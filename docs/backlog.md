@@ -33,10 +33,11 @@ collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, 
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜
 Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
 
-## P2 — Premier lot de données `immo` ("zones")  ⬜
-Négocier avec `radar-immobilier` le contrat d'attributs exact (zones → puis lots). Modéliser en
-dataset QC avec `geoId` stable. Inscrire la demande dans `data/requests/` ([ADR-0004]).
-**Rescrape immo** : enregistrer les datasets déjà consommés par immo et les ré-acquérir proprement.
+## P2 — Premier lot de données `immo` ("zones")  ⛔ bloqué (input immo)
+Bloqué : nécessite le **contrat d'attributs exact** de `radar-immobilier` (zones → lots) et la
+coordination immo (h2a indisponible cette session). Préparé : municipalités QC servies + entrée
+ledger `data/requests/ca-qc-sda__qc-municipalites.json` (`requestedBy: immo`, [ADR-0004]).
+Au déblocage : modéliser zones/lots en dataset QC avec `geoId` stable + rescrape des datasets immo.
 
 ## P3 — Provinces du Canada  🟡
 `geo-source-ca` : StatCan 2021 cartographic boundaries, **OGL-Canada**. ✅ provinces+territoires (13,
@@ -58,10 +59,13 @@ Par pays, `kind: "statistical"` / `"postal"` ([ADR-0002]). Packages frères cré
 - `geo-source-fr-stat` (INSEE — COG, IRIS), `geo-source-fr-postal` (BAN / code postal↔commune)
 - Postal **après** l'admin dans chaque pays (licences restrictives à vérifier d'abord).
 
-## P6 — Publication  ⬜ (fin)
-- npm Trusted Publishing par package (tag-driven), Docker `geo-api` → registry Scaleway.
-- `deploy/k8s/` + PR `requests/geo.md` + `tenants/geo/` sur `../poc-k8s` (ingress `geo.sent-tech.ca`).
-- Site → CDN (Playwright MCP prévu pour cette étape).
+## P6 — Publication  🟡 harnessing fait, publication "à la fin"
+- ✅ Harnessing : `Dockerfile` (+gdal), `deploy/k8s/` (deployment/service/ingress/pvc/job-fetch),
+  workflows `npm-publish` (Trusted Publishing) + `docker-publish` — **tag-driven, rien d'auto**.
+- ✅ Demande tenant poc-k8s : PR `rhanka/k8s-ops#30` (`requests/geo.md` + `tenants/geo/`, ingress
+  `geo.sent-tech.ca`).
+- ⬜ Publication effective (npm publish, docker push, déploiement, site→CDN) — **à la fin**, par
+  l'owner (Playwright MCP prévu pour le CDN).
 
 ---
 
