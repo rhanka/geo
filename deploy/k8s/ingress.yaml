@@ -1,0 +1,35 @@
+# Ingress exposing geo-api at https://geo.sent-tech.ca through the shared
+# Traefik v3 controller, with a cert-manager-issued Let's Encrypt certificate.
+#
+# Cluster contract (owned by poc-k8s):
+#   - Traefik v3 is the single shared ingress controller / LB.
+#   - cert-manager ClusterIssuer `letsencrypt-prod` issues certs for the
+#     sent-tech.ca DNS zone.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: geo-api
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - geo.sent-tech.ca
+      secretName: geo-api-tls
+  rules:
+    - host: geo.sent-tech.ca
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: geo-api
+                port:
+                  name: http
