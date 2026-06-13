@@ -65,6 +65,28 @@ provider MERN/MRNF, **CC-BY 4.0 (redistribuable, attribution requise)**, via le 
 Risques pinés : dérive d'index de couche ArcGIS (pin `layer` + assert des champs), CRS source
 (forcer WGS84 via `outSR=4326`), licences postales restrictives (gate → non redistribuable).
 
+## ADR-0007 — Hermétisme du cache d'acquisition · accepted · 2026-06-13
+
+**Contexte.** Le scrape réel des régions QC a renvoyé **1 feature avec une géométrie Point
+synthétique** alors que le service réel renvoie 18 MultiPolygons : le cache `.cache/geo`
+(clé = `sha256(url)`) avait été **empoisonné** par un test qui a écrit un fixture sous la même URL.
+**Décision.** Les tests d'acquisition DOIVENT utiliser un `cacheDir` temporaire isolé
+(`os.tmpdir()`), jamais le défaut `.cache/geo`. `.cache/` reste gitignored ; purge du cache avant
+tout scrape réel. À corriger dans les tests `geo-acquire`/`geo-cli`.
+
+## ADR-0008 — Acquisition par fichier bulk via GDAL pour les couches volumineuses/lentes · accepted · 2026-06-13
+
+**Contexte.** Le service ArcGIS REST SDA est **inutilisable pour les municipalités** (1343 features) :
+timeout systématique même à 100 features généralisées ; MRC en pleine résolution = 95 MB. GDAL 3.8.4
+(`ogr2ogr`/`ogrinfo`) est présent sur la machine. Le GPKG bulk officiel fait 105 MB et est dispo.
+**Décision.** `geo-acquire` gagne un **chemin d'acquisition fichier** (`format: "gpkg" | "shp" | "fgdb"`) :
+télécharge l'archive (→ cache, gitignored), lit via `ogr2ogr` (virtual FS `/vsizip/`), reprojette
+`-t_srs EPSG:4326`, simplifie `-simplify ~30` (mètres, en CRS source Lambert), sort du GeoJSON →
+normalisation. L'**ArcGIS REST reste réservé aux petites couches rapides** (ex. régions). Le brut
+(105 MB) n'est **jamais commité** ; seule la donnée **normalisée + simplifiée** (committable) l'est.
+GDAL devient une **dépendance système** (CI : `gdal-bin` ; image Docker du scraper : gdal). Conséquence
+multi-pays : la plupart des référentiels officiels seront acquis ainsi (data.gouv.fr, StatCan…).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
