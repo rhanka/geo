@@ -17,21 +17,20 @@
     "**/*.svelte"
   ],
   "svelte": "./src/index.ts",
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
     }
   },
   "files": [
-    "src",
-    "dist"
+    "src"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json --emitDeclarationOnly",
-    "check": "tsc -p tsconfig.json --noEmit",
+    "build": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run src --passWithNoTests"
   },
   "dependencies": {

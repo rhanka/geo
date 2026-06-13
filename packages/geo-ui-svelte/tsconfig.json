@@ -1,8 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "verbatimModuleSyntax": false,
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts", "src/**/*.svelte"]
 }

@@ -1,0 +1,21 @@
+{
+  "note": "Machine source of truth for data licensing. redistributable/attributionRequired/shareAlike MUST match geo-core LICENSES for the given licenseId (CI asserts no drift). docs/licenses.md is generated from this file via `geo licenses build`. See docs/decisions.md ADR-0003.",
+  "sources": [
+    {
+      "sourceId": "ca-qc/sda",
+      "kind": "administrative",
+      "provider": "Gouvernement du Québec — Ministère des Ressources naturelles et des Forêts (MRNF)",
+      "providerUrl": "https://www.donneesquebec.ca",
+      "homepage": "https://www.donneesquebec.ca/recherche/dataset/decoupages-administratifs",
+      "licenseId": "cc-by-4.0",
+      "redistributable": true,
+      "attributionRequired": true,
+      "shareAlike": false,
+      "attribution": "© Gouvernement du Québec — Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "sourceUrl": "https://servicescarto.mern.gouv.qc.ca/pes/rest/services/Territoire/SDA_WMS/MapServer",
+      "retrievedAt": "2026-06-13",
+      "datasets": ["qc-regions", "qc-mrc", "qc-municipalites"],
+      "notes": "Découpages administratifs du Québec (SDA 1/20 000). CKAN license_id=cc-by, isopen=true. ArcGIS REST MapServer sert du GeoJSON via outSR=4326&f=geojson."
+    }
+  ]
+}
