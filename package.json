@@ -1,0 +1,44 @@
+{
+  "name": "@sentropic/geo-root",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Acquisition, normalisation et publication de données géographiques mondiales (Québec → Canada → monde), respectant les licences. Lib npm @sentropic/geo + CLI + API OGC + site geo.sent-tech.ca.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git"
+  },
+  "homepage": "https://geo.sent-tech.ca",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "node scripts/run-workspaces.mjs build",
+    "check": "npm run build && node scripts/run-workspaces.mjs check",
+    "test": "node scripts/run-workspaces.mjs test",
+    "lint": "node scripts/run-workspaces.mjs lint",
+    "verify": "npm run check && npm test",
+    "geo": "npm --workspace @sentropic/geo-cli run -s start --",
+    "api:dev": "npm --workspace @sentropic/geo-api run dev",
+    "site:dev": "npm --workspace apps/site run dev"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.43.5",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@testing-library/svelte": "^5.2.8",
+    "@types/node": "^25.3.0",
+    "jsdom": "^27.2.0",
+    "svelte": "^5.53.2",
+    "svelte-check": "^4.3.4",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.0.15"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
