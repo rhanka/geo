@@ -1,0 +1,41 @@
+{
+  "name": "@sentropic/geo-cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "CLI `geo` : lister les sources, acquérir des jeux de données, servir et construire.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git",
+    "directory": "packages/geo-cli"
+  },
+  "bin": {
+    "geo": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/geo-core": "^0.1.0",
+    "@sentropic/geo-acquire": "^0.1.0",
+    "@sentropic/geo-source-ca-qc": "^0.1.0",
+    "commander": "^15.0.0"
+  }
+}

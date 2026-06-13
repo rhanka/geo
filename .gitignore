@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+.npm/
+
+# build output
+dist/
+build/
+.svelte-kit/
+*.tsbuildinfo
+
+# acquisition cache & large raw downloads (re-downloadable, never committed)
+.cache/
+data/raw/
+data/tmp/
+*.zip
+*.gpkg
+*.gdb/
+*.shp
+*.shx
+*.dbf
+*.prj
+
+# h2a local bus (coordination, not source)
+.h2a/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# logs / os
+*.log
+.DS_Store
+coverage/
