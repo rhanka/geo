@@ -58,6 +58,9 @@ Par pays, `kind: "statistical"` / `"postal"` ([ADR-0002]). Packages frères cré
 - `geo-source-ca-postal` (FSA StatCan ouvert ; PCCF complet = **non redistribuable**, gate)
 - `geo-source-fr-stat` (INSEE — COG, IRIS), `geo-source-fr-postal` (BAN / code postal↔commune)
 - Postal **après** l'admin dans chaque pays (licences restrictives à vérifier d'abord).
+- **Modèle décidé** ([ADR-0011]) : crosswalks/codes = features `geometry:null` (servis par l'API OGC).
+  **Pré-requis lib** : `geo-acquire` doit gagner les formats **CSV** + **`.7z`** (débloque aussi
+  `fr-communes`). Gate licence stricte : seulement les référentiels ouverts (OGL / Licence Ouverte).
 
 ## P6 — Publication  🟡 harnessing fait, publication "à la fin"
 - ✅ Harnessing : `Dockerfile` (+gdal), `deploy/k8s/` (deployment/service/ingress/pvc/job-fetch),

@@ -114,6 +114,28 @@ volume de l'API) et en dev local. `ca-provinces` est donc documenté + reproduct
 ou GDAL SQLite) pour produire une couche légère committable de `ca-provinces` (et autres côtières).
 Marqué pour `geo-acquire`/scrape.
 
+## ADR-0011 — Modèle des référentiels non-géométriques (stat/postaux) · accepted (revisit) · 2026-06-13
+
+**Contexte.** Les référentiels **statistiques** (INSEE COG, SGC/DGUID StatCan) et **postaux**
+(code postal ↔ commune, FSA) sont en partie **non géométriques** (tables de correspondance/codes),
+alors que le cœur est centré géométrie (`AdminFeatureCollection`). Décision prise par le conductor
+(revisitable).
+**Décisions.**
+1. **Modèle** : représenter les crosswalks/codes comme des **features à `geometry: null`** (RFC 7946
+   l'autorise), la correspondance vivant dans `properties` (ex. `{ postalCode, geoId, country }`).
+   → un seul modèle, servi tel quel par l'API OGC existante. Implémentation : élargir `AdminFeature`
+   (ou type `ReferentialFeature = Feature<Geometry | null, …>`) dans `geo-core`.
+2. **Packages** (suivant [ADR-0002]) : `geo-source-<cc>-postal` (`kind:"postal"`) et
+   `geo-source-<cc>-stat` (`kind:"statistical"`), créés à l'implémentation.
+3. **Gate licence prioritaire** : uniquement les référentiels **ouverts** (FSA StatCan = OGL ;
+   « base officielle des codes postaux » La Poste / BAN = Licence Ouverte ; INSEE COG = Licence
+   Ouverte). Les produits **restreints** (PCCF complet, certains produits INSEE) résolvent en
+   `redistributable:false` → jamais republiés (la gate l'impose). Entrée de registre par source.
+4. **Lib (follow-up geo-acquire)** : ajouter le format **CSV** (parse → features `geometry:null`) et
+   le support **`.7z`** (libarchive / étape d'extraction) — débloque aussi `fr-communes` ([ADR-0009]).
+Marqué `revisit` : à confirmer/affiner quand un 2e pays postal sera fait (éventuelle lib
+`geo-referential` de crosswalk, différée jusqu'à ≥2 pays — [ADR-0002]).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
