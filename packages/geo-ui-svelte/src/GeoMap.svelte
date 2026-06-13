@@ -1,10 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { FeatureCollection, Position } from "@sentropic/geo-core";
+  import type {
+    AdminFeatureCollection,
+    FeatureCollection,
+    Position,
+  } from "@sentropic/geo-core";
 
   interface Props {
-    /** GeoJSON FeatureCollection to render (WGS84, RFC 7946). */
-    data: FeatureCollection;
+    /** Administrative GeoJSON FeatureCollection to render (WGS84, RFC 7946). */
+    data: AdminFeatureCollection;
     /** CSS height of the map container. */
     height?: string;
   }

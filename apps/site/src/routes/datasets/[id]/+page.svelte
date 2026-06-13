@@ -35,7 +35,6 @@
     <Stack gap={3} as="header">
       <Typography variant="h1" as="h1">{entry.title}</Typography>
       <div class="meta-tags">
-        <Tag tone="info" size="sm">{entry.level}</Tag>
         <Tag tone={entry.license.redistributable ? "success" : "warning"} size="sm">
           {entry.license.id}
         </Tag>
@@ -63,17 +62,6 @@
       <Typography variant="h2" as="h2">Provenance &amp; licence</Typography>
 
       <dl class="meta-list">
-        <div class="meta-row">
-          <dt><Typography variant="overline" tone="muted">Fournisseur</Typography></dt>
-          <dd>
-            {#if entry.providerUrl}
-              <Link href={entry.providerUrl} variant="standalone" external>{entry.provider}</Link>
-            {:else}
-              <Typography variant="body">{entry.provider}</Typography>
-            {/if}
-          </dd>
-        </div>
-
         <div class="meta-row">
           <dt><Typography variant="overline" tone="muted">Licence</Typography></dt>
           <dd>
