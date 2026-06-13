@@ -87,6 +87,33 @@ normalisation. L'**ArcGIS REST reste réservé aux petites couches rapides** (ex
 GDAL devient une **dépendance système** (CI : `gdal-bin` ; image Docker du scraper : gdal). Conséquence
 multi-pays : la plupart des référentiels officiels seront acquis ainsi (data.gouv.fr, StatCan…).
 
+## ADR-0009 — Acquisition `.7z` et gros référentiels communaux · revisit · 2026-06-13
+
+**Contexte (France).** IGN ADMIN EXPRESS est livré en **`.7z`** ; or `geo-acquire` (GDAL `/vsizip/`)
+ne lit que les ZIP, et ce build GDAL 3.8.4 n'a pas `/vsi7z/`. Par ailleurs `fr-communes` (34 877)
+dépasse ~25–30 Mo même simplifié. **Décisions :** (a) régions + départements FR produits ; communes
+**déclarées mais non produites** (volume) — à shipper plus tard en TopoJSON ou par découpage
+départemental, attributs réduits ; (b) en attendant le support `.7z` dans `geo-acquire`, FR est
+produit via un script miroir du pipeline `acquire`. **Follow-up backlog :** ajouter le support
+`.7z`/libarchive (ou une étape d'extraction `7z`) à `geo-acquire` pour que `geo fetch fr/...`
+fonctionne de bout en bout. Marqué `revisit` car la voie d'acquisition FR n'est pas encore unifiée
+avec la CLI.
+
+## ADR-0010 — Budget de données committées (gros référentiels reproductibles, non versionnés) · accepted · 2026-06-13
+
+**Contexte.** `ca-provinces` (StatCan, 13 features) pèse **17.8 Mo** : dominé par le **nombre
+d'anneaux** (archipel arctique, lacs) que `ogr2ogr -simplify` ne réduit pas (il enlève des sommets,
+pas des anneaux). À l'échelle mondiale, committer toutes les géométries gonflerait le repo de façon
+non soutenable.
+**Décision.** Budget de **~6 Mo / dataset committé**. En-dessous (régions/MRC/**municipalités QC**
+4.9 Mo, régions/départements FR) → committé comme couche de service/seed. Au-dessus → **non versionné**
+(`.gitignore`), mais **reproductible** via `geo fetch` (le `SourceManifest` + la licence + l'entrée de
+registre restent committés). La donnée lourde est produite au **déploiement** (job k8s `geo fetch` →
+volume de l'API) et en dev local. `ca-provinces` est donc documenté + reproductible mais **non seedé**.
+**Follow-up.** Étape de généralisation par aire (suppression des anneaux < seuil km², via mapshaper
+ou GDAL SQLite) pour produire une couche légère committable de `ca-provinces` (et autres côtières).
+Marqué pour `geo-acquire`/scrape.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
