@@ -12,6 +12,7 @@ import {
   acquire as defaultAcquire,
   writeNormalized as defaultWriteNormalized,
   type AcquireOptions,
+  type CommandRunner,
 } from "@sentropic/geo-acquire";
 import type { NormalizedDataset } from "@sentropic/geo-core";
 
@@ -24,6 +25,14 @@ export interface FetchDeps {
   writeNormalized?: typeof defaultWriteNormalized;
   /** Injected fetch implementation forwarded to `acquire` (tests pass a stub). */
   fetchImpl?: typeof fetch;
+  /**
+   * Override the acquisition cache directory forwarded to `acquire`. Tests MUST
+   * pass an isolated temp dir so a real download never writes the default
+   * `.cache/geo` and poisons subsequent fetches (ADR-0007).
+   */
+  cacheDir?: string;
+  /** Injected GDAL command runner forwarded to `acquire` for bulk formats (tests). */
+  gdalRunner?: CommandRunner;
   /** Override the current working directory used to resolve the out dir. */
   cwd?: string;
 }
@@ -87,6 +96,8 @@ export async function fetchSource(
     if (normalizer) acquireOpts.normalizer = normalizer;
     if (options.force !== undefined) acquireOpts.force = options.force;
     if (deps.fetchImpl !== undefined) acquireOpts.fetchImpl = deps.fetchImpl;
+    if (deps.cacheDir !== undefined) acquireOpts.cacheDir = deps.cacheDir;
+    if (deps.gdalRunner !== undefined) acquireOpts.gdalRunner = deps.gdalRunner;
 
     const normalized: NormalizedDataset = await acquire(source.manifest, id, acquireOpts);
     const { geojsonPath, metaPath } = await writeNormalized(normalized, outDir);

@@ -33,7 +33,7 @@ describe("showSource", () => {
     expect(detail.datasets).toHaveLength(3);
     const muni = detail.datasets.find((d) => d.id === "qc-municipalites");
     expect(muni?.adminLevel).toBe("municipality");
-    expect(muni?.layer).toBe(2);
+    expect(muni?.layer).toBe("munic_s");
     expect(formatSourceDetail(detail)).toContain("ca-qc/sda");
   });
 
