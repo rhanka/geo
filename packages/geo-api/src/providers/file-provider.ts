@@ -77,7 +77,9 @@ export class FileProvider implements FeatureProvider {
     const map = new Map<string, LoadedCollection>();
     let entries: string[];
     try {
-      entries = await readdir(this.#dir);
+      // Recurse: `writeNormalized` namespaces datasets under <sourceSlug>/, e.g.
+      // `ca-qc-sda/qc-municipalites.geojson` (see ADR-0005). Paths are relative to #dir.
+      entries = await readdir(this.#dir, { recursive: true });
     } catch {
       // Missing/unreadable directory → zero collections.
       return map;
@@ -85,17 +87,17 @@ export class FileProvider implements FeatureProvider {
     const geojsonFiles = entries
       .filter((name) => name.endsWith(".geojson"))
       .sort();
-    for (const fileName of geojsonFiles) {
-      const loaded = await this.#loadOne(fileName);
+    for (const relPath of geojsonFiles) {
+      const loaded = await this.#loadOne(relPath);
       if (loaded) map.set(loaded.info.id, loaded);
     }
     return map;
   }
 
-  async #loadOne(fileName: string): Promise<LoadedCollection | undefined> {
-    const stem = basename(fileName, ".geojson");
-    const geojsonPath = join(this.#dir, fileName);
-    const metaPath = join(this.#dir, `${stem}.meta.json`);
+  async #loadOne(relPath: string): Promise<LoadedCollection | undefined> {
+    const stem = basename(relPath, ".geojson");
+    const geojsonPath = join(this.#dir, relPath);
+    const metaPath = `${geojsonPath.slice(0, -".geojson".length)}.meta.json`;
 
     let collection: AdminFeatureCollection;
     try {
