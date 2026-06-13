@@ -38,13 +38,18 @@ Négocier avec `radar-immobilier` le contrat d'attributs exact (zones → puis l
 dataset QC avec `geoId` stable. Inscrire la demande dans `data/requests/` ([ADR-0004]).
 **Rescrape immo** : enregistrer les datasets déjà consommés par immo et les ré-acquérir proprement.
 
-## P3 — Provinces du Canada  ⬜
-`geo-source-ca` : sources fédérales (Statistics Canada / NRCan) — provinces & territoires, puis
-divisions/subdivisions de recensement (CD/CSD). Licence OGL-Canada (redistribuable).
+## P3 — Provinces du Canada  🟡
+`geo-source-ca` : StatCan 2021 cartographic boundaries, **OGL-Canada**. ✅ provinces+territoires (13,
+PRUID→ISO 3166-2) — package + manifest + tests verts, **non seedé** (17.8 Mo > budget [ADR-0010],
+reproductible via `geo fetch`). ⬜ census divisions (CD) déclaré, non produit (follow-up).
+**Follow-up** : généralisation par aire (anneaux < seuil) pour une couche légère committable.
 
-## P4 — France (data.gouv.fr)  ⬜
-`geo-source-fr` : ADMIN EXPRESS (IGN) / communes INSEE via data.gouv.fr (Licence Ouverte).
-Plus simple → bon terrain de généralisation du moteur multi-pays.
+## P4 — France (data.gouv.fr / IGN)  🟡
+`geo-source-fr` : **ADMIN EXPRESS COG CARTO** (IGN), **Licence Ouverte 2.0**. ✅ régions (18) +
+départements (101) produits & servis. ⬜ communes (34 877) déclarées mais non produites (volume —
+TopoJSON / découpage départemental / attributs réduits, voir [ADR-0009]).
+**Follow-up geo-acquire** : support `.7z`/libarchive (IGN livre en `.7z`, `/vsizip/` ne lit que ZIP)
+pour que `geo fetch fr/...` marche de bout en bout ([ADR-0009]).
 
 ## P5 — Référentiels statistiques & postaux  ⬜
 Par pays, `kind: "statistical"` / `"postal"` ([ADR-0002]). Packages frères créés à l'implémentation :

@@ -16,6 +16,38 @@
       "retrievedAt": "2026-06-13",
       "datasets": ["qc-regions", "qc-mrc", "qc-municipalites"],
       "notes": "Découpages administratifs du Québec (SDA 1/20 000). CKAN license_id=cc-by, isopen=true. ArcGIS REST MapServer sert du GeoJSON via outSR=4326&f=geojson."
+    },
+    {
+      "sourceId": "fr/admin-express",
+      "kind": "administrative",
+      "provider": "Institut national de l'information géographique et forestière (IGN)",
+      "providerUrl": "https://geoservices.ign.fr",
+      "homepage": "https://geoservices.ign.fr/telechargement-api/ADMIN-EXPRESS-COG-CARTO",
+      "licenseId": "licence-ouverte-2.0",
+      "redistributable": true,
+      "attributionRequired": true,
+      "shareAlike": false,
+      "attribution": "© IGN — Licence Ouverte / Open Licence 2.0 (Etalab)",
+      "sourceUrl": "https://data.geopf.fr/telechargement/download/ADMIN-EXPRESS-COG-CARTO/ADMIN-EXPRESS-COG-CARTO_4-0__GPKG_WGS84G_FRA_2026-01-01/ADMIN-EXPRESS-COG-CARTO_4-0__GPKG_WGS84G_FRA_2026-01-01.7z",
+      "retrievedAt": "2026-06-13",
+      "datasets": ["fr-regions", "fr-departements", "fr-communes"],
+      "notes": "ADMIN EXPRESS COG CARTO édition 4-0 (2026-01-01), GPKG WGS84. Archive .7z : geo-acquire ne gère que ZIP via /vsizip/ (support .7z = follow-up) → produit via script miroir. fr-communes (34877) déclaré mais non produit (volume)."
+    },
+    {
+      "sourceId": "ca/statcan-boundaries",
+      "kind": "administrative",
+      "provider": "Statistics Canada",
+      "providerUrl": "https://www.statcan.gc.ca",
+      "homepage": "https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/index2021-eng.cfm?year=21",
+      "licenseId": "ogl-ca",
+      "redistributable": true,
+      "attributionRequired": true,
+      "shareAlike": false,
+      "attribution": "© Statistics Canada — Open Government Licence – Canada / © Statistique Canada — Licence du gouvernement ouvert – Canada",
+      "sourceUrl": "https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lpr_000b21a_e.zip",
+      "retrievedAt": "2026-06-13",
+      "datasets": ["ca-provinces", "ca-census-divisions"],
+      "notes": "2021 Census cartographic boundary files. CRS source EPSG:3347 → reprojeté WGS84. ca-provinces (13) NON seedé (17.8 Mo > budget ADR-0010 ; reproductible via `geo fetch`). ca-census-divisions déclaré, non produit (follow-up)."
     }
   ]
 }
