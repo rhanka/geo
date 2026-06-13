@@ -1,0 +1,156 @@
+# geo-fetch — populates the geo-data PVC with normalized GeoJSON, reproducibly.
+#
+# Uses the same image as geo-api (gdal-bin is present, so bulk vector formats
+# ingest via ogr2ogr/ogrinfo). Writes to /data/normalized on the PVC (mounted
+# read-write here; the geo-api Deployment mounts it read-only).
+#
+# `geo fetch` takes one dataset per call, so the three Québec SDA datasets are
+# fetched in sequence. This also regenerates the over-budget datasets (ADR-0010)
+# reproducibly. Re-run this Job to (re)populate or refresh the served data.
+#
+# Run it after the PVC exists, e.g.:
+#   kubectl -n geo apply -f deploy/k8s/job-fetch.yaml
+#   kubectl -n geo wait --for=condition=complete job/geo-fetch --timeout=20m
+# To re-run, delete the completed Job first (`kubectl -n geo delete job geo-fetch`).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-fetch
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-fetch
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: data-population
+spec:
+  backoffLimit: 2
+  # Reap the Job 1h after it finishes so re-applying with a fresh image is clean.
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-fetch
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: data-population
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: geo-fetch
+          image: rg.fr-par.scw.cloud/geo/geo-api:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GEO_DATA_DIR
+              value: /data/normalized
+          # `geo` is on PATH (symlinked to packages/geo-cli/dist/cli.js).
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              OUT=/data/normalized
+              mkdir -p "$OUT"
+              echo "Fetching Québec SDA boundaries into $OUT"
+              geo fetch ca-qc/sda qc-regions       --out "$OUT"
+              geo fetch ca-qc/sda qc-mrc           --out "$OUT"
+              geo fetch ca-qc/sda qc-municipalites --out "$OUT"
+              echo "Rebuilding license registry"
+              geo licenses build || echo "licenses build skipped (non-fatal)"
+              echo "geo-fetch complete"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 384Mi
+            limits:
+              # gdal/ogr2ogr can spike on the larger municipal layer; give it room.
+              cpu: 1000m
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: geo-data
+---
+# Optional periodic refresh of the served data (ADR-0004 cadence). Disabled by
+# default (suspend: true) — enable by setting `suspend: false` once the one-shot
+# geo-fetch Job has succeeded and you want scheduled re-fetches. Shares the same
+# image, command, and PVC as the Job above.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: geo-fetch
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-fetch
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: data-population
+spec:
+  # 04:17 on the 1st of each month (UTC). Adjust to taste.
+  schedule: "17 4 1 * *"
+  suspend: true
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 3600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: geo-fetch
+            app.kubernetes.io/part-of: geo
+            app.kubernetes.io/component: data-population
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: geo-fetch
+              image: rg.fr-par.scw.cloud/geo/geo-api:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: GEO_DATA_DIR
+                  value: /data/normalized
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  OUT=/data/normalized
+                  mkdir -p "$OUT"
+                  geo refresh --stale --out "$OUT" || \
+                    { geo fetch ca-qc/sda qc-regions       --out "$OUT"; \
+                      geo fetch ca-qc/sda qc-mrc           --out "$OUT"; \
+                      geo fetch ca-qc/sda qc-municipalites --out "$OUT"; }
+                  geo licenses build || echo "licenses build skipped (non-fatal)"
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 384Mi
+                limits:
+                  cpu: 1000m
+                  memory: 1Gi
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: geo-data
