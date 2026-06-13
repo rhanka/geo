@@ -1,0 +1,47 @@
+{
+  "name": "@sentropic/geo-api",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Serveur Hono implémentant OGC API – Features (GeoJSON) ; provider fichier ou PostGIS. Réutilisable par d'autres projets.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git",
+    "directory": "packages/geo-api"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./app": {
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/geo-core": "^0.1.0",
+    "@hono/node-server": "^2.0.4",
+    "hono": "^4.12.25",
+    "pg": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.15.6"
+  }
+}
