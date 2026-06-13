@@ -9,6 +9,7 @@ export type LicenseId =
   | "cc-by-sa-4.0"
   | "cc0-1.0"
   | "ogl-ca"
+  | "licence-ouverte-2.0"
   | "odbl-1.0"
   | "public-domain"
   | "proprietary"
@@ -56,6 +57,13 @@ export const LICENSES: Record<LicenseId, License> = {
     redistributable: true,
     attributionRequired: true,
   },
+  "licence-ouverte-2.0": {
+    id: "licence-ouverte-2.0",
+    title: "Licence Ouverte / Open Licence 2.0 (Etalab)",
+    url: "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+    redistributable: true,
+    attributionRequired: true,
+  },
   "odbl-1.0": {
     id: "odbl-1.0",
     title: "Open Data Commons Open Database License 1.0",
@@ -96,6 +104,11 @@ const LICENSE_ALIASES: Record<string, LicenseId> = {
   "cc-zero": "cc0-1.0",
   "ogl-canada": "ogl-ca",
   "ogl-ca": "ogl-ca",
+  "licence-ouverte": "licence-ouverte-2.0",
+  "licence-ouverte-2.0": "licence-ouverte-2.0",
+  "lov2": "licence-ouverte-2.0",
+  "etalab-2.0": "licence-ouverte-2.0",
+  "fr-lo": "licence-ouverte-2.0",
   "odbl": "odbl-1.0",
   "odc-odbl": "odbl-1.0",
   "public-domain": "public-domain",
