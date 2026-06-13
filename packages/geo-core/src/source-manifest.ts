@@ -22,6 +22,14 @@ export type DatasetFormat =
 
 export type AccessLevel = "open" | "restricted";
 
+/**
+ * What kind of referential a source publishes. Administrative boundaries,
+ * statistical geographies (e.g. INSEE, Statistics Canada census units), and
+ * postal referentials (postal code ↔ geography) have distinct providers,
+ * licenses and update cadences, so they are tagged explicitly.
+ */
+export type SourceKind = "administrative" | "statistical" | "postal";
+
 export interface Checksum {
   algo: "sha256";
   value: string;
@@ -56,6 +64,8 @@ export interface SourceManifest {
   id: string;
   title: string;
   description?: string;
+  /** Referential kind; defaults to "administrative" when omitted. */
+  kind?: SourceKind;
   jurisdiction: {
     country: CountryCode;
     subdivision?: SubdivisionCode;
@@ -124,6 +134,16 @@ export function validateSourceManifest(input: unknown): ValidationResult {
     errors.push("provider: required object");
   } else if (typeof provider["name"] !== "string" || provider["name"].length === 0) {
     errors.push("provider.name: required non-empty string");
+  }
+
+  const kind = input["kind"];
+  if (
+    kind !== undefined &&
+    kind !== "administrative" &&
+    kind !== "statistical" &&
+    kind !== "postal"
+  ) {
+    errors.push('kind: must be one of "administrative", "statistical", "postal"');
   }
 
   if (input["license"] === undefined) {
