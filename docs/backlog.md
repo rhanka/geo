@@ -21,12 +21,14 @@ collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, 
 |---|----|------|--------|
 | P0.1 | `geo-core` contrat (admin, geojson, crs, licence, source-manifest, `kind`) | conductor | ✅ |
 | P0.2 | `geo-acquire` (download, gate licence, arcgis, acquire/writeNormalized) | lib-build | ✅ |
-| P0.3 | `geo-api` OGC Features + FileProvider **récursif** ([ADR-0005]) | lib-build | 🟡 (récursion à appliquer) |
-| P0.4 | `geo-source-ca-qc` : manifests SDA (régions, MRC, **municipalités**) + normalizers, ids `qc-*` | lib-build | ⬜ |
-| P0.5 | `geo-cli` : `sources`, `fetch`, `serve`, `build`, `refresh`, `licenses build` | lib-build | ⬜ |
-| P0.6 | `geo-ui-svelte` + `apps/site` : catalogue + carte MapLibre (chrome design-system) | lib-build | ⬜ |
-| P0.7 | **scrape réel** municipalités QC + fixture committée + checksum | scrape-exec | ⬜ |
-| P0.8 | `data/requests/` ledger + registre licences seedé QC | conductor | 🟡 |
+| P0.3 | `geo-api` OGC Features + FileProvider **récursif** ([ADR-0005]) | lib-build | ✅ |
+| P0.4 | `geo-source-ca-qc` : manifests SDA (régions, MRC, **municipalités**) + normalizers, ids `qc-*` | lib-build | ✅ |
+| P0.5 | `geo-cli` : `sources`, `fetch`, `serve`, `build`, `refresh`, `licenses build` | lib-build | ✅ |
+| P0.6 | `geo-ui-svelte` + `apps/site` : catalogue + carte MapLibre (chrome design-system) | lib-build | ✅ |
+| P0.7 | **scrape réel** via GPKG bulk + GDAL ([ADR-0008]) : régions 18, MRC 106, **municipalités 1343** (WGS84, simplifié, ~6.7 Mo) | scrape-exec | ✅ |
+| P0.8 | `data/requests/` ledger (municipalités = demande immo) + registre licences QC | conductor | ✅ |
+
+**P0 livré** : `npm run verify` vert (geo-core 19 / geo-acquire 31 / geo-api 18 / geo-source-ca-qc 8 / geo-cli 30 tests) ; `GET /collections/qc-municipalites/items` → 1343 features GeoJSON servies par l'API. Reste : déploiement (P6) pour l'exposer publiquement.
 
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜
 Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.

@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -6,6 +6,7 @@ import type { FeatureCollection, SourceManifest } from "@sentropic/geo-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { acquire, writeNormalized } from "./acquire.js";
+import type { CommandRunner } from "./gdal.js";
 import { LicenseError } from "./license-gate.js";
 
 const SAMPLE: FeatureCollection = {
@@ -102,7 +103,7 @@ describe("acquire", () => {
   it("throws a clear error for an unsupported V1 format", async () => {
     const manifest = arcgisManifest();
     const dataset = manifest.datasets[0];
-    if (dataset) dataset.format = "shp";
+    if (dataset) dataset.format = "csv";
     await expect(
       acquire(manifest, "regions", { cacheDir, fetchImpl: fetchReturning(SAMPLE) }),
     ).rejects.toThrow(/not yet supported in V1/);
@@ -126,6 +127,65 @@ describe("acquire", () => {
       fetchImpl: fetchReturning(SAMPLE),
     });
     expect(result.meta.count).toBe(2);
+  });
+
+  it("acquires a gpkg dataset via GDAL (injected runner, no real ogr2ogr)", async () => {
+    const manifest: SourceManifest = {
+      ...arcgisManifest(),
+      datasets: [
+        {
+          id: "regions",
+          title: "Régions",
+          format: "gpkg",
+          url: "https://data.test/SDA.gpkg.zip",
+          crs: "EPSG:32198",
+          adminLevel: "region",
+          layer: "regio_s",
+          query: { simplify: 0.0008 },
+        },
+      ],
+    };
+
+    // Fake archive bytes (never actually parsed as a zip — GDAL is mocked).
+    const fetchImpl = vi.fn(async () =>
+      new Response("PK fake zip", { status: 200, statusText: "OK" }),
+    ) as unknown as typeof fetch;
+
+    // The fake ogr2ogr writes the WGS84 GeoJSON to the outPath it is given.
+    const gdalRunner: CommandRunner = async (file, args) => {
+      if (file === "ogrinfo") return { stdout: "1: regio_s (3D Multi Polygon)", stderr: "" };
+      // ogr2ogr args: [..., outPath, source, layer]; outPath is 3rd-from-last.
+      const outPath = args[args.length - 3];
+      if (typeof outPath === "string") {
+        await writeFile(outPath, JSON.stringify(SAMPLE));
+      }
+      return { stdout: "", stderr: "" };
+    };
+
+    const result = await acquire(manifest, "regions", { cacheDir, fetchImpl, gdalRunner });
+
+    expect(result.meta.count).toBe(2);
+    expect(result.meta.crs).toBe("EPSG:4326");
+    expect(result.collection.features[0]?.properties.level).toBe("region");
+  });
+
+  it("throws when a gpkg dataset omits a string layer", async () => {
+    const manifest: SourceManifest = {
+      ...arcgisManifest(),
+      datasets: [
+        {
+          id: "regions",
+          title: "Régions",
+          format: "gpkg",
+          url: "https://data.test/SDA.gpkg.zip",
+          adminLevel: "region",
+        },
+      ],
+    };
+    const fetchImpl = vi.fn() as unknown as typeof fetch;
+    await expect(
+      acquire(manifest, "regions", { cacheDir, fetchImpl }),
+    ).rejects.toThrow(/requires a string "layer"/);
   });
 });
 

@@ -56,7 +56,8 @@ describe("manifest", () => {
     expect(getDataset(manifest, DATASET_MRC)?.adminLevel).toBe("mrc");
     expect(getDataset(manifest, DATASET_MUNICIPALITES)?.layer).toBe(SDA_LAYERS.municipalites);
     expect(getDataset(manifest, DATASET_MUNICIPALITES)?.adminLevel).toBe("municipality");
-    expect(manifest.datasets.every((d) => d.format === "arcgis-rest")).toBe(true);
+    expect(manifest.datasets.every((d) => d.format === "gpkg")).toBe(true);
+    expect(manifest.datasets.every((d) => d.url.endsWith("SDA.gpkg.zip"))).toBe(true);
   });
 });
 
