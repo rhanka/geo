@@ -1,0 +1,69 @@
+# Backlog / Track — @sentropic/geo
+
+Source de vérité du backlog (le MCP `track` étant indisponible — voir [ADR-0001](decisions.md)).
+Piloté en `/loop` par le conductor ; délégation ≤4 sous-agents en parallèle.
+
+Statuts : ⬜ todo · 🟡 in-progress · ✅ done · ⛔ blocked. Rôles : voir [`ROLES.md`](ROLES.md).
+
+## Objectif
+
+Capitaliser la lib `@sentropic/geo` jusqu'à **publication npm + API hébergée** (`geo.sent-tech.ca`
+sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `immo`).
+
+---
+
+## P0 — Vertical slice : municipalités du Québec servies par l'API  🟡
+
+But : `geo fetch ca-qc/sda#qc-municipalites` → GeoJSON normalisé WGS84 → `geo-api` (OGC Features,
+collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, CC-BY 4.0 ([ADR-0006]).
+
+| # | WP | Rôle | Statut |
+|---|----|------|--------|
+| P0.1 | `geo-core` contrat (admin, geojson, crs, licence, source-manifest, `kind`) | conductor | ✅ |
+| P0.2 | `geo-acquire` (download, gate licence, arcgis, acquire/writeNormalized) | lib-build | ✅ |
+| P0.3 | `geo-api` OGC Features + FileProvider **récursif** ([ADR-0005]) | lib-build | 🟡 (récursion à appliquer) |
+| P0.4 | `geo-source-ca-qc` : manifests SDA (régions, MRC, **municipalités**) + normalizers, ids `qc-*` | lib-build | ⬜ |
+| P0.5 | `geo-cli` : `sources`, `fetch`, `serve`, `build`, `refresh`, `licenses build` | lib-build | ⬜ |
+| P0.6 | `geo-ui-svelte` + `apps/site` : catalogue + carte MapLibre (chrome design-system) | lib-build | ⬜ |
+| P0.7 | **scrape réel** municipalités QC + fixture committée + checksum | scrape-exec | ⬜ |
+| P0.8 | `data/requests/` ledger + registre licences seedé QC | conductor | 🟡 |
+
+## P1 — Durcissement API + site pour la collection municipalités  ⬜
+Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
+
+## P2 — Premier lot de données `immo` ("zones")  ⬜
+Négocier avec `radar-immobilier` le contrat d'attributs exact (zones → puis lots). Modéliser en
+dataset QC avec `geoId` stable. Inscrire la demande dans `data/requests/` ([ADR-0004]).
+**Rescrape immo** : enregistrer les datasets déjà consommés par immo et les ré-acquérir proprement.
+
+## P3 — Provinces du Canada  ⬜
+`geo-source-ca` : sources fédérales (Statistics Canada / NRCan) — provinces & territoires, puis
+divisions/subdivisions de recensement (CD/CSD). Licence OGL-Canada (redistribuable).
+
+## P4 — France (data.gouv.fr)  ⬜
+`geo-source-fr` : ADMIN EXPRESS (IGN) / communes INSEE via data.gouv.fr (Licence Ouverte).
+Plus simple → bon terrain de généralisation du moteur multi-pays.
+
+## P5 — Référentiels statistiques & postaux  ⬜
+Par pays, `kind: "statistical"` / `"postal"` ([ADR-0002]). Packages frères créés à l'implémentation :
+- `geo-source-ca-stat` (Statistics Canada — DGUID/SGC, géographies de recensement)
+- `geo-source-ca-postal` (FSA StatCan ouvert ; PCCF complet = **non redistribuable**, gate)
+- `geo-source-fr-stat` (INSEE — COG, IRIS), `geo-source-fr-postal` (BAN / code postal↔commune)
+- Postal **après** l'admin dans chaque pays (licences restrictives à vérifier d'abord).
+
+## P6 — Publication  ⬜ (fin)
+- npm Trusted Publishing par package (tag-driven), Docker `geo-api` → registry Scaleway.
+- `deploy/k8s/` + PR `requests/geo.md` + `tenants/geo/` sur `../poc-k8s` (ingress `geo.sent-tech.ca`).
+- Site → CDN (Playwright MCP prévu pour cette étape).
+
+---
+
+## Registre licences (P-transverse, continu)
+`licenses/registry.json` (machine) + `docs/licenses.md` (généré). Toute nouvelle source ⇒ entrée +
+vérif anti-dérive vs `geo-core.LICENSES` ([ADR-0003]).
+
+## Invariants de pilotage
+- Avancer **par priorité** ; ne pas ouvrir Pn+1 tant que Pn n'est pas livrable, sauf si bloqué
+  (alors prendre une tâche transverse, ex. France/registre, pour ne pas rester idle).
+- Chaque itération `/loop` : déléguer → intégrer → `verify` → committer → consigner décisions.
+- ≤4 sous-agents/dockers en parallèle.
