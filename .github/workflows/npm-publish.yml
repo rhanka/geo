@@ -1,0 +1,125 @@
+name: NPM Publish
+
+# Tag-driven only. This workflow NEVER runs on a normal push or PR — it fires
+# exclusively when a `v*` tag is pushed. Publication is intentionally manual:
+# cut and push a tag (e.g. `git tag v0.1.0 && git push origin v0.1.0`).
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify workspace
+        run: npm run verify
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag is merged into the default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${GITHUB_REF_NAME}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+
+      - name: Verify publishable package versions match the tag
+        env:
+          EXPECTED_VERSION: ${{ github.ref_name }}
+        run: |
+          EXPECTED_VERSION="${EXPECTED_VERSION#v}" node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+
+          const expected = process.env.EXPECTED_VERSION;
+          // Public @sentropic/geo-* packages, in dependency order. apps/site
+          // (@sentropic/geo-site) is private and NOT published.
+          const publishable = [
+            "packages/geo-core/package.json",
+            "packages/geo-acquire/package.json",
+            "packages/geo-api/package.json",
+            "packages/geo-source-ca-qc/package.json",
+            "packages/geo-source-ca/package.json",
+            "packages/geo-source-fr/package.json",
+            "packages/geo-cli/package.json",
+            "packages/geo-ui-svelte/package.json",
+          ];
+          const failures = [];
+          for (const manifestPath of publishable) {
+            const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+            if (manifest.version !== expected) {
+              failures.push(`${manifest.name}: ${manifest.version}`);
+            }
+          }
+          if (failures.length > 0) {
+            console.error(`Tag version ${expected} does not match package versions:`);
+            for (const failure of failures) console.error(`- ${failure}`);
+            process.exit(1);
+          }
+          console.log(`All publishable package versions match ${expected}`);
+          NODE
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    # npm Trusted Publishing (OIDC): no NODE_AUTH_TOKEN / NPM_TOKEN needed.
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm for Trusted Publishing
+        run: |
+          npm install -g npm@11.6.2
+          node --version
+          npm --version
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish packages (dependency order)
+        run: |
+          # Public @sentropic/geo-* packages only, in dependency order.
+          # @sentropic/geo-site (apps/site) is private and not published.
+          npm publish --workspace @sentropic/geo-core         --access public
+          npm publish --workspace @sentropic/geo-acquire      --access public
+          npm publish --workspace @sentropic/geo-api          --access public
+          npm publish --workspace @sentropic/geo-source-ca-qc --access public
+          npm publish --workspace @sentropic/geo-source-ca    --access public
+          npm publish --workspace @sentropic/geo-source-fr    --access public
+          npm publish --workspace @sentropic/geo-cli          --access public
+          npm publish --workspace @sentropic/geo-ui-svelte    --access public

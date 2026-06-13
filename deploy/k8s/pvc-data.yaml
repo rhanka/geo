@@ -1,0 +1,23 @@
+# PersistentVolumeClaim for the normalized GeoJSON served by geo-api.
+#
+# Populated by the geo-fetch Job (RW) and mounted read-only by the geo-api
+# Deployment. Kept small — the served boundaries are a few hundred MB at most;
+# the over-budget StatCan datasets (ADR-0010) are reproducible via `geo fetch`,
+# not versioned, so 1Gi is comfortable headroom.
+#
+# storageClassName is intentionally omitted so the cluster's default class is
+# used. If poc-k8s pins a non-default class for the `geo` tenant, set it here.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: geo-data
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

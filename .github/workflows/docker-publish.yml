@@ -1,0 +1,97 @@
+name: Docker Publish
+
+# Tag- and manual-triggered ONLY. This workflow never runs on a plain push to
+# main or on pull requests:
+#   - `push` is scoped to `v*` tags.
+#   - `workflow_dispatch` lets the owner build/push on demand (optional tag).
+# The actual `push: true` is additionally guarded per-step so an image is only
+# pushed for a tag or an explicit dispatch.
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to push (defaults to the git short SHA)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Scaleway Container Registry — see cluster conventions.
+  REGISTRY: rg.fr-par.scw.cloud
+  IMAGE: rg.fr-par.scw.cloud/geo/geo-api
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # Build the workspace before the image so a broken build fails fast and
+      # cheaply (the Dockerfile also runs npm ci + build, but this surfaces
+      # errors without the Docker layer overhead).
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Scaleway Container Registry login. Secrets are referenced by NAME only —
+      # provide their values in the repo/org secrets. The username for Scaleway
+      # registry tokens is the literal "nologin"; the password is a Scaleway
+      # secret key (or registry token). Adjust to your configured secret names.
+      - name: Log in to Scaleway Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.SCW_REGISTRY_USERNAME }}
+          password: ${{ secrets.SCW_SECRET_KEY }}
+
+      - name: Compute image tags
+        id: tags
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          DISPATCH_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            version="${GITHUB_REF#refs/tags/}"
+            version="${version#v}"
+            tags="${IMAGE}:${version},${IMAGE}:latest"
+          elif [[ -n "${DISPATCH_TAG:-}" ]]; then
+            tags="${IMAGE}:${DISPATCH_TAG}"
+          else
+            tags="${IMAGE}:$(git rev-parse --short HEAD)"
+          fi
+          echo "tags=${tags}" >> "$GITHUB_OUTPUT"
+          echo "Will build: ${tags}"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          # Push only for a tag build or an explicit manual dispatch. Anything
+          # else (should not occur given the triggers) builds without pushing.
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+          tags: ${{ steps.tags.outputs.tags }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
