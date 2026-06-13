@@ -33,5 +33,22 @@ export {
 // ArcGIS REST fetcher.
 export { ARCGIS_QUERY_DEFAULTS, arcgisQueryUrl } from "./arcgis.js";
 
+// GDAL-backed bulk acquisition (gpkg/shp/fgdb).
+export {
+  DEFAULT_SIMPLIFY_TOLERANCE,
+  buildOgr2OgrArgs,
+  extractLayerToGeoJson,
+  listLayers,
+  parseOgrinfoLayers,
+  runOgr2Ogr,
+  vsizipPath,
+  type CommandResult,
+  type CommandRunner,
+  type DiscoveredLayer,
+  type ExtractOptions,
+  type ExtractResult,
+  type GdalFormat,
+} from "./gdal.js";
+
 // High-level acquire + persistence.
 export { acquire, writeNormalized, type AcquireOptions } from "./acquire.js";

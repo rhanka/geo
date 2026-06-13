@@ -1,52 +1,69 @@
 /**
  * Source manifest for Données Québec « Découpages administratifs » (SDA),
- * provider MRNF, served as an ArcGIS REST MapServer.
+ * provider MRNF, acquired from the bulk GeoPackage via GDAL (ADR-0008).
  *
- * ── Live service introspection (2026-06-13) ───────────────────────────────
- * Service:
- *   https://servicescarto.mern.gouv.qc.ca/pes/rest/services/Territoire/SDA_WMS/MapServer
- *   (`?f=json` → layers; `<n>?f=json` → fields; `<n>/query?...&f=geojson` → samples)
+ * ── Bulk GPKG acquisition (verified 2026-06-13) ───────────────────────────
+ * The ArcGIS REST `query` endpoint is impractical for these large provincial
+ * layers (paging, server limits, timeouts), so the manifest now points at the
+ * SDA bulk GeoPackage (all layers, ~105 MB zipped, CC-BY 4.0):
  *
- * Layers (id | name):
- *   0  Région administrative              ← qc-regions       (adminLevel "region")
- *   1  Municipalité régionale de comté    ← qc-mrc           (adminLevel "mrc")
- *   2  Municipalité                       ← qc-municipalites (adminLevel "municipality")
- *   3  Arrondissement
- *   4  Communauté métropolitaine
- *   5  Agglomération
+ *   https://diffusion.mern.gouv.qc.ca/diffusion/RGQ/Vectoriel/Theme/Local/SDA_20k/GPKG/SDA.gpkg.zip
  *
- * Field names pinned from the live service (esriFieldTypeString unless noted):
+ * The zip contains a single `SDA.gpkg`; GDAL opens it directly from the archive
+ * root via `/vsizip/`. `ogrinfo -ro -so` lists these layers (polygon `_s`,
+ * line `_l`):
  *
- *   Layer 0 — Région administrative
+ *   regio_s  Région administrative (3D Multi Polygon)     ← qc-regions       (18 features)
+ *   mrc_s    Municipalité régionale de comté (3D MPoly)   ← qc-mrc           (106 features)
+ *   munic_s  Municipalité (3D Multi Polygon)              ← qc-municipalites (1343 features)
+ *   (arron_s/comet_s polygons and *_l line layers are not used here)
+ *
+ * IMPORTANT — the GPKG layers are stored in **EPSG:4269** (NAD83 geographic,
+ * degrees), NOT EPSG:32198 (Québec Lambert, metres). ogr2ogr reads the SRS from
+ * the file, so `-simplify <tol>` is interpreted in **degrees**, and `crs` below
+ * reflects the real source CRS. `ogr2ogr -t_srs EPSG:4326 -lco RFC7946=YES`
+ * yields 2D WGS84 GeoJSON (Z dropped, right-hand winding).
+ *
+ * Field names (identical to the former REST service — the existing normalizers
+ * key on these unchanged; esriFieldType→GPKG String unless noted):
+ *
+ *   regio_s — Région administrative
  *     RES_CO_REG  région code        e.g. "11", "03"  (2-digit, zero-padded)
  *     RES_NM_REG  région name        e.g. "Gaspésie–Îles-de-la-Madeleine"
- *     RES_DE_IND, RES_CO_VER, RES_VA_SUP (double), RES_VA_PER (int), OBJECTID
+ *     RES_ID_IND, RES_NO_IND, RES_DE_IND, RES_CO_REF, RES_CO_VER
  *
- *   Layer 1 — MRC
+ *   mrc_s — MRC
  *     MRS_CO_MRC  MRC code           e.g. "371", "50"
  *     MRS_NM_MRC  MRC name           e.g. "Trois-Rivières"
  *     MRS_CO_REG  parent région code e.g. "04"
  *     MRS_NM_REG  parent région name
- *     MRS_NO_IND, MRS_DE_IND, MRS_CO_VER, MRS_VA_SUP (double), MRS_VA_PER (int), OBJECTID
+ *     MRS_ID_IND, MRS_NO_IND, MRS_DE_IND, MRS_CO_REF, MRS_CO_VER
  *
- *   Layer 2 — Municipalité
+ *   munic_s — Municipalité
  *     MUS_CO_GEO  municipality code (code géographique) e.g. "97035", "54115"
  *     MUS_NM_MUN  municipality name e.g. "Fermont"
  *     MUS_CO_MRC  parent MRC code   e.g. "972", "54"
  *     MUS_NM_MRC  parent MRC name
  *     MUS_CO_REG  région code       e.g. "09"
  *     MUS_NM_REG  région name
- *     MUS_CO_DES, MUS_NM_NMC, MUS_NM_AGG, MUS_NM_COM, MUS_CO_COM, MUS_VA_SUP,
- *     SITE_WEB, COURRIEL, TELEPHONE, MUS_CO_VER, MUS_VA_PER (int), OBJECTID
- *
- * All layers are esriGeometryPolygon. `outSR=4326&f=geojson` yields WGS84 GeoJSON,
- * so no client-side reprojection is needed (the native CRS is EPSG:32198).
+ *     MUS_VA_SUP (Real), MUS_CO_DES, MUS_NM_NMC, MUS_NM_AGG, MUS_NM_COM,
+ *     MUS_CO_COM, MUS_DA_CON (DateTime), MUS_CO_SOU, MUS_CO_REF, MUS_CO_VER
  * ──────────────────────────────────────────────────────────────────────────
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
 
-/** ArcGIS REST MapServer endpoint for the SDA découpages administratifs. */
+/**
+ * Bulk GeoPackage archive (all SDA layers, ~105 MB zipped) under CC-BY 4.0.
+ * The zip holds a single `SDA.gpkg`; GDAL opens it from the archive root.
+ */
+export const SDA_GPKG_ZIP_URL =
+  "https://diffusion.mern.gouv.qc.ca/diffusion/RGQ/Vectoriel/Theme/Local/SDA_20k/GPKG/SDA.gpkg.zip";
+
+/**
+ * Former ArcGIS REST MapServer endpoint (retained for reference/provenance;
+ * no longer used for acquisition — see {@link SDA_GPKG_ZIP_URL}).
+ */
 export const SDA_SERVICE_URL =
   "https://servicescarto.mern.gouv.qc.ca/pes/rest/services/Territoire/SDA_WMS/MapServer";
 
@@ -58,16 +75,22 @@ export const DATASET_REGIONS = "qc-regions";
 export const DATASET_MRC = "qc-mrc";
 export const DATASET_MUNICIPALITES = "qc-municipalites";
 
-/** SDA layer ids, pinned from live introspection. */
+/** GeoPackage polygon layer names inside `SDA.gpkg`, pinned from `ogrinfo`. */
 export const SDA_LAYERS = {
-  regions: 0,
-  mrc: 1,
-  municipalites: 2,
+  regions: "regio_s",
+  mrc: "mrc_s",
+  municipalites: "munic_s",
 } as const;
 
 /**
  * The Québec SDA source manifest. Three datasets (régions, MRC, municipalités),
- * each an ArcGIS REST layer served as WGS84 GeoJSON, under CC-BY 4.0.
+ * each a polygon layer of the bulk SDA GeoPackage, acquired via GDAL and
+ * reprojected to WGS84 GeoJSON, under CC-BY 4.0.
+ *
+ * `query.simplify` is the Douglas–Peucker tolerance passed to `ogr2ogr
+ * -simplify`, in source-SRS units (here **degrees**, as the GPKG is EPSG:4269).
+ * Tolerances are tuned per level to keep each emitted GeoJSON under ~6 MB while
+ * preserving recognizable boundaries.
  */
 export const manifest: SourceManifest = {
   id: SOURCE_ID,
@@ -88,34 +111,37 @@ export const manifest: SourceManifest = {
     {
       id: DATASET_REGIONS,
       title: "Régions administratives du Québec",
-      description: "Les 17 régions administratives du Québec (SDA).",
-      format: "arcgis-rest",
-      url: SDA_SERVICE_URL,
-      crs: "EPSG:32198",
+      description: "Les 18 régions administratives du Québec (SDA).",
+      format: "gpkg",
+      url: SDA_GPKG_ZIP_URL,
+      crs: "EPSG:4269",
       adminLevel: "region",
       layer: SDA_LAYERS.regions,
+      query: { simplify: 0.0008 },
       updateCadence: "P1Y",
     },
     {
       id: DATASET_MRC,
       title: "Municipalités régionales de comté (MRC) du Québec",
       description: "Les MRC et territoires équivalents du Québec (SDA).",
-      format: "arcgis-rest",
-      url: SDA_SERVICE_URL,
-      crs: "EPSG:32198",
+      format: "gpkg",
+      url: SDA_GPKG_ZIP_URL,
+      crs: "EPSG:4269",
       adminLevel: "mrc",
       layer: SDA_LAYERS.mrc,
+      query: { simplify: 0.0008 },
       updateCadence: "P1Y",
     },
     {
       id: DATASET_MUNICIPALITES,
       title: "Municipalités du Québec",
       description: "Les municipalités du Québec (SDA).",
-      format: "arcgis-rest",
-      url: SDA_SERVICE_URL,
-      crs: "EPSG:32198",
+      format: "gpkg",
+      url: SDA_GPKG_ZIP_URL,
+      crs: "EPSG:4269",
       adminLevel: "municipality",
       layer: SDA_LAYERS.municipalites,
+      query: { simplify: 0.0012 },
       updateCadence: "P1Y",
     },
   ],

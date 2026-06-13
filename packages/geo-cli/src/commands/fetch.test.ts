@@ -1,9 +1,9 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import type { FeatureCollection } from "@sentropic/geo-core";
-import { LicenseError } from "@sentropic/geo-acquire";
+import { LicenseError, type CommandRunner } from "@sentropic/geo-acquire";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchSource, formatFetchResult } from "./fetch.js";
@@ -40,11 +40,24 @@ describe("fetchSource", () => {
   });
 
   it("acquires one dataset and writes normalized output via the real pipeline", async () => {
+    // qc-regions is a bulk `gpkg` dataset (SDA.gpkg.zip + GDAL). Inject a fake
+    // GDAL runner so the real acquire + ca-qc normalizer pipeline runs without
+    // a real ogr2ogr: ogrinfo lists one layer, ogr2ogr writes REGION_FC to the
+    // emitted GeoJSON path (3rd-from-last arg: [..., outPath, source, layer]).
+    const gdalRunner: CommandRunner = async (file, args) => {
+      if (file === "ogrinfo") return { stdout: "1: regio_s (3D Multi Polygon)", stderr: "" };
+      const outPath = args[args.length - 3];
+      if (typeof outPath === "string") await writeFile(outPath, JSON.stringify(REGION_FC));
+      return { stdout: "", stderr: "" };
+    };
+
     const result = await fetchSource(
       "ca-qc/sda",
       "qc-regions",
       { out: outDir },
-      { fetchImpl: fetchReturning(REGION_FC) },
+      // Isolated cacheDir so this real download never writes the default
+      // `.cache/geo` and poisons subsequent fetches (ADR-0007).
+      { fetchImpl: fetchReturning(REGION_FC), cacheDir, gdalRunner },
     );
 
     expect(result.datasets).toHaveLength(1);

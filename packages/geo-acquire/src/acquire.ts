@@ -26,13 +26,24 @@ import {
 
 import { arcgisQueryUrl } from "./arcgis.js";
 import { type DownloadOptions, download, sha256Hex } from "./download.js";
+import {
+  DEFAULT_SIMPLIFY_TOLERANCE,
+  type CommandRunner,
+  type GdalFormat,
+  extractLayerToGeoJson,
+} from "./gdal.js";
 import { assertRedistributable } from "./license-gate.js";
 import { type NormalizeContext, type Normalizer, geojsonPassthrough } from "./normalize.js";
 
 export interface AcquireOptions extends DownloadOptions {
   /** Override the normalizer. Defaults to {@link geojsonPassthrough}. */
   normalizer?: Normalizer;
+  /** Injected GDAL command runner for bulk formats (tests). */
+  gdalRunner?: CommandRunner;
 }
+
+/** Bulk vector formats acquired via GDAL (archive download + ogr2ogr). */
+const GDAL_FORMATS: ReadonlySet<string> = new Set<GdalFormat>(["gpkg", "shp", "fgdb"]);
 
 /** Deterministic JSON serialization (sorted object keys) for stable checksums. */
 function canonicalJson(value: unknown): string {
@@ -71,25 +82,15 @@ export async function acquire(
   // License gate — before any network access or persistence.
   assertRedistributable(manifest);
 
-  const url = resolveFetchUrl(manifest, datasetId);
-
   const downloadOpts: DownloadOptions = {};
   if (opts.cacheDir !== undefined) downloadOpts.cacheDir = opts.cacheDir;
   if (opts.force !== undefined) downloadOpts.force = opts.force;
   if (opts.fetchImpl !== undefined) downloadOpts.fetchImpl = opts.fetchImpl;
   if (opts.headers !== undefined) downloadOpts.headers = opts.headers;
 
-  const result = await download(url, downloadOpts);
-
-  let raw: unknown;
-  try {
-    raw = JSON.parse(result.text());
-  } catch (cause) {
-    throw new Error(
-      `failed to parse JSON from ${url} (source "${manifest.id}", dataset "${datasetId}")`,
-      { cause },
-    );
-  }
+  const raw = GDAL_FORMATS.has(dataset.format)
+    ? await acquireRawViaGdal(manifest, datasetId, downloadOpts, opts.gdalRunner)
+    : await acquireRawViaJson(manifest, datasetId, downloadOpts);
 
   const normalizer = opts.normalizer ?? geojsonPassthrough;
   const ctx: NormalizeContext = { manifest, dataset };
@@ -111,7 +112,68 @@ export async function acquire(
   return { meta, collection };
 }
 
-/** Resolve the download URL for a dataset based on its declared format. */
+/**
+ * Acquire a raw GeoJSON payload for a JSON-over-HTTP dataset (`geojson` /
+ * `arcgis-rest`). Downloads (cached) and parses the body as JSON.
+ */
+async function acquireRawViaJson(
+  manifest: SourceManifest,
+  datasetId: string,
+  downloadOpts: DownloadOptions,
+): Promise<unknown> {
+  const url = resolveFetchUrl(manifest, datasetId);
+  const result = await download(url, downloadOpts);
+  try {
+    return JSON.parse(result.text());
+  } catch (cause) {
+    throw new Error(
+      `failed to parse JSON from ${url} (source "${manifest.id}", dataset "${datasetId}")`,
+      { cause },
+    );
+  }
+}
+
+/**
+ * Acquire a raw GeoJSON payload for a bulk vector dataset (`gpkg` / `shp` /
+ * `fgdb`) via GDAL. Downloads (cached) the archive, then reprojects the
+ * requested layer to WGS84 GeoJSON with `ogr2ogr`.
+ */
+async function acquireRawViaGdal(
+  manifest: SourceManifest,
+  datasetId: string,
+  downloadOpts: DownloadOptions,
+  runner: CommandRunner | undefined,
+): Promise<unknown> {
+  const dataset = getDataset(manifest, datasetId);
+  if (!dataset) {
+    throw new Error(`dataset "${datasetId}" not found in source "${manifest.id}"`);
+  }
+  if (typeof dataset.layer !== "string" || dataset.layer.length === 0) {
+    throw new Error(
+      `dataset "${datasetId}" (format "${dataset.format}") requires a string "layer" ` +
+        `naming the layer to extract (source "${manifest.id}").`,
+    );
+  }
+
+  const result = await download(dataset.url, downloadOpts);
+
+  const tolerance =
+    typeof dataset.query?.["simplify"] === "number"
+      ? (dataset.query["simplify"] as number)
+      : DEFAULT_SIMPLIFY_TOLERANCE;
+
+  const extractOpts: Parameters<typeof extractLayerToGeoJson>[0] = {
+    archivePath: result.cachePath,
+    layer: dataset.layer,
+    tolerance,
+  };
+  if (runner !== undefined) extractOpts.runner = runner;
+
+  const { geojson } = await extractLayerToGeoJson(extractOpts);
+  return geojson;
+}
+
+/** Resolve the download URL for a JSON-over-HTTP dataset's declared format. */
 function resolveFetchUrl(manifest: SourceManifest, datasetId: string): string {
   const dataset = getDataset(manifest, datasetId);
   if (!dataset) {
@@ -128,7 +190,7 @@ function resolveFetchUrl(manifest: SourceManifest, datasetId: string): string {
       throw new Error(
         `format "${dataset.format}" is not yet supported in V1 ` +
           `(source "${manifest.id}", dataset "${datasetId}"). ` +
-          `Supported formats: geojson, arcgis-rest.`,
+          `Supported formats: geojson, arcgis-rest, gpkg, shp, fgdb.`,
       );
   }
 }
@@ -148,6 +210,11 @@ function sourceSlug(sourceId: string): string {
  * `<dir>/<sourceSlug>/<datasetId>.geojson` (the FeatureCollection) plus a
  * sibling `.meta.json`. Data only reaches here after the license gate has
  * passed in {@link acquire}.
+ *
+ * The FeatureCollection is written **compactly** (no pretty-print): geometry
+ * coordinate arrays dominate these files, and 2-space indentation roughly
+ * triples the on-disk size of provincial boundary sets for no machine benefit.
+ * The small, human-read `.meta.json` stays pretty-printed.
  */
 export async function writeNormalized(
   dataset: NormalizedDataset,
@@ -160,7 +227,7 @@ export async function writeNormalized(
   const geojsonPath = join(outDir, `${dataset.meta.datasetId}.geojson`);
   const metaPath = join(outDir, `${dataset.meta.datasetId}.meta.json`);
 
-  await writeFile(geojsonPath, `${JSON.stringify(dataset.collection, null, 2)}\n`);
+  await writeFile(geojsonPath, `${JSON.stringify(dataset.collection)}\n`);
   await writeFile(metaPath, `${JSON.stringify(dataset.meta, null, 2)}\n`);
 
   return { geojsonPath, metaPath };
