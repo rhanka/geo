@@ -89,6 +89,48 @@ export function vsizipPath(zipPath: string, inner?: string): string {
 /** Default emitted-coordinate precision (decimal places). 6 ≈ 0.1 m at this latitude. */
 export const DEFAULT_COORDINATE_PRECISION = 6;
 
+/** Archive container of a bulk dataset. */
+export type ArchiveKind = "zip" | "7z";
+
+/**
+ * Infer the archive kind from a URL/path suffix. GDAL's `/vsizip/` handles
+ * `.zip` natively; `.7z` is not a GDAL virtual filesystem here, so it is
+ * extracted with the system `7z` CLI first. Defaults to `"zip"`.
+ */
+export function archiveKindFromPath(path: string): ArchiveKind {
+  return /\.7z(?:[?#].*)?$/i.test(path) ? "7z" : "zip";
+}
+
+/** Build `7z x` args to extract `archivePath` into `destDir` (no shell). */
+export function build7zExtractArgs(archivePath: string, destDir: string): string[] {
+  // -y assume yes, -bd no progress bar, -o<dir> output dir (no space, 7z syntax).
+  return ["x", "-y", "-bd", `-o${destDir}`, archivePath];
+}
+
+/** Extract a `.7z` archive into `destDir` via the system `7z` CLI. */
+export async function run7zExtract(
+  archivePath: string,
+  destDir: string,
+  runner: CommandRunner = defaultRunner,
+): Promise<void> {
+  try {
+    await runner("7z", build7zExtractArgs(archivePath, destDir));
+  } catch (error) {
+    if (isEnoent(error)) {
+      throw new Error(
+        `7z required for .7z archives (apt-get install p7zip-full). ` +
+          `Could not execute "7z".`,
+        { cause: error },
+      );
+    }
+    const stderr = (error as { stderr?: string }).stderr ?? "";
+    throw new Error(
+      `7z extraction failed for "${archivePath}": ${stderr || (error as Error).message}`,
+      { cause: error },
+    );
+  }
+}
+
 /**
  * Build the `ogr2ogr` argument vector that reprojects `layer` from `source`
  * (a real path or a `/vsizip/...` virtual path) to WGS84 GeoJSON at `outPath`,
@@ -211,10 +253,13 @@ export interface ExtractOptions {
   /** Douglas–Peucker tolerance in source-SRS units. */
   tolerance: number;
   /**
-   * Inner dataset path within the zip (e.g. `"SDA.gpkg"`). When omitted, the
-   * archive root is opened and GDAL picks the sole contained dataset.
+   * Inner dataset path within the archive (e.g. `"SDA.gpkg"`). For `zip` it may
+   * be omitted (GDAL opens the sole contained dataset); for `7z` it is REQUIRED
+   * (names the extracted file to open).
    */
   inner?: string;
+  /** Archive container; defaults to `"zip"` (`/vsizip/`). `"7z"` extracts first. */
+  archiveKind?: ArchiveKind;
   /** Injected command runner (tests). */
   runner?: CommandRunner;
   /** Injected JSON reader for the emitted file (tests); defaults to reading `outPath`. */
@@ -234,16 +279,30 @@ export async function extractLayerToGeoJson(
   opts: ExtractOptions,
 ): Promise<ExtractResult> {
   const runner = opts.runner ?? defaultRunner;
+  const kind = opts.archiveKind ?? "zip";
   const work = await mkdtemp(join(tmpdir(), "geo-gdal-"));
   try {
-    // GDAL's /vsizip/ sniffs a `.zip` suffix; the cache filename has none, so
-    // expose it through a `.zip` symlink (no copy of the 105 MB body). The
-    // symlink target must be absolute (the link lives in a temp dir, while the
-    // cache path is often relative to the caller's cwd).
-    const zipLink = join(work, "archive.zip");
-    await symlink(resolve(opts.archivePath), zipLink);
+    let source: string;
+    if (kind === "7z") {
+      // GDAL has no /vsi7z/ here, so extract the archive with the `7z` CLI and
+      // open the (real) extracted file. `inner` names the dataset within it.
+      if (!opts.inner) {
+        throw new Error(
+          `.7z archives require an "inner" path naming the dataset file inside the archive`,
+        );
+      }
+      await run7zExtract(resolve(opts.archivePath), work, runner);
+      source = join(work, opts.inner);
+    } else {
+      // GDAL's /vsizip/ sniffs a `.zip` suffix; the cache filename has none, so
+      // expose it through a `.zip` symlink (no copy of the 105 MB body). The
+      // symlink target must be absolute (the link lives in a temp dir, while the
+      // cache path is often relative to the caller's cwd).
+      const zipLink = join(work, "archive.zip");
+      await symlink(resolve(opts.archivePath), zipLink);
+      source = vsizipPath(zipLink, opts.inner);
+    }
 
-    const source = vsizipPath(zipLink, opts.inner);
     const layers = await listLayers(source, runner);
 
     const outPath = join(work, "out.geojson");
