@@ -74,6 +74,37 @@ function itemsUrlFor(collection: OgcCollection, base: string): string {
   return `${base}/collections/${encodeURIComponent(collection.id)}/items`;
 }
 
+/**
+ * Default page size requested from the OGC `/items` endpoint. The OGC API caps
+ * an unparametrized `/items` at 100 features (silent truncation); passing an
+ * explicit large `limit` returns the whole collection in one request. Per
+ * ADR-0015, dense-layer transport (vector tiles / PMTiles) is a later increment.
+ */
+export const DEFAULT_ITEMS_LIMIT = 2000;
+
+/**
+ * Add an explicit `?limit=` to an `/items` URL so the dataset is not silently
+ * truncated to the OGC default of 100 features (ADR-0015). Idempotent: an
+ * already-present `limit` is left untouched.
+ */
+export function itemsUrlWithLimit(
+  itemsUrl: string,
+  limit: number = DEFAULT_ITEMS_LIMIT,
+): string {
+  try {
+    const url = new URL(itemsUrl);
+    if (!url.searchParams.has("limit")) {
+      url.searchParams.set("limit", String(limit));
+    }
+    return url.toString();
+  } catch {
+    // Relative or malformed URL: append conservatively.
+    if (/[?&]limit=/.test(itemsUrl)) return itemsUrl;
+    const sep = itemsUrl.includes("?") ? "&" : "?";
+    return `${itemsUrl}${sep}limit=${limit}`;
+  }
+}
+
 function bboxOf(collection: OgcCollection): [number, number, number, number] | undefined {
   const raw = collection.extent?.spatial?.bbox?.[0];
   if (raw && raw.length >= 4) {

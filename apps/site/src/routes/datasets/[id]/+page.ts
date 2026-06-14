@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
 import { isFeatureCollection } from "@sentropic/geo-core";
 import type { AdminFeatureCollection } from "@sentropic/geo-core";
-import { loadCatalogEntry } from "$lib/catalog";
+import { loadCatalogEntry, itemsUrlWithLimit } from "$lib/catalog";
 import type { PageLoad } from "./$types";
 
 // This route is NOT prerendered: the dataset GeoJSON is fetched at runtime in
@@ -27,7 +27,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
   let dataError: string | null = null;
 
   try {
-    const res = await fetch(entry.itemsUrl, {
+    // Explicit limit so the OGC `/items` default (100) does not silently
+    // truncate larger collections (ADR-0015).
+    const res = await fetch(itemsUrlWithLimit(entry.itemsUrl), {
       headers: { accept: "application/geo+json, application/json" },
     });
     if (res.ok) {
