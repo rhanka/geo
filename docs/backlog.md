@@ -33,9 +33,9 @@ collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, 
 ## P-S3 — Stockage object storage (S3 Scaleway)  ⬜ **priorité haute** ([ADR-0012])
 Fondation manquante : la donnée scrappée doit vivre sur **S3** (Scaleway Object Storage), pas dans git.
 - `@sentropic/geo-storage` : `Store` (`get/put/list/has`) + `FsStore` (dev/CI) + `S3Store` (`@aws-sdk/client-s3`, endpoint `s3.fr-par.scw.cloud`).
-- `geo-acquire`/CLI : `writeNormalized` → `Store` ; `geo fetch --out s3://geo-data/normalized`.
+- `geo-acquire`/CLI : `writeNormalized` → `Store` ; `geo fetch --out s3://sentropic-geo/normalized`.
 - `geo-api` : `geo serve --data s3://…` (provider lit le bucket, cache).
-- Deploy : Job `geo fetch` **écrit** S3 ; API **lit** S3 ; secret `geo-s3-credentials`. Amende PR poc-k8s #30 (bucket `geo-data` fr-par).
+- Deploy : Job `geo fetch` **écrit** S3 ; API **lit** S3 ; secret `geo-s3-credentials`. Amende PR poc-k8s #30 (bucket `sentropic-geo` fr-par).
 - Migration : retirer les géométries committées (QC/FR) de git → S3 (garder au plus un échantillon CI).
 
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜

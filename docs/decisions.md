@@ -142,7 +142,7 @@ Marqué `revisit` : à confirmer/affiner quand un 2e pays postal sera fait (éve
 ca-provinces 17.8 Mo) — « pas utile de scraper si on ne stocke pas sur S3 ». La valeur du scraping
 est un **store durable et servable**.
 **Décision.** La donnée normalisée **canonique** vit sur **Scaleway Object Storage** (S3-compatible,
-`s3.fr-par.scw.cloud`), bucket `geo-data`, préfixes `normalized/<source>/<dataset>.geojson` +
+`s3.fr-par.scw.cloud`), bucket `sentropic-geo`, préfixes `normalized/<source>/<dataset>.geojson` +
 `.meta.json` + un `catalog.json` index. **git ne stocke plus aucune géométrie** — uniquement le code
 (manifests, normalizers), le registre de licences, et au plus un micro-échantillon CI. [ADR-0010]
 est ainsi remplacé : plus de « budget » git, la donnée est sur S3.
@@ -154,11 +154,16 @@ est ainsi remplacé : plus de « budget » git, la donnée est sur S3.
    (cache mémoire/disque). Plus de dépendance à un PVC repeuplé from-scratch.
 4. **Deploy** : le Job `geo fetch` **écrit** sur S3 ; l'API **lit** depuis S3. Secret k8s
    `geo-s3-credentials` (`S3_ACCESS_KEY`/`S3_SECRET_KEY`, endpoint, bucket) — jamais committé. Amende
-   la demande poc-k8s (object storage `geo-data` en `fr-par`, comme radar).
+   la demande poc-k8s (object storage `sentropic-geo` en `fr-par`, comme radar).
 **Conséquences.** Les données QC/FR déjà committées en git seront **migrées vers S3** (cleanup) ou
 réduites à un échantillon CI. `geo-api` garde le `FileProvider` local pour dev/CI ; `S3Store` pour la
 prod.
-**Revisit.** Choix client S3 (SDK vs léger SigV4), lecture S3 directe vs sync S3→volume, nommage bucket.
+**Provisionné (2026-06-13, via `scw`).** App IAM `geo-s3` + policy `ObjectStorageFullAccess` +
+clé dédiée. Bucket **`sentropic-geo`** en `fr-par` (le nom `geo` était déjà pris → 409). Organisé :
+`README.md`, `catalog.json` (index des sources), préfixes `normalized/` + `raw/`. Credentials dans
+`poc-k8s/.env` (gitignoré) **et** GitHub Secrets `S3_ACCESS_KEY/SECRET_KEY/ENDPOINT/BUCKET/REGION`
+sur `rhanka/geo` + `rhanka/k8s-ops`. Reste à coder : `@sentropic/geo-storage` + repointage fetch/api.
+**Revisit.** Choix client S3 (SDK vs léger SigV4), lecture S3 directe vs sync S3→volume.
 
 ## Méthode de décision
 
