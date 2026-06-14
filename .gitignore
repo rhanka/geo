@@ -13,8 +13,9 @@ build/
 data/raw/
 data/tmp/
 
-# over-budget normalized datasets (ADR-0010): reproducible via `geo fetch`, not versioned
-data/normalized/ca-statcan-boundaries/
+# normalized data lives on S3 object storage, not git (ADR-0012). Already-committed
+# datasets (QC / FR-admin) are migrated out; new data is never versioned.
+data/normalized/
 *.zip
 *.gpkg
 *.gdb/
