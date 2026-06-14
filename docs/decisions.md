@@ -229,6 +229,22 @@ sans dépendance nouvelle) ; (2) choroplèthe + légende minimale ; (3) recherch
 PMTiles + glyphs auto-hébergés ; (5) projection linéaire (deck.gl + échantillon route OSM). Linéaire déplacé
 **après** la recherche (aucune donnée route n'existe encore).
 
+## ADR-0016 — `GeoMap` consomme les builders géo de `@sentropic/dataviz-core` · accepted · 2026-06-14
+
+**Contexte.** Le conducteur dataviz a (via h2a) **confirmé le split** ([ADR-0014]) et offert : `@sentropic/dataviz-core@0.4.36`
+(npm, MIT, deps: none) expose déjà **7 builders géo agnostiques, pure-data, zéro rendu** —
+`buildChoroplethModel`, `buildGeoPointModel`, `buildGeoFlowModel`, `buildGeoHexbinModel`,
+`buildGeoClusterModel`, `buildGeoDensityModel`, `buildGeoJsonLayerModel`.
+**Décision (réversible).** `GeoMap` (`geo-ui-svelte`) **consomme ces builders** pour le binning/agrégation
+(pure data) ; geo n'implémente QUE le **rendu** (deck.gl/MapLibre) + les projections. Cela **remplace** le
+binning inline `choropleth.ts` (inc.2) et **referme le gap de parité de vocabulaire** (hexbin/cluster/
+density/flow) que la double-revue 4.8 ([ADR-0015]) avait relevé. dataviz garde ses composants `Geo*Map`
+(usages dataviz génériques, cible différente) — pas de conflit ; si dataviz expose un jour des primitives
+WebGL réutilisables, geo les consommera aussi.
+**Suite.** Refactor `geo-ui-svelte` : dép `@sentropic/dataviz-core`, `choropleth.ts` → wrapper sur
+`buildChoroplethModel`, + couches hexbin/cluster/density via les builders. Coordination ouverte avec dataviz
+(signatures, ajustements éventuels).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
