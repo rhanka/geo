@@ -245,6 +245,20 @@ WebGL réutilisables, geo les consommera aussi.
 `buildChoroplethModel`, + couches hexbin/cluster/density via les builders. Coordination ouverte avec dataviz
 (signatures, ajustements éventuels).
 
+**Mise à jour · 2026-06-14 (inc.2b/2c, double-revue 4.8 GO).** Refactor livré : `geo-ui-svelte`
+consomme `@sentropic/dataviz-core` — d'abord `0.4.36` (inc.2b : choroplèthe via `buildChoroplethModel`
++ hexbin/cluster/density via les builders, rendu MapLibre natif `fill`/`circle`/`heatmap`), puis
+adoption de `0.4.37` (inc.2c, commit `1dd05b2`) qui implémente les **3 ajustements** demandés
+(additif/rétro-compat) : `classify()` + `ChoroplethConfig.classification` → `ChoroplethModel.breaks`,
+`GeoPointConfig.geometry` (supprime le pont `__lng/__lat`), et `polygon` sur `GeoHexbin`/`GeoDensityCell`
+(supprime la synthèse `hexRing`). ~80 lignes de glue locale retirées ; équivalence de rendu **prouvée
+empiriquement** par la revue adversariale (`classify` 4000/4000 identiques à 1e-9, cas dégénérés
+conformes), `npm run verify` EXIT=0, **352 tests verts**. **Décision réversible consignée** : le type
+publié `Cell = string|number|boolean|null` n'admet pas l'objet géométrie attendu au runtime par le mode
+`geometry` ; dataviz **diffère volontairement** l'élargissement de `Cell` (type fondamental de `Row`)
+tant qu'il n'y a qu'un seul consommateur. geo conserve donc un **cast `as unknown as Cell` (1 ligne,
+documentée)** comme soupape — réversible : si dataviz élargit `Cell`, le cast est retiré.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
