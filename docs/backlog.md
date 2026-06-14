@@ -38,6 +38,16 @@ Fondation manquante : la donnée scrappée doit vivre sur **S3** (Scaleway Objec
 - Deploy : Job `geo fetch` **écrit** S3 ; API **lit** S3 ; secret `geo-s3-credentials`. Amende PR poc-k8s #30 (bucket `sentropic-geo` fr-par).
 - Migration : retirer les géométries committées (QC/FR) de git → S3 (garder au plus un échantillon CI).
 
+## P-immo — Capitalisation du scraping immo  ⬜ **priorité haute** ([ADR-0013])
+« La valeur de la lib » : reproduire le scrapping + les assets d'immo (`~/src/radar-immobilier`),
+périmètre dans `/tmp/etude-geo/separation.md`. Chunks :
+- **Lot 1 (immo demande)** : registre **1106 munis QC** + schéma `Municipality` + **polygones StatCan CSD**
+  (name/code-join `MUS_CO_GEO`) → `geo-source-ca-qc` ; données → S3. 🟡 *(bg)*
+- **Lot 2** : adapter **terrAPI adresses** + fetcher **MAMH role-evaluation** (XML) → sources geo.
+- **Lot 3** : **GeoSourceInventory** + contraintes **CPTAQ/BDZI/GRHQ** (manifests/recettes).
+- **Lot 4** : **StatCan census profile** + **orthophotos** + cadastre allégé SDA.
+- Garde-fous : anti-PII (Loi 25), anti-invention, OSM=ODbL → recettes/URLs only. immo = consommateur.
+
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜
 Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
 
