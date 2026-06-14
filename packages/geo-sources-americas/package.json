@@ -1,8 +1,8 @@
 {
-  "name": "@sentropic/geo-source-ca-qc-constraints",
+  "name": "@sentropic/geo-sources-americas",
   "version": "0.1.0",
   "type": "module",
-  "description": "Contraintes géographiques Québec : zone agricole CPTAQ, zones inondables BDZI, hydrographie GRHQ. Recettes/manifests capitalisés depuis radar-immobilier (ADR-0013).",
+  "description": "Manifestes (data) et recettes des sources géographiques des Amériques — Canada fédéral (StatCan) et Québec (SDA, cadastre, contraintes CPTAQ/BDZI/GRHQ, civique terrAPI/MAMH). Registre { manifests, recipes } consommé par @sentropic/geo (ADR-0017).",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -10,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/geo.git",
-    "directory": "packages/geo-source-ca-qc-constraints"
+    "directory": "packages/geo-sources-americas"
   },
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -31,5 +31,8 @@
   },
   "dependencies": {
     "@sentropic/geo-core": "^0.1.0"
+  },
+  "peerDependencies": {
+    "@sentropic/geo": "^0.1.0"
   }
 }
