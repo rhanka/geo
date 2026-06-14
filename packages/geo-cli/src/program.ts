@@ -88,7 +88,10 @@ export function buildProgram(deps: ProgramDeps = {}): Command {
   program
     .command("fetch <sourceId> [datasetId]")
     .description("Acquire a dataset (or all of a source) and write normalized GeoJSON.")
-    .option("--out <dir>", "output directory for normalized data")
+    .option(
+      "--out <target>",
+      "output for normalized data: a directory, fs:<dir>, or s3://<bucket>/<prefix>",
+    )
     .option("--force", "re-fetch over the network, bypassing the cache")
     .action(
       async (

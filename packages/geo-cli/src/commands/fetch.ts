@@ -11,6 +11,7 @@
 import {
   acquire as defaultAcquire,
   writeNormalized as defaultWriteNormalized,
+  writeNormalizedToStore as defaultWriteNormalizedToStore,
   type AcquireOptions,
   type CommandRunner,
 } from "@sentropic/geo-acquire";
@@ -19,6 +20,11 @@ import type {
   NormalizedDataset,
   ReferentialFeatureCollection,
 } from "@sentropic/geo-core";
+import {
+  createStore as defaultCreateStore,
+  parseStoreUri,
+  type Store,
+} from "@sentropic/geo-storage";
 
 import { defaultRegistry, getSource, type RegisteredSource } from "../registry.js";
 import { resolveDataDir } from "../paths.js";
@@ -27,6 +33,12 @@ export interface FetchDeps {
   registry?: Map<string, RegisteredSource>;
   acquire?: typeof defaultAcquire;
   writeNormalized?: typeof defaultWriteNormalized;
+  /** Persist a normalized dataset to a {@link Store} (ADR-0012 object storage path). */
+  writeNormalizedToStore?: typeof defaultWriteNormalizedToStore;
+  /** Build a {@link Store} from a URI; overridable so tests skip real S3/network. */
+  createStore?: typeof defaultCreateStore;
+  /** Inject a {@link Store} directly, bypassing `createStore` (hermetic tests). */
+  store?: Store;
   /** Injected fetch implementation forwarded to `acquire` (tests pass a stub). */
   fetchImpl?: typeof fetch;
   /**
@@ -77,6 +89,8 @@ export async function fetchSource(
   const registry = deps.registry ?? defaultRegistry();
   const acquire = deps.acquire ?? defaultAcquire;
   const writeNormalized = deps.writeNormalized ?? defaultWriteNormalized;
+  const writeNormalizedToStore = deps.writeNormalizedToStore ?? defaultWriteNormalizedToStore;
+  const createStore = deps.createStore ?? defaultCreateStore;
 
   const source = getSource(registry, sourceId);
 
@@ -91,7 +105,10 @@ export async function fetchSource(
     );
   }
 
-  const outDir = resolveDataDir(options.out, deps.cwd);
+  // Resolve the write target. A store URI (`s3://…`, `fs:…`) — or an injected
+  // `store` — routes through the {@link Store} write path (ADR-0012). A bare
+  // `--out` path keeps the legacy local-fs behavior (`writeNormalized`).
+  const target = resolveTarget(options.out, deps, createStore);
 
   const datasets: FetchedDataset[] = [];
   for (const id of datasetIds) {
@@ -106,7 +123,22 @@ export async function fetchSource(
     const normalized: NormalizedDataset<
       AdminFeatureCollection | ReferentialFeatureCollection
     > = await acquire(source.manifest, id, acquireOpts);
-    const { geojsonPath, metaPath } = await writeNormalized(normalized, outDir);
+
+    let geojsonPath: string;
+    let metaPath: string;
+    if (target.kind === "store") {
+      const prefixArg = target.prefix;
+      const keys =
+        prefixArg !== undefined
+          ? await writeNormalizedToStore(normalized, target.store, prefixArg)
+          : await writeNormalizedToStore(normalized, target.store);
+      geojsonPath = keys.geojsonKey;
+      metaPath = keys.metaKey;
+    } else {
+      const paths = await writeNormalized(normalized, target.outDir);
+      geojsonPath = paths.geojsonPath;
+      metaPath = paths.metaPath;
+    }
 
     datasets.push({
       sourceId: source.manifest.id,
@@ -119,7 +151,39 @@ export async function fetchSource(
     });
   }
 
-  return { outDir, datasets };
+  return { outDir: target.label, datasets };
+}
+
+/** Where `fetchSource` writes: a local fs dir, or a {@link Store} (+ prefix). */
+type WriteTarget =
+  | { kind: "fs"; outDir: string; label: string }
+  | { kind: "store"; store: Store; prefix?: string; label: string };
+
+/**
+ * Decide the write target from `--out` + deps. An injected `deps.store` always
+ * wins. Otherwise an `s3://…`/`fs:…` URI builds a {@link Store}; a bare path
+ * (or no `--out`) resolves to a local fs directory (existing behavior).
+ */
+function resolveTarget(
+  out: string | undefined,
+  deps: FetchDeps,
+  createStore: typeof defaultCreateStore,
+): WriteTarget {
+  if (deps.store !== undefined) {
+    const target: WriteTarget = { kind: "store", store: deps.store, label: out ?? "(store)" };
+    return target;
+  }
+
+  if (out !== undefined && (out.startsWith("s3://") || out.startsWith("fs:"))) {
+    const parsed = parseStoreUri(out);
+    const store = createStore(out);
+    const target: WriteTarget = { kind: "store", store, label: out };
+    if (parsed.kind === "s3" && parsed.prefix !== undefined) target.prefix = parsed.prefix;
+    return target;
+  }
+
+  const outDir = resolveDataDir(out, deps.cwd);
+  return { kind: "fs", outDir, label: outDir };
 }
 
 /** Render a fetch result as human-readable lines. */
