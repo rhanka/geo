@@ -1,7 +1,12 @@
 # geo — Kubernetes workload manifests
 
 App-owned workload manifests for deploying **geo-api** (the OGC API – Features
-server for `geo.sent-tech.ca`) onto the shared single-node cluster.
+server for `api.geo.sent-tech.ca`) onto the shared single-node cluster.
+
+> **Domain split:** the apex `geo.sent-tech.ca` is the **static site**, served
+> by **GitHub Pages** (`.github/workflows/pages.yml`, see `docs/deploy.md`). The
+> **API** lives on the `api.` subdomain, `api.geo.sent-tech.ca`, exposed by the
+> Ingress below. The site is built with `PUBLIC_GEO_API_URL=https://api.geo.sent-tech.ca`.
 
 ## Ownership split (app vs. poc-k8s)
 
@@ -15,7 +20,7 @@ owned by **poc-k8s**, not here:
 | Job / CronJob (`geo-fetch`)                   | RBAC for the tenant                                     |
 | —                                             | Image-pull secret for `rg.fr-par.scw.cloud/geo/*`      |
 | —                                             | Traefik v3 controller + cert-manager `letsencrypt-prod`|
-| —                                             | DNS `geo.sent-tech.ca` → shared LB                      |
+| —                                             | DNS `api.geo.sent-tech.ca` → shared LB                  |
 
 Do not add Namespace/quota/RBAC objects here — they belong in poc-k8s.
 
@@ -25,7 +30,7 @@ Do not add Namespace/quota/RBAC objects here — they belong in poc-k8s.
 | --------------------- | ------------------- | -------------------------------------------------- |
 | `deployment-api.yaml` | Deployment          | geo-api server, 1 replica, data PVC mounted RO     |
 | `service-api.yaml`    | Service (ClusterIP) | Stable in-cluster address for geo-api              |
-| `ingress.yaml`        | Ingress (Traefik)   | `geo.sent-tech.ca` + TLS via cert-manager          |
+| `ingress.yaml`        | Ingress (Traefik)   | `api.geo.sent-tech.ca` + TLS via cert-manager      |
 | `pvc-data.yaml`       | PVC (`geo-data`)    | Normalized GeoJSON, 1Gi RWO                         |
 | `job-fetch.yaml`      | Job + CronJob       | Populate / refresh the served data (`geo fetch`)   |
 
@@ -111,4 +116,5 @@ signal during startup and data refreshes.
 - An **image-pull secret** for `rg.fr-par.scw.cloud/geo/*` wired into the
   namespace (default ServiceAccount or referenced by name in the pods).
 - Traefik v3 ingress + cert-manager `letsencrypt-prod` ClusterIssuer, and DNS
-  for `geo.sent-tech.ca` pointing at the shared LB.
+  for `api.geo.sent-tech.ca` pointing at the shared LB. (The apex
+  `geo.sent-tech.ca` is the GitHub Pages site, not this cluster.)
