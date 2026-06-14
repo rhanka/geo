@@ -10,7 +10,7 @@
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
-import type { Normalizer } from "@sentropic/geo-acquire";
+import type { Normalizer } from "@sentropic/geo-core";
 
 import { DATASET_CENSUS_DIVISIONS, DATASET_PROVINCES, manifest } from "./manifest.js";
 import { censusDivisionsNormalizer, provincesNormalizer } from "./normalizers.js";

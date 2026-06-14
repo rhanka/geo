@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import type { FeatureCollection } from "@sentropic/geo-core";
-import { LicenseError, type CommandRunner } from "@sentropic/geo-acquire";
+import { LicenseError, type CommandRunner } from "@sentropic/geo/acquire";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchSource, formatFetchResult } from "./fetch.js";

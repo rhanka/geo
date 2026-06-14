@@ -1,5 +1,5 @@
 import { getDataset, makeGeoId, validateSourceManifest } from "@sentropic/geo-core";
-import type { NormalizeContext } from "@sentropic/geo-acquire";
+import type { NormalizeContext } from "@sentropic/geo-core";
 import { describe, expect, it } from "vitest";
 
 import {
