@@ -1,4 +1,6 @@
 import { buildInventory } from "@sentropic/geo/catalog";
+import { registry as americas } from "@sentropic/geo-sources-americas";
+import { registry as europe } from "@sentropic/geo-sources-europe";
 import type { PageLoad } from "./$types";
 
 /**
@@ -7,13 +9,9 @@ import type { PageLoad } from "./$types";
  * API, no network), so the page prerenders with no live backend. Projects each
  * {@link InventoryEntry} onto a serializable view model for the FR catalogue
  * page.
- *
- * NOTE (packages-v2 phase C): the continent libraries are wired in phase E; the
- * catalog is built empty here so the site type-checks and prerenders during the
- * migration.
  */
 export const load: PageLoad = () => {
-  const inventory = buildInventory([]);
+  const inventory = buildInventory([americas, europe]);
   const sources = inventory.map((entry) => ({
     sourceId: entry.sourceId,
     title: entry.title,
