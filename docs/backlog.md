@@ -12,7 +12,7 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ---
 
-## État (2026-06-14) — backlog autonome ÉPUISÉ ✅ (342 tests, PR rhanka/geo#1)
+## État (2026-06-14) — backlog autonome ÉPUISÉ ✅ (352 tests, PR rhanka/geo#1)
 
 **Livré** (tout poussé sur `scaffold/geo-v1`, CI verte) :
 - **Lib** : `geo-core` (modèle/standards/licences/Source Manifest/référentiel), `geo-acquire`
@@ -22,8 +22,10 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 - **Données / 3 pays** : QC (SDA régions/MRC/**municipalités**, StatCan CSD, cadastre, CPTAQ/BDZI/GRHQ,
   terrAPI+MAMH), Canada (provinces, FSA postal), France (IGN ADMIN EXPRESS, INSEE COG, La Poste).
   Capitalisation **immo** complète (ADR-0013). Données → **S3** (`sentropic-geo`, ADR-0012).
-- **Carte WebGL** (`GeoMap`, MapLibre v5) : MVP + choroplèthe + légende + recherche + panneau détail
-  (4 incréments / 5). Page `/carte` + `/sources`. Consensus dataviz/DS/immo tranché (ADR-0014/0015).
+- **Carte WebGL** (`GeoMap`, MapLibre v5) : MVP + choroplèthe + légende + recherche + panneau détail +
+  binning délégué à `@sentropic/dataviz-core@0.4.37` (choroplèthe/hexbin/cluster/density, inc.2b/2c,
+  ADR-0016 ; glue locale retirée, équivalence prouvée). Page `/carte` + `/sources`. Consensus
+  dataviz/DS/immo tranché (ADR-0014/0015/0016).
 - **Déploiement** : Dockerfile + `deploy/k8s/` (API S3) + workflows CI/npm-publish/docker-publish +
   **GitHub Pages** (`pages.yml`, apex) + PR poc-k8s `k8s-ops#30`.
 - **Gouvernance** : ADR-0001→0015, registre de licences, ce backlog.
@@ -37,7 +39,7 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 **Reste — polish optionnel (autonome, faible priorité)** :
 - inc.4 basemap **PMTiles** auto-hébergé (le MVP marche sur fond tokenisé) ; inc.5 **projection routière**
   deck.gl (bloqué : pas de source de routes — nécessite une couche RRN/Adresses QC d'abord) ;
-  `/sources` dans l'OpenAPI ; variante `DatasetCard` pour le catalogue de sources.
+  variante `DatasetCard` pour le catalogue de sources. (`/sources` dans l'OpenAPI = ✅ livré.)
 
 ---
 
