@@ -1,12 +1,21 @@
 /**
  * `geo sources list` / `geo sources show <sourceId>` — list and inspect the
- * registered sources. Pure functions returning plain data so they are trivial
- * to unit-test; the commander layer handles printing.
+ * full geo source catalog. These read from the aggregated, typed
+ * `@sentropic/geo-sources` INVENTORY (all 13 sources), not the CLI's
+ * normalizer registry (which only covers sources the CLI can `fetch`).
+ *
+ * Pure functions returning plain data so they are trivial to unit-test; the
+ * commander layer handles printing.
  */
 
-import { resolveManifestLicense } from "@sentropic/geo-core";
-
-import { defaultRegistry, getSource, type RegisteredSource } from "../registry.js";
+import {
+  allSources,
+  byCountry,
+  byKind,
+  bySourceId,
+  datasetsFor,
+  type InventoryEntry,
+} from "@sentropic/geo-sources";
 
 export interface SourceSummary {
   id: string;
@@ -15,6 +24,7 @@ export interface SourceSummary {
   jurisdiction: string;
   license: string;
   redistributable: boolean;
+  attribution: string;
   datasetIds: string[];
 }
 
@@ -23,75 +33,88 @@ export interface DatasetSummary {
   title: string;
   format: string;
   adminLevel?: string;
-  layer?: string | number;
 }
 
 export interface SourceDetail extends SourceSummary {
-  description?: string;
-  provider: string;
-  providerUrl?: string;
-  homepage?: string;
-  attributionRequired: boolean;
+  country: string;
+  subdivision?: string;
+  level?: string;
   datasets: DatasetSummary[];
 }
 
-function jurisdictionOf(source: RegisteredSource): string {
-  const { country, subdivision } = source.manifest.jurisdiction;
-  return subdivision ?? country;
+/** Optional filters for `listSources` (mirrors `geo sources list` flags). */
+export interface SourceListFilters {
+  country?: string;
+  kind?: string;
 }
 
-function toSummary(source: RegisteredSource): SourceSummary {
-  const license = resolveManifestLicense(source.manifest);
+/** Render an entry's jurisdiction as the most specific available code. */
+function jurisdictionOf(entry: InventoryEntry): string {
+  return entry.jurisdiction.subdivision ?? entry.jurisdiction.country;
+}
+
+function toSummary(entry: InventoryEntry): SourceSummary {
   return {
-    id: source.manifest.id,
-    title: source.manifest.title,
-    kind: source.manifest.kind ?? "administrative",
-    jurisdiction: jurisdictionOf(source),
-    license: license.id,
-    redistributable: license.redistributable,
-    datasetIds: source.manifest.datasets.map((d) => d.id),
+    id: entry.sourceId,
+    title: entry.title,
+    kind: entry.kind,
+    jurisdiction: jurisdictionOf(entry),
+    license: entry.license.id,
+    redistributable: entry.redistributable,
+    attribution: entry.attribution,
+    datasetIds: entry.datasets.map((d) => d.id),
   };
 }
 
-/** List all registered sources as summaries. */
-export function listSources(
-  registry: Map<string, RegisteredSource> = defaultRegistry(),
-): SourceSummary[] {
-  return [...registry.values()].map(toSummary);
+/**
+ * List the source catalog as summaries, optionally filtered by `--country`
+ * (ISO 3166-1 alpha-2, case-insensitive) and/or `--kind` (source kind).
+ */
+export function listSources(filters: SourceListFilters = {}): SourceSummary[] {
+  let entries: InventoryEntry[] = filters.country
+    ? byCountry(filters.country)
+    : allSources();
+  if (filters.kind) {
+    const kinds = new Set(byKind(filters.kind as InventoryEntry["kind"]));
+    entries = entries.filter((entry) => kinds.has(entry));
+  }
+  return entries.map(toSummary);
 }
 
 /** Inspect a single source by id. Throws if the source is unknown. */
-export function showSource(
-  sourceId: string,
-  registry: Map<string, RegisteredSource> = defaultRegistry(),
-): SourceDetail {
-  const source = getSource(registry, sourceId);
-  const license = resolveManifestLicense(source.manifest);
+export function showSource(sourceId: string): SourceDetail {
+  const entry = bySourceId(sourceId);
+  if (!entry) {
+    const known = allSources()
+      .map((e) => e.sourceId)
+      .join(", ");
+    throw new Error(`unknown source "${sourceId}" (registered: ${known || "none"})`);
+  }
   const detail: SourceDetail = {
-    ...toSummary(source),
-    provider: source.manifest.provider.name,
-    attributionRequired: license.attributionRequired,
-    datasets: source.manifest.datasets.map((d): DatasetSummary => {
+    ...toSummary(entry),
+    country: entry.jurisdiction.country,
+    datasets: datasetsFor(sourceId).map((d): DatasetSummary => {
       const ds: DatasetSummary = { id: d.id, title: d.title, format: d.format };
       if (d.adminLevel !== undefined) ds.adminLevel = d.adminLevel;
-      if (d.layer !== undefined) ds.layer = d.layer;
       return ds;
     }),
   };
-  if (source.manifest.description !== undefined) detail.description = source.manifest.description;
-  if (source.manifest.provider.url !== undefined) detail.providerUrl = source.manifest.provider.url;
-  if (source.manifest.homepage !== undefined) detail.homepage = source.manifest.homepage;
+  if (entry.jurisdiction.subdivision !== undefined) {
+    detail.subdivision = entry.jurisdiction.subdivision;
+  }
+  if (entry.jurisdiction.level !== undefined) detail.level = entry.jurisdiction.level;
   return detail;
 }
 
 /** Render a source summary list as human-readable lines. */
 export function formatSourceList(sources: SourceSummary[]): string {
-  if (sources.length === 0) return "No sources registered.";
+  if (sources.length === 0) return "No sources match.";
   return sources
     .map(
       (s) =>
         `${s.id}\n  ${s.title}\n  kind=${s.kind} jurisdiction=${s.jurisdiction} ` +
         `license=${s.license}${s.redistributable ? "" : " (NOT redistributable)"}\n  ` +
+        `attribution: ${s.attribution}\n  ` +
         `datasets: ${s.datasetIds.join(", ")}`,
     )
     .join("\n\n");
@@ -99,22 +122,23 @@ export function formatSourceList(sources: SourceSummary[]): string {
 
 /** Render a source detail as human-readable lines. */
 export function formatSourceDetail(detail: SourceDetail): string {
+  const jurisdiction =
+    `${detail.country}` +
+    `${detail.subdivision ? `/${detail.subdivision}` : ""}` +
+    `${detail.level ? ` (${detail.level})` : ""}`;
   const lines: string[] = [
     `${detail.id} — ${detail.title}`,
-    detail.description ? `  ${detail.description}` : undefined,
     `  kind: ${detail.kind}`,
-    `  jurisdiction: ${detail.jurisdiction}`,
-    `  provider: ${detail.provider}${detail.providerUrl ? ` <${detail.providerUrl}>` : ""}`,
-    detail.homepage ? `  homepage: ${detail.homepage}` : undefined,
+    `  jurisdiction: ${jurisdiction}`,
     `  license: ${detail.license}` +
-      ` (redistributable=${detail.redistributable}, attribution=${detail.attributionRequired})`,
+      ` (redistributable=${detail.redistributable})`,
+    `  attribution: ${detail.attribution}`,
     `  datasets:`,
     ...detail.datasets.map(
       (d) =>
         `    - ${d.id} [${d.format}` +
-        `${d.adminLevel ? `, level=${d.adminLevel}` : ""}` +
-        `${d.layer !== undefined ? `, layer=${d.layer}` : ""}] ${d.title}`,
+        `${d.adminLevel ? `, level=${d.adminLevel}` : ""}] ${d.title}`,
     ),
-  ].filter((line): line is string => line !== undefined);
+  ];
   return lines.join("\n");
 }

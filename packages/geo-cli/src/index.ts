@@ -20,6 +20,7 @@ export {
   type SourceSummary,
   type SourceDetail,
   type DatasetSummary,
+  type SourceListFilters,
 } from "./commands/sources.js";
 
 export {

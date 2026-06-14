@@ -229,6 +229,90 @@ describe("items", () => {
   });
 });
 
+describe("sources catalog", () => {
+  it("lists the full inventory (all 13 sources)", async () => {
+    const res = await app.request(`${ORIGIN}/sources`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      numberMatched: number;
+      numberReturned: number;
+      sources: { sourceId: string; license: { id: string }; attribution: string }[];
+    };
+    expect(body.numberMatched).toBe(13);
+    expect(body.numberReturned).toBe(13);
+    expect(body.sources).toHaveLength(13);
+    const sda = body.sources.find((s) => s.sourceId === "ca-qc/sda");
+    expect(sda).toBeDefined();
+    expect(sda!.license.id).toBe("cc-by-4.0");
+    expect(sda!.attribution).toBeTruthy();
+  });
+
+  it("filters by ?country= (case-insensitive)", async () => {
+    const res = await app.request(`${ORIGIN}/sources?country=fr`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { sources: { sourceId: string }[] };
+    expect(body.sources.length).toBeGreaterThan(0);
+    expect(body.sources.every((s) => s.sourceId.startsWith("fr/"))).toBe(true);
+  });
+
+  it("filters by ?kind=", async () => {
+    const res = await app.request(`${ORIGIN}/sources?kind=postal`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { sources: { kind: string }[] };
+    expect(body.sources.length).toBeGreaterThan(0);
+    expect(body.sources.every((s) => s.kind === "postal")).toBe(true);
+  });
+
+  it("combines ?country= and ?kind= filters", async () => {
+    const res = await app.request(`${ORIGIN}/sources?country=FR&kind=postal`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { sources: { sourceId: string; kind: string }[] };
+    expect(body.sources.length).toBeGreaterThan(0);
+    expect(
+      body.sources.every((s) => s.sourceId.startsWith("fr/") && s.kind === "postal"),
+    ).toBe(true);
+  });
+
+  it("returns a single source (slashed id) with its datasets", async () => {
+    const res = await app.request(`${ORIGIN}/sources/ca-qc/sda`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      sourceId: string;
+      datasets: { id: string }[];
+      jurisdiction: { country: string; subdivision?: string };
+    };
+    expect(body.sourceId).toBe("ca-qc/sda");
+    expect(body.jurisdiction.country).toBe("CA");
+    expect(body.jurisdiction.subdivision).toBe("CA-QC");
+    expect(body.datasets.length).toBeGreaterThan(0);
+  });
+
+  it("accepts a percent-encoded slashed id", async () => {
+    const res = await app.request(
+      `${ORIGIN}/sources/${encodeURIComponent("ca-qc/sda")}`,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { sourceId: string };
+    expect(body.sourceId).toBe("ca-qc/sda");
+  });
+
+  it("404s an unknown source", async () => {
+    const res = await app.request(`${ORIGIN}/sources/does/not-exist`);
+    expect(res.status).toBe(404);
+    const body = (await res.json()) as { code: string };
+    expect(body.code).toBe("NotFound");
+  });
+});
+
+describe("landing page sources link", () => {
+  it("advertises the source catalog", async () => {
+    const res = await app.request(`${ORIGIN}/`);
+    const body = (await res.json()) as { links: { href: string; rel: string }[] };
+    const sourcesLink = body.links.find((l) => l.href.endsWith("/sources"));
+    expect(sourcesLink).toBeDefined();
+  });
+});
+
 describe("single feature", () => {
   it("returns the right Feature as application/geo+json", async () => {
     const fid = "ca/qc/region/03";

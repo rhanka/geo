@@ -26,6 +26,7 @@ describe("program: sources list", () => {
         jurisdiction: "CA-QC",
         license: "cc-by-4.0",
         redistributable: true,
+        attribution: "© Gouvernement du Québec",
         datasetIds: ["qc-regions"],
       },
     ]);
@@ -45,9 +46,10 @@ describe("program: sources show", () => {
       jurisdiction: "CA-QC",
       license: "cc-by-4.0",
       redistributable: true,
+      attribution: "© Gouvernement du Québec",
       datasetIds: [],
-      provider: "MRNF",
-      attributionRequired: true,
+      country: "CA",
+      subdivision: "CA-QC",
       datasets: [],
     }));
     const { program } = harness({ showSource });
