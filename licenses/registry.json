@@ -48,6 +48,38 @@
       "retrievedAt": "2026-06-13",
       "datasets": ["ca-provinces", "ca-census-divisions"],
       "notes": "2021 Census cartographic boundary files. CRS source EPSG:3347 → reprojeté WGS84. ca-provinces (13) NON seedé (17.8 Mo > budget ADR-0010 ; reproductible via `geo fetch`). ca-census-divisions déclaré, non produit (follow-up)."
+    },
+    {
+      "sourceId": "fr/laposte-codes-postaux",
+      "kind": "postal",
+      "provider": "La Poste",
+      "providerUrl": "https://datanova.laposte.fr",
+      "homepage": "https://www.data.gouv.fr/datasets/base-officielle-des-codes-postaux",
+      "licenseId": "licence-ouverte-2.0",
+      "redistributable": true,
+      "attributionRequired": true,
+      "shareAlike": false,
+      "attribution": "© La Poste — Licence Ouverte / Open Licence 2.0 (Etalab)",
+      "sourceUrl": "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/raw",
+      "retrievedAt": "2026-06-13",
+      "datasets": ["fr-codes-postaux"],
+      "notes": "Base officielle des codes postaux (HEXASMAL). CSV ;-séparé → référentiel geometry:null (code postal ↔ INSEE commune). Donnée sur S3 (ADR-0012)."
+    },
+    {
+      "sourceId": "fr/insee-cog",
+      "kind": "statistical",
+      "provider": "Institut national de la statistique et des études économiques (INSEE)",
+      "providerUrl": "https://www.insee.fr",
+      "homepage": "https://www.insee.fr/fr/information/8377162",
+      "licenseId": "licence-ouverte-2.0",
+      "redistributable": true,
+      "attributionRequired": true,
+      "shareAlike": false,
+      "attribution": "© INSEE — Licence Ouverte / Open Licence 2.0 (Etalab)",
+      "sourceUrl": "https://www.insee.fr/fr/statistiques/fichier/8377162/v_commune_2025.csv",
+      "retrievedAt": "2026-06-13",
+      "datasets": ["fr-cog-communes"],
+      "notes": "Code Officiel Géographique (COG) communes. CSV → référentiel geometry:null (code commune + hiérarchie dept/région). Donnée sur S3 (ADR-0012)."
     }
   ]
 }
