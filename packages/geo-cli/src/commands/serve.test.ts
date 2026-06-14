@@ -10,7 +10,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { FileProvider, StoreProvider, type FeatureProvider } from "@sentropic/geo-api";
-import type { Store } from "@sentropic/geo-storage";
+import type { Store } from "@sentropic/geo/storage";
 
 import { startServer } from "./serve.js";
 

@@ -2,7 +2,7 @@ import type {
   AdminFeatureCollection,
   NormalizedDataset,
 } from "@sentropic/geo-core";
-import type { PutOptions, Store } from "@sentropic/geo-storage";
+import type { PutOptions, Store } from "../storage/index.js";
 import { describe, expect, it } from "vitest";
 
 import { writeNormalizedToStore } from "./acquire.js";

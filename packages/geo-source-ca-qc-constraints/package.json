@@ -4,20 +4,32 @@
   "type": "module",
   "description": "Contraintes géographiques Québec : zone agricole CPTAQ, zones inondables BDZI, hydrographie GRHQ. Recettes/manifests capitalisés depuis radar-immobilier (ADR-0013).",
   "license": "MIT",
-  "publishConfig": { "access": "public" },
-  "repository": { "type": "git", "url": "git+https://github.com/rhanka/geo.git", "directory": "packages/geo-source-ca-qc-constraints" },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git",
+    "directory": "packages/geo-source-ca-qc-constraints"
+  },
   "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run src --passWithNoTests"
   },
   "dependencies": {
-    "@sentropic/geo-core": "^0.1.0",
-    "@sentropic/geo-acquire": "^0.1.0"
+    "@sentropic/geo-core": "^0.1.0"
   }
 }
