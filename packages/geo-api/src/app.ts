@@ -14,7 +14,7 @@
 
 import { Hono } from "hono";
 
-import type { AdminFeature, AdminFeatureCollection } from "@sentropic/geo-core";
+import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
 
 import { buildOpenApi } from "./openapi.js";
 import {
@@ -26,7 +26,7 @@ import {
   renderCollection,
   type Link,
 } from "./ogc.js";
-import type { FeatureProvider, ItemsQuery } from "./provider.js";
+import type { FeatureProvider, ItemsQuery, ServedFeature } from "./provider.js";
 
 /** Default page size and the hard cap enforced on `?limit=`. */
 const DEFAULT_LIMIT = 100;
@@ -170,7 +170,7 @@ export function createApp(provider: FeatureProvider): Hono {
       links.push({ href: next.toString(), rel: "next", type: MEDIA_GEOJSON, title: "Next page" });
     }
 
-    const body: AdminFeatureCollection & {
+    const body: FeatureCollection<Geometry | null> & {
       numberMatched: number;
       numberReturned: number;
       timeStamp: string;
@@ -212,7 +212,7 @@ export function createApp(provider: FeatureProvider): Hono {
       },
     ];
 
-    const body: AdminFeature & { links: Link[] } = { ...feature, links };
+    const body: ServedFeature & { links: Link[] } = { ...feature, links };
     c.header("Content-Type", MEDIA_GEOJSON);
     return c.body(JSON.stringify(body));
   });
