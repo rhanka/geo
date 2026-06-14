@@ -5,20 +5,22 @@
  * consume `@sentropic/dataviz-core`'s point builders and map their
  * rendering-neutral output to NATIVE MapLibre layer specs (no deck.gl yet):
  *
- *  - `hexbin`  — `buildGeoHexbinModel`  → a GeoJSON polygon source (one hex ring
- *                per bin) + a `fill` layer coloured by bin count.
+ *  - `hexbin`  — `buildGeoHexbinModel`  → a GeoJSON polygon source (the builder's
+ *                `bin.polygon` ring per bin) + a `fill` layer coloured by count.
  *  - `cluster` — `buildGeoClusterModel` → a GeoJSON point source + a `circle`
  *                layer sized (and labelled) by cluster count.
  *  - `density` — `buildGeoDensityModel` → a GeoJSON point source + a `heatmap`
  *                layer weighted by per-cell density.
  *
  * Pure functions, no DOM/WebGL — `GeoMap` adds the returned source + layer.
- * The hexagon / no rendering math lives here (dataviz cells carry only a
- * `center`/`bounds`, not a polygon ring — see `BUILDER_NOTES`).
+ * As of dataviz-core 0.4.37 the builders carry the cell `polygon` rings directly
+ * (see `BUILDER_NOTES`); we only convert the `GeoCoordinate[]` vertices to closed
+ * GeoJSON `Position` rings for MapLibre.
  */
 
 import type {
   GeoClusterModel,
+  GeoCoordinate,
   GeoDensityModel,
   GeoHexbinModel,
 } from "@sentropic/dataviz-core";
@@ -28,7 +30,7 @@ import {
   buildGeoHexbinModel,
 } from "@sentropic/dataviz-core";
 import type { FeatureCollection, Position } from "@sentropic/geo-core";
-import { LAT_KEY, LNG_KEY, pointInput } from "./dataviz-adapter.js";
+import { GEOMETRY_KEY, pointInput } from "./dataviz-adapter.js";
 
 /** The point-aggregation layer kinds (excludes the polygon `choropleth`). */
 export type PointLayerKind = "hexbin" | "cluster" | "density";
@@ -68,22 +70,15 @@ const DEFAULT_RAMP: readonly string[] = [
   "#1e3a8a",
 ];
 
-/** Regular hexagon ring (6 vertices, closed) around a center, in degrees. */
-function hexRing(
-  centerLng: number,
-  centerLat: number,
-  cellSize: number,
-): Position[] {
-  const ring: Position[] = [];
-  const radius = cellSize / 2;
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i + Math.PI / 6;
-    ring.push([
-      centerLng + radius * Math.cos(angle),
-      centerLat + radius * Math.sin(angle),
-    ]);
-  }
-  ring.push(ring[0] as Position); // close the ring
+/**
+ * Convert a builder cell `polygon` (a `GeoCoordinate[]` of `{latitude,longitude}`
+ * vertices, NOT closed) into a closed GeoJSON `Position[]` ring (`[lng, lat]`
+ * tuples with the first vertex repeated last). Used for both hexbin (6 vertices)
+ * and density (4 corners) cells.
+ */
+function polygonToRing(polygon: readonly GeoCoordinate[]): Position[] {
+  const ring: Position[] = polygon.map((p) => [p.longitude, p.latitude]);
+  if (ring.length > 0) ring.push(ring[0] as Position); // close the ring
   return ring;
 }
 
@@ -109,8 +104,9 @@ function countColorExpr(maxCount: number, ramp: readonly string[]): unknown {
 }
 
 /**
- * Hexbin layer: `buildGeoHexbinModel` → a GeoJSON polygon source (a hex ring per
- * bin, properties `count`/`value`) + a `fill` layer coloured by count.
+ * Hexbin layer: `buildGeoHexbinModel` → a GeoJSON polygon source (the builder's
+ * `bin.polygon` ring per bin, properties `count`/`value`) + a `fill` layer
+ * coloured by count.
  */
 export function buildHexbinLayer(
   data: FeatureCollection,
@@ -120,8 +116,7 @@ export function buildHexbinLayer(
   const ramp = options.ramp ?? DEFAULT_RAMP;
   const { model, rows } = pointInput(data, options.valueKey);
   const hex = buildGeoHexbinModel(model, rows, {
-    longitude: LNG_KEY,
-    latitude: LAT_KEY,
+    geometry: GEOMETRY_KEY,
     ...(options.valueKey === undefined ? {} : { value: options.valueKey }),
     ...(options.cellSize === undefined ? {} : { cellSize: options.cellSize }),
   });
@@ -132,9 +127,7 @@ export function buildHexbinLayer(
       type: "Feature",
       geometry: {
         type: "Polygon",
-        coordinates: [
-          hexRing(bin.center.longitude, bin.center.latitude, hex.cellSize),
-        ],
+        coordinates: [polygonToRing(bin.polygon ?? [])],
       },
       properties: { id: bin.id, count: bin.count, value: bin.value },
     })),
@@ -172,8 +165,7 @@ export function buildClusterLayer(
   const ramp = options.ramp ?? DEFAULT_RAMP;
   const { model, rows } = pointInput(data, options.valueKey);
   const cluster = buildGeoClusterModel(model, rows, {
-    longitude: LNG_KEY,
-    latitude: LAT_KEY,
+    geometry: GEOMETRY_KEY,
     ...(options.valueKey === undefined ? {} : { value: options.valueKey }),
     ...(options.radius === undefined ? {} : { radius: options.radius }),
   });
@@ -243,8 +235,7 @@ export function buildDensityLayer(
 ): { spec: PointLayerSpec; model: GeoDensityModel } {
   const { model, rows } = pointInput(data, options.valueKey);
   const density = buildGeoDensityModel(model, rows, {
-    longitude: LNG_KEY,
-    latitude: LAT_KEY,
+    geometry: GEOMETRY_KEY,
     ...(options.valueKey === undefined ? {} : { value: options.valueKey }),
     ...(options.cellSize === undefined ? {} : { cellSize: options.cellSize }),
   });

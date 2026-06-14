@@ -9,59 +9,58 @@
  *
  *  - INPUT  — flatten a `FeatureCollection` to `Row[]` (one row per feature) and
  *             synthesize the matching `DataModel`. Polygon choropleths key on
- *             `properties[regionKey]`; point layers read `lat`/`lng` columns
- *             projected out of each feature's `Point` geometry.
+ *             `properties[regionKey]`; point layers carry each feature's `Point`
+ *             geometry in a single column the builders read via their
+ *             `geometry` config (dataviz-core 0.4.37).
  *  - OUTPUT — each consumer (`choropleth.ts`, the hexbin/cluster/density layer
  *             builders) maps the builder's model to a MapLibre layer/legend.
  *
  * Keeping this in one file means there is exactly one place that understands
- * both vocabularies, and it documents (in `BUILDER_NOTES`) where the builder
- * I/O does not map cleanly to GeoJSON so we can ask dataviz to adjust upstream.
+ * both vocabularies. As of dataviz-core 0.4.37 all three previously-local maths
+ * (choropleth classification, point lat/lng projection, cell polygon rings) are
+ * provided by the builders — see `BUILDER_NOTES` for the resolution record.
  */
 
 import type { FeatureCollection, Position } from "@sentropic/geo-core";
 import type {
   Aggregation,
+  Cell,
   DataModel,
   Row,
 } from "@sentropic/dataviz-core";
 
 /**
- * Notes for the dataviz-core maintainers, surfaced from this integration.
- * Documented here (not forked) per the "don't fork the math" rule.
+ * Resolution record for the three asks this integration raised against
+ * dataviz-core — all delivered additively in 0.4.37 (ADR-0016). Kept as a public
+ * marker; the local glue that worked around each gap has been removed.
  */
 export const BUILDER_NOTES = {
   /**
-   * `buildChoroplethModel` AGGREGATES one value per region (group-by + rollup)
-   * but does NOT CLASSIFY those region values into graduated bins. A geographic
-   * choropleth needs the second step (quantile / equal-interval breaks driving a
-   * colour ramp). We keep the classification local (`choropleth.ts`) and only
-   * delegate the aggregation. ASK: expose a `classify(values, {method,count})`
-   * helper (or a `breaks` option on `ChoroplethModel`) so the binning math lives
-   * in dataviz-core too.
+   * RESOLVED in 0.4.37: `ChoroplethConfig.classification = { method, count }`
+   * populates `ChoroplethModel.breaks` (and `classify(values, {method,count})`
+   * is exported). `choropleth.ts` now reads `model.breaks` instead of
+   * classifying locally; only the class → colour mapping stays in geo (rendering).
    */
-  choroplethHasNoClassification: true,
+  choroplethHasNoClassification: false,
   /**
-   * The point builders (`buildGeoHexbinModel`, `buildGeoDensityModel`,
-   * `buildGeoClusterModel`) take `latitude`/`longitude` as flat column ids, not
-   * geometry. We project each `Point` feature's `coordinates` into synthetic
-   * `lat`/`lng` columns. ASK: a `geometry`-aware point config (like
-   * `GeoJsonLayerConfig.geometry`) would remove this projection step.
+   * RESOLVED in 0.4.37: the point builders accept `geometry: '<column>'` (a
+   * GeoJSON `Point` object column), so we pass the feature geometry directly
+   * instead of projecting synthetic `__lat`/`__lng` columns.
    */
-  pointBuildersNeedFlatLatLng: true,
+  pointBuildersNeedFlatLatLng: false,
   /**
-   * `GeoHexbin`/`GeoDensityCell` carry a `center` (and density a `bounds`) but
-   * NOT a ready polygon ring, so we synthesize the hexagon / rectangle rings
-   * here for MapLibre fills. ASK: an optional `polygon: Position[]` on the cell
-   * models would let consumers render without re-deriving cell geometry.
+   * RESOLVED in 0.4.37: `GeoHexbin.polygon` (6 pointy-top vertices) and
+   * `GeoDensityCell.polygon` (4 corners SW/SE/NE/NW) are provided by the
+   * builders. `point-layers.ts` renders those instead of synthesizing rings.
    */
-  cellsHaveNoPolygonRing: true,
+  cellsHaveNoPolygonRing: false,
 } as const;
 
-/** Column id we project a point feature's longitude into. */
-export const LNG_KEY = "__lng";
-/** Column id we project a point feature's latitude into. */
-export const LAT_KEY = "__lat";
+/**
+ * Column id under which each point feature's GeoJSON `Point` geometry is carried,
+ * so the dataviz-core point builders can read it via their `geometry` config.
+ */
+export const GEOMETRY_KEY = "__geometry";
 
 /** Coerce a raw cell to a finite number, or `undefined` (stricter than `Number`). */
 function toFiniteNumber(raw: unknown): number | undefined {
@@ -151,11 +150,16 @@ export function choroplethInput(
  * Build the rows + model for the **point-aggregation** builders (hexbin /
  * cluster / density).
  *
- * Each `Point` feature is projected to `{ [LNG_KEY], [LAT_KEY], ...props }`. The
- * lat/lng become continuous dimensions (the builders read them as raw columns,
- * not as measures); an optional numeric `valueKey` becomes a `sum` measure so
- * the builders can weight cells/clusters by it. Non-point geometries are
- * dropped — these layer kinds are defined over POINT inputs (immo signals).
+ * Each `Point` feature's geometry is carried verbatim in the {@link GEOMETRY_KEY}
+ * column so the builders read it via their `geometry` config (dataviz-core
+ * 0.4.37). An optional numeric `valueKey` becomes a `sum` measure so the builders
+ * can weight cells/clusters by it. Non-point geometries are dropped — these layer
+ * kinds are defined over POINT inputs (immo signals).
+ *
+ * NOTE (dataviz divergence): the builders read the geometry column as a GeoJSON
+ * `Point` OBJECT at runtime, but the published `Cell` type is
+ * `string | number | boolean | null` and does not admit objects. We cast the
+ * geometry into the cell; see the report's "divergences" section.
  */
 export function pointInput(
   fc: FeatureCollection,
@@ -168,17 +172,19 @@ export function pointInput(
     const [lng, lat] = geom.coordinates as Position;
     if (typeof lng !== "number" || typeof lat !== "number") continue;
     const props = feature.properties ?? {};
-    const row: Row = { [LNG_KEY]: lng, [LAT_KEY]: lat };
+    // Carry the GeoJSON Point object as-is; the builder's `geometry` reader
+    // expects { type:'Point', coordinates:[lng,lat] }. Cast around the scalar-only
+    // `Cell` type (runtime contract is wider than the published type — see report).
+    const row: Row = {
+      [GEOMETRY_KEY]: { type: "Point", coordinates: [lng, lat] } as unknown as Cell,
+    };
     if (valueKey !== undefined) {
       row[valueKey] = toFiniteNumber(props[valueKey]) ?? 0;
     }
     rows.push(row);
   }
   const model: DataModel = {
-    dimensions: [
-      { id: LNG_KEY, label: "Longitude", type: "continuous" },
-      { id: LAT_KEY, label: "Latitude", type: "continuous" },
-    ],
+    dimensions: [{ id: GEOMETRY_KEY, label: "Geometry", type: "discrete" }],
     measures:
       valueKey === undefined
         ? []
