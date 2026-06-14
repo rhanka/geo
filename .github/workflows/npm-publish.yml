@@ -58,16 +58,13 @@ jobs:
           import { readFileSync } from "node:fs";
 
           const expected = process.env.EXPECTED_VERSION;
-          // Public @sentropic/geo-* packages, in dependency order. apps/site
-          // (@sentropic/geo-site) is private and NOT published.
+          // Public @sentropic/geo-* packages, in dependency order (ADR-0017:
+          // 16→5). apps/site (@sentropic/geo-site) is private and NOT published.
           const publishable = [
             "packages/geo-core/package.json",
-            "packages/geo-acquire/package.json",
-            "packages/geo-api/package.json",
-            "packages/geo-source-ca-qc/package.json",
-            "packages/geo-source-ca/package.json",
-            "packages/geo-source-fr/package.json",
-            "packages/geo-cli/package.json",
+            "packages/geo/package.json",
+            "packages/geo-sources-americas/package.json",
+            "packages/geo-sources-europe/package.json",
             "packages/geo-ui-svelte/package.json",
           ];
           const failures = [];
@@ -113,13 +110,10 @@ jobs:
 
       - name: Publish packages (dependency order)
         run: |
-          # Public @sentropic/geo-* packages only, in dependency order.
+          # Public @sentropic/geo-* packages only, in dependency order (ADR-0017).
           # @sentropic/geo-site (apps/site) is private and not published.
-          npm publish --workspace @sentropic/geo-core         --access public
-          npm publish --workspace @sentropic/geo-acquire      --access public
-          npm publish --workspace @sentropic/geo-api          --access public
-          npm publish --workspace @sentropic/geo-source-ca-qc --access public
-          npm publish --workspace @sentropic/geo-source-ca    --access public
-          npm publish --workspace @sentropic/geo-source-fr    --access public
-          npm publish --workspace @sentropic/geo-cli          --access public
-          npm publish --workspace @sentropic/geo-ui-svelte    --access public
+          npm publish --workspace @sentropic/geo-core             --access public
+          npm publish --workspace @sentropic/geo                  --access public
+          npm publish --workspace @sentropic/geo-sources-americas --access public
+          npm publish --workspace @sentropic/geo-sources-europe   --access public
+          npm publish --workspace @sentropic/geo-ui-svelte        --access public

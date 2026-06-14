@@ -1,11 +1,12 @@
 #!/bin/sh
 # Entrypoint for the @sentropic/geo image.
 #
-# Bridges the fixed data path that packages/geo-api/dist/server.js expects
-# (/app/data/normalized, resolved relative to the compiled server module) to the
-# configurable $GEO_DATA_DIR (default /data/normalized — the mounted PVC). This
-# lets the documented server CMD work unchanged while the data location stays
-# env-driven, without modifying package source.
+# Bridges the fixed data path that packages/geo/dist/api/server.js expects
+# (/app/data/normalized, resolved relative to the compiled server module — note
+# the module now sits one directory deeper, under dist/api/, but resolves the
+# same /app/data/normalized) to the configurable $GEO_DATA_DIR (default
+# /data/normalized — the mounted PVC). This lets the documented server CMD work
+# unchanged while the data location stays env-driven, without modifying source.
 #
 # For non-server commands (e.g. `geo fetch … --out /data/normalized`) the
 # symlink is harmless; those commands target $GEO_DATA_DIR explicitly.

@@ -47,6 +47,36 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ---
 
+## Refactor packages 16→5 (`refactor/packages-v2`, ADR-0017/0018) — ✅ exécuté (363 tests)
+
+Consolidation de la taxonomie 16→**5 packages** (branche `refactor/packages-v2`, non mergée,
+rien publié) — voir [ADR-0017](decisions.md) (décision) + [ADR-0018](decisions.md) (exécution).
+
+- **Phase A** ✅ (`20bf694`) — `geo-core` : types `FieldMap`/`recipe?`/`SourceRegistry`/`NormalizerFn`
+  + `featuresToCollection` déplacé ici (casse le cycle recettes→engine).
+- **Phase B** ✅ (`ca935ff`) — `@sentropic/geo` créé ; `geo-acquire`+`geo-storage` fusionnés dedans.
+- **Phase C** ✅ — `geo-api`+`geo-cli`+`geo-sources` repliés dans `geo` (`src/{api,cli,catalog,normalize}`) ;
+  **inventaire injecté** (`buildInventory(registries)`, `createApp(provider, inventory?)`,
+  `buildRegistry(registries)`) ; dispatch de recette dans `fetch.ts` ; continents chargés par **import
+  dynamique optionnel** ; normaliseur générique `fieldMap` (factory livrée, conversion des recettes différée) ;
+  `geo-api`/`geo-cli`/`geo-sources` supprimés. Tests moteur sur **fixture hermétique** in-`geo`.
+- **Phase D** ✅ — libs continent `@sentropic/geo-sources-americas` (6 CA/QC) + `@sentropic/geo-sources-europe`
+  (3 FR) : registres `{ manifests, recipes }` ; ré-exports nommés conservés (`QC_MUNICIPALITIES`,
+  `fetchQcCivicAddresses`, `parseQcCivicAddresses`, `fetchRoleXml`) ; recettes verbatim (pas de fieldMap) ;
+  9 `geo-source-*` supprimés ; test d'intégration pipeline ca-qc réel relocalisé dans americas.
+- **Phase E** ✅ — `apps/site` (`buildInventory([americas, europe])`), scripts racine, `npm-publish.yml`
+  (5 packages), `pages.yml`, `Dockerfile`/entrypoint/`job-fetch` (chemins `dist/cli/cli.js` + `dist/api/server.js`),
+  docs (ce backlog + ADR-0018).
+
+**5 packages cibles** : `geo-core`, `geo`, `geo-ui-svelte`, `geo-sources-americas`, `geo-sources-europe`.
+**Différé (réversible)** : conversion des normaliseurs simples en `fieldMap` (recettes conservées telles
+quelles). `npm run verify` EXIT=0, **363 tests**, 0 cycle topo. Rien mergé/publié (branche dédiée).
+
+> **MAJ npm-publish** : la liste passe de 8 à **5 packages** ; le « npm Trusted Publishing » ci-dessus
+> vise désormais ces 5 (`geo-core`, `geo`, `geo-sources-americas`, `geo-sources-europe`, `geo-ui-svelte`).
+
+---
+
 ## P0 — Vertical slice : municipalités du Québec servies par l'API  🟡
 
 But : `geo fetch ca-qc/sda#qc-municipalites` → GeoJSON normalisé WGS84 → `geo-api` (OGC Features,
