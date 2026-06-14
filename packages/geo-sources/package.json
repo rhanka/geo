@@ -1,0 +1,31 @@
+{
+  "name": "@sentropic/geo-sources",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Inventaire agrégé des sources géographiques @sentropic/geo (registre typé : id, juridiction, kind, licence, datasets) — capitalisé depuis le GeoSourceInventory d'immo (ADR-0013).",
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/rhanka/geo.git", "directory": "packages/geo-sources" },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/geo-core": "^0.1.0",
+    "@sentropic/geo-source-ca-qc": "^0.1.0",
+    "@sentropic/geo-source-ca": "^0.1.0",
+    "@sentropic/geo-source-ca-qc-civic": "^0.1.0",
+    "@sentropic/geo-source-ca-qc-constraints": "^0.1.0",
+    "@sentropic/geo-source-ca-qc-cadastre": "^0.1.0",
+    "@sentropic/geo-source-ca-postal": "^0.1.0",
+    "@sentropic/geo-source-fr": "^0.1.0",
+    "@sentropic/geo-source-fr-postal": "^0.1.0",
+    "@sentropic/geo-source-fr-stat": "^0.1.0"
+  }
+}
