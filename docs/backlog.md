@@ -12,9 +12,9 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ---
 
-## État (2026-06-14) — backlog autonome ÉPUISÉ ✅ (352 tests, PR rhanka/geo#1)
+## État (2026-06-14) — code mergé sur `main`, Pages déployé ; npm + DNS user-gated (352 tests)
 
-**Livré** (tout poussé sur `scaffold/geo-v1`, CI verte) :
+**Livré** (tout mergé sur **`main`** `10d2147`, CI verte) :
 - **Lib** : `geo-core` (modèle/standards/licences/Source Manifest/référentiel), `geo-acquire`
   (download + gate licence + cache/checksum + GDAL bulk + `.7z` + CSV + `referentialNormalizer`),
   `geo-api` (OGC API – Features + `/sources` + provider fichier/S3 + CORS), `geo-cli`, `geo-storage`
@@ -26,14 +26,18 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
   binning délégué à `@sentropic/dataviz-core@0.4.37` (choroplèthe/hexbin/cluster/density, inc.2b/2c,
   ADR-0016 ; glue locale retirée, équivalence prouvée). Page `/carte` + `/sources`. Consensus
   dataviz/DS/immo tranché (ADR-0014/0015/0016).
-- **Déploiement** : Dockerfile + `deploy/k8s/` (API S3) + workflows CI/npm-publish/docker-publish +
-  **GitHub Pages** (`pages.yml`, apex) + PR poc-k8s `k8s-ops#30`.
+- **Déploiement** : `main` mergé (`10d2147`) ; **GitHub Pages** activé + **déployé** (build full-workspace
+  corrigé, domaine custom `geo.sent-tech.ca` posé) ; poc-k8s **#30 mergé** (tenant geo : namespace + netpol) ;
+  Dockerfile + `deploy/k8s/` (API S3) + workflows CI / npm-publish (OIDC) / docker-publish (tag `v*` = npm + image).
 - **Gouvernance** : ADR-0001→0015, registre de licences, ce backlog.
 
 **Reste — dépend de TOI (user-gated)** :
-- 🔑 **Publication npm** : créer le token/scope (`@sentropic`) → la CI `npm-publish.yml` (tag-driven) publie.
-- 🌐 **Hébergement live** : merge `scaffold/geo-v1`→`main` (déclenche Pages + CI), DNS `geo.sent-tech.ca`→Pages
-  + `api.geo.sent-tech.ca`→LB, et amender l'ingress poc-k8s (`k8s-ops#30`) sur le sous-domaine API.
+- 🔑 **npm Trusted Publishing** : org `@sentropic` existe déjà (dataviz) ; ajouter le trusted publisher
+  (GitHub Actions · `rhanka/geo` · `npm-publish.yml`) pour les 8 packages `@sentropic/geo-*`. Puis je pousse
+  `git tag v0.1.0` → publie les 8 packages npm **+** l'image `geo-api` (un seul tag). Versions déjà à 0.1.0.
+- 🌐 **DNS** (zone `sent-tech.ca`) : `geo.sent-tech.ca` → CNAME `rhanka.github.io` (site, HTTPS auto ensuite) ;
+  `api.geo.sent-tech.ca` → A/CNAME vers le LoadBalancer du cluster poc-k8s (ingress Traefik du tenant geo).
+- ☸️ **Appliquer `deploy/k8s/`** sur le tenant geo (après image publiée + DNS api) — accès `kubectl` ou GitOps poc-k8s.
 - ✅ GO pour qu'immo bascule `SignauxMapView`→`GeoMap` (immo attend ton feu vert).
 
 **Reste — polish optionnel (autonome, faible priorité)** :
