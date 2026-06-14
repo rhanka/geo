@@ -7,6 +7,8 @@ export const VERSION = "0.1.0";
 
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as GeoMapLegend } from "./GeoMapLegend.svelte";
+export { default as GeoSearch, foldText } from "./GeoSearch.svelte";
+export { default as GeoDetailPanel } from "./GeoDetailPanel.svelte";
 export { default as DatasetCard } from "./DatasetCard.svelte";
 export { default as DatasetCatalog } from "./DatasetCatalog.svelte";
 export { default as AttributionBar } from "./AttributionBar.svelte";
@@ -17,6 +19,12 @@ export type {
   GeoMapProps,
 } from "./GeoMap.svelte";
 export type { GeoMapLegendProps } from "./GeoMapLegend.svelte";
+export type { GeoSearchProps } from "./GeoSearch.svelte";
+export type {
+  GeoDetailField,
+  GeoDetailSchema,
+  GeoDetailPanelProps,
+} from "./GeoDetailPanel.svelte";
 export type { DatasetCardProps } from "./DatasetCard.svelte";
 export type { AttributionBarProps } from "./AttributionBar.svelte";
 
