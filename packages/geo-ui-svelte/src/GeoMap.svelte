@@ -29,12 +29,36 @@
     geometry: Geometry | null;
   }
 
+  /**
+   * Which kind of layer `GeoMap` renders.
+   *
+   *  - `"choropleth"` (default) — the existing admin-polygon behaviour: fill /
+   *    outline / point layers driven by `categories` or a value-binned `step`.
+   *  - `"hexbin" | "cluster" | "density"` — POINT-aggregation layers for point
+   *    inputs (e.g. immo signals), each backed by the matching
+   *    `@sentropic/dataviz-core` builder and rendered natively in MapLibre.
+   */
+  export type GeoLayerKind = "choropleth" | "hexbin" | "cluster" | "density";
+
   export interface GeoMapProps {
     /**
      * GeoJSON FeatureCollection to render (WGS84, RFC 7946). When omitted or
      * empty, the map shows a French empty-state overlay instead of layers.
      */
     data?: FeatureCollection;
+    /** Which layer kind to render. Default `"choropleth"` (current behaviour). */
+    layerKind?: GeoLayerKind;
+    /**
+     * Point-aggregation tuning (used when `layerKind` is `hexbin`/`cluster`/
+     * `density`). `cellSize`/`radius` are in degrees; `valueKey` weights the
+     * cells/clusters; `ramp` colours hexbin/cluster fills.
+     */
+    pointLayer?: {
+      valueKey?: string;
+      cellSize?: number;
+      radius?: number;
+      ramp?: readonly string[];
+    };
     /**
      * Categories driving the data-driven fill colour. Joined to features via
      * `categoryKey`. When provided, the fill uses a MapLibre `match` expression.
@@ -79,9 +103,10 @@
   import GeoMapLegend from "./GeoMapLegend.svelte";
   import {
     binsToStepExpression,
-    computeChoroplethBins,
+    computeChoroplethBinsFromModel,
     DEFAULT_CHOROPLETH_RAMP,
   } from "./choropleth.js";
+  import { buildPointLayer, type PointLayerKind } from "./point-layers.js";
 
   /**
    * Resolve a `var(--st-…, #fallback)` (or plain) colour string to a concrete
@@ -103,6 +128,8 @@
 
   let {
     data,
+    layerKind = "choropleth",
+    pointLayer,
     categories,
     categoryKey = "category",
     valueKey,
@@ -123,9 +150,15 @@
   /** True when there is nothing to draw → show the French empty-state. */
   const isEmpty = $derived(!data || data.features.length === 0);
 
-  /** Whether the value-driven choropleth path is active (no explicit categories). */
+  /** True for the point-aggregation kinds (hexbin/cluster/density). */
+  const isPointLayer = $derived(layerKind !== "choropleth");
+
+  /**
+   * Whether the value-driven choropleth path is active: the default polygon
+   * layer kind, with a `valueKey` and no explicit `categories`.
+   */
   const isChoropleth = $derived(
-    !!valueKey && !(categories && categories.length > 0),
+    !isPointLayer && !!valueKey && !(categories && categories.length > 0),
   );
 
   /** Sequential ramp resolved to concrete colours (CSS vars → hex). */
@@ -140,7 +173,7 @@
   $effect(() => {
     bins =
       isChoropleth && data && valueKey
-        ? computeChoroplethBins(data.features, valueKey, {
+        ? computeChoroplethBinsFromModel(data, valueKey, {
             count: binCount,
             method: binMethod,
             ramp: resolvedRamp,
@@ -242,7 +275,7 @@
           return match;
         }
         if (valueKey && data) {
-          const computed = computeChoroplethBins(data.features, valueKey, {
+          const computed = computeChoroplethBinsFromModel(data, valueKey, {
             count: binCount,
             method: binMethod,
             ramp: DEFAULT_CHOROPLETH_RAMP.map(resolveColor),
@@ -298,7 +331,38 @@
       map.on("load", () => {
         if (!map) return;
 
-        if (!isEmpty && data) {
+        if (!isEmpty && data && isPointLayer) {
+          // POINT-aggregation kinds (hexbin/cluster/density). Each consumes the
+          // matching `@sentropic/dataviz-core` builder via `buildPointLayer`,
+          // which returns a derived GeoJSON source + native MapLibre layer specs
+          // (NO deck.gl yet). The raw points are not drawn — only the aggregate.
+          const { sourceId, source, layers } = buildPointLayer(
+            layerKind as PointLayerKind,
+            data,
+            layerKind,
+            {
+              ...(pointLayer?.valueKey === undefined
+                ? {}
+                : { valueKey: pointLayer.valueKey }),
+              ...(pointLayer?.cellSize === undefined
+                ? {}
+                : { cellSize: pointLayer.cellSize }),
+              ...(pointLayer?.radius === undefined
+                ? {}
+                : { radius: pointLayer.radius }),
+              ramp: (pointLayer?.ramp ?? DEFAULT_CHOROPLETH_RAMP).map(
+                resolveColor,
+              ),
+            },
+          );
+          map.addSource(sourceId, {
+            type: "geojson",
+            data: source,
+          } as unknown as import("maplibre-gl").SourceSpecification);
+          for (const layer of layers) {
+            map.addLayer(layer as import("maplibre-gl").LayerSpecification);
+          }
+        } else if (!isEmpty && data) {
           // Our RFC-7946 FeatureCollection is structurally a maplibre GeoJSON
           // source `data`; cast the whole source spec through `unknown` so this
           // package's tsconfig need not pull in the global `GeoJSON` namespace.

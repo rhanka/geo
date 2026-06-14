@@ -5,9 +5,11 @@
  */
 
 import { describe, expect, it } from "vitest";
+import type { FeatureCollection } from "@sentropic/geo-core";
 import {
   binsToStepExpression,
   computeChoroplethBins,
+  computeChoroplethBinsFromModel,
   formatBinRangeFr,
   numericValues,
 } from "./choropleth.js";
@@ -15,6 +17,29 @@ import {
 /** Wrap raw numbers as minimal feature-like objects for the helper. */
 function feats(...values: Array<number | null | string>) {
   return values.map((value) => ({ properties: { value } }));
+}
+
+/** Wrap raw numbers as a polygon FeatureCollection (one feature per value). */
+function fc(...values: Array<number | null | string>): FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: values.map((value, i) => ({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [i, 0],
+            [i + 1, 0],
+            [i + 1, 1],
+            [i, 1],
+            [i, 0],
+          ],
+        ],
+      },
+      properties: { value },
+    })),
+  };
 }
 
 const RAMP = ["c0", "c1", "c2", "c3", "c4"];
@@ -147,5 +172,70 @@ describe("formatBinRangeFr", () => {
     // fr-CA groups thousands with a (narrow) no-break space; assert structure.
     expect(label).toContain("–");
     expect(label.replace(/\s/g, "")).toBe("1000–5000");
+  });
+});
+
+describe("computeChoroplethBinsFromModel — builder-backed", () => {
+  it("matches computeChoroplethBins (identity rollup) for the same values", () => {
+    const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const direct = computeChoroplethBins(feats(...values), "value", {
+      count: 5,
+      method: "quantile",
+      ramp: RAMP,
+    });
+    const viaBuilder = computeChoroplethBinsFromModel(fc(...values), "value", {
+      count: 5,
+      method: "quantile",
+      ramp: RAMP,
+    });
+    expect(viaBuilder).toEqual(direct);
+    // Same bin count and boundary shape (the deliverable's parity requirement).
+    expect(viaBuilder).toHaveLength(5);
+    expect(viaBuilder!.map((b) => b.min)).toEqual(direct!.map((b) => b.min));
+    expect(viaBuilder!.map((b) => b.max)).toEqual(direct!.map((b) => b.max));
+  });
+
+  it("matches for equal-interval too", () => {
+    const values = [0, 10, 50, 90, 100];
+    const direct = computeChoroplethBins(feats(...values), "value", {
+      count: 4,
+      method: "equal",
+      ramp: RAMP,
+    });
+    const viaBuilder = computeChoroplethBinsFromModel(fc(...values), "value", {
+      count: 4,
+      method: "equal",
+      ramp: RAMP,
+    });
+    expect(viaBuilder).toEqual(direct);
+  });
+
+  it("aggregates per region (sum) before classifying", () => {
+    // Two regions: A → 1+2+3 = 6, B → 100. Binning runs over [6, 100].
+    const data: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [1, 2, 3, 100].map((value, i) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [i, 0] },
+        properties: { region: value === 100 ? "B" : "A", value },
+      })),
+    };
+    const bins = computeChoroplethBinsFromModel(data, "value", {
+      regionKey: "region",
+      aggregation: "sum",
+      count: 5,
+      method: "equal",
+      ramp: RAMP,
+    });
+    expect(bins).toBeDefined();
+    // Classified over the two region totals [6, 100], not the four raw values.
+    expect(bins![0]!.min).toBe(6);
+    expect(bins![bins!.length - 1]!.max).toBe(100);
+  });
+
+  it("returns undefined when every region value is equal (no gradient)", () => {
+    expect(
+      computeChoroplethBinsFromModel(fc(7, 7, 7), "value", { ramp: RAMP }),
+    ).toBeUndefined();
   });
 });

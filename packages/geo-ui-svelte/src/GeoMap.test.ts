@@ -81,6 +81,31 @@ describe("GeoMap", () => {
     expect(document.body.textContent).not.toContain("Aucune donnée à afficher");
   });
 
+  it("mounts a point-aggregation layerKind without throwing", () => {
+    const points: FeatureCollection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [-71.2, 46.8] },
+          properties: { weight: 3 },
+        },
+        {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [-73.5, 45.5] },
+          properties: { weight: 1 },
+        },
+      ],
+    };
+    for (const layerKind of ["hexbin", "cluster", "density"] as const) {
+      expect(() =>
+        render(GeoMap, {
+          props: { data: points, layerKind, pointLayer: { valueKey: "weight" } },
+        }),
+      ).not.toThrow();
+    }
+  });
+
   it("applies the height prop to the wrapper", () => {
     const { container } = render(GeoMap, { props: { height: "640px" } });
     const wrap = container.querySelector(".geo-map-wrap") as HTMLElement;
