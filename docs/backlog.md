@@ -12,6 +12,35 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ---
 
+## État (2026-06-14) — backlog autonome ÉPUISÉ ✅ (342 tests, PR rhanka/geo#1)
+
+**Livré** (tout poussé sur `scaffold/geo-v1`, CI verte) :
+- **Lib** : `geo-core` (modèle/standards/licences/Source Manifest/référentiel), `geo-acquire`
+  (download + gate licence + cache/checksum + GDAL bulk + `.7z` + CSV + `referentialNormalizer`),
+  `geo-api` (OGC API – Features + `/sources` + provider fichier/S3 + CORS), `geo-cli`, `geo-storage`
+  (S3 Scaleway), `geo-sources` (inventaire 13 sources), `geo-ui-svelte`, `apps/site`.
+- **Données / 3 pays** : QC (SDA régions/MRC/**municipalités**, StatCan CSD, cadastre, CPTAQ/BDZI/GRHQ,
+  terrAPI+MAMH), Canada (provinces, FSA postal), France (IGN ADMIN EXPRESS, INSEE COG, La Poste).
+  Capitalisation **immo** complète (ADR-0013). Données → **S3** (`sentropic-geo`, ADR-0012).
+- **Carte WebGL** (`GeoMap`, MapLibre v5) : MVP + choroplèthe + légende + recherche + panneau détail
+  (4 incréments / 5). Page `/carte` + `/sources`. Consensus dataviz/DS/immo tranché (ADR-0014/0015).
+- **Déploiement** : Dockerfile + `deploy/k8s/` (API S3) + workflows CI/npm-publish/docker-publish +
+  **GitHub Pages** (`pages.yml`, apex) + PR poc-k8s `k8s-ops#30`.
+- **Gouvernance** : ADR-0001→0015, registre de licences, ce backlog.
+
+**Reste — dépend de TOI (user-gated)** :
+- 🔑 **Publication npm** : créer le token/scope (`@sentropic`) → la CI `npm-publish.yml` (tag-driven) publie.
+- 🌐 **Hébergement live** : merge `scaffold/geo-v1`→`main` (déclenche Pages + CI), DNS `geo.sent-tech.ca`→Pages
+  + `api.geo.sent-tech.ca`→LB, et amender l'ingress poc-k8s (`k8s-ops#30`) sur le sous-domaine API.
+- ✅ GO pour qu'immo bascule `SignauxMapView`→`GeoMap` (immo attend ton feu vert).
+
+**Reste — polish optionnel (autonome, faible priorité)** :
+- inc.4 basemap **PMTiles** auto-hébergé (le MVP marche sur fond tokenisé) ; inc.5 **projection routière**
+  deck.gl (bloqué : pas de source de routes — nécessite une couche RRN/Adresses QC d'abord) ;
+  `/sources` dans l'OpenAPI ; variante `DatasetCard` pour le catalogue de sources.
+
+---
+
 ## P0 — Vertical slice : municipalités du Québec servies par l'API  🟡
 
 But : `geo fetch ca-qc/sda#qc-municipalites` → GeoJSON normalisé WGS84 → `geo-api` (OGC Features,
