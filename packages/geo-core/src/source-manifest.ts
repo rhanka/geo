@@ -8,6 +8,7 @@ import type { AdminLevel, CountryCode, SubdivisionCode } from "./admin.js";
 import type { CrsCode } from "./crs.js";
 import type { License, LicenseId } from "./license.js";
 import { resolveLicense } from "./license.js";
+import type { FieldMap } from "./normalize.js";
 
 export type DatasetFormat =
   | "geojson"
@@ -57,6 +58,21 @@ export interface DatasetManifest {
   checksum?: Checksum;
   /** Access level; defaults to "open". */
   access?: AccessLevel;
+  /**
+   * Declarative field-mapping for the generic, code-free normalizer (ADR-0017).
+   * When present, the engine can normalize this dataset without a bespoke
+   * recipe by mapping raw properties onto standard fields. Mutually informative
+   * with {@link recipe}: a dataset uses one or the other.
+   */
+  fieldMap?: FieldMap;
+  /**
+   * Recipe id referencing a bespoke normalizer in the source library's
+   * {@link import("./normalize.js").SourceRegistry} `recipes`, for sources the
+   * generic field-map cannot express (e.g. StatCan CSD name-join, `.7z` bulk,
+   * XML fetchers). The engine resolves `recipes[recipe]` and dispatches it to
+   * the acquisition slot matching the dataset's `format`.
+   */
+  recipe?: string;
 }
 
 export interface SourceManifest {

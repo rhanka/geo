@@ -14,3 +14,4 @@ export * from "./admin.js";
 export * from "./license.js";
 export * from "./source-manifest.js";
 export * from "./feature.js";
+export * from "./normalize.js";
