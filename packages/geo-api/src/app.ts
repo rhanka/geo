@@ -16,6 +16,13 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
+import {
+  allSources,
+  byCountry,
+  byKind,
+  bySourceId,
+  type InventoryEntry,
+} from "@sentropic/geo-sources";
 
 import { buildOpenApi } from "./openapi.js";
 import {
@@ -95,6 +102,12 @@ export function createApp(provider: FeatureProvider): Hono {
         type: MEDIA_JSON,
         title: "Feature collections",
       },
+      {
+        href: `${base}/sources`,
+        rel: "related",
+        type: MEDIA_JSON,
+        title: "Source catalog (inventory)",
+      },
     ];
     return c.json({
       title: "@sentropic/geo — OGC API – Features",
@@ -106,6 +119,40 @@ export function createApp(provider: FeatureProvider): Hono {
 
   // ── Conformance ─────────────────────────────────────────────────────────────
   app.get("/conformance", (c) => c.json({ conformsTo: [...CONFORMANCE_CLASSES] }));
+
+  // ── Source catalog (inventory) ───────────────────────────────────────────────
+  // Distinct from the served `/collections`: this describes the upstream geo
+  // sources (jurisdiction, license, attribution, datasets) from the typed
+  // `@sentropic/geo-sources` INVENTORY, with optional `?country=`/`?kind=`
+  // filters. Static metadata — no provider/datasource access.
+  app.get("/sources", (c) => {
+    const country = c.req.query("country");
+    const kind = c.req.query("kind");
+    let sources: InventoryEntry[] = country ? byCountry(country) : allSources();
+    if (kind !== undefined) {
+      const ofKind = new Set(byKind(kind as InventoryEntry["kind"]));
+      sources = sources.filter((s) => ofKind.has(s));
+    }
+    return c.json({
+      numberMatched: sources.length,
+      numberReturned: sources.length,
+      sources,
+    });
+  });
+
+  // ── Single source ────────────────────────────────────────────────────────────
+  // Source ids carry a slash (e.g. `ca-qc/sda`), so a single `:sourceId` param
+  // can't capture them. A `{.+}` regex param matches the rest of the path,
+  // accepting both raw (`/sources/ca-qc/sda`) and percent-encoded
+  // (`/sources/ca-qc%2Fsda`) ids.
+  app.get("/sources/:sourceId{.+}", (c) => {
+    const id = decodeURIComponent(c.req.param("sourceId"));
+    const source = bySourceId(id);
+    if (!source) {
+      return c.json({ code: "NotFound", description: `Unknown source: ${id}` }, 404);
+    }
+    return c.json(source);
+  });
 
   // ── OpenAPI definition ───────────────────────────────────────────────────────
   app.get("/api", (c) => {

@@ -69,17 +69,22 @@ export function buildProgram(deps: ProgramDeps = {}): Command {
     .description("Acquire, normalize and serve licensed geographic data.")
     .version(VERSION);
 
-  // geo sources list | show <sourceId>
-  const sources = program.command("sources").description("List/inspect registered sources.");
+  // geo sources list [--country <cc>] [--kind <kind>] | show <sourceId>
+  const sources = program.command("sources").description("List/inspect the source catalog.");
   sources
     .command("list")
-    .description("List registered sources.")
-    .action(() => {
-      out(formatSourceList(listSources()));
+    .description("List the geo source catalog (from @sentropic/geo-sources).")
+    .option("--country <cc>", "filter by ISO 3166-1 alpha-2 country code (e.g. CA, FR)")
+    .option("--kind <kind>", "filter by source kind (e.g. administrative, postal, statistical)")
+    .action((opts: { country?: string; kind?: string }) => {
+      const filters: { country?: string; kind?: string } = {};
+      if (opts.country !== undefined) filters.country = opts.country;
+      if (opts.kind !== undefined) filters.kind = opts.kind;
+      out(formatSourceList(listSources(filters)));
     });
   sources
     .command("show <sourceId>")
-    .description("Inspect a registered source.")
+    .description("Inspect a source from the catalog.")
     .action((sourceId: string) => {
       out(formatSourceDetail(showSource(sourceId)));
     });
