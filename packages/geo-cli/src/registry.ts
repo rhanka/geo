@@ -5,7 +5,7 @@
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
-import type { Normalizer } from "@sentropic/geo-acquire";
+import type { Normalizer } from "@sentropic/geo-core";
 import { registerSource as registerCaQc } from "@sentropic/geo-source-ca-qc";
 
 /** A registered source: its manifest plus the per-dataset normalizers. */

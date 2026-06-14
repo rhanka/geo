@@ -34,7 +34,7 @@ import type {
   ItemsResult,
   ServedFeature,
 } from "../provider.js";
-import type { Store } from "@sentropic/geo-storage";
+import type { Store } from "@sentropic/geo/storage";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";

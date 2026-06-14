@@ -18,7 +18,7 @@
  * so callers and tests stay fully hermetic.
  */
 
-import { sha256Hex } from "@sentropic/geo-acquire";
+import { sha256Hex } from "@sentropic/geo";
 import type { SourceManifest } from "@sentropic/geo-core";
 
 import { parseQcCivicAddresses, type QcCivicAddresses } from "./parser.js";

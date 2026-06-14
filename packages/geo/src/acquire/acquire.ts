@@ -21,7 +21,7 @@ import type {
 // Type-only import: geo-acquire writes through the Store *interface* and never
 // pulls in @aws-sdk. `verbatimModuleSyntax` + `import type` guarantee this is
 // erased at build time, so no runtime dependency on geo-storage is emitted.
-import type { Store } from "@sentropic/geo-storage";
+import type { Store } from "../storage/index.js";
 import {
   WGS84,
   attributionLine,

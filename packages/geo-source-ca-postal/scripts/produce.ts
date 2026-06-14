@@ -22,7 +22,7 @@ import { stat } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { acquire, writeNormalized } from "@sentropic/geo-acquire";
+import { acquire, writeNormalized } from "@sentropic/geo/acquire";
 
 import { DATASET_FSA, manifest } from "../src/manifest.js";
 import { fsaReferentialNormalizer } from "../src/normalizers.js";

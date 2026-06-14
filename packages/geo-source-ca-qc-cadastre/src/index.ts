@@ -21,7 +21,7 @@
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
-import type { Normalizer } from "@sentropic/geo-acquire";
+import type { Normalizer } from "@sentropic/geo-core";
 
 import {
   manifest as cadastreManifest,

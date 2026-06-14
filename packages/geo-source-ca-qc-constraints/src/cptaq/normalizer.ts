@@ -28,7 +28,7 @@ import type {
   GeoJsonProperties,
 } from "@sentropic/geo-core";
 import { isFeatureCollection, makeGeoId } from "@sentropic/geo-core";
-import { featuresToCollection, type Normalizer } from "@sentropic/geo-acquire";
+import { featuresToCollection, type Normalizer } from "@sentropic/geo-core";
 
 /** Constraint tag stamped on every CPTAQ feature. */
 export const CPTAQ_CONSTRAINT = "cptaq-zone-agricole";

@@ -24,7 +24,7 @@
  * injectable (defaults to Node's global `fetch`) so tests stay hermetic.
  */
 
-import { sha256Hex } from "@sentropic/geo-acquire";
+import { sha256Hex } from "@sentropic/geo";
 import type { SourceManifest } from "@sentropic/geo-core";
 
 /** Globally unique source id for the MAMH rôle source. */

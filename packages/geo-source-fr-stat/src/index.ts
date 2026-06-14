@@ -9,7 +9,7 @@
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
-import type { CsvNormalizer } from "@sentropic/geo-acquire";
+import type { CsvNormalizer } from "@sentropic/geo-core";
 
 import { DATASET_COMMUNES, manifest } from "./manifest.js";
 import { communesNormalizer } from "./normalizers.js";

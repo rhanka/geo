@@ -19,7 +19,7 @@ import type {
   ReferentialFeatureCollection,
 } from "@sentropic/geo-core";
 import { makeGeoId } from "@sentropic/geo-core";
-import type { CsvNormalizer } from "@sentropic/geo-acquire";
+import type { CsvNormalizer } from "@sentropic/geo-core";
 
 import { CP_COLUMNS } from "./manifest.js";
 

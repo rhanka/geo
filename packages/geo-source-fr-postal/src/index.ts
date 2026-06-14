@@ -9,7 +9,7 @@
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
-import type { CsvNormalizer } from "@sentropic/geo-acquire";
+import type { CsvNormalizer } from "@sentropic/geo-core";
 
 import { DATASET_CODES_POSTAUX, manifest } from "./manifest.js";
 import { codesPostauxNormalizer } from "./normalizers.js";

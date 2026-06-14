@@ -40,7 +40,8 @@ import {
   type DatasetManifest,
   type NormalizedDataset,
 } from "@sentropic/geo-core";
-import { writeNormalized, type NormalizeContext } from "@sentropic/geo-acquire";
+import { writeNormalized } from "@sentropic/geo/acquire";
+import type { NormalizeContext } from "@sentropic/geo-core";
 
 import {
   ADMIN_EXPRESS_7Z_URL,

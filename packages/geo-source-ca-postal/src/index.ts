@@ -17,7 +17,7 @@ import type {
   ReferentialFeatureCollection,
   SourceManifest,
 } from "@sentropic/geo-core";
-import type { NormalizeContext } from "@sentropic/geo-acquire";
+import type { NormalizeContext } from "@sentropic/geo-core";
 
 import { DATASET_FSA, manifest } from "./manifest.js";
 import { fsaReferentialNormalizer } from "./normalizers.js";
