@@ -15,6 +15,7 @@ on:
     paths:
       - "apps/site/**"
       - "packages/geo-ui-svelte/**"
+      - "packages/geo-sources/**"
       - "packages/geo-core/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -54,10 +55,13 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      # Build the site's workspace dependencies first (geo-core feeds the
-      # license model used by the catalog; geo-ui-svelte the components).
-      - name: Build dependencies
-        run: npm run build -w @sentropic/geo-core -w @sentropic/geo-ui-svelte
+      # Build ALL workspace packages first, in topological order, so every
+      # dependency the site resolves to dist/ exists before SSR/prerender.
+      # The site imports @sentropic/geo-sources (the /sources catalogue), which
+      # aggregates the geo-source-* packages; the previous partial list
+      # (geo-core + geo-ui-svelte) missed it → ERR_MODULE_NOT_FOUND on prerender.
+      - name: Build workspace packages (topological order)
+        run: npm run build
 
       - name: Build site
         run: npm --workspace @sentropic/geo-site run build
