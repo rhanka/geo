@@ -185,6 +185,25 @@ polygones → `geo-source-ca-qc` ; adresses/role/inventory/contraintes → datas
 **Garde-fous** : anti-PII (Loi 25), anti-invention (vérifier sources/endpoints réels), **OSM = ODbL →
 recettes/URLs seulement, ne pas embarquer la donnée OSM**.
 
+## ADR-0014 — Composant carte dataviz géo WebGL (geo) + frontière dataviz/geo · accepted (revisit) · 2026-06-14
+
+**Mandat user** : chantier dataviz géo de `geo.sent-tech.ca` confié à **geo**. **Frontière réversible**
+(à confirmer avec le conducteur dataviz via h2a) : **dataviz** = primitives de rendu WebGL génériques ;
+**geo** = le **composant carte WebGL géo** (`GeoMap` dans `@sentropic/geo-ui-svelte`) — renderer WebGL
+(classe deck.gl) pour les géographies (basemap vectoriel + couches admin + données QC) + dataviz géo
+(choroplèthe, **projection de données sur features linéaires type routes**), **remplaçant
+Leaflet/MapLibre-raster**. Stylé par le design-system ; `graphify` = référence rendu WebGL fluide.
+**Coordination h2a** : proposé à dataviz (confirm), répondu au thread UI/carto immo, requests de
+composants relayés (drumbeat) au design-system.
+**Spec carte (feedback user sur SignauxMapView immo)** : labels **FR** ('3851 signaux') ; **recherche
+en haut** façon graphify (pas dans le menu) ; **légende/filtre toujours visible** (union des types),
+labels FR lisibles — le composant est **ONTOLOGIE-AGNOSTIQUE** (immo fournit catégories
+labellisées+colorées + schéma de détail) ; **panneau détail dépliable** (citation + lien PDF + métadonnées
++ choix des niveaux) ; richesse « comme la carte de Steve ». Composants DS natifs (search-on-top,
+légende+bulle, chrome) à fournir par le design-system.
+**Décision réversible (en l'absence du user)** : on démarre **spec → double-revue 4.8 → build → publish →
+deploy (GitHub Pages site + k8s API)** côté geo sans bloquer sur la confirmation async dataviz/DS.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
