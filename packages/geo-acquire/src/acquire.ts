@@ -15,6 +15,7 @@ import type {
   AdminFeatureCollection,
   CollectionMeta,
   NormalizedDataset,
+  ReferentialFeatureCollection,
   SourceManifest,
 } from "@sentropic/geo-core";
 import {
@@ -25,6 +26,7 @@ import {
 } from "@sentropic/geo-core";
 
 import { arcgisQueryUrl } from "./arcgis.js";
+import { type CsvNormalizer, parseCsv } from "./csv.js";
 import { type DownloadOptions, download, sha256Hex } from "./download.js";
 import {
   DEFAULT_SIMPLIFY_TOLERANCE,
@@ -39,6 +41,12 @@ import { type NormalizeContext, type Normalizer, geojsonPassthrough } from "./no
 export interface AcquireOptions extends DownloadOptions {
   /** Override the normalizer. Defaults to {@link geojsonPassthrough}. */
   normalizer?: Normalizer;
+  /**
+   * CSV normalizer, **required** when the dataset's format is `csv`: maps parsed
+   * rows to a {@link ReferentialFeatureCollection}. `acquire` throws if a CSV
+   * dataset is acquired without one.
+   */
+  csvNormalizer?: CsvNormalizer;
   /** Injected GDAL command runner for bulk formats (tests). */
   gdalRunner?: CommandRunner;
 }
@@ -71,7 +79,7 @@ export async function acquire(
   manifest: SourceManifest,
   datasetId: string,
   opts: AcquireOptions = {},
-): Promise<NormalizedDataset> {
+): Promise<NormalizedDataset<AdminFeatureCollection | ReferentialFeatureCollection>> {
   const dataset = getDataset(manifest, datasetId);
   if (!dataset) {
     throw new Error(
@@ -89,19 +97,69 @@ export async function acquire(
   if (opts.fetchImpl !== undefined) downloadOpts.fetchImpl = opts.fetchImpl;
   if (opts.headers !== undefined) downloadOpts.headers = opts.headers;
 
-  const raw = GDAL_FORMATS.has(dataset.format)
-    ? await acquireRawViaGdal(manifest, datasetId, downloadOpts, opts.gdalRunner)
-    : await acquireRawViaJson(manifest, datasetId, downloadOpts);
-
-  const normalizer = opts.normalizer ?? geojsonPassthrough;
   const ctx: NormalizeContext = { manifest, dataset };
-  const collection: AdminFeatureCollection = normalizer(raw, ctx);
+  let collection: AdminFeatureCollection | ReferentialFeatureCollection;
 
+  if (dataset.format === "csv") {
+    collection = await acquireCsv(manifest, datasetId, downloadOpts, opts.csvNormalizer, ctx);
+  } else {
+    const raw = GDAL_FORMATS.has(dataset.format)
+      ? await acquireRawViaGdal(manifest, datasetId, downloadOpts, opts.gdalRunner)
+      : await acquireRawViaJson(manifest, datasetId, downloadOpts);
+    const normalizer = opts.normalizer ?? geojsonPassthrough;
+    collection = normalizer(raw, ctx);
+  }
+
+  return assembleDataset(manifest, dataset.id, dataset.title, collection);
+}
+
+/**
+ * Acquire a CSV referential dataset: download (cached) the file, parse it with
+ * the RFC 4180 parser (delimiter from `dataset.query.delimiter`, default `,`),
+ * then run the caller-supplied {@link CsvNormalizer} to produce a
+ * {@link ReferentialFeatureCollection}.
+ *
+ * @throws Error when no `csvNormalizer` was provided (it is required for CSV).
+ */
+async function acquireCsv(
+  manifest: SourceManifest,
+  datasetId: string,
+  downloadOpts: DownloadOptions,
+  csvNormalizer: CsvNormalizer | undefined,
+  ctx: NormalizeContext,
+): Promise<ReferentialFeatureCollection> {
+  if (!csvNormalizer) {
+    throw new Error(
+      `format "csv" requires an AcquireOptions.csvNormalizer ` +
+        `(source "${manifest.id}", dataset "${datasetId}"). ` +
+        `Provide one that maps parsed rows to a ReferentialFeatureCollection.`,
+    );
+  }
+  const dataset = ctx.dataset;
+  const result = await download(dataset.url, downloadOpts);
+
+  const rawDelimiter = dataset.query?.["delimiter"];
+  const parseOpts =
+    typeof rawDelimiter === "string" && rawDelimiter.length > 0
+      ? { delimiter: rawDelimiter }
+      : undefined;
+  const { rows } = parseCsv(result.text(), parseOpts);
+
+  return csvNormalizer(rows, ctx);
+}
+
+/** Build the provenance {@link CollectionMeta} envelope around a normalized collection. */
+function assembleDataset(
+  manifest: SourceManifest,
+  datasetId: string,
+  title: string,
+  collection: AdminFeatureCollection | ReferentialFeatureCollection,
+): NormalizedDataset<AdminFeatureCollection | ReferentialFeatureCollection> {
   const license = resolveManifestLicense(manifest);
   const meta: CollectionMeta = {
     sourceId: manifest.id,
-    datasetId: dataset.id,
-    title: dataset.title,
+    datasetId,
+    title,
     license,
     attribution: attributionLine(manifest.provider.name, license),
     crs: WGS84,
@@ -109,7 +167,6 @@ export async function acquire(
     count: collection.features.length,
     checksum: { algo: "sha256", value: sha256Hex(canonicalJson(collection)) },
   };
-
   return { meta, collection };
 }
 
@@ -221,7 +278,7 @@ function sourceSlug(sourceId: string): string {
  * The small, human-read `.meta.json` stays pretty-printed.
  */
 export async function writeNormalized(
-  dataset: NormalizedDataset,
+  dataset: NormalizedDataset<AdminFeatureCollection | ReferentialFeatureCollection>,
   dir: string,
 ): Promise<{ geojsonPath: string; metaPath: string }> {
   const slug = sourceSlug(dataset.meta.sourceId);

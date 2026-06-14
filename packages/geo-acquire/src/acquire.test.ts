@@ -103,7 +103,7 @@ describe("acquire", () => {
   it("throws a clear error for an unsupported V1 format", async () => {
     const manifest = arcgisManifest();
     const dataset = manifest.datasets[0];
-    if (dataset) dataset.format = "csv";
+    if (dataset) dataset.format = "wms";
     await expect(
       acquire(manifest, "regions", { cacheDir, fetchImpl: fetchReturning(SAMPLE) }),
     ).rejects.toThrow(/not yet supported in V1/);

@@ -20,29 +20,44 @@ import { basename, join } from "node:path";
 import {
   isFeatureCollection,
   resolveLicense,
-  type AdminFeature,
-  type AdminFeatureCollection,
   type CollectionMeta,
+  type FeatureCollection,
+  type Geometry,
   type License,
 } from "@sentropic/geo-core";
 
 import { geometryBBox, geometryIntersectsBBox, unionBBox, type BBox2D } from "../geo-util.js";
-import type { CollectionInfo, FeatureProvider, ItemsQuery, ItemsResult } from "../provider.js";
+import type {
+  CollectionInfo,
+  FeatureProvider,
+  ItemsQuery,
+  ItemsResult,
+  ServedFeature,
+} from "../provider.js";
 
 /** Default location of normalized datasets, relative to the repo root. */
 export const DEFAULT_DATA_DIR = "data/normalized";
 
+/**
+ * A loaded collection. Geometry may be `null` per feature (referential
+ * crosswalks), so the on-disk shape is the broad GeoJSON FeatureCollection
+ * rather than the geometry-required {@link AdminFeatureCollection}.
+ */
+type LoadedFeatureCollection = FeatureCollection<Geometry | null>;
+
 interface LoadedCollection {
   info: CollectionInfo;
-  collection: AdminFeatureCollection;
+  /** Features as served (geometry may be null for referential rows). */
+  features: ServedFeature[];
   /** featureId → feature, for O(1) item lookup. */
-  byId: Map<string, AdminFeature>;
+  byId: Map<string, ServedFeature>;
 }
 
 /** A feature's stable id: its GeoJSON `id`, falling back to `properties.geoId`. */
-function featureKey(feature: AdminFeature, index: number): string {
+function featureKey(feature: ServedFeature, index: number): string {
   if (feature.id !== undefined && feature.id !== null) return String(feature.id);
-  if (typeof feature.properties?.geoId === "string") return feature.properties.geoId;
+  const geoId = feature.properties?.["geoId"];
+  if (typeof geoId === "string") return geoId;
   return String(index);
 }
 
@@ -99,11 +114,11 @@ export class FileProvider implements FeatureProvider {
     const geojsonPath = join(this.#dir, relPath);
     const metaPath = `${geojsonPath.slice(0, -".geojson".length)}.meta.json`;
 
-    let collection: AdminFeatureCollection;
+    let collection: LoadedFeatureCollection;
     try {
       const raw = JSON.parse(await readFile(geojsonPath, "utf8")) as unknown;
       if (!isFeatureCollection(raw)) return undefined;
-      collection = raw as AdminFeatureCollection;
+      collection = raw as LoadedFeatureCollection;
     } catch {
       return undefined;
     }
@@ -119,9 +134,12 @@ export class FileProvider implements FeatureProvider {
     const id = meta?.datasetId ?? stem;
     const license: License = resolveLicense(meta?.license);
 
-    const features = collection.features;
-    const byId = new Map<string, AdminFeature>();
+    const features = collection.features as ServedFeature[];
+    const byId = new Map<string, ServedFeature>();
     let bbox: BBox2D | undefined;
+    // Extent is the union of non-null geometries; `geometryBBox(null)` is
+    // undefined, so null-geometry referential rows are skipped (no crash) and
+    // `extent` is omitted entirely when every feature is null-geometry.
     features.forEach((feature, index) => {
       byId.set(featureKey(feature, index), feature);
       bbox = unionBBox(bbox, geometryBBox(feature.geometry));
@@ -137,7 +155,7 @@ export class FileProvider implements FeatureProvider {
       ...(bbox ? { extent: { bbox } } : {}),
     };
 
-    return { info, collection, byId };
+    return { info, features, byId };
   }
 
   async listCollections(): Promise<CollectionInfo[]> {
@@ -157,8 +175,8 @@ export class FileProvider implements FeatureProvider {
 
     const filter = query.bbox;
     const matched = filter
-      ? loaded.collection.features.filter((f) => geometryIntersectsBBox(f.geometry, filter))
-      : loaded.collection.features;
+      ? loaded.features.filter((f) => geometryIntersectsBBox(f.geometry, filter))
+      : loaded.features;
 
     const offset = query.offset ?? 0;
     const limit = query.limit ?? matched.length;
@@ -171,7 +189,7 @@ export class FileProvider implements FeatureProvider {
     };
   }
 
-  async getItem(id: string, featureId: string): Promise<AdminFeature | undefined> {
+  async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {
     const map = await this.#ensureLoaded();
     return map.get(id)?.byId.get(featureId);
   }
