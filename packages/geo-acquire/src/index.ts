@@ -60,5 +60,10 @@ export {
   type GdalFormat,
 } from "./gdal.js";
 
-// High-level acquire + persistence.
-export { acquire, writeNormalized, type AcquireOptions } from "./acquire.js";
+// High-level acquire + persistence (local fs + Store/object storage, ADR-0012).
+export {
+  acquire,
+  writeNormalized,
+  writeNormalizedToStore,
+  type AcquireOptions,
+} from "./acquire.js";
