@@ -18,6 +18,10 @@ import type {
   ReferentialFeatureCollection,
   SourceManifest,
 } from "@sentropic/geo-core";
+// Type-only import: geo-acquire writes through the Store *interface* and never
+// pulls in @aws-sdk. `verbatimModuleSyntax` + `import type` guarantee this is
+// erased at build time, so no runtime dependency on geo-storage is emitted.
+import type { Store } from "@sentropic/geo-storage";
 import {
   WGS84,
   attributionLine,
@@ -292,4 +296,40 @@ export async function writeNormalized(
   await writeFile(metaPath, `${JSON.stringify(dataset.meta, null, 2)}\n`);
 
   return { geojsonPath, metaPath };
+}
+
+/**
+ * Persist a {@link NormalizedDataset} to a {@link Store} (ADR-0012): normalized
+ * data lives on object storage, not git. Mirrors {@link writeNormalized}'s
+ * layout — `<prefix>/<sourceSlug>/<datasetId>.geojson` (compact) plus a sibling
+ * `.meta.json` (pretty) — but addresses by store key rather than disk path, so
+ * the same write path serves a local {@link FsStore} or an S3 backend.
+ *
+ * geo-acquire depends only on the `Store` **interface** (type-only import); it
+ * never references `@aws-sdk`. Returns the keys written, not paths.
+ */
+export async function writeNormalizedToStore(
+  dataset: NormalizedDataset<AdminFeatureCollection | ReferentialFeatureCollection>,
+  store: Store,
+  prefix?: string,
+): Promise<{ geojsonKey: string; metaKey: string }> {
+  const slug = sourceSlug(dataset.meta.sourceId);
+  const base = prefix && prefix.length > 0 ? `${trimSlashes(prefix)}/${slug}` : slug;
+
+  const geojsonKey = `${base}/${dataset.meta.datasetId}.geojson`;
+  const metaKey = `${base}/${dataset.meta.datasetId}.meta.json`;
+
+  await store.put(geojsonKey, `${JSON.stringify(dataset.collection)}\n`, {
+    contentType: "application/geo+json",
+  });
+  await store.put(metaKey, `${JSON.stringify(dataset.meta, null, 2)}\n`, {
+    contentType: "application/json",
+  });
+
+  return { geojsonKey, metaKey };
+}
+
+/** Strip leading/trailing slashes from a store-key prefix. */
+function trimSlashes(value: string): string {
+  return value.replace(/^\/+|\/+$/g, "");
 }
