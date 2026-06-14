@@ -1,14 +1,13 @@
-# geo-fetch — populates the geo-data PVC with normalized GeoJSON, reproducibly.
+# geo-fetch — populates S3 object storage with normalized GeoJSON, reproducibly.
 #
 # Uses the same image as geo-api (gdal-bin is present, so bulk vector formats
-# ingest via ogr2ogr/ogrinfo). Writes to /data/normalized on the PVC (mounted
-# read-write here; the geo-api Deployment mounts it read-only).
+# ingest via ogr2ogr/ogrinfo). Writes to s3://sentropic-geo/normalized (ADR-0012);
+# the geo-api Deployment reads the same bucket via the StoreProvider. No PVC: an
+# emptyDir holds only the transient download cache + GDAL scratch.
 #
 # `geo fetch` takes one dataset per call, so the three Québec SDA datasets are
-# fetched in sequence. This also regenerates the over-budget datasets (ADR-0010)
-# reproducibly. Re-run this Job to (re)populate or refresh the served data.
+# fetched in sequence. Re-run this Job to (re)populate or refresh the served data.
 #
-# Run it after the PVC exists, e.g.:
 #   kubectl -n geo apply -f deploy/k8s/job-fetch.yaml
 #   kubectl -n geo wait --for=condition=complete job/geo-fetch --timeout=20m
 # To re-run, delete the completed Job first (`kubectl -n geo delete job geo-fetch`).
@@ -23,7 +22,6 @@ metadata:
     app.kubernetes.io/component: data-population
 spec:
   backoffLimit: 2
-  # Reap the Job 1h after it finishes so re-applying with a fresh image is clean.
   ttlSecondsAfterFinished: 3600
   template:
     metadata:
@@ -41,23 +39,22 @@ spec:
         - name: geo-fetch
           image: rg.fr-par.scw.cloud/geo/geo-api:latest
           imagePullPolicy: IfNotPresent
-          env:
-            - name: GEO_DATA_DIR
-              value: /data/normalized
+          workingDir: /scratch
+          # S3 connection (S3_ENDPOINT/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY/S3_BUCKET).
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
           # `geo` is on PATH (symlinked to packages/geo-cli/dist/cli.js).
           command:
             - /bin/sh
             - -c
             - |
               set -eu
-              OUT=/data/normalized
-              mkdir -p "$OUT"
+              OUT=s3://sentropic-geo/normalized
               echo "Fetching Québec SDA boundaries into $OUT"
               geo fetch ca-qc/sda qc-regions       --out "$OUT"
               geo fetch ca-qc/sda qc-mrc           --out "$OUT"
               geo fetch ca-qc/sda qc-municipalites --out "$OUT"
-              echo "Rebuilding license registry"
-              geo licenses build || echo "licenses build skipped (non-fatal)"
               echo "geo-fetch complete"
           resources:
             requests:
@@ -73,17 +70,18 @@ spec:
               drop:
                 - ALL
           volumeMounts:
-            - name: data
-              mountPath: /data
+            - name: scratch
+              mountPath: /scratch
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: geo-data
+        # Ephemeral download cache + GDAL extraction scratch (raw archives, never
+        # persisted; normalized output goes straight to S3).
+        - name: scratch
+          emptyDir:
+            sizeLimit: 2Gi
 ---
 # Optional periodic refresh of the served data (ADR-0004 cadence). Disabled by
 # default (suspend: true) — enable by setting `suspend: false` once the one-shot
-# geo-fetch Job has succeeded and you want scheduled re-fetches. Shares the same
-# image, command, and PVC as the Job above.
+# geo-fetch Job has succeeded. Shares the same image + S3 target.
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -120,21 +118,20 @@ spec:
             - name: geo-fetch
               image: rg.fr-par.scw.cloud/geo/geo-api:latest
               imagePullPolicy: IfNotPresent
-              env:
-                - name: GEO_DATA_DIR
-                  value: /data/normalized
+              workingDir: /scratch
+              envFrom:
+                - secretRef:
+                    name: geo-s3-credentials
               command:
                 - /bin/sh
                 - -c
                 - |
                   set -eu
-                  OUT=/data/normalized
-                  mkdir -p "$OUT"
+                  OUT=s3://sentropic-geo/normalized
                   geo refresh --stale --out "$OUT" || \
                     { geo fetch ca-qc/sda qc-regions       --out "$OUT"; \
                       geo fetch ca-qc/sda qc-mrc           --out "$OUT"; \
                       geo fetch ca-qc/sda qc-municipalites --out "$OUT"; }
-                  geo licenses build || echo "licenses build skipped (non-fatal)"
               resources:
                 requests:
                   cpu: 100m
@@ -148,9 +145,9 @@ spec:
                   drop:
                     - ALL
               volumeMounts:
-                - name: data
-                  mountPath: /data
+                - name: scratch
+                  mountPath: /scratch
           volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: geo-data
+            - name: scratch
+              emptyDir:
+                sizeLimit: 2Gi
