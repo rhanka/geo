@@ -7,16 +7,17 @@
  * the map and the legend always agree. Pure functions, no DOM — unit-testable
  * in isolation.
  *
- * Aggregation is delegated to `@sentropic/dataviz-core`'s `buildChoroplethModel`
- * (group-by region + measure rollup) via {@link computeChoroplethBinsFromModel};
- * the graduated CLASSIFICATION (quantile / equal-interval breaks → colour ramp)
- * stays local because the builder does not expose it (see `BUILDER_NOTES` in
- * `dataviz-adapter.ts`). `computeChoroplethBins` is the classification core and
- * is reused by both paths.
+ * Both the aggregation (group-by region + measure rollup) AND the graduated
+ * CLASSIFICATION (quantile / equal-interval breaks) are delegated to
+ * `@sentropic/dataviz-core` as of 0.4.37: {@link computeChoroplethBinsFromModel}
+ * passes `classification: { method, count }` to `buildChoroplethModel` and reads
+ * the resulting `model.breaks`. Only the classes → colour ramp MAPPING (a
+ * rendering concern) and the degenerate-case / dedup handling stay local.
+ * {@link classifyValues} delegates the break math to dataviz-core's `classify`.
  */
 
 import type { Aggregation } from "@sentropic/dataviz-core";
-import { buildChoroplethModel } from "@sentropic/dataviz-core";
+import { buildChoroplethModel, classify } from "@sentropic/dataviz-core";
 import type { FeatureCollection } from "@sentropic/geo-core";
 import { choroplethInput } from "./dataviz-adapter.js";
 
@@ -85,58 +86,23 @@ export function numericValues(
   return values;
 }
 
-/** Linear-interpolated quantile of an ascending-sorted array (`q` in [0,1]). */
-function quantileSorted(sorted: readonly number[], q: number): number {
-  const n = sorted.length;
-  if (n === 0) return Number.NaN;
-  const pos = (n - 1) * q;
-  const lo = Math.floor(pos);
-  const hi = Math.ceil(pos);
-  const vLo = sorted[lo] ?? Number.NaN;
-  if (lo === hi) return vLo;
-  const vHi = sorted[hi] ?? vLo;
-  return vLo + (vHi - vLo) * (pos - lo);
-}
-
 /**
- * Classify a set of already-extracted, ASCENDING-SORTED numeric values into
- * graduated colour bins. This is the classification core shared by the
- * feature-based and the builder-backed entry points.
+ * Map a set of classification breaks (`count + 1` ascending edges, min..max
+ * inclusive — the convention returned by dataviz-core's `classify`) to graduated
+ * colour bins. Boundaries are deduplicated (skewed `quantile` data may collapse
+ * edges → fewer bins than requested) and the ramp is spread evenly across the
+ * realized bins. Returns `undefined` when there is no usable gradient.
  *
- * Returns `undefined` when there are no values or every value is equal (a single
- * value has no gradient to show). Bin boundaries are deduplicated, so skewed
- * `quantile` data may yield fewer bins than requested — callers should treat the
- * result length as authoritative.
+ * This is the rendering-side mapping kept local per ADR-0016; the break math
+ * itself lives in dataviz-core.
  */
-export function classifyValues(
-  values: readonly number[],
-  options: ChoroplethOptions = {},
+function breaksToBins(
+  breaks: readonly number[],
+  ramp: readonly string[],
 ): ChoroplethBin[] | undefined {
-  const ramp = options.ramp ?? DEFAULT_CHOROPLETH_RAMP;
-  const method = options.method ?? "quantile";
-  const requested = options.count ?? 5;
-  const count = Math.max(1, Math.min(requested, ramp.length));
-
-  const min = values[0];
-  const max = values[values.length - 1];
-  if (min === undefined || max === undefined) return undefined;
-  if (min === max) return undefined; // no gradient
-
-  // Boundaries: count+1 edges from min..max, then deduped to keep bins distinct.
-  const edges: number[] = [];
-  for (let i = 0; i <= count; i++) {
-    const t = i / count;
-    // Force exact endpoints (guards against fp drift in quantile interpolation).
-    if (i === 0) edges.push(min);
-    else if (i === count) edges.push(max);
-    else
-      edges.push(
-        method === "equal" ? min + (max - min) * t : quantileSorted(values, t),
-      );
-  }
-
+  // Dedupe edges to keep bins distinct (ascending-monotonic input from classify).
   const uniqueEdges: number[] = [];
-  for (const e of edges) {
+  for (const e of breaks) {
     const last = uniqueEdges[uniqueEdges.length - 1];
     if (last === undefined || e > last) uniqueEdges.push(e);
   }
@@ -157,6 +123,39 @@ export function classifyValues(
     bins.push({ min: lo, max: hi, color: ramp[colorIdx] ?? lastColor });
   }
   return bins;
+}
+
+/**
+ * Classify a set of numeric values into graduated colour bins.
+ *
+ * Delegates the break math to `@sentropic/dataviz-core`'s `classify`
+ * (quantile / equal-interval, returning `count + 1` edges min..max) and keeps
+ * only the rendering-side concerns local: clamping the class count to the ramp,
+ * the degenerate-case guard (no values / single value → `undefined`), boundary
+ * dedup and the class → colour mapping.
+ *
+ * Returns `undefined` when there are no values or every value is equal (no
+ * gradient). Bin boundaries are deduplicated, so skewed `quantile` data may
+ * yield fewer bins than requested — callers should treat the result length as
+ * authoritative.
+ */
+export function classifyValues(
+  values: readonly number[],
+  options: ChoroplethOptions = {},
+): ChoroplethBin[] | undefined {
+  const ramp = options.ramp ?? DEFAULT_CHOROPLETH_RAMP;
+  const method = options.method ?? "quantile";
+  const requested = options.count ?? 5;
+  const count = Math.max(1, Math.min(requested, ramp.length));
+
+  const finite = values.filter((v) => Number.isFinite(v));
+  if (finite.length === 0) return undefined;
+  const min = Math.min(...finite);
+  const max = Math.max(...finite);
+  if (min === max) return undefined; // no gradient
+
+  const breaks = classify([...finite], { method, count });
+  return breaksToBins(breaks, ramp);
 }
 
 /**
@@ -190,13 +189,16 @@ export interface ChoroplethModelOptions extends ChoroplethOptions {
 }
 
 /**
- * Compute graduated choropleth bins by AGGREGATING per region via dataviz-core's
- * `buildChoroplethModel`, then CLASSIFYING the per-region values locally.
+ * Compute graduated choropleth bins by AGGREGATING per region AND CLASSIFYING the
+ * per-region values via dataviz-core's `buildChoroplethModel` (0.4.37).
  *
- * This is the builder-backed path (ADR-0016): the group-by + rollup is owned by
- * dataviz-core; only the classification (which the builder does not expose) is
- * local. The returned bins / step-expression / legend are identical in shape to
- * {@link computeChoroplethBins}. Returns `undefined` for no-gradient inputs.
+ * This is the builder-backed path (ADR-0016): both the group-by + rollup and the
+ * classification breaks are owned by dataviz-core — we pass
+ * `classification: { method, count }` and read `model.breaks`. Only the
+ * rendering-side class → colour mapping (and the no-gradient guard) stays local
+ * via {@link breaksToBins}. The returned bins / step-expression / legend are
+ * identical in shape to {@link computeChoroplethBins}. Returns `undefined` for
+ * no-gradient inputs.
  */
 export function computeChoroplethBinsFromModel(
   data: FeatureCollection,
@@ -204,6 +206,11 @@ export function computeChoroplethBinsFromModel(
   options: ChoroplethModelOptions = {},
 ): ChoroplethBin[] | undefined {
   const aggregation = options.aggregation ?? "sum";
+  const ramp = options.ramp ?? DEFAULT_CHOROPLETH_RAMP;
+  // Clamp the requested class count to the ramp length (rendering concern), then
+  // let dataviz-core compute the breaks over the aggregated region values.
+  const count = Math.max(1, Math.min(options.count ?? 5, ramp.length));
+  const method = options.method ?? "quantile";
   const { model, rows } = choroplethInput(
     data,
     options.regionKey,
@@ -216,13 +223,12 @@ export function computeChoroplethBinsFromModel(
   const result = buildChoroplethModel(model, rows, {
     region,
     measure: valueKey,
+    classification: { method, count },
   });
-  const values: number[] = [];
-  for (const region of result.regions) {
-    if (Number.isFinite(region.value)) values.push(region.value);
-  }
-  values.sort((a, b) => a - b);
-  return classifyValues(values, options);
+  const breaks = result.breaks ?? [];
+  // No-gradient guard: classify returns [] for empty input and [min, max] with
+  // min === max for a single distinct value — both collapse to < 2 unique edges.
+  return breaksToBins(breaks, ramp);
 }
 
 /**

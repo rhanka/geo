@@ -62,7 +62,6 @@ export {
   choroplethInput,
   pointInput,
   BUILDER_NOTES,
-  LAT_KEY,
-  LNG_KEY,
+  GEOMETRY_KEY,
   REGION_KEY,
 } from "./dataviz-adapter.js";
