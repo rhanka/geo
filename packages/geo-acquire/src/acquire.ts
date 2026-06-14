@@ -51,6 +51,14 @@ export interface AcquireOptions extends DownloadOptions {
    * dataset is acquired without one.
    */
   csvNormalizer?: CsvNormalizer;
+  /**
+   * Referential normalizer for a geometry-bearing bulk source (`gpkg`/`shp`/`fgdb`):
+   * maps the `ogr2ogr` GeoJSON to a {@link ReferentialFeatureCollection}. When set,
+   * it takes precedence over `normalizer` on the GDAL path — for sources whose
+   * features are referential (e.g. StatCan FSA postal areas) rather than
+   * administrative units.
+   */
+  referentialNormalizer?: (raw: unknown, ctx: NormalizeContext) => ReferentialFeatureCollection;
   /** Injected GDAL command runner for bulk formats (tests). */
   gdalRunner?: CommandRunner;
 }
@@ -110,8 +118,14 @@ export async function acquire(
     const raw = GDAL_FORMATS.has(dataset.format)
       ? await acquireRawViaGdal(manifest, datasetId, downloadOpts, opts.gdalRunner)
       : await acquireRawViaJson(manifest, datasetId, downloadOpts);
-    const normalizer = opts.normalizer ?? geojsonPassthrough;
-    collection = normalizer(raw, ctx);
+    if (GDAL_FORMATS.has(dataset.format) && opts.referentialNormalizer) {
+      // Geometry-bearing referential source (e.g. StatCan FSA): emit a
+      // ReferentialFeatureCollection rather than admin units.
+      collection = opts.referentialNormalizer(raw, ctx);
+    } else {
+      const normalizer = opts.normalizer ?? geojsonPassthrough;
+      collection = normalizer(raw, ctx);
+    }
   }
 
   return assembleDataset(manifest, dataset.id, dataset.title, collection);
