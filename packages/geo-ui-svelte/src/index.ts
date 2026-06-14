@@ -16,6 +16,7 @@ export { default as AttributionBar } from "./AttributionBar.svelte";
 export type {
   GeoCategory,
   GeoFeatureHit,
+  GeoLayerKind,
   GeoMapProps,
 } from "./GeoMap.svelte";
 export type { GeoMapLegendProps } from "./GeoMapLegend.svelte";
@@ -30,6 +31,8 @@ export type { AttributionBarProps } from "./AttributionBar.svelte";
 
 export {
   computeChoroplethBins,
+  computeChoroplethBinsFromModel,
+  classifyValues,
   binsToStepExpression,
   formatBinRangeFr,
   numericValues,
@@ -39,4 +42,27 @@ export type {
   ChoroplethBin,
   ChoroplethMethod,
   ChoroplethOptions,
+  ChoroplethModelOptions,
 } from "./choropleth.js";
+
+export {
+  buildHexbinLayer,
+  buildClusterLayer,
+  buildDensityLayer,
+  buildPointLayer,
+} from "./point-layers.js";
+export type {
+  PointLayerKind,
+  PointLayerSpec,
+  PointLayerOptions,
+} from "./point-layers.js";
+
+export {
+  featuresToRows,
+  choroplethInput,
+  pointInput,
+  BUILDER_NOTES,
+  LAT_KEY,
+  LNG_KEY,
+  REGION_KEY,
+} from "./dataviz-adapter.js";
