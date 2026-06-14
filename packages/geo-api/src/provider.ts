@@ -9,7 +9,14 @@
  * directly.
  */
 
-import type { AdminFeature, BBox, License } from "@sentropic/geo-core";
+import type { AdminFeature, BBox, License, ReferentialFeature } from "@sentropic/geo-core";
+
+/**
+ * A feature served by the API. Either a geometry-bearing administrative feature
+ * or a (possibly null-geometry) referential crosswalk feature. The HTTP layer
+ * serves both as valid GeoJSON.
+ */
+export type ServedFeature = AdminFeature | ReferentialFeature;
 
 /**
  * Server-facing description of a collection. This is the normalized shape the
@@ -48,7 +55,7 @@ export interface ItemsQuery {
 /** Result of an items query. */
 export interface ItemsResult {
   /** The page of features matching the query. */
-  features: AdminFeature[];
+  features: ServedFeature[];
   /** Total number of features matching the filter (ignoring limit/offset). */
   numberMatched: number;
   /** Number of features actually returned in this page. */
@@ -71,5 +78,5 @@ export interface FeatureProvider {
    */
   getItems(id: string, query: ItemsQuery): Promise<ItemsResult | undefined>;
   /** A single feature by id, or `undefined` if collection/feature is unknown. */
-  getItem(id: string, featureId: string): Promise<AdminFeature | undefined>;
+  getItem(id: string, featureId: string): Promise<ServedFeature | undefined>;
 }

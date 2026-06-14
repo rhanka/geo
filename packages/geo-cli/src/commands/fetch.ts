@@ -14,7 +14,11 @@ import {
   type AcquireOptions,
   type CommandRunner,
 } from "@sentropic/geo-acquire";
-import type { NormalizedDataset } from "@sentropic/geo-core";
+import type {
+  AdminFeatureCollection,
+  NormalizedDataset,
+  ReferentialFeatureCollection,
+} from "@sentropic/geo-core";
 
 import { defaultRegistry, getSource, type RegisteredSource } from "../registry.js";
 import { resolveDataDir } from "../paths.js";
@@ -99,7 +103,9 @@ export async function fetchSource(
     if (deps.cacheDir !== undefined) acquireOpts.cacheDir = deps.cacheDir;
     if (deps.gdalRunner !== undefined) acquireOpts.gdalRunner = deps.gdalRunner;
 
-    const normalized: NormalizedDataset = await acquire(source.manifest, id, acquireOpts);
+    const normalized: NormalizedDataset<
+      AdminFeatureCollection | ReferentialFeatureCollection
+    > = await acquire(source.manifest, id, acquireOpts);
     const { geojsonPath, metaPath } = await writeNormalized(normalized, outDir);
 
     datasets.push({

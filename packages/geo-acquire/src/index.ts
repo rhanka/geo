@@ -30,6 +30,16 @@ export {
   type Normalizer,
 } from "./normalize.js";
 
+// CSV acquisition: RFC 4180 parser + referential column mapper.
+export {
+  csvColumnMapper,
+  parseCsv,
+  type CsvColumnMapping,
+  type CsvNormalizer,
+  type ParseCsvOptions,
+  type ParsedCsv,
+} from "./csv.js";
+
 // ArcGIS REST fetcher.
 export { ARCGIS_QUERY_DEFAULTS, arcgisQueryUrl } from "./arcgis.js";
 
