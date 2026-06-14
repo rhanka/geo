@@ -7,6 +7,7 @@
 
   const nav = [
     { label: "Catalogue", href: "/", active: true },
+    { label: "Carte", href: "/carte" },
   ];
 </script>
 
