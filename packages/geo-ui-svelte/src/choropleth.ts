@@ -6,7 +6,19 @@
  * MapLibre `step` expression. The same bins feed `GeoMapLegend` (value mode) so
  * the map and the legend always agree. Pure functions, no DOM — unit-testable
  * in isolation.
+ *
+ * Aggregation is delegated to `@sentropic/dataviz-core`'s `buildChoroplethModel`
+ * (group-by region + measure rollup) via {@link computeChoroplethBinsFromModel};
+ * the graduated CLASSIFICATION (quantile / equal-interval breaks → colour ramp)
+ * stays local because the builder does not expose it (see `BUILDER_NOTES` in
+ * `dataviz-adapter.ts`). `computeChoroplethBins` is the classification core and
+ * is reused by both paths.
  */
+
+import type { Aggregation } from "@sentropic/dataviz-core";
+import { buildChoroplethModel } from "@sentropic/dataviz-core";
+import type { FeatureCollection } from "@sentropic/geo-core";
+import { choroplethInput } from "./dataviz-adapter.js";
 
 /** Default sequential colour ramp (5 stops), tokenized with hex fallbacks. */
 export const DEFAULT_CHOROPLETH_RAMP: readonly string[] = [
@@ -74,7 +86,7 @@ export function numericValues(
 }
 
 /** Linear-interpolated quantile of an ascending-sorted array (`q` in [0,1]). */
-function quantileSorted(sorted: number[], q: number): number {
+function quantileSorted(sorted: readonly number[], q: number): number {
   const n = sorted.length;
   if (n === 0) return Number.NaN;
   const pos = (n - 1) * q;
@@ -87,16 +99,17 @@ function quantileSorted(sorted: number[], q: number): number {
 }
 
 /**
- * Compute graduated choropleth bins from a set of features.
+ * Classify a set of already-extracted, ASCENDING-SORTED numeric values into
+ * graduated colour bins. This is the classification core shared by the
+ * feature-based and the builder-backed entry points.
  *
- * Returns `undefined` when there are no finite values or every value is equal
- * (a single value has no gradient to show). Bin boundaries are deduplicated, so
- * skewed `quantile` data may yield fewer bins than requested — callers should
- * treat the result length as authoritative.
+ * Returns `undefined` when there are no values or every value is equal (a single
+ * value has no gradient to show). Bin boundaries are deduplicated, so skewed
+ * `quantile` data may yield fewer bins than requested — callers should treat the
+ * result length as authoritative.
  */
-export function computeChoroplethBins(
-  features: ReadonlyArray<{ properties?: Record<string, unknown> | null }>,
-  key: string,
+export function classifyValues(
+  values: readonly number[],
   options: ChoroplethOptions = {},
 ): ChoroplethBin[] | undefined {
   const ramp = options.ramp ?? DEFAULT_CHOROPLETH_RAMP;
@@ -104,7 +117,6 @@ export function computeChoroplethBins(
   const requested = options.count ?? 5;
   const count = Math.max(1, Math.min(requested, ramp.length));
 
-  const values = numericValues(features, key);
   const min = values[0];
   const max = values[values.length - 1];
   if (min === undefined || max === undefined) return undefined;
@@ -145,6 +157,72 @@ export function computeChoroplethBins(
     bins.push({ min: lo, max: hi, color: ramp[colorIdx] ?? lastColor });
   }
   return bins;
+}
+
+/**
+ * Compute graduated choropleth bins from a set of features (per-feature values).
+ *
+ * Backwards-compatible wrapper: extracts the numeric values of `key` across the
+ * features and classifies them. Used directly when every feature already carries
+ * its own value (no per-region rollup needed). For region-aggregated inputs,
+ * prefer {@link computeChoroplethBinsFromModel}, which delegates the aggregation
+ * to dataviz-core's `buildChoroplethModel`.
+ */
+export function computeChoroplethBins(
+  features: ReadonlyArray<{ properties?: Record<string, unknown> | null }>,
+  key: string,
+  options: ChoroplethOptions = {},
+): ChoroplethBin[] | undefined {
+  return classifyValues(numericValues(features, key), options);
+}
+
+/** Options for {@link computeChoroplethBinsFromModel}. */
+export interface ChoroplethModelOptions extends ChoroplethOptions {
+  /**
+   * Property carrying each feature's region join id. The dataviz builder groups
+   * features by this and aggregates `valueKey` within each group. When omitted,
+   * each feature is its own region (an identity pass-through, matching the
+   * pre-builder per-feature behaviour).
+   */
+  regionKey?: string;
+  /** Rollup applied per region. Default `"sum"`. */
+  aggregation?: Aggregation;
+}
+
+/**
+ * Compute graduated choropleth bins by AGGREGATING per region via dataviz-core's
+ * `buildChoroplethModel`, then CLASSIFYING the per-region values locally.
+ *
+ * This is the builder-backed path (ADR-0016): the group-by + rollup is owned by
+ * dataviz-core; only the classification (which the builder does not expose) is
+ * local. The returned bins / step-expression / legend are identical in shape to
+ * {@link computeChoroplethBins}. Returns `undefined` for no-gradient inputs.
+ */
+export function computeChoroplethBinsFromModel(
+  data: FeatureCollection,
+  valueKey: string,
+  options: ChoroplethModelOptions = {},
+): ChoroplethBin[] | undefined {
+  const aggregation = options.aggregation ?? "sum";
+  const { model, rows } = choroplethInput(
+    data,
+    options.regionKey,
+    valueKey,
+    aggregation,
+  );
+  // The adapter owns the actual region dimension id (it may differ from
+  // `regionKey` to avoid clashing with the measure id).
+  const region = model.dimensions[0]?.id ?? valueKey;
+  const result = buildChoroplethModel(model, rows, {
+    region,
+    measure: valueKey,
+  });
+  const values: number[] = [];
+  for (const region of result.regions) {
+    if (Number.isFinite(region.value)) values.push(region.value);
+  }
+  values.sort((a, b) => a - b);
+  return classifyValues(values, options);
 }
 
 /**
