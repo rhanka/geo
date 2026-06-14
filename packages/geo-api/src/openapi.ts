@@ -35,6 +35,45 @@ export function buildOpenApi(base: string): Record<string, unknown> {
           responses: { "200": { description: "OpenAPI 3.0 description." } },
         },
       },
+      "/sources": {
+        get: {
+          summary: "List the source catalog (inventory)",
+          operationId: "getSources",
+          parameters: [
+            {
+              name: "country",
+              in: "query",
+              schema: { type: "string" },
+              description: "Filter by ISO 3166-1 alpha-2 country code (e.g. CA, FR).",
+            },
+            {
+              name: "kind",
+              in: "query",
+              schema: { type: "string", enum: ["administrative", "statistical", "postal"] },
+            },
+          ],
+          responses: { "200": { description: "The geo source inventory (jurisdiction, license, datasets)." } },
+        },
+      },
+      "/sources/{sourceId}": {
+        get: {
+          summary: "Describe a source",
+          operationId: "describeSource",
+          parameters: [
+            {
+              name: "sourceId",
+              in: "path",
+              required: true,
+              schema: { type: "string" },
+              description: "Source id; may contain a slash (e.g. ca-qc/sda), raw or percent-encoded.",
+            },
+          ],
+          responses: {
+            "200": { description: "The source entry with its datasets." },
+            "404": { description: "Unknown source." },
+          },
+        },
+      },
       "/collections": {
         get: {
           summary: "List collections",
