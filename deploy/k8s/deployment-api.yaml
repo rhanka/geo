@@ -1,6 +1,7 @@
 # geo-api Deployment — OGC API – Features server.
 #
-# Serves normalized GeoJSON from the geo-data PVC (mounted read-only). The image
+# Serves normalized GeoJSON directly from S3 object storage (Scaleway, bucket
+# sentropic-geo) via the StoreProvider — no PVC needed (ADR-0012). The image
 # is built and pushed by .github/workflows/docker-publish.yml. The `:latest` tag
 # is a placeholder; pin a real tag (e.g. the release version) at deploy time,
 # e.g. `kustomize edit set image` or `kubectl set image`.
@@ -39,10 +40,15 @@ spec:
           env:
             - name: PORT
               value: "8787"
-            - name: GEO_DATA_DIR
-              value: /data/normalized
+            - name: GEO_DATA_URI
+              value: s3://sentropic-geo/normalized
             - name: NODE_ENV
               value: production
+          # S3 connection (Scaleway Object Storage) from the geo-s3-credentials
+          # secret: S3_ENDPOINT / S3_REGION / S3_ACCESS_KEY / S3_SECRET_KEY / S3_BUCKET.
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
           # /conformance returns a static 200 regardless of data state, so it is
           # a safe liveness/readiness signal.
           readinessProbe:
@@ -74,12 +80,4 @@ spec:
             capabilities:
               drop:
                 - ALL
-          volumeMounts:
-            - name: data
-              mountPath: /data
-              readOnly: true
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: geo-data
-            readOnly: true
+      # No volume: data is read from S3 (sentropic-geo) by the StoreProvider.

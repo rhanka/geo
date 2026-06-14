@@ -112,7 +112,10 @@ export function buildProgram(deps: ProgramDeps = {}): Command {
     .command("serve")
     .description("Boot the OGC API – Features server over the normalized data.")
     .option("--port <port>", "port to listen on", (v) => Number.parseInt(v, 10))
-    .option("--data <dir>", "normalized-data directory")
+    .option(
+      "--data <location>",
+      "normalized data: a directory, fs:<dir>, or s3://<bucket>/<prefix>",
+    )
     .action((opts: { port?: number; data?: string }) => {
       const options: { port?: number; data?: string } = {};
       if (opts.port !== undefined) options.port = opts.port;

@@ -12,21 +12,22 @@
  * `<name>` stem of the file. Datasets are loaded lazily on first access and
  * cached. A missing or empty directory yields zero collections (not an error),
  * so the server boots cleanly before any data has been acquired.
+ *
+ * The geojson/meta parsing and the items/item query logic are shared with the
+ * store-backed provider via `./collection-loader.js`; this module owns only the
+ * directory listing and file reads.
  */
 
 import { readdir, readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 
 import {
-  isFeatureCollection,
-  resolveLicense,
-  type CollectionMeta,
-  type FeatureCollection,
-  type Geometry,
-  type License,
-} from "@sentropic/geo-core";
-
-import { geometryBBox, geometryIntersectsBBox, unionBBox, type BBox2D } from "../geo-util.js";
+  buildLoadedCollection,
+  parseMeta,
+  queryItem,
+  queryItems,
+  type LoadedCollection,
+} from "./collection-loader.js";
 import type {
   CollectionInfo,
   FeatureProvider,
@@ -37,37 +38,6 @@ import type {
 
 /** Default location of normalized datasets, relative to the repo root. */
 export const DEFAULT_DATA_DIR = "data/normalized";
-
-/**
- * A loaded collection. Geometry may be `null` per feature (referential
- * crosswalks), so the on-disk shape is the broad GeoJSON FeatureCollection
- * rather than the geometry-required {@link AdminFeatureCollection}.
- */
-type LoadedFeatureCollection = FeatureCollection<Geometry | null>;
-
-interface LoadedCollection {
-  info: CollectionInfo;
-  /** Features as served (geometry may be null for referential rows). */
-  features: ServedFeature[];
-  /** featureId → feature, for O(1) item lookup. */
-  byId: Map<string, ServedFeature>;
-}
-
-/** A feature's stable id: its GeoJSON `id`, falling back to `properties.geoId`. */
-function featureKey(feature: ServedFeature, index: number): string {
-  if (feature.id !== undefined && feature.id !== null) return String(feature.id);
-  const geoId = feature.properties?.["geoId"];
-  if (typeof geoId === "string") return geoId;
-  return String(index);
-}
-
-function isMeta(value: unknown): value is CollectionMeta {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    typeof (value as { datasetId?: unknown }).datasetId === "string"
-  );
-}
 
 export class FileProvider implements FeatureProvider {
   readonly #dir: string;
@@ -114,48 +84,9 @@ export class FileProvider implements FeatureProvider {
     const geojsonPath = join(this.#dir, relPath);
     const metaPath = `${geojsonPath.slice(0, -".geojson".length)}.meta.json`;
 
-    let collection: LoadedFeatureCollection;
-    try {
-      const raw = JSON.parse(await readFile(geojsonPath, "utf8")) as unknown;
-      if (!isFeatureCollection(raw)) return undefined;
-      collection = raw as LoadedFeatureCollection;
-    } catch {
-      return undefined;
-    }
-
-    let meta: CollectionMeta | undefined;
-    try {
-      const raw = JSON.parse(await readFile(metaPath, "utf8")) as unknown;
-      if (isMeta(raw)) meta = raw;
-    } catch {
-      // Sibling meta is optional; fall back to defaults derived from the file.
-    }
-
-    const id = meta?.datasetId ?? stem;
-    const license: License = resolveLicense(meta?.license);
-
-    const features = collection.features as ServedFeature[];
-    const byId = new Map<string, ServedFeature>();
-    let bbox: BBox2D | undefined;
-    // Extent is the union of non-null geometries; `geometryBBox(null)` is
-    // undefined, so null-geometry referential rows are skipped (no crash) and
-    // `extent` is omitted entirely when every feature is null-geometry.
-    features.forEach((feature, index) => {
-      byId.set(featureKey(feature, index), feature);
-      bbox = unionBBox(bbox, geometryBBox(feature.geometry));
-    });
-
-    const info: CollectionInfo = {
-      id,
-      title: meta?.title ?? id,
-      license,
-      attribution: meta?.attribution ?? license.title,
-      crs: meta?.crs ?? "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-      count: meta?.count ?? features.length,
-      ...(bbox ? { extent: { bbox } } : {}),
-    };
-
-    return { info, features, byId };
+    const geojsonText = await readMaybe(geojsonPath);
+    const metaText = await readMaybe(metaPath);
+    return buildLoadedCollection(stem, geojsonText, parseMeta(metaText));
   }
 
   async listCollections(): Promise<CollectionInfo[]> {
@@ -170,27 +101,20 @@ export class FileProvider implements FeatureProvider {
 
   async getItems(id: string, query: ItemsQuery): Promise<ItemsResult | undefined> {
     const map = await this.#ensureLoaded();
-    const loaded = map.get(id);
-    if (!loaded) return undefined;
-
-    const filter = query.bbox;
-    const matched = filter
-      ? loaded.features.filter((f) => geometryIntersectsBBox(f.geometry, filter))
-      : loaded.features;
-
-    const offset = query.offset ?? 0;
-    const limit = query.limit ?? matched.length;
-    const page = matched.slice(offset, offset + limit);
-
-    return {
-      features: page,
-      numberMatched: matched.length,
-      numberReturned: page.length,
-    };
+    return queryItems(map, id, query);
   }
 
   async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {
     const map = await this.#ensureLoaded();
-    return map.get(id)?.byId.get(featureId);
+    return queryItem(map, id, featureId);
+  }
+}
+
+/** Read a file as UTF-8 text, returning `undefined` if it is missing/unreadable. */
+async function readMaybe(path: string): Promise<string | undefined> {
+  try {
+    return await readFile(path, "utf8");
+  } catch {
+    return undefined;
   }
 }

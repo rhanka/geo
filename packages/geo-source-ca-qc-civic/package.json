@@ -1,0 +1,23 @@
+{
+  "name": "@sentropic/geo-source-ca-qc-civic",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Sources civiques Québec : adresses (terrAPI/AdressesQuébec) + fetcher du rôle d'évaluation foncière (MAMH, XML public — fetcher seulement, parsing/PII restent côté consommateur). Capitalisé depuis radar-immobilier (ADR-0013).",
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/rhanka/geo.git", "directory": "packages/geo-source-ca-qc-civic" },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/geo-core": "^0.1.0",
+    "@sentropic/geo-acquire": "^0.1.0"
+  }
+}
