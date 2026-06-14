@@ -204,6 +204,31 @@ légende+bulle, chrome) à fournir par le design-system.
 **Décision réversible (en l'absence du user)** : on démarre **spec → double-revue 4.8 → build → publish →
 deploy (GitHub Pages site + k8s API)** côté geo sans bloquer sur la confirmation async dataviz/DS.
 
+## ADR-0015 — Consensus double-revue 4.8 de la spec carte → GO-with-fixes · accepted · 2026-06-14
+
+Les **deux reviewers Opus-4.8** concluent **GO-with-fixes** (architecture saine ; API ontologie-agnostique
+juste ; blockers = wiring/séquencement, pas design). Fixes verrouillés (réversibles) :
+1. **CORS geo-api** : ✅ fait (`origin:*`, API publique read-only). **Pagination `/items`** : le consommateur
+   passe un `limit` explicite (sinon 1106→100 silencieux) ; transport des couches denses (vector tiles/PMTiles)
+   = incrément ultérieur.
+2. **Bundle** : `deck.gl` + `maplibre-gl` en **`peerDependencies`** de `geo-ui-svelte` ; tests WebGL = **Playwright**
+   (jsdom ne rend pas le WebGL → les tests unitaires ne couvrent que la garde SSR + le DOM).
+3. **Abandonner le cull Canvas2D de graphify** (aucun code ne transfère ; concept → toggle de couches sur
+   `movestart`/`idle`). Labels **GPU** (`symbol` MapLibre), pas DOM.
+4. **Découpler du DS non-livré** : binder **`AppChrome`** (réel aujourd'hui), PAS `@sentropic/app-shell`
+   (private/incubation). geo livre des **légende/recherche/détail minimaux** (compose Drawer/Accordion/Search),
+   swap vers les composants DS plus tard. **Ne pas gater les incréments** sur le backlog DS.
+5. **Deploy = migration réelle** : API → sous-domaine **`api.geo.sent-tech.ca`** ; site → **GitHub Pages** sur
+   l'apex `geo.sent-tech.ca` ; CORS fait. (⇒ MAJ ingress poc-k8s + DNS + workflow Pages.)
+6. **Vocabulaire couches** : aligner sur le DS `GeoMap` (`geojson|choropleth|points` + alias
+   `density|hexbin|cluster|flow`) ; `GeoLinearLayer` = extension documentée. **PMTiles** basemap auto-hébergé
+   (recette OSM **ODbL**, build CI) + **self-host glyphs/sprites** (pas `demotiles`).
+
+**Plan d'incréments révisé** (réordonné) : (1) **MVP** carte MapLibre vector (polygones admin + pan/zoom/fit,
+sans dépendance nouvelle) ; (2) choroplèthe + légende minimale ; (3) recherche + panneau détail ; (4) basemap
+PMTiles + glyphs auto-hébergés ; (5) projection linéaire (deck.gl + échantillon route OSM). Linéaire déplacé
+**après** la recherche (aucune donnée route n'existe encore).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
