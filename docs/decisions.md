@@ -300,6 +300,48 @@ double-revue ; **préserver la logique testée (352 tests)** ; convertir les sou
 (données S3), [ADR-0013] (capitalisation immo, scope `@sentropic`, MIT), [ADR-0014]/[ADR-0015]/[ADR-0016]
 (carte WebGL, builders dataviz-core).
 
+## ADR-0018 — Migration 16→5 exécutée (`refactor/packages-v2`) · accepted · 2026-06-14 · **met en œuvre ADR-0017**
+
+**Contexte.** [ADR-0017] décide la cible (5 packages, sources = manifestes, inventaire injecté). Cette ADR
+consigne son **exécution** sur la branche `refactor/packages-v2` (non mergée, rien publié), pilotée par
+agents Opus 4.8, en 5 phases A→E avec `npm run verify` EXIT=0 à chaque borne.
+
+**Réalisé.**
+- **A** (`20bf694`) — `geo-core` : `FieldMap`/`DatasetManifest.recipe?`/`SourceRegistry`/`NormalizerFn` +
+  `featuresToCollection` déplacé ici (les recettes continent ne dépendent que de `geo-core` → zéro cycle).
+- **B** (`ca935ff`) — `@sentropic/geo` créé ; `geo-acquire`+`geo-storage` fusionnés (`src/{acquire,storage}`).
+- **C** — `geo-api`+`geo-cli`+`geo-sources` repliés dans `geo` (`src/{api,cli,catalog,normalize}`).
+  **Inventaire injecté** : `buildInventory(registries)`, `createApp(provider, inventory?)`,
+  `buildRegistry(registries)`. `fetch.ts` dispatche la recette dans le slot d'`acquire` selon `format`.
+  Continents chargés par **import dynamique optionnel** (`continents.ts`, try/catch) → l'engine NE dépend
+  PAS des libs continent (pas d'arête de dep → tri topo acyclique). Normaliseur générique `makeFieldMapNormalizer`
+  (factory livrée + testée ; **conversion des recettes existantes différée**, réversible). Tests moteur sur une
+  **fixture hermétique** in-`geo` (`catalog/fixtures.ts`) — l'engine n'importe aucun package source. Suppression
+  de `geo-api`/`geo-cli`/`geo-sources`.
+- **D** — `@sentropic/geo-sources-americas` (6 sources CA/QC) + `@sentropic/geo-sources-europe` (3 FR) :
+  chaque lib expose `registry = { manifests, recipes }` (helper `build-registry.ts` qui tague chaque dataset
+  `recipe:"<sourceId>#<datasetId>"` sans muter les manifestes → **slugs S3 et ids datasets inchangés**).
+  Normaliseurs **conservés tels quels** comme recettes (`normalizers`/`referentialNormalizers`/`csvNormalizers`
+  unifiés en `NormalizerFn`). Ré-exports nommés préservés : `QC_MUNICIPALITIES`, `fetchQcCivicAddresses`,
+  `parseQcCivicAddresses`, `fetchRoleXml`. Sources civiques = manifestes seuls (fetcher/adapter, parsing/PII
+  côté consommateur, [ADR-0013]). `americas` **peer-dépend** de `@sentropic/geo` (`sha256Hex`). Suppression des
+  9 `geo-source-*`. Test d'intégration du pipeline ca-qc réel relocalisé dans `americas`.
+- **E** — `apps/site` (`buildInventory([americas, europe])` + deps), scripts racine (`@sentropic/geo`),
+  `npm-publish.yml` (5 packages, ordre deps), `pages.yml` (paths), `Dockerfile`/entrypoint/`job-fetch`
+  (chemins `dist/cli/cli.js` + `dist/api/server.js`, bin `geo` inchangé), docs (backlog + cette ADR).
+
+**Résultat.** 5 packages publiables : `geo-core` → `geo` → `geo-sources-americas`/`geo-sources-europe`/
+`geo-ui-svelte`. `npm run verify` EXIT=0, **363 tests**, 0 erreur type/svelte-check, **0 cycle topo**. Le bin
+`geo` résout les 13 sources et les recettes `ca-qc/sda` de bout en bout (smoke OK). **Rien mergé sur `main`,
+rien publié.**
+
+**Différé / réversible.** La **conversion des normaliseurs simples en `fieldMap`** (SDA, ca-provinces,
+fr-régions/départements) est différée : les recettes bespoke sont conservées intactes ; le normaliseur générique
+existe mais n'est encore câblé sur aucune source. À reprendre incrémentalement, source par source, chacune sous
+garde de test.
+
+**Conséquences.** Met en œuvre [ADR-0017]. Aucune décision d'architecture nouvelle (exécution conforme).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor

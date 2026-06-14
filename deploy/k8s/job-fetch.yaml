@@ -44,7 +44,7 @@ spec:
           envFrom:
             - secretRef:
                 name: geo-s3-credentials
-          # `geo` is on PATH (symlinked to packages/geo-cli/dist/cli.js).
+          # `geo` is on PATH (symlinked to packages/geo/dist/cli/cli.js).
           command:
             - /bin/sh
             - -c

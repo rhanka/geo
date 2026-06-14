@@ -15,7 +15,9 @@ on:
     paths:
       - "apps/site/**"
       - "packages/geo-ui-svelte/**"
-      - "packages/geo-sources/**"
+      - "packages/geo/**"
+      - "packages/geo-sources-americas/**"
+      - "packages/geo-sources-europe/**"
       - "packages/geo-core/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -57,9 +59,9 @@ jobs:
 
       # Build ALL workspace packages first, in topological order, so every
       # dependency the site resolves to dist/ exists before SSR/prerender.
-      # The site imports @sentropic/geo-sources (the /sources catalogue), which
-      # aggregates the geo-source-* packages; the previous partial list
-      # (geo-core + geo-ui-svelte) missed it → ERR_MODULE_NOT_FOUND on prerender.
+      # The site imports @sentropic/geo/catalog plus the continent registries
+      # (@sentropic/geo-sources-americas / -europe) for the /sources catalogue
+      # (ADR-0017); a partial build would → ERR_MODULE_NOT_FOUND on prerender.
       - name: Build workspace packages (topological order)
         run: npm run build
 
