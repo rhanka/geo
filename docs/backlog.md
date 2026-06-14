@@ -48,6 +48,17 @@ périmètre dans `/tmp/etude-geo/separation.md`. Chunks :
 - **Lot 4** : **StatCan census profile** + **orthophotos** + cadastre allégé SDA.
 - Garde-fous : anti-PII (Loi 25), anti-invention, OSM=ODbL → recettes/URLs only. immo = consommateur.
 
+## P-dataviz — Composant carte WebGL géo + showcase geo.sent-tech.ca  ⬜ **priorité haute** ([ADR-0014])
+Pilotage Opus-4.8, **double-revue 4.8**, décisions réversibles. Phases : **spec → consensus → build →
+publish (main) → deploy (GitHub Pages site + k8s API)**.
+- `@sentropic/geo-ui-svelte` : composant **`GeoMap` WebGL** (classe deck.gl) remplaçant Leaflet/raster —
+  basemap vectoriel + couches admin + données QC + dataviz géo (choroplèthe, projection sur routes).
+  Ontologie-agnostique (catégories labellisées+colorées + schéma détail passés par le consommateur).
+- `apps/site` (geo.sent-tech.ca) : showcase des composants dataviz géo + parcours des géographies,
+  format design-system ; recherche en haut (graphify), légende+bulle, panneau détail dépliable, FR.
+- Frontière dataviz/geo + composants DS (légende+bulle, search, chrome) : coordination h2a en cours.
+- Cas d'usage immo : remplace SignauxMapView (labels FR, types lisibles, détail citation/pdf/meta).
+
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜
 Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
 
