@@ -169,6 +169,57 @@ describe("acquire", () => {
     expect(result.collection.features[0]?.properties.level).toBe("region");
   });
 
+  it("acquires a geometry-bearing gpkg/shp dataset as a referential collection", async () => {
+    const manifest: SourceManifest = {
+      ...arcgisManifest(),
+      datasets: [
+        {
+          id: "fsa",
+          title: "Forward Sortation Areas",
+          format: "shp",
+          url: "https://data.test/lfsa000b21a_e.zip",
+          crs: "EPSG:3347",
+          layer: "lfsa000b21a_e",
+          query: { simplify: 50 },
+        },
+      ],
+    };
+    const fetchImpl = vi.fn(async () =>
+      new Response("PK fake zip", { status: 200, statusText: "OK" }),
+    ) as unknown as typeof fetch;
+    const gdalRunner: CommandRunner = async (file, args) => {
+      if (file === "ogrinfo") return { stdout: "1: lfsa000b21a_e (Multi Polygon)", stderr: "" };
+      const outPath = args[args.length - 3];
+      if (typeof outPath === "string") await writeFile(outPath, JSON.stringify(SAMPLE));
+      return { stdout: "", stderr: "" };
+    };
+    // A referential normalizer keeps geometry but emits ReferentialProperties
+    // (no required admin `level`) — e.g. postal FSA areas.
+    const referentialNormalizer = (raw: unknown) => {
+      const fc = raw as FeatureCollection;
+      return {
+        type: "FeatureCollection" as const,
+        features: fc.features.map((f, i) => ({
+          type: "Feature" as const,
+          geometry: f.geometry,
+          properties: { country: "CA", fsa: `A${i}A` },
+        })),
+      };
+    };
+
+    const result = await acquire(manifest, "fsa", {
+      cacheDir,
+      fetchImpl,
+      gdalRunner,
+      referentialNormalizer,
+    });
+
+    expect(result.meta.count).toBe(2);
+    expect(result.collection.features[0]?.properties.fsa).toBe("A0A");
+    // Geometry is preserved (referential WITH geometry, unlike CSV referentials).
+    expect(result.collection.features[0]?.geometry).not.toBeNull();
+  });
+
   it("throws when a gpkg dataset omits a string layer", async () => {
     const manifest: SourceManifest = {
       ...arcgisManifest(),
