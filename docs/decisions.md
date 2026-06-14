@@ -136,6 +136,30 @@ alors que le cœur est centré géométrie (`AdminFeatureCollection`). Décision
 Marqué `revisit` : à confirmer/affiner quand un 2e pays postal sera fait (éventuelle lib
 `geo-referential` de crosswalk, différée jusqu'à ≥2 pays — [ADR-0002]).
 
+## ADR-0012 — Stockage des données normalisées sur object storage S3 (Scaleway) · accepted · 2026-06-13
+
+**Contexte.** Committer des géométries dans git ne passe pas à l'échelle mondiale (cf [ADR-0010],
+ca-provinces 17.8 Mo) — « pas utile de scraper si on ne stocke pas sur S3 ». La valeur du scraping
+est un **store durable et servable**.
+**Décision.** La donnée normalisée **canonique** vit sur **Scaleway Object Storage** (S3-compatible,
+`s3.fr-par.scw.cloud`), bucket `geo-data`, préfixes `normalized/<source>/<dataset>.geojson` +
+`.meta.json` + un `catalog.json` index. **git ne stocke plus aucune géométrie** — uniquement le code
+(manifests, normalizers), le registre de licences, et au plus un micro-échantillon CI. [ADR-0010]
+est ainsi remplacé : plus de « budget » git, la donnée est sur S3.
+**Architecture.**
+1. **`@sentropic/geo-storage`** (nouveau package) : interface `Store` (`get`/`put`/`list`/`has`) avec
+   `FsStore` (local, dev/CI) et `S3Store` (prod, dep `@aws-sdk/client-s3`, endpoint Scaleway custom).
+2. **`geo-acquire`/CLI** : `writeNormalized` cible un `Store` ; `geo fetch --out fs:./data/normalized | s3://geo-data/normalized`.
+3. **`geo-api`** : `geo serve --data <fs|s3>` ; un `S3Provider`/`StoreProvider` lit depuis le bucket
+   (cache mémoire/disque). Plus de dépendance à un PVC repeuplé from-scratch.
+4. **Deploy** : le Job `geo fetch` **écrit** sur S3 ; l'API **lit** depuis S3. Secret k8s
+   `geo-s3-credentials` (`S3_ACCESS_KEY`/`S3_SECRET_KEY`, endpoint, bucket) — jamais committé. Amende
+   la demande poc-k8s (object storage `geo-data` en `fr-par`, comme radar).
+**Conséquences.** Les données QC/FR déjà committées en git seront **migrées vers S3** (cleanup) ou
+réduites à un échantillon CI. `geo-api` garde le `FileProvider` local pour dev/CI ; `S3Store` pour la
+prod.
+**Revisit.** Choix client S3 (SDK vs léger SigV4), lecture S3 directe vs sync S3→volume, nommage bucket.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
