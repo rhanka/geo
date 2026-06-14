@@ -19,7 +19,7 @@ import type {
   ReferentialFeatureCollection,
 } from "@sentropic/geo-core";
 import { makeGeoId } from "@sentropic/geo-core";
-import type { CsvNormalizer } from "@sentropic/geo-acquire";
+import type { CsvNormalizer } from "@sentropic/geo-core";
 
 /** Trim a CSV cell and return it only when non-empty. */
 function cell(row: Record<string, string>, key: string): string | undefined {
