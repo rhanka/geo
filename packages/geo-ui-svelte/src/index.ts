@@ -10,5 +10,10 @@ export { default as DatasetCard } from "./DatasetCard.svelte";
 export { default as DatasetCatalog } from "./DatasetCatalog.svelte";
 export { default as AttributionBar } from "./AttributionBar.svelte";
 
+export type {
+  GeoCategory,
+  GeoFeatureHit,
+  GeoMapProps,
+} from "./GeoMap.svelte";
 export type { DatasetCardProps } from "./DatasetCard.svelte";
 export type { AttributionBarProps } from "./AttributionBar.svelte";
