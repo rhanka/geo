@@ -11,6 +11,8 @@ export const VERSION = "0.1.0";
 export { createApp } from "./app.js";
 
 export { FileProvider, DEFAULT_DATA_DIR } from "./providers/file-provider.js";
+export { StoreProvider } from "./providers/store-provider.js";
+export { makeProvider, isStoreUri } from "./providers/make-provider.js";
 export { PostgisProvider } from "./providers/postgis-provider.js";
 
 export {
