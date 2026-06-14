@@ -13,11 +13,9 @@
  */
 
 import type {
+  CsvNormalizer,
   ReferentialFeature,
-  ReferentialFeatureCollection,
 } from "@sentropic/geo-core";
-
-import type { NormalizeContext } from "./normalize.js";
 
 export interface ParseCsvOptions {
   /** Field delimiter. Defaults to "," (RFC 4180). Use ";" for many EU files. */
@@ -129,15 +127,9 @@ function parseRecords(text: string, delimiter: string): string[][] {
   return records;
 }
 
-/**
- * A CSV normalizer turns parsed rows into a {@link ReferentialFeatureCollection}
- * (all features carry `geometry: null`). It mirrors {@link Normalizer} but is
- * typed for tabular, geometry-free referentials.
- */
-export type CsvNormalizer = (
-  rows: Record<string, string>[],
-  ctx: NormalizeContext,
-) => ReferentialFeatureCollection;
+// `CsvNormalizer` now lives in geo-core (single source of truth for the
+// normalizer types); re-exported here for back-compat.
+export type { CsvNormalizer };
 
 /** Map a source column to a {@link ReferentialProperties} key, optionally transforming the value. */
 export interface CsvColumnMapping {

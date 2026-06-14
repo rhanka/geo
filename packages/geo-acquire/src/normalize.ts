@@ -8,32 +8,27 @@
 
 import type {
   AdminFeature,
-  AdminFeatureCollection,
   AdminLevel,
   AdminProperties,
-  DatasetManifest,
   Feature,
   Geometry,
   GeoJsonProperties,
-  SourceManifest,
+  NormalizeContext,
+  Normalizer,
 } from "@sentropic/geo-core";
-import { isAdminLevel, isFeatureCollection, makeGeoId } from "@sentropic/geo-core";
+import {
+  featuresToCollection,
+  isAdminLevel,
+  isFeatureCollection,
+  makeGeoId,
+} from "@sentropic/geo-core";
 
-/** Context handed to every {@link Normalizer}. */
-export interface NormalizeContext {
-  manifest: SourceManifest;
-  dataset: DatasetManifest;
-}
-
-/** Transforms a raw payload into a normalized administrative collection. */
-export type Normalizer = (raw: unknown, ctx: NormalizeContext) => AdminFeatureCollection;
-
-/** Wrap a list of normalized features into an {@link AdminFeatureCollection}. */
-export function featuresToCollection(
-  features: AdminFeature[],
-): AdminFeatureCollection {
-  return { type: "FeatureCollection", features };
-}
+// `featuresToCollection`, the `Normalizer`/`NormalizeContext` types now live in
+// geo-core (so continent source recipes depend on geo-core alone, breaking the
+// cycle). Re-exported here for back-compat with existing `@sentropic/geo-acquire`
+// importers.
+export { featuresToCollection };
+export type { NormalizeContext, Normalizer };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return typeof value === "object" && value !== null && !Array.isArray(value)
