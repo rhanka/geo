@@ -13,6 +13,7 @@
  */
 
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 
 import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
 
@@ -65,6 +66,11 @@ function parseBBox(
 /** Construct the OGC API – Features app backed by the given provider. */
 export function createApp(provider: FeatureProvider): Hono {
   const app = new Hono();
+
+  // Public, read-only open-data API: allow any origin so the static site
+  // (GitHub Pages geo.sent-tech.ca) and third-party consumers can fetch
+  // cross-origin. No credentials are used, so a permissive policy is safe.
+  app.use("*", cors());
 
   // ── Landing page ──────────────────────────────────────────────────────────
   app.get("/", (c) => {
