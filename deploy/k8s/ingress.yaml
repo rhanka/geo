@@ -1,10 +1,15 @@
-# Ingress exposing geo-api at https://geo.sent-tech.ca through the shared
+# Ingress exposing geo-api at https://api.geo.sent-tech.ca through the shared
 # Traefik v3 controller, with a cert-manager-issued Let's Encrypt certificate.
+#
+# The apex geo.sent-tech.ca is the static site (served by GitHub Pages, see
+# .github/workflows/pages.yml); the API lives on the api. subdomain so the two
+# can coexist on the same domain.
 #
 # Cluster contract (owned by poc-k8s):
 #   - Traefik v3 is the single shared ingress controller / LB.
 #   - cert-manager ClusterIssuer `letsencrypt-prod` issues certs for the
 #     sent-tech.ca DNS zone.
+#   - DNS `api.geo.sent-tech.ca` must point at the shared LB.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -20,10 +25,10 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - geo.sent-tech.ca
+        - api.geo.sent-tech.ca
       secretName: geo-api-tls
   rules:
-    - host: geo.sent-tech.ca
+    - host: api.geo.sent-tech.ca
       http:
         paths:
           - path: /

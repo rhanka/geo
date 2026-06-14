@@ -1,0 +1,79 @@
+name: Pages
+
+# Build the public SvelteKit site (apps/site, adapter-static) and deploy it to
+# GitHub Pages. The site serves the apex custom domain geo.sent-tech.ca (CNAME
+# baked in via apps/site/static/CNAME) and calls the API on the subdomain
+# https://api.geo.sent-tech.ca, which is the k8s geo-api ingress.
+#
+# This is independent of:
+#   - ci.yml          (build/typecheck/test on every push + PR)
+#   - npm-publish.yml  (release the npm packages)
+#   - docker-publish.yml (build/push the geo-api image)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/site/**"
+      - "packages/geo-ui-svelte/**"
+      - "packages/geo-core/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# Least-privilege for GitHub Pages: write the Pages deployment and mint the
+# OIDC token deploy-pages needs. No other scope is required.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent Pages deployment; let an in-flight run finish
+# rather than cancelling a partially published deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Baked into the static build: the deployed site fetches the OGC API from
+      # the api subdomain (the k8s geo-api ingress). Read by apps/site via
+      # $env/dynamic/public (src/lib/catalog.ts).
+      PUBLIC_GEO_API_URL: https://api.geo.sent-tech.ca
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Build the site's workspace dependencies first (geo-core feeds the
+      # license model used by the catalog; geo-ui-svelte the components).
+      - name: Build dependencies
+        run: npm run build -w @sentropic/geo-core -w @sentropic/geo-ui-svelte
+
+      - name: Build site
+        run: npm --workspace @sentropic/geo-site run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/site/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
