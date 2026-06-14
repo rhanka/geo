@@ -1,0 +1,23 @@
+{
+  "name": "@sentropic/geo-source-ca-qc-cadastre",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cadastre allégé du Québec (SDA/Infolot MapServer) — recette/manifest capitalisé depuis radar-immobilier (ADR-0013). L'API lots+scoring reste côté immo.",
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/rhanka/geo.git", "directory": "packages/geo-source-ca-qc-cadastre" },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/geo-core": "^0.1.0",
+    "@sentropic/geo-acquire": "^0.1.0"
+  }
+}
