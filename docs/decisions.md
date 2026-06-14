@@ -259,6 +259,47 @@ publié `Cell = string|number|boolean|null` n'admet pas l'objet géométrie atte
 tant qu'il n'y a qu'un seul consommateur. geo conserve donc un **cast `as unknown as Cell` (1 ligne,
 documentée)** comme soupape — réversible : si dataviz élargit `Cell`, le cast est retiré.
 
+## ADR-0017 — Refonte de la taxonomie des packages (sources = manifestes data, ≤5 libs continent) · accepted · 2026-06-14 · **supersede ADR-0002**
+
+**Contexte.** [ADR-0002] = 1 package npm par juridiction (+ `kind`). À l'échelle mondiale → **explosion** :
+le QC seul (1106 munis × niveaux), a fortiori la planète, ferait des milliers/dizaines de milliers de
+packages. Feedback user : « avec le QC à l'atome ça fait ~20000 packages, ça va pas » ; « max ~5 libs de
+sources (une par continent), 2-3 pour le reste » ; « lazy, pas charger des To ».
+
+**Décision (réversible).** Découpler « ajouter une juridiction » de « publier un package ».
+- **Une source = un MANIFESTE** (`SourceManifest`, donnée). Un **normaliseur générique piloté par `fieldMap`**
+  (dans `geo`) traite la majorité des sources sans code. Le code **bespoke** (rare : jointure StatCan CSD,
+  XML MAMH, `.7z` IGN) vit dans la lib du continent, référencé par `recipe: "<id>"`. **Ajouter un pays /
+  niveau / ville = ajouter un manifeste, jamais un package.**
+- **Packages publiés (plafond ~11, constant vs nombre de juridictions)** :
+  - `@sentropic/geo-core` — modèle/types/licences/schéma manifeste/catalogue. **Léger, browser-safe**
+    (importé par le front).
+  - `@sentropic/geo` — moteur Node : acquire (download/GDAL/CSV/`.7z`/arcgis) + storage (S3/fs) + **API OGC
+    `createApp`** + **CLI** (bin). **Node-only, deps lourdes isolées.** Fusionne
+    geo-acquire+geo-storage+geo-sources+geo-api+geo-cli.
+  - `@sentropic/geo-ui-svelte` (+ `-react`/`-vue` plus tard) — composant `GeoMap`. `geo-ui-core` (pilote de
+    rendu framework-agnostique) **extrait au 2ᵉ port** (`choropleth.ts`/`point-layers.ts`/`dataviz-adapter.ts`
+    sont déjà neutres → simple déplacement).
+  - `@sentropic/geo-sources-<continent>` (≤5 : americas/europe/asia/africa/oceania) — manifestes (data) +
+    recettes bespoke du continent.
+- **Données jamais en package** — S3 uniquement, lues **par collection à la demande** (OGC `bbox`/`limit`,
+  `geo fetch <une-source>`). Lazy de bout en bout ; le front n'installe que `geo-core` + `geo-ui-svelte`.
+- **Moteur WebGL** = `maplibre-gl` (**BSD-3-Clause**) + `deck.gl` (**MIT**) en **`peerDependencies`** (browser,
+  partagées, non embarquées → nos packages restent **MIT purs**). Pilote = `geo-ui-core`. **geo3D / WebGPU =
+  piste future** (couche deck.gl/luma.gl custom), **jamais un moteur from-scratch** (ROI défavorable ;
+  deck.gl couvre déjà 3D Tiles/point clouds/glTF/extrusions, MapLibre le terrain/globe).
+
+**Premier publish (couverture CA/QC/FR) = 5** : `geo-core`, `geo`, `geo-ui-svelte`, `geo-sources-americas`
+(CA+QC), `geo-sources-europe` (FR). (vs 16.)
+
+**Migration.** Consolidation 16→5 sur branche `refactor/packages-v2`, pilotée par agents Opus 4.8 +
+double-revue ; **préserver la logique testée (352 tests)** ; convertir les sources simples en manifestes
+`fieldMap`, garder les complexes en `recipe`. Staged et réversible (rien n'est publié).
+
+**Conséquences.** Supersede [ADR-0002]. Conserve : [ADR-0011] (`kind` → champ de manifeste), [ADR-0012]
+(données S3), [ADR-0013] (capitalisation immo, scope `@sentropic`, MIT), [ADR-0014]/[ADR-0015]/[ADR-0016]
+(carte WebGL, builders dataviz-core).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
