@@ -14,7 +14,7 @@ import {
   writeNormalizedToStore as defaultWriteNormalizedToStore,
   type AcquireOptions,
   type CommandRunner,
-} from "@sentropic/geo-acquire";
+} from "@sentropic/geo/acquire";
 import type {
   AdminFeatureCollection,
   NormalizedDataset,
@@ -24,7 +24,7 @@ import {
   createStore as defaultCreateStore,
   parseStoreUri,
   type Store,
-} from "@sentropic/geo-storage";
+} from "@sentropic/geo/storage";
 
 import { defaultRegistry, getSource, type RegisteredSource } from "../registry.js";
 import { resolveDataDir } from "../paths.js";

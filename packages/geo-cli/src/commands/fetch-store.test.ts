@@ -5,7 +5,7 @@
  * ever constructed (an injected store + injected `createStore` keep it hermetic).
  */
 
-import type { PutOptions, Store } from "@sentropic/geo-storage";
+import type { PutOptions, Store } from "@sentropic/geo/storage";
 import { describe, expect, it, vi } from "vitest";
 
 import { fetchSource } from "./fetch.js";

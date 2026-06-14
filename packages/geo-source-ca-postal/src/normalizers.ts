@@ -29,7 +29,7 @@ import type {
   ReferentialProperties,
 } from "@sentropic/geo-core";
 import { isFeatureCollection, makeGeoId } from "@sentropic/geo-core";
-import type { NormalizeContext } from "@sentropic/geo-acquire";
+import type { NormalizeContext } from "@sentropic/geo-core";
 
 /**
  * PRUID → ISO 3166-2 postal abbreviation. The ISO subdivision code is

@@ -1,5 +1,5 @@
 import { validateSourceManifest } from "@sentropic/geo-core";
-import { sha256Hex } from "@sentropic/geo-acquire";
+import { sha256Hex } from "@sentropic/geo";
 import { describe, expect, it } from "vitest";
 
 import {

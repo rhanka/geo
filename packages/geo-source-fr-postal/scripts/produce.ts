@@ -37,8 +37,8 @@ import {
   download,
   parseCsv,
   writeNormalized,
-  type NormalizeContext,
-} from "@sentropic/geo-acquire";
+} from "@sentropic/geo/acquire";
+import type { NormalizeContext } from "@sentropic/geo-core";
 
 import { DATASET_CODES_POSTAUX, manifest } from "../src/manifest.js";
 import { codesPostauxNormalizer } from "../src/normalizers.js";

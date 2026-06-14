@@ -23,7 +23,7 @@ import type {
   GeoJsonProperties,
 } from "@sentropic/geo-core";
 import { isFeatureCollection, makeGeoId } from "@sentropic/geo-core";
-import { featuresToCollection, type Normalizer } from "@sentropic/geo-acquire";
+import { featuresToCollection, type Normalizer } from "@sentropic/geo-core";
 
 /** ISO 3166-2 subdivision code for Québec. */
 const QC_ISO = "CA-QC";

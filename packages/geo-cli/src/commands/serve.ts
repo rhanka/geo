@@ -20,7 +20,7 @@ import {
   FileProvider,
   type FeatureProvider,
 } from "@sentropic/geo-api";
-import { createStore as defaultCreateStore } from "@sentropic/geo-storage";
+import { createStore as defaultCreateStore } from "@sentropic/geo/storage";
 
 import { resolveDataDir } from "../paths.js";
 

@@ -13,7 +13,7 @@
  * time never requires a live S3.
  */
 
-import { createStore, type CreateStoreOptions } from "@sentropic/geo-storage";
+import { createStore, type CreateStoreOptions } from "@sentropic/geo/storage";
 
 import { FileProvider } from "./file-provider.js";
 import { StoreProvider } from "./store-provider.js";

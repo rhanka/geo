@@ -12,7 +12,7 @@ import type {
   CollectionMeta,
   ReferentialFeatureCollection,
 } from "@sentropic/geo-core";
-import type { Store } from "@sentropic/geo-storage";
+import type { Store } from "@sentropic/geo/storage";
 
 import { createApp } from "../app.js";
 import { StoreProvider } from "./store-provider.js";

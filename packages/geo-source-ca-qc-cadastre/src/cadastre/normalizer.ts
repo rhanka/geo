@@ -31,7 +31,7 @@ import type {
   GeoJsonProperties,
 } from "@sentropic/geo-core";
 import { isFeatureCollection, makeGeoId } from "@sentropic/geo-core";
-import { featuresToCollection, type Normalizer } from "@sentropic/geo-acquire";
+import { featuresToCollection, type Normalizer } from "@sentropic/geo-core";
 
 /** geoId segment for a cadastral lot (`ca/qc/lot/<noLot>`). */
 export const CADASTRE_GEOID_KIND = "lot";
