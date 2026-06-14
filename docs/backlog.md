@@ -30,6 +30,14 @@ collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, 
 
 **P0 livré** : `npm run verify` vert (geo-core 19 / geo-acquire 31 / geo-api 18 / geo-source-ca-qc 8 / geo-cli 30 tests) ; `GET /collections/qc-municipalites/items` → 1343 features GeoJSON servies par l'API. Reste : déploiement (P6) pour l'exposer publiquement.
 
+## P-S3 — Stockage object storage (S3 Scaleway)  ⬜ **priorité haute** ([ADR-0012])
+Fondation manquante : la donnée scrappée doit vivre sur **S3** (Scaleway Object Storage), pas dans git.
+- `@sentropic/geo-storage` : `Store` (`get/put/list/has`) + `FsStore` (dev/CI) + `S3Store` (`@aws-sdk/client-s3`, endpoint `s3.fr-par.scw.cloud`).
+- `geo-acquire`/CLI : `writeNormalized` → `Store` ; `geo fetch --out s3://geo-data/normalized`.
+- `geo-api` : `geo serve --data s3://…` (provider lit le bucket, cache).
+- Deploy : Job `geo fetch` **écrit** S3 ; API **lit** S3 ; secret `geo-s3-credentials`. Amende PR poc-k8s #30 (bucket `geo-data` fr-par).
+- Migration : retirer les géométries committées (QC/FR) de git → S3 (garder au plus un échantillon CI).
+
 ## P1 — Durcissement API + site pour la collection municipalités  ⬜
 Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
 
