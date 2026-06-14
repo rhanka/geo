@@ -30,6 +30,7 @@ import {
   DEFAULT_SIMPLIFY_TOLERANCE,
   type CommandRunner,
   type GdalFormat,
+  archiveKindFromPath,
   extractLayerToGeoJson,
 } from "./gdal.js";
 import { assertRedistributable } from "./license-gate.js";
@@ -166,7 +167,10 @@ async function acquireRawViaGdal(
     archivePath: result.cachePath,
     layer: dataset.layer,
     tolerance,
+    archiveKind: archiveKindFromPath(dataset.url),
   };
+  const inner = dataset.query?.["inner"];
+  if (typeof inner === "string") extractOpts.inner = inner;
   if (runner !== undefined) extractOpts.runner = runner;
 
   const { geojson } = await extractLayerToGeoJson(extractOpts);

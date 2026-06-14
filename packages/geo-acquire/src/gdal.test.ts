@@ -1,10 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  archiveKindFromPath,
+  build7zExtractArgs,
   buildOgr2OgrArgs,
   extractLayerToGeoJson,
   listLayers,
   parseOgrinfoLayers,
+  run7zExtract,
   runOgr2Ogr,
   vsizipPath,
   type CommandRunner,
@@ -201,5 +204,79 @@ describe("extractLayerToGeoJson", () => {
     const ogr2ogrCall = runner.calls.find((c) => c.file === "ogr2ogr");
     expect(ogr2ogrCall?.args.at(-1)).toBe("regio_s");
     expect(ogr2ogrCall?.args.at(-2)).toMatch(/^\/vsizip\//);
+  });
+
+  it("extracts a .7z archive with 7z then runs ogr2ogr on the real file", async () => {
+    const runner = fakeRunner({
+      ogrinfo: { stdout: "1: COMMUNE (Multi Polygon)" },
+      ogr2ogr: {},
+      "7z": {},
+    });
+    const fc = { type: "FeatureCollection", features: [] };
+
+    const result = await extractLayerToGeoJson({
+      archivePath: "/tmp/ADMIN-EXPRESS.7z",
+      archiveKind: "7z",
+      inner: "ADMIN-EXPRESS/admin.gpkg",
+      layer: "COMMUNE",
+      tolerance: 0.001,
+      runner,
+      readJson: async () => fc,
+    });
+
+    expect(result.geojson).toEqual(fc);
+    // 7z extraction runs before any GDAL call.
+    expect(runner.calls[0]?.file).toBe("7z");
+    expect(runner.calls[0]?.args).toContain("/tmp/ADMIN-EXPRESS.7z");
+    // The GDAL source is the extracted real file, NOT a /vsizip/ path.
+    const ogr2ogrCall = runner.calls.find((c) => c.file === "ogr2ogr");
+    expect(ogr2ogrCall?.args.at(-2)).not.toMatch(/^\/vsizip\//);
+    expect(ogr2ogrCall?.args.at(-2)).toMatch(/admin\.gpkg$/);
+  });
+
+  it("rejects a .7z archive without an inner path", async () => {
+    await expect(
+      extractLayerToGeoJson({
+        archivePath: "/tmp/a.7z",
+        archiveKind: "7z",
+        layer: "X",
+        tolerance: 1,
+        runner: fakeRunner({}),
+        readJson: async () => ({}),
+      }),
+    ).rejects.toThrow(/\.7z archives require an "inner" path/);
+  });
+});
+
+describe("archiveKindFromPath", () => {
+  it("detects .7z (incl. query/hash) and defaults to zip", () => {
+    expect(archiveKindFromPath("https://x/ADMIN.7z")).toBe("7z");
+    expect(archiveKindFromPath("https://x/ADMIN.7z?token=1")).toBe("7z");
+    expect(archiveKindFromPath("https://x/SDA.gpkg.zip")).toBe("zip");
+    expect(archiveKindFromPath("https://x/file.shp.zip")).toBe("zip");
+  });
+});
+
+describe("build7zExtractArgs / run7zExtract", () => {
+  it("builds `7z x -y -bd -o<dir> <archive>`", () => {
+    expect(build7zExtractArgs("/tmp/a.7z", "/tmp/work")).toEqual([
+      "x",
+      "-y",
+      "-bd",
+      "-o/tmp/work",
+      "/tmp/a.7z",
+    ]);
+  });
+
+  it("throws a clear error when 7z is absent (ENOENT)", async () => {
+    await expect(run7zExtract("/tmp/a.7z", "/tmp/work", enoentRunner("7z"))).rejects.toThrow(
+      /7z required for \.7z archives \(apt-get install p7zip-full\)/,
+    );
+  });
+
+  it("surfaces stderr on a non-zero exit", async () => {
+    await expect(
+      run7zExtract("/tmp/a.7z", "/tmp/work", failingRunner("7z", "Cannot open archive")),
+    ).rejects.toThrow(/7z extraction failed.*Cannot open archive/s);
   });
 });
