@@ -12,7 +12,7 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ---
 
-## État (2026-06-14) — code mergé sur `main`, Pages déployé ; npm + DNS user-gated (352 tests)
+## État (2026-06-15) — npm PUBLIÉ (5 packages @0.1.0) · refactor + zones/lots mergés sur `main` (407 tests)
 
 **Livré** (tout mergé sur **`main`** `10d2147`, CI verte) :
 - **Lib** : `geo-core` (modèle/standards/licences/Source Manifest/référentiel), `geo-acquire`
@@ -31,14 +31,18 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
   Dockerfile + `deploy/k8s/` (API S3) + workflows CI / npm-publish (OIDC) / docker-publish (tag `v*` = npm + image).
 - **Gouvernance** : ADR-0001→0015, registre de licences, ce backlog.
 
+**Publié** ✅ : les **5 packages `@sentropic/geo*@0.1.0`** sont sur npm (geo-core, geo, geo-sources-americas,
+geo-sources-europe, geo-ui-svelte ; 1er publish manuel via token bootstrap révoqué). immo les consomme déjà.
+
 **Reste — dépend de TOI (user-gated)** :
-- 🔑 **npm Trusted Publishing** : org `@sentropic` existe déjà (dataviz) ; ajouter le trusted publisher
-  (GitHub Actions · `rhanka/geo` · `npm-publish.yml`) pour les 8 packages `@sentropic/geo-*`. Puis je pousse
-  `git tag v0.1.0` → publie les 8 packages npm **+** l'image `geo-api` (un seul tag). Versions déjà à 0.1.0.
-- 🌐 **DNS** (zone `sent-tech.ca`) : `geo.sent-tech.ca` → CNAME `rhanka.github.io` (site, HTTPS auto ensuite) ;
-  `api.geo.sent-tech.ca` → A/CNAME vers le LoadBalancer du cluster poc-k8s (ingress Traefik du tenant geo).
-- ☸️ **Appliquer `deploy/k8s/`** sur le tenant geo (après image publiée + DNS api) — accès `kubectl` ou GitOps poc-k8s.
-- ✅ GO pour qu'immo bascule `SignauxMapView`→`GeoMap` (immo attend ton feu vert).
+- 🌐 **DNS** (zone `sent-tech.ca`) : `geo.sent-tech.ca` → CNAME `rhanka.github.io` (site Pages, HTTPS auto) ;
+  `api.geo.sent-tech.ca` → A/CNAME vers le LoadBalancer du cluster poc-k8s (ingress Traefik tenant geo).
+- 🐳 **Image API** : `docker-publish` bloqué — ajouter secrets `SCW_REGISTRY_USERNAME` (=`nologin`) +
+  `SCW_SECRET_KEY` (clé Scaleway avec perm Container Registry) sur `rhanka/geo`, puis re-dispatch.
+- ☸️ **Appliquer `deploy/k8s/`** sur le tenant geo (après image + DNS api) — accès `kubectl` ou GitOps poc-k8s.
+- 🔧 **`geo@0.1.1`** : republier pour réintégrer le `bin geo` (npm 11 l'a retiré au 1er publish ; CLI OK via
+  Docker/local en attendant) — nécessite auth/2FA.
+- ✅ GO immo : `SignauxMapView`→`GeoMap` (immo consomme déjà la lib npm ; bascule UI parallèle prudente).
 
 **Reste — polish optionnel (autonome, faible priorité)** :
 - inc.4 basemap **PMTiles** auto-hébergé (le MVP marche sur fond tokenisé) ; inc.5 **projection routière**
@@ -49,8 +53,8 @@ sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `
 
 ## Refactor packages 16→5 (`refactor/packages-v2`, ADR-0017/0018) — ✅ exécuté (363 tests)
 
-Consolidation de la taxonomie 16→**5 packages** (branche `refactor/packages-v2`, non mergée,
-rien publié) — voir [ADR-0017](decisions.md) (décision) + [ADR-0018](decisions.md) (exécution).
+Consolidation de la taxonomie 16→**5 packages** — **mergée sur `main` + publiée npm @0.1.0** — voir
+[ADR-0017](decisions.md) (décision) + [ADR-0018](decisions.md) (exécution).
 
 - **Phase A** ✅ (`20bf694`) — `geo-core` : types `FieldMap`/`recipe?`/`SourceRegistry`/`NormalizerFn`
   + `featuresToCollection` déplacé ici (casse le cycle recettes→engine).
@@ -70,10 +74,28 @@ rien publié) — voir [ADR-0017](decisions.md) (décision) + [ADR-0018](decisio
 
 **5 packages cibles** : `geo-core`, `geo`, `geo-ui-svelte`, `geo-sources-americas`, `geo-sources-europe`.
 **Différé (réversible)** : conversion des normaliseurs simples en `fieldMap` (recettes conservées telles
-quelles). `npm run verify` EXIT=0, **363 tests**, 0 cycle topo. Rien mergé/publié (branche dédiée).
+quelles). `npm run verify` EXIT=0, 0 cycle topo. **Mergé sur `main` + 5 packages publiés npm @0.1.0.**
 
 > **MAJ npm-publish** : la liste passe de 8 à **5 packages** ; le « npm Trusted Publishing » ci-dessus
 > vise désormais ces 5 (`geo-core`, `geo`, `geo-sources-americas`, `geo-sources-europe`, `geo-ui-svelte`).
+
+---
+
+## Chantier zones+lots (acquisition intra-ville, cadrage immo) — A/C/B livrés, mergés sur `main` (407 tests)
+
+geo owne l'**acquisition géo générique** (cadastre lots + zonage), immo consomme + garde la résolution
+métier temporelle (Loi 25, jointure rôle↔lot). Mergé sur `main` (`101fa85`).
+- **Lot A** ✅ (`21a6edb`) — **crawler ArcGIS REST générique** `crawlArcgisLayer` (pagination offset +
+  bbox tiling, throttle+backoff Retry-After, outSR=4326, provenance ; fetch/sleep/now injectables, hermétique).
+  Primitive réutilisable (zonage T1 + gros cadastre).
+- **Lot C** ✅ (`b85b757`) — **cadastre allégé province-wide** `crawlQcCadastreLots` (bbox tiling sur
+  `QC_EXTENT`, params spatiaux ESRI contournant le 404 `where=1=1`, `NO_LOT` verbatim ; ids/clés S3 inchangés).
+- **Lot B** ✅ (`101fa85`) — **adapter CKAN Données Québec** (`searchCkanPackages` / `resolveGeoResources` /
+  `acquireCkanGeoJson`, GeoJSON ; SHP/GPKG→GDAL documenté) + exemple zonage Longueuil (ids CKAN `TODO: confirmer`).
+- **Lot D** ⏳ — `GeoSourceInventory`→geo + script de recensement de plateformes (ArcGIS/CKAN/JMap/PDF) :
+  **partiellement bloqué** (annuaire des sites web municipaux requis). Suivi.
+- **À confirmer (réseau)** : ids/URLs CKAN réels par ville ; câblage des manifestes zonage dans le registre ;
+  enrichissement T3 JMap (cas par cas) ; T5 PDF = fallback semi-manuel (hors scraper).
 
 ---
 
