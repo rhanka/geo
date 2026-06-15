@@ -43,6 +43,22 @@ export {
 // ArcGIS REST fetcher.
 export { ARCGIS_QUERY_DEFAULTS, arcgisQueryUrl } from "./arcgis.js";
 
+// Generic, paginating ArcGIS REST crawler (throttle + backoff, offset/bbox).
+export {
+  ARCGIS_DEFAULT_BACKOFF_BASE_MS,
+  ARCGIS_DEFAULT_MAX_PAGES,
+  ARCGIS_DEFAULT_MAX_RETRIES,
+  ARCGIS_DEFAULT_PAGE_SIZE,
+  ARCGIS_DEFAULT_THROTTLE_MS,
+  bboxToExtent,
+  crawlArcgisLayer,
+  type ArcgisCrawlOptions,
+  type ArcgisCrawlProvenance,
+  type ArcgisCrawlResult,
+  type ArcgisCrawlStrategy,
+  type ArcgisExtent,
+} from "./arcgis-crawl.js";
+
 // GDAL-backed bulk acquisition (gpkg/shp/fgdb).
 export {
   DEFAULT_SIMPLIFY_TOLERANCE,
