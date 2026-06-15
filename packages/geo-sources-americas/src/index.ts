@@ -40,6 +40,13 @@ export {
   parseQcCivicAddresses,
   fetchRoleXml,
 } from "./ca-qc-civic/index.js";
+// Province-wide cadastre acquisition entry point (bbox-tiling crawl).
+export {
+  crawlQcCadastreLots,
+  QC_EXTENT,
+  type CrawlQcCadastreLotsOptions,
+  type CrawlQcCadastreLotsResult,
+} from "./ca-qc-cadastre/index.js";
 
 /**
  * The Americas source registry. Manifests (with `recipe` tags injected) plus the
