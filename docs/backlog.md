@@ -91,7 +91,10 @@ métier temporelle (Loi 25, jointure rôle↔lot). Mergé sur `main` (`101fa85`)
 - **Lot C** ✅ (`b85b757`) — **cadastre allégé province-wide** `crawlQcCadastreLots` (bbox tiling sur
   `QC_EXTENT`, params spatiaux ESRI contournant le 404 `where=1=1`, `NO_LOT` verbatim ; ids/clés S3 inchangés).
 - **Lot B** ✅ (`101fa85`) — **adapter CKAN Données Québec** (`searchCkanPackages` / `resolveGeoResources` /
-  `acquireCkanGeoJson`, GeoJSON ; SHP/GPKG→GDAL documenté) + exemple zonage Longueuil (ids CKAN `TODO: confirmer`).
+  `acquireCkanGeoJson`, GeoJSON ; SHP/GPKG→GDAL documenté).
+- **Lot B+** ✅ (`4711008`) — **11 sources zonage QC RÉELLES câblées** (ids CKAN confirmés live, toutes `cc-by`) :
+  Longueuil, Gatineau, Saguenay, Lévis, Trois-Rivières, Sherbrooke, Québec, Repentigny, Rimouski, Rouyn-Noranda,
+  Shawinigan — manifestes par `packageId`, résolution de la ressource GeoJSON via l'adapter au fetch (512 tests).
 - **Lot D** ✅ (`07be0e9`) — `GeoSourceInventory` migré dans `geo/catalog` (types TS + validateur `isGeoSourceInventory`,
   sans Zod, champ `platform` ajouté) + `recenseCkanZonage` (découverte CKAN, idempotent, hermétique) +
   `recensePlatform` (détection par signature d'URL **fournie**). **Bloqué (suivi)** : la découverte auto
