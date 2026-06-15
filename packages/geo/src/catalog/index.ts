@@ -49,3 +49,24 @@ export type {
   RecensePlatformOptions,
 } from "./recense-platform.js";
 export { recensePlatform } from "./recense-platform.js";
+
+// ── ArcGIS Zonage Discovery (Lot E) ───────────────────────────────────────────
+
+export type {
+  ArcgisDiscoveryStatus,
+  ArcgisZonageCoverage,
+  DiscoverArcgisOptions,
+  DiscoverArcgisResult,
+} from "./discover-arcgis.js";
+export {
+  ARCGIS_DISCOVERY_TIMEOUT_MS,
+  ARCGIS_DISCOVERY_VERSION,
+  ARCGIS_SERVER_URL_PATTERNS,
+  ARCGIS_ZONAGE_LAYER_NAME_PATTERNS,
+  ARCGIS_ZONAGE_SERVICE_NAME_PATTERNS,
+  defaultMunicipalDomainGuesser,
+  discoverArcgisZonageServices,
+  filterZonageServices,
+  probeArcgisCatalog,
+  resolveZonageLayer,
+} from "./discover-arcgis.js";
