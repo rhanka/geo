@@ -14,6 +14,13 @@
  * manifest with its normalizers so the `geo` CLI can build a registry and call
  * `acquire(manifest, datasetId, { normalizer: normalizers[datasetId] })`.
  *
+ * Because the province-wide layer 0 **rejects an unbounded `where=1=1` (HTTP
+ * 404)**, the source also exposes a bespoke province-entière crawl recipe,
+ * {@link crawlQcCadastreLots}: it drives the generic ArcGIS crawler in its
+ * **bbox-tiling** strategy over the Québec extent ({@link QC_EXTENT}) — every
+ * tile carries an ESRI spatial envelope filter, so the bare `where=1=1` is never
+ * sent alone — then normalizes the merged WGS84 GeoJSON via the same normalizer.
+ *
  * Deliberately left to immo (ADR-0013 separation): the **lots API**, the
  * per-city bbox table, and the lot **scoring / zone** enrichment
  * (`api/src/services/geo/lots.ts`, `geo-lots.ts`, the "carte-steve" rôle
@@ -49,6 +56,15 @@ export {
   NO_LOT_FIELD,
   MUNICIPALITY_CODE_FIELDS,
 } from "./cadastre/normalizer.js";
+
+// ── Province-wide acquisition recipe (bbox-tiling crawl over the QC extent) ───
+export {
+  crawlQcCadastreLots,
+  QC_EXTENT,
+  CADASTRE_CRAWL_VERSION,
+  type CrawlQcCadastreLotsOptions,
+  type CrawlQcCadastreLotsResult,
+} from "./cadastre/crawl.js";
 
 /** Cadastre normalizers keyed by dataset id. */
 export const cadastreNormalizers: Record<string, Normalizer> = {
