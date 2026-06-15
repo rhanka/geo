@@ -92,8 +92,10 @@ métier temporelle (Loi 25, jointure rôle↔lot). Mergé sur `main` (`101fa85`)
   `QC_EXTENT`, params spatiaux ESRI contournant le 404 `where=1=1`, `NO_LOT` verbatim ; ids/clés S3 inchangés).
 - **Lot B** ✅ (`101fa85`) — **adapter CKAN Données Québec** (`searchCkanPackages` / `resolveGeoResources` /
   `acquireCkanGeoJson`, GeoJSON ; SHP/GPKG→GDAL documenté) + exemple zonage Longueuil (ids CKAN `TODO: confirmer`).
-- **Lot D** ⏳ — `GeoSourceInventory`→geo + script de recensement de plateformes (ArcGIS/CKAN/JMap/PDF) :
-  **partiellement bloqué** (annuaire des sites web municipaux requis). Suivi.
+- **Lot D** ✅ (`07be0e9`) — `GeoSourceInventory` migré dans `geo/catalog` (types TS + validateur `isGeoSourceInventory`,
+  sans Zod, champ `platform` ajouté) + `recenseCkanZonage` (découverte CKAN, idempotent, hermétique) +
+  `recensePlatform` (détection par signature d'URL **fournie**). **Bloqué (suivi)** : la découverte auto
+  `slug→URL officielle` (sondage des sites municipaux) requiert un **annuaire des sites web municipaux** (MAMH/Wikidata).
 - **À confirmer (réseau)** : ids/URLs CKAN réels par ville ; câblage des manifestes zonage dans le registre ;
   enrichissement T3 JMap (cas par cas) ; T5 PDF = fallback semi-manuel (hors scraper).
 
