@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/geo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Moteur Node @sentropic/geo : acquisition (download/GDAL/CSV/arcgis) + stockage (S3/fs, ADR-0012) + API OGC API – Features + CLI `geo`. Fusionne geo-acquire+geo-storage+geo-sources+geo-api+geo-cli (ADR-0017).",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "sideEffects": false,
   "bin": {
-    "geo": "./dist/cli/cli.js"
+    "geo": "dist/cli/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -64,16 +64,16 @@
     "test": "vitest run src --passWithNoTests"
   },
   "dependencies": {
-    "@sentropic/geo-core": "^0.1.0",
     "@aws-sdk/client-s3": "^3.700.0",
     "@hono/node-server": "^2.0.4",
+    "@sentropic/geo-core": "^0.1.0",
+    "commander": "^15.0.0",
     "hono": "^4.12.25",
-    "pg": "^8.21.0",
-    "commander": "^15.0.0"
+    "pg": "^8.21.0"
   },
   "devDependencies": {
-    "proj4": "^2.20.9",
+    "@types/pg": "^8.15.6",
     "@types/proj4": "^2.5.6",
-    "@types/pg": "^8.15.6"
+    "proj4": "^2.20.9"
   }
 }
