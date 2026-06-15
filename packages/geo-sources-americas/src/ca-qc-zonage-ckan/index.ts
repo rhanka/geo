@@ -1,147 +1,505 @@
 /**
- * Example CKAN zonage source declarations for Données Québec open-data datasets.
+ * CKAN zonage source declarations for 11 Québec municipalities on Données Québec.
  *
- * This module demonstrates how to wire a CKAN-hosted municipal zonage dataset
- * into the `@sentropic/geo-sources-americas` manifest/recipe pattern (ADR-0017).
+ * Each municipality publishes its zonage layer as a CKAN *package*. The
+ * acquisition flow (ADR-0017):
  *
- * ## Principle
- * Each municipality that publishes its zonage on Données Québec has a CKAN
- * *package* (dataset). The acquisition flow is:
+ *   1. Pin the `packageId` (CKAN slug confirmed via `package_show`, 2026-06-15).
+ *   2. {@link resolveGeoResources} → filter for GeoJSON resource at runtime.
+ *   3. {@link acquireCkanGeoJson} → download and parse into a WGS84 FeatureCollection.
  *
- *   1. {@link searchCkanPackages} → discover the package (or pin `packageId` directly).
- *   2. {@link resolveGeoResources} → filter for GeoJSON/SHP/GPKG/KML resources.
- *   3. {@link acquireCkanGeoJson} (for GeoJSON) or `extractLayerToGeoJson` +
- *      GDAL (for SHP/GPKG) → download and parse into a WGS84 FeatureCollection.
+ * ## Design principle — packageId, not resource URL
+ * Each manifest stores the *packageId* in a stable constant and pins the
+ * GeoJSON resource URL confirmed at cadrage time. The packageId is the durable
+ * key; the resource URL may drift between portal re-publications, so callers
+ * should re-resolve via `package_show?id=<packageId>` if the pinned URL 404s.
  *
- * ## Confirmed municipalities (cadrage §1.3, verified 2026-06-14)
- * The cadrage lists: Longueuil, Gatineau, Saguenay, Lévis, Trois-Rivières,
- * Sherbrooke, Québec, Repentigny, Rimouski, Rouyn-Noranda.
+ * ## Edge-cases (documented)
+ * - **Sherbrooke**: GeoJSON resource is served via `opendata.arcgis.com` (ArcGIS
+ *   Hub download endpoint), not the Données Québec CDN. `acquireCkanGeoJson`
+ *   handles it transparently — it is a plain HTTPS GeoJSON download.
+ * - **Shawinigan**: The single CKAN resource is an ArcGIS FeatureServer `/query`
+ *   endpoint that returns GeoJSON directly (`?f=geojson`). The URL is long but
+ *   the response is a valid FeatureCollection; `acquireCkanGeoJson` handles it.
+ *   If the FeatureServer moves or the result is paginated, route through
+ *   `crawlArcgisLayer` instead (set `format: "arcgis-rest"` and provide `layer`).
  *
- * **Longueuil** is used here as the worked example because its dataset appeared
- * consistently in cadrage references. The CKAN package id below is a best-effort
- * match — it MUST be confirmed against
- * `https://www.donneesquebec.ca/recherche/api/3/action/package_search?q=zonage+longueuil`
- * before production use (the portal can rename slugs without notice).
- *
- * ## How to declare a new city
- * Copy the {@link LONGUEUIL_ZONAGE_MANIFEST} block, change `id`, `title`,
- * `description`, `provider.name`, `homepage`, and update each dataset's `url`
- * (the direct GeoJSON/SHP resource URL from the CKAN `resources[]` array).
- * If the package publishes only SHP/GPKG, set `format: "shp"` / `"gpkg"` and
- * route the resource through `extractLayerToGeoJson` at acquisition time.
+ * ## Confirmed municipalities (package_show verified 2026-06-15)
+ * Longueuil, Gatineau, Saguenay, Lévis, Trois-Rivières, Sherbrooke, Québec,
+ * Repentigny, Rimouski, Rouyn-Noranda, Shawinigan.
+ * All datasets carry `licence_id: "cc-by"` (resolved to `cc-by-4.0` here).
  */
 
 import type { SourceManifest } from "@sentropic/geo-core";
 
-// ── Longueuil — zonage municipal (worked example) ────────────────────────────
-
-/**
- * CKAN package id for the Longueuil municipal zonage dataset on Données Québec.
- *
- * TODO: confirm this id against the live CKAN API before production use:
- *   curl 'https://www.donneesquebec.ca/recherche/api/3/action/package_search?q=zonage+longueuil&rows=5'
- *
- * The slug can drift when the publisher renames the dataset. Pin the *resource*
- * URL (see {@link LONGUEUIL_ZONAGE_GEOJSON_URL}) once confirmed — the resource
- * URL is more stable than the package slug.
- */
-export const LONGUEUIL_CKAN_PACKAGE_ID =
-  // TODO: confirmer id CKAN — à valider via l'API package_search
-  "zonage-ville-de-longueuil";
-
-/**
- * Direct GeoJSON resource URL for the Longueuil zonage.
- *
- * TODO: confirm against `package_show?id=<LONGUEUIL_CKAN_PACKAGE_ID>` →
- * `resources[]` → entry where `format == "GeoJSON"`.
- */
-export const LONGUEUIL_ZONAGE_GEOJSON_URL =
-  // TODO: confirmer l'URL exacte de la ressource GeoJSON depuis le portail
-  "https://www.donneesquebec.ca/recherche/datastore/dump/TODO-resource-id-longueuil";
+// ── Shared constants ──────────────────────────────────────────────────────────
 
 /** Données Québec CKAN action API base URL (stable, documented). */
 export const DONNEESQUEBEC_CKAN_BASE =
   "https://www.donneesquebec.ca/recherche/api/3/action";
 
-/** Dataset id for the Longueuil zonage (OGC collection id, ADR-0005). */
-export const DATASET_LONGUEUIL_ZONAGE = "qc-longueuil-zonage";
+// ── Longueuil ─────────────────────────────────────────────────────────────────
 
-/**
- * Source manifest for the **Longueuil municipal zonage** via CKAN Données Québec.
- *
- * This is a *GeoJSON* resource acquired directly via {@link acquireCkanGeoJson}.
- * If the publisher switches to SHP/GPKG only, update `format` to `"shp"` or
- * `"gpkg"` and route through `extractLayerToGeoJson`.
- *
- * @remarks
- * - The `url` field points to the **direct GeoJSON download URL** from the CKAN
- *   resource record (not the package landing page). Retrieve it via:
- *   `package_show?id=<LONGUEUIL_CKAN_PACKAGE_ID>` → `resources[].url`.
- * - A downstream normalizer should map raw zone-code fields (e.g. `CODE_ZONE`,
- *   `CATEGORIE`) onto {@link AdminProperties}; that mapping is city-specific and
- *   belongs in a recipe function, not this manifest.
- * - `updateCadence: "P1Y"` is a conservative estimate — some cities re-publish
- *   when their règlement de zonage is amended (can be several times per year).
- */
+/** CKAN package id for the Longueuil municipal zonage (confirmed 2026-06-15). */
+export const LONGUEUIL_CKAN_PACKAGE_ID = "zonage";
+
+/** Dataset id for the Longueuil zonage (OGC collection id, ADR-0005). */
+export const DATASET_LONGUEUIL_ZONAGE = "qc-zonage-longueuil";
+
+/** Source manifest for the **Longueuil municipal zonage** via CKAN Données Québec. */
 export const LONGUEUIL_ZONAGE_MANIFEST: SourceManifest = {
-  id: "ca-qc/longueuil-zonage",
+  id: "ca-qc/zonage-longueuil",
   title: "Zonage — Ville de Longueuil (CKAN Données Québec)",
   description:
     "Polygones des zones de zonage municipal de la Ville de Longueuil, " +
-    "publiés en open data sur le portail Données Québec. Acquisition directe " +
-    "via l'API CKAN (acquireCkanGeoJson). Le règlement de zonage et la légende " +
-    "des codes sont disponibles sur le site de la ville.",
+    "publiés en open data sur le portail Données Québec. " +
+    "Acquisition via acquireCkanGeoJson (adapter CKAN générique, ADR-0017).",
   kind: "administrative",
   jurisdiction: { country: "CA", subdivision: "CA-QC" },
   provider: {
-    name: "Ville de Longueuil / Données Québec",
+    name: "Ville de Longueuil",
     url: "https://www.donneesquebec.ca",
   },
   license: "cc-by-4.0",
-  // TODO: remplacer par l'URL canonique du package sur le portail une fois confirmée.
   homepage: `https://www.donneesquebec.ca/recherche/dataset/${LONGUEUIL_CKAN_PACKAGE_ID}`,
   datasets: [
     {
       id: DATASET_LONGUEUIL_ZONAGE,
       title: "Zones de zonage — Longueuil (GeoJSON WGS84)",
       description:
-        "Polygones de zonage en GeoJSON WGS84 tels que publiés sur Données Québec. " +
-        "Acquis via acquireCkanGeoJson (adapter CKAN générique). " +
-        "Les SHP/GPKG alternatifs nécessitent extractLayerToGeoJson (GDAL).",
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
       format: "geojson",
-      // TODO: remplacer par l'URL de ressource GeoJSON confirmée (voir LONGUEUIL_ZONAGE_GEOJSON_URL).
-      url: LONGUEUIL_ZONAGE_GEOJSON_URL,
+      url: "https://www.donneesquebec.ca/recherche/dataset/aedd53ac-131d-4141-93c4-8d4211eb2d95/resource/fafe8962-b38d-4a98-ad93-25ac8950b8c8/download/zonage.json",
       crs: "EPSG:4326",
-      // updateCadence conservateur ; à ajuster selon la cadence réelle de publication.
       updateCadence: "P1Y",
     },
   ],
 };
 
-// ── Template comment: how to add a new CKAN zonage city ──────────────────────
-//
-// 1. Look up the package id on Données Québec:
-//    curl 'https://www.donneesquebec.ca/recherche/api/3/action/package_search?q=zonage+<city>&rows=5'
-//
-// 2. Get the resource list:
-//    curl 'https://www.donneesquebec.ca/recherche/api/3/action/package_show?id=<package-id>'
-//
-// 3. Pick the GeoJSON resource URL (format == "GeoJSON") or the SHP/GPKG URL
-//    (set needsGdal accordingly).
-//
-// 4. Add a manifest block here following the LONGUEUIL_ZONAGE_MANIFEST pattern.
-//
-// 5. Add an entry in the geo-sources-americas registry (index.ts) if the source
-//    needs CLI/API acquisition support.
-//
-// Municipalities confirmed in cadrage §1.3 to publish on Données Québec
-// (all TODO — ids to verify via package_search):
-//   - Gatineau            → q=zonage+gatineau
-//   - Saguenay            → q=zonage+saguenay
-//   - Lévis               → q=zonage+levis
-//   - Trois-Rivières      → q=zonage+trois-rivieres
-//   - Sherbrooke          → q=zonage+sherbrooke
-//   - Québec (ville)      → q=zonage+quebec
-//   - Repentigny          → q=zonage+repentigny
-//   - Rimouski            → q=zonage+rimouski
-//   - Rouyn-Noranda       → q=zonage+rouyn-noranda
+// ── Gatineau ──────────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Gatineau municipal zonage (confirmed 2026-06-15). */
+export const GATINEAU_CKAN_PACKAGE_ID = "vgat-zonage-norme-v1";
+
+/** Dataset id for the Gatineau zonage (OGC collection id). */
+export const DATASET_GATINEAU_ZONAGE = "qc-zonage-gatineau";
+
+/** Source manifest for the **Gatineau municipal zonage** via CKAN Données Québec. */
+export const GATINEAU_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-gatineau",
+  title: "Zonage normé v1 — Ville de Gatineau (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage normé municipal de la Ville de Gatineau, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Gatineau",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${GATINEAU_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_GATINEAU_ZONAGE,
+      title: "Zones de zonage normé v1 — Gatineau (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage normé en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/5f03d188-27ca-47a2-a871-8df97bed75cd/resource/e96f48a7-b0c8-42ce-afa8-06475b38b3af/download/zonage-norme.json",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Saguenay ──────────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Saguenay municipal zonage (confirmed 2026-06-15). */
+export const SAGUENAY_CKAN_PACKAGE_ID = "sag_zonage";
+
+/** Dataset id for the Saguenay zonage (OGC collection id). */
+export const DATASET_SAGUENAY_ZONAGE = "qc-zonage-saguenay";
+
+/** Source manifest for the **Saguenay municipal zonage** via CKAN Données Québec. */
+export const SAGUENAY_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-saguenay",
+  title: "Zonage — Ville de Saguenay (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Saguenay, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Saguenay",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${SAGUENAY_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_SAGUENAY_ZONAGE,
+      title: "Zones de zonage — Saguenay (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/a086941f-22e3-4fe7-a8dc-fe791229d942/resource/6d5e4aa8-1b9f-4deb-8815-4803ce63007f/download/sag_zonage.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Lévis ─────────────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Lévis municipal zonage (confirmed 2026-06-15). */
+export const LEVIS_CKAN_PACKAGE_ID = "zonage-levis";
+
+/** Dataset id for the Lévis zonage (OGC collection id). */
+export const DATASET_LEVIS_ZONAGE = "qc-zonage-levis";
+
+/** Source manifest for the **Lévis municipal zonage** via CKAN Données Québec. */
+export const LEVIS_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-levis",
+  title: "Zonage — Ville de Lévis (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Lévis, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Lévis",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${LEVIS_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_LEVIS_ZONAGE,
+      title: "Zones de zonage — Lévis (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/6cd041e3-902c-469e-a863-e54f4df966f2/resource/7b5a1166-1a41-4d6d-9286-de5d4caa07c5/download/zonage.json",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Trois-Rivières ────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Trois-Rivières municipal zonage (confirmed 2026-06-15). */
+export const TROIS_RIVIERES_CKAN_PACKAGE_ID = "zonage-v3r";
+
+/** Dataset id for the Trois-Rivières zonage (OGC collection id). */
+export const DATASET_TROIS_RIVIERES_ZONAGE = "qc-zonage-trois-rivieres";
+
+/** Source manifest for the **Trois-Rivières municipal zonage** via CKAN Données Québec. */
+export const TROIS_RIVIERES_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-trois-rivieres",
+  title: "Zonage — Ville de Trois-Rivières (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Trois-Rivières, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Trois-Rivières",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${TROIS_RIVIERES_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_TROIS_RIVIERES_ZONAGE,
+      title: "Zones de zonage — Trois-Rivières (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/85fa8f51-28f6-4163-9d96-eab0b185ec10/resource/6073d899-4ff3-488a-a4bf-10334638c4ae/download/zonage-v3r.json",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Sherbrooke ────────────────────────────────────────────────────────────────
+
+/**
+ * CKAN package id for the Sherbrooke municipal zonage (confirmed 2026-06-15).
+ *
+ * Edge-case: The GeoJSON resource URL is served by `opendata.arcgis.com`
+ * (ArcGIS Hub download endpoint), not the Données Québec CDN. This is a
+ * standard HTTPS GeoJSON download; `acquireCkanGeoJson` handles it transparently.
+ */
+export const SHERBROOKE_CKAN_PACKAGE_ID = "ae984df25d12471f9f3de4b84b3e2a53_0";
+
+/** Dataset id for the Sherbrooke zonage (OGC collection id). */
+export const DATASET_SHERBROOKE_ZONAGE = "qc-zonage-sherbrooke";
+
+/** Source manifest for the **Sherbrooke municipal zonage** via CKAN Données Québec. */
+export const SHERBROOKE_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-sherbrooke",
+  title: "Zonage — Ville de Sherbrooke (CKAN Données Québec / ArcGIS Hub)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Sherbrooke, " +
+    "publiés via ArcGIS Hub (opendata.arcgis.com) et référencés sur Données Québec. " +
+    "Ressource GeoJSON téléchargeable directement (pas de pagination ArcGIS REST requise).",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Sherbrooke — Données géomatiques",
+    url: "https://donneesouvertes-sherbrooke.opendata.arcgis.com",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${SHERBROOKE_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_SHERBROOKE_ZONAGE,
+      title: "Zones de zonage — Sherbrooke (GeoJSON via ArcGIS Hub)",
+      description:
+        "Polygones de zonage en GeoJSON via ArcGIS Hub download endpoint. " +
+        "URL confirmée via package_show (2026-06-15). " +
+        "Si cette URL cesse de fonctionner, utiliser la ressource EsriREST: " +
+        "https://services3.arcgis.com/qsNXG7LzoUbR4c1C/arcgis/rest/services/Zonage/FeatureServer/0",
+      format: "geojson",
+      url: "https://donneesouvertes-sherbrooke.opendata.arcgis.com/api/download/v1/items/ae984df25d12471f9f3de4b84b3e2a53/geojson?layers=0",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Québec (ville) ────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Ville de Québec municipal zonage (confirmed 2026-06-15). */
+export const QUEBEC_CKAN_PACKAGE_ID = "vque_56";
+
+/** Dataset id for the Ville de Québec zonage (OGC collection id). */
+export const DATASET_QUEBEC_ZONAGE = "qc-zonage-quebec";
+
+/** Source manifest for the **Ville de Québec municipal zonage** via CKAN Données Québec. */
+export const QUEBEC_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-quebec",
+  title: "Zonage municipal — Zones — Ville de Québec (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Québec, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Québec",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${QUEBEC_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_QUEBEC_ZONAGE,
+      title: "Zones de zonage — Québec (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/a56dfef1-ad07-4b21-9ef7-24a0c553a085/resource/8108e324-503f-4a10-9107-ea556fdc883d/download/vdq-zonagemunicipalzones.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Repentigny ────────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Repentigny municipal zonage (confirmed 2026-06-15). */
+export const REPENTIGNY_CKAN_PACKAGE_ID = "zonagemunicipal";
+
+/** Dataset id for the Repentigny zonage (OGC collection id). */
+export const DATASET_REPENTIGNY_ZONAGE = "qc-zonage-repentigny";
+
+/** Source manifest for the **Repentigny municipal zonage** via CKAN Données Québec. */
+export const REPENTIGNY_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-repentigny",
+  title: "Zonage municipal — Ville de Repentigny (CKAN Données Québec)",
+  description:
+    "Polygones des zones de zonage municipal de la Ville de Repentigny, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Repentigny",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${REPENTIGNY_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_REPENTIGNY_ZONAGE,
+      title: "Zones de zonage municipal — Repentigny (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/d8dffd21-359d-43dd-af8f-32d44a274cfe/resource/74ee6756-9d5d-4c9e-9b0d-8d694aeb1a7d/download/zonage_municipal.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Rimouski ──────────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Rimouski municipal zonage (confirmed 2026-06-15). */
+export const RIMOUSKI_CKAN_PACKAGE_ID = "plan-de-zonage";
+
+/** Dataset id for the Rimouski zonage (OGC collection id). */
+export const DATASET_RIMOUSKI_ZONAGE = "qc-zonage-rimouski";
+
+/** Source manifest for the **Rimouski municipal zonage** via CKAN Données Québec. */
+export const RIMOUSKI_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-rimouski",
+  title: "Plan de zonage — Ville de Rimouski (CKAN Données Québec)",
+  description:
+    "Polygones du plan de zonage municipal de la Ville de Rimouski, " +
+    "publiés en open data sur le portail Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Rimouski",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${RIMOUSKI_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_RIMOUSKI_ZONAGE,
+      title: "Plan de zonage — Rimouski (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15).",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/d1935001-9c0c-432a-ab5e-f519384feb24/resource/a1a8d4f1-2610-4f83-ae47-86f876f32d97/download/planzonage.json",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Rouyn-Noranda ─────────────────────────────────────────────────────────────
+
+/** CKAN package id for the Rouyn-Noranda municipal zonage (confirmed 2026-06-15). */
+export const ROUYN_NORANDA_CKAN_PACKAGE_ID = "4a69c2484a2540de9f9eb58b908d4d0f_0";
+
+/** Dataset id for the Rouyn-Noranda zonage (OGC collection id). */
+export const DATASET_ROUYN_NORANDA_ZONAGE = "qc-zonage-rouyn-noranda";
+
+/** Source manifest for the **Rouyn-Noranda municipal zonage** via CKAN Données Québec. */
+export const ROUYN_NORANDA_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-rouyn-noranda",
+  title: "Plan de zonage — Ville de Rouyn-Noranda (CKAN Données Québec / ArcGIS Hub)",
+  description:
+    "Polygones du plan de zonage municipal de la Ville de Rouyn-Noranda, " +
+    "publiés via ArcGIS Hub et référencés sur Données Québec. " +
+    "Ressource GeoJSON téléchargeable directement sur le CDN Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Rouyn-Noranda",
+    url: "https://donnees-ouvertes-vrn.opendata.arcgis.com",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${ROUYN_NORANDA_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_ROUYN_NORANDA_ZONAGE,
+      title: "Plan de zonage — Rouyn-Noranda (GeoJSON WGS84)",
+      description:
+        "Polygones de zonage en GeoJSON WGS84. " +
+        "Ressource GeoJSON confirmée via package_show (2026-06-15). " +
+        "Également disponible via ArcGIS REST: " +
+        "https://carte.rouyn-noranda.ca/arcgis/rest/services/Donnees_ouvertes/Donnees_ouvertes/MapServer/5",
+      format: "geojson",
+      url: "https://www.donneesquebec.ca/recherche/dataset/81cfd131-73ec-43ad-9d6b-72f127c45f51/resource/cc9a0110-6ce5-4b00-ace9-603dda3c2acc/download/plan_zonage.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Shawinigan ────────────────────────────────────────────────────────────────
+
+/**
+ * CKAN package id for the Shawinigan municipal zonage (confirmed 2026-06-15).
+ *
+ * Edge-case: The single CKAN resource URL is an ArcGIS FeatureServer `/query`
+ * endpoint that returns GeoJSON directly (`?f=geojson&where=1=1&outFields=*&returnGeometry=true`).
+ * `acquireCkanGeoJson` handles it as a plain GeoJSON download.
+ *
+ * If the FeatureServer is paginated or unavailable, migrate to `format: "arcgis-rest"`
+ * with `layer: 0` and route through `crawlArcgisLayer`.
+ * FeatureServer base: `https://cartes.shawinigan.ca/server/rest/services/Zonage_municipal/FeatureServer`
+ */
+export const SHAWINIGAN_CKAN_PACKAGE_ID = "shawi-plan-de-zonage";
+
+/** Dataset id for the Shawinigan zonage (OGC collection id). */
+export const DATASET_SHAWINIGAN_ZONAGE = "qc-zonage-shawinigan";
+
+/** Source manifest for the **Shawinigan municipal zonage** via CKAN Données Québec. */
+export const SHAWINIGAN_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-shawinigan",
+  title: "Plan de zonage — Ville de Shawinigan (CKAN Données Québec / ArcGIS FeatureServer)",
+  description:
+    "Polygones du plan de zonage municipal de la Ville de Shawinigan, " +
+    "publiés via un ArcGIS FeatureServer query endpoint référencé sur Données Québec. " +
+    "La ressource retourne du GeoJSON directement via le paramètre ?f=geojson. " +
+    "Si la réponse est paginée ou le service indisponible, migrer vers format arcgis-rest + crawlArcgisLayer.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Shawinigan",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${SHAWINIGAN_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_SHAWINIGAN_ZONAGE,
+      title: "Zonage municipal — Shawinigan (GeoJSON via ArcGIS FeatureServer query)",
+      description:
+        "Polygones de zonage via ArcGIS FeatureServer /query?f=geojson. " +
+        "Ressource confirmée via package_show (2026-06-15). " +
+        "Fallback: crawlArcgisLayer sur " +
+        "https://cartes.shawinigan.ca/server/rest/services/Zonage_municipal/FeatureServer (layer 0).",
+      format: "geojson",
+      url: "https://cartes.shawinigan.ca/server/rest/services/Zonage_municipal/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+// ── Aggregate exports ─────────────────────────────────────────────────────────
+
+/**
+ * All 11 confirmed QC municipal zonage manifests (CKAN Données Québec).
+ * Licence `cc-by-4.0` for all (verified 2026-06-15).
+ * Ordered alphabetically by city name.
+ */
+export const QC_ZONAGE_CKAN_MANIFESTS: readonly SourceManifest[] = [
+  GATINEAU_ZONAGE_MANIFEST,
+  LEVIS_ZONAGE_MANIFEST,
+  LONGUEUIL_ZONAGE_MANIFEST,
+  QUEBEC_ZONAGE_MANIFEST,
+  REPENTIGNY_ZONAGE_MANIFEST,
+  RIMOUSKI_ZONAGE_MANIFEST,
+  ROUYN_NORANDA_ZONAGE_MANIFEST,
+  SAGUENAY_ZONAGE_MANIFEST,
+  SHAWINIGAN_ZONAGE_MANIFEST,
+  SHERBROOKE_ZONAGE_MANIFEST,
+  TROIS_RIVIERES_ZONAGE_MANIFEST,
+];

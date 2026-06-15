@@ -29,6 +29,7 @@ import {
 import { registerSource as registerCaQcCadastre } from "./ca-qc-cadastre/index.js";
 import { registerSources as registerCaQcConstraints } from "./ca-qc-constraints/index.js";
 import { adressesManifest, roleManifest } from "./ca-qc-civic/index.js";
+import { QC_ZONAGE_CKAN_MANIFESTS } from "./ca-qc-zonage-ckan/index.js";
 
 import { buildRegistry, type SourceRecipes } from "./build-registry.js";
 
@@ -47,6 +48,22 @@ export {
   type CrawlQcCadastreLotsOptions,
   type CrawlQcCadastreLotsResult,
 } from "./ca-qc-cadastre/index.js";
+// QC municipal zonage CKAN sources (11 municipalities, cc-by-4.0).
+export {
+  DONNEESQUEBEC_CKAN_BASE,
+  QC_ZONAGE_CKAN_MANIFESTS,
+  LONGUEUIL_CKAN_PACKAGE_ID,
+  GATINEAU_CKAN_PACKAGE_ID,
+  SAGUENAY_CKAN_PACKAGE_ID,
+  LEVIS_CKAN_PACKAGE_ID,
+  TROIS_RIVIERES_CKAN_PACKAGE_ID,
+  SHERBROOKE_CKAN_PACKAGE_ID,
+  QUEBEC_CKAN_PACKAGE_ID,
+  REPENTIGNY_CKAN_PACKAGE_ID,
+  RIMOUSKI_CKAN_PACKAGE_ID,
+  ROUYN_NORANDA_CKAN_PACKAGE_ID,
+  SHAWINIGAN_CKAN_PACKAGE_ID,
+} from "./ca-qc-zonage-ckan/index.js";
 
 /**
  * The Americas source registry. Manifests (with `recipe` tags injected) plus the
@@ -80,7 +97,12 @@ export const registry: SourceRegistry = (() => {
   // Civic manifests (no recipe — fetcher/adapter only, parsing/PII stay with the
   // consumer per ADR-0013).
   const civicManifests: SourceManifest[] = [adressesManifest, roleManifest];
-  return { manifests: [...manifests, ...civicManifests], recipes };
+  // Zonage CKAN manifests (no recipe — direct GeoJSON acquisition via
+  // acquireCkanGeoJson, no bespoke normalizer needed at this stage).
+  return {
+    manifests: [...manifests, ...civicManifests, ...QC_ZONAGE_CKAN_MANIFESTS],
+    recipes,
+  };
 })();
 
 /** The recipe map, exported for tests/introspection. */
