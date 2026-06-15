@@ -83,3 +83,18 @@ export {
   writeNormalizedToStore,
   type AcquireOptions,
 } from "./acquire.js";
+
+// CKAN open-data adapter (Données Québec and compatible portals).
+export {
+  searchCkanPackages,
+  resolveGeoResources,
+  acquireCkanGeoJson,
+  type AcquireCkanGeoJsonOptions,
+  type CkanGeoJsonProvenance,
+  type CkanGeoJsonResult,
+  type CkanPackage,
+  type CkanResource,
+  type GeoResourceFormat,
+  type ResolvedGeoResource,
+  type SearchCkanPackagesOptions,
+} from "./ckan.js";
