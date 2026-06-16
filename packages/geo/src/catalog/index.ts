@@ -47,8 +47,10 @@ export { recenseCkanZonage } from "./recense-ckan.js";
 export type {
   PlatformDetectionResult,
   RecensePlatformOptions,
+  CityWebsiteLookup,
+  CityNotInDirectoryResult,
 } from "./recense-platform.js";
-export { recensePlatform } from "./recense-platform.js";
+export { recensePlatform, recensePlatformForCity } from "./recense-platform.js";
 
 // ── ArcGIS Zonage Discovery (Lot E) ───────────────────────────────────────────
 
