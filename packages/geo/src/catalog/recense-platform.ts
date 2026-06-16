@@ -355,3 +355,56 @@ export async function recensePlatform(
     success: true,
   };
 }
+
+// ── Branchement de l'annuaire (Lot D débloqué) ──────────────────────────────
+
+/**
+ * Résolveur slug → URL officielle de la ville. C'est l'ENTRÉE qui manquait au
+ * recensement (cf. TODO historique de ce module). En production, on injecte
+ * `websiteForSlug` de `@sentropic/geo-sources-americas` (annuaire MAMH), passé
+ * en paramètre pour garder le moteur `geo` découplé des libs de sources
+ * (ADR-0017 : pas d'import statique du moteur vers une lib continent).
+ */
+export type CityWebsiteLookup = (citySlug: string) => string | null | undefined;
+
+/** Résultat de `recensePlatformForCity` quand l'annuaire ne connaît pas la ville. */
+export interface CityNotInDirectoryResult {
+  readonly citySlug: string;
+  readonly siteUrl: null;
+  readonly platform: "unknown";
+  readonly evidence: string;
+  readonly success: false;
+  readonly errorMessage: string;
+}
+
+/**
+ * Recense la plateforme d'une ville **par son slug**, en résolvant d'abord son
+ * site officiel via l'annuaire injecté (`lookup`), puis en déléguant à
+ * {@link recensePlatform}. C'est la composition qui débloque le Lot D : le
+ * recensement n'a plus besoin qu'on lui fournisse l'URL à la main.
+ *
+ * @param citySlug Slug de la ville (clé de l'annuaire).
+ * @param lookup   Résolveur slug → site web (ex. `websiteForSlug` de
+ *                 `@sentropic/geo-sources-americas`).
+ * @param opts     Options transmises à {@link recensePlatform}.
+ * @returns        Le résultat de détection, ou un résultat d'échec explicite
+ *                 (`success: false`) si l'annuaire ne liste pas de site.
+ */
+export async function recensePlatformForCity(
+  citySlug: string,
+  lookup: CityWebsiteLookup,
+  opts: RecensePlatformOptions = {},
+): Promise<PlatformDetectionResult | CityNotInDirectoryResult> {
+  const website = lookup(citySlug);
+  if (website === null || website === undefined || website === "") {
+    return {
+      citySlug,
+      siteUrl: null,
+      platform: "unknown",
+      evidence: `No official website in directory for slug "${citySlug}"`,
+      success: false,
+      errorMessage: "city-not-in-directory",
+    };
+  }
+  return recensePlatform(citySlug, website, opts);
+}

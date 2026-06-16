@@ -81,10 +81,28 @@ quelles). `npm run verify` EXIT=0, 0 cycle topo. **Mergé sur `main` + 5 package
 
 ---
 
-## Chantier zones+lots (acquisition intra-ville, cadrage immo) — A/C/B livrés, mergés sur `main` (407 tests)
+## Chantier zones+lots (acquisition intra-ville, cadrage immo) — A/C/B livrés (mergés sur `main`) + **acquisition LIVE livrée** sur `feat/qc-zones-lots-acquisition`
 
 geo owne l'**acquisition géo générique** (cadastre lots + zonage), immo consomme + garde la résolution
 métier temporelle (Loi 25, jointure rôle↔lot). Mergé sur `main` (`101fa85`).
+
+**✅ Acquisition LIVE livrée (2026-06-16, branche `feat/qc-zones-lots-acquisition`, non mergée, rien publié).**
+4 agents Opus 4.8 (A1 lots, A2 découverte ArcGIS, A3 ingestion zonage, A4 annuaire) → consolidation
+(purge faux-positifs, vérif, commit). Chiffres **réels** après purge ([ADR-0020], [ADR-0021], [ADR-0019]) :
+- **Zonage : 67 collections QC réelles / 50 095 features** servies (`geo serve` → GET /collections = 67).
+  Découverte AGOL = **122 endpoints** vérifiés live → ingérés 74 collections → **purge de 7 faux-positifs**
+  (4 Ontario : Ottawa `plan-admin`+`quinnjackson3`, `cityofcornwall`, comté SDG `sade` ; 3 redondants/keep-français
+  tranchés sur preuve géométrique). 11 CKAN (Québec, Saguenay, Gatineau, Lévis, …) + ArcGIS AGOL. S3 only.
+- **Lots : 40 villes prioritaires / 1 782 312 lots** (cadastre allégé, `NO_LOT`). Servis en **40 shards
+  `qc-lots-<slug>`** (monolithe 2,63 Go **supprimé** ; servir tous les shards d'un coup = OOM → **tuilage/lazy-load
+  requis**, voir [ADR-0021] et P1). S3 only.
+- **Annuaire municipal : 1100/1106 villes joints (99.5 %), 1076 sites** (`ca-qc/municipal-directory`, MAMH+Wikidata,
+  CC-BY 4.0, **committé** 396 KB) → débloque le domain-probing zonage et l'attribution ([ADR-0019]).
+- `npm run verify` **VERT** (geo 259 + americas 200 + europe 28 + ui 46 ; 0 erreur type/svelte-check, 0 cycle topo).
+- **Suivi (P1)** : (a) **lazy-load/tuilage** du `StoreProvider` pour servir tous les lots ([ADR-0021]) ;
+  (b) **polygone QC précis** dans le filtre de découverte zonage (élimine le faux-positif frontalier à la source,
+  [ADR-0020]) ; (c) nettoyage attribution slugs-owner AGOL → noms de villes via l'annuaire ; (d) corriger le
+  doublon de préfixe S3 du runner zonage.
 - **Lot A** ✅ (`21a6edb`) — **crawler ArcGIS REST générique** `crawlArcgisLayer` (pagination offset +
   bbox tiling, throttle+backoff Retry-After, outSR=4326, provenance ; fetch/sleep/now injectables, hermétique).
   Primitive réutilisable (zonage T1 + gros cadastre).

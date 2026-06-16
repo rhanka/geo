@@ -342,6 +342,106 @@ garde de test.
 
 **Conséquences.** Met en œuvre [ADR-0017]. Aucune décision d'architecture nouvelle (exécution conforme).
 
+## ADR-0019 — Annuaire municipal QC (`ca-qc/municipal-directory`, MAMH + Wikidata) · accepted · 2026-06-16
+
+**Contexte.** L'acquisition zonage (ArcGIS) avait besoin d'une table **slug-ville → site web officiel**
+pour (a) le domain-probing d'endpoints et (b) nettoyer l'attribution. Aucune source unique ne mappait les
+~1100 municipalités QC à leur site.
+
+**Décision.** Capter l'annuaire **MAMH** (Ministère des Affaires municipales, fichier ouvert `MUN.csv` :
+`mcode`/`munnom`/`mweb`) comme source **primaire**, corroboré par **Wikidata** (`P856` site officiel).
+Capitalisé **sans nouveau package** ([ADR-0017]) : données `ca-qc/municipalities/municipal-directory.qc.json`
+(1100 villes, 1076 sites, **CC-BY 4.0**) + manifest `ca-qc/municipal-directory` + accessors
+`websiteForSlug`/`directoryWebsites` dans `geo-sources-americas` ; `recensePlatformForCity(slug, lookup)`
+branché dans `geo` (détecte arcgis/ckan/… pour un site donné).
+
+**Réalisé / vérifié.** Source MAMH confirmée live (encodage **UTF-8** servi par la CDN, pas CP1252).
+Jointure par **nom NFD-normalisé** (le registre `QC_MUNICIPALITIES` n'a aucun `code` peuplé → `mcode`
+inutilisable comme clé) ; 29 homonymes Ville/Canton/Paroisse désambiguïsés par **population exacte**.
+**1100/1106 joints (99.5 %)**. Wikidata corrobore (243 overlap, 74 % même host ; MAMH gardé primaire).
+Preuve Lot D : chaîne `slug → site → recensePlatform` OK (ArcGIS détecté live sur gatineau). Tests verts.
+
+**Conséquences.** Donnée committée (396 KB < seuil S3 d'[ADR-0012]). Entrée registre licences (CC-BY 4.0).
+Réutilisable au-delà du zonage (toute capacité « site officiel d'une ville QC »).
+
+## ADR-0020 — Acquisition zonage municipal QC via ArcGIS (AGOL) + CKAN, avec filtre-QC et purge des faux-positifs · accepted · 2026-06-16
+
+**Contexte.** Découvrir et servir le zonage municipal QC **à l'échelle**. Deux voies : portails ouverts
+**CKAN** (donneesquebec.ca) et **ArcGIS Online (AGOL)**. L'heuristique slug→domaine plafonnait (~30-40 %).
+
+**Décision.** Découverte **voie AGOL** (`www.arcgis.com/sharing/rest/search`, bbox QC, requêtes
+zonage/urbanisme/affectation/zoning) → registre `ca-qc-zonage-arcgis/registry.generated.json` (produit par
+`scripts/ca-qc-zonage-arcgis/harvest.mjs`, **jamais édité à la main** — `verifiedAt` par entrée). Ingestion
+par un **runner** `scripts/acquire-arcgis-zonage.ts` (la passe-through GeoJSON de `acquire()` était câblée à
+la CLI pour les CKAN ; le **crawl ArcGIS paginé** ne l'était pas → runner). Données normalisées WGS84 →
+**S3** `normalized/ca-qc-zonage/<slug>.geojson` + `.meta.json` ([ADR-0012]).
+
+**CAVEAT filtre-QC (assumé).** Le filtre de découverte = échantillon reprojeté WGS84 + **point-in-polygon
+QC** + champ code-zone + HTTPS + query 200. Comme **QC/ON/NB s'imbriquent** le long de la rivière des
+Outaouais et du fleuve, un bbox seul échoue et même le point-in-polygon laisse passer des **townships
+ontariens frontaliers**. Décision : **acquérir large, puis purger à la consolidation** sur preuve
+géométrique + terminologie.
+
+**Purge exécutée (consolidation 2026-06-16).** Registre **122 → 113 endpoints** ; S3 **74 → 67 collections /
+99 966 → 50 095 features**. 7 faux-positifs retirés (registre + S3) :
+- **Ontario confirmés** (centroïde ON + terminologie ANGLAISE « Zoning By-law ») : `plan-admin` ×5 +
+  `quinnjackson3` (org AGOL `G6F8XLCl5KtAlZ2G` = Ville d'**Ottawa**, ~30 972 feat) ; `jhughes-ncr4`
+  (NCR/Ottawa, 14 089 feat) ; `cityofcornwall` (**Cornwall ON**, 370 feat) ; `sade` (= comté **SDG**
+  *Stormont-Dundas-Glengarry* ON : titres « SS_Zoning2016 », « South Glengarry Zoning », champ `SDGZoneID`,
+  964 feat).
+- **Redondants QC** (donnée QC réelle mais doublon d'une collection autoritative) : `bassants-utoronto/sag_zonage`
+  (bbox **identique** à la collection CKAN `saguenay`, 2 798 feat) ; `shawinigan-arcgis` (octet-pour-octet
+  identique au CKAN `shawinigan`, 678 feat).
+- **Ambigus tranchés KEEP** (centroïde in-QC + champs **français**, croisés avec l'annuaire [ADR-0019]) :
+  `taherif-uofguelph/ZONAGE` (`EXVILLE=Masson-Angers`, secteur de **Gatineau**) ;
+  `guillaume-allard/Carleton` (RCM **Avignon**, Gaspésie : Carleton/Nouvelle/Maria/St-François…) ;
+  `jean-rene-hickey` (`exville=Aylmer`, secteur de **Gatineau**).
+
+**Résultat.** **67 collections zonage QC réelles / 50 095 features** servies (`geo serve` → GET /collections
+= 67 ; les 6+ slugs purgés répondent 404 ; collections gardées /items OK : quebec 4785, saguenay 2838,
+gatineau 1871, …). Voie MAMH (`harvest-mamh.mjs`) testée : rendement marginal (ArcGIS self-hosted déjà
+indexé AGOL) ⇒ AGOL est la source scalable. **122 ≈ le marché ArcGIS-ouvert réel QC** ; union AGOL+CKAN+immo
+couvre le marché.
+
+**Caveats résiduels (assumés).** (1) **Slugs = noms-owner AGOL bruts** → attribution `provider.name` =
+owner, `license: "unknown"` au niveau source (endpoints publics sans licence déclarée) ; requalification
+ville-par-ville + via [ADR-0019] différée. (2) Le filtre QC reste heuristique : une passe future devrait
+remplacer le point-in-polygon par le **polygone QC précis** (frontière Outaouais/fleuve) pour éliminer le
+faux-positif à la source. (3) **Doublon de préfixe S3** dans les clés écrites par le runner
+(`normalized/ca-qc-zonage/normalized/ca-qc-zonage/…`) — bénin (listing récursif), à corriger au prochain run.
+
+## ADR-0021 — Lots cadastraux QC servis par **shards par ville** (pas de monolithe) · accepted · 2026-06-16
+
+**Contexte.** Acquisition province-wide du **cadastre allégé** QC (polygones `NO_LOT`). Le runner
+`scripts/run-cadastre-lots.mjs` (crawl ArcGIS par quad-subdivision bbox/ville, dédup `NO_LOT`, résumable,
+mémoire bornée) a livré **40 villes prioritaires / 1 782 312 lots**. Il écrivait **deux** artefacts S3 :
+des **shards par ville** `normalized/qc-cadastre-lots/<slug>.geojson` **et** un **monolithe** mergé
+`normalized/qc-cadastre-lots.geojson` (**2,63 Go**).
+
+**Problème.** Le `StoreProvider` de l'API **charge en mémoire chaque `.geojson` du préfixe** au premier
+accès (parse complet + index `byId`). Servir le monolithe 2,63 Go d'un bloc = **OOM**. Servir le préfixe
+qui le contient = OOM a fortiori.
+
+**Décision.** **Supprimer le monolithe** de S3 (donnée intégralement préservée : `count` monolithe
+**1 782 312** == Σ des 40 shards au checkpoint, vérifié) et rendre les lots servables comme **40 collections
+séparées** `qc-lots-<slug>` (un `.meta.json` par shard, **CC-BY 4.0**, `© Gouvernement du Québec — Cadastre
+allégé (MRNF/BDGQ)`). Chaque shard (18–147 Mo) est individuellement chargeable. **Preuve** : `geo serve
+--data s3://…/_proof-lots` (sous-ensemble) → GET /collections liste `qc-lots-saint-mathieu` (9 708),
+`qc-lots-varennes` (13 853), `qc-lots-saint-isidore--roussillon` (16 368) ; /items rend des polygones réels
+(`NO_LOT` verbatim, ex. « 6 223 823 » à -73.345,45.686, Varennes).
+
+**Limite connue → tuilage requis (différé).** Servir **les 40 shards d'un coup** (Σ 2,63 Go) **OOM** toujours,
+car le `StoreProvider` est **eager** (charge toutes les collections du préfixe au boot, même pour un simple
+`list`). Les shards sont la **bonne unité servable** mais le provider doit gagner soit (a) un **chargement
+paresseux par collection** (lister via `.meta.json` sans parser les géométries ; charger un shard à la
+1re requête `/items`), soit (b) un **tuilage** (MVT/découpe spatiale) pour les très grosses villes. C'est
+le **pré-requis** pour servir tous les lots simultanément ; hors scope de cette acquisition, consigné au
+backlog. En attendant, on sert les lots **par sous-ensembles** de shards.
+
+**Conséquences.** Aucune donnée volumineuse committée (lots = S3 only, [ADR-0012]). Monolithe retiré
+(−2,63 Go). 40 shards + 40 meta sur S3. Le runner reste résumable (`_checkpoint.json` conservé) et
+extensible province (40 → 1104 villes) sans changer le modèle de service.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
