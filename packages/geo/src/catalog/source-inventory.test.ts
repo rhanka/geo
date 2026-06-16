@@ -18,7 +18,7 @@ import {
   recenseCkanZonage,
   type CityRef,
 } from "./recense-ckan.js";
-import { recensePlatform } from "./recense-platform.js";
+import { recensePlatform, recensePlatformForCity } from "./recense-platform.js";
 
 // ── Helpers de test ───────────────────────────────────────────────────────────
 
@@ -526,5 +526,48 @@ describe("recensePlatform", () => {
 
     expect(result.citySlug).toBe("longueuil");
     expect(result.siteUrl).toBe("https://sig.longueuil.quebec/arcgis/rest/services");
+  });
+});
+
+// ── Tests : recensePlatformForCity (Lot D — annuaire branché) ──────────────────
+
+describe("recensePlatformForCity", () => {
+  // Annuaire de test (slug → site web), injecté comme le ferait
+  // `websiteForSlug` de @sentropic/geo-sources-americas.
+  const directory: Record<string, string | null> = {
+    "ville-arcgis": "https://sig.ville-arcgis.qc.ca/arcgis/rest/services/Zonage/MapServer",
+    "ville-sans-site": null,
+  };
+  const lookup = (slug: string): string | null | undefined => directory[slug];
+
+  it("résout le slug via l'annuaire puis détecte la plateforme", async () => {
+    const mockFetch = async (): Promise<Response> => {
+      throw new Error("Should not be called"); // pré-match URL ArcGIS
+    };
+
+    const result = await recensePlatformForCity("ville-arcgis", lookup, {
+      fetchImpl: mockFetch as typeof fetch,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.platform).toBe("arcgis");
+    expect(result.siteUrl).toBe(directory["ville-arcgis"]);
+    expect(result.citySlug).toBe("ville-arcgis");
+  });
+
+  it("échoue proprement quand l'annuaire ne liste pas de site (slug inconnu)", async () => {
+    const result = await recensePlatformForCity("slug-inconnu", lookup);
+
+    expect(result.success).toBe(false);
+    expect(result.platform).toBe("unknown");
+    expect(result.siteUrl).toBeNull();
+    expect(result.errorMessage).toBe("city-not-in-directory");
+  });
+
+  it("échoue proprement quand le site listé est null", async () => {
+    const result = await recensePlatformForCity("ville-sans-site", lookup);
+
+    expect(result.success).toBe(false);
+    expect(result.errorMessage).toBe("city-not-in-directory");
   });
 });
