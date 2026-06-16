@@ -30,11 +30,27 @@ import { registerSource as registerCaQcCadastre } from "./ca-qc-cadastre/index.j
 import { registerSources as registerCaQcConstraints } from "./ca-qc-constraints/index.js";
 import { adressesManifest, roleManifest } from "./ca-qc-civic/index.js";
 import { QC_ZONAGE_CKAN_MANIFESTS } from "./ca-qc-zonage-ckan/index.js";
+import { QC_ZONAGE_ARCGIS_MANIFESTS } from "./ca-qc-zonage-arcgis/index.js";
+import { municipalDirectoryManifest } from "./ca-qc/index.js";
 
 import { buildRegistry, type SourceRecipes } from "./build-registry.js";
 
 // ── Selected named re-exports (preserved for direct downstream consumers) ────
 export { QC_MUNICIPALITIES } from "./ca-qc/index.js";
+// QC municipal website directory (MAMH-sourced, slug → official website; Lot D).
+export {
+  QC_MUNICIPAL_DIRECTORY,
+  MAMH_REPERTOIRE_PACKAGE_ID,
+  MAMH_MUN_CSV_URL,
+  websiteForSlug,
+  directoryEntry,
+  directoryWebsites,
+  municipalDirectoryManifest,
+  MUNICIPAL_DIRECTORY_SOURCE_ID,
+  DATASET_MUNICIPAL_DIRECTORY,
+  type MunicipalDirectory,
+  type MunicipalDirectoryEntry,
+} from "./ca-qc/index.js";
 export {
   fetchQcCivicAddresses,
   fetchAndParseQcCivicAddresses,
@@ -64,6 +80,15 @@ export {
   ROUYN_NORANDA_CKAN_PACKAGE_ID,
   SHAWINIGAN_CKAN_PACKAGE_ID,
 } from "./ca-qc-zonage-ckan/index.js";
+// QC municipal zonage ArcGIS REST endpoints (découverts À L'ÉCHELLE + vérifiés
+// live via harvester AGOL/MAMH ; licence non qualifiée → "unknown").
+export {
+  QC_ZONAGE_ARCGIS_ENDPOINTS,
+  QC_ZONAGE_ARCGIS_MANIFESTS,
+  QC_ZONAGE_ARCGIS_COUNT,
+  buildQcZonageArcgisManifests,
+  type VerifiedArcgisZonageEndpoint,
+} from "./ca-qc-zonage-arcgis/index.js";
 
 /**
  * The Americas source registry. Manifests (with `recipe` tags injected) plus the
@@ -99,8 +124,16 @@ export const registry: SourceRegistry = (() => {
   const civicManifests: SourceManifest[] = [adressesManifest, roleManifest];
   // Zonage CKAN manifests (no recipe — direct GeoJSON acquisition via
   // acquireCkanGeoJson, no bespoke normalizer needed at this stage).
+  // MAMH municipal directory manifest (no recipe — CSV consumed by the directory
+  // builder, not by the geometry acquisition path; provenance/license/cadence only).
   return {
-    manifests: [...manifests, ...civicManifests, ...QC_ZONAGE_CKAN_MANIFESTS],
+    manifests: [
+      ...manifests,
+      ...civicManifests,
+      ...QC_ZONAGE_CKAN_MANIFESTS,
+      ...QC_ZONAGE_ARCGIS_MANIFESTS,
+      municipalDirectoryManifest,
+    ],
     recipes,
   };
 })();
