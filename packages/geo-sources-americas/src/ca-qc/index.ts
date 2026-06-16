@@ -42,6 +42,23 @@ export {
   type Municipality,
 } from "./municipalities/municipalities.js";
 
+// ── QC municipal website directory (MAMH-sourced, Lot D unblocker) ───────────
+export {
+  QC_MUNICIPAL_DIRECTORY,
+  MAMH_REPERTOIRE_PACKAGE_ID,
+  MAMH_MUN_CSV_URL,
+  websiteForSlug,
+  directoryEntry,
+  directoryWebsites,
+  type MunicipalDirectory,
+  type MunicipalDirectoryEntry,
+} from "./municipalities/municipal-directory.js";
+export {
+  municipalDirectoryManifest,
+  MUNICIPAL_DIRECTORY_SOURCE_ID,
+  DATASET_MUNICIPAL_DIRECTORY,
+} from "./municipalities/municipal-directory-manifest.js";
+
 export {
   manifest,
   SOURCE_ID,
