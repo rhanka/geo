@@ -13,14 +13,14 @@
 #
 # Build context = the monorepo root.
 #
-#   docker build -t rg.fr-par.scw.cloud/geo/geo-api:latest .
+#   docker build -t rg.fr-par.scw.cloud/sentropic-geo/geo-api:latest .
 #
 # Run the API server (default):
 #   docker run -p 8787:8787 -v "$PWD/data/normalized:/data/normalized:ro" \
-#     rg.fr-par.scw.cloud/geo/geo-api:latest
+#     rg.fr-par.scw.cloud/sentropic-geo/geo-api:latest
 #
 # Run a fetch (populate the data volume) — overrides CMD with the `geo` bin:
-#   docker run -v "$PWD/data:/data" rg.fr-par.scw.cloud/geo/geo-api:latest \
+#   docker run -v "$PWD/data:/data" rg.fr-par.scw.cloud/sentropic-geo/geo-api:latest \
 #     geo fetch ca-qc/sda qc-municipalites --out /data/normalized
 #
 # The `geo` executable is on PATH (symlinked to packages/geo/dist/cli/cli.js),
