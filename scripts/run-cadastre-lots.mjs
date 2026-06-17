@@ -401,6 +401,7 @@ async function main() {
   const keyPrefix = args.prefix ? `${args.prefix.replace(/\/+$/, "")}/` : "";
   const checkpointKey = `${keyPrefix}${DATASET_ID}/_checkpoint.json`;
   const shardKey = (slug) => `${keyPrefix}${DATASET_ID}/${slug}.geojson`;
+  const shardMetaKey = (slug) => `${keyPrefix}${DATASET_ID}/${slug}.meta.json`;
   const servedKey = `${keyPrefix}${DATASET_ID}.geojson`;
   const servedMetaKey = `${keyPrefix}${DATASET_ID}.meta.json`;
 
@@ -481,6 +482,22 @@ async function main() {
 
     if (!args.dryRun) {
       const size = await s3PutFile(s3, shardKey(m.slug), shardPath, "application/geo+json");
+      const shardMeta = {
+        sourceId: SOURCE_ID,
+        datasetId: `qc-lots-${m.slug}`,
+        title: `Lots cadastraux - ${m.name ?? m.slug} (cadastre allege du Quebec)`,
+        description: `Shard municipal des lots cadastraux alleges pour ${m.name ?? m.slug}.`,
+        license: "See source metadata",
+        attribution: "Gouvernement du Quebec - cadastre du Quebec",
+        crs: "EPSG:4326",
+        municipalitySlug: m.slug,
+        municipalityName: m.name ?? null,
+        fetchedAt: new Date().toISOString(),
+        count: result.lots,
+        bytes: size,
+      };
+      if (m.mamhCode) shardMeta.mamhCode = m.mamhCode;
+      await s3PutString(s3, shardMetaKey(m.slug), JSON.stringify(shardMeta, null, 2) + "\n", "application/json");
       checkpoint.done[m.slug] = { lots: result.lots, tiles: result.tiles, bytes: size, at: new Date().toISOString() };
       checkpoint.totalLots = grandTotal;
       await s3PutString(s3, checkpointKey, JSON.stringify(checkpoint), "application/json");
