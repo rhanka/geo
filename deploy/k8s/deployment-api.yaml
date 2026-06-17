@@ -16,6 +16,11 @@ metadata:
     app.kubernetes.io/component: api
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: geo-api
@@ -34,7 +39,7 @@ spec:
         - name: geo-registry-pull
       containers:
         - name: geo-api
-          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.2
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.3
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -46,7 +51,7 @@ spec:
             # collection, so the API can expose zones and qc-lots-* shards from
             # the full normalized prefix without loading every lot at startup.
             - name: GEO_DATA_URI
-              value: s3://sentropic-geo/normalized/ca-qc-zonage
+              value: s3://sentropic-geo/normalized
             - name: NODE_ENV
               value: production
           # S3 connection (Scaleway Object Storage) from the geo-s3-credentials
