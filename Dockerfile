@@ -83,8 +83,9 @@ RUN ln -sf /app/packages/geo/dist/cli/cli.js /usr/local/bin/geo \
 COPY deploy/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Run as the built-in unprivileged `node` user.
-USER node
+# Run as the built-in unprivileged node user by numeric UID so
+# Kubernetes runAsNonRoot can verify the image user.
+USER 1000
 
 EXPOSE 8787
 
