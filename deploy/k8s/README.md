@@ -41,12 +41,12 @@ names). Add a `kustomization.yaml` listing these files if you adopt Kustomize.
 ## Image
 
 ```
-rg.fr-par.scw.cloud/geo/geo-api:<tag>
+rg.fr-par.scw.cloud/sentropic-geo/geo-api:<tag>
 ```
 
 Built and pushed by `.github/workflows/docker-publish.yml` (tag-/manual-driven).
 The manifests use `:latest` as a placeholder — pin a real tag at deploy time
-(e.g. `kubectl -n geo set image deployment/geo-api geo-api=rg.fr-par.scw.cloud/geo/geo-api:v0.1.0`,
+(e.g. `kubectl -n geo set image deployment/geo-api geo-api=rg.fr-par.scw.cloud/sentropic-geo/geo-api:v0.1.0`,
 or `kustomize edit set image`). The same image runs both the API server and the
 `geo-fetch` data-population Job (it bundles `gdal-bin`).
 
