@@ -13,12 +13,18 @@
  * present, else the `<name>` stem. Keys are listed under an optional `prefix`
  * (e.g. `normalized`), recursively — store keys are forward-slash paths, so a
  * source-namespaced key like `ca-qc-sda/qc-regions.geojson` is found by listing
- * the prefix. Datasets load lazily on first access and are cached;
- * {@link StoreProvider.invalidate} forces a re-list on next access.
+ * the prefix.
+ *
+ * Unlike the file provider, the store provider indexes collection metadata
+ * first and loads GeoJSON bodies only when a collection's items are requested.
+ * This keeps `/collections` and `/collections/:id` OOM-safe when the bucket
+ * contains large lot shards such as `qc-lots-*`.
  *
  * No network or live S3 connection is touched at construction — `list`/`get`
  * are only called on first request — so the module is import-safe.
  */
+
+import { resolveLicense, type CollectionMeta, type License } from "@sentropic/geo-core";
 
 import {
   buildLoadedCollection,
@@ -38,14 +44,26 @@ import type { Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
+const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
 const decoder = new TextDecoder();
+
+interface StoreCollectionEntry {
+  /** Store key of the normalized GeoJSON payload. */
+  geojsonKey: string;
+  /** Parsed metadata, when a valid sibling `.meta.json` exists. */
+  meta: CollectionMeta | undefined;
+  /** Lightweight collection info built without parsing the GeoJSON body. */
+  info: CollectionInfo;
+  /** Lazy, cached full materialization. */
+  loaded: Promise<LoadedCollection | undefined> | undefined;
+}
 
 export class StoreProvider implements FeatureProvider {
   readonly #store: Store;
   readonly #prefix: string;
-  /** Resolves once keys have been listed and all datasets loaded. */
-  #loaded: Promise<Map<string, LoadedCollection>> | undefined;
+  /** Resolves once keys have been listed and collection metadata indexed. */
+  #indexed: Promise<Map<string, StoreCollectionEntry>> | undefined;
 
   /**
    * @param store  The key→bytes object store to read from.
@@ -58,16 +76,16 @@ export class StoreProvider implements FeatureProvider {
 
   /** Force a re-list of the store on next access (e.g. after a data refresh). */
   invalidate(): void {
-    this.#loaded = undefined;
+    this.#indexed = undefined;
   }
 
-  #ensureLoaded(): Promise<Map<string, LoadedCollection>> {
-    if (!this.#loaded) this.#loaded = this.#load();
-    return this.#loaded;
+  #ensureIndexed(): Promise<Map<string, StoreCollectionEntry>> {
+    if (!this.#indexed) this.#indexed = this.#index();
+    return this.#indexed;
   }
 
-  async #load(): Promise<Map<string, LoadedCollection>> {
-    const map = new Map<string, LoadedCollection>();
+  async #index(): Promise<Map<string, StoreCollectionEntry>> {
+    const map = new Map<string, StoreCollectionEntry>();
     let keys: string[];
     try {
       keys = await this.#store.list(this.#prefix);
@@ -75,21 +93,37 @@ export class StoreProvider implements FeatureProvider {
       // Unreachable/empty store → zero collections (mirrors FileProvider).
       return map;
     }
+
     const geojsonKeys = keys.filter((k) => k.endsWith(GEOJSON_SUFFIX)).sort();
-    for (const key of geojsonKeys) {
-      const loaded = await this.#loadOne(key);
-      if (loaded) map.set(loaded.info.id, loaded);
+    for (const geojsonKey of geojsonKeys) {
+      const entry = await this.#indexOne(geojsonKey);
+      map.set(entry.info.id, entry);
     }
     return map;
   }
 
-  async #loadOne(geojsonKey: string): Promise<LoadedCollection | undefined> {
+  async #indexOne(geojsonKey: string): Promise<StoreCollectionEntry> {
     const stem = stemOf(geojsonKey);
     const metaKey = `${geojsonKey.slice(0, -GEOJSON_SUFFIX.length)}${META_SUFFIX}`;
+    const meta = parseMeta(await this.#getText(metaKey));
+    return {
+      geojsonKey,
+      meta,
+      info: buildCollectionInfo(stem, meta),
+      loaded: undefined,
+    };
+  }
 
-    const geojsonText = await this.#getText(geojsonKey);
-    const metaText = await this.#getText(metaKey);
-    return buildLoadedCollection(stem, geojsonText, parseMeta(metaText));
+  async #load(entry: StoreCollectionEntry): Promise<LoadedCollection | undefined> {
+    if (!entry.loaded) {
+      entry.loaded = this.#loadEntry(entry);
+    }
+    return entry.loaded;
+  }
+
+  async #loadEntry(entry: StoreCollectionEntry): Promise<LoadedCollection | undefined> {
+    const geojsonText = await this.#getText(entry.geojsonKey);
+    return buildLoadedCollection(stemOf(entry.geojsonKey), geojsonText, entry.meta);
   }
 
   /** Read a key as UTF-8 text, returning `undefined` if absent/unreadable. */
@@ -104,24 +138,44 @@ export class StoreProvider implements FeatureProvider {
   }
 
   async listCollections(): Promise<CollectionInfo[]> {
-    const map = await this.#ensureLoaded();
-    return [...map.values()].map((c) => c.info);
+    const map = await this.#ensureIndexed();
+    return [...map.values()].map((entry) => entry.info);
   }
 
   async getCollection(id: string): Promise<CollectionInfo | undefined> {
-    const map = await this.#ensureLoaded();
+    const map = await this.#ensureIndexed();
     return map.get(id)?.info;
   }
 
   async getItems(id: string, query: ItemsQuery): Promise<ItemsResult | undefined> {
-    const map = await this.#ensureLoaded();
-    return queryItems(map, id, query);
+    const map = await this.#ensureIndexed();
+    const entry = map.get(id);
+    if (!entry) return undefined;
+    const loaded = await this.#load(entry);
+    return loaded ? queryItems(new Map([[loaded.info.id, loaded]]), loaded.info.id, query) : undefined;
   }
 
   async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {
-    const map = await this.#ensureLoaded();
-    return queryItem(map, id, featureId);
+    const map = await this.#ensureIndexed();
+    const entry = map.get(id);
+    if (!entry) return undefined;
+    const loaded = await this.#load(entry);
+    return loaded ? queryItem(new Map([[loaded.info.id, loaded]]), loaded.info.id, featureId) : undefined;
   }
+}
+
+/** Build collection metadata without parsing the potentially-large GeoJSON body. */
+function buildCollectionInfo(stem: string, meta: CollectionMeta | undefined): CollectionInfo {
+  const id = meta?.datasetId ?? stem;
+  const license: License = resolveLicense(meta?.license);
+  return {
+    id,
+    title: meta?.title ?? id,
+    license,
+    attribution: meta?.attribution ?? license.title,
+    crs: meta?.crs ?? DEFAULT_CRS,
+    count: meta?.count ?? 0,
+  };
 }
 
 /** The `<name>` stem of a `.geojson` store key (basename without suffix). */
