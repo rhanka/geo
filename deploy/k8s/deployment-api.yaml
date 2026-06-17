@@ -30,9 +30,11 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      imagePullSecrets:
+        - name: geo-registry-pull
       containers:
         - name: geo-api
-          image: rg.fr-par.scw.cloud/geo/geo-api:latest
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -40,8 +42,11 @@ spec:
           env:
             - name: PORT
               value: "8787"
+            # StoreProvider indexes metadata first and lazy-loads GeoJSON per
+            # collection, so the API can expose zones and qc-lots-* shards from
+            # the full normalized prefix without loading every lot at startup.
             - name: GEO_DATA_URI
-              value: s3://sentropic-geo/normalized
+              value: s3://sentropic-geo/normalized/ca-qc-zonage
             - name: NODE_ENV
               value: production
           # S3 connection (Scaleway Object Storage) from the geo-s3-credentials
@@ -70,10 +75,12 @@ spec:
           resources:
             requests:
               cpu: 75m
-              memory: 256Mi
+              memory: 512Mi
             limits:
-              cpu: 300m
-              memory: 384Mi
+              # Lazy StoreProvider keeps startup light; per-request lot shards
+              # still need room when large city collections are queried.
+              cpu: 500m
+              memory: 2Gi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false

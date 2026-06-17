@@ -215,10 +215,7 @@ async function main(): Promise<void> {
   for (const input of inputs) {
     try {
       const normalized = await acquireOne(input);
-      const keys =
-        prefix && prefix.length > 0
-          ? await writeNormalizedToStore(normalized, store, prefix)
-          : await writeNormalizedToStore(normalized, store);
+      const keys = await writeNormalizedToStore(normalized, store);
       console.log(
         `  ${input.datasetId} — ${normalized.meta.count} features [${normalized.meta.license.id}]\n` +
           `    attribution: ${normalized.meta.attribution}\n` +
