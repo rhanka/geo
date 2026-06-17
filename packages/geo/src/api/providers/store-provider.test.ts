@@ -165,14 +165,16 @@ describe("StoreProvider via the OGC app", () => {
     ]);
   });
 
-  it("surfaces an extent for the admin collection (geometry present)", async () => {
-    const app = createApp(new StoreProvider(seededStore()));
-    const res = await app.request(`${ORIGIN}/collections/ca-qc-regions`);
+  it("serves collection metadata without loading the GeoJSON body", async () => {
+    const store = seededStore();
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`/collections/ca-qc-regions`);
     expect(res.status).toBe(200);
     const body = (await res.json()) as { id: string; title: string; extent?: unknown };
     expect(body.id).toBe("ca-qc-regions");
     expect(body.title).toBe("Régions administratives du Québec");
-    expect(body.extent).toBeDefined();
+    expect(body.extent).toBeUndefined();
+    expect(store.getCalls.sort()).toEqual(["ca-qc-sda/regions.meta.json"]);
   });
 
   it("omits the extent for an all-null-geometry referential collection", async () => {
