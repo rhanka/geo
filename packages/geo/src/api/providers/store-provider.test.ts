@@ -22,6 +22,8 @@ const ORIGIN = "http://localhost";
 /** A minimal in-memory {@link Store} over a `Map`, for tests. */
 class FakeStore implements Store {
   readonly #data = new Map<string, Uint8Array>();
+  /** Record of `get()` calls, to assert GeoJSON payloads stay lazy. */
+  readonly getCalls: string[] = [];
   /** Record of `list()` calls, to assert the provider's prefix usage. */
   readonly listCalls: (string | undefined)[] = [];
 
@@ -35,6 +37,7 @@ class FakeStore implements Store {
   }
 
   get(key: string): Promise<Uint8Array | undefined> {
+    this.getCalls.push(key);
     return Promise.resolve(this.#data.get(key));
   }
 
@@ -148,13 +151,18 @@ function seededStore(): FakeStore {
 }
 
 describe("StoreProvider via the OGC app", () => {
-  it("lists both collections by their meta datasetId", async () => {
-    const app = createApp(new StoreProvider(seededStore()));
-    const res = await app.request(`${ORIGIN}/collections`);
+  it("lists both collections by their meta datasetId without loading GeoJSON bodies", async () => {
+    const store = seededStore();
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`/collections`);
     expect(res.status).toBe(200);
     const body = (await res.json()) as { collections: { id: string }[] };
     const ids = body.collections.map((c) => c.id).sort();
     expect(ids).toEqual(["ca-qc-postal-crosswalk", "ca-qc-regions"]);
+    expect(store.getCalls.sort()).toEqual([
+      "ca-qc-sda/postal.meta.json",
+      "ca-qc-sda/regions.meta.json",
+    ]);
   });
 
   it("surfaces an extent for the admin collection (geometry present)", async () => {
