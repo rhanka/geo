@@ -45,6 +45,7 @@ import type { Store } from "../../storage/index.js";
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
 const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+const INDEX_CONCURRENCY = 32;
 
 const decoder = new TextDecoder();
 
@@ -95,17 +96,23 @@ export class StoreProvider implements FeatureProvider {
     }
 
     const geojsonKeys = keys.filter((k) => k.endsWith(GEOJSON_SUFFIX)).sort();
-    for (const geojsonKey of geojsonKeys) {
-      const entry = await this.#indexOne(geojsonKey);
+    const keySet = new Set(keys);
+    const entries = await mapLimit(geojsonKeys, INDEX_CONCURRENCY, (geojsonKey) =>
+      this.#indexOne(geojsonKey, keySet),
+    );
+    for (const entry of entries) {
       map.set(entry.info.id, entry);
     }
     return map;
   }
 
-  async #indexOne(geojsonKey: string): Promise<StoreCollectionEntry> {
+  async #indexOne(
+    geojsonKey: string,
+    keys: ReadonlySet<string>,
+  ): Promise<StoreCollectionEntry> {
     const stem = stemOf(geojsonKey);
     const metaKey = `${geojsonKey.slice(0, -GEOJSON_SUFFIX.length)}${META_SUFFIX}`;
-    const meta = parseMeta(await this.#getText(metaKey));
+    const meta = keys.has(metaKey) ? parseMeta(await this.#getText(metaKey)) : undefined;
     return {
       geojsonKey,
       meta,
@@ -183,4 +190,24 @@ function stemOf(geojsonKey: string): string {
   const slash = geojsonKey.lastIndexOf("/");
   const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
   return base.slice(0, -GEOJSON_SUFFIX.length);
+}
+
+async function mapLimit<T, U>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T) => Promise<U>,
+): Promise<U[]> {
+  const results = new Array<U>(items.length);
+  let next = 0;
+  const workerCount = Math.min(Math.max(1, limit), items.length);
+  const workers = Array.from({ length: workerCount }, async () => {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= items.length) return;
+      results[index] = await fn(items[index]!);
+    }
+  });
+  await Promise.all(workers);
+  return results;
 }
