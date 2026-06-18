@@ -112,6 +112,7 @@ export const SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS: readonly VerifiedArcgisZonage
     zoneCodeField: null,
     verifiedAt: "2026-06-18T00:00:00.000Z",
     source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
     meta: {
       title: "Zonage en vigueur",
       owner: "Ville de Québec",
@@ -125,6 +126,7 @@ export const SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS: readonly VerifiedArcgisZonage
     zoneCodeField: null,
     verifiedAt: "2026-06-18T00:00:00.000Z",
     source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
     meta: {
       title: "Grande affectation du territoire",
       owner: "Ville de Québec",
@@ -164,6 +166,7 @@ export const SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS: readonly VerifiedArcgisZonage
     zoneCodeField: null,
     verifiedAt: "2026-06-18T00:00:00.000Z",
     source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
     meta: {
       title: "Plan d'implantation et d'intégration architecturale",
       owner: "Ville de Rimouski",
