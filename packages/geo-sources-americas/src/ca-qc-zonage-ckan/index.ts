@@ -709,6 +709,28 @@ function supplementalZonageManifest(spec: SupplementalCkanZonageDataset): Source
 
 const SUPPLEMENTAL_ZONAGE_CKAN_DATASETS: readonly SupplementalCkanZonageDataset[] = [
   {
+    sourceId: "ca-qc/zonage-gatineau-affectations-territoire",
+    datasetId: "qc-zonage-gatineau-affectations-territoire",
+    title: "Affectations du territoire — Ville de Gatineau",
+    description:
+      "Polygones des grandes affectations du territoire de la Ville de Gatineau.",
+    providerName: "Ville de Gatineau",
+    providerUrl: "https://www.donneesquebec.ca",
+    packageId: "affectations-du-territoire",
+    url: "https://www.donneesquebec.ca/recherche/dataset/e57cc953-a96c-41df-8822-a5e456e76c35/resource/99bef1cc-4ebc-4cdd-a7ad-7d519a0bb7c2/download/affectations_territoire.json",
+  },
+  {
+    sourceId: "ca-qc/zonage-saguenay-grandes-affectations",
+    datasetId: "qc-zonage-saguenay-grandes-affectations",
+    title: "Grandes affectations du territoire — Ville de Saguenay",
+    description:
+      "Polygones des grandes affectations du territoire de la Ville de Saguenay.",
+    providerName: "Ville de Saguenay",
+    providerUrl: "https://www.donneesquebec.ca",
+    packageId: "sag_grande-affectation",
+    url: "https://www.donneesquebec.ca/recherche/dataset/1a5a6b81-4b2b-4623-8c0f-67c5da9208a9/resource/b1dfe680-04c6-4bec-8d7c-9854b5be531b/download/sag_grandesaffectations.geojson",
+  },
+  {
     sourceId: "ca-qc/zonage-montreal-pum-2050-espace-vert-local",
     datasetId: "qc-zonage-montreal-pum-2050-espace-vert-local",
     title: "PUM 2050 - Affectation du sol Espace vert local — Ville de Montréal",
