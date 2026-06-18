@@ -99,7 +99,7 @@ jobs:
 
       - name: Upgrade npm for Trusted Publishing
         run: |
-          npm install -g npm@11.6.2
+          npm install -g npm@11.16.0
           node --version
           npm --version
 
@@ -112,8 +112,8 @@ jobs:
         run: |
           # Public @sentropic/geo-* packages only, in dependency order (ADR-0017).
           # @sentropic/geo-site (apps/site) is private and not published.
-          npm publish --workspace @sentropic/geo-core             --access public
-          npm publish --workspace @sentropic/geo                  --access public
-          npm publish --workspace @sentropic/geo-sources-americas --access public
-          npm publish --workspace @sentropic/geo-sources-europe   --access public
-          npm publish --workspace @sentropic/geo-ui-svelte        --access public
+          npm publish --workspace @sentropic/geo-core             --access public --provenance
+          npm publish --workspace @sentropic/geo                  --access public --provenance
+          npm publish --workspace @sentropic/geo-sources-americas --access public --provenance
+          npm publish --workspace @sentropic/geo-sources-europe   --access public --provenance
+          npm publish --workspace @sentropic/geo-ui-svelte        --access public --provenance
