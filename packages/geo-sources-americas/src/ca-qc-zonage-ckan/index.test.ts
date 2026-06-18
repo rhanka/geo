@@ -8,7 +8,7 @@
  *  3. Each manifest's source id matches the `ca-qc/zonage-<ville>` convention.
  *  4. Each manifest's dataset id matches the `qc-zonage-<ville>` convention.
  *  5. All source ids and dataset ids are globally unique.
- *  6. `QC_ZONAGE_CKAN_MANIFESTS` contains exactly 16 manifests.
+ *  6. `QC_ZONAGE_CKAN_MANIFESTS` contains all expected manifests plus supplemental manifests.
  *  7. CKAN acquisition flow (mocked): resolveGeoResources + acquireCkanGeoJson
  *     work end-to-end for a representative manifest (Longueuil).
  */
@@ -67,6 +67,7 @@ import {
   DATASET_MONTREAL_LIMITES_HAUTEUR,
   DATASET_MONTREAL_PPU,
   DATASET_MONTREAL_PUM_2050_INTENSIFICATION_AFFECTATION,
+  SUPPLEMENTAL_ZONAGE_CKAN_MANIFESTS,
   DATASET_SAINT_HYACINTHE_AFFECTATIONS,
   DATASET_SAINT_HYACINTHE_ZONAGE,
 } from "./index.js";
@@ -302,8 +303,8 @@ describe("QC zonage CKAN manifests — uniqueness", () => {
 // ── 6. QC_ZONAGE_CKAN_MANIFESTS aggregate ────────────────────────────────────
 
 describe("QC_ZONAGE_CKAN_MANIFESTS", () => {
-  it("contains exactly 16 manifests", () => {
-    expect(QC_ZONAGE_CKAN_MANIFESTS).toHaveLength(16);
+  it("contains all expected manifests plus supplemental manifests", () => {
+    expect(QC_ZONAGE_CKAN_MANIFESTS).toHaveLength(ALL_MANIFESTS.length + SUPPLEMENTAL_ZONAGE_CKAN_MANIFESTS.length);
   });
 
   it("all manifests in the aggregate array are valid SourceManifests", () => {
@@ -326,7 +327,7 @@ describe("QC_ZONAGE_CKAN_MANIFESTS", () => {
     const ids = QC_ZONAGE_CKAN_MANIFESTS.map((m) => m.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) {
-      expect(id).toMatch(/^ca-qc\/zonage-[a-z-]+$/);
+      expect(id).toMatch(/^ca-qc\/zonage-[a-z0-9-]+$/);
     }
   });
 
@@ -336,11 +337,11 @@ describe("QC_ZONAGE_CKAN_MANIFESTS", () => {
     );
     expect(new Set(datasetIds).size).toBe(datasetIds.length);
     for (const id of datasetIds) {
-      expect(id).toMatch(/^qc-zonage-[a-z-]+$/);
+      expect(id).toMatch(/^qc-zonage-[a-z0-9-]+$/);
     }
   });
 
-  it("contains all 16 expected manifests (by source id)", () => {
+  it("contains all expected manifests (by source id)", () => {
     const ids = new Set(QC_ZONAGE_CKAN_MANIFESTS.map((m) => m.id));
     const expected = ALL_MANIFESTS.map(({ sourceId }) => sourceId);
     for (const sourceId of expected) {
