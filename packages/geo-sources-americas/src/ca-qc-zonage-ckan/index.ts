@@ -432,6 +432,113 @@ export const ROUYN_NORANDA_ZONAGE_MANIFEST: SourceManifest = {
 };
 
 
+
+// ── Montréal ─────────────────────────────────────────────────────────────────
+
+/** CKAN package id for Montréal plan d'urbanisme height limits (confirmed 2026-06-18). */
+export const MONTREAL_LIMITES_HAUTEUR_CKAN_PACKAGE_ID = "vmtl-plan-urbanisme-limites-hauteur";
+
+/** CKAN package id for Montréal programmes particuliers d'urbanisme (confirmed 2026-06-18). */
+export const MONTREAL_PPU_CKAN_PACKAGE_ID = "vmtl-plan-urbanisme-ppu";
+
+/** CKAN package id for Montréal PUM 2050 intensification/affectation zones (confirmed 2026-06-18). */
+export const MONTREAL_PUM_2050_CKAN_PACKAGE_ID =
+  "vmtl-niveaux-intensification-urbaine-densite-affectation-sol-pum-2050";
+
+/** Dataset id for Montréal plan d'urbanisme height limits. */
+export const DATASET_MONTREAL_LIMITES_HAUTEUR = "qc-zonage-montreal-limites-hauteur";
+
+/** Dataset id for Montréal programmes particuliers d'urbanisme. */
+export const DATASET_MONTREAL_PPU = "qc-zonage-montreal-ppu";
+
+/** Dataset id for Montréal PUM 2050 intensification/affectation zones. */
+export const DATASET_MONTREAL_PUM_2050_INTENSIFICATION_AFFECTATION =
+  "qc-zonage-montreal-pum-2050-intensification-affectation";
+
+/** Source manifest for Montréal plan d'urbanisme height limits via CKAN Données Québec / Données Montréal. */
+export const MONTREAL_LIMITES_HAUTEUR_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-montreal-limites-hauteur",
+  title: "Plan d'urbanisme - Limites de hauteur — Ville de Montréal",
+  description:
+    "Polygones des limites de hauteur au plan d'urbanisme de Montréal, " +
+    "référencés sur Données Québec et publiés par Données Montréal.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Montréal",
+    url: "https://donnees.montreal.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${MONTREAL_LIMITES_HAUTEUR_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_MONTREAL_LIMITES_HAUTEUR,
+      title: "Plan d'urbanisme - Limites de hauteur — Montréal (GeoJSON WGS84)",
+      description: "Polygones des limites de hauteur au plan d'urbanisme. Ressource confirmée via package_search Données Québec (2026-06-18).",
+      format: "geojson",
+      url: "https://donnees.montreal.ca/dataset/9f49de77-c50d-43af-bc64-c28c3bd6d021/resource/79c4a316-d6b7-4fca-a3d4-f999b83647b1/download/plan-urbanisme-limites-hauteurs.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+/** Source manifest for Montréal programmes particuliers d'urbanisme via CKAN Données Québec / Données Montréal. */
+export const MONTREAL_PPU_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-montreal-ppu",
+  title: "Plan d'urbanisme - Programmes particuliers d'urbanisme — Ville de Montréal",
+  description:
+    "Polygones des programmes particuliers d'urbanisme de Montréal, " +
+    "référencés sur Données Québec et publiés par Données Montréal.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Montréal",
+    url: "https://donnees.montreal.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${MONTREAL_PPU_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_MONTREAL_PPU,
+      title: "Plan d'urbanisme - PPU — Montréal (GeoJSON WGS84)",
+      description: "Polygones des programmes particuliers d'urbanisme. Ressource confirmée via package_search Données Québec (2026-06-18).",
+      format: "geojson",
+      url: "https://donnees.montreal.ca/dataset/9c5bf3bf-75f4-4e25-aa35-3993a916aec9/resource/7daf3ea2-ee0b-4acd-ac4c-cc3e59b0fb7d/download/ppu.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+/** Source manifest for Montréal PUM 2050 intensification/affectation zones via CKAN Données Québec / Données Montréal. */
+export const MONTREAL_PUM_2050_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-montreal-pum-2050",
+  title: "PUM 2050 - Intensification, densité et affectation du sol — Ville de Montréal",
+  description:
+    "Polygones des niveaux d'intensification urbaine, seuils minimaux moyens de densité nette " +
+    "et affectation du sol du Plan d'urbanisme et de mobilité 2050 de Montréal.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Montréal",
+    url: "https://donnees.montreal.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${MONTREAL_PUM_2050_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_MONTREAL_PUM_2050_INTENSIFICATION_AFFECTATION,
+      title: "PUM 2050 - Intensification, densité et affectation du sol — Montréal (GeoJSON WGS84)",
+      description: "Polygones PUM 2050 d'intensification, densité et affectation du sol. Ressource confirmée via package_search Données Québec (2026-06-18).",
+      format: "geojson",
+      url: "https://donnees.montreal.ca/fr/dataset/f420857a-709d-450a-a422-61c3f5079a5e/resource/aa336ce2-2380-4006-bc8b-ef8eea39c8ff/download/intens_affect.geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
 // ── Saint-Hyacinthe ───────────────────────────────────────────────────────────
 
 /** CKAN package id for the Saint-Hyacinthe municipal zonage (confirmed 2026-06-18). */
@@ -570,6 +677,9 @@ export const QC_ZONAGE_CKAN_MANIFESTS: readonly SourceManifest[] = [
   GATINEAU_ZONAGE_MANIFEST,
   LEVIS_ZONAGE_MANIFEST,
   LONGUEUIL_ZONAGE_MANIFEST,
+  MONTREAL_LIMITES_HAUTEUR_MANIFEST,
+  MONTREAL_PPU_MANIFEST,
+  MONTREAL_PUM_2050_MANIFEST,
   QUEBEC_ZONAGE_MANIFEST,
   REPENTIGNY_ZONAGE_MANIFEST,
   RIMOUSKI_ZONAGE_MANIFEST,
