@@ -240,6 +240,41 @@ export const SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS: readonly VerifiedArcgisZonage
       geometryType: "esriGeometryPolygon",
     },
   },
+  // Licence: Données Québec package f47351fc7ecc4c7db8a8b0de4df985d0
+  // `license_id=cc-by`, `license_title=Attribution (CC-BY 4.0)`; couche vérifiée polygonale, 227 entités.
+  {
+    citySlug: "saint-hyacinthe-ilots-densification-vises",
+    serviceUrl: "https://arcgis.st-hyacinthe.ca/server/rest/services/Hosted/ISOGEO_DataLink_Features/FeatureServer/4",
+    zoneCodeField: "num_zone",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Îlots de densification visés",
+      owner: "Ville de Saint-Hyacinthe",
+      layerName: "z_vise_all",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.donneesquebec.ca/recherche/dataset/f47351fc7ecc4c7db8a8b0de4df985d0",
+    },
+  },
+  // Licence: ArcGIS item 0106919a72f84b29a5fa79f5444adc59
+  // `licenseInfo=Creative Commons 4.0 (CC) - Attribution`; couche vérifiée polygonale, 273 entités.
+  {
+    citySlug: "mrc-beauharnois-salaberry-zone-agricole-transposee",
+    serviceUrl: "https://services5.arcgis.com/8TXm0JD0A0eOyxy5/arcgis/rest/services/zone_agricole_transposee_s/FeatureServer/8",
+    zoneCodeField: "zonage",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Zone agricole transposée",
+      owner: "MRC de Beauharnois-Salaberry",
+      layerName: "zone_agricole_transposee_s",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=0106919a72f84b29a5fa79f5444adc59",
+    },
+  },
+
 ];
 
 /** Sépare une URL de couche `…/Server/N` en `{ serviceUrl, layer }`. */
