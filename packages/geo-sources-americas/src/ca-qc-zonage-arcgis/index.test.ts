@@ -12,6 +12,7 @@ import {
   QC_ZONAGE_ARCGIS_ENDPOINTS,
   QC_ZONAGE_ARCGIS_MANIFESTS,
   QC_ZONAGE_ARCGIS_COUNT,
+  SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS,
   buildQcZonageArcgisManifests,
 } from "./index.js";
 
@@ -53,23 +54,25 @@ describe("buildQcZonageArcgisManifests", () => {
 
   it("produit un manifest par endpoint", () => {
     expect(manifests.length).toBe(QC_ZONAGE_ARCGIS_ENDPOINTS.length);
-    expect(QC_ZONAGE_ARCGIS_MANIFESTS.length).toBe(manifests.length);
+    expect(QC_ZONAGE_ARCGIS_MANIFESTS.length).toBe(
+      manifests.length + SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS.length,
+    );
   });
 
   it("tous les manifests sont valides (validateSourceManifest)", () => {
-    for (const m of manifests) {
+    for (const m of QC_ZONAGE_ARCGIS_MANIFESTS) {
       const res = validateSourceManifest(m);
       expect(res.ok, JSON.stringify((res as { errors?: string[] }).errors)).toBe(true);
     }
   });
 
   it("les id de manifest sont uniques", () => {
-    const ids = manifests.map((m) => m.id);
+    const ids = QC_ZONAGE_ARCGIS_MANIFESTS.map((m) => m.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("chaque dataset est arcgis-rest avec layer numérique et CRS WGS84", () => {
-    for (const m of manifests) {
+    for (const m of QC_ZONAGE_ARCGIS_MANIFESTS) {
       expect(m.datasets.length).toBe(1);
       const ds = m.datasets[0]!;
       expect(ds.format).toBe("arcgis-rest");
@@ -79,11 +82,11 @@ describe("buildQcZonageArcgisManifests", () => {
     }
   });
 
-  it("jurisdiction CA-QC et licence 'unknown' (non qualifiée à la découverte)", () => {
-    for (const m of manifests) {
+  it("jurisdiction CA-QC et licence unknown ou qualifiée explicitement", () => {
+    for (const m of QC_ZONAGE_ARCGIS_MANIFESTS) {
       expect(m.jurisdiction.country).toBe("CA");
       expect(m.jurisdiction.subdivision).toBe("CA-QC");
-      expect(m.license).toBe("unknown");
+      expect(["unknown", "cc-by-4.0"]).toContain(m.license);
     }
   });
 });
