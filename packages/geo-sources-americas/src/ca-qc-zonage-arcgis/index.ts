@@ -56,6 +56,8 @@ export interface VerifiedArcgisZonageEndpoint {
   readonly source: string;
   /** Licence qualifiée manuellement quand l'item ArcGIS la déclare explicitement. */
   readonly license?: SourceManifest["license"];
+  /** Profil API si la licence reste à qualifier mais que la source officielle est publique. */
+  readonly rightsProfile?: SourceManifest["rightsProfile"];
   /** Métadonnées de découverte (titre, owner, couche, type géométrie). */
   readonly meta?: {
     readonly title?: string;
@@ -274,6 +276,159 @@ export const SUPPLEMENTAL_ZONAGE_ARCGIS_ENDPOINTS: readonly VerifiedArcgisZonage
       website: "https://www.arcgis.com/home/item.html?id=0106919a72f84b29a5fa79f5444adc59",
     },
   },
+  // Licence: ArcGIS item da29a494fb324842a92cb61482b71bb2
+  // `licenseInfo=Licence Creative Commons Attribution 4.0 International`; couche vérifiée polygonale, 11 entités.
+  {
+    citySlug: "longueuil-zonage-agricole",
+    serviceUrl: "https://services2.arcgis.com/h4XWvDXfYYyD6jNu/arcgis/rest/services/DO_ZonageAgricole/FeatureServer/0",
+    zoneCodeField: "TYPE",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Zonage agricole",
+      owner: "Ville de Longueuil",
+      layerName: "Zonage agricole",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=da29a494fb324842a92cb61482b71bb2",
+    },
+  },
+  // Licence: ArcGIS item df185eece9b04f2c897f3b41210d92da
+  // `licenseInfo=CC BY`; couche vérifiée polygonale, 212 entités.
+  {
+    citySlug: "sherbrooke-zones-developpement-urbain",
+    serviceUrl: "https://services3.arcgis.com/qsNXG7LzoUbR4c1C/arcgis/rest/services/ZoneDeveloppement/FeatureServer/0",
+    zoneCodeField: "TYPE",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Zones de développement urbain",
+      owner: "Ville de Sherbrooke",
+      layerName: "zone_developpement",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=df185eece9b04f2c897f3b41210d92da",
+    },
+  },
+  // Licence: ArcGIS item 19946a7cfa1d435190328072110bf522
+  // `licenseInfo=CC BY`; couche vérifiée polygonale, 1 entité.
+  {
+    citySlug: "sherbrooke-limite-rci-1274-2",
+    serviceUrl: "https://services3.arcgis.com/qsNXG7LzoUbR4c1C/arcgis/rest/services/LimiteControleInterimaire1274_2/FeatureServer/0",
+    zoneCodeField: null,
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Limite du Reglement de controle interimaire n1274-2",
+      owner: "Ville de Sherbrooke",
+      layerName: "LimiteControleInterimaire1274_2",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=19946a7cfa1d435190328072110bf522",
+    },
+  },
+  // Licence: ArcGIS item 83ee438b8b6d47089ceadeaa39a97c0d
+  // `licenseInfo=CC BY`; couche vérifiée polygonale, 23 entités.
+  {
+    citySlug: "sherbrooke-milieux-boises-rci",
+    serviceUrl: "https://services3.arcgis.com/qsNXG7LzoUbR4c1C/arcgis/rest/services/Milieux%20boisés%20RCI/FeatureServer/0",
+    zoneCodeField: "INFORCI",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Milieux boises RCI",
+      owner: "Ville de Sherbrooke",
+      layerName: "milieu_boise_rci",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=83ee438b8b6d47089ceadeaa39a97c0d",
+    },
+  },
+  // Licence: ArcGIS item e07a8bf719924d6da105e626f2aca7f0
+  // `licenseInfo=Creative Commons 4.0 (CC) - Attribution`; couche vérifiée polygonale, 589 entités.
+  {
+    citySlug: "mrc-beauharnois-salaberry-inclusions-exclusions-cptaq",
+    serviceUrl: "https://services5.arcgis.com/8TXm0JD0A0eOyxy5/arcgis/rest/services/incl_excl_s/FeatureServer/11",
+    zoneCodeField: "resultat",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Inclusions et exclusions CPTAQ",
+      owner: "MRC de Beauharnois-Salaberry",
+      layerName: "incl_excl_s",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=e07a8bf719924d6da105e626f2aca7f0",
+    },
+  },
+  // Licence: ArcGIS item d330d1a903c144cbaf7fc1c6939aba1f
+  // `licenseInfo=Creative Commons 4.0 (CC) - Attribution`; couche vérifiée polygonale, 83 entités.
+  {
+    citySlug: "mrc-granit-demandes-portee-collective",
+    serviceUrl: "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/demandes_portee_collective_s/FeatureServer/106",
+    zoneCodeField: "numero",
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Demandes a portee collective",
+      owner: "MRC du Granit",
+      layerName: "demandes_portee_collective_s",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.arcgis.com/home/item.html?id=d330d1a903c144cbaf7fc1c6939aba1f",
+    },
+  },
+  // Licence: Donnees Quebec package `base-de-donnees-des-zones-inondables`,
+  // `license_id=cc-by`; couche polygonale MELCCFP, 621 entites.
+  {
+    citySlug: "melccfp-bdzi-zones-inondables",
+    serviceUrl: "https://www.servicesgeo.enviroweb.gouv.qc.ca/donnees/rest/services/Public/Themes_publics/MapServer/22",
+    zoneCodeField: null,
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Base de donnees des zones a risque d'inondation",
+      owner: "MELCCFP",
+      layerName: "Zones inondables",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.donneesquebec.ca/recherche/dataset/base-de-donnees-des-zones-inondables",
+    },
+  },
+  // Licence: Donnees Quebec package `delimitation-du-perimetre-de-la-zone-d-intervention-speciale-zis-annexe2-modifie`,
+  // `license_id=cc-by`; couche polygonale historique ZIS, 142 entites.
+  {
+    citySlug: "melccfp-zis-annexe2-modifiee",
+    serviceUrl: "https://www.servicesgeo.enviroweb.gouv.qc.ca/donnees/rest/services/Public/ZIS_Annexe2_modifiee/MapServer/0",
+    zoneCodeField: null,
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Zone d'intervention speciale 2017-2019, annexe 2 modifiee",
+      owner: "MELCCFP",
+      layerName: "ZIS Annexe 2 modifiee",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.donneesquebec.ca/recherche/dataset/delimitation-du-perimetre-de-la-zone-d-intervention-speciale-zis-annexe2-modifie",
+    },
+  },
+  // Licence: Donnees Quebec package `zis-annexe2-arrete-30dec2019`,
+  // `license_id=cc-by`; couche polygonale, 8 entites.
+  {
+    citySlug: "melccfp-zis-arrete-2019-exclusions",
+    serviceUrl: "https://www.servicesgeo.enviroweb.gouv.qc.ca/donnees/rest/services/Public/ZIS_Annexe2_arrete_30dec2019/MapServer/0",
+    zoneCodeField: null,
+    verifiedAt: "2026-06-18T00:00:00.000Z",
+    source: "manual-supplemental-arcgis",
+    license: "cc-by-4.0",
+    meta: {
+      title: "Territoires soustraits a l'application de la ZIS",
+      owner: "MELCCFP",
+      layerName: "ZIS Annexe 2 arrete 30 decembre 2019",
+      geometryType: "esriGeometryPolygon",
+      website: "https://www.donneesquebec.ca/recherche/dataset/zis-annexe2-arrete-30dec2019",
+    },
+  },
 
 ];
 
@@ -328,15 +483,16 @@ export function buildQcZonageArcgisManifests(
         `Endpoint ArcGIS REST de zonage municipal vérifié live (${ep.source}). ` +
         (ep.license
           ? `Licence qualifiée manuellement depuis les métadonnées ArcGIS.`
-          : `Licence non qualifiée à la découverte (endpoint public sans auth).`),
+          : `Licence non qualifiée à la découverte; source officielle publique servie en demo-unverified.`),
       kind: "administrative",
       jurisdiction: { country: "CA", subdivision: "CA-QC" },
       provider: {
         name: ep.meta?.owner ?? ep.citySlug,
         ...(ep.meta?.website ? { url: ep.meta.website } : {}),
       },
-      // pas de licence uniforme déclarée → marquée "unknown" sauf qualification explicite.
+      // pas de licence uniforme déclarée -> `unknown`; le profil API rend le statut explicite.
       license: ep.license ?? "unknown",
+      rightsProfile: ep.rightsProfile ?? (ep.license ? "open" : "demo-unverified"),
       datasets: [dataset],
     } satisfies SourceManifest;
   });

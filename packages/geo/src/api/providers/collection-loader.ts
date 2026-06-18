@@ -114,6 +114,7 @@ export function buildLoadedCollection(
     title: meta?.title ?? id,
     license,
     attribution: meta?.attribution ?? license.title,
+    ...(meta?.rights ? { rights: meta.rights } : {}),
     crs: meta?.crs ?? "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
     count: meta?.count ?? features.length,
     ...(bbox ? { extent: { bbox } } : {}),

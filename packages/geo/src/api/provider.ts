@@ -9,7 +9,13 @@
  * directly.
  */
 
-import type { AdminFeature, BBox, License, ReferentialFeature } from "@sentropic/geo-core";
+import type {
+  AdminFeature,
+  BBox,
+  CollectionRights,
+  License,
+  ReferentialFeature,
+} from "@sentropic/geo-core";
 
 /**
  * A feature served by the API. Either a geometry-bearing administrative feature
@@ -34,6 +40,8 @@ export interface CollectionInfo {
   license: License;
   /** Ready-to-display attribution string. */
   attribution: string;
+  /** Rights and usage profile for API consumers. */
+  rights?: CollectionRights;
   /** CRS identifier of the served geometry (canonical OGC CRS URI or EPSG code). */
   crs: string;
   /** Spatial extent of the collection, when known. */
