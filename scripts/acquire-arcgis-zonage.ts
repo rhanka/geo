@@ -93,7 +93,38 @@ const SEED_INPUTS: readonly ArcgisZonageInput[] = [
  * usable URL. `serviceUrl` may be a layer URL (`.../FeatureServer/0`) — split
  * the trailing `/N` into base + layer.
  */
-function fromA2Entry(entry: Record<string, unknown>): ArcgisZonageInput | null {
+function slugPart(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-")
+    .slice(0, 56);
+}
+
+function endpointSuffix(
+  entry: Record<string, unknown>,
+  serviceUrl: string,
+  layer: number,
+): string {
+  const meta =
+    typeof entry["meta"] === "object" && entry["meta"] !== null
+      ? (entry["meta"] as Record<string, unknown>)
+      : {};
+  const title = typeof meta["title"] === "string" ? meta["title"] : "";
+  const layerName = typeof meta["layerName"] === "string" ? meta["layerName"] : "";
+  const serviceName = serviceUrl.match(/\/services\/([^/]+)\/(?:FeatureServer|MapServer)$/i)?.[1] ?? "";
+  const label = slugPart([title, layerName, serviceName].filter(Boolean).join("-")) || "layer";
+  const hash = sha256Hex(`${serviceUrl}/${layer}`).slice(0, 8);
+  return `${label}-${layer}-${hash}`;
+}
+
+function fromA2Entry(
+  entry: Record<string, unknown>,
+  duplicateSuffix?: string,
+): ArcgisZonageInput | null {
   const citySlug = typeof entry["citySlug"] === "string" ? entry["citySlug"] : undefined;
   const rawUrl = typeof entry["serviceUrl"] === "string" ? entry["serviceUrl"] : undefined;
   if (!citySlug || !rawUrl) return null;
@@ -104,10 +135,11 @@ function fromA2Entry(entry: Record<string, unknown>): ArcgisZonageInput | null {
     typeof entry["provider"] === "string"
       ? (entry["provider"] as string)
       : `Ville de ${citySlug.charAt(0).toUpperCase()}${citySlug.slice(1)}`;
+  const idStem = duplicateSuffix ? `${citySlug}-${duplicateSuffix}` : citySlug;
   return {
-    datasetId: `qc-zonage-${citySlug}-arcgis`,
-    sourceId: `ca-qc/zonage-${citySlug}-arcgis`,
-    title: `Zonage — ${citySlug} (ArcGIS REST, crawl WGS84)`,
+    datasetId: `qc-zonage-${idStem}-arcgis`,
+    sourceId: `ca-qc/zonage-${idStem}-arcgis`,
+    title: `Zonage — ${citySlug}${duplicateSuffix ? ` / ${duplicateSuffix}` : ""} (ArcGIS REST, crawl WGS84)`,
     provider,
     serviceUrl,
     layer,
@@ -133,10 +165,19 @@ async function loadA2Inputs(path: string): Promise<ArcgisZonageInput[]> {
       ? ((parsed as Record<string, unknown>)["endpoints"] as unknown[])
       : [];
   const out: ArcgisZonageInput[] = [];
+  const seenBaseIds = new Set<string>();
   for (const e of list) {
     if (typeof e === "object" && e !== null) {
-      const mapped = fromA2Entry(e as Record<string, unknown>);
-      if (mapped) out.push(mapped);
+      const entry = e as Record<string, unknown>;
+      const base = fromA2Entry(entry);
+      if (!base) continue;
+      if (!seenBaseIds.has(base.datasetId)) {
+        seenBaseIds.add(base.datasetId);
+        out.push(base);
+        continue;
+      }
+      const suffixed = fromA2Entry(entry, endpointSuffix(entry, base.serviceUrl, base.layer));
+      if (suffixed) out.push(suffixed);
     }
   }
   return out;
