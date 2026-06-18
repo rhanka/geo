@@ -39,7 +39,7 @@ import {
   archiveKindFromPath,
   extractLayerToGeoJson,
 } from "./gdal.js";
-import { assertRedistributable } from "./license-gate.js";
+import { assertRedistributable, publicationRightsProfile } from "./license-gate.js";
 import { type NormalizeContext, type Normalizer, geojsonPassthrough } from "./normalize.js";
 
 export interface AcquireOptions extends DownloadOptions {
@@ -174,11 +174,24 @@ function assembleDataset(
   collection: AdminFeatureCollection | ReferentialFeatureCollection,
 ): NormalizedDataset<AdminFeatureCollection | ReferentialFeatureCollection> {
   const license = resolveManifestLicense(manifest);
+  const rightsProfile = publicationRightsProfile(manifest);
+  const licenseStatus =
+    license.id === "unknown" ? "unknown" : license.redistributable ? "explicit" : "incompatible";
   const meta: CollectionMeta = {
     sourceId: manifest.id,
     datasetId,
     title,
     license,
+    rights: {
+      profile: rightsProfile,
+      licenseStatus,
+      ...(rightsProfile === "demo-unverified"
+        ? {
+            usageNotice:
+              "Demo/internal evaluation only; upstream redistribution rights are not yet qualified.",
+          }
+        : {}),
+    },
     attribution: attributionLine(manifest.provider.name, license),
     crs: WGS84,
     fetchedAt: new Date().toISOString(),
