@@ -1,5 +1,5 @@
 /**
- * Hermetic tests for the 11 QC municipal zonage CKAN source manifests
+ * Hermetic tests for the QC municipal zonage CKAN source manifests
  * (ADR-0007: no real network, ADR-0017: manifest/recipe pattern).
  *
  * Coverage:
@@ -7,8 +7,8 @@
  *  2. Each manifest carries `cc-by-4.0` licence, `kind: "administrative"`, CA-QC jurisdiction.
  *  3. Each manifest's source id matches the `ca-qc/zonage-<ville>` convention.
  *  4. Each manifest's dataset id matches the `qc-zonage-<ville>` convention.
- *  5. All 11 source ids and all 11 dataset ids are globally unique.
- *  6. `QC_ZONAGE_CKAN_MANIFESTS` contains exactly 11 manifests.
+ *  5. All source ids and dataset ids are globally unique.
+ *  6. `QC_ZONAGE_CKAN_MANIFESTS` contains exactly 13 manifests.
  *  7. CKAN acquisition flow (mocked): resolveGeoResources + acquireCkanGeoJson
  *     work end-to-end for a representative manifest (Longueuil).
  */
@@ -32,6 +32,8 @@ import {
   RIMOUSKI_ZONAGE_MANIFEST,
   ROUYN_NORANDA_ZONAGE_MANIFEST,
   SHAWINIGAN_ZONAGE_MANIFEST,
+  SAINT_HYACINTHE_AFFECTATIONS_MANIFEST,
+  SAINT_HYACINTHE_ZONAGE_MANIFEST,
   LONGUEUIL_CKAN_PACKAGE_ID,
   GATINEAU_CKAN_PACKAGE_ID,
   SAGUENAY_CKAN_PACKAGE_ID,
@@ -43,6 +45,8 @@ import {
   RIMOUSKI_CKAN_PACKAGE_ID,
   ROUYN_NORANDA_CKAN_PACKAGE_ID,
   SHAWINIGAN_CKAN_PACKAGE_ID,
+  SAINT_HYACINTHE_AFFECTATIONS_CKAN_PACKAGE_ID,
+  SAINT_HYACINTHE_CKAN_PACKAGE_ID,
   DATASET_LONGUEUIL_ZONAGE,
   DATASET_GATINEAU_ZONAGE,
   DATASET_SAGUENAY_ZONAGE,
@@ -54,6 +58,8 @@ import {
   DATASET_RIMOUSKI_ZONAGE,
   DATASET_ROUYN_NORANDA_ZONAGE,
   DATASET_SHAWINIGAN_ZONAGE,
+  DATASET_SAINT_HYACINTHE_AFFECTATIONS,
+  DATASET_SAINT_HYACINTHE_ZONAGE,
 } from "./index.js";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -95,7 +101,7 @@ function jsonResponse(body: unknown): Response {
   });
 }
 
-// ── All 11 manifests as a table ───────────────────────────────────────────────
+// ── All manifests as a table ───────────────────────────────────────────────
 
 /** All manifests with their expected ids for parametric tests. */
 const ALL_MANIFESTS = [
@@ -168,6 +174,21 @@ const ALL_MANIFESTS = [
     datasetId: DATASET_ROUYN_NORANDA_ZONAGE,
     packageId: ROUYN_NORANDA_CKAN_PACKAGE_ID,
     city: "Rouyn-Noranda",
+  },
+
+  {
+    manifest: SAINT_HYACINTHE_AFFECTATIONS_MANIFEST,
+    sourceId: "ca-qc/zonage-saint-hyacinthe-affectations",
+    datasetId: DATASET_SAINT_HYACINTHE_AFFECTATIONS,
+    packageId: SAINT_HYACINTHE_AFFECTATIONS_CKAN_PACKAGE_ID,
+    city: "Saint-Hyacinthe affectations",
+  },
+  {
+    manifest: SAINT_HYACINTHE_ZONAGE_MANIFEST,
+    sourceId: "ca-qc/zonage-saint-hyacinthe",
+    datasetId: DATASET_SAINT_HYACINTHE_ZONAGE,
+    packageId: SAINT_HYACINTHE_CKAN_PACKAGE_ID,
+    city: "Saint-Hyacinthe",
   },
   {
     manifest: SHAWINIGAN_ZONAGE_MANIFEST,
@@ -250,8 +271,8 @@ describe("QC zonage CKAN manifests — uniqueness", () => {
 // ── 6. QC_ZONAGE_CKAN_MANIFESTS aggregate ────────────────────────────────────
 
 describe("QC_ZONAGE_CKAN_MANIFESTS", () => {
-  it("contains exactly 11 manifests", () => {
-    expect(QC_ZONAGE_CKAN_MANIFESTS).toHaveLength(11);
+  it("contains exactly 13 manifests", () => {
+    expect(QC_ZONAGE_CKAN_MANIFESTS).toHaveLength(13);
   });
 
   it("all manifests in the aggregate array are valid SourceManifests", () => {
@@ -288,7 +309,7 @@ describe("QC_ZONAGE_CKAN_MANIFESTS", () => {
     }
   });
 
-  it("contains all 11 expected manifests (by source id)", () => {
+  it("contains all 13 expected manifests (by source id)", () => {
     const ids = new Set(QC_ZONAGE_CKAN_MANIFESTS.map((m) => m.id));
     const expected = ALL_MANIFESTS.map(({ sourceId }) => sourceId);
     for (const sourceId of expected) {

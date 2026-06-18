@@ -1,5 +1,5 @@
 /**
- * CKAN zonage source declarations for 11 Québec municipalities on Données Québec.
+ * CKAN zonage source declarations for Québec municipalities on Données Québec.
  *
  * Each municipality publishes its zonage layer as a CKAN *package*. The
  * acquisition flow (ADR-0017):
@@ -431,6 +431,82 @@ export const ROUYN_NORANDA_ZONAGE_MANIFEST: SourceManifest = {
   ],
 };
 
+
+// ── Saint-Hyacinthe ───────────────────────────────────────────────────────────
+
+/** CKAN package id for the Saint-Hyacinthe municipal zonage (confirmed 2026-06-18). */
+export const SAINT_HYACINTHE_CKAN_PACKAGE_ID = "4b810a13d5d34c1ea2672ba37acc72dc";
+
+/** CKAN package id for the Saint-Hyacinthe zoning affectations (confirmed 2026-06-18). */
+export const SAINT_HYACINTHE_AFFECTATIONS_CKAN_PACKAGE_ID = "8512559138ba4ca3b894f42f7265d72d";
+
+/** Dataset id for the Saint-Hyacinthe zonage (OGC collection id). */
+export const DATASET_SAINT_HYACINTHE_ZONAGE = "qc-zonage-saint-hyacinthe";
+
+/** Dataset id for the Saint-Hyacinthe zoning affectations (OGC collection id). */
+export const DATASET_SAINT_HYACINTHE_AFFECTATIONS = "qc-zonage-saint-hyacinthe-affectations";
+
+/** Source manifest for the **Saint-Hyacinthe municipal zonage** via CKAN Données Québec. */
+export const SAINT_HYACINTHE_ZONAGE_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-saint-hyacinthe",
+  title: "Zonage — Ville de Saint-Hyacinthe (CKAN Données Québec / ArcGIS FeatureServer)",
+  description:
+    "Polygones du zonage municipal de la Ville de Saint-Hyacinthe, " +
+    "publiés via un ArcGIS FeatureServer query endpoint référencé sur Données Québec. " +
+    "La ressource retourne du GeoJSON directement via le paramètre ?f=geojson.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Saint-Hyacinthe",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${SAINT_HYACINTHE_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_SAINT_HYACINTHE_ZONAGE,
+      title: "Zonage — Saint-Hyacinthe (GeoJSON via ArcGIS FeatureServer query)",
+      description:
+        "Polygones de zonage via ArcGIS FeatureServer /query?f=geojson. " +
+        "Ressource confirmée via package_search Données Québec (2026-06-18).",
+      format: "geojson",
+      url: "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13/query?where=1=1&outFields=*&returnGeometry=true&f=geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
+/** Source manifest for the **Saint-Hyacinthe zoning affectations** via CKAN Données Québec. */
+export const SAINT_HYACINTHE_AFFECTATIONS_MANIFEST: SourceManifest = {
+  id: "ca-qc/zonage-saint-hyacinthe-affectations",
+  title: "Grandes affectations du zonage — Ville de Saint-Hyacinthe (CKAN Données Québec)",
+  description:
+    "Polygones des grandes affectations du zonage de la Ville de Saint-Hyacinthe, " +
+    "publiés via un ArcGIS FeatureServer query endpoint référencé sur Données Québec.",
+  kind: "administrative",
+  jurisdiction: { country: "CA", subdivision: "CA-QC" },
+  provider: {
+    name: "Ville de Saint-Hyacinthe",
+    url: "https://www.donneesquebec.ca",
+  },
+  license: "cc-by-4.0",
+  homepage: `https://www.donneesquebec.ca/recherche/dataset/${SAINT_HYACINTHE_AFFECTATIONS_CKAN_PACKAGE_ID}`,
+  datasets: [
+    {
+      id: DATASET_SAINT_HYACINTHE_AFFECTATIONS,
+      title: "Grandes affectations du zonage — Saint-Hyacinthe (GeoJSON via ArcGIS FeatureServer query)",
+      description:
+        "Polygones d'affectation via ArcGIS FeatureServer /query?f=geojson. " +
+        "Ressource confirmée via package_search Données Québec (2026-06-18).",
+      format: "geojson",
+      url: "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/15/query?where=1=1&outFields=*&returnGeometry=true&f=geojson",
+      crs: "EPSG:4326",
+      updateCadence: "P1Y",
+    },
+  ],
+};
+
 // ── Shawinigan ────────────────────────────────────────────────────────────────
 
 /**
@@ -486,7 +562,7 @@ export const SHAWINIGAN_ZONAGE_MANIFEST: SourceManifest = {
 // ── Aggregate exports ─────────────────────────────────────────────────────────
 
 /**
- * All 11 confirmed QC municipal zonage manifests (CKAN Données Québec).
+ * Confirmed QC municipal zonage manifests (CKAN Données Québec).
  * Licence `cc-by-4.0` for all (verified 2026-06-15).
  * Ordered alphabetically by city name.
  */
@@ -499,6 +575,8 @@ export const QC_ZONAGE_CKAN_MANIFESTS: readonly SourceManifest[] = [
   RIMOUSKI_ZONAGE_MANIFEST,
   ROUYN_NORANDA_ZONAGE_MANIFEST,
   SAGUENAY_ZONAGE_MANIFEST,
+  SAINT_HYACINTHE_AFFECTATIONS_MANIFEST,
+  SAINT_HYACINTHE_ZONAGE_MANIFEST,
   SHAWINIGAN_ZONAGE_MANIFEST,
   SHERBROOKE_ZONAGE_MANIFEST,
   TROIS_RIVIERES_ZONAGE_MANIFEST,
