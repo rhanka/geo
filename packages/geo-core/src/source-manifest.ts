@@ -24,6 +24,13 @@ export type DatasetFormat =
 export type AccessLevel = "open" | "restricted";
 
 /**
+ * Publication/use-rights profile exposed by the API. It is deliberately
+ * separate from the license id: a source may be technically public but still
+ * have rights pending qualification for demo-only consumption.
+ */
+export type RightsProfile = "open" | "demo-unverified" | "blocked";
+
+/**
  * What kind of referential a source publishes. Administrative boundaries,
  * statistical geographies (e.g. INSEE, Statistics Canada census units), and
  * postal referentials (postal code ↔ geography) have distinct providers,
@@ -94,6 +101,12 @@ export interface SourceManifest {
   };
   /** Either a known {@link LicenseId} or an inline {@link License}. */
   license: LicenseId | License;
+  /**
+   * API publication/use profile. Defaults to `open` for redistributable
+   * licenses and `blocked` otherwise. Set `demo-unverified` only for official
+   * public sources whose rights are still being qualified.
+   */
+  rightsProfile?: RightsProfile;
   /** Dataset landing/catalog page. */
   homepage?: string;
   datasets: DatasetManifest[];
@@ -164,6 +177,16 @@ export function validateSourceManifest(input: unknown): ValidationResult {
 
   if (input["license"] === undefined) {
     errors.push("license: required (LicenseId or License)");
+  }
+
+  const rightsProfile = input["rightsProfile"];
+  if (
+    rightsProfile !== undefined &&
+    rightsProfile !== "open" &&
+    rightsProfile !== "demo-unverified" &&
+    rightsProfile !== "blocked"
+  ) {
+    errors.push('rightsProfile: must be one of "open", "demo-unverified", "blocked"');
   }
 
   const datasets = input["datasets"];

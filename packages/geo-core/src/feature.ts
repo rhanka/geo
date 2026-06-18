@@ -10,6 +10,7 @@ import type { AdminLevel, CountryCode } from "./admin.js";
 import type { CrsCode } from "./crs.js";
 import type { Feature, FeatureCollection, Geometry } from "./geojson.js";
 import type { License } from "./license.js";
+import type { RightsProfile } from "./source-manifest.js";
 
 /** Standard properties carried by every normalized administrative feature. */
 export interface AdminProperties {
@@ -53,6 +54,17 @@ export type ReferentialFeatureCollection = FeatureCollection<
   ReferentialProperties
 >;
 
+export type LicenseStatus = "explicit" | "unknown" | "incompatible";
+
+export interface CollectionRights {
+  /** API publication/use profile for consumers. */
+  profile: RightsProfile;
+  /** Qualification status of the upstream license evidence. */
+  licenseStatus: LicenseStatus;
+  /** Human-readable warning for demo-only or blocked data. */
+  usageNotice?: string;
+}
+
 export interface CollectionMeta {
   /** Originating SourceManifest id. */
   sourceId: string;
@@ -68,6 +80,8 @@ export interface CollectionMeta {
   fetchedAt: string;
   /** Number of features. */
   count: number;
+  /** Rights and usage profile exposed to API consumers. */
+  rights?: CollectionRights;
   /** Optional checksum of the normalized payload. */
   checksum?: { algo: "sha256"; value: string };
 }
