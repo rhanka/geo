@@ -180,6 +180,7 @@ function buildCollectionInfo(stem: string, meta: CollectionMeta | undefined): Co
     title: meta?.title ?? id,
     license,
     attribution: meta?.attribution ?? license.title,
+    ...(meta?.rights ? { rights: meta.rights } : {}),
     crs: meta?.crs ?? DEFAULT_CRS,
     count: meta?.count ?? 0,
   };

@@ -53,6 +53,7 @@ export interface OgcCollection {
   crs: string[];
   storageCrs: string;
   license?: { title: string; href?: string };
+  rights?: CollectionInfo["rights"];
   links: Link[];
 }
 
@@ -98,6 +99,7 @@ export function renderCollection(info: CollectionInfo, base: string): OgcCollect
       title: info.license.title,
       ...(info.license.url !== undefined ? { href: info.license.url } : {}),
     },
+    ...(info.rights ? { rights: info.rights } : {}),
     links,
   };
 }
