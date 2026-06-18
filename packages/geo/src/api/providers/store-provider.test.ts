@@ -174,7 +174,10 @@ describe("StoreProvider via the OGC app", () => {
     expect(body.id).toBe("ca-qc-regions");
     expect(body.title).toBe("Régions administratives du Québec");
     expect(body.extent).toBeUndefined();
-    expect(store.getCalls.sort()).toEqual(["ca-qc-sda/regions.meta.json"]);
+    expect(store.getCalls.sort()).toEqual([
+      "ca-qc-sda/postal.meta.json",
+      "ca-qc-sda/regions.meta.json",
+    ]);
   });
 
   it("omits the extent for an all-null-geometry referential collection", async () => {
