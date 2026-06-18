@@ -201,16 +201,42 @@ function assembleDataset(
   return { meta, collection };
 }
 
-/**
- * Acquire a raw GeoJSON payload for a JSON-over-HTTP dataset (`geojson` /
- * `arcgis-rest`). Downloads (cached) and parses the body as JSON.
- */
-async function acquireRawViaJson(
+/** Maximum ArcGIS records requested per page. Servers may cap lower. */
+const ARCGIS_PAGE_SIZE = 2000;
+const ARCGIS_MAX_PAGES = 1000;
+
+interface GeoJsonPage {
+  type?: unknown;
+  features?: unknown;
+  exceededTransferLimit?: unknown;
+  [key: string]: unknown;
+}
+
+function isFeatureCollectionPage(value: unknown): value is GeoJsonPage & { features: unknown[] } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as GeoJsonPage).type === "FeatureCollection" &&
+    Array.isArray((value as GeoJsonPage).features)
+  );
+}
+
+function pageSignature(page: { features: unknown[] }): string {
+  const first = page.features[0];
+  const last = page.features[page.features.length - 1];
+  return JSON.stringify([
+    typeof first === "object" && first !== null ? (first as { id?: unknown }).id : undefined,
+    typeof last === "object" && last !== null ? (last as { id?: unknown }).id : undefined,
+    page.features.length,
+  ]);
+}
+
+async function downloadJson(
+  url: string,
   manifest: SourceManifest,
   datasetId: string,
   downloadOpts: DownloadOptions,
 ): Promise<unknown> {
-  const url = resolveFetchUrl(manifest, datasetId);
   const result = await download(url, downloadOpts);
   try {
     return JSON.parse(result.text());
@@ -220,6 +246,71 @@ async function acquireRawViaJson(
       { cause },
     );
   }
+}
+
+async function acquireArcgisRestGeoJson(
+  manifest: SourceManifest,
+  datasetId: string,
+  downloadOpts: DownloadOptions,
+): Promise<unknown> {
+  const dataset = getDataset(manifest, datasetId);
+  if (!dataset) throw new Error(`dataset "${datasetId}" not found in source "${manifest.id}"`);
+
+  const layer = dataset.layer ?? 0;
+  const baseQuery = dataset.query ?? {};
+  const pageSize = Number(baseQuery["resultRecordCount"] ?? ARCGIS_PAGE_SIZE);
+  const features: unknown[] = [];
+  let template: GeoJsonPage | undefined;
+  const seenPageSignatures = new Set<string>();
+
+  for (let pageIndex = 0; pageIndex < ARCGIS_MAX_PAGES; pageIndex += 1) {
+    const offset = pageIndex * pageSize;
+    const url = arcgisQueryUrl(dataset.url, layer, {
+      ...baseQuery,
+      resultOffset: offset,
+      resultRecordCount: pageSize,
+    });
+    const page = await downloadJson(url, manifest, datasetId, downloadOpts);
+    if (!isFeatureCollectionPage(page)) return page;
+    if (!template) template = page;
+
+    if (page.features.length === 0) break;
+    const signature = pageSignature(page);
+    if (seenPageSignatures.has(signature)) {
+      throw new Error(
+        `ArcGIS pagination did not advance for source "${manifest.id}" dataset "${datasetId}" ` +
+          `(offset ${offset}, page size ${pageSize}).`,
+      );
+    }
+    seenPageSignatures.add(signature);
+    features.push(...page.features);
+
+    if (page.exceededTransferLimit !== true && page.features.length < pageSize) break;
+  }
+
+  if (!template) {
+    return { type: "FeatureCollection", features: [] };
+  }
+  return { ...template, features };
+}
+
+/**
+ * Acquire a raw GeoJSON payload for a JSON-over-HTTP dataset (`geojson` /
+ * `arcgis-rest`). Downloads (cached) and parses the body as JSON.
+ */
+async function acquireRawViaJson(
+  manifest: SourceManifest,
+  datasetId: string,
+  downloadOpts: DownloadOptions,
+): Promise<unknown> {
+  const dataset = getDataset(manifest, datasetId);
+  if (!dataset) throw new Error(`dataset "${datasetId}" not found in source "${manifest.id}"`);
+  if (dataset.format === "arcgis-rest") {
+    return acquireArcgisRestGeoJson(manifest, datasetId, downloadOpts);
+  }
+
+  const url = resolveFetchUrl(manifest, datasetId);
+  return downloadJson(url, manifest, datasetId, downloadOpts);
 }
 
 /**
