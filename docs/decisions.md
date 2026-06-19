@@ -442,6 +442,25 @@ backlog. En attendant, on sert les lots **par sous-ensembles** de shards.
 (−2,63 Go). 40 shards + 40 meta sur S3. Le runner reste résumable (`_checkpoint.json` conservé) et
 extensible province (40 → 1104 villes) sans changer le modèle de service.
 
+## ADR-0022 — Serving indexé : PMTiles (carte) + PostGIS per-tenant (API features) ; Iceberg écarté · accepted · 2026-06-18 · **supersede la limite « tuilage différé » d'ADR-0021**
+
+**Contexte.** Après acquisition, les données vivent en **GeoJSON normalisé sur S3** (67 collections zonage / ~50k features + 40 shards lots / 1,78M). Le `StoreProvider` de l'API est **eager** (charge/parse tout le préfixe au boot) → OOM à l'échelle (cf. [ADR-0021]) et **aucun index spatial**. Le GeoJSON-plat est une couche d'**atterrissage**, pas de **service**. Question posée (user) : Apache Iceberg ?
+
+**Décision (couche de service indexée, par usage).**
+1. **Carte / rendu** → **PMTiles** (tuiles vectorielles, 1 archive par jeu) **statiques sur S3 + Cloudflare** ; généré au **build via `tippecanoe`** (GeoJSON→PMTiles) ; servi par **HTTP range requests** (MapLibre `pmtiles://`), zéro logique serveur, cache edge CF. Règle l'OOM + l'absence d'index + débloque la carte (millions de polygones).
+2. **API OGC Features** (bbox + filtres attributs + **temporel as-of**) → **PostGIS** (index spatial **GiST**, requêtes riches). Déploiement = **StatefulSet PostGIS `postgis/postgis:16-3.4` per-tenant dans le ns `geo`**.
+3. **Landing** = GeoJSON normalisé sur S3 **conservé** (acquisition/reproductibilité) ; **DuckDB-spatial** en option ad-hoc.
+4. **Iceberg écarté** : format de table **analytique** (même avec types geometry v3, pruning par bbox de fichier, **pas** d'index spatial type R-tree, requiert un moteur Trino/Spark/DuckDB) → sur-dimensionné pour servir tuiles/features en basse latence. Réservé à un éventuel **lac versionné** (décision plateforme, hors geo).
+
+**Gouvernance DB (validée).** Aval **architect** (`claude:architect`, 2026-06-18) + reco **poc-k8s** alignées :
+- **Standard org = StatefulSet Postgres/PostGIS PAR TENANT** (pattern live sentropic, aligné BR-51 portabilité : single-PG self-host, zéro dép Sent-Tech-only).
+- **geo GO maintenant** : StatefulSet PostGIS dans ns geo, **geo possède ses backups** (`pg_dump`→S3). N'attend pas CNPG.
+- **Per-tenant, ZÉRO DB partagée** : la DB geo (zones/lots/annuaire) reste à geo ; immo/sentropic **consomment via l'API OGC Features / les PMTiles** (federation-first, `SPEC_EVOL_DATA_ARCHITECTURE`), **jamais** d'accès DB cross-tenant. (= contrat déjà transmis à immo.) **Jointures spatiales lourdes** (ex. immo « lots ∩ zone X », overlay cadastral) = pattern **ingestion-réplique** : immo ingère la donnée geo dans **son propre** PostGIS via un **bulk-export** que geo expose (fraîcheur par re-pull/diff), pas d'accès à la DB de geo → préserve l'isolation tenant. **geo doit donc fournir un bulk-export (ou endpoint OGC paginable) consommable par un tiers, EN PLUS des PMTiles** (l'API-only pur serait inefficace pour des jointures lourdes).
+- **CNPG cluster-wide = décision plateforme DIFFÉRÉE** (owner + poc-k8s) : migrerait aussi le PG de sentropic + RBAC cnpg ; geo ne devient pas 1er tenant CNPG sans aval owner. Le StatefulSet per-tenant est **réversible** (CNPG pourra l'adopter plus tard).
+- **Critère org (double-check Opus 4.8max, confirmé) :** la donnée geo est **read-mostly + re-dérivable** (open-data QC) → pas de besoin HA/PITR ; `pg_dump`→S3 nocturne + re-dérivabilité de la source = DR suffisant. C'est CE fait qui rend CNPG superflu ici. **Règle org : CNPG cluster-wide ne se justifie que pour de la donnée transactionnelle CRITIQUE / irremplaçable ; pour du référentiel re-dérivable, StatefulSet per-tenant + `pg_dump`→S3 est le bon niveau.**
+
+**Conséquences.** Amende le contrat poc-k8s (#30 « no database » → **PostGIS tenant-scoped**) + **quota PVC 2→3** (poc-k8s réapplique le ns). Pipeline build à ajouter : `tippecanoe` (lots+zones → PMTiles → S3). La limite « tuilage/lazy-load différé » d'[ADR-0021] est **résolue par cette décision** (PMTiles pour les lots/zones en masse ; PostGIS pour les requêtes features). L'API file/S3-backed actuelle reste valable pour admin+zonage en attendant PostGIS.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
