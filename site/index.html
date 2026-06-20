@@ -240,14 +240,18 @@
         url: PMTILES_URL,
         attribution: "Zonage QC — geo/sentropic (Scaleway)"
       });
+      // La couche de masse provinciale (PMTiles) porte des attributs d'affectation
+      // bruts (A1, A2…), pas le champ normalisé "kind" des grilles extraites.
+      // On la rend en teinte neutre : elle situe l'emprise ; les grilles
+      // extraites portent la lecture par type (kind).
       map.addLayer({
         id: "masse-fill",
         type: "fill",
         source: "qc-zones-pmtiles",
         "source-layer": PMTILES_SOURCE_LAYER,
         paint: {
-          "fill-color": fillColorExpr,
-          "fill-opacity": 0.32
+          "fill-color": "#5b6b7d",
+          "fill-opacity": 0.22
         }
       });
       map.addLayer({
