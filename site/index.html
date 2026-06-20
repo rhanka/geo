@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Zonage Québec — Carte démo (geo / sentropic)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Carte de démonstration du zonage municipal du Québec : masse PMTiles + grilles extraites servies par l'API OGC geo/sentropic. 100% Scaleway." />
+
+  <!-- MapLibre GL (CDN, aucune dépendance Google) -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" crossorigin="anonymous" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+  <!-- PMTiles (CDN) -->
+  <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --bg: #11161d;
+      --panel: rgba(20, 27, 36, 0.94);
+      --border: #2a3543;
+      --text: #e6edf3;
+      --muted: #93a1b0;
+      --accent: #4ea1ff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+    #map { position: absolute; inset: 0; }
+
+    .panel {
+      position: absolute;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      color: var(--text);
+      z-index: 5;
+    }
+
+    /* Panneau de gauche : sélecteur de couches */
+    #controls {
+      top: 12px; left: 12px;
+      width: 320px;
+      max-height: calc(100% - 24px);
+      display: flex; flex-direction: column;
+    }
+    #controls header { padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
+    #controls header h1 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: .2px; }
+    #controls header p { margin: 4px 0 0; font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+    .section { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: 0; }
+    .section h2 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+    label.row { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 3px 0; cursor: pointer; }
+    label.row input { accent-color: var(--accent); flex: none; }
+    #grille-list {
+      overflow-y: auto;
+      max-height: 38vh;
+      padding-right: 4px;
+    }
+    #grille-list .muni { display: block; }
+    #grille-list small { color: var(--muted); font-size: 10.5px; margin-left: 24px; display: block; }
+    #search { width: 100%; padding: 6px 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); background: #0d1219; color: var(--text); font-size: 12.5px; }
+    .status { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .status.err { color: #ff8a8a; }
+
+    /* Légende */
+    #legend { bottom: 28px; right: 12px; width: 188px; padding: 10px 12px; }
+    #legend h2 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 2px 0; }
+    .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,.25); flex: none; }
+
+    /* Attribution */
+    #attribution { bottom: 4px; left: 12px; right: 12px; font-size: 10.5px; color: var(--muted); text-align: left; background: rgba(17,22,29,.7); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); }
+    #attribution a { color: var(--accent); text-decoration: none; }
+
+    /* Popup */
+    .maplibregl-popup-content {
+      background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 12.5px; padding: 10px 12px;
+    }
+    .maplibregl-popup-content .pop-title { font-weight: 650; font-size: 14px; margin-bottom: 6px; }
+    .maplibregl-popup-content table { border-collapse: collapse; }
+    .maplibregl-popup-content td { padding: 1px 0; vertical-align: top; }
+    .maplibregl-popup-content td.k { color: var(--muted); padding-right: 10px; white-space: nowrap; }
+    .maplibregl-popup-close-button { color: var(--text); }
+    .maplibregl-popup-tip { border-top-color: var(--panel) !important; border-bottom-color: var(--panel) !important; }
+
+    .badge { display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:600; color:#11161d; }
+
+    .spin { display:inline-block; width:11px; height:11px; border:2px solid var(--muted); border-top-color: var(--accent); border-radius:50%; animation: spin .8s linear infinite; vertical-align:-1px; margin-right:5px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="controls" class="panel">
+    <header>
+      <h1>Zonage Québec — démo</h1>
+      <p>Masse provinciale en tuiles vectorielles (PMTiles) + grilles extraites servies par l'API OGC <strong>geo / sentropic</strong>. Hébergement Scaleway.</p>
+    </header>
+
+    <div class="section">
+      <h2>Couche de masse</h2>
+      <label class="row">
+        <input type="checkbox" id="toggle-masse" checked />
+        <span>Zones (PMTiles provincial)</span>
+      </label>
+      <div class="status" id="masse-status"></div>
+    </div>
+
+    <div class="section">
+      <h2>Grilles extraites (GeoJSON OGC)</h2>
+      <input type="text" id="search" placeholder="Filtrer une municipalité…" />
+      <div id="grille-list"><div class="status"><span class="spin"></span>Chargement des collections…</div></div>
+      <div class="status" id="grille-status"></div>
+    </div>
+  </div>
+
+  <div id="legend" class="panel">
+    <h2>Légende — type (kind)</h2>
+    <div class="legend-item"><span class="swatch" style="background:#f4d03f"></span> H — résidentiel</div>
+    <div class="legend-item"><span class="swatch" style="background:#e74c3c"></span> C — commercial</div>
+    <div class="legend-item"><span class="swatch" style="background:#9b59b6"></span> I — industriel</div>
+    <div class="legend-item"><span class="swatch" style="background:#27ae60"></span> A — agricole</div>
+    <div class="legend-item"><span class="swatch" style="background:#3498db"></span> P — public / parc</div>
+    <div class="legend-item"><span class="swatch" style="background:#7f8c9b"></span> autre / mixte</div>
+  </div>
+
+  <div id="attribution" class="panel">
+    Données : zonage municipal du Québec (sources municipales / MAMH), © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>,
+    extraction <strong>geo / sentropic</strong>. Tuiles &amp; API hébergées sur <strong>Scaleway</strong> (fr-par).
+  </div>
+
+  <script>
+  "use strict";
+
+  // ---- Configuration (données réelles uniquement) ----
+  const API_BASE   = "https://api.geo.sent-tech.ca";
+  const PMTILES_URL = "pmtiles://https://s3.fr-par.scw.cloud/sentropic-geo/pmtiles/qc-zones.pmtiles";
+  const PMTILES_SOURCE_LAYER = "zones";
+
+  // Couleurs par "kind" (première lettre normalisée). Inconnu -> gris.
+  const KIND_COLORS = {
+    H: "#f4d03f", // résidentiel
+    C: "#e74c3c", // commercial
+    I: "#9b59b6", // industriel
+    A: "#27ae60", // agricole
+    P: "#3498db"  // public / parc
+  };
+  const KIND_OTHER = "#7f8c9b";
+  const KIND_LABEL = { H:"résidentiel", C:"commercial", I:"industriel", A:"agricole", P:"public / parc" };
+
+  // Expression MapLibre : couleur selon la 1re lettre de "kind"
+  const fillColorExpr = [
+    "match",
+    ["upcase", ["slice", ["coalesce", ["to-string", ["get", "kind"]], "?"], 0, 1]],
+    "H", KIND_COLORS.H,
+    "C", KIND_COLORS.C,
+    "I", KIND_COLORS.I,
+    "A", KIND_COLORS.A,
+    "P", KIND_COLORS.P,
+    KIND_OTHER
+  ];
+
+  // Collections recommandées (par défaut activées) — mix sain H/C/I/A/P, en QC.
+  const DEFAULT_ON = new Set([
+    "qc-zonage-neuville",
+    "qc-zonage-saint-stanislas-de-kostka",
+    "qc-zonage-saint-gilbert"
+  ]);
+
+  // ---- Index municipalité (réattribution OSM) optionnel : embarqué pour libellés lisibles ----
+  // (Sous-ensemble issu de _acquisition-shared/grilles-reattribution.json — seulement collections réelles servies.)
+  const MUNI_INDEX = {
+    "qc-zonage-arcgis-argenteuil-zonage": "Lachute",
+    "qc-zonage-doucetmarjorie-arcgis": "Boisbriand",
+    "qc-zonage-geomatiquecn-arcgis": "Otterburn Park",
+    "qc-zonage-gsavignac-bourdeau-arcgis": "Hampstead",
+    "qc-zonage-guillaume-allard-arcgis": "Carleton-sur-Mer",
+    "qc-zonage-jeanguillemette-arcgis": "Mont-Élie",
+    "qc-zonage-jehanninnicolas-arcgis": "Chambly",
+    "qc-zonage-daniel-huntington-vsad-arcgis": "Saint-Augustin-de-Desmaures"
+  };
+
+  // ---- Humanisation d'un id de collection -> nom lisible ----
+  function prettyName(id) {
+    if (MUNI_INDEX[id]) return MUNI_INDEX[id];
+    let s = id.replace(/^qc-zonage-/, "").replace(/^arcgis-/, "").replace(/-arcgis$/, "");
+    // retirer les suffixes hash/version fréquents
+    s = s.replace(/-[0-9a-f]{6,8}$/i, "").replace(/-\d{1,3}$/, "");
+    // garder un libellé court et lisible
+    const parts = s.split("-").filter(Boolean).slice(0, 4);
+    s = parts.join(" ");
+    return s.replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  // ---- État ----
+  const activeGrilles = new Map(); // id -> {sourceId, layers:[], loaded}
+  let collectionsCache = [];
+
+  // ---- Carte ----
+  const protocol = new pmtiles.Protocol();
+  maplibregl.addProtocol("pmtiles", protocol.tile);
+
+  const map = new maplibregl.Map({
+    container: "map",
+    style: {
+      version: 8,
+      glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+      sources: {
+        "osm-raster": {
+          type: "raster",
+          tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+          tileSize: 256,
+          attribution: "© OpenStreetMap"
+        }
+      },
+      layers: [
+        { id: "osm", type: "raster", source: "osm-raster" }
+      ]
+    },
+    center: [-72.5, 46.3],
+    zoom: 6,
+    maxZoom: 18,
+    attributionControl: false
+  });
+
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-right");
+
+  const popup = new maplibregl.Popup({ closeButton: true, closeOnClick: true, maxWidth: "280px" });
+
+  // ---- Couche de masse PMTiles ----
+  function addMasseLayer() {
+    const status = document.getElementById("masse-status");
+    try {
+      map.addSource("qc-zones-pmtiles", {
+        type: "vector",
+        url: PMTILES_URL,
+        attribution: "Zonage QC — geo/sentropic (Scaleway)"
+      });
+      map.addLayer({
+        id: "masse-fill",
+        type: "fill",
+        source: "qc-zones-pmtiles",
+        "source-layer": PMTILES_SOURCE_LAYER,
+        paint: {
+          "fill-color": fillColorExpr,
+          "fill-opacity": 0.32
+        }
+      });
+      map.addLayer({
+        id: "masse-line",
+        type: "line",
+        source: "qc-zones-pmtiles",
+        "source-layer": PMTILES_SOURCE_LAYER,
+        paint: { "line-color": "#1b2530", "line-width": 0.4, "line-opacity": 0.5 }
+      });
+      wireInteractions("masse-fill");
+      status.textContent = "Tuiles vectorielles provinciales chargées.";
+    } catch (e) {
+      status.className = "status err";
+      status.textContent = "Erreur couche masse : " + e.message;
+      console.error(e);
+    }
+  }
+
+  document.getElementById("toggle-masse").addEventListener("change", (ev) => {
+    const v = ev.target.checked ? "visible" : "none";
+    if (map.getLayer("masse-fill")) map.setLayoutProperty("masse-fill", "visibility", v);
+    if (map.getLayer("masse-line")) map.setLayoutProperty("masse-line", "visibility", v);
+  });
+
+  // ---- Liste des collections qc-zonage- via l'API OGC ----
+  async function loadCollections() {
+    const listEl = document.getElementById("grille-list");
+    try {
+      const r = await fetch(API_BASE + "/collections");
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const data = await r.json();
+      const cols = Array.isArray(data.collections) ? data.collections : (Array.isArray(data) ? data : []);
+      collectionsCache = cols
+        .map(c => c.id)
+        .filter(id => typeof id === "string" && id.startsWith("qc-zonage-"))
+        .map(id => ({ id, name: prettyName(id) }))
+        .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+      renderCollectionList("");
+      // activer les collections par défaut
+      for (const id of DEFAULT_ON) {
+        const cb = document.querySelector(`input[data-cid="${id}"]`);
+        if (cb) { cb.checked = true; toggleGrille(id, true); }
+      }
+    } catch (e) {
+      listEl.innerHTML = '<div class="status err">Impossible de charger les collections : ' + e.message + "</div>";
+      console.error(e);
+    }
+  }
+
+  function renderCollectionList(filter) {
+    const listEl = document.getElementById("grille-list");
+    const f = (filter || "").trim().toLowerCase();
+    const items = collectionsCache.filter(c =>
+      !f || c.name.toLowerCase().includes(f) || c.id.toLowerCase().includes(f)
+    );
+    if (!items.length) { listEl.innerHTML = '<div class="status">Aucune collection.</div>'; return; }
+    listEl.innerHTML = items.map(c => {
+      const on = activeGrilles.has(c.id) || DEFAULT_ON.has(c.id);
+      return `<label class="row muni">
+        <input type="checkbox" data-cid="${c.id}" ${on ? "checked" : ""} />
+        <span>${escapeHtml(c.name)}</span>
+      </label>
+      <small>${escapeHtml(c.id)}</small>`;
+    }).join("");
+    listEl.querySelectorAll("input[data-cid]").forEach(cb => {
+      cb.addEventListener("change", () => toggleGrille(cb.dataset.cid, cb.checked));
+    });
+  }
+
+  document.getElementById("search").addEventListener("input", (e) => renderCollectionList(e.target.value));
+
+  // ---- Activer / désactiver une grille (chargement GeoJSON séquentiel) ----
+  let firstFit = true;
+  async function toggleGrille(id, on) {
+    const status = document.getElementById("grille-status");
+    if (!on) {
+      const g = activeGrilles.get(id);
+      if (g) {
+        g.layers.forEach(l => { if (map.getLayer(l)) map.removeLayer(l); });
+        if (map.getSource(g.sourceId)) map.removeSource(g.sourceId);
+        activeGrilles.delete(id);
+      }
+      status.textContent = activeGrilles.size + " grille(s) active(s).";
+      return;
+    }
+    if (activeGrilles.has(id)) return;
+
+    const sourceId = "g_" + id;
+    const fillId = sourceId + "_fill";
+    const lineId = sourceId + "_line";
+    activeGrilles.set(id, { sourceId, layers: [fillId, lineId], loaded: false });
+
+    status.innerHTML = '<span class="spin"></span>Chargement ' + escapeHtml(prettyName(id)) + "…";
+    try {
+      // limite haute mais bornée — données réelles servies par l'API
+      const url = API_BASE + "/collections/" + encodeURIComponent(id) + "/items?limit=5000";
+      const r = await fetch(url);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const gj = await r.json();
+      if (!activeGrilles.has(id)) return; // désactivé entre-temps
+
+      map.addSource(sourceId, { type: "geojson", data: gj });
+      map.addLayer({
+        id: fillId, type: "fill", source: sourceId,
+        paint: { "fill-color": fillColorExpr, "fill-opacity": 0.55 }
+      });
+      map.addLayer({
+        id: lineId, type: "line", source: sourceId,
+        paint: { "line-color": "#0d1219", "line-width": 0.6, "line-opacity": 0.7 }
+      });
+      wireInteractions(fillId);
+      activeGrilles.get(id).loaded = true;
+
+      // cadrer sur la première grille chargée
+      const b = geojsonBounds(gj);
+      if (b && firstFit) { map.fitBounds(b, { padding: 60, maxZoom: 13, duration: 800 }); firstFit = false; }
+      status.textContent = activeGrilles.size + " grille(s) active(s).";
+    } catch (e) {
+      activeGrilles.delete(id);
+      status.className = "status err";
+      status.textContent = "Échec " + prettyName(id) + " : " + e.message;
+      console.error("collection", id, e);
+    }
+  }
+
+  // ---- Popup au clic ----
+  function wireInteractions(layerId) {
+    map.on("click", layerId, (e) => {
+      const f = e.features && e.features[0];
+      if (!f) return;
+      const p = f.properties || {};
+      const kindRaw = (p.kind != null ? String(p.kind) : "");
+      const kl = kindRaw ? kindRaw[0].toUpperCase() : "";
+      const color = KIND_COLORS[kl] || KIND_OTHER;
+      const kindTxt = kindRaw + (KIND_LABEL[kl] ? " — " + KIND_LABEL[kl] : "");
+      const rows = [
+        ["Zone", p.zone_code],
+        ["Type", `<span class="badge" style="background:${color}">${escapeHtml(kindTxt || "?")}</span>`],
+        ["Source", p.source],
+        ["Confiance", p.confidence],
+        ["Lots", p.n_lots]
+      ].filter(([, v]) => v !== undefined && v !== null && v !== "");
+      const html = `<div class="pop-title">${escapeHtml(String(p.zone_code || "Zone"))}</div>
+        <table>${rows.map(([k, v]) => `<tr><td class="k">${k}</td><td>${k === "Type" ? v : escapeHtml(String(v))}</td></tr>`).join("")}</table>`;
+      popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+    });
+    map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
+    map.on("mouseleave", layerId, () => { map.getCanvas().style.cursor = ""; });
+  }
+
+  // ---- Utilitaires ----
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  function geojsonBounds(gj) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const eachCoord = (c) => {
+      if (typeof c[0] === "number") {
+        if (c[0] < minX) minX = c[0]; if (c[0] > maxX) maxX = c[0];
+        if (c[1] < minY) minY = c[1]; if (c[1] > maxY) maxY = c[1];
+      } else { c.forEach(eachCoord); }
+    };
+    const feats = gj.type === "FeatureCollection" ? gj.features : [gj];
+    for (const f of feats) { if (f && f.geometry && f.geometry.coordinates) eachCoord(f.geometry.coordinates); }
+    if (minX === Infinity) return null;
+    return [[minX, minY], [maxX, maxY]];
+  }
+
+  // ---- Boot ----
+  map.on("load", () => {
+    addMasseLayer();
+    loadCollections();
+  });
+  map.on("error", (e) => {
+    // Erreurs de tuiles individuelles ne doivent pas casser la démo ; on logge seulement.
+    if (e && e.error) console.warn("map error:", e.error.message || e.error);
+  });
+  </script>
+</body>
+</html>
