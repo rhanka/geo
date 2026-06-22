@@ -45,9 +45,16 @@ import {
   candidatePagesForCity,
   discoverGrillesForCity,
   type GrilleCandidate,
-  type GrilleRouteGuess,
   type PvFetchLike,
 } from "../../packages/qc-sources/src/sources/grille-discovery.js";
+import {
+  isGrillePage,
+  parseGrillePage,
+} from "../../packages/qc-sources/src/sources/grille-specifications-parser.js";
+import {
+  locateGrillePages,
+  type GrilleLocation,
+} from "../../packages/qc-sources/src/sources/grille-page-locator.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ACQ = resolve(HERE, ".."); // acquisition/
@@ -101,6 +108,10 @@ interface ManifestMuni {
   discoveredFrom?: string;
   scoreClassif?: number;
   titre?: string;
+  /** Grille-locator diagnostics (provenance for the route/first/last decision). */
+  grillePageCount?: number;
+  locatorConfidence?: number;
+  routeReason?: string;
 }
 
 // ── HTTP confirmation (HEAD then GET fallback) ─────────────────────────────────
@@ -163,26 +174,88 @@ async function confirmPdf(
   return { ok: false, status: 0, contentType: "" };
 }
 
-// ── routeGuess via pdftotext (poppler) ─────────────────────────────────────────
+// ── route decision via the frozen parser + grille-page locator ─────────────────
 
-/**
- * Heuristic route hint from a downloaded PDF's native text layer:
- *   - "native"  → pdftotext -layout yields substantial text (≥ ~200 chars/page
- *     averaged) → likely parseable without vision.
- *   - "vision"  → little/no text (scanned/image grille) → needs vision.
- * The normes runner re-decides the EXACT route (native|multizone|vision) with the
- * frozen parser; this is only a cheap pre-classification hint.
- */
-function probeRouteGuess(pdfPath: string): GrilleRouteGuess {
+interface RouteProbe {
+  route: ManifestMuni["route"];
+  first?: number;
+  last?: number;
+  grillePageCount?: number;
+  confidence?: number;
+  reason: string;
+}
+
+/** Split a `pdftotext -layout` projection into per-page texts (drop the trailing FF). */
+function pdfToPageTexts(pdfPath: string): string[] | null {
   const r = spawnSync("pdftotext", ["-q", "-layout", "-enc", "UTF-8", pdfPath, "-"], {
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024,
   });
-  if (r.status !== 0) return "vision";
-  const text = r.stdout ?? "";
-  const pages = Math.max(1, (text.match(/\f/g)?.length ?? 0) + 1);
-  const perPage = text.replace(/\s/g, "").length / pages;
-  return perPage >= 200 ? "native" : "vision";
+  if (r.status !== 0) return null;
+  const parts = (r.stdout ?? "").split("\f");
+  if (parts.length > 0 && parts[parts.length - 1] === "") parts.pop();
+  return parts;
+}
+
+/**
+ * Decide the EXACT route from the downloaded PDF, replacing the old "lots of text
+ * → native" density heuristic that mis-routed VERTICAL grilles to the horizontal
+ * native parser (which then returned 0 rows). The precise decision is:
+ *
+ *   1. NATIVE — probe every page with the FROZEN `parseGrillePage` (the Sherbrooke
+ *      horizontal parser). If any page is accepted with ≥1 zone row, the grille is
+ *      a native-text horizontal table → route="native" ($0, no page bounds needed).
+ *   2. MULTIZONE / VISION — otherwise LOCATE the grille pages by text signal. When
+ *      found, BOUND the vision pass to [firstPage,lastPage] and pick the extractor
+ *      by the locator's layout hint: a one-zone-per-page annex → "vision" (single-
+ *      zone), a transposed multi-zone sheet → "multizone".
+ *   3. AUTO — when no grille page is detected at all (image-only scan whose text
+ *      layer is empty, or a bylaw that doesn't embed the table), DO NOT guess a
+ *      range: leave route="auto" with no bounds and flag it for investigation
+ *      (anti-invention — the batch's idempotent skip keeps it from depositing junk).
+ */
+function decideRoute(pdfPath: string, sourceUrl: string): RouteProbe {
+  const pages = pdfToPageTexts(pdfPath);
+  if (pages === null) {
+    return { route: "auto", reason: "pdftotext failed — leave auto for investigation" };
+  }
+  const snapshot = new Date().toISOString().slice(0, 10);
+
+  // (1) native horizontal grille?
+  let nativeRows = 0;
+  let nativeGrillePages = 0;
+  for (const p of pages) {
+    if (!isGrillePage(p).isGrille) continue;
+    nativeGrillePages++;
+    const res = parseGrillePage(p, { source_url: sourceUrl, snapshot });
+    if (!res.rejected) nativeRows += res.zones.length;
+  }
+  if (nativeGrillePages > 0 && nativeRows > 0) {
+    return {
+      route: "native",
+      reason: `native: ${nativeGrillePages} header-anchored pages, ${nativeRows} accepted rows`,
+    };
+  }
+
+  // (2) locate grille pages → bounded multizone / vision.
+  const loc: GrilleLocation | null = locateGrillePages(pages);
+  if (loc) {
+    const route = loc.layout === "one-zone-per-page" ? "vision" : "multizone";
+    return {
+      route,
+      first: loc.firstPage,
+      last: loc.lastPage,
+      grillePageCount: loc.grillePageCount,
+      confidence: loc.confidence,
+      reason: `${route}: grille pages ${loc.firstPage}..${loc.lastPage} (${loc.grillePageCount} pages, ${loc.layout}, conf=${loc.confidence})`,
+    };
+  }
+
+  // (3) nothing detectable in the text layer → investigate, never invent a range.
+  return {
+    route: "auto",
+    reason: "no native grille rows and no grille page located (image-only scan?) — left auto for investigation",
+  };
 }
 
 function pdfPageCount(pdfPath: string): number | undefined {
@@ -275,7 +348,16 @@ async function main(): Promise<void> {
         writeFileSync(pdfPath, conf.bytes);
         const pages = pdfPageCount(pdfPath);
         if (pages) picked.pages = pages;
-        if (args.routeGuess) picked.route = probeRouteGuess(pdfPath);
+        if (args.routeGuess) {
+          const probe = decideRoute(pdfPath, cand.pdfUrl);
+          picked.route = probe.route;
+          if (probe.first !== undefined) picked.first = probe.first;
+          if (probe.last !== undefined) picked.last = probe.last;
+          if (probe.grillePageCount !== undefined) picked.grillePageCount = probe.grillePageCount;
+          if (probe.confidence !== undefined) picked.locatorConfidence = probe.confidence;
+          picked.routeReason = probe.reason;
+          console.error(`  [route] ${probe.reason}`);
+        }
       }
       break; // first confirmed candidate per muni is enough for the manifest
     }
