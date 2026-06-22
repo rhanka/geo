@@ -1,67 +1,81 @@
-# Plan de couverture — données géo Québec (cible maximale + roadmap remote)
+# Plan de couverture — données géo Québec
 
-> Établi le 2026-06-22. Comptes **réels** mesurés (S3 + OGC live + repo), pas d'estimé.
-> Source inventaire : `work/immo-audit/INVENTAIRE-scraping-qc.md`.
+> 2026-06-22. **Cible = 1106 municipalités (100 %) sur CHAQUE layer.** Les plafonds
+> par voie (ex. ~350 en vecteur) ne sont PAS la cible : ce sont les rendements
+> d'UNE voie. On atteint 1106 en **empilant les voies** + une voie d'investigation
+> pour le résidu. Tous les rendements ci-dessous sont **mesurés** (S3/OGC/repo,
+> daté 2026-06-22) ou **projetés** à partir d'un échantillon réel — jamais au pifomètre.
+> Sources : `work/immo-audit/INVENTAIRE-scraping-qc.md` + `gisement-mrc.md`.
 
-## 1. État actuel — par layer (couverture réelle)
+## 0. Le Québec = 1106 municipalités (87 MRC). C'est le dénominateur partout.
 
-| # | Layer | Acquis aujourd'hui | Méthode | Stockage |
+## 1. Départ → Cible, par layer (cible = 1106)
+
+| Layer | Départ (mesuré) | Cible | Voie principale pour combler |
+|---|---|---|---|
+| Cadastre lots | 1102 / 1106 | **1106** | 4 manquantes = TNO sans cadastre (à confirmer) |
+| Rôle foncier | 1095 / 1106 | **1106** | ~11 sans rôle MAMH publié — à investiguer |
+| Index immo | 1102 / 1106 | **1106** | suit cadastre+rôle |
+| code_zone sur lots | 28 / 1106 | **1106** | suit zones (layer ci-dessous) |
+| **Zones (polygones)** | ~99 propres / 1106 | **1106** | empilement de voies §2 + PDF §3 |
+| **Normes (grilles)** | 25 / 1106 | **1106** | crawl PDF (66 % hit mesuré) §3 |
+| PV / signaux | 563 prêts / 1106 | **1106** | basculer prod + étendre configs |
+| PMTiles | 2 (privé) | **1106 public** | tuilage + exposition publique |
+
+## 2. ZONES — décomposition par VOIE (ce qui « motive le 350 », chiffré)
+
+| # | Voie d'acquisition | Rendement | Munis | Base du chiffre |
 |---|---|---|---|---|
-| 1 | Frontières admin (SDA/MERN) | **1343** polygones munis | harvest SDA | `normalized/qc-admin-boundaries/` |
-| 2 | Cadastre lots (géométrie) | **1102** munis (1080 clippés SDA, ~1,78 M lots) | harvest cadastre rénové + clip frontière | `normalized/qc-cadastre-lots/` |
-| 3 | Rôle foncier (attributs bâtiment) | **1095** munis | parse XML MAMH | `registry/role-foncier/` |
-| 4 | Index zéro-copie immo | **1102** parquet (code_zone non-null sur ~15-28 munis) | cadastre ⋈ rôle ⋈ code_zone | `registry/index-immo/` |
-| 5 | code_zone sur lots (point-in-polygon) | **28** munis | PIP lot ⋈ zone | servi OGC + index |
-| 6 | **ZONES spatiales (polygones)** | **387 collections servies** ; **~99 munis 1:1** (38 propres + 61 désagrégées) | ArcGIS Hub par compte + CKAN + MRC + désagrégation + PDF | `normalized/ca-qc-zonage/` + OGC |
-| 7 | **NORMES / grilles (valeurs régl.)** | **25** munis déposés (crawl province → ~370 grilles en vue) | découverte PDF (crawler PV) + extraction native/multizone/vision | `registry/qc-zonage-norms/` |
-| 8 | PV / procès-verbaux (signaux) | **563** villes configurées (code prêt) | scrapers `@geo/qc-sources` | code — prod **non basculée** |
-| 9 | PMTiles (tuiles vectorielles) | **2** archives province (zones+lots) | tippecanoe (job Scaleway) | `pmtiles/` (bucket **privé**) |
-| 10 | Rapport statut client | prod (md+docx) | `@geo/qc-status-report` | repo |
+| 1 | ArcGIS Hub — comptes nommés 1:1 | **mesuré** | **38** | 38/329 collections mappent 1:1 un muni (live OGC) |
+| 2 | Désagrégation des agrégats | **mesuré** | **+61** | 5/118 agrégats ont un attr muni → 61 per-muni (Ét.0 livrée) |
+| 3 | CKAN Données Québec (grandes villes) | **mesuré, épuisé** | 11 (inclus) | 50 packages = 11 grandes villes pinées |
+| 4 | Énumération **nominative** des 87 comptes MRC | **projeté** | **+60 à +150** | 10 comptes MRC captés rendent 5-30 munis/compte ; mais ~la moitié des MRC n'ont AUCUN compte public (Joliette/Des Chenaux/Érable/Abitibi-O. = 0 à la sonde) |
+| 5 | Adaptateurs portails MRC SHP (type Portneuf) | **projeté** | **+30 à +100** | 5-30 munis/portail × 6-10 portails exposant du SHP |
+| 6 | WFS/JMap/GoNet municipaux | **non exploité** | **+0 à +50** | plateformes détectées mais pas moissonnées (scénario haut) |
+| | **SOUS-TOTAL VECTEUR (1→6)** | | **~250-350 (23-32 %)** | = plafond open-data vecteur |
 
-## 2. Cible MAXIMALE par layer (plafond honnête + raison)
+**Pourquoi ça plafonne ~350 (contrainte, pas pifomètre) :** la donnée vecteur ouverte
+n'existe **pas** pour la majorité des ~750 petites munis (< 5 000 hab). Mesuré : la
+recherche par mot-clé MRC est stérile (≥1 faux positif sur 2 sondes → vérif spatiale
+obligatoire) ; CKAN MRC = orthophoto, pas zonage. Le gisement net au-delà de
+l'existant = **+80 à +180 munis** (médian +120), pas « 87 MRC × N ».
 
-| Layer | Cible max atteignable | Plafond / raison |
-|---|---|---|
-| Cadastre lots | **~1086 / 1102 = ceiling** ✅ déjà atteint | 16 TNO nordiques ont 0 lot cadastral |
-| Rôle foncier | **~1099 = ceiling** ✅ quasi atteint | quelques munis sans rôle MAMH publié |
-| Index immo | **1102 structurel** ✅ ; sa VALEUR (code_zone) suit les zones | borné par la couverture zones |
-| code_zone sur lots | **= couverture zones** (jusqu'à ~280-350 munis) | suit le layer 6 |
-| **ZONES vecteur (polygones nets)** | **~280-350 munis (25-32 %)** | **plafond open-data dur** : au-delà, pas de zonage vecteur public — uniquement PDF/scan |
-| **NORMES / grilles** | **~370-500 munis** | = munis publiant une grille PDF en ligne (le crawl en trouve ~66 %) |
-| PV / signaux | **1106** (scrapers extensibles ; 563 prêts) | borné par l'effort d'ajout de configs muni |
-| PMTiles | **province + par-ville, public/CDN** | = exposer ce qui existe |
-| Zones PDF longue traîne (~700 munis) | **zones grossières** (codes localisés à l'aire, pas polygones nets) | les PDF scannés sans frontière interne ne donnent pas de polygone propre (cf. verdict A-16) |
+## 3. ZONES 350 → 1106 : la voie PDF + le RECENSEMENT (plan d'investigation)
 
-**Synthèse cible** : socle foncier (cadastre/rôle/index) ~100 % ✅ ; **zones vecteur plafonnent ~30 %** (limite open-data, pas un manque d'effort) ; **normes extensibles à ~400 munis** (le vrai gisement de valeur restant) ; PV à basculer en prod ; PMTiles à rendre publics.
+Pour les ~750 munis sans vecteur, le zonage existe en **PDF** sur le site municipal.
 
-## 3. Roadmap — remote-optimisée (réponse à « ça va pas assez vite »)
+| Voie | Rendement | Donne | Statut |
+|---|---|---|---|
+| 7 | Découverte PDF (crawler PV) | **66 % hit mesuré** (161/244 munis sondés) | un PDF de grille | crawl démarré (arrêté pour cadrage) |
+| 8 | PDF→GeoJSON par calage lots (ADR-0023) | **>85 % auto** sur GeoPDF géoréf T1/T2/T3 ; ~15 % semi-manuel T4 | polygones de zone (grossiers→propres selon type) | POC saint-amable OK |
 
-**Principe directeur** : **rien de lourd ne tourne en séquentiel sur le poste local.** Toute acquisition de masse passe en **jobs Scaleway Serverless parallèles shardés** ; le serving reste sur **k8s** (geo-api + PostGIS, déjà en place). Politesse préservée : on shard **par muni** (chaque worker frappe des sites différents).
+**Le maillon manquant = un RECENSEMENT/TYPAGE des 1106** (lecture seule, 0 crédit) :
+pour chaque muni, classer la voie applicable — *vecteur dispo ? / GeoPDF T1-3
+extractible ? / scan T4 semi-manuel ? / aucune source ?* — à partir des taux mesurés.
+**C'est CE recensement qui transforme le « 350 au pifomètre » en projection fondée
+par muni** et qui chiffre honnêtement combien des 1106 sont réellement atteignables,
+par quelle voie, et à quel coût. Il faut le faire AVANT de relancer du calcul payant.
 
-### Phase A — NORMES à l'échelle (le plus gros gisement de valeur), PARALLÈLE
-- **A1.** Déployer le job Scaleway normes (déjà codé+commité `deploy/normes-job/`, mode `extract`) → build image + push registre Scaleway + `scw jobs definition`.
-- **A2.** Sharder les 563 munis en **N=10-20 jobs parallèles** (`--slugs <shard>`) → la découverte province passe de **~7 h séquentiel à ~30 min**.
-- **A3.** Extraction normes en jobs parallèles sur les PDF stagés (S3) → normes **25 → ~300-370 munis**.
-- **Gain** : ×10-20 sur le mur d'acquisition. **C'est l'accélération demandée.**
+## 4. NORMES (valeurs de grille) — même logique
 
-### Phase B — PMTiles publics (seul engagement ouvert envers immo)
-- Provisionner un **bucket S3 PUBLIC dédié + CDN** ; (re)tuiler zonage par-ville + lots province via le job tippecanoe Scaleway ; publier un **manifeste versionné** `(snapshot_id, etag/ville)` ; fixer l'endpoint + ETA pilote saint-frederic. (ADR-0022.)
+| Voie | Rendement | Munis | Statut |
+|---|---|---|---|
+| Extraction native (grille horizontale texte) | mesuré | gratuit ($0) | en place |
+| Extraction multizone/vision (grille verticale/image) | mesuré ~$0.06-0.32/muni | payant LLM | en place |
+| Découverte des PDF de grille | **66 % hit** mesuré | ~370/563 sondables | crawl |
 
-### Phase C — ZONES vecteur jusqu'au plafond (~280 munis)
-- Énumération **nominative** des comptes ArcGIS Hub des 87 MRC (pas keyword — stérile) + désagrégation (déjà faite, +61) + adaptateurs portails SHP (type Portneuf). Vérif spatiale par muni **obligatoire** (≥1 faux positif/2 sondes). → ~99 → ~280 munis 1:1.
+Cible normes = **= nb de munis publiant une grille PDF** (le recensement §3 le chiffre).
+**Contrainte de coût** : l'extraction vision doit passer par le **CLI/LLM-gateway
+multi-compte** (décision user), PAS l'API Mistral directe — à câbler avant tout run.
 
-### Phase D — PV prod (reversion immo→geo)
-- Basculer en production les scrapers PV (563 prêts) côté geo ; les exposer ; étendre vers 1106.
+## 5. Roadmap remote (k8s) — APRÈS recensement + câblage LLM-gateway
 
-### Phase E — exposer les NORMES en collections OGC
-- Publier `registry/qc-zonage-norms/` en collections OGC `qc-zonage-norms-<slug>` pour qu'immo puisse les puller (aujourd'hui parquet S3 only).
+1. **Recensement/typage des 1106** (lecture seule, 0 crédit) → projection fondée par layer.
+2. **Câbler l'extraction sur le CLI/LLM-gateway multi-compte** (Claude), retirer l'appel Mistral direct.
+3. **Acquisition de masse en Jobs k8s parallèles shardés** (orchestrateur TS `k8s-shard-run.ts` déjà prouvé) — uniquement une fois 1 et 2 faits, quota bumpé le temps du burst puis restauré.
+4. Voies vecteur §2 (énumération MRC nominative + portails SHP) → ~350.
+5. Voie PDF §3 (calage lots) → pousser vers 1106 selon le recensement.
+6. PMTiles publics + CDN ; exposer normes en OGC ; basculer PV en prod.
 
-### Phase F — longue traîne PDF (le dur, ~700 munis)
-- Extraction PDF→GeoJSON par calage sur lots (ADR-0023, >85 % auto sur T1/T2/T3, semi-manuel T4) — par lots, en jobs ; donne des zones grossières là où le vecteur public n'existe pas.
-
-### Ordre & parallélisme
-- **Maintenant en parallèle** : A (normes shardé) + B (PMTiles publics) — indépendants, tous deux remote.
-- **Ensuite** : C (zones vecteur MRC nominatif) + E (normes OGC).
-- **Continu** : D (PV), F (PDF longue traîne).
-
-> Tout le code d'orchestration est TS, commité ; l'exécution de masse vise Scaleway Jobs (coût ~$0.06-0.32/muni mesuré pour les normes vision). Le poste local ne sert qu'à piloter/valider.
+> Rien qui consomme du crédit n'est relancé tant que (1) le recensement n'a pas chiffré
+> la cible réelle par muni et (2) le LLM-gateway multi-compte n'est pas câblé.
