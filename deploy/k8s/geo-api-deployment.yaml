@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geo-api
+  namespace: geo
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: api
+        app.kubernetes.io/name: geo-api
+        app.kubernetes.io/part-of: geo
+    spec:
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: geo-api
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8787
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8787"
+            - name: GEO_DATA_URI
+              value: s3://sentropic-geo/normalized
+            - name: NODE_ENV
+              value: production
+          # S3 credentials (S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_ENDPOINT,
+          # S3_REGION) are injected from the out-of-repo Secret. See README.md.
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
+          livenessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 75m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
