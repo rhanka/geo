@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build / compile artefacts
+dist/
+build/
+.svelte-kit/
+*.tsbuildinfo
+
+# Caches (pipeline geo + téléchargements statcan)
+.cache/
+
+# Secrets / env — les creds vivent HORS repo
+# (_acquisition-shared/s3.env, sentropic/.env)
+*.env
+.env
+.env.*
+.npmrc
+*.pem
+*.key
+*credentials*
+
+# Données lourdes générées / téléchargées (re-générables par le pipeline)
+data/
+*.pdf
+work/**/run.log
+*.zip
+*.parquet
+*.pmtiles
+*.mbtiles
+*.fgb
+
+# OS
+.DS_Store
