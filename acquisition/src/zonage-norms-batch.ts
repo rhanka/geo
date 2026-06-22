@@ -35,8 +35,13 @@ const RUNNER = join(HERE, "zonage-norms-run.ts");
 const TSX = join(ACQ, "node_modules", ".bin", "tsx");
 
 const MUNIS_JSON =
-  process.argv[2] ?? join(REPO, "work", "zonage-norms", "munis.json");
-const MISTRAL_ENV = "/home/antoinefa/src/sentropic/.env";
+  process.argv[2] ??
+  process.env["NORMS_MANIFEST"] ??
+  join(REPO, "work", "zonage-norms", "munis.json");
+// Local default; overridable with `MISTRAL_ENV_FILE`. When the file is absent
+// (remote runner), MISTRAL_API_KEY is read straight from the env instead.
+const MISTRAL_ENV =
+  process.env["MISTRAL_ENV_FILE"] ?? "/home/antoinefa/src/sentropic/.env";
 const BUDGET_USD = process.env["NORMS_BUDGET_USD"] ?? "4";
 
 interface Muni {
@@ -77,8 +82,12 @@ async function main(): Promise<void> {
   );
 
   // MISTRAL_API_KEY (vision + multizone need it) → CHILD env only, never logged.
+  // Prefer the local env file when it exists; otherwise fall back to the key
+  // already in process.env (remote runner injects it as a job env var).
   const childEnv = { ...process.env };
-  const mistralKey = loadEnv(MISTRAL_ENV)["MISTRAL_API_KEY"];
+  const mistralKey = existsSync(MISTRAL_ENV)
+    ? loadEnv(MISTRAL_ENV)["MISTRAL_API_KEY"]
+    : process.env["MISTRAL_API_KEY"];
   if (mistralKey) childEnv["MISTRAL_API_KEY"] = mistralKey;
   console.error(
     `[batch] MISTRAL_API_KEY ${childEnv["MISTRAL_API_KEY"] ? "chargée" : "ABSENTE"}`,

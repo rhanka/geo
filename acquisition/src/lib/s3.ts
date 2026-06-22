@@ -7,7 +7,7 @@
  * client uses `forcePathStyle` exactly like the existing node scripts
  * (scripts/build-pmtiles.mjs) and the Python `boto3.client(endpoint_url=...)`.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 import {
   S3Client,
@@ -18,7 +18,13 @@ import {
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 
-export const S3ENV = "/home/antoinefa/src/_acquisition-shared/s3.env";
+/**
+ * Default creds file (never committed). Overridable with the `S3_ENV_FILE`
+ * env var so a remote runner (e.g. the Scaleway normes job) can point at its
+ * own materialised file — or skip the file entirely (see `s3Client`).
+ */
+export const S3ENV =
+  process.env["S3_ENV_FILE"] ?? "/home/antoinefa/src/_acquisition-shared/s3.env";
 export const BUCKET = "sentropic-geo";
 
 /**
@@ -47,9 +53,19 @@ export function loadEnv(path: string = S3ENV): Record<string, string> {
   return env;
 }
 
-/** Build the Scaleway S3 client (forcePathStyle, creds from s3.env). */
+/**
+ * Build the Scaleway S3 client (forcePathStyle).
+ *
+ * Creds resolution (retro-compatible — the local default is unchanged):
+ *   1. If the `envPath` file EXISTS, read creds from it (the historical path,
+ *      `/home/antoinefa/src/_acquisition-shared/s3.env`, or `$S3_ENV_FILE`).
+ *   2. Otherwise (remote runner with no file on disk), read the same
+ *      `S3_ENDPOINT/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY` keys straight from
+ *      `process.env`. This lets a Scaleway Serverless Job inject creds as job
+ *      env vars without materialising a file. NEVER logs any value.
+ */
 export function s3Client(envPath: string = S3ENV): S3Client {
-  const env = loadEnv(envPath);
+  const env = existsSync(envPath) ? loadEnv(envPath) : process.env;
   return new S3Client({
     endpoint: env["S3_ENDPOINT"],
     region: env["S3_REGION"] || "fr-par",
