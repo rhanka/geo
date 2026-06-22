@@ -1,81 +1,58 @@
-# Plan de couverture — données géo Québec
+# Plan de couverture — données géo Québec → 1106 municipalités (100 %)
 
-> 2026-06-22. **Cible = 1106 municipalités (100 %) sur CHAQUE layer.** Les plafonds
-> par voie (ex. ~350 en vecteur) ne sont PAS la cible : ce sont les rendements
-> d'UNE voie. On atteint 1106 en **empilant les voies** + une voie d'investigation
-> pour le résidu. Tous les rendements ci-dessous sont **mesurés** (S3/OGC/repo,
-> daté 2026-06-22) ou **projetés** à partir d'un échantillon réel — jamais au pifomètre.
-> Sources : `work/immo-audit/INVENTAIRE-scraping-qc.md` + `gisement-mrc.md`.
+> 2026-06-22. **Cible = les 1106 municipalités, sur les 3 couches : Zones, Normes, PV.**
+> **Aucun plafond** : toute ville a une source ; si pas de vecteur ouvert, on **recompose
+> le vecteur** depuis le PDF / le logiciel SIG / le site municipal (obscura, session).
+> Principe : une **cascade de voies** par ville — la 1re qui marche gagne ; un **recenseur
+> exhaustif** tourne en parallèle pour trouver la source des villes sans hit facile.
 
-## 0. Le Québec = 1106 municipalités (87 MRC). C'est le dénominateur partout.
+## UN tableau — toutes les couches × type d'acquisition
 
-## 1. Départ → Cible, par layer (cible = 1106)
+| # | Type d'acquisition | Ce qu'il produit | Zones | Normes | PV | Couverture visée | Coût | Statut |
+|---|---|---|:--:|:--:|:--:|---|---|---|
+| 1 | Vecteur ouvert ArcGIS/AGOL (par compte) | polygones de zone | ✅ | | | villes/MRC à compte SIG | gratuit | en place — 38 |
+| 2 | Désagrégation des agrégats (par `mun_nom`/centroïde) | polygones per-muni | ✅ | | | villes cachées dans layers MRC | gratuit | fait — +61 |
+| 3 | CKAN Données Québec | polygones | ✅ | | | grandes villes | gratuit | épuisé — 11 |
+| 4 | Portails MRC (SHP / WFS / JMap / GoNet) | polygones | ✅ | | | villes des MRC à portail | gratuit | partiel → à généraliser |
+| 5 | Découverte PDF (crawler PV 2-hop + robots) | localise le PDF grille/plan | ✅ | ✅ | | toute ville à PDF en ligne | gratuit | 66 % hit mesuré |
+| 6 | **PDF→GeoJSON — recomposition vecteur** (GeoPDF géoréf T1, vectorisation calque T2, raster géoréf T3, calage sur lots) | **polygones recomposés** + valeurs | ✅ | ✅ | | toute ville à plan/grille PDF | gratuit (sauf OCR) | POC saint-amable OK |
+| 7 | **Sites villes + session (obscura, headless)** | atteint PDF/SIG derrière JS/onclick/login | ✅ | ✅ | ✅ | villes à site protégé (ex. cap-sante onclick, gestionweblex/ASP.NET) | gratuit | **à brancher (était squizzé)** |
+| 8 | Extraction valeurs de grille — natif (texte) / vision (image) | valeurs normes | | ✅ | | grilles trouvées | natif gratuit ; **vision = LLM** | en place |
+| 9 | Scrapers PV (sites municipaux) | procès-verbaux / signaux | | | ✅ | villes configurées | gratuit | 563 prêts |
+| 10 | **Recenseur exhaustif de sources** (par ville sans hit facile) | trouve LA voie : site muni, logiciel SIG, dépôt SHP, PDF, portail MRC | ✅ | ✅ | ✅ | les villes « dures » | gratuit | **à construire** |
 
-| Layer | Départ (mesuré) | Cible | Voie principale pour combler |
-|---|---|---|---|
-| Cadastre lots | 1102 / 1106 | **1106** | 4 manquantes = TNO sans cadastre (à confirmer) |
-| Rôle foncier | 1095 / 1106 | **1106** | ~11 sans rôle MAMH publié — à investiguer |
-| Index immo | 1102 / 1106 | **1106** | suit cadastre+rôle |
-| code_zone sur lots | 28 / 1106 | **1106** | suit zones (layer ci-dessous) |
-| **Zones (polygones)** | ~99 propres / 1106 | **1106** | empilement de voies §2 + PDF §3 |
-| **Normes (grilles)** | 25 / 1106 | **1106** | crawl PDF (66 % hit mesuré) §3 |
-| PV / signaux | 563 prêts / 1106 | **1106** | basculer prod + étendre configs |
-| PMTiles | 2 (privé) | **1106 public** | tuilage + exposition publique |
+**Cible = 1106 sur les 3 couches.** Chaque ville est servie par la 1re voie qui marche
+(cascade 1→7) ; celles sans hit facile passent par le **recenseur (10)** → puis
+recomposition (6) ou obscura (7). **Le seul poste payant = l'extraction vision (8)** —
+il doit passer par le **CLI/LLM-gateway multi-compte Claude**, pas l'API Mistral.
 
-## 2. ZONES — décomposition par VOIE (ce qui « motive le 350 », chiffré)
+## Gratuit vs payant (pour ne pas brûler de crédit)
 
-| # | Voie d'acquisition | Rendement | Munis | Base du chiffre |
-|---|---|---|---|---|
-| 1 | ArcGIS Hub — comptes nommés 1:1 | **mesuré** | **38** | 38/329 collections mappent 1:1 un muni (live OGC) |
-| 2 | Désagrégation des agrégats | **mesuré** | **+61** | 5/118 agrégats ont un attr muni → 61 per-muni (Ét.0 livrée) |
-| 3 | CKAN Données Québec (grandes villes) | **mesuré, épuisé** | 11 (inclus) | 50 packages = 11 grandes villes pinées |
-| 4 | Énumération **nominative** des 87 comptes MRC | **projeté** | **+60 à +150** | 10 comptes MRC captés rendent 5-30 munis/compte ; mais ~la moitié des MRC n'ont AUCUN compte public (Joliette/Des Chenaux/Érable/Abitibi-O. = 0 à la sonde) |
-| 5 | Adaptateurs portails MRC SHP (type Portneuf) | **projeté** | **+30 à +100** | 5-30 munis/portail × 6-10 portails exposant du SHP |
-| 6 | WFS/JMap/GoNet municipaux | **non exploité** | **+0 à +50** | plateformes détectées mais pas moissonnées (scénario haut) |
-| | **SOUS-TOTAL VECTEUR (1→6)** | | **~250-350 (23-32 %)** | = plafond open-data vecteur |
+- **Gratuit (réseau/calcul, 0 LLM)** : voies 1-7, 9, 10 + extraction **native** (texte).
+  → tout ça peut tourner **maintenant**, en parallèle, sans crédit.
+- **Payant (LLM)** : seulement l'extraction **vision** des grilles-images (voie 8 vision).
+  → **gelé** tant que le CLI/LLM-gateway multi-compte n'est pas câblé.
 
-**Pourquoi ça plafonne ~350 (contrainte, pas pifomètre) :** la donnée vecteur ouverte
-n'existe **pas** pour la majorité des ~750 petites munis (< 5 000 hab). Mesuré : la
-recherche par mot-clé MRC est stérile (≥1 faux positif sur 2 sondes → vérif spatiale
-obligatoire) ; CKAN MRC = orthophoto, pas zonage. Le gisement net au-delà de
-l'existant = **+80 à +180 munis** (médian +120), pas « 87 MRC × N ».
+## Plan d'exécution (parallèle, vers 1106)
 
-## 3. ZONES 350 → 1106 : la voie PDF + le RECENSEMENT (plan d'investigation)
+**A. Recensement exhaustif des 1106 (voie 10) — lancer en parallèle, gratuit.**
+Pour chaque municipalité : catalogue ArcGIS/AGOL + CKAN + portail MRC + **site municipal
+(obscura si session/JS)** + présence de PDF (plan & grille) + logiciel SIG détecté.
+Sortie : par ville, la **liste ordonnée des sources réelles** + le **type T1/T2/T3/T4**
+du PDF s'il y en a. C'est la carte qui pilote tout le reste — et qui prouve qu'il n'y a
+pas de plafond (chaque ville a au moins une voie).
 
-Pour les ~750 munis sans vecteur, le zonage existe en **PDF** sur le site municipal.
+**B. Acquisition de masse en Jobs k8s parallèles shardés** (orchestrateur TS prouvé),
+voies 1-7 + 9 + extraction native. Gratuit. Tourne pendant que A affine les villes dures.
 
-| Voie | Rendement | Donne | Statut |
-|---|---|---|---|
-| 7 | Découverte PDF (crawler PV) | **66 % hit mesuré** (161/244 munis sondés) | un PDF de grille | crawl démarré (arrêté pour cadrage) |
-| 8 | PDF→GeoJSON par calage lots (ADR-0023) | **>85 % auto** sur GeoPDF géoréf T1/T2/T3 ; ~15 % semi-manuel T4 | polygones de zone (grossiers→propres selon type) | POC saint-amable OK |
+**C. Recomposition vecteur (6) + obscura (7)** sur les villes sans vecteur ouvert,
+guidées par le recensement A → polygones recomposés depuis PDF/logiciel/site.
 
-**Le maillon manquant = un RECENSEMENT/TYPAGE des 1106** (lecture seule, 0 crédit) :
-pour chaque muni, classer la voie applicable — *vecteur dispo ? / GeoPDF T1-3
-extractible ? / scan T4 semi-manuel ? / aucune source ?* — à partir des taux mesurés.
-**C'est CE recensement qui transforme le « 350 au pifomètre » en projection fondée
-par muni** et qui chiffre honnêtement combien des 1106 sont réellement atteignables,
-par quelle voie, et à quel coût. Il faut le faire AVANT de relancer du calcul payant.
+**D. Extraction vision (8)** — uniquement après câblage LLM-gateway multi-compte ;
+en Jobs k8s shardés, quota bumpé le temps du burst puis restauré.
 
-## 4. NORMES (valeurs de grille) — même logique
+**E. Exposition** : PMTiles publics + CDN ; normes en collections OGC ; PV en prod.
 
-| Voie | Rendement | Munis | Statut |
-|---|---|---|---|
-| Extraction native (grille horizontale texte) | mesuré | gratuit ($0) | en place |
-| Extraction multizone/vision (grille verticale/image) | mesuré ~$0.06-0.32/muni | payant LLM | en place |
-| Découverte des PDF de grille | **66 % hit** mesuré | ~370/563 sondables | crawl |
-
-Cible normes = **= nb de munis publiant une grille PDF** (le recensement §3 le chiffre).
-**Contrainte de coût** : l'extraction vision doit passer par le **CLI/LLM-gateway
-multi-compte** (décision user), PAS l'API Mistral directe — à câbler avant tout run.
-
-## 5. Roadmap remote (k8s) — APRÈS recensement + câblage LLM-gateway
-
-1. **Recensement/typage des 1106** (lecture seule, 0 crédit) → projection fondée par layer.
-2. **Câbler l'extraction sur le CLI/LLM-gateway multi-compte** (Claude), retirer l'appel Mistral direct.
-3. **Acquisition de masse en Jobs k8s parallèles shardés** (orchestrateur TS `k8s-shard-run.ts` déjà prouvé) — uniquement une fois 1 et 2 faits, quota bumpé le temps du burst puis restauré.
-4. Voies vecteur §2 (énumération MRC nominative + portails SHP) → ~350.
-5. Voie PDF §3 (calage lots) → pousser vers 1106 selon le recensement.
-6. PMTiles publics + CDN ; exposer normes en OGC ; basculer PV en prod.
-
-> Rien qui consomme du crédit n'est relancé tant que (1) le recensement n'a pas chiffré
-> la cible réelle par muni et (2) le LLM-gateway multi-compte n'est pas câblé.
+> Itération : A (recenseur) ne s'arrête pas tant qu'une ville n'a pas AU MOINS une voie
+> identifiée. Pas de « plafond » : une ville sans source ouverte = une source à trouver
+> (site/logiciel/PDF), pas une ville abandonnée.
