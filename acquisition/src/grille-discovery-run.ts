@@ -29,9 +29,20 @@
  *   --out PATH       manifest path (default work/zonage-norms/discovered.json)
  *   --download       download each confirmed PDF to work/zonage-norms/<slug>/grille.pdf
  *   --route-guess    probe the downloaded PDF text layer to set routeGuess (native|vision)
- *   --delay-ms N     politeness delay between page/PDF fetches (default 1500)
+ *   --delay-ms N     politeness delay floor between page/PDF fetches (default 1500);
+ *                    a longer robots.txt Crawl-delay overrides it per domain
  *   --threshold N    classifier acceptance threshold (default 4)
  *   --timeout-ms N   per-fetch timeout (default 15000)
+ *   --2hop           enable the bounded 2-hop crawl (follow up to 5 same-domain
+ *                    urbanisme/zonage sub-pages when hop-1 pages yield no grille PDF)
+ *   --max-hops N     explicit crawl depth (1 = single-hop default, 2 = same as --2hop)
+ *   --max-subpages N max sub-pages followed per muni in 2-hop mode (default 5)
+ *   --no-robots      DISABLE robots.txt enforcement (default: ON — robots is honoured)
+ *
+ * ROBOTS: by default every page/sub-page/PDF URL is checked against the origin's
+ * robots.txt (fetched once per domain, cached). Disallowed URLs are skipped;
+ * Crawl-delay raises the inter-fetch delay. A missing/unreachable robots.txt is
+ * permissive (logged). Pass --no-robots only for local fixture replays.
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -42,6 +53,7 @@ import {
   ALL_PV_CITIES,
   PV_USER_AGENT,
   PvSourceFetchError,
+  RobotsCache,
   candidatePagesForCity,
   discoverGrillesForCity,
   type GrilleCandidate,
@@ -72,6 +84,9 @@ interface Args {
   delayMs: number;
   threshold: number;
   timeoutMs: number;
+  maxHops: number;
+  maxSubpages: number;
+  robots: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -82,6 +97,9 @@ function parseArgs(argv: string[]): Args {
   const has = (k: string): boolean => argv.includes(`--${k}`);
   const limitRaw = get("limit");
   const slugsRaw = get("slugs");
+  // --2hop is sugar for --max-hops 2; an explicit --max-hops wins if both given.
+  const maxHopsRaw = get("max-hops");
+  const maxHops = maxHopsRaw !== undefined ? Number(maxHopsRaw) : has("2hop") ? 2 : 1;
   return {
     ...(limitRaw ? { limit: Number(limitRaw) } : {}),
     ...(slugsRaw ? { slugs: slugsRaw.split(",").map((s) => s.trim()).filter(Boolean) } : {}),
@@ -91,6 +109,9 @@ function parseArgs(argv: string[]): Args {
     delayMs: Number(get("delay-ms") ?? "1500"),
     threshold: Number(get("threshold") ?? "4"),
     timeoutMs: Number(get("timeout-ms") ?? "15000"),
+    maxHops,
+    maxSubpages: Number(get("max-subpages") ?? "5"),
+    robots: !has("no-robots"),
   };
 }
 
@@ -288,8 +309,18 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const fetchImpl = globalThis.fetch;
   const cities = selectCities(args);
+  // One shared robots cache for the whole run (robots.txt fetched once/domain).
+  const robots = args.robots
+    ? new RobotsCache({
+        fetchImpl: fetchImpl as unknown as PvFetchLike,
+        userAgent: PV_USER_AGENT,
+        timeoutMs: args.timeoutMs,
+      })
+    : undefined;
   console.error(
     `[grille-discovery] ${cities.length} muni(s)` +
+      ` hops=${args.maxHops}` +
+      ` robots=${args.robots ? "on" : "OFF"}` +
       (args.download ? " (+download)" : "") +
       (args.routeGuess ? " (+routeGuess)" : ""),
   );
@@ -307,6 +338,9 @@ async function main(): Promise<void> {
         timeoutMs: args.timeoutMs,
         threshold: args.threshold,
         delayMs: args.delayMs,
+        maxHops: args.maxHops,
+        maxSubpagesPerCity: args.maxSubpages,
+        ...(robots ? { robots } : {}),
       });
     } catch (e) {
       console.error(`  crawl error: ${e instanceof Error ? e.message : String(e)}`);
@@ -315,15 +349,27 @@ async function main(): Promise<void> {
 
     const probedPages = result.probes.length;
     const okPages = result.probes.filter((p) => p.status === "ok").length;
+    const hop2Pages = result.probes.filter((p) => p.hop === 2).length;
+    const robotsBlocked = result.probes.filter((p) => p.status === "robots-disallow").length;
     console.error(
-      `  pages probed=${probedPages} ok=${okPages} candidates=${result.candidates.length}` +
+      `  pages probed=${probedPages} ok=${okPages} hop2=${hop2Pages}` +
+        (robotsBlocked > 0 ? ` robots-blocked=${robotsBlocked}` : "") +
+        ` candidates=${result.candidates.length}` +
         ` (${candidatePagesForCity(city.pvIndexUrl).length} derived)`,
     );
 
     // Confirm candidates best-score-first; keep the FIRST confirmed PDF per muni.
     let picked: ManifestMuni | undefined;
     for (const cand of result.candidates) {
-      if (args.delayMs > 0) await new Promise((r) => setTimeout(r, args.delayMs));
+      // Robots gate the PDF fetch too (anti-fetch a Disallowed document).
+      if (robots && !(await robots.isAllowed(cand.pdfUrl))) {
+        console.error(`  [robots] skip ${cand.pdfUrl}`);
+        continue;
+      }
+      const pdfDelay = robots
+        ? Math.max(args.delayMs, (await robots.crawlDelayMs(cand.pdfUrl)) ?? 0)
+        : args.delayMs;
+      if (pdfDelay > 0) await new Promise((r) => setTimeout(r, pdfDelay));
       let conf: ConfirmResult;
       try {
         conf = await confirmPdf(fetchImpl, cand.pdfUrl, args.timeoutMs, args.download);
