@@ -5,7 +5,9 @@ import {
   discoverGrillesInHtml,
   discoverGrillesForCity,
   candidatePagesForCity,
+  extractInternalSubpages,
   GRILLE_SCORE_THRESHOLD,
+  RobotsCache,
   type PvFetchLike,
 } from "./grille-discovery.js";
 
@@ -184,5 +186,117 @@ describe("discoverGrillesForCity", () => {
     expect(okProbe?.status).toBe("ok");
     const notFoundProbe = res.probes.find((p) => p.status === "skipped-non-200");
     expect(notFoundProbe).toBeDefined();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// extractInternalSubpages — same-site sub-page link harvest (2-hop)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// A hub page that links to urbanisme/zonage SUB-PAGES (not the PDF directly),
+// plus noise (outbound + a PV) that must NOT be followed. Models portneuf's PV
+// page → urbanisme sub-page → grille PDF chain. The grille sub-page path here
+// is deliberately NOT one of URBANISME_PATH_HINTS, so it is only reachable by
+// following an internal link (a genuine hop-2 path, not a derived candidate).
+const GRILLE_SUBPAGE_PATH = "/ma-ville/amenagement-du-territoire/grilles-de-zonage";
+const HUB_PAGE_HTML = `<!DOCTYPE html><html><body>
+  <a href="https://facebook.com/ville">Facebook</a>
+  <a href="/conseil/proces-verbaux/">Procès-verbaux</a>
+  <a href="${GRILLE_SUBPAGE_PATH}">Grilles de zonage</a>
+  <a href="/ma-ville/reglementation-diverse">Réglementation</a>
+  <a href="/loisirs/activites">Loisirs</a>
+  <a href="https://autre-site.qc.ca/zonage">Zonage (autre site)</a>
+</body></html>`;
+
+describe("extractInternalSubpages", () => {
+  it("keeps same-site urbanisme/zonage/règlement sub-pages, drops outbound + PDF + noise", () => {
+    const links = extractInternalSubpages(HUB_PAGE_HTML, "https://exemple.qc.ca/accueil");
+    const urls = links.map((l) => l.url);
+    expect(urls).toContain(`https://exemple.qc.ca${GRILLE_SUBPAGE_PATH}`);
+    expect(urls).toContain("https://exemple.qc.ca/ma-ville/reglementation-diverse");
+    // outbound (even if it says "zonage"), facebook, loisirs are dropped
+    expect(urls.some((u) => /facebook|autre-site|loisirs/.test(u))).toBe(false);
+    // the PV link is not an urbanisme/zonage hint → not followed
+    expect(urls.some((u) => /proces-verbaux/.test(u))).toBe(false);
+    // the grille/zonage sub-page (score 4+3) ranks before a bare règlement (score 1)
+    expect(urls[0]).toBe(`https://exemple.qc.ca${GRILLE_SUBPAGE_PATH}`);
+  });
+
+  it("caps the number of sub-pages returned", () => {
+    const many = `<html><body>${Array.from({ length: 12 }, (_, i) => `<a href="/urbanisme-${i}">Urbanisme ${i}</a>`).join("")}</body></html>`;
+    const links = extractInternalSubpages(many, "https://exemple.qc.ca/x", 5);
+    expect(links).toHaveLength(5);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2-hop crawl: hop-1 misses, hop-2 finds the grille on a sub-page
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("discoverGrillesForCity — 2-hop", () => {
+  // Hop-1 pages yield NO grille PDF (just the hub of sub-page links). The grille
+  // PDF lives on the /services-aux-citoyens/urbanisme SUB-PAGE (hop 2).
+  const SUBPAGE_WITH_GRILLE = `<html><body>
+    <a href="/upload/grille_des_specifications_zonage.pdf">Grilles des spécifications</a>
+  </body></html>`;
+
+  const GRILLE_SUBPAGE_URL = `https://exemple.qc.ca${GRILLE_SUBPAGE_PATH}`;
+  const GRILLE_PDF_URL = "https://exemple.qc.ca/upload/grille_des_specifications_zonage.pdf";
+
+  const make2HopFetch = (): PvFetchLike => async (url) => {
+    if (url === "https://exemple.qc.ca/conseil/proces-verbaux/") return htmlResponse(HUB_PAGE_HTML);
+    if (url === "https://exemple.qc.ca/") return htmlResponse(HUB_PAGE_HTML);
+    if (url === GRILLE_SUBPAGE_URL) return htmlResponse(SUBPAGE_WITH_GRILLE);
+    return notFound();
+  };
+
+  it("does NOT find the grille in single-hop (maxHops=1)", async () => {
+    const res = await discoverGrillesForCity(
+      "exemple",
+      "https://exemple.qc.ca/conseil/proces-verbaux/",
+      { fetchImpl: make2HopFetch(), maxHops: 1 },
+    );
+    expect(res.candidates).toHaveLength(0);
+    expect(res.probes.some((p) => p.hop === 2)).toBe(false);
+  });
+
+  it("FINDS the grille via a depth-1 sub-page in 2-hop (maxHops=2)", async () => {
+    const res = await discoverGrillesForCity(
+      "exemple",
+      "https://exemple.qc.ca/conseil/proces-verbaux/",
+      { fetchImpl: make2HopFetch(), maxHops: 2 },
+    );
+    expect(res.candidates.length).toBeGreaterThanOrEqual(1);
+    expect(res.candidates[0]?.pdfUrl).toBe(GRILLE_PDF_URL);
+    // the winning candidate came from the sub-page (hop 2)
+    const subProbe = res.probes.find((p) => p.pageUrl === GRILLE_SUBPAGE_URL);
+    expect(subProbe?.hop).toBe(2);
+    expect(subProbe?.status).toBe("ok");
+  });
+
+  it("respects robots.txt: a Disallowed sub-page is not fetched in 2-hop", async () => {
+    const fetchImpl: PvFetchLike = async (url) => {
+      if (url.endsWith("/robots.txt")) {
+        const body = "User-agent: *\nDisallow: /ma-ville/amenagement-du-territoire/\n";
+        const bytes = new TextEncoder().encode(body);
+        return {
+          ok: true,
+          status: 200,
+          headers: { get: (n: string) => (n.toLowerCase() === "content-type" ? "text/plain" : null) },
+          arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+        };
+      }
+      return make2HopFetch()(url);
+    };
+    const robots = new RobotsCache({ fetchImpl, log: () => {} });
+    const res = await discoverGrillesForCity(
+      "exemple",
+      "https://exemple.qc.ca/conseil/proces-verbaux/",
+      { fetchImpl, maxHops: 2, robots },
+    );
+    // grille sub-page is Disallowed → never fetched → no candidate
+    expect(res.candidates).toHaveLength(0);
+    const blocked = res.probes.find((p) => p.pageUrl === GRILLE_SUBPAGE_URL);
+    expect(blocked?.status).toBe("robots-disallow");
   });
 });

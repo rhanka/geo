@@ -41,9 +41,10 @@ import {
   PvSourceFetchError,
   type PvFetchLike,
 } from "./proces-verbaux-generic.js";
+import { RobotsCache } from "./robots-txt.js";
 
 // Re-export the reused PV primitives so a runner can import everything from here.
-export { PV_USER_AGENT, PvSourceFetchError, ALL_PV_CITIES };
+export { PV_USER_AGENT, PvSourceFetchError, ALL_PV_CITIES, RobotsCache };
 export type { PvFetchLike, PvIndexItemT };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -72,15 +73,17 @@ interface KeywordSignal {
 }
 
 const GRILLE_SIGNALS: readonly KeywordSignal[] = [
-  // Strong, near-unambiguous grille markers.
-  { re: /grille\s+des?\s+specifications?/, weight: 6, label: "grille des spécifications" },
-  { re: /grille\s+des?\s+normes?/, weight: 6, label: "grille des normes" },
-  { re: /grille\s+des?\s+usages?/, weight: 5, label: "grille des usages" },
-  { re: /grille[-_\s]*(de[-_\s]*)?zonage/, weight: 5, label: "grille de zonage" },
+  // Strong, near-unambiguous grille markers. "grilles?" handles the common
+  // plural anchor "Grilles des spécifications" (e.g. portneuf) the same as the
+  // singular "Grille des spécifications".
+  { re: /grilles?\s+des?\s+specifications?/, weight: 6, label: "grille des spécifications" },
+  { re: /grilles?\s+des?\s+normes?/, weight: 6, label: "grille des normes" },
+  { re: /grilles?\s+des?\s+usages?/, weight: 5, label: "grille des usages" },
+  { re: /grilles?[-_\s]*(de[-_\s]*)?zonage/, weight: 5, label: "grille de zonage" },
   { re: /reglement\s+de\s+zonage/, weight: 5, label: "règlement de zonage" },
   { re: /usages?\s+et\s+normes?/, weight: 4, label: "usages et normes" },
   // Medium markers — meaningful but appear in many municipal docs.
-  { re: /\bgrille\b/, weight: 3, label: "grille" },
+  { re: /\bgrilles?\b/, weight: 3, label: "grille" },
   { re: /\bzonage\b/, weight: 3, label: "zonage" },
   { re: /specifications?\b/, weight: 2, label: "spécifications" },
   // Weak/contextual — boost only, never decisive on their own.
@@ -220,6 +223,124 @@ export function discoverGrillesInHtml(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 2-hop: internal sub-page link extraction (same domain, depth 1)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Anchor/url keywords that mark a sub-page worth following for a grille (urbanisme,
+ * zonage, règlement, aménagement, grille). Folded-text match. Tuned to the FR
+ * municipal vocabulary so we only follow links that plausibly lead to the
+ * zoning grille, never the whole site.
+ */
+const SUBPAGE_FOLLOW_RE =
+  /urbanism|zonage|r[eè]glement|reglement|amenagement|am[eé]nagement|grille|specification|sp[eé]cification|permis|reglementation/;
+
+/** Anchors we must never follow (login, cart, social, language switch, media). */
+const SUBPAGE_SKIP_RE =
+  /facebook|twitter|instagram|linkedin|youtube|mailto:|tel:|\/(?:en|es)\/|login|connexion|panier|cart/;
+
+/** One internal sub-page link discovered for the 2-hop crawl. */
+export interface InternalLink {
+  /** Absolute URL of the sub-page (same registrable site as the source page). */
+  readonly url: string;
+  /** Verbatim anchor text (traceability). */
+  readonly anchor: string;
+}
+
+/** Registrable site (host minus leading "www."), or null on a malformed URL. */
+function registrableSite(u: string): string | null {
+  try {
+    return new URL(u).host.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract SAME-SITE, non-document sub-page links from an already-fetched page
+ * whose anchor text or href evokes urbanisme/zonage/règlement/grille. These are
+ * the depth-1 hops the 2-hop crawl follows when a page yields no grille PDF in
+ * direct anchors. PDF/doc links are NOT returned here (those are handled by
+ * `discoverGrillesInHtml`); only navigable HTML sub-pages are.
+ *
+ * Pure; resolves relative hrefs against the page's effective base via the same
+ * WHATWG resolution `parsePvIndex` uses (here re-derived locally to avoid
+ * exporting internals from the PV parser). Returns at most `max` links, deduped,
+ * highest-signal first (an explicit "grille"/"zonage" anchor before a bare
+ * "règlements" hub).
+ */
+export function extractInternalSubpages(
+  html: string,
+  pageUrl: string,
+  max = 5,
+): InternalLink[] {
+  if (detectIndexRenderMode(html).requiresBrowser) return [];
+  const baseSite = registrableSite(pageUrl);
+  // Effective base: a <base href> when declared, else the page URL.
+  let base = pageUrl;
+  const bm = html.match(/<base\b[^>]*href=["']([^"']+)["']/i);
+  if (bm?.[1]) {
+    try {
+      base = new URL(bm[1], pageUrl).href;
+    } catch {
+      base = pageUrl;
+    }
+  }
+
+  interface Scored {
+    readonly link: InternalLink;
+    readonly score: number;
+  }
+  const scored: Scored[] = [];
+  const seen = new Set<string>();
+  const anchorRe = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
+  for (const m of html.matchAll(anchorRe)) {
+    const attrs = m[1] ?? "";
+    const anchor = (m[2] ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const hrefMatch = attrs.match(/(?:^|\s)href=["']([^"']+)["']/i);
+    const rawHref = hrefMatch?.[1];
+    if (!rawHref) continue;
+    if (/^(?:#|javascript:|mailto:|tel:|data:)/i.test(rawHref.trim())) continue;
+
+    let abs: string;
+    try {
+      const u = new URL(rawHref, base);
+      if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+      u.hash = "";
+      abs = u.href;
+    } catch {
+      continue;
+    }
+
+    // Same registrable site only (a sub-page hop must stay on the muni site).
+    const site = registrableSite(abs);
+    if (!site || site !== baseSite) continue;
+    // Skip the page we are already on (self-link) and document links (those are
+    // grille candidates, handled by discoverGrillesInHtml, not sub-page hops).
+    if (abs === pageUrl) continue;
+    if (/\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(abs)) continue;
+
+    const hay = fold(`${anchor} ${abs}`);
+    if (SUBPAGE_SKIP_RE.test(hay)) continue;
+    if (!SUBPAGE_FOLLOW_RE.test(hay)) continue;
+    if (seen.has(abs)) continue;
+    seen.add(abs);
+
+    // Prefer the strongest sub-page hints (grille/zonage/specification) so the
+    // bounded budget is spent on the most promising hops first.
+    let score = 1;
+    if (/grille|specification|sp[eé]cification/.test(hay)) score += 4;
+    if (/zonage/.test(hay)) score += 3;
+    if (/urbanism/.test(hay)) score += 2;
+    if (/r[eè]glement|reglement/.test(hay)) score += 1;
+    scored.push({ link: { url: abs, anchor: anchor || abs }, score });
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, max).map((s) => s.link);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Candidate urbanisme/règlements page derivation (per municipality)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -300,14 +421,38 @@ export interface DiscoverCityOptions {
   readonly pages?: readonly string[];
   /** Politeness delay between page fetches, ms (default 0 — caller may set). */
   readonly delayMs?: number;
+  /**
+   * Max crawl depth. 1 (default) = single-hop (the derived candidate pages only).
+   * 2 = follow up to `maxSubpagesPerCity` same-domain urbanisme/zonage sub-pages
+   * from pages that produced no direct grille PDF (depth-1 hop, robots-gated).
+   */
+  readonly maxHops?: number;
+  /** Max sub-pages followed per municipality in 2-hop mode (default 5). */
+  readonly maxSubpagesPerCity?: number;
+  /**
+   * Robots gate. When provided, every page/sub-page URL is checked with
+   * `isAllowed(url)` before fetching (Disallow ⇒ skipped, recorded), and the
+   * effective inter-fetch delay is `max(delayMs, crawlDelayMs(domain))`. Pass a
+   * shared `RobotsCache` so robots.txt is fetched once per domain across the run.
+   * When omitted, no robots gating is applied (back-compat for existing callers).
+   */
+  readonly robots?: RobotsCache;
 }
 
 /** Per-page outcome for traceability/debugging. */
 export interface PageProbeResult {
   readonly pageUrl: string;
-  readonly status: "ok" | "skipped-non-200" | "skipped-non-html" | "render-js" | "error";
+  readonly status:
+    | "ok"
+    | "skipped-non-200"
+    | "skipped-non-html"
+    | "render-js"
+    | "robots-disallow"
+    | "error";
   readonly httpStatus?: number;
   readonly nCandidates: number;
+  /** Crawl hop this page was reached at (1 = derived candidate, 2 = sub-page). */
+  readonly hop?: number;
   readonly detail?: string;
 }
 
@@ -367,9 +512,17 @@ async function fetchHtml(
 
 /**
  * Crawl one municipality's candidate pages and return scored grille PDF
- * candidates. Pages that 404 / aren't HTML / are JS-rendered are skipped and
- * recorded in `probes` (no fabrication). The caller is still responsible for
- * confirming each `pdfUrl` is HTTP 200 before trusting it in a manifest.
+ * candidates. Pages that 404 / aren't HTML / are JS-rendered / are robots-
+ * Disallowed are skipped and recorded in `probes` (no fabrication). The caller
+ * is still responsible for confirming each `pdfUrl` is HTTP 200 before trusting
+ * it in a manifest.
+ *
+ * SINGLE-HOP (maxHops=1, default): only the derived candidate pages are probed.
+ * 2-HOP (maxHops=2): when the derived pages produce NO grille PDF, follow up to
+ * `maxSubpagesPerCity` same-domain urbanisme/zonage/règlement sub-pages found on
+ * those pages (depth 1 only), classifying their PDFs identically. Every fetch
+ * (hop 1 AND hop 2) is robots-gated when a `RobotsCache` is supplied, and the
+ * inter-fetch delay is `max(delayMs, crawlDelayMs(domain))`.
  */
 export async function discoverGrillesForCity(
   slug: string,
@@ -380,22 +533,39 @@ export async function discoverGrillesForCity(
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const threshold = opts.threshold ?? GRILLE_SCORE_THRESHOLD;
   const maxPagesWithHits = opts.maxPagesWithHits ?? 3;
-  const delayMs = opts.delayMs ?? 0;
+  const baseDelayMs = opts.delayMs ?? 0;
+  const maxHops = opts.maxHops ?? 1;
+  const maxSubpages = opts.maxSubpagesPerCity ?? 5;
+  const robots = opts.robots;
   const pages = opts.pages ?? candidatePagesForCity(pvIndexUrl);
 
   const probes: PageProbeResult[] = [];
   const byUrl = new Map<string, GrilleCandidate>();
   let pagesWithHits = 0;
+  // Collected depth-1 sub-page links (only used when maxHops >= 2).
+  const subpageQueue: InternalLink[] = [];
+  const subpageSeen = new Set<string>();
+  // True once at least one fetch has happened (to gate the leading delay).
+  let fetched = false;
 
-  for (let i = 0; i < pages.length; i++) {
-    const pageUrl = pages[i];
-    if (pageUrl === undefined) continue;
-    if (delayMs > 0 && i > 0) await delay(delayMs);
+  /** Effective politeness delay for a URL: max(baseDelay, robots crawl-delay). */
+  const effectiveDelayMs = async (url: string): Promise<number> => {
+    if (!robots) return baseDelayMs;
+    const cd = await robots.crawlDelayMs(url);
+    return cd === null ? baseDelayMs : Math.max(baseDelayMs, cd);
+  };
+
+  /**
+   * Probe ONE already-allowed page: fetch, classify direct grille PDFs, and (in
+   * 2-hop mode, on a 200 HTML page with no direct hit) harvest sub-page links.
+   * Returns the number of direct candidates found.
+   */
+  const probePage = async (pageUrl: string, hop: number): Promise<number> => {
     try {
       const { html, status, contentType } = await fetchHtml(fetchImpl, pageUrl, timeoutMs);
       if (contentType && !/html/i.test(contentType)) {
-        probes.push({ pageUrl, status: "skipped-non-html", httpStatus: status, nCandidates: 0, detail: contentType });
-        continue;
+        probes.push({ pageUrl, status: "skipped-non-html", httpStatus: status, nCandidates: 0, hop, detail: contentType });
+        return 0;
       }
       const { candidates, renderRequiresBrowser } = discoverGrillesInHtml(
         html,
@@ -404,24 +574,67 @@ export async function discoverGrillesForCity(
         threshold,
       );
       if (renderRequiresBrowser) {
-        probes.push({ pageUrl, status: "render-js", httpStatus: status, nCandidates: 0 });
-        continue;
+        probes.push({ pageUrl, status: "render-js", httpStatus: status, nCandidates: 0, hop });
+        return 0;
       }
       for (const c of candidates) {
         const existing = byUrl.get(c.pdfUrl);
         if (!existing || c.scoreClassif > existing.scoreClassif) byUrl.set(c.pdfUrl, c);
       }
-      probes.push({ pageUrl, status: "ok", httpStatus: status, nCandidates: candidates.length });
-      if (candidates.length > 0) {
-        pagesWithHits++;
-        if (pagesWithHits >= maxPagesWithHits) break;
+      probes.push({ pageUrl, status: "ok", httpStatus: status, nCandidates: candidates.length, hop });
+      // 2-hop: only harvest sub-pages from hop-1 pages that yielded NO direct
+      // grille PDF (a page with a hit needs no deeper follow).
+      if (maxHops >= 2 && hop === 1 && candidates.length === 0) {
+        for (const link of extractInternalSubpages(html, pageUrl, maxSubpages)) {
+          if (subpageSeen.has(link.url)) continue;
+          subpageSeen.add(link.url);
+          subpageQueue.push(link);
+        }
       }
+      return candidates.length;
     } catch (e) {
       if (e instanceof PvSourceFetchError) {
         const status = e.kind === "http" ? "skipped-non-200" : "error";
-        probes.push({ pageUrl, status, nCandidates: 0, detail: e.message });
+        probes.push({ pageUrl, status, nCandidates: 0, hop, detail: e.message });
       } else {
-        probes.push({ pageUrl, status: "error", nCandidates: 0, detail: String(e) });
+        probes.push({ pageUrl, status: "error", nCandidates: 0, hop, detail: String(e) });
+      }
+      return 0;
+    }
+  };
+
+  /** Robots-gate + politeness-delay wrapper around `probePage`. */
+  const guardedProbe = async (pageUrl: string, hop: number): Promise<number> => {
+    if (robots && !(await robots.isAllowed(pageUrl))) {
+      probes.push({ pageUrl, status: "robots-disallow", nCandidates: 0, hop });
+      return 0;
+    }
+    if (fetched) {
+      const d = await effectiveDelayMs(pageUrl);
+      if (d > 0) await delay(d);
+    }
+    fetched = true;
+    return probePage(pageUrl, hop);
+  };
+
+  // ── HOP 1: the derived candidate pages ──────────────────────────────────────
+  for (const pageUrl of pages) {
+    if (pageUrl === undefined) continue;
+    const n = await guardedProbe(pageUrl, 1);
+    if (n > 0) {
+      pagesWithHits++;
+      if (pagesWithHits >= maxPagesWithHits) break;
+    }
+  }
+
+  // ── HOP 2: bounded same-domain sub-pages, only if hop 1 found nothing ───────
+  if (maxHops >= 2 && byUrl.size === 0 && subpageQueue.length > 0) {
+    const budget = subpageQueue.slice(0, maxSubpages);
+    for (const link of budget) {
+      const n = await guardedProbe(link.url, 2);
+      if (n > 0) {
+        pagesWithHits++;
+        if (pagesWithHits >= maxPagesWithHits) break;
       }
     }
   }
