@@ -1,176 +1,24 @@
 {
-  "_note": "Candidate grille manifest. route/first/last set by grille-discovery-run.ts decideRoute(): native (Sherbrooke horizontal parser accepts rows), else grille pages LOCATED by grille-page-locator and bounded → multizone (transposed multi-zone sheet) or vision (one-zone-per-page annex), else auto (no grille text located — image-only scan or table not embedded; investigate, do NOT deposit). Anti-invention: no guessed page range. Feeds zonage-norms-batch.ts.",
-  "_generatedAt": "2026-06-22T17:52:20.070Z",
+  "_note": "Candidate grille manifest discovered by grille-discovery-run.ts (reuses the PV crawler). Every sourceUrl was confirmed HTTP 200 + PDF at discovery time. route is a heuristic guess; zonage-norms-run.ts re-decides native|multizone|vision precisely. Same shape as munis.json.",
+  "_generatedAt": "2026-06-23T12:41:06.482Z",
   "munis": [
     {
-      "slug": "saint-constant",
-      "route": "multizone",
-      "sourceUrl": "https://saint-constant.ca/uploads/Greffe/Avis_Publics_2024/Avis_second_projet_reg_1844-24.pdf",
-      "discoveredFrom": "https://saint-constant.ca/fr/seances-du-conseil-et-documents-publics",
-      "scoreClassif": 8,
-      "titre": "Second projet de règlement numéro 1844-24 modifiant le règlement de zonage",
-      "pages": 8,
-      "first": 8,
-      "last": 8,
-      "grillePageCount": 1,
-      "locatorConfidence": 1,
-      "routeReason": "multizone 8..8 (1pg,multi-zone-per-page,conf=1)"
-    },
-    {
-      "slug": "la-prairie",
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
       "route": "auto",
-      "sourceUrl": "https://laprairie.ca/storage/app/media/ville/administration/reglements/1250-58_Zonage-combine.pdf",
-      "discoveredFrom": "https://laprairie.ca/reglements",
-      "scoreClassif": 8,
-      "titre": "Règlement de zonage 1250",
-      "pages": 594,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
+      "sourceUrl": "http://sldg.ca/sldg/wp-content/uploads/2026/04/Grilles-des-usages-et-normes-par-zone.pdf",
+      "discoveredFrom": "https://saint-louis-de-gonzague.com/reglements-durbanisme",
+      "scoreClassif": 14,
+      "titre": "Annexe A &#8211; Grilles des usages et normes par zone",
+      "pages": 68
     },
     {
-      "slug": "delson",
+      "slug": "saint-alexis",
       "route": "auto",
-      "sourceUrl": "https://ville.delson.qc.ca/wp-content/uploads/2025/01/Reg-de-zonage-901-38-ZonageContraintes.pdf",
-      "discoveredFrom": "https://ville.delson.qc.ca/reglements",
-      "scoreClassif": 4,
-      "titre": "Règlement 901 – Annexe A – Plan de zonage",
-      "pages": 1,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "saint-remi",
-      "route": "multizone",
-      "sourceUrl": "https://www.saint-remi.ca/wp-content/uploads/2026/03/Annexe-B-Grille-des-specifications-complet-V654-2023-32.pdf",
-      "discoveredFrom": "https://www.saint-remi.ca/reglementation",
-      "scoreClassif": 12,
-      "titre": "Annexe B – Grille des spécifications V654-2025-32",
-      "pages": 131,
-      "first": 19,
-      "last": 21,
-      "grillePageCount": 3,
-      "locatorConfidence": 1,
-      "routeReason": "multizone 19..21 (3pg,multi-zone-per-page,conf=1)"
-    },
-    {
-      "slug": "saint-jacques-le-mineur",
-      "route": "multizone",
-      "sourceUrl": "https://www.saint-jacques-le-mineur.ca/wp-content/uploads/2025/02/SJLM_ZONAGE_GRILLES_CODIFICATION_WEB_14-03-2024-2.pdf",
-      "discoveredFrom": "https://www.saint-jacques-le-mineur.ca/reglements",
-      "scoreClassif": 13,
-      "titre": "Grille des usages et normes",
-      "pages": 47,
-      "first": 2,
-      "last": 47,
-      "grillePageCount": 46,
-      "locatorConfidence": 1,
-      "routeReason": "multizone 2..47 (46pg,multi-zone-per-page,conf=1)"
-    },
-    {
-      "slug": "hemmingford",
-      "route": "auto",
-      "sourceUrl": "https://canton.hemmingford.ca/wp-content/uploads/2026/04/proj-reg-309-20-parc-safari-boreal-adopte-le-27-avril-2026.pdf",
-      "discoveredFrom": "https://canton.hemmingford.ca/reglements",
-      "scoreClassif": 8,
-      "titre": "No.309-20 Projet de règlement modifiant le règlement de zonage numéro 309 afin d’assurer la concordance à l’amendement urb-205-20-2025 du SARD de la MRC",
-      "pages": 11,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "sainte-therese",
-      "route": "auto",
-      "sourceUrl": "https://www.sainte-therese.ca/storage/app/media/services/citoyens/permis-et-urbanisme/reglements-urbanisme/Reglement_zonage_1200NS.pdf",
-      "discoveredFrom": "https://www.sainte-therese.ca/reglements-durbanisme",
-      "scoreClassif": 9,
-      "titre": "Règlement de zonage 1200 N.S.",
-      "pages": 322,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "deux-montagnes",
-      "route": "auto",
-      "sourceUrl": "https://www.ville.deux-montagnes.qc.ca/storage/app/media/ville-de-deux-montagnes/administration-et-finances/reglements-municipaux/1733-zonage_adm_2026-06-04.pdf",
-      "discoveredFrom": "https://www.ville.deux-montagnes.qc.ca/reglements",
-      "scoreClassif": 8,
-      "titre": "Consultez le règlement de zonage No. 1733",
-      "pages": 330,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "mirabel",
-      "route": "auto",
-      "sourceUrl": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/Reglement_U-2434_-_Communication_du_resultat_de_demandes_de_scrutin.pdf",
-      "discoveredFrom": "https://mirabel.ca/reglements",
-      "scoreClassif": 8,
-      "titre": "Règlement U-2434 - Modifiant le Règlement de zonage U-2300",
-      "pages": 1,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "mascouche",
-      "route": "auto",
-      "sourceUrl": "https://mascouche.ca/storage/app/media/services/reglements-et-permis/urbanisme/reglement1103zonage.pdf",
-      "discoveredFrom": "https://mascouche.ca/reglements",
-      "scoreClassif": 4,
-      "titre": "Zonage (R-1103)",
-      "pages": 360,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "coteau-du-lac",
-      "route": "multizone",
-      "sourceUrl": "https://coteau-du-lac.com/storage/app/media/vie-municipale/administration-et-finances/reglementation-municipale/reglement-no-URB-400-zonage-annexe-B-grilles-usages-normes.pdf",
-      "discoveredFrom": "https://coteau-du-lac.com/reglements-municipaux",
-      "scoreClassif": 9,
-      "titre": "Annexe B Grilles des usages et normes",
-      "pages": 121,
-      "first": 1,
-      "last": 121,
-      "grillePageCount": 107,
-      "locatorConfidence": 0.884,
-      "routeReason": "multizone 1..121 (107pg,multi-zone-per-page,conf=0.884)"
-    },
-    {
-      "slug": "boisbriand",
-      "route": "vision",
-      "sourceUrl": "https://www.ville.boisbriand.qc.ca/storage/app/media/services/permis-et-reglements/reglements-d-urbanisme/zonage/Annexe-III-Grille-des-usages-et-normes_Zones-101-a-143.pdf",
-      "discoveredFrom": "https://boisbriand.ca/reglements-durbanisme",
-      "scoreClassif": 12,
-      "titre": "Annexe III - Grilles des usages et normes_Zones 101 à 143",
-      "pages": 55,
-      "first": 1,
-      "last": 55,
-      "grillePageCount": 55,
-      "locatorConfidence": 1,
-      "routeReason": "vision 1..55 (55pg,one-zone-per-page,conf=1)"
-    },
-    {
-      "slug": "saint-alexandre",
-      "route": "auto",
-      "sourceUrl": "https://saint-alexandre.ca/wp-content/uploads/2026/06/Projet-de-reglement-26-439-modifiant-le-reglement-de-zonage-20-366-zone-AC-1.pdf",
-      "discoveredFrom": "https://saint-alexandre.ca/reglementation",
-      "scoreClassif": 8,
-      "titre": "Projet de règlement 26-439 modifiant le règlement de zonage 20-366 zone AC-1",
-      "pages": 3,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "frelighsburg",
-      "route": "auto",
-      "sourceUrl": "https://frelighsburg.ca/wp-content/uploads/2025/04/Reglement-131-2022-Annexe-C-Plan-de-zonage-VAdmin-1.pdf",
-      "discoveredFrom": "https://frelighsburg.ca/reglements",
-      "scoreClassif": 4,
-      "titre": "Annexe 2 &#8211; Inventaire photographique",
-      "pages": 1,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
-    },
-    {
-      "slug": "saint-nazaire-dacton",
-      "route": "auto",
-      "sourceUrl": "https://stnazairedacton.ca/wp-content/uploads/2024/04/grille-des-usages-101-a-104.pdf",
-      "discoveredFrom": "https://stnazairedacton.ca/urbanisme",
-      "scoreClassif": 8,
-      "titre": "Grille des usages 101 à 104",
-      "pages": 2,
-      "routeReason": "no native rows + no grille page located (image-only?) — investigate"
+      "sourceUrl": "https://st-alexis.com/storage/app/media/municipalite/Urbanisme/2025-127_annexe_B_Grille_zonage_A.pdf",
+      "discoveredFrom": "https://st-alexis.com/services/urbanisme/reglementation-et-permis",
+      "scoreClassif": 6,
+      "titre": "2025-127_annexe_B_Grille_zonage_A.pdf",
+      "pages": 3
     }
   ]
 }
