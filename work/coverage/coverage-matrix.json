@@ -1,6 +1,6 @@
 {
   "$schema": "qc-coverage-matrix/v1",
-  "generatedAt": "2026-06-23T13:36:10.952Z",
+  "generatedAt": "2026-06-23T18:41:02.519Z",
   "municipalityCount": 1106,
   "cities": {
     "westmount": {
@@ -7472,7 +7472,7 @@
         "note": "https://www.stesophie.ca/storage/app/media/services/amenagement-et-urbanisme/reglements-durbanisme/zonage-et-annexes/ss-reglement-zonage-grilles-ev-2020-09-16-4.pdf; vectoriel: 0 marqueur GeoPDF, 161182 chars texte (Creator: Aspose.PDF, 109 pages)"
       },
       "normes": {
-        "status": "to-research",
+        "status": "done",
         "candidateTracks": [
           "pdf-native",
           "gestionweblex",
@@ -7480,7 +7480,8 @@
           "obscura-session",
           "recenseur-manual"
         ],
-        "lastResearchAt": "2026-06-23T11:24:36.773Z"
+        "lastResearchAt": "2026-06-23T11:24:36.773Z",
+        "doneTrack": "qc-zonage-norms-sainte-sophie"
       },
       "pv": {
         "status": "planned",
@@ -9235,7 +9236,7 @@
         "note": "https://www.sainte-julienne.com/storage/app/media/municipalite/administration/procedures-et-reglements/Urbanisme/Grilles%20des%20usages%20et%20des%20normes/Annexe%20B%20-%20R%C3%A8glement%20zonage%20STJ_Grille.pdf; vectoriel: 0 marqueur GeoPDF, 172703 chars texte"
       },
       "normes": {
-        "status": "to-research",
+        "status": "done",
         "candidateTracks": [
           "pdf-native",
           "gestionweblex",
@@ -9243,7 +9244,8 @@
           "obscura-session",
           "recenseur-manual"
         ],
-        "lastResearchAt": "2026-06-23T11:26:23.009Z"
+        "lastResearchAt": "2026-06-23T11:26:23.009Z",
+        "doneTrack": "qc-zonage-norms-sainte-julienne"
       },
       "pv": {
         "status": "planned",
@@ -9292,7 +9294,7 @@
         "note": "https://ville.farnham.qc.ca/wp-content/uploads/2025/10/Grilles-PDF.pdf; vectoriel: 0 marqueur GeoPDF, 475478 chars texte; Producer: Microsoft: Print To PDF"
       },
       "normes": {
-        "status": "to-research",
+        "status": "done",
         "candidateTracks": [
           "pdf-native",
           "gestionweblex",
@@ -9300,7 +9302,8 @@
           "obscura-session",
           "recenseur-manual"
         ],
-        "lastResearchAt": "2026-06-23T11:26:26.096Z"
+        "lastResearchAt": "2026-06-23T11:26:26.096Z",
+        "doneTrack": "qc-zonage-norms-farnham"
       },
       "pv": {
         "status": "planned",
@@ -9799,7 +9802,7 @@
         "note": "https://ville.prevost.qc.ca/storage/app/media/Guichet%20citoyen/Services/Urbanisme/RUD/2026/annexe-d-grille-des-specifications-codifie-2-decembre-2025.pdf; vectoriel: 0 marqueur GeoPDF, 310125 chars texte"
       },
       "normes": {
-        "status": "to-research",
+        "status": "done",
         "candidateTracks": [
           "pdf-native",
           "gestionweblex",
@@ -9807,7 +9810,8 @@
           "obscura-session",
           "recenseur-manual"
         ],
-        "lastResearchAt": "2026-06-23T11:26:57.900Z"
+        "lastResearchAt": "2026-06-23T11:26:57.900Z",
+        "doneTrack": "qc-zonage-norms-prevost"
       },
       "pv": {
         "status": "planned",
@@ -10093,7 +10097,7 @@
         "note": "https://municipalitedefranklin.ca/wp-content/uploads/2026/06/272-Zonage-fevrier-2026.pdf; vectoriel: 0 marqueur GeoPDF, 458667 chars texte"
       },
       "normes": {
-        "status": "to-research",
+        "status": "done",
         "candidateTracks": [
           "pdf-native",
           "gestionweblex",
@@ -10101,7 +10105,8 @@
           "obscura-session",
           "recenseur-manual"
         ],
-        "lastResearchAt": "2026-06-23T05:08:35.004Z"
+        "lastResearchAt": "2026-06-23T05:08:35.004Z",
+        "doneTrack": "qc-zonage-norms-franklin"
       },
       "pv": {
         "status": "planned",
@@ -67295,13 +67300,10 @@
         "lastResearchAt": "2026-06-23T05:50:52.184Z"
       },
       "zones": {
-        "status": "to-research",
-        "candidateTracks": [
-          "pdf-discovery-required"
-        ],
-        "lastResearchAt": "2026-06-23T11:30:00.000Z",
-        "notes": "LIFT ÉCHOUÉ T1 — GeoPDF Adobe/ArcGIS, pas OGC attributaire. URL confirmée: lasarre.ca/wp-content/uploads/2025/10/05-2024-REGLEMENT-DE-ZONAGE_VF_16oct.pdf (14MB, 302pp). GDAL 3.8 ogrinfo pages 301 (plan rural, GPTS 48.756-79.304..48.886-79.076) et 302 (plan urbain) = 9 couches vectorielles géoréférencées (NAD83 TM, coord valides). PROBLÈME BLOQUANT: toutes les props OGR sont vides ({}) — le driver PDF GDAL extrait les géométries (p301: LaSarre_PlanZonage_modif_2025=368 polygones; p302: LaSarre_PlanZonage_modif_2025=202 polygones) mais SANS attributs de zone. Les codes de zone sont encodés en texte vectorisé (MultiLineString glyphes de police ArialMT) dans la couche Anno — pas en attribut de feature. Pas de schéma attributaire OGC. ANTI-INVENTION: publication impossible sans zone_code réel. REQUIS: soit (a) T2 = spatial-join Anno labels + polygones via OCR-text extraction sur le PDF Adobe, soit (b) accès SDE/FGDB source ArcGIS (non publique). Reclasser en pdf-vectorize-t2 (calage OCR) ou contacter la ville pour accès SDE.",
-        "note": "non-crawle: slug absent du registre ALL_PV_CITIES (pas de pvIndexUrl). Discovery impossible sans cablage du site municipal. PAS un pas-de-pdf verifie."
+        "status": "done",
+        "doneTrack": "qc-zonage-la-sarre",
+        "candidateTracks": [],
+        "note": "recompose GDAL+pdftotext (pdf-georef), 570 poly / 132 codes"
       },
       "normes": {
         "status": "to-research",
