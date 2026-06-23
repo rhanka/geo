@@ -358,11 +358,16 @@ function runOgr2ogr(
   pages?: string,
 ): FeatureCollection | null {
   const pagesOpt = pages ? `-oo PAGES=${pages}` : "";
-  const cmd = `ogr2ogr -f GeoJSON "${outPath}" "${pdfPath}" ${pagesOpt} -t_srs EPSG:4326 2>&1`;
+  // Note: -skipfailures est nécessaire pour les GeoPDF ArcMap multi-layer dont certains
+  // layers ont des noms avec caractères spéciaux que GeoJSON ne peut pas créer (ex: accents, ':').
+  // ogr2ogr retourne exit 1 dans ce cas mais produit quand même un GeoJSON valide avec les
+  // layers qui ont réussi. On ignore l'exception et on vérifie le fichier produit.
+  const cmd = `ogr2ogr -f GeoJSON "${outPath}" "${pdfPath}" ${pagesOpt} -t_srs EPSG:4326 -skipfailures 2>&1`;
   try {
     execSync(cmd, { encoding: "utf8", timeout: 120_000 });
   } catch {
-    return null;
+    // -skipfailures peut quand même lever une exception si AUCUN layer n'a réussi.
+    // On continue pour vérifier si un fichier a été produit.
   }
 
   if (!existsSync(outPath)) return null;
