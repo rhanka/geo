@@ -1,47 +1,64 @@
 /**
  * recompose-zones-pdf.ts — Recette industrialisée « zones-géométrie depuis GeoPDF »
  *
- * CONTEXTE (la-sarre, prouvé 2026-06-23):
+ * CONTEXTE (la-sarre prouvé 2026-06-23, V2 OCR ajouté 2026-06-23):
  *   Une ville publie un plan de zonage en PDF géoréférencé (GeoPDF Adobe/ArcGIS/QGIS).
  *   GDAL 3.8+ lit ces fichiers via son driver PDF: deux sous-types coexistent —
  *     TYPE A (VECTEUR) : les zones sont des polygones vectoriels dans le PDF → ogr2ogr
  *                        extrait les géométries reprojetées en WGS84.
  *     TYPE B (RASTER)  : le fond de carte est un raster géoréférencé (PNG/JPEG dans PDF)
- *                        → ogr2ogr ne donne rien; on peut récupérer les labels via
- *                        pdftotext + GeoTransform mais sans polygones de zones propres
- *                        → classifié pdf-georef-raster, NON publié par cette recette.
+ *                        → ogr2ogr ne donne rien; classifié pdf-georef-raster, NON publié.
+ *
+ * DEUX VOIES POUR LES LABELS (TYPE A) :
+ *   V1 (pdftotext, gratuit) :
+ *     - pdftotext -bbox-layout → mots + positions pixel PDF
+ *     - Fonctionne si les labels sont du texte PDF standard (non-glyph)
+ *     - Supporte formats : A-1, H2, RB-300, PA ET NUM-TYPE (605-Cb, 826-Ia, 314-P)
+ *
+ *   V2 (OCR Tesseract, flag --ocr ou auto si V1 < min-codes) :
+ *     - gdal_translate → PNG natif géoréférencé
+ *     - tesseract.js → texte + bbox pixel (hOCR)
+ *     - Pixel bbox → WGS84 via GeoTransform (mêmes formules que V1)
+ *     - point-in-polygon → zone_code
+ *     - Usage typique: GeoPDF ArcMap (CREATOR=Esri ArcMap) où labels = glyphes Anno
+ *       NB: pour ces PDFs, les polygones vecteur ogr2ogr peuvent être des insets.
+ *           Vérifier visuellement le résultat avant publication.
  *
  * RECETTE COMPLÈTE (TYPE A uniquement) :
  *   1. `gdalinfo` → détecte le géoréférencement (GeoTransform OU Pixel Size) + CRS.
  *   2. `ogr2ogr -f GeoJSON … -t_srs EPSG:4326` → polygones zones en WGS84.
- *   3. `pdftotext -bbox-layout` → mots + positions pixel PDF (GRATUIT, zéro OCR).
- *   4. Filtrage labels : heuristiques code-zone (short alphanum ≤ 24 chars, pas stopwords).
- *   5. GeoTransform GDAL : position pixel PDF → CRS natif → WGS84 (proj4).
+ *   3. V1: `pdftotext -bbox-layout` ou V2: tesseract.js sur gdal_translate PNG.
+ *   4. Filtrage labels : codes-zone valides (formats alpha-num QC + NUM-TYPE).
+ *   5. GeoTransform GDAL : position pixel → CRS natif → WGS84 (proj4).
  *   6. turf booleanPointInPolygon → zone_code par polygone (STRICT, anti-invention).
- *   7. Vérif spatiale : centroïde du dataset < 10 km du centroïde registre munis.
+ *   7. Vérif spatiale : centroïde du dataset < spatial-km du centroïde registre munis.
  *   8. Schéma feature : {zone_code(réel|null), kind, affectation:null, num_zone, source, confidence}.
  *   9. Publication S3 : normalized/ca-qc-zonage/qc-zonage-<slug>/qc-zonage-<slug>.geojson
  *
  * USAGE :
  *   npx tsx src/recompose-zones-pdf.ts --slug la-sarre --pdf /path/to/plan.pdf
+ *   npx tsx src/recompose-zones-pdf.ts --slug val-dor --pdf /tmp/z_valdor_f4.pdf --ocr
  *   npx tsx src/recompose-zones-pdf.ts --slug delson --pdf https://…/plan.pdf
  *   npx tsx src/recompose-zones-pdf.ts --slug la-sarre --pdf /path/to/plan.pdf --dry-run
  *   npx tsx src/recompose-zones-pdf.ts --slug la-sarre --pdf /path/to/plan.pdf --pages 2-4
  *
  * OPTIONS :
- *   --slug <slug>      Slug canonique de la ville (OBLIGATOIRE)
- *   --pdf  <url|path>  URL HTTPS ou chemin local du PDF (OBLIGATOIRE)
- *   --pages <n|n-m>    Pages à extraire via ogr2ogr (défaut: toutes)
- *   --dry-run          Affiche le plan sans écrire sur S3
- *   --spatial-km <n>   Tolérance vérif spatiale en km (défaut: 10)
- *   --min-codes <n>    Nombre min de zone_code uniques pour valider (défaut: 3)
+ *   --slug <slug>         Slug canonique de la ville (OBLIGATOIRE)
+ *   --pdf  <url|path>     URL HTTPS ou chemin local du PDF (OBLIGATOIRE)
+ *   --pages <n|n-m>       Pages à extraire via ogr2ogr (défaut: toutes)
+ *   --dry-run             Affiche le plan sans écrire sur S3
+ *   --spatial-km <n>      Tolérance vérif spatiale en km (défaut: 10)
+ *   --min-codes <n>       Nombre min de zone_code uniques pour valider (défaut: 3)
+ *   --ocr                 Force la voie V2 OCR (tesseract.js) même si pdftotext donne des résultats
+ *   --ocr-lang <lang>     Langue tesseract (défaut: fra+eng)
+ *   --ocr-threshold <n>   Seuil de confiance OCR 0-100 (défaut: 50)
  *
  * ANTI-INVENTION :
  *   - zone_code = null si aucun label ne tombe dans le polygone (jamais inventé).
  *   - Vérif spatiale élimine les datasets hors territoire de la ville.
  *   - Les labels filtrés par stopwords évitent d'affecter des noms de rue comme code.
  *
- * Node/TS pur. JAMAIS de secret loggé. GDAL + pdftotext = outils locaux.
+ * Node/TS pur. JAMAIS de secret loggé. GDAL + pdftotext + tesseract.js = outils locaux.
  */
 import { execSync, spawnSync } from "node:child_process";
 import {
@@ -94,6 +111,10 @@ interface GdalInfo {
   pixelSize: [number, number] | null;
   /** True si GDAL a pu ouvrir via driver PDF (a un Coordinate System). */
   hasCoordSystem: boolean;
+  /** True si le PDF est généré par Esri ArcMap (labels = glyphes, OCR requis). */
+  isArcMap: boolean;
+  /** Valeur du champ CREATOR dans les métadonnées PDF. */
+  creator: string | null;
 }
 
 interface PdfLabel {
@@ -105,6 +126,16 @@ interface PdfLabel {
   /** Dimensions de la page PDF en points. */
   pageW: number;
   pageH: number;
+}
+
+interface OcrLabel {
+  /** Texte du mot OCR. */
+  text: string;
+  /** Centre en pixels GDAL (origine coin supérieur gauche). */
+  pixelX: number;
+  pixelY: number;
+  /** Confiance OCR 0-100. */
+  confidence: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -166,8 +197,14 @@ const STOPWORDS = new Set([
   "page",
 ]);
 
-/** Pattern : code de zone valide (court alphanumérique, ex. A-1, H2, RB-300, PA). */
-const ZONE_CODE_RE = /^[A-Z]{1,4}[-.]?\d{0,4}[A-Z]?$/i;
+/**
+ * Pattern : code de zone valide.
+ * Formats supportés :
+ *   LETTRES[-.]CHIFFRES[LETTRE]  : A-1, H2, RB-300, PA, RU-100a
+ *   CHIFFRES-LETTRES             : 605-Cb, 826-Ia, 409-REC, 314-P (format val-dor/saint-tite)
+ */
+const ZONE_CODE_RE =
+  /^(?:[A-Z]{1,4}[-.]?\d{0,4}[A-Za-z]?|\d{1,4}-[A-Za-z]{1,5})$/i;
 
 // ---------------------------------------------------------------------------
 // Utilitaires
@@ -242,6 +279,8 @@ function runGdalinfo(pdfPath: string): GdalInfo {
     geoTransform: null,
     pixelSize: null,
     hasCoordSystem: false,
+    isArcMap: false,
+    creator: null,
   };
 
   let output: string;
@@ -257,6 +296,13 @@ function runGdalinfo(pdfPath: string): GdalInfo {
   // Coordinate System présent → PDF géoréférencé.
   if (output.includes("Coordinate System is:")) {
     res.hasCoordSystem = true;
+  }
+
+  // Détection CREATOR ArcMap (métadonnées PDF).
+  const creatorMatch = output.match(/CREATOR\s*=\s*(.+)/);
+  if (creatorMatch) {
+    res.creator = creatorMatch[1]!.trim();
+    res.isArcMap = /esri arcmap/i.test(res.creator);
   }
 
   // Pixel Size = (…) OU GeoTransform = → géoréférencé.
@@ -448,6 +494,126 @@ function runPdftotext(pdfPath: string): PdfLabel[] {
 }
 
 // ---------------------------------------------------------------------------
+// 3b. Voie V2 : OCR tesseract.js sur PNG géoréférencé
+// ---------------------------------------------------------------------------
+
+/**
+ * Rasterise le PDF avec gdal_translate en PNG natif (résolution GDAL, 1px GDAL = 1px OCR),
+ * puis OCR via tesseract.js v7 (PSM 11 = sparse text).
+ * Retourne les mots avec leur centre en pixels GDAL et leur confiance.
+ *
+ * API tesseract.js v7 : recognize(img, options?, output?) → result.data.blocks
+ *   blocks → paragraphs → lines → words → {text, confidence, bbox:{x0,y0,x1,y1}}
+ *
+ * Contraintes :
+ *   - tesseract.js doit être disponible via npm dans le package courant.
+ *   - gdal_translate doit être dans le PATH système.
+ *   - Résolution native (pas de -outsize) → 1 pixel GDAL = 1 pixel OCR.
+ */
+async function runOcrTesseract(
+  pdfPath: string,
+  tmpDir: string,
+  lang: string = "fra+eng",
+  confThreshold: number = 50,
+): Promise<OcrLabel[]> {
+  // 1. Rasterise avec gdal_translate → PNG (résolution GDAL native).
+  const pngPath = join(tmpDir, "ocr_raster.png");
+  const gdalCmd = `gdal_translate -of PNG "${pdfPath}" "${pngPath}" 2>&1`;
+  try {
+    execSync(gdalCmd, { encoding: "utf8", timeout: 60_000 });
+  } catch (e) {
+    console.error(`[recompose/ocr] gdal_translate échec: ${e}`);
+    return [];
+  }
+  if (!existsSync(pngPath)) {
+    console.error("[recompose/ocr] gdal_translate n'a pas produit de PNG.");
+    return [];
+  }
+
+  // 2. tesseract.js — chargement dynamique (évite erreur import statique si absent).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let createWorker: ((...args: any[]) => Promise<any>) | null = null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tjs = await import("tesseract.js") as any;
+    createWorker = tjs.createWorker ?? tjs.default?.createWorker ?? null;
+  } catch {
+    console.error("[recompose/ocr] tesseract.js non disponible dans node_modules. Voie V2 impossible.");
+    return [];
+  }
+
+  if (!createWorker) {
+    console.error("[recompose/ocr] tesseract.js chargé mais createWorker introuvable.");
+    return [];
+  }
+
+  // 3. OCR en mode sparse text (PSM 11) — setParameters après création.
+  // tesseract.js v7 : createWorker(langs, oem) puis setParameters séparément.
+  const worker = await createWorker(lang, 1 /* LSTM_ONLY */);
+  await worker.setParameters({ tessedit_pageseg_mode: "11" });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let blocks: any[] = [];
+  try {
+    // 3e argument = OutputFormats : {blocks: true} active le retour d'objets Word structurés.
+    const result = await worker.recognize(pngPath, {}, { blocks: true });
+    blocks = result?.data?.blocks ?? [];
+  } finally {
+    await worker.terminate();
+  }
+
+  // 4. Aplatir blocks → words avec bbox pixel.
+  const labels: OcrLabel[] = [];
+  for (const block of blocks) {
+    for (const para of block.paragraphs ?? []) {
+      for (const line of para.lines ?? []) {
+        for (const word of line.words ?? []) {
+          const text = ((word.text as string) ?? "").trim().replace(/[^\w\-]/g, "");
+          const conf = (word.confidence as number) ?? 0;
+          if (!text || conf < confThreshold) continue;
+          const bbox = word.bbox as { x0: number; y0: number; x1: number; y1: number };
+          if (!bbox) continue;
+          labels.push({
+            text,
+            pixelX: (bbox.x0 + bbox.x1) / 2,
+            pixelY: (bbox.y0 + bbox.y1) / 2,
+            confidence: conf,
+          });
+        }
+      }
+    }
+  }
+
+  console.error(`[recompose/ocr] tesseract.js: ${labels.length} mots OCR (conf≥${confThreshold}) depuis ${pngPath}`);
+  return labels;
+}
+
+/**
+ * Convertit un label OCR (pixel GDAL) en WGS84 via le GeoTransform.
+ * Différence avec pdfCoordToWgs84 : ici pixelX/pixelY sont DÉJÀ en pixels GDAL
+ * (pas de conversion pdfX→pixel via ratio page).
+ */
+function ocrPixelToWgs84(
+  pixelX: number,
+  pixelY: number,
+  gt: number[],
+  projDef: string,
+): [number, number] | null {
+  const crsX = gt[0]! + pixelX * gt[1]! + pixelY * gt[2]!;
+  const crsY = gt[3]! + pixelX * gt[4]! + pixelY * gt[5]!;
+  try {
+    const wgs84 = proj4(projDef, "+proj=longlat +datum=WGS84 +no_defs", [crsX, crsY]);
+    if (!Array.isArray(wgs84) || wgs84.length < 2) return null;
+    const lon = wgs84[0]!;
+    const lat = wgs84[1]!;
+    if (!Number.isFinite(lon) || !Number.isFinite(lat)) return null;
+    return [lon, lat];
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 4. Filtrage des labels zone_code
 // ---------------------------------------------------------------------------
 
@@ -467,8 +633,15 @@ function filterZoneLabels(labels: PdfLabel[]): PdfLabel[] {
     if (/^\d{5,}$/.test(t)) return false;
     // Exclure les mesures (123m, 45.6m).
     if (/^\d+\.?\d*m$/i.test(t)) return false;
-    // Doit correspondre au pattern code-zone OU être alphanumérique court.
-    return ZONE_CODE_RE.test(t) || /^[A-Z]\d{1,4}$/i.test(t) || /^\d{1,3}[A-Z]?$/i.test(t);
+    // Doit correspondre au pattern code-zone ou être alphanumérique court avec lettre.
+    // ANTI-INVENTION : les purs numériques courts ("0", "00", "01", "123") sont des numéros
+    // de lot / de parcelle — on ne les accepte PAS comme zone_code.
+    if (ZONE_CODE_RE.test(t)) return true;
+    // Formats courts avec lettre : H2, 1A, Z12b (non capturés par ZONE_CODE_RE)
+    if (/^[A-Z]\d{1,4}$/i.test(t)) return true;
+    // Exclure les purs numériques (lot numbers) même courts
+    if (/^\d+$/.test(t)) return false;
+    return false;
   });
 }
 
@@ -568,7 +741,16 @@ function buildOutputGeoJSON(
   zoneCodes: Map<number, string | null>,
   slug: string,
   pdfSource: string,
+  /** "v1" pour pdftotext, "v2-ocr" pour tesseract.js OCR */
+  labelPath: "v1" | "v2-ocr" = "v1",
 ): FeatureCollection {
+  const sourceField = labelPath === "v2-ocr"
+    ? `pdf-georef-ocr-${slug}`
+    : `pdf-georef-${slug}`;
+  const confidenceField = labelPath === "v2-ocr"
+    ? `pdf-georef-ocr:${pdfSource}`
+    : `pdf-georef:${pdfSource}`;
+
   const features: Feature[] = polygons.features.map((f, i) => {
     const zone_code = zoneCodes.get(i) ?? null;
     const props = f.properties ?? {};
@@ -589,8 +771,8 @@ function buildOutputGeoJSON(
         kind: "zone",
         affectation: null,
         num_zone: num_zone ?? null,
-        source: `pdf-georef-${slug}`,
-        confidence: `pdf-georef:${pdfSource}`,
+        source: sourceField,
+        confidence: confidenceField,
       },
     };
   });
@@ -611,10 +793,15 @@ async function main(): Promise<void> {
   const dryRun = args["dry-run"] === true;
   const spatialKm = parseFloat((args["spatial-km"] as string) || "10");
   const minCodes = parseInt((args["min-codes"] as string) || "3", 10);
+  const forceOcr = args["ocr"] === true;
+  const ocrLang = (args["ocr-lang"] as string) || "fra+eng";
+  const ocrThreshold = parseInt((args["ocr-threshold"] as string) || "50", 10);
+  // Seuil pour auto-déclencher OCR : si pdftotext donne < N codes uniques.
+  const OCR_AUTO_THRESHOLD = 5;
 
   if (!slug || !pdfArg) {
     console.error(
-      "Usage: npx tsx src/recompose-zones-pdf.ts --slug <slug> --pdf <url|path> [--pages N-M] [--dry-run]",
+      "Usage: npx tsx src/recompose-zones-pdf.ts --slug <slug> --pdf <url|path> [--pages N-M] [--dry-run] [--ocr]",
     );
     process.exit(2);
   }
@@ -628,7 +815,7 @@ async function main(): Promise<void> {
   }
 
   console.error(`[recompose] slug=${slug} (${muniEntry.name}) lat=${muniEntry.lat} lon=${muniEntry.lon}`);
-  console.error(`[recompose] pdf=${pdfArg}${pages ? " pages=" + pages : ""}${dryRun ? " [DRY-RUN]" : ""}`);
+  console.error(`[recompose] pdf=${pdfArg}${pages ? " pages=" + pages : ""}${dryRun ? " [DRY-RUN]" : ""}${forceOcr ? " [--ocr forcé]" : ""}`);
 
   // ── ÉTAPE 0 : résolution du PDF (URL → fichier local temporaire) ────────
   const tmpDir = `/tmp/geo-recompose-${slug}-${Date.now()}`;
@@ -665,8 +852,15 @@ async function main(): Promise<void> {
   }
 
   console.error(
-    `[recompose] Géoréférencé ✓ | EPSG=${gdal.epsg ?? "??"} | hasCoordSys=${gdal.hasCoordSystem} | GT=${gdal.geoTransform ? "présent" : "absent"}`,
+    `[recompose] Géoréférencé ✓ | EPSG=${gdal.epsg ?? "??"} | hasCoordSys=${gdal.hasCoordSystem} | GT=${gdal.geoTransform ? "présent" : "absent"} | creator=${gdal.creator ?? "inconnu"}`,
   );
+  if (gdal.isArcMap) {
+    console.error(
+      "[recompose] AVERTISSEMENT: PDF créé par Esri ArcMap → les labels de zones sont probablement" +
+      " des glyphes vectorisés (couche Anno). pdftotext peut échouer. OCR V2 sera tenté automatiquement" +
+      " si pdftotext donne < " + OCR_AUTO_THRESHOLD + " codes uniques.",
+    );
+  }
 
   // ── ÉTAPE 2 : ogr2ogr — tente l'extraction vectorielle ─────────────────
   console.error("[recompose] Étape 2/7: ogr2ogr (extraction polygones vecteur)…");
@@ -691,61 +885,107 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
-  // ── ÉTAPE 3 : pdftotext -bbox-layout ────────────────────────────────────
-  console.error("[recompose] Étape 3/7: pdftotext -bbox-layout…");
-  const rawLabels = runPdftotext(pdfPath);
-  console.error(`[recompose] ${rawLabels.length} mots extraits.`);
+  // ── ÉTAPE 3-5 : labels (V1 pdftotext OU V2 OCR) → WGS84 ───────────────
+  let labelPoints: Array<{ wgs84: [number, number]; text: string; confidence?: number }> = [];
+  let labelPath: "v1" | "v2-ocr" = "v1";
 
-  // ── ÉTAPE 4 : filtrage labels zone_code ─────────────────────────────────
-  console.error("[recompose] Étape 4/7: filtrage labels zone_code…");
-  const zoneLabels = filterZoneLabels(rawLabels);
-  console.error(
-    `[recompose] ${zoneLabels.length} candidats zone_code retenus sur ${rawLabels.length} mots.`,
-  );
-
-  // ── ÉTAPE 5 : GeoTransform → WGS84 ─────────────────────────────────────
-  console.error("[recompose] Étape 5/7: GeoTransform → WGS84…");
-
-  let labelPoints: Array<{ wgs84: [number, number]; text: string }> = [];
-
-  if (gdal.geoTransform && gdal.pixelSize && gdal.projDef && zoneLabels.length > 0) {
+  /**
+   * Convertit une liste de labels pdftotext en points WGS84 filtrés.
+   * Retourne les labelPoints et le nombre de candidats zone_code.
+   */
+  function buildV1LabelPoints(rawLabels: PdfLabel[]): Array<{ wgs84: [number, number]; text: string }> {
+    const zoneLabels = filterZoneLabels(rawLabels);
+    console.error(`[recompose] V1: ${zoneLabels.length} candidats zone_code retenus sur ${rawLabels.length} mots.`);
+    const pts: Array<{ wgs84: [number, number]; text: string }> = [];
+    if (!gdal.geoTransform || !gdal.pixelSize || !gdal.projDef) return pts;
     const gt = gdal.geoTransform;
     const [pixW, pixH] = gdal.pixelSize;
-    let converted = 0;
-
     for (const lbl of zoneLabels) {
-      const wgs84 = pdfCoordToWgs84(
-        lbl.pdfX,
-        lbl.pdfY,
-        lbl.pageW,
-        lbl.pageH,
-        pixW,
-        pixH,
-        gt,
-        gdal.projDef,
-      );
-      if (wgs84) {
-        labelPoints.push({ wgs84, text: lbl.text });
-        converted++;
+      const wgs84 = pdfCoordToWgs84(lbl.pdfX, lbl.pdfY, lbl.pageW, lbl.pageH, pixW, pixH, gt, gdal.projDef);
+      if (wgs84) pts.push({ wgs84, text: lbl.text });
+    }
+    console.error(`[recompose] V1: ${pts.length}/${zoneLabels.length} labels convertis en WGS84.`);
+    return pts;
+  }
+
+  if (!forceOcr) {
+    // V1 : pdftotext -bbox-layout
+    console.error("[recompose] Étape 3/7: V1 pdftotext -bbox-layout…");
+    const rawLabels = runPdftotext(pdfPath);
+    console.error(`[recompose] V1: ${rawLabels.length} mots extraits.`);
+    const v1Points = buildV1LabelPoints(rawLabels);
+
+    // Pré-join V1 pour décider si auto-OCR nécessaire.
+    // Auto-OCR si :
+    //   - V1 ne donne aucun label converti, OU
+    //   - Pré-join rapide montre < OCR_AUTO_THRESHOLD codes uniques matchés.
+    let doOcr = false;
+    if (v1Points.length === 0) {
+      console.error("[recompose] V1: 0 labels convertis → auto-OCR.");
+      doOcr = true;
+    } else {
+      // Pré-join sur un échantillon de polygones (max 500 pour rapidité).
+      const samplePolys = vectorGJ.features.slice(0, 500);
+      const sampleFC: FeatureCollection = { type: "FeatureCollection", features: samplePolys };
+      const sampleCodes = assignZoneCodes(sampleFC, v1Points);
+      const sampleUnique = new Set([...sampleCodes.values()].filter(Boolean));
+      console.error(`[recompose] V1: pré-join (échantillon ${samplePolys.length} polys) → ${sampleUnique.size} codes uniques.`);
+      if (sampleUnique.size < OCR_AUTO_THRESHOLD && gdal.geoTransform && gdal.projDef) {
+        console.error(
+          `[recompose] V1: seulement ${sampleUnique.size} codes matchés (< ${OCR_AUTO_THRESHOLD}). ` +
+          `Déclenchement auto V2 OCR (ArcMap=${gdal.isArcMap}).`,
+        );
+        doOcr = true;
       }
     }
 
-    console.error(
-      `[recompose] ${converted}/${zoneLabels.length} labels convertis en WGS84.`,
-    );
-  } else if (zoneLabels.length === 0) {
-    console.error(
-      "[recompose] 0 labels zone_code → zone_code sera null sur tous les polygones (PDF sans texte vectoriel).",
-    );
+    if (doOcr) {
+      labelPath = "v2-ocr";
+    } else {
+      labelPoints = v1Points;
+    }
   } else {
-    const missing = [];
-    if (!gdal.geoTransform) missing.push("GeoTransform");
-    if (!gdal.pixelSize) missing.push("PixelSize");
-    if (!gdal.projDef) missing.push(`projDef(EPSG:${gdal.epsg ?? "?"})`);
-    console.error(
-      `[recompose] AVERTISSEMENT: impossible de localiser les labels (manque: ${missing.join(", ")}). zone_code sera null.`,
-    );
-    labelPoints = [];
+    labelPath = "v2-ocr";
+    console.error("[recompose] --ocr forcé → voie V2 OCR (pdftotext ignoré).");
+  }
+
+  // V2 OCR (si --ocr forcé OU auto-trigger).
+  if (labelPath === "v2-ocr") {
+    if (!gdal.geoTransform || !gdal.projDef) {
+      console.error(
+        "[recompose] AVERTISSEMENT OCR: GeoTransform ou projDef absent. Impossible de localiser les labels OCR. zone_code sera null.",
+      );
+    } else {
+      console.error("[recompose] Étape 3b/7: V2 OCR (gdal_translate + tesseract.js)…");
+      const ocrLabels = await runOcrTesseract(pdfPath, tmpDir, ocrLang, ocrThreshold);
+
+      // Filtre les labels OCR par ZONE_CODE_RE.
+      const ocrZoneLabels = ocrLabels.filter((l) => {
+        const t = l.text.trim();
+        if (!t || STOPWORDS.has(t.toLowerCase())) return false;
+        if (/^\d+$/.test(t)) return false; // exclure purs numériques
+        if (/^\d{5,}$/.test(t)) return false;
+        return ZONE_CODE_RE.test(t) || /^[A-Z]\d{1,4}$/i.test(t);
+      });
+
+      console.error(`[recompose] V2: ${ocrZoneLabels.length} codes candidats OCR après filtrage.`);
+
+      if (ocrZoneLabels.length > 0) {
+        const sample = ocrZoneLabels.slice(0, 10).map((l) => `${l.text}(${l.confidence}%)`).join(", ");
+        console.error(`[recompose] V2: exemples: ${sample}`);
+      }
+
+      const gt = gdal.geoTransform;
+      let converted = 0;
+      for (const lbl of ocrZoneLabels) {
+        const wgs84 = ocrPixelToWgs84(lbl.pixelX, lbl.pixelY, gt, gdal.projDef);
+        if (wgs84) {
+          labelPoints.push({ wgs84, text: lbl.text, confidence: lbl.confidence });
+          converted++;
+        }
+      }
+      console.error(`[recompose] V2: ${converted}/${ocrZoneLabels.length} labels OCR convertis en WGS84.`);
+    }
   }
 
   // ── ÉTAPE 6 : point-in-polygon ──────────────────────────────────────────
@@ -762,9 +1002,18 @@ async function main(): Promise<void> {
     console.error(
       `[recompose] RÉSULTAT: trop peu de codes uniques (${uniqueCodes.size} < ${minCodes} requis). Vérifier le PDF.`,
     );
-    console.error(
-      "[recompose] → Indique probablement un PDF raster mal classé ou labels absents. Non publié.",
-    );
+    if (gdal.isArcMap) {
+      console.error(
+        "[recompose] → PDF Esri ArcMap détecté. Les zones vectorielles dans ce PDF sont des LINESTRINGS" +
+        " (couche Zonage/Limite_de_zone) — pas des Polygons. ogr2ogr extrait les couches Other_* (insets/légendes)." +
+        " Les labels OCR sont bien géolocalisés mais sans polygones correspondants." +
+        " Solution: polygoniser les LINESTRINGS (non implémenté) ou utiliser une autre source de polygones.",
+      );
+    } else {
+      console.error(
+        "[recompose] → Indique probablement un PDF raster mal classé, labels absents, ou décalage GeoTransform.",
+      );
+    }
     process.exit(0);
   }
 
@@ -807,7 +1056,7 @@ async function main(): Promise<void> {
   console.error(`[recompose] Vérification spatiale OK ✓ (${distKm.toFixed(1)} km)`);
 
   // ── Construction du GeoJSON de sortie ────────────────────────────────────
-  const outGj = buildOutputGeoJSON(vectorGJ, zoneCodes, slug, isUrl ? pdfArg : pdfPath);
+  const outGj = buildOutputGeoJSON(vectorGJ, zoneCodes, slug, isUrl ? pdfArg : pdfPath, labelPath);
   const s3Key = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
 
   console.error(`\n[recompose] ===== RÉSUMÉ =====`);
