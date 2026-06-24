@@ -5,6 +5,10 @@ import { slugify, parseRole } from "./role-foncier.js";
 import { chooseEpsg, computeLotAttrs } from "./lot-attrs-geom.js";
 import { representativePoint, strictPointInPolygon } from "./lib/geo.js";
 import { inferRoleSchema } from "./lib/parquet.js";
+import {
+  findPolygonizeCandidateLayers,
+  polygonizeLineworkWithTurf,
+} from "./recompose-zones-pdf.js";
 
 describe("norm (cadastre-clip-sda slug canonicalisation)", () => {
   it("strips accents and apostrophes, collapses separators", () => {
@@ -140,5 +144,34 @@ describe("inferRoleSchema (pandas/pyarrow type-inference parity)", () => {
     expect(types["b"]).toBe("DOUBLE"); // int + null -> float (pandas rule)
     expect(types["c"]).toBe("UTF8");
     expect(types["d"]).toBe("DOUBLE"); // has a fractional value
+  });
+});
+
+describe("recompose-zones-pdf polygonize support", () => {
+  it("selects zoning boundary layers without selecting OCR/glyph label layers", () => {
+    expect(
+      findPolygonizeCandidateLayers([
+        "PDFDECB_tmp_Other_6",
+        "PDFDECB_tmp_Layers_Etiquettes_Zonage_-_Default",
+        "PDFDECB_tmp_Layers_Périmètre_d'urbanisation",
+        "PDFDECB_tmp_Layers_Zonage",
+        "Zonage/Limite_de_zone",
+      ]),
+    ).toEqual(["PDFDECB_tmp_Layers_Zonage", "Zonage/Limite_de_zone"]);
+  });
+
+  it("polygonizes a noded line network into real polygons", () => {
+    const out = polygonizeLineworkWithTurf({
+      type: "FeatureCollection",
+      features: [
+        { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[0, 0], [1, 0]] } },
+        { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[1, 0], [1, 1]] } },
+        { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[1, 1], [0, 1]] } },
+        { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[0, 1], [0, 0]] } },
+      ],
+    });
+
+    expect(out.features).toHaveLength(1);
+    expect(out.features[0]?.geometry?.type).toBe("Polygon");
   });
 });
