@@ -38,3 +38,18 @@ work/zonage-norms/discovered-*.json
 
 # Coverage: outputs intermédiaires (régénérables via coverage-cli)
 work/coverage/track-events/
+
+# Local agent/runtime state (not source)
+.claude/
+.codex/
+.remote/
+.playwright-mcp/
+
+# Legacy backup copied from the old geo-quebec workspace; kept on disk, not versioned
+work/legacy-geo-quebec/
+
+# OCR language data downloaded locally; re-fetchable / system dependency
+*.traineddata
+work/**/run.err
+work/**/run.out
+work/coverage/seed-run.log
