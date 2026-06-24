@@ -68,11 +68,22 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { Feature, FeatureCollection, Point, Polygon, MultiPolygon } from "geojson";
+import type {
+  Feature,
+  FeatureCollection,
+  LineString,
+  MultiLineString,
+  Polygon,
+  MultiPolygon,
+} from "geojson";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import {
+  area as turfArea,
+  polygonize as turfPolygonize,
+} from "@turf/turf";
 import proj4 from "proj4";
 
 import { s3Client, putBytes, BUCKET } from "./lib/s3.js";
@@ -109,6 +120,8 @@ interface GdalInfo {
   geoTransform: number[] | null;
   /** Page size in pixels [width, height]. */
   pixelSize: [number, number] | null;
+  /** NEATLINE GeoPDF en CRS source, si présent. */
+  neatline: [number, number][] | null;
   /** True si GDAL a pu ouvrir via driver PDF (a un Coordinate System). */
   hasCoordSystem: boolean;
   /** True si le PDF est généré par Esri ArcMap (labels = glyphes, OCR requis). */
@@ -136,6 +149,12 @@ interface OcrLabel {
   pixelY: number;
   /** Confiance OCR 0-100. */
   confidence: number;
+}
+
+interface ExtractedVector {
+  polygons: FeatureCollection;
+  method: "ogr-structured" | "ogr-nonstructured" | "ogr-polygonize";
+  lineLayers?: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -206,6 +225,43 @@ const STOPWORDS = new Set([
 const ZONE_CODE_RE =
   /^(?:[A-Z]{1,4}[-.]?\d{0,4}[A-Za-z]?|\d{1,4}-[A-Za-z]{1,5})$/i;
 
+/** Scories topologiques typiques d'ArcMap après BuildArea (traits, micro-anneaux). */
+const MIN_POLYGON_AREA_M2 = 50;
+
+function looksLikeZoneCode(text: string, opts: { requireDigit: boolean }): boolean {
+  const t = text.trim();
+  if (!t) return false;
+  if (opts.requireDigit && (!/[A-Za-z]/.test(t) || !/\d/.test(t))) {
+    return false;
+  }
+  return ZONE_CODE_RE.test(t) || /^[A-Z]\d{1,4}$/i.test(t);
+}
+
+function zoneCodeShape(text: string): "num-alpha" | "alpha-num" | "other" {
+  const t = text.trim();
+  if (/^\d{1,4}-[A-Za-z]{1,5}$/.test(t)) return "num-alpha";
+  if (/^[A-Za-z]{1,4}[-.]?\d{1,4}[A-Za-z]?$/.test(t)) return "alpha-num";
+  return "other";
+}
+
+function keepDominantOcrShape<T extends { text: string }>(labels: T[]): T[] {
+  if (labels.length < 8) return labels;
+
+  const counts = new Map<string, number>();
+  for (const label of labels) {
+    const shape = zoneCodeShape(label.text);
+    if (shape === "other") continue;
+    counts.set(shape, (counts.get(shape) ?? 0) + 1);
+  }
+
+  const [dominantShape, dominantCount] =
+    [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? [];
+  if (!dominantShape || !dominantCount) return labels;
+  if (dominantCount < 5 || dominantCount / labels.length < 0.7) return labels;
+
+  return labels.filter((label) => zoneCodeShape(label.text) === dominantShape);
+}
+
 // ---------------------------------------------------------------------------
 // Utilitaires
 // ---------------------------------------------------------------------------
@@ -258,6 +314,48 @@ function parseArgs(argv: string[]): Record<string, string | boolean> {
   return out;
 }
 
+function parseNeatline(gdalinfoOutput: string): [number, number][] | null {
+  const m = gdalinfoOutput.match(/NEATLINE=POLYGON\s*\(\(([^)]+)\)\)/);
+  if (!m) return null;
+
+  const coords: [number, number][] = [];
+  for (const pair of m[1]!.split(",")) {
+    const nums = pair
+      .trim()
+      .split(/\s+/)
+      .map((v) => Number(v));
+    if (nums.length < 2 || !Number.isFinite(nums[0]) || !Number.isFinite(nums[1])) {
+      return null;
+    }
+    coords.push([nums[0]!, nums[1]!]);
+  }
+
+  return coords.length >= 4 ? coords : null;
+}
+
+function projectRingToWgs84(
+  coords: [number, number][],
+  projDef: string,
+): [number, number][] | null {
+  try {
+    const out = coords.map((p) => {
+      const wgs84 = proj4(projDef, "+proj=longlat +datum=WGS84 +no_defs", p);
+      if (!Array.isArray(wgs84) || wgs84.length < 2) {
+        throw new Error("invalid reprojection");
+      }
+      const lon = wgs84[0]!;
+      const lat = wgs84[1]!;
+      if (!Number.isFinite(lon) || !Number.isFinite(lat)) {
+        throw new Error("invalid coordinate");
+      }
+      return [lon, lat] as [number, number];
+    });
+    return out.length >= 4 ? out : null;
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // 1. gdalinfo — détection géoréférencement + GeoTransform
 // ---------------------------------------------------------------------------
@@ -278,6 +376,7 @@ function runGdalinfo(pdfPath: string): GdalInfo {
     projDef: null,
     geoTransform: null,
     pixelSize: null,
+    neatline: null,
     hasCoordSystem: false,
     isArcMap: false,
     creator: null,
@@ -316,6 +415,8 @@ function runGdalinfo(pdfPath: string): GdalInfo {
   }
 
   if (!res.isGeoref) return res;
+
+  res.neatline = parseNeatline(output);
 
   // GeoTransform [gt0..gt5].
   if (geoTransformMatch) {
@@ -359,11 +460,16 @@ function runGdalinfo(pdfPath: string): GdalInfo {
         res.projDef = p4;
       }
     }
-    // Extrait l'EPSG depuis le WKT2 (cherche la dernière ligne ID["EPSG",…] du bloc CRS).
+    // Extrait un EPSG seulement si ce n'est pas un code de composante WKT
+    // (9001 = metre, 880x = paramètres TM, 6269 = datum, etc.).
     const epsgMatches = [...srsOut.matchAll(/ID\["EPSG",\s*(\d+)\]/g)];
-    if (epsgMatches.length > 0) {
-      // Le dernier ID est celui du CRS complet (pas du datum).
-      res.epsg = epsgMatches[epsgMatches.length - 1]![1]!;
+    const componentEpsg = new Set(["6269", "9001", "9807", "8801", "8802", "8805", "8806", "8807"]);
+    const crsEpsg = epsgMatches
+      .map((m) => m[1]!)
+      .filter((code) => !componentEpsg.has(code))
+      .at(-1);
+    if (crsEpsg) {
+      res.epsg = crsEpsg;
     }
   } catch {
     // gdalsrsinfo non disponible ou échec → fallback ci-dessous.
@@ -398,24 +504,7 @@ function runGdalinfo(pdfPath: string): GdalInfo {
  * Retourne null si le PDF n'a pas de couche vecteur ou si ogr2ogr échoue.
  * `pages` optionnel: filtre les pages à extraire (ex: "2-4").
  */
-function runOgr2ogr(
-  pdfPath: string,
-  outPath: string,
-  pages?: string,
-): FeatureCollection | null {
-  const pagesOpt = pages ? `-oo PAGES=${pages}` : "";
-  // Note: -skipfailures est nécessaire pour les GeoPDF ArcMap multi-layer dont certains
-  // layers ont des noms avec caractères spéciaux que GeoJSON ne peut pas créer (ex: accents, ':').
-  // ogr2ogr retourne exit 1 dans ce cas mais produit quand même un GeoJSON valide avec les
-  // layers qui ont réussi. On ignore l'exception et on vérifie le fichier produit.
-  const cmd = `ogr2ogr -f GeoJSON "${outPath}" "${pdfPath}" ${pagesOpt} -t_srs EPSG:4326 -skipfailures 2>&1`;
-  try {
-    execSync(cmd, { encoding: "utf8", timeout: 120_000 });
-  } catch {
-    // -skipfailures peut quand même lever une exception si AUCUN layer n'a réussi.
-    // On continue pour vérifier si un fichier a été produit.
-  }
-
+function readPolygonsGeoJSON(outPath: string): FeatureCollection | null {
   if (!existsSync(outPath)) return null;
 
   let raw: string;
@@ -440,6 +529,365 @@ function runOgr2ogr(
   if (polys.length === 0) return null;
 
   return { type: "FeatureCollection", features: polys };
+}
+
+function readLineworkGeoJSON(outPath: string): FeatureCollection | null {
+  if (!existsSync(outPath)) return null;
+
+  let raw: string;
+  try {
+    raw = readFileSync(outPath, "utf8");
+  } catch {
+    return null;
+  }
+
+  let gj: FeatureCollection;
+  try {
+    gj = JSON.parse(raw) as FeatureCollection;
+  } catch {
+    return null;
+  }
+
+  const lines = (gj.features ?? []).filter(
+    (f) =>
+      f.geometry?.type === "LineString" ||
+      f.geometry?.type === "MultiLineString",
+  );
+
+  if (lines.length === 0) return null;
+  return { type: "FeatureCollection", features: lines };
+}
+
+function runOgr2ogrCommand(cmd: string, outPath: string): FeatureCollection | null {
+  try {
+    if (existsSync(outPath)) unlinkSync(outPath);
+  } catch {
+    // Nettoyage best-effort.
+  }
+
+  try {
+    execSync(cmd, { encoding: "utf8", timeout: 120_000 });
+  } catch {
+    // -skipfailures peut quand même lever une exception si AUCUN layer n'a réussi.
+    // On continue pour vérifier si un fichier a été produit.
+  }
+
+  return readPolygonsGeoJSON(outPath);
+}
+
+function runOgr2ogrLineworkCommand(cmd: string, outPath: string): FeatureCollection | null {
+  try {
+    if (existsSync(outPath)) unlinkSync(outPath);
+  } catch {
+    // Nettoyage best-effort.
+  }
+
+  try {
+    execSync(cmd, { encoding: "utf8", timeout: 120_000 });
+  } catch {
+    // On inspecte quand même la sortie: ogr2ogr peut écrire un GeoJSON partiel.
+  }
+
+  return readLineworkGeoJSON(outPath);
+}
+
+function shellDoubleQuote(value: string): string {
+  return `"${value.replace(/(["\\$`])/g, "\\$1")}"`;
+}
+
+function sqlIdentifier(value: string): string {
+  return `"${value.replace(/"/g, '""')}"`;
+}
+
+function safeFilenamePart(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Za-z0-9_-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80) || "layer";
+}
+
+function listOgrLayers(pdfPath: string, pages?: string): string[] {
+  const pagesOpt = pages ? `-oo PAGES=${shellDoubleQuote(pages)}` : "";
+  let output: string;
+  try {
+    output = execSync(`ogrinfo -ro -so ${shellDoubleQuote(pdfPath)} ${pagesOpt} 2>/dev/null`, {
+      encoding: "utf8",
+      timeout: 30_000,
+    });
+  } catch {
+    return [];
+  }
+
+  const layers: string[] = [];
+  const layerRe = /^\s*\d+:\s+(.+?)\s*$/gm;
+  let m: RegExpExecArray | null;
+  while ((m = layerRe.exec(output)) !== null) {
+    const layer = m[1]?.trim();
+    if (layer) layers.push(layer);
+  }
+  return layers;
+}
+
+function normalizeLayerName(layer: string): string {
+  return layer
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+export function findPolygonizeCandidateLayers(layers: string[]): string[] {
+  return layers.filter((layer) => {
+    const n = normalizeLayerName(layer);
+    const hasZoneLinework =
+      n.includes("limite_de_zone") ||
+      n.includes("limites_de_zone") ||
+      /(?:^|[_/\s-])zonage(?:$|[_/\s-])/.test(n) ||
+      n.endsWith("_zonage") ||
+      n.includes("layers_zonage");
+    if (!hasZoneLinework) return false;
+
+    return !(
+      n.includes("etiquette") ||
+      n.includes("label") ||
+      n.includes("identifier") ||
+      n.includes("indicator") ||
+      n.includes("other") ||
+      n.includes("perimetre") ||
+      n.includes("urbanisation") ||
+      n.includes("limite_de_la_ville")
+    );
+  });
+}
+
+export function polygonizeLineworkWithTurf(linework: FeatureCollection): FeatureCollection {
+  const lineFeatures = (linework.features ?? []).filter(
+    (f): f is Feature<LineString | MultiLineString> =>
+      f.geometry?.type === "LineString" || f.geometry?.type === "MultiLineString",
+  );
+  if (lineFeatures.length === 0) {
+    return { type: "FeatureCollection", features: [] };
+  }
+
+  const polygonized = turfPolygonize({
+    type: "FeatureCollection",
+    features: lineFeatures,
+  }) as FeatureCollection;
+
+  const features = (polygonized.features ?? []).filter(
+    (f) =>
+      f.geometry?.type === "Polygon" || f.geometry?.type === "MultiPolygon",
+  );
+  return { type: "FeatureCollection", features };
+}
+
+function cleanLineCoordinates(coords: number[][]): number[][] {
+  const cleaned: number[][] = [];
+  for (const p of coords) {
+    if (p.length < 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1])) {
+      continue;
+    }
+    const prev = cleaned[cleaned.length - 1];
+    if (!prev || prev[0] !== p[0] || prev[1] !== p[1]) {
+      cleaned.push([p[0]!, p[1]!]);
+    }
+  }
+  return cleaned;
+}
+
+function normalizeLinework(
+  linework: FeatureCollection,
+  neatlineWgs84?: [number, number][] | null,
+): FeatureCollection {
+  const features: Feature[] = [];
+
+  for (const feature of linework.features ?? []) {
+    const geom = feature.geometry;
+    const parts =
+      geom?.type === "LineString"
+        ? [geom.coordinates]
+        : geom?.type === "MultiLineString"
+          ? geom.coordinates
+          : [];
+
+    for (const part of parts) {
+      const coords = cleanLineCoordinates(part as number[][]);
+      if (coords.length < 2) continue;
+      features.push({
+        type: "Feature",
+        properties: { ...(feature.properties ?? {}) },
+        geometry: { type: "LineString", coordinates: coords },
+      });
+    }
+  }
+
+  if (neatlineWgs84 && neatlineWgs84.length >= 4) {
+    const ring = cleanLineCoordinates(neatlineWgs84);
+    const first = ring[0];
+    const last = ring[ring.length - 1];
+    if (
+      first &&
+      last &&
+      (first[0] !== last[0] || first[1] !== last[1])
+    ) {
+      ring.push([first[0]!, first[1]!]);
+    }
+    if (ring.length >= 4) {
+      features.push({
+        type: "Feature",
+        properties: { polygonize_source_layer: "NEATLINE" },
+        geometry: { type: "LineString", coordinates: ring },
+      });
+    }
+  }
+
+  return { type: "FeatureCollection", features };
+}
+
+function filterPolygonizeArtifacts(polygons: FeatureCollection): FeatureCollection {
+  const features = (polygons.features ?? []).filter((feature) => {
+    if (
+      feature.geometry?.type !== "Polygon" &&
+      feature.geometry?.type !== "MultiPolygon"
+    ) {
+      return false;
+    }
+    try {
+      return turfArea(feature as Feature<Polygon | MultiPolygon>) >= MIN_POLYGON_AREA_M2;
+    } catch {
+      return true;
+    }
+  });
+  return { type: "FeatureCollection", features };
+}
+
+function polygonizeLineworkWithGeos(
+  linework: FeatureCollection,
+  workPath: string,
+): FeatureCollection | null {
+  writeFileSync(workPath, JSON.stringify(linework));
+  const outPath = workPath.replace(/\.geojson$/i, ".geos-polygonized.geojson");
+  const layerName = basename(workPath, ".geojson");
+  const sql =
+    `SELECT ST_BuildArea(ST_UnaryUnion(ST_Collect(geometry))) AS geometry ` +
+    `FROM ${sqlIdentifier(layerName)}`;
+  const cmd =
+    `ogr2ogr -f GeoJSON ${shellDoubleQuote(outPath)} ${shellDoubleQuote(workPath)} ` +
+    `-dialect SQLite -sql ${shellDoubleQuote(sql)} -explodecollections -skipfailures 2>&1`;
+  const polygons = runOgr2ogrCommand(cmd, outPath);
+  return polygons ? filterPolygonizeArtifacts(polygons) : null;
+}
+
+function runOgrPolygonize(
+  pdfPath: string,
+  outPath: string,
+  pages?: string,
+  neatlineWgs84?: [number, number][] | null,
+): ExtractedVector | null {
+  const layers = findPolygonizeCandidateLayers(listOgrLayers(pdfPath, pages));
+  if (layers.length === 0) return null;
+
+  console.error(
+    `[recompose] Polygonize: layer(s) candidat(s): ${layers.join(", ")}`,
+  );
+
+  const pagesOpt = pages ? `-oo PAGES=${shellDoubleQuote(pages)}` : "";
+  const features: Feature[] = [];
+  const usedLayers: string[] = [];
+
+  for (const layer of layers) {
+    const safeLayer = safeFilenamePart(layer);
+    const lineOut = outPath.replace(
+      /\.geojson$/i,
+      `.linework_${safeLayer}.geojson`,
+    );
+    const lineCmd =
+      `ogr2ogr -f GeoJSON ${shellDoubleQuote(lineOut)} ${shellDoubleQuote(pdfPath)} ${pagesOpt} ` +
+      `${shellDoubleQuote(layer)} -t_srs EPSG:4326 -nlt PROMOTE_TO_MULTI -skipfailures 2>&1`;
+    const linework = runOgr2ogrLineworkCommand(lineCmd, lineOut);
+    if (!linework) continue;
+
+    const normalized = normalizeLinework(linework, neatlineWgs84);
+    let polygons: FeatureCollection | null = null;
+
+    try {
+      polygons = filterPolygonizeArtifacts(polygonizeLineworkWithTurf(normalized));
+    } catch (e) {
+      console.error(`[recompose] Polygonize Turf: échec (${String(e)}). Repli GEOS BuildArea.`);
+    }
+
+    if (!polygons || polygons.features.length === 0) {
+      const geosIn = outPath.replace(
+        /\.geojson$/i,
+        `.polygonize_input_${safeLayer}.geojson`,
+      );
+      polygons = polygonizeLineworkWithGeos(normalized, geosIn);
+    }
+    if (!polygons) continue;
+
+    for (const feature of polygons.features) {
+      features.push({
+        ...feature,
+        properties: {
+          ...(feature.properties ?? {}),
+          polygonize_source_layer: layer,
+        },
+      });
+    }
+    usedLayers.push(layer);
+  }
+
+  if (features.length === 0) return null;
+
+  console.error(
+    `[recompose] Polygonize: ${features.length} polygone(s) depuis ${usedLayers.length} layer(s).`,
+  );
+  return {
+    polygons: { type: "FeatureCollection", features },
+    method: "ogr-polygonize",
+    lineLayers: usedLayers,
+  };
+}
+
+function runOgr2ogr(
+  pdfPath: string,
+  outPath: string,
+  pages?: string,
+  sourceSrs?: string,
+  preferPolygonize: boolean = false,
+  neatlineWgs84?: [number, number][] | null,
+): ExtractedVector | null {
+  const pagesOpt = pages ? `-oo PAGES=${pages}` : "";
+  if (preferPolygonize) {
+    const polygonized = runOgrPolygonize(pdfPath, outPath, pages, neatlineWgs84);
+    if (polygonized) return polygonized;
+  }
+
+  // Note: -skipfailures est nécessaire pour les GeoPDF ArcMap multi-layer dont certains
+  // layers ont des noms avec caractères spéciaux que GeoJSON ne peut pas créer (ex: accents, ':').
+  // ogr2ogr retourne exit 1 dans ce cas mais produit quand même un GeoJSON valide avec les
+  // layers qui ont réussi. On ignore l'exception et on vérifie le fichier produit.
+  const structuredCmd = `ogr2ogr -f GeoJSON "${outPath}" "${pdfPath}" ${pagesOpt} -t_srs EPSG:4326 -skipfailures 2>&1`;
+  const structured = runOgr2ogrCommand(structuredCmd, outPath);
+  if (structured) return { polygons: structured, method: "ogr-structured" };
+
+  const polygonized = runOgrPolygonize(pdfPath, outPath, pages, neatlineWgs84);
+  if (polygonized) return polygonized;
+
+  if (!sourceSrs) return null;
+
+  console.error(
+    "[recompose] ogr2ogr standard: aucun polygone. Tentative OGR_PDF_READ_NON_STRUCTURED=YES…",
+  );
+  const nonStructuredCmd =
+    `ogr2ogr --config OGR_PDF_READ_NON_STRUCTURED YES --config GDAL_PDF_LAYERS ALL ` +
+    `-f GeoJSON "${outPath}" "${pdfPath}" ${pagesOpt} -s_srs "${sourceSrs}" ` +
+    `-t_srs EPSG:4326 -nlt PROMOTE_TO_MULTI -skipfailures 2>&1`;
+  const nonStructured = runOgr2ogrCommand(nonStructuredCmd, outPath);
+  if (nonStructured) return { polygons: nonStructured, method: "ogr-nonstructured" };
+
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -520,7 +968,7 @@ async function runOcrTesseract(
   const pngPath = join(tmpDir, "ocr_raster.png");
   const gdalCmd = `gdal_translate -of PNG "${pdfPath}" "${pngPath}" 2>&1`;
   try {
-    execSync(gdalCmd, { encoding: "utf8", timeout: 60_000 });
+    execSync(gdalCmd, { encoding: "utf8", timeout: 420_000 });
   } catch (e) {
     console.error(`[recompose/ocr] gdal_translate échec: ${e}`);
     return [];
@@ -636,9 +1084,7 @@ function filterZoneLabels(labels: PdfLabel[]): PdfLabel[] {
     // Doit correspondre au pattern code-zone ou être alphanumérique court avec lettre.
     // ANTI-INVENTION : les purs numériques courts ("0", "00", "01", "123") sont des numéros
     // de lot / de parcelle — on ne les accepte PAS comme zone_code.
-    if (ZONE_CODE_RE.test(t)) return true;
-    // Formats courts avec lettre : H2, 1A, Z12b (non capturés par ZONE_CODE_RE)
-    if (/^[A-Z]\d{1,4}$/i.test(t)) return true;
+    if (looksLikeZoneCode(t, { requireDigit: false })) return true;
     // Exclure les purs numériques (lot numbers) même courts
     if (/^\d+$/.test(t)) return false;
     return false;
@@ -743,10 +1189,17 @@ function buildOutputGeoJSON(
   pdfSource: string,
   /** "v1" pour pdftotext, "v2-ocr" pour tesseract.js OCR */
   labelPath: "v1" | "v2-ocr" = "v1",
+  vectorPath: ExtractedVector["method"] = "ogr-structured",
 ): FeatureCollection {
+  const vectorSuffix =
+    vectorPath === "ogr-nonstructured"
+      ? "-ogr-nonstructured"
+      : vectorPath === "ogr-polygonize"
+        ? "-polygonized"
+        : "";
   const sourceField = labelPath === "v2-ocr"
-    ? `pdf-georef-ocr-${slug}`
-    : `pdf-georef-${slug}`;
+    ? `pdf-georef-ocr${vectorSuffix}-${slug}`
+    : `pdf-georef${vectorSuffix}-${slug}`;
   const confidenceField = labelPath === "v2-ocr"
     ? `pdf-georef-ocr:${pdfSource}`
     : `pdf-georef:${pdfSource}`;
@@ -815,7 +1268,10 @@ async function main(): Promise<void> {
   }
 
   console.error(`[recompose] slug=${slug} (${muniEntry.name}) lat=${muniEntry.lat} lon=${muniEntry.lon}`);
-  console.error(`[recompose] pdf=${pdfArg}${pages ? " pages=" + pages : ""}${dryRun ? " [DRY-RUN]" : ""}${forceOcr ? " [--ocr forcé]" : ""}`);
+  console.error(
+    `[recompose] pdf=${pdfArg}${pages ? " pages=" + pages : ""}${dryRun ? " [DRY-RUN]" : ""}` +
+    `${forceOcr ? " [--ocr forcé]" : ""}`,
+  );
 
   // ── ÉTAPE 0 : résolution du PDF (URL → fichier local temporaire) ────────
   const tmpDir = `/tmp/geo-recompose-${slug}-${Date.now()}`;
@@ -863,9 +1319,22 @@ async function main(): Promise<void> {
   }
 
   // ── ÉTAPE 2 : ogr2ogr — tente l'extraction vectorielle ─────────────────
-  console.error("[recompose] Étape 2/7: ogr2ogr (extraction polygones vecteur)…");
+  console.error("[recompose] Étape 2/7: ogr2ogr (extraction/polygonize vecteur)…");
   const outGeoJSON = join(tmpDir, "raw.geojson");
-  const vectorGJ = runOgr2ogr(pdfPath, outGeoJSON, pages);
+  const sourceSrs = gdal.projDef ?? (gdal.epsg ? `EPSG:${gdal.epsg}` : undefined);
+  const neatlineWgs84 =
+    gdal.neatline && gdal.projDef
+      ? projectRingToWgs84(gdal.neatline, gdal.projDef)
+      : null;
+  const vector = runOgr2ogr(
+    pdfPath,
+    outGeoJSON,
+    pages,
+    sourceSrs,
+    gdal.isArcMap,
+    neatlineWgs84,
+  );
+  const vectorGJ = vector?.polygons ?? null;
 
   if (!vectorGJ) {
     console.error(
@@ -878,7 +1347,14 @@ async function main(): Promise<void> {
   }
 
   const polyCount = vectorGJ.features.length;
-  console.error(`[recompose] ${polyCount} polygone(s) vecteur extrait(s). TYPE A confirmé.`);
+  console.error(
+    `[recompose] ${polyCount} polygone(s) vecteur extrait(s). TYPE A confirmé (${vector!.method}).`,
+  );
+  if (vector?.method === "ogr-polygonize") {
+    console.error(
+      `[recompose] Polygonize actif: ${vector.lineLayers?.join(", ") ?? "layer inconnu"}`,
+    );
+  }
 
   if (polyCount === 0) {
     console.error("[recompose] RÉSULTAT: 0 polygones — PDF vecteur vide ou couche non reconnue.");
@@ -965,26 +1441,34 @@ async function main(): Promise<void> {
         if (!t || STOPWORDS.has(t.toLowerCase())) return false;
         if (/^\d+$/.test(t)) return false; // exclure purs numériques
         if (/^\d{5,}$/.test(t)) return false;
-        return ZONE_CODE_RE.test(t) || /^[A-Z]\d{1,4}$/i.test(t);
+        return looksLikeZoneCode(t, { requireDigit: true });
       });
 
-      console.error(`[recompose] V2: ${ocrZoneLabels.length} codes candidats OCR après filtrage.`);
+      const dominantOcrZoneLabels = keepDominantOcrShape(ocrZoneLabels);
+      if (dominantOcrZoneLabels.length !== ocrZoneLabels.length) {
+        console.error(
+          `[recompose] V2: filtre forme dominante OCR → ` +
+          `${dominantOcrZoneLabels.length}/${ocrZoneLabels.length} candidats conservés.`,
+        );
+      }
 
-      if (ocrZoneLabels.length > 0) {
-        const sample = ocrZoneLabels.slice(0, 10).map((l) => `${l.text}(${l.confidence}%)`).join(", ");
+      console.error(`[recompose] V2: ${dominantOcrZoneLabels.length} codes candidats OCR après filtrage.`);
+
+      if (dominantOcrZoneLabels.length > 0) {
+        const sample = dominantOcrZoneLabels.slice(0, 10).map((l) => `${l.text}(${l.confidence}%)`).join(", ");
         console.error(`[recompose] V2: exemples: ${sample}`);
       }
 
       const gt = gdal.geoTransform;
       let converted = 0;
-      for (const lbl of ocrZoneLabels) {
+      for (const lbl of dominantOcrZoneLabels) {
         const wgs84 = ocrPixelToWgs84(lbl.pixelX, lbl.pixelY, gt, gdal.projDef);
         if (wgs84) {
           labelPoints.push({ wgs84, text: lbl.text, confidence: lbl.confidence });
           converted++;
         }
       }
-      console.error(`[recompose] V2: ${converted}/${ocrZoneLabels.length} labels OCR convertis en WGS84.`);
+      console.error(`[recompose] V2: ${converted}/${dominantOcrZoneLabels.length} labels OCR convertis en WGS84.`);
     }
   }
 
@@ -1003,12 +1487,18 @@ async function main(): Promise<void> {
       `[recompose] RÉSULTAT: trop peu de codes uniques (${uniqueCodes.size} < ${minCodes} requis). Vérifier le PDF.`,
     );
     if (gdal.isArcMap) {
-      console.error(
-        "[recompose] → PDF Esri ArcMap détecté. Les zones vectorielles dans ce PDF sont des LINESTRINGS" +
-        " (couche Zonage/Limite_de_zone) — pas des Polygons. ogr2ogr extrait les couches Other_* (insets/légendes)." +
-        " Les labels OCR sont bien géolocalisés mais sans polygones correspondants." +
-        " Solution: polygoniser les LINESTRINGS (non implémenté) ou utiliser une autre source de polygones.",
-      );
+      if (vector?.method === "ogr-polygonize") {
+        console.error(
+          "[recompose] → PDF Esri ArcMap détecté. Les limites de zones ont été polygonisées; " +
+          "l'échec vient donc des labels OCR absents/filtrés, de leur géolocalisation ou d'un conflit de join.",
+        );
+      } else {
+        console.error(
+          "[recompose] → PDF Esri ArcMap détecté. Les zones vectorielles dans ce PDF sont des LINESTRINGS" +
+          " (couche Zonage/Limite_de_zone) — pas des Polygons. ogr2ogr extrait les couches Other_* (insets/légendes)." +
+          " Solution: polygoniser les LINESTRINGS ou utiliser une autre source de polygones.",
+        );
+      }
     } else {
       console.error(
         "[recompose] → Indique probablement un PDF raster mal classé, labels absents, ou décalage GeoTransform.",
@@ -1056,7 +1546,14 @@ async function main(): Promise<void> {
   console.error(`[recompose] Vérification spatiale OK ✓ (${distKm.toFixed(1)} km)`);
 
   // ── Construction du GeoJSON de sortie ────────────────────────────────────
-  const outGj = buildOutputGeoJSON(vectorGJ, zoneCodes, slug, isUrl ? pdfArg : pdfPath, labelPath);
+  const outGj = buildOutputGeoJSON(
+    vectorGJ,
+    zoneCodes,
+    slug,
+    isUrl ? pdfArg : pdfPath,
+    labelPath,
+    vector!.method,
+  );
   const s3Key = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
 
   console.error(`\n[recompose] ===== RÉSUMÉ =====`);
@@ -1089,7 +1586,14 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((e: unknown) => {
-  console.error("[recompose] FATAL:", e);
-  process.exit(1);
-});
+const isDirectCli =
+  process.argv[1] !== undefined &&
+  (resolve(process.argv[1]) === fileURLToPath(import.meta.url) ||
+    basename(process.argv[1]) === "recompose-zones-pdf.ts");
+
+if (isDirectCli) {
+  main().catch((e: unknown) => {
+    console.error("[recompose] FATAL:", e);
+    process.exit(1);
+  });
+}
