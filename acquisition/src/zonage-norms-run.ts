@@ -66,6 +66,7 @@ interface Args {
   dryRun: boolean;
   force: boolean;
   snapshot: string;
+  dpi?: number;
   /** 1-based inclusive page range to read (vision/multizone). Default: all. */
   firstPage?: number;
   lastPage?: number;
@@ -94,6 +95,7 @@ function parseArgs(argv: string[]): Args {
     dryRun: has("dry-run"),
     force: has("force"),
     snapshot: get("snapshot") ?? new Date().toISOString().slice(0, 10),
+    ...(get("dpi") ? { dpi: Number(get("dpi")) } : {}),
     ...(get("first-page") ? { firstPage: Number(get("first-page")) } : {}),
     ...(get("last-page") ? { lastPage: Number(get("last-page")) } : {}),
   };
@@ -130,6 +132,29 @@ function pdfPageCount(pdfPath: string): number {
   const r = spawnSync("pdfinfo", [pdfPath], { encoding: "utf8" });
   const m = r.stdout?.match(/Pages:\s+(\d+)/);
   return m ? Number(m[1]) : 0;
+}
+
+function pageTextsByNumber(layoutText: string): string[] {
+  const pages = layoutText.split("\f");
+  if (pages[pages.length - 1] === "") pages.pop();
+  return pages;
+}
+
+function normalizeExpectedZone(raw: string): string {
+  return raw.replace(/[–—]/g, "-").replace(/\s+/g, "").toUpperCase();
+}
+
+function expectedZoneFromPage(text: string): string | undefined {
+  const zoneLabel = text.match(/\bZONE\s+([A-Z]{1,4}\s*[-–—]?\s*\d+(?:\.\d+)?(?:\s*[A-Z])?)/i);
+  if (zoneLabel?.[1]) return normalizeExpectedZone(zoneLabel[1]);
+
+  const header = text.split(/\r?\n/).slice(0, 24).join("\n");
+  const standalone = header.match(
+    /^\s*([A-Z]{1,4}\s*[-–—]\s*\d+(?:\.\d+)?(?:\s*[A-Z])?)\s*(?:[-–—]?\s*abrog(?:e|é|ée))?\s*$/im,
+  );
+  if (standalone?.[1]) return normalizeExpectedZone(standalone[1]);
+
+  return undefined;
 }
 
 interface RouteDecision {
@@ -252,6 +277,7 @@ async function main(): Promise<void> {
   console.error(`[zonage-norms] slug=${args.slug} pdf=${args.pdf} route=${args.route}`);
 
   const layoutText = pdftotextLayout(args.pdf);
+  const pageTexts = pageTextsByNumber(layoutText);
   const decision =
     args.route === "auto"
       ? decideRoute(layoutText, args.sourceUrl, args.snapshot)
@@ -291,7 +317,10 @@ async function main(): Promise<void> {
     const pageCount = pdfPageCount(args.pdf);
     const first = args.firstPage ?? 1;
     const last = Math.min(args.lastPage ?? pageCount, first - 1 + args.maxVisionPages, pageCount);
-    console.error(`[vision] pdf pages=${pageCount} range=${first}..${last} budget=$${args.budgetUsd}`);
+    console.error(
+      `[vision] pdf pages=${pageCount} range=${first}..${last} budget=$${args.budgetUsd}` +
+        (args.dpi ? ` dpi=${args.dpi}` : ""),
+    );
     for (let page = first; page <= last; page++) {
       if (tracker.usd() >= args.budgetUsd) {
         console.error(`[budget] reached $${tracker.usd().toFixed(2)} — stopping at page ${page}`);
@@ -299,9 +328,12 @@ async function main(): Promise<void> {
       }
       visionPagesAttempted++;
       try {
+        const expectedZone = expectedZoneFromPage(pageTexts[page - 1] ?? "");
         const zn = await extractZonePageFromPdf(args.pdf, page, {
           source_url: args.sourceUrl,
           snapshot: args.snapshot,
+          ...(expectedZone ? { expectedZone } : {}),
+          ...(args.dpi ? { dpi: args.dpi } : {}),
           vision: tracker.call,
         });
         zones.push(zn);
@@ -328,7 +360,10 @@ async function main(): Promise<void> {
     // caller passes --first-page/--last-page to bound the annex. Default = all.
     const first = args.firstPage ?? 1;
     const last = Math.min(args.lastPage ?? pageCount, first - 1 + args.maxVisionPages, pageCount);
-    console.error(`[multizone] pdf pages=${pageCount} range=${first}..${last} budget=$${args.budgetUsd}`);
+    console.error(
+      `[multizone] pdf pages=${pageCount} range=${first}..${last} budget=$${args.budgetUsd}` +
+        (args.dpi ? ` dpi=${args.dpi}` : ""),
+    );
     const byZone = new Map<string, ZoneNormsT>();
     for (let page = first; page <= last; page++) {
       if (tracker.usd() >= args.budgetUsd) {
@@ -340,6 +375,7 @@ async function main(): Promise<void> {
         const pageZones = await extractMultiZonePageFromPdf(args.pdf, page, {
           source_url: args.sourceUrl,
           snapshot: args.snapshot,
+          ...(args.dpi ? { dpi: args.dpi } : {}),
           vision: tracker.call,
         });
         // A multi-zone grille often spans a USAGES feuillet + a NORMES feuillet for

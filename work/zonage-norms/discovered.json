@@ -1,24 +1,104 @@
 {
   "_note": "Candidate grille manifest discovered by grille-discovery-run.ts (reuses the PV crawler). Every sourceUrl was confirmed HTTP 200 + PDF at discovery time. route is a heuristic guess; zonage-norms-run.ts re-decides native|multizone|vision precisely. Same shape as munis.json.",
-  "_generatedAt": "2026-06-23T12:41:06.482Z",
+  "_generatedAt": "2026-06-24T03:42:31.770Z",
   "munis": [
     {
-      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "slug": "sainte-catherine-de-la-jacques-cartier",
       "route": "auto",
-      "sourceUrl": "http://sldg.ca/sldg/wp-content/uploads/2026/04/Grilles-des-usages-et-normes-par-zone.pdf",
-      "discoveredFrom": "https://saint-louis-de-gonzague.com/reglements-durbanisme",
-      "scoreClassif": 14,
-      "titre": "Annexe A &#8211; Grilles des usages et normes par zone",
-      "pages": 68
+      "sourceUrl": "https://www.villescjc.com/storage/app/media/reglements-municipaux/amenagement-et-urbanisme/1259-2014annexe-2-grilles-amendeescompet-notes1706-2026ev.pdf",
+      "discoveredFrom": "https://www.villescjc.com/reglementation-municipale",
+      "scoreClassif": 16,
+      "titre": "Grilles des spécifications (24 février 2026) Zonage - Annexe 2",
+      "pages": 165,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
     },
     {
-      "slug": "saint-alexis",
+      "slug": "montebello",
       "route": "auto",
-      "sourceUrl": "https://st-alexis.com/storage/app/media/municipalite/Urbanisme/2025-127_annexe_B_Grille_zonage_A.pdf",
-      "discoveredFrom": "https://st-alexis.com/services/urbanisme/reglementation-et-permis",
-      "scoreClassif": 6,
-      "titre": "2025-127_annexe_B_Grille_zonage_A.pdf",
-      "pages": 3
+      "sourceUrl": "https://www.montebello.ca/fichiersUpload/fichiers/20230224100224-grille-des-normes-20-09-2021.pdf",
+      "discoveredFrom": "https://www.montebello.ca/fr/services-municipaux/urbanisme/",
+      "scoreClassif": 13,
+      "titre": "Grille des normes de zonage",
+      "pages": 1,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
+    },
+    {
+      "slug": "melbourne",
+      "route": "auto",
+      "sourceUrl": "https://melbournecanton.ca/wp-content/uploads/2023/08/2008-02-Reglement-de-zonage_MAJ-2023-07-1.pdf",
+      "discoveredFrom": "https://melbournecanton.ca/reglements",
+      "scoreClassif": 8,
+      "titre": "2008-02 Règlement de zonage",
+      "pages": 183,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
+    },
+    {
+      "slug": "amherst",
+      "route": "multizone",
+      "sourceUrl": "https://municipalite.amherst.qc.ca/wp-content/uploads/2020/10/Grilles-usages-et-normes.pdf",
+      "discoveredFrom": "https://municipalite.amherst.qc.ca/urbanisme",
+      "scoreClassif": 9,
+      "titre": "Grilles des usages et des normes",
+      "pages": 24,
+      "first": 1,
+      "last": 24,
+      "grillePageCount": 19,
+      "locatorConfidence": 0.792,
+      "routeReason": "multizone: grille pages 1..24 (19 pages, multi-zone-per-page, conf=0.792)"
+    },
+    {
+      "slug": "richmond",
+      "route": "auto",
+      "sourceUrl": "https://www.richmond.quebec/wp-content/uploads/2024/11/Regl-336.pdf",
+      "discoveredFrom": "https://richmond.quebec/reglements-durbanisme-2/",
+      "scoreClassif": 20,
+      "titre": "Règlement 336 modifiant l'annexe V \"grille des spécifications des usages permis par zone\" du règlement de zonage no 108 afin d'intégrer l'usage \"services hôteliers illimités\" dans la zone C-1",
+      "pages": 2,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
+    },
+    {
+      "slug": "magog",
+      "route": "multizone",
+      "sourceUrl": "https://www.ville.magog.qc.ca/wp-content/uploads/2023/04/3458-2024-U-Zonage-lotissement-Annexe-B-3508-2025.pdf",
+      "discoveredFrom": "https://www.ville.magog.qc.ca/reglements",
+      "scoreClassif": 15,
+      "titre": "Annexe B &#8211; Grilles des usages et normes",
+      "pages": 708,
+      "first": 1,
+      "last": 707,
+      "grillePageCount": 354,
+      "locatorConfidence": 0.501,
+      "routeReason": "multizone: grille pages 1..707 (354 pages, multi-zone-per-page, conf=0.501)"
+    },
+    {
+      "slug": "lac-superieur",
+      "route": "auto",
+      "sourceUrl": "https://muni.lacsuperieur.qc.ca/wp-content/uploads/2023/10/2015-560-Plan-de-zonage-Annexe-A-m.a.j.-25-11-22.pdf",
+      "discoveredFrom": "https://muni.lacsuperieur.qc.ca/urbanisme",
+      "scoreClassif": 4,
+      "titre": "Règlement numéro 2015-560 (plan)",
+      "pages": 1,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
+    },
+    {
+      "slug": "notre-dame-de-la-paix",
+      "route": "auto",
+      "sourceUrl": "https://www.notredamedelapaix.qc.ca/wp-content/uploads/2018/08/R%C3%88GLEMENT-No-1007-PR2-CONCERNANT-LE-ZONAGE.pdf",
+      "discoveredFrom": "https://www.notredamedelapaix.qc.ca/publications/reglements/",
+      "scoreClassif": 8,
+      "titre": "file_download Règlement #1007 - Modifiant le règlement de zonage #224",
+      "pages": 2,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
+    },
+    {
+      "slug": "stanstead--memphremagog",
+      "route": "auto",
+      "sourceUrl": "https://stanstead.ca/wp-content/uploads/2023/12/2012-URB-02-Zonage-version-admin-21-12-2023-1.pdf",
+      "discoveredFrom": "https://stanstead.ca/reglements",
+      "scoreClassif": 8,
+      "titre": "Règlement de zonage 2012-URB-02",
+      "pages": 248,
+      "routeReason": "no native grille rows and no grille page located (image-only scan?) — left auto for investigation"
     }
   ]
 }
