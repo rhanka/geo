@@ -29,6 +29,10 @@
  *   --out PATH       manifest path (default work/zonage-norms/discovered.json)
  *   --download       download each confirmed PDF to work/zonage-norms/<slug>/grille.pdf
  *   --route-guess    probe the downloaded PDF text layer to set routeGuess (native|vision)
+ *   --max-eval N     with --download, max candidate PDFs to download+classify per
+ *                    muni before picking the best real grille (default 4). A
+ *                    plan/carte or règlement/amendement is REJECTED (never kept as
+ *                    a grille); among real grilles the most-grille-pages wins.
  *   --delay-ms N     politeness delay floor between page/PDF fetches (default 1500);
  *                    a longer robots.txt Crawl-delay overrides it per domain
  *   --threshold N    classifier acceptance threshold (default 4)
@@ -45,7 +49,8 @@
  * permissive (logged). Pass --no-robots only for local fixture replays.
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -67,6 +72,11 @@ import {
   locateGrillePages,
   type GrilleLocation,
 } from "../../packages/qc-sources/src/sources/grille-page-locator.js";
+import {
+  classifyGrillePdf,
+  gateGrilleCandidate,
+  type GrillePdfClass,
+} from "../../packages/qc-sources/src/sources/grille-pdf-classifier.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ACQ = resolve(HERE, ".."); // acquisition/
@@ -86,6 +96,7 @@ interface Args {
   timeoutMs: number;
   maxHops: number;
   maxSubpages: number;
+  maxEval: number;
   robots: boolean;
 }
 
@@ -111,6 +122,7 @@ function parseArgs(argv: string[]): Args {
     timeoutMs: Number(get("timeout-ms") ?? "15000"),
     maxHops,
     maxSubpages: Number(get("max-subpages") ?? "5"),
+    maxEval: Number(get("max-eval") ?? "4"),
     robots: !has("no-robots"),
   };
 }
@@ -129,6 +141,8 @@ interface ManifestMuni {
   discoveredFrom?: string;
   scoreClassif?: number;
   titre?: string;
+  /** Content classification of the downloaded PDF (grille|unknown; see classifier). */
+  classifKind?: string;
   /** Grille-locator diagnostics (provenance for the route/first/last decision). */
   grillePageCount?: number;
   locatorConfidence?: number;
@@ -235,8 +249,7 @@ function pdfToPageTexts(pdfPath: string): string[] | null {
  *      range: leave route="auto" with no bounds and flag it for investigation
  *      (anti-invention — the batch's idempotent skip keeps it from depositing junk).
  */
-function decideRoute(pdfPath: string, sourceUrl: string): RouteProbe {
-  const pages = pdfToPageTexts(pdfPath);
+function decideRouteFromPages(pages: string[] | null, sourceUrl: string): RouteProbe {
   if (pages === null) {
     return { route: "auto", reason: "pdftotext failed — leave auto for investigation" };
   }
@@ -283,6 +296,75 @@ function pdfPageCount(pdfPath: string): number | undefined {
   const r = spawnSync("pdfinfo", [pdfPath], { encoding: "utf8" });
   const m = r.stdout?.match(/Pages:\s+(\d+)/);
   return m?.[1] ? Number(m[1]) : undefined;
+}
+
+/** Extract per-page texts from in-memory PDF bytes via a throwaway temp file. */
+function pagesFromBytes(bytes: Uint8Array): string[] | null {
+  const tmp = join(tmpdir(), `grille-cand-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}.pdf`);
+  try {
+    writeFileSync(tmp, bytes);
+    return pdfToPageTexts(tmp);
+  } catch {
+    return null;
+  } finally {
+    try {
+      rmSync(tmp, { force: true });
+    } catch {
+      /* best-effort cleanup */
+    }
+  }
+}
+
+/** One kept (non-rejected) candidate, ranked for the per-muni pick. */
+interface ViableCandidate {
+  muni: ManifestMuni;
+  bytes?: Uint8Array;
+  /** gate priority (3=grille+bounded route … 0=unknown fallback). */
+  priority: number;
+  grillePages: number;
+  score: number;
+}
+
+/** Best-of comparison: priority, then grille-page count (leverage 3), then score. */
+function isBetterCandidate(a: ViableCandidate, b: ViableCandidate): boolean {
+  if (a.priority !== b.priority) return a.priority > b.priority;
+  if (a.grillePages !== b.grillePages) return a.grillePages > b.grillePages;
+  return a.score > b.score;
+}
+
+/**
+ * Set the muni's route from the route probe, RESCUING a confirmed grille whose
+ * probe stayed "auto" (the locator's strict "grille des …" title anchor missed it)
+ * to a BOUNDED route so the batch extracts the right pages instead of running
+ * whole-PDF vision: a transposed zone-code/numeric header sheet → multizone over
+ * the header pages; a one-zone-per-page vertical grille → single-zone vision over
+ * the grille span. Anti-invention: rescue ONLY fires for kind="grille" (a positive
+ * signature was found); an "unknown" keeps route="auto".
+ */
+function applyRoute(muni: ManifestMuni, probe: RouteProbe, cls: GrillePdfClass): void {
+  let route = probe.route;
+  let first = probe.first;
+  let last = probe.last;
+  let reason = probe.reason;
+  if (route === "auto" && cls.kind === "grille") {
+    if (cls.signals.zoneHeaderPages >= 1) {
+      route = "multizone";
+      first = cls.signals.firstZoneHeaderPage;
+      last = cls.signals.lastZoneHeaderPage;
+      reason = `rescue→multizone: ${cls.signals.zoneHeaderPages} zone-header pages ${first}..${last}`;
+    } else if (cls.signals.firstGrillePage >= 1) {
+      route = "vision";
+      first = cls.signals.firstGrillePage;
+      last = cls.signals.lastGrillePage;
+      reason = `rescue→vision: grille span ${first}..${last} (${cls.signals.grillePages} pages)`;
+    }
+  }
+  muni.route = route;
+  if (first !== undefined) muni.first = first;
+  if (last !== undefined) muni.last = last;
+  if (cls.signals.grillePages > 0) muni.grillePageCount = cls.signals.grillePages;
+  if (probe.confidence !== undefined) muni.locatorConfidence = probe.confidence;
+  muni.routeReason = reason;
 }
 
 // ── main ───────────────────────────────────────────────────────────────────────
@@ -358,9 +440,22 @@ async function main(): Promise<void> {
         ` (${candidatePagesForCity(city.pvIndexUrl).length} derived)`,
     );
 
-    // Confirm candidates best-score-first; keep the FIRST confirmed PDF per muni.
-    let picked: ManifestMuni | undefined;
+    // Confirm candidates best-score-first. With --download we GATE on the PDF
+    // *content*: a plan/carte (image-only) or a règlement/amendement is REJECTED
+    // (never kept as a grille — anti-invention), and among the real grilles we keep
+    // the highest-priority one (a bounded route and the most grille pages, the
+    // multi-page-grille preference). Without --download we cannot read the body, so
+    // we preserve the legacy behaviour (first confirmed candidate wins).
+    let best: ViableCandidate | undefined;
+    let evaluated = 0;
+    let rejected = 0;
+    const rejectKinds: string[] = [];
     for (const cand of result.candidates) {
+      // Stop once we hold an ideal grille (positive signature + bounded route) or
+      // we have spent the per-muni evaluation budget.
+      if (best && best.priority >= 3) break;
+      if (args.download && evaluated >= args.maxEval) break;
+
       // Robots gate the PDF fetch too (anti-fetch a Disallowed document).
       if (robots && !(await robots.isAllowed(cand.pdfUrl))) {
         console.error(`  [robots] skip ${cand.pdfUrl}`);
@@ -384,35 +479,61 @@ async function main(): Promise<void> {
         continue;
       }
       confirmed++;
-      console.error(`  [200] score=${cand.scoreClassif} ${cand.pdfUrl}`);
-      picked = buildMuni(cand);
 
-      if (args.download && conf.bytes) {
-        const dir = join(WORK_DIR, cand.slug);
-        if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-        const pdfPath = join(dir, "grille.pdf");
-        writeFileSync(pdfPath, conf.bytes);
-        const pages = pdfPageCount(pdfPath);
-        if (pages) picked.pages = pages;
-        if (args.routeGuess) {
-          const probe = decideRoute(pdfPath, cand.pdfUrl);
-          picked.route = probe.route;
-          if (probe.first !== undefined) picked.first = probe.first;
-          if (probe.last !== undefined) picked.last = probe.last;
-          if (probe.grillePageCount !== undefined) picked.grillePageCount = probe.grillePageCount;
-          if (probe.confidence !== undefined) picked.locatorConfidence = probe.confidence;
-          picked.routeReason = probe.reason;
-          console.error(`  [route] ${probe.reason}`);
-        }
+      // No body to inspect (no --download): legacy first-confirmed-wins.
+      if (!args.download || !conf.bytes) {
+        console.error(`  [200] score=${cand.scoreClassif} ${cand.pdfUrl}`);
+        best = { muni: buildMuni(cand), priority: 0, grillePages: 0, score: cand.scoreClassif };
+        break;
       }
-      break; // first confirmed candidate per muni is enough for the manifest
+
+      evaluated++;
+      const pages = pagesFromBytes(conf.bytes);
+      const cls = classifyGrillePdf(pages ?? []);
+      const probe = decideRouteFromPages(pages, cand.pdfUrl);
+      const gate = gateGrilleCandidate(cls, probe.route !== "auto");
+      console.error(
+        `  [200] score=${cand.scoreClassif} kind=${cls.kind} grillePages=${cls.signals.grillePages} route=${probe.route} ${cand.pdfUrl}`,
+      );
+      if (!gate.keep) {
+        rejected++;
+        rejectKinds.push(cls.kind);
+        console.error(`  [reject] ${gate.reason}`);
+        continue;
+      }
+
+      const muni = buildMuni(cand);
+      muni.classifKind = cls.kind;
+      applyRoute(muni, probe, cls);
+      const viable: ViableCandidate = {
+        muni,
+        bytes: conf.bytes,
+        priority: gate.priority,
+        grillePages: cls.signals.grillePages,
+        score: cand.scoreClassif,
+      };
+      if (!best || isBetterCandidate(viable, best)) best = viable;
     }
 
-    if (picked) {
-      munis.push(picked);
+    if (best) {
+      if (args.download && best.bytes) {
+        const dir = join(WORK_DIR, best.muni.slug);
+        if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+        const pdfPath = join(dir, "grille.pdf");
+        writeFileSync(pdfPath, best.bytes);
+        const pages = pdfPageCount(pdfPath);
+        if (pages) best.muni.pages = pages;
+        if (best.muni.routeReason) console.error(`  [route] ${best.muni.routeReason}`);
+      }
+      munis.push(best.muni);
       cityHits++;
     } else {
-      console.error(`  no confirmed grille PDF`);
+      console.error(
+        `  no confirmed grille PDF` +
+          (rejected > 0
+            ? ` (rejected ${rejected} non-grille: ${[...new Set(rejectKinds)].join(",")})`
+            : ""),
+      );
     }
   }
 
