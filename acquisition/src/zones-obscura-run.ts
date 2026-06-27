@@ -120,7 +120,8 @@ interface SlugResult {
 }
 
 // ── Args ──────────────────────────────────────────────────────────────────────
-interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; outFile?: string }
+interface GonetSeed { slug: string; code: string }
+interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; gonetSeeds: GonetSeed[]; outFile?: string }
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string) => argv.includes(`--${k}`);
@@ -135,6 +136,9 @@ function parseArgs(argv: string[]): Args {
     // ArcGIS hosted-org id (--org) or explicit FeatureServer URL (--service).
     services: csv("service"),
     orgs: csv("org"),
+    // GoNet-seeded mode (discover-once-deposit-many): skip the site crawl and go
+    // straight to the GOnet6 viewer for a known municode. Format: slug=municode.
+    gonetSeeds: csv("gonet").map((pair) => { const [slug, code] = pair.split("="); return { slug: (slug ?? "").trim(), code: (code ?? "").trim() }; }).filter((s) => s.slug && /^\d{4,5}$/.test(s.code)),
     ...(get("out") ? { outFile: get("out") } : {}),
   };
 }
@@ -255,6 +259,51 @@ class Browser {
       this.sink = null;
       if (targetId) { try { await this.send("Target.closeTarget", { targetId }); } catch { /* ignore */ } }
     }
+  }
+
+  /**
+   * Open a tab on `url`, let it render `navMs`, and KEEP the target open so the
+   * authenticated page session (cookies, JS state) can be reused for in-page
+   * `fetch` calls (GoNet's MapServer is reachable only through its in-session
+   * resource proxy). Returns the session id, target id, and the request URLs
+   * captured during load. Caller MUST `closeSession(targetId)` when done.
+   */
+  async openSession(url: string, navMs: number): Promise<{ sid: string; targetId: string; requests: string[] }> {
+    const requests: string[] = [];
+    this.sink = requests;
+    const created = (await this.send("Target.createTarget", { url: "about:blank" })).result as { targetId: string };
+    const targetId = created.targetId;
+    const attached = (await this.send("Target.attachToTarget", { targetId, flatten: true })).result as { sessionId: string };
+    const sid = attached.sessionId;
+    await this.send("Network.setUserAgentOverride", { userAgent: REAL_UA }, sid);
+    await this.send("Network.enable", {}, sid);
+    await this.send("Page.enable", {}, sid);
+    await this.send("Page.navigate", { url }, sid);
+    await sleep(navMs);
+    this.sink = null; // snapshot taken; stop capturing (in-page fetches are not leads)
+    return { sid, targetId, requests };
+  }
+
+  /**
+   * Evaluate an async JS expression in a kept-open session; returns the resolved
+   * value as a string. A CDP-level race timeout guarantees the call can never
+   * hang the run if the page promise never settles.
+   */
+  async evalAsync(sid: string, expr: string, timeoutMs = 30_000): Promise<string | null> {
+    try {
+      const evalP = this.send("Runtime.evaluate", { expression: expr, awaitPromise: true, returnByValue: true }, sid);
+      const timed = await Promise.race([
+        evalP.then((r) => ({ ok: true as const, r })),
+        sleep(timeoutMs).then(() => ({ ok: false as const })),
+      ]);
+      if (!timed.ok) return null;
+      const r = timed.r.result as { result?: { value?: string } };
+      return r?.result?.value ?? null;
+    } catch { return null; }
+  }
+
+  async closeSession(targetId: string): Promise<void> {
+    try { await this.send("Target.closeTarget", { targetId }); } catch { /* ignore */ }
   }
 
   close(): void {
@@ -450,12 +499,179 @@ async function fetchFeatures(layerUrl: string, outFields: string, where: string)
   return features;
 }
 
-function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string): GeoFeature[] {
+function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
   return features.map((f) => {
     const raw = f.properties?.[zoneField];
     const zone = raw !== null && raw !== undefined && String(raw).trim() !== "" ? String(raw).trim() : null;
-    return { type: "Feature", geometry: f.geometry, properties: { zone_code: zone, kind: null, affectation: null, num_zone: null, source: serviceUrl, confidence: "obscura-zone-vector" } };
+    return { type: "Feature", geometry: f.geometry, properties: { zone_code: zone, kind: null, affectation: null, num_zone: null, source: serviceUrl, confidence } };
   });
+}
+
+// ── GoNet / GoAzimut (PG Solutions GOnet6) ────────────────────────────────────
+// Le viewer `goazimut.com/GOnet6/?m=<municode>` ouvre une SESSION publique
+// (validateUser mode=FORCE_PUBLIC + reCAPTCHA invisible v3 — passe en headless),
+// puis charge une couche ArcGIS **MapServer** par-muni servie UNIQUEMENT via un
+// proxy authentifié `container/resource-proxy/proxy.jsp?<url>`. La couche de
+// zonage réglementaire est nommée "Zonage municipal" (préfixes GoNet GROUP-/NLIST-
+// possibles) et porte un champ zone_code réel (ex. `Code`, `zonage`, `No_zone`).
+// On rend le viewer pour établir la session, on liste les couches du MapServer
+// in-page (cookies/Referer auto), on sélectionne la couche zonage, on la
+// télécharge en GeoJSON WGS84 et on dépose — anti-invention identique à l'ArcGIS.
+interface GoNetLayer { id: number; name: string; geometryType?: string }
+
+const GONET_PROXY_DEFAULT = "https://www.goazimut.com/container/resource-proxy/proxy.jsp?";
+// "Zonage municipal" — pas "Zone verte/inondable/agricole" (zonage agricole CPTAQ),
+// pas "Affectation" (grande affectation du SAD), pas labels/annotations.
+const GONET_ZONAGE_NAME_RE = /zonage/i;
+const GONET_ZONAGE_EXCLUDE_RE = /\b(?:verte?|inondab\w*|agricole|affectat\w*|humide|glissement|emb[âa]cle|conservation|protection|patrimo\w*|hydro\w*|érosion|erosion)\b/i;
+
+function stripGonetPrefix(name: string): string {
+  return name.replace(/^(?:GROUP|NLIST|LABEL|HIDDEN|SIG)-\s*/i, "").trim();
+}
+function isGonetZonageLayer(l: GoNetLayer): boolean {
+  if (!/Polygon/i.test(l.geometryType ?? "")) return false;
+  if (/^(?:LABEL|HIDDEN)-/i.test(l.name)) return false; // annotations / helpers
+  const clean = stripGonetPrefix(l.name);
+  return GONET_ZONAGE_NAME_RE.test(clean) && !GONET_ZONAGE_EXCLUDE_RE.test(clean);
+}
+
+/** Pick the zone_code field of a (confirmed) GoNet zonage layer. */
+function pickGonetZoneField(fields: FieldInfo[]): string | null {
+  const usable = fields.filter((f) =>
+    /string/i.test(f.type) &&
+    !AFFECTATION_FIELD_PATTERNS.some((p) => p.test(f.name)) &&
+    !/^shape|shape_|^objectid|^producteur$|^matricule$|^nommuni$|^nom_?mrc$/i.test(f.name));
+  for (const f of usable) if (ZONE_CODE_FIELD_PATTERNS.some((p) => p.test(f.name))) return f.name; // zonage/no_zone/…
+  for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zone/i.test(f.name)) return f.name; // ex. `Code`
+  return usable[0]?.name ?? null; // layer already confirmed "Zonage municipal"
+}
+
+/** Canonical GOnet6 viewer URL from any captured goazimut lead carrying a municode. */
+function gonetViewerUrl(goazimut: Iterable<string>): string | null {
+  for (const u of goazimut) {
+    const m = u.match(/[?&]m=(\d{4,5})\b/);
+    if (m) return `https://www.goazimut.com/GOnet6/?m=${m[1]}&pl=1`;
+  }
+  return null;
+}
+function gonetProxyBase(requests: string[]): string {
+  for (const u of requests) { const m = u.match(/^(https?:\/\/[^?]*\/proxy\.jsp)\?/i); if (m) return `${m[1]}?`; }
+  return GONET_PROXY_DEFAULT;
+}
+function gonetMapServerBase(requests: string[]): string | null {
+  for (const u of requests) { const m = u.match(/proxy\.jsp\?(https?:\/\/[^?\s"'<>]*?\/MapServer)/i); if (m) return m[1]; }
+  return null;
+}
+/** Build a CDP-evaluable async fetch (self-aborting after 25s) returning response body text. */
+function fetchTextExpr(url: string): string {
+  return `(async()=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),25000);try{const r=await fetch(${JSON.stringify(url)},{signal:c.signal});return await r.text();}catch(e){return "__ERR__"+((e&&e.message)||e);}finally{clearTimeout(t);}})()`;
+}
+function parseJsonOrNull<T = Record<string, unknown>>(txt: string | null): T | null {
+  if (!txt || txt.startsWith("__ERR__")) return null;
+  try { return JSON.parse(txt) as T; } catch { return null; }
+}
+
+/** Download every feature of a GoNet MapServer layer via the in-session proxy (OID keyset paging). */
+async function gonetFetchFeatures(
+  browser: Browser, sid: string, proxy: string, mapBase: string, id: number, zoneField: string, oidField: string,
+): Promise<GeoFeature[]> {
+  const features: GeoFeature[] = [];
+  let lastOid = -1;
+  const batch = 1000;
+  while (features.length < MAX_FEATURES) {
+    const where = encodeURIComponent(`${oidField}>${lastOid}`);
+    const of = encodeURIComponent(`${zoneField},${oidField}`);
+    const url = `${proxy}${mapBase}/${id}/query?where=${where}&outFields=${of}&orderByFields=${encodeURIComponent(oidField)}` +
+      `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=${batch}&f=geojson`;
+    const fc = parseJsonOrNull<GeoFC & { features?: Array<GeoFeature & { id?: number }> }>(await browser.evalAsync(sid, fetchTextExpr(url)));
+    if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) break;
+    features.push(...fc.features);
+    let maxOid = lastOid;
+    for (const f of fc.features) {
+      const oid = Number((f as { id?: number }).id ?? (f.properties?.[oidField] as number | undefined));
+      if (Number.isFinite(oid) && oid > maxOid) maxOid = oid;
+    }
+    if (maxOid <= lastOid || fc.features.length < batch) break; // last page (or no OID progress)
+    lastOid = maxOid;
+    await sleep(120);
+  }
+  return features;
+}
+
+/**
+ * Extract + validate + deposit the GoNet "Zonage municipal" layer for `slug`.
+ * Returns a terminal SlugResult (deposited / no-zonage-layer / spatial-fail).
+ */
+async function processGonetZonage(
+  slug: string, muni: MuniEntry | undefined, viewerUrl: string,
+  browser: Browser, s3: S3Client | null, args: Args, base: SlugResult,
+): Promise<SlugResult> {
+  const session = await browser.openSession(viewerUrl, args.navMs + 8_000);
+  try {
+    const mapBase = gonetMapServerBase(session.requests);
+    if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
+    const proxy = gonetProxyBase(session.requests);
+
+    const info = parseJsonOrNull<{ layers?: GoNetLayer[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/?f=json`)));
+    const layers = info?.layers ?? [];
+    if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
+    const candidates = layers.filter(isGonetZonageLayer);
+    if (candidates.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
+
+    // Among zonage-named polygon layers, keep the one with a usable zone field AND
+    // the most features (scale variants are duplicated; one may be empty).
+    let best: { id: number; name: string; zoneField: string; oidField: string; count: number } | null = null;
+    for (const c of candidates.slice(0, 8)) {
+      const li = parseJsonOrNull<{ fields?: FieldInfo[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}?f=json`)));
+      const fields = li?.fields ?? [];
+      const zoneField = pickGonetZoneField(fields);
+      if (!zoneField) continue;
+      const oidField = fields.find((f) => /OID/i.test(f.type))?.name ?? "OBJECTID";
+      const cnt = parseJsonOrNull<{ count?: number }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}/query?where=1%3D1&returnCountOnly=true&f=json`)));
+      const count = cnt?.count ?? 0;
+      if (count <= 0) continue;
+      if (!best || count > best.count) best = { id: c.id, name: stripGonetPrefix(c.name), zoneField, oidField, count };
+    }
+    if (!best) return { ...base, status: "no-zonage-layer", detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
+
+    const layerUrl = `${mapBase}/${best.id}`;
+    const raw = await gonetFetchFeatures(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.oidField);
+    if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    const norm = normalize(raw, best.zoneField, layerUrl, "obscura-gonet-vector");
+
+    // Spatial gate (projection-free): the WGS84 features' bbox centre must sit near
+    // the registry centroid — catches a wrong-muni MapServer or off-QC data.
+    let distanceKm: number | undefined;
+    if (muni) {
+      let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity, n = 0;
+      for (const f of norm) for (const [x, y] of positionsOf(f.geometry?.coordinates)) {
+        if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+        if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y; n++;
+      }
+      if (n > 0) {
+        distanceKm = haversineKm(muni.lat, muni.lon, (miny + maxy) / 2, (minx + maxx) / 2);
+        if (distanceKm > Math.max(args.spatialKm, 35)) return { ...base, status: "spatial-fail", detail: `gonet spatial KO: features à ${distanceKm.toFixed(0)}km du centroïde (${layerUrl})` };
+      }
+    }
+
+    const nonNull = norm.filter((f) => f.properties.zone_code !== null).length;
+    if (nonNull / norm.length < 0.5) return { ...base, status: "no-zonage-layer", detail: `gonet couche ${best.name}: zone_code null>50% — rejet` };
+
+    base.zonageLayerUrl = layerUrl;
+    base.zoneCodeField = best.zoneField;
+    base.featureCount = norm.length;
+    if (distanceKm !== undefined) base.distanceKm = distanceKm;
+
+    if (args.deposit && s3) {
+      const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
+      const fc: GeoFC = { type: "FeatureCollection", features: norm };
+      await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
+      return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
+    }
+    return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${best.zoneField}) via GoNet ${layerUrl}` };
+  } finally {
+    await browser.closeSession(session.targetId);
+  }
 }
 
 // ── Traitement d'une ville ────────────────────────────────────────────────────
@@ -510,6 +726,22 @@ async function processCity(slug: string, muni: MuniEntry | undefined, browser: B
   if (platforms.length === 0) platforms.push("none");
   base.platforms = platforms;
   base.viewerUrls = [...new Set(viewerUrls)].slice(0, 4);
+
+  // 2b) GoNet/GoAzimut (PG Solutions GOnet6): zonage = ArcGIS MapServer servi via
+  //     un proxy in-session. Rend le viewer, interroge la couche "Zonage municipal"
+  //     in-page, dépose. Terminal si dépôt ; sinon on retombe sur l'ArcGIS si présent.
+  if (platforms.includes("goazimut")) {
+    const viewer = gonetViewerUrl(lead.goazimut);
+    dbg(`gonet viewer=${viewer ?? "n/a"}`);
+    if (viewer) {
+      const g = await processGonetZonage(slug, muni, viewer, browser, s3, args, base);
+      if (g.deposited || g.status === "deposited") return g;
+      if (!platforms.includes("arcgis")) return g; // gonet-only → classement gonet terminal
+      base.detail = g.detail; // garde la note gonet si l'ArcGIS échoue aussi
+    } else if (!platforms.includes("arcgis")) {
+      return { ...base, status: "no-zonage-layer", detail: "goazimut détecté mais aucun municode GOnet capté" };
+    }
+  }
 
   // 3) Resolve ArcGIS leads → candidate zonage layers.
   const orgs = new Set<string>(lead.arcgisOrgs);
@@ -638,11 +870,11 @@ async function processCityFromSeed(
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  if (args.slugs.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS]"); process.exit(2); }
+  if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS]  |  --gonet slug=municode,..."); process.exit(2); }
 
   const chrome = resolveChrome();
   if (!chrome) { console.error("[obscura] AUCUN binaire Chromium — abandon"); process.exit(1); }
-  console.error(`[obscura] chromium=${chrome} slugs=${args.slugs.length} deposit=${args.deposit}`);
+  console.error(`[obscura] chromium=${chrome} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} deposit=${args.deposit}`);
 
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
@@ -650,8 +882,26 @@ async function main(): Promise<void> {
   const seeded = args.services.length > 0 || args.orgs.length > 0;
 
   const results: SlugResult[] = [];
-  // Org-seeded mode skips Chromium entirely (discover-once-deposit-many).
-  if (seeded) {
+  // GoNet-seeded mode: needs Chromium (the GOnet6 zonage MapServer is reachable
+  // only via the viewer's in-session proxy) but skips the municipal-site crawl.
+  if (args.gonetSeeds.length > 0) {
+    console.error(`[obscura] GONET-SEEDED mode pairs=${args.gonetSeeds.map((s) => `${s.slug}=${s.code}`).join(",")}`);
+    const browser = await Browser.launch(chrome);
+    try {
+      for (let i = 0; i < args.gonetSeeds.length; i++) {
+        const { slug, code } = args.gonetSeeds[i]!;
+        const viewer = `https://www.goazimut.com/GOnet6/?m=${code}&pl=1`;
+        const seedBase: SlugResult = { slug, site: websiteForSlug(slug) ?? null, platforms: ["goazimut"], viewerUrls: [viewer], deposited: false, status: "no-zonage-layer", detail: "" };
+        let r: SlugResult;
+        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, s3, args, seedBase); }
+        catch (e) { r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+        results.push(r);
+        console.error(`[${i + 1}/${args.gonetSeeds.length}] ${r.status.padEnd(18)} ${slug} (m=${code}) :: ${r.detail}`);
+      }
+    } finally {
+      browser.close();
+    }
+  } else if (seeded) {
     console.error(`[obscura] SEEDED mode services=[${args.services.join(",")}] orgs=[${args.orgs.join(",")}]`);
     for (let i = 0; i < args.slugs.length; i++) {
       const slug = args.slugs[i]!;
