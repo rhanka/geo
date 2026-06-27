@@ -18,16 +18,21 @@
  */
 
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { websiteForSlug } from "../../packages/geo-sources-americas/dist/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { ALL_PV_CITIES, PV_USER_AGENT, type PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import type { RawDocumentRef } from "../../packages/qc-sources/src/SourceAdapter.js";
 import { s3Client, exists, putBytes } from "./lib/s3.js";
 
 // ── Config ───────────────────────────────────────────────────────────────────
 
-const COVERAGE_MATRIX_PATH = "/home/antoinefa/src/geo/work/coverage/coverage-matrix.json";
+// Repo-relative (resolved from this module's location, cwd-independent).
+const COVERAGE_MATRIX_PATH = resolve(
+  dirname(fileURLToPath(import.meta.url)), // acquisition/src
+  "../../work/coverage/coverage-matrix.json",
+);
 const TIMEOUT_MS = 12_000;
 const ROBOTS_TIMEOUT_MS = 5_000;
 const DEFAULT_DELAY_MS = 2_000;

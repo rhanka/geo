@@ -12,17 +12,21 @@
  *   registry/qc-pv/<slug>/index.json
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { websiteForSlug } from "../../packages/geo-sources-americas/dist/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { parsePvIndex, type PvIndexItemT } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
 import { PV_USER_AGENT, type PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import { RobotsCache } from "../../packages/qc-sources/src/sources/robots-txt.js";
 
 import { exists, putBytes, s3Client } from "./lib/s3.js";
 
-const COVERAGE_MATRIX_PATH = "work/coverage/coverage-matrix.json";
-const COVERAGE_MATRIX_FALLBACK_PATH = "../work/coverage/coverage-matrix.json";
+// Repo-relative (resolved from this module's location, cwd-independent).
+const COVERAGE_MATRIX_PATH = resolve(
+  dirname(fileURLToPath(import.meta.url)), // acquisition/src
+  "../../work/coverage/coverage-matrix.json",
+);
 const DEFAULT_DELAY_MS = 1500;
 const DEFAULT_TIMEOUT_MS = 12000;
 const DEFAULT_CITY_TIMEOUT_MS = 45000;
@@ -425,11 +429,8 @@ function addDefaultPvPaths(siteUrl: string, urls: Set<string>): void {
 
 function selectSlugs(args: Args): string[] {
   if (args.slugs && args.slugs.length > 0) return args.slugs;
-  const matrixPath = existsSync(COVERAGE_MATRIX_PATH)
-    ? COVERAGE_MATRIX_PATH
-    : resolve(COVERAGE_MATRIX_FALLBACK_PATH);
-  const raw = existsSync(matrixPath)
-    ? (JSON.parse(readFileSync(matrixPath, "utf8")) as CoverageMatrix)
+  const raw = existsSync(COVERAGE_MATRIX_PATH)
+    ? (JSON.parse(readFileSync(COVERAGE_MATRIX_PATH, "utf8")) as CoverageMatrix)
     : {};
   const statuses = new Set(args.statuses);
   const slugs = Object.entries(raw.cities ?? {})
@@ -674,7 +675,7 @@ export async function runPvGoNet(argv: string[]): Promise<ReturnType<typeof summ
       console.error(`${outcome.outcome.toUpperCase()} [${i + 1}/${slugs.length}] ${slug}${count}${index}${reason}`);
     } catch (e) {
       const reason = e instanceof Error ? e.message : String(e);
-      outcomes.push({ slug, siteUrl: websiteForSlug(slug), goNetLinks: [], outcome: "error", reason });
+      outcomes.push({ slug, siteUrl: websiteForSlug(slug) ?? null, goNetLinks: [], outcome: "error", reason });
       console.error(`ERROR [${i + 1}/${slugs.length}] ${slug}: ${reason}`);
     }
   }

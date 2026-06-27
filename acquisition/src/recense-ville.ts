@@ -20,12 +20,14 @@
  */
 
 import { readFileSync, existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   recensePlatformForCity,
   type PlatformDetectionResult,
   type CityNotInDirectoryResult,
 } from "../../packages/geo/dist/catalog/recense-platform.js";
-import { websiteForSlug } from "../../packages/geo-sources-americas/dist/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { ALL_PV_CITIES } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import {
   COVERAGE_LAYERS,
@@ -37,9 +39,10 @@ import { type CoverageMatrix, setCell } from "./coverage-matrix.js";
 
 type DetectedPlatform = PlatformDetectionResult["platform"];
 
-const AUDIT_ZONAGE =
-  "/home/antoinefa/src/geo/work/immo-audit/zonage-resolution.json";
-const NORMS_MUNIS = "/home/antoinefa/src/geo/work/zonage-norms/munis.json";
+// Repo-relative (resolved from this module's location, cwd-independent).
+const HERE = dirname(fileURLToPath(import.meta.url)); // acquisition/src
+const AUDIT_ZONAGE = resolve(HERE, "../../work/immo-audit/zonage-resolution.json");
+const NORMS_MUNIS = resolve(HERE, "../../work/zonage-norms/munis.json");
 
 /** Résultat du recensement d'une couche pour une ville. */
 export interface LayerRecensement {
