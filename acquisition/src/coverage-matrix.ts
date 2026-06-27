@@ -12,7 +12,8 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   COVERAGE_LAYERS,
   type CoverageLayer,
@@ -57,8 +58,11 @@ export interface RegistryMuni {
 
 const MUNICIPALITIES = municipalitiesRaw as readonly RegistryMuni[];
 
-export const MATRIX_PATH =
-  "/home/antoinefa/src/geo/work/coverage/coverage-matrix.json";
+// Repo-relative (resolved from this module's location, cwd-independent).
+export const MATRIX_PATH = resolve(
+  dirname(fileURLToPath(import.meta.url)), // acquisition/src
+  "../../work/coverage/coverage-matrix.json",
+);
 
 /** Les 1106 municipalités cibles (slug + name + mrc). */
 export function allMunicipalities(): readonly RegistryMuni[] {

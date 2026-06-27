@@ -14,6 +14,8 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
 // ── S3 import via CommonJS fallback ──────────────────────────────────────────
 import { s3Client, putBytes, BUCKET } from "./lib/s3.js";
@@ -70,9 +72,11 @@ interface GeoFeatureCollection {
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 
-const MATRIX_PATH = "/home/antoinefa/src/geo/work/coverage/coverage-matrix.json";
-const MUNIS_PATH = "/home/antoinefa/src/geo/packages/qc-sources/src/geo/municipalities.qc.json";
-const DIRECTORY_PATH = "/home/antoinefa/src/geo/packages/geo-sources-americas/dist/ca-qc/municipalities/municipal-directory.qc.json";
+// Repo-relative paths (resolved from this module's location, cwd-independent).
+const HERE = dirname(fileURLToPath(import.meta.url)); // acquisition/src
+const MATRIX_PATH = resolve(HERE, "../../work/coverage/coverage-matrix.json");
+const MUNIS_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
+const DIRECTORY_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/qc-municipal-directory.json");
 
 const TIMEOUT_MS = 5_000;
 const USER_AGENT = "sentropic-geo/0.1";
