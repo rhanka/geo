@@ -11,7 +11,8 @@
  */
 
 import { writeFileSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   COVERAGE_LAYERS,
   COVERAGE_TRACKS,
@@ -24,8 +25,11 @@ import {
   MATRIX_PATH,
 } from "./coverage-matrix.js";
 
-export const REPORT_PATH =
-  "/home/antoinefa/src/geo/work/coverage/TRACK-REPORT.md";
+// Repo-relative (resolved from this module's location, cwd-independent).
+export const REPORT_PATH = resolve(
+  dirname(fileURLToPath(import.meta.url)), // acquisition/src
+  "../../work/coverage/TRACK-REPORT.md",
+);
 
 /** Comptes agrégés d'une couche. */
 export interface LayerRollup {
