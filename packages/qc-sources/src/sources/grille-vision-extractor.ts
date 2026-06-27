@@ -450,6 +450,30 @@ export function parseVisionContent(content: string): VisionRawExtraction {
 //  Guards: per-field concordance + semantic type-check + plausibility → NormField.
 // ───────────────────────────────────────────────────────────────────────────
 
+/**
+ * Canonicalise a zone CODE for cross-pass concordance (NOT for display — we keep
+ * the verbatim form for that). Two faithful reads of the SAME zone box can differ
+ * in surface form between the two independent passes: a leading "ZONE" label, the
+ * "(Plan général)" suffix, or a space/dash/long-dash between the letters and the
+ * number ("A-2" / "A 2" / "Zone A-2" / "A–2"). We strip those so the two reads
+ * concord, while two reads of a GENUINELY different code ("A-2" / "A-3") stay
+ * distinct → divergence → refuse (anti-invention preserved). Returns null for an
+ * empty/absent code (so two null reads do NOT spuriously "agree" on a code).
+ */
+export function canonZoneCode(s: string | null | undefined): string | null {
+  if (s === null || s === undefined) return null;
+  const c = s
+    .toUpperCase()
+    .replace(/\bZONE\b/g, " ")
+    .replace(/\(\s*PLAN\s+G[ÉE]N[ÉE]RAL\s*\)/g, " ")
+    .replace(/[–—]/g, "-")
+    .replace(/\s*-\s*/g, "-")
+    .replace(/([A-Z])\s+(\d)/g, "$1-$2")
+    .replace(/\s+/g, "")
+    .trim();
+  return c.length > 0 ? c : null;
+}
+
 /** Normalise a verbatim cell for textual (glyph-level) comparison. */
 function canonRaw(s: string | null | undefined): string {
   if (s === null || s === undefined) return "∅";
@@ -617,8 +641,13 @@ export async function extractZonePageFromImage(
 
   // Zone code: trust it only if BOTH passes agree (and, when provided, it matches
   // the expected zone). Otherwise fall back to the expected zone, or refuse.
+  // Concordance is on the CANONICAL code (canonZoneCode), not glyph-level, so a
+  // "Zone A-2" / "A 2" / "A-2" surface difference between the two passes still
+  // concords while a genuinely different code refuses — we keep pass A's verbatim
+  // form for display.
+  const zoneCanonA = canonZoneCode(passA.zone_code);
   const zoneConcord =
-    passA.zone_code !== null && canonRaw(passA.zone_code) === canonRaw(passB.zone_code)
+    zoneCanonA !== null && zoneCanonA === canonZoneCode(passB.zone_code)
       ? passA.zone_code
       : null;
   const zoneCode = zoneConcord ?? opts.expectedZone ?? null;
