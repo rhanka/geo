@@ -79,6 +79,26 @@ const USER_AGENT = "sentropic-geo/0.1";
 const S3_PREFIX = "normalized/ca-qc-zonage/";
 const MAX_FEATURES_FETCH = 5000; // limite max features ArcGIS
 
+interface Args {
+  slugs?: string[];
+  limit: number;
+  noMatrixUpdate: boolean;
+}
+
+function parseArgs(argv: string[]): Args {
+  const get = (k: string): string | undefined => {
+    const i = argv.indexOf(`--${k}`);
+    return i >= 0 ? argv[i + 1] : undefined;
+  };
+  const has = (k: string): boolean => argv.includes(`--${k}`);
+  const slugsRaw = get("slugs");
+  return {
+    ...(slugsRaw ? { slugs: slugsRaw.split(",").map((s) => s.trim()).filter(Boolean) } : {}),
+    limit: Number(get("limit") ?? "100"),
+    noMatrixUpdate: has("no-matrix-update"),
+  };
+}
+
 // Patterns de noms de service/layer pour le ZONAGE (pas affectation seule)
 const ZONAGE_SERVICE_PATTERNS = [
   /\bzonage\b/i,
@@ -870,6 +890,7 @@ function updateMatrix(
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  const args = parseArgs(process.argv.slice(2));
   console.error("[agol-mono-muni-detect] Démarrage");
 
   // Charge les données
@@ -877,16 +898,19 @@ async function main(): Promise<void> {
   const munis: Array<{slug: string; name: string; lat: number; lon: number}> = JSON.parse(
     readFileSync(MUNIS_PATH, "utf8")
   );
-  const directoryData = JSON.parse(readFileSync(DIRECTORY_PATH, "utf8"));
+  const directoryData = existsSync(DIRECTORY_PATH)
+    ? JSON.parse(readFileSync(DIRECTORY_PATH, "utf8"))
+    : { entries: {} };
   const directoryEntries = directoryData.entries as Record<string, {website?: string}>;
 
-  // Sélectionne les 100 premières cibles (skip celles déjà traitées par ce script)
-  const citySlugOrder = Object.keys(matrixData.cities);
+  // Sélectionne les cibles, soit explicitement par --slugs (mode shard), soit
+  // les N premières cibles AGOL encore to-research (mode historique).
+  const citySlugOrder = args.slugs ?? Object.keys(matrixData.cities);
   const targets: TargetCity[] = [];
   let skippedAlreadyDone = 0;
   let originalTargetCount = 0;
   for (const slug of citySlugOrder) {
-    if (originalTargetCount >= 100) break;
+    if (!args.slugs && originalTargetCount >= args.limit) break;
     const cell = matrixData.cities[slug];
     if (!cell.zones) continue;
     // Compte comme cible originale si c'était un agol-account to-research
@@ -946,8 +970,10 @@ async function main(): Promise<void> {
       errors++;
     }
 
-    // Mise à jour matrice après chaque ville
-    if (result.status !== "error") {
+    // Mise à jour matrice après chaque ville. En mode flotte parallèle,
+    // --no-matrix-update évite les écritures concurrentes/racy; S3 reste la
+    // source de vérité et coverage-reconcile réconciliera ensuite.
+    if (!args.noMatrixUpdate && result.status !== "error") {
       updateMatrix(MATRIX_PATH, city.slug, result);
     }
 
