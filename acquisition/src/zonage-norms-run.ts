@@ -165,6 +165,47 @@ interface RouteDecision {
 }
 
 /**
+ * Detect a multi-zone HORIZONTAL grille page: zones are COLUMN headers and the
+ * norms run DOWN as rows (e.g. Compton "Grille des normes relatives à
+ * l'implantation…" with a `H1 H2 … H10` header row, or "Grille de zonage" sheets
+ * with `Co-01 Co-02 …` columns).
+ *
+ * WHY THIS MATTERS (the bug this fixes): these pages look NOTHING like the
+ * Sherbrooke native anchors, so `isGrillePage` rejects them (0 native rows), AND
+ * they carry no "grille des spécifications" marker — so today they fall through to
+ * the SINGLE-zone vision route, which cannot pick one of N column-zones and fails
+ * `no-zone` on EVERY page (observed: Compton 39 pages → 0 zones). The multi-zone
+ * extractor reads zones-in-columns and recovers them.
+ *
+ * ANTI-INVENTION: this only changes the ROUTE. The multi-zone extractor keeps the
+ * exact same 2-pass concordance + semantic + plausibility guards, so no value is
+ * fabricated — a non-grille page still yields 0 concordant zones.
+ *
+ * Signal (both required, to avoid matching prose like "…dans la zone H-14…"):
+ *   1. a grille TITLE ("grille des normes|usages|spécifications" / "grille de
+ *      zonage"), AND
+ *   2. at least one tabular HEADER ROW carrying ≥3 zone-code-like tokens separated
+ *      by column whitespace (2+ spaces) — e.g. "H1   H2   H3 …".
+ */
+function isMultiZoneHorizontalPage(text: string): boolean {
+  const hasGrilleTitle =
+    /grille\s+des?\s+(?:normes|usages|sp[ée]cifications)/i.test(text) ||
+    /grille\s+de\s+zonage/i.test(text);
+  if (!hasGrilleTitle) return false;
+  // A zone-code token: letters then digits, optionally separated/suffixed by a
+  // single dash or dot (H1, H10, Ra-1, Co-01, AFT1-3). Must contain a digit so a
+  // word like "Zones" or "Code" never counts.
+  const zoneTok = /^[A-Z]{1,4}-?\d{1,3}(?:[-.]\d{1,3})?[A-Z]?$/i;
+  for (const line of text.split(/\r?\n/)) {
+    const cells = line.trim().split(/\s{2,}/).filter((t) => t.length > 0);
+    if (cells.length < 3) continue;
+    const zoneLike = cells.filter((c) => zoneTok.test(c)).length;
+    if (zoneLike >= 3) return true;
+  }
+  return false;
+}
+
+/**
  * Decide the route by probing the layout text with the frozen parser:
  *   - native: Sherbrooke-type pages pass `isGrillePage` AND `parseGrillePage`.
  *   - multizone: pages carry the "GRILLE DES SPÉCIFICATIONS" / "feuillet" markers
@@ -192,12 +233,21 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
   // The "grille des spécifications" multi-zone format (zones in columns) is the
   // dominant rural/Portneuf layout; route it to the multi-zone vision extractor.
   const specPages = pages.filter((p) => /grille des sp.cifications/i.test(p)).length;
-  if (specPages > 0) {
+  // Multi-zone HORIZONTAL grilles whose title is "grille des normes/usages" or
+  // "grille de zonage" (Compton, bois-franc, …) carry no "spécifications" marker
+  // and no native anchors, so without this they fell through to single-zone
+  // vision and produced 0 zones. Route them to the same multi-zone extractor.
+  const horizPages = pages.filter((p) => isMultiZoneHorizontalPage(p)).length;
+  if (specPages > 0 || horizPages > 0) {
+    const why =
+      specPages > 0
+        ? `${specPages} "grille des spécifications" pages`
+        : `${horizPages} multi-zone horizontal grille pages (zones in columns)`;
     return {
       route: "multizone",
       nativeGrillePages: grillePages,
       nativeAcceptedRows: acceptedRows,
-      reason: `${specPages} "grille des spécifications" pages (multi-zone columns) → multizone vision`,
+      reason: `${why} → multizone vision`,
     };
   }
   return {

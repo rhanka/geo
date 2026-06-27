@@ -36,6 +36,7 @@ import { readFile } from "node:fs/promises";
 import {
   FIELD_SPECS,
   buildVisionField,
+  canonZoneCode,
   renderPageToPng,
   VISION_METHODE,
   GrilleVisionError,
@@ -247,9 +248,10 @@ export interface MultiZoneExtractOptions {
   vision?: MultiZoneVisionCallImpl;
 }
 
-/** Canonicalise a zone code for cross-pass matching (case/space-insensitive). */
+/** Canonicalise a zone code for cross-pass column matching (shares the single-
+ * zone canon so "Ra-1" / "Ra 1" / "RA-1" pair across the two passes). */
 function canonZoneKey(code: string): string {
-  return code.toUpperCase().replace(/\s+/g, "");
+  return canonZoneCode(code) ?? code.toUpperCase().replace(/\s+/g, "");
 }
 
 /**
