@@ -517,7 +517,7 @@ function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string
 // On rend le viewer pour établir la session, on liste les couches du MapServer
 // in-page (cookies/Referer auto), on sélectionne la couche zonage, on la
 // télécharge en GeoJSON WGS84 et on dépose — anti-invention identique à l'ArcGIS.
-interface GoNetLayer { id: number; name: string; geometryType?: string }
+interface GoNetLayer { id: number; name: string; geometryType?: string; type?: string; parentLayerId?: number; subLayerIds?: number[] | null }
 
 const GONET_PROXY_DEFAULT = "https://www.goazimut.com/container/resource-proxy/proxy.jsp?";
 // "Zonage municipal" — pas "Zone verte/inondable/agricole" (zonage agricole CPTAQ),
@@ -528,11 +528,39 @@ const GONET_ZONAGE_EXCLUDE_RE = /\b(?:verte?|inondab\w*|agricole|affectat\w*|hum
 function stripGonetPrefix(name: string): string {
   return name.replace(/^(?:GROUP|NLIST|LABEL|HIDDEN|SIG)-\s*/i, "").trim();
 }
+function gonetNameIsZonage(name: string): boolean {
+  const clean = stripGonetPrefix(name);
+  return GONET_ZONAGE_NAME_RE.test(clean) && !GONET_ZONAGE_EXCLUDE_RE.test(clean);
+}
 function isGonetZonageLayer(l: GoNetLayer): boolean {
   if (!/Polygon/i.test(l.geometryType ?? "")) return false;
   if (/^(?:LABEL|HIDDEN)-/i.test(l.name)) return false; // annotations / helpers
-  const clean = stripGonetPrefix(l.name);
-  return GONET_ZONAGE_NAME_RE.test(clean) && !GONET_ZONAGE_EXCLUDE_RE.test(clean);
+  return gonetNameIsZonage(l.name);
+}
+/**
+ * Candidate zonage polygon layers. Two shapes occur in GOnet6:
+ *  (a) a flat polygon layer whose own name matches "zonage" (the 3 pilot villes);
+ *  (b) a "Zonage municipal" GROUP layer (no geometry) whose polygon CHILDREN
+ *      hold the data under generic names (ex. "Limite de zone et étiquette",
+ *      "Dominance (trame)"). The data layer carries the zone_code field; the
+ *      field-pick + zone_code-non-null≥50% + spatial gate downstream reject the
+ *      wrong child (anti-invention preserved — selection never invents codes).
+ */
+function gonetZonageCandidates(layers: GoNetLayer[]): GoNetLayer[] {
+  const byId = new Map<number, GoNetLayer>();
+  for (const l of layers) byId.set(l.id, l);
+  const out: GoNetLayer[] = [];
+  for (const l of layers) {
+    if (!/Polygon/i.test(l.geometryType ?? "")) continue;
+    if (/^(?:LABEL|HIDDEN)-/i.test(l.name)) continue;
+    if (gonetNameIsZonage(l.name)) { out.push(l); continue; } // (a) direct
+    const pid = l.parentLayerId; // (b) child of a "Zonage municipal" group
+    if (pid !== undefined && pid >= 0) {
+      const parent = byId.get(pid);
+      if (parent && gonetNameIsZonage(parent.name) && !GONET_ZONAGE_EXCLUDE_RE.test(stripGonetPrefix(l.name))) out.push(l);
+    }
+  }
+  return out;
 }
 
 /** Pick the zone_code field of a (confirmed) GoNet zonage layer. */
@@ -615,13 +643,17 @@ async function processGonetZonage(
     const info = parseJsonOrNull<{ layers?: GoNetLayer[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/?f=json`)));
     const layers = info?.layers ?? [];
     if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
-    const candidates = layers.filter(isGonetZonageLayer);
+    if (process.env["GONET_DUMP_LAYERS"]) {
+      console.error(`[gonet-dump ${slug}] ${layers.length} couches @ ${mapBase}`);
+      for (const l of layers) console.error(`    #${l.id}\tp=${l.parentLayerId ?? "-"}\t${l.type ?? "?"}\t${l.geometryType ?? "?"}\t${l.name}`);
+    }
+    const candidates = gonetZonageCandidates(layers);
     if (candidates.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
 
     // Among zonage-named polygon layers, keep the one with a usable zone field AND
     // the most features (scale variants are duplicated; one may be empty).
     let best: { id: number; name: string; zoneField: string; oidField: string; count: number } | null = null;
-    for (const c of candidates.slice(0, 8)) {
+    for (const c of candidates.slice(0, 12)) {
       const li = parseJsonOrNull<{ fields?: FieldInfo[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}?f=json`)));
       const fields = li?.fields ?? [];
       const zoneField = pickGonetZoneField(fields);
