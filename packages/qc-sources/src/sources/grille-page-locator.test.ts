@@ -218,3 +218,43 @@ describe("locateGrillePages", () => {
     expect(locateGrillePages(pages)).toBeNull();
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Codified-bylaw one-zone-per-page gabarit (la-durantaye, saint-neree): the
+//  running header is "GRILLES DE SPÉCIFICATION" (DE, singular) — missed by the old
+//  strict "des spécifications" anchor — and the page's own zone is named DIGIT-FIRST
+//  at the end of that header ("ZONE 1- HA"). The locator must (a) LOCATE these pages
+//  and (b) classify the layout as one-zone-per-page so the route is single-zone
+//  vision (NOT multizone). Body usage codes (H-1, C-1…) are one-per-line.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ANNEXE_J_ZONE_PAGE = (zone: string): string => `
+ANNEXE J GRILLES DE SPÉCIFICATION                                   ZONE ${zone}
+                  USAGE PERMIS                          NORMES D'IMPLANTATION
+                       Unifamiliale isolée    H-1    x      Marge avant (m)   5   -
+                     Unifamiliale jumelée     H-2    x    Marge latérale (m)  2   -
+                   Unifamiliale en rangée     H-3         Marge arrière (m)   6   -
+                              Multifamiliale  H-7              Hauteur (m)     5  10
+`;
+
+describe("codified one-zone-per-page gabarit (ANNEXE J/L, DE + digit-first zone)", () => {
+  it("hasGrilleTitle matches the 'GRILLES DE SPÉCIFICATION' (de, singular) header", () => {
+    expect(hasGrilleTitle(ANNEXE_J_ZONE_PAGE("1- HA"))).toBe(true);
+  });
+
+  it("locates the grille pages and classifies layout as one-zone-per-page", () => {
+    const pages = [
+      ANNEXE_J_ZONE_PAGE("1- HA"),
+      ANNEXE_J_ZONE_PAGE("2- HA"),
+      ANNEXE_J_ZONE_PAGE("100-A"),
+      ANNEXE_J_ZONE_PAGE("122-AF-1"),
+    ];
+    const loc = locateGrillePages(pages);
+    expect(loc).not.toBeNull();
+    expect(loc!.firstPage).toBe(1);
+    expect(loc!.lastPage).toBe(4);
+    expect(loc!.grillePageCount).toBe(4);
+    // Digit-first title-zone banner → one-zone-per-page → single-zone vision route.
+    expect(loc!.layout).toBe("one-zone-per-page");
+  });
+});
