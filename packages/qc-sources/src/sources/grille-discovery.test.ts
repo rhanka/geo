@@ -64,6 +64,33 @@ describe("classifyGrilleLink", () => {
     // "règlement" + no zonage; "piia" penalty keeps it out.
     expect(c.score).toBeLessThan(GRILLE_SCORE_THRESHOLD);
   });
+
+  it("ranks the codified BASE règlement de zonage above an amendment modifying it", () => {
+    const base = classifyGrilleLink(
+      "2019-151 - Règlement de zonage - Codification administrative en date du 2025-10-22",
+      "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=base",
+    );
+    const amendment = classifyGrilleLink(
+      "2020-162 - Règlement modifiant le règlement de zonage 2019-151",
+      "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=amend",
+    );
+    expect(base.score).toBeGreaterThan(amendment.score);
+    expect(base.matched).toContain("codification administrative");
+    expect(amendment.penalised).toContain("modifiant (amendement)");
+  });
+
+  it("penalises an élevage/distances-séparatrices annexe (livestock table, not a grille)", () => {
+    const annexe = classifyGrilleLink(
+      "Annexe H - Distances séparatrices relatives aux installations d'élevage",
+      "https://x.qc.ca/annexe-h-elevage.pdf",
+    );
+    const grille = classifyGrilleLink(
+      "Grille des spécifications",
+      "https://x.qc.ca/grille.pdf",
+    );
+    expect(annexe.penalised).toContain("élevage/installations (distances, pas grille)");
+    expect(annexe.score).toBeLessThan(grille.score);
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
