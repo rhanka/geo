@@ -43,6 +43,7 @@ import {
   MistralVisionMultiZone,
   type MultiZoneRawExtraction,
 } from "../../packages/qc-sources/src/sources/grille-vision-multizone.js";
+import { isMultiZoneHorizontalPage } from "../../packages/qc-sources/src/sources/grille-pdf-classifier.js";
 
 import { s3Client } from "./lib/s3.js";
 import {
@@ -54,6 +55,9 @@ import {
 // (mistral-medium-latest: ~$0.40 in / $2.00 out per 1M as of 2026-06.)
 const MISTRAL_IN_PER_M = 0.4;
 const MISTRAL_OUT_PER_M = 2.0;
+
+/** Anti-invention floor: never deposit a product with fewer real zone codes. */
+const MIN_DEPOSIT_ZONE_CODES = 3;
 
 interface Args {
   slug: string;
@@ -148,6 +152,22 @@ function expectedZoneFromPage(text: string): string | undefined {
   const zoneLabel = text.match(/\bZONE\s+([A-Z]{1,4}\s*[-–—]?\s*\d+(?:\.\d+)?(?:\s*[A-Z])?)/i);
   if (zoneLabel?.[1]) return normalizeExpectedZone(zoneLabel[1]);
 
+  // DIGIT-FIRST page-title gabarit (the "ANNEXE J/L GRILLES DE SPÉCIFICATION …
+  // ZONE 1-HA" one-zone-per-page sheets — la-durantaye, saint-neree-de-bellechasse).
+  // Here the page's own zone lives in the TITLE in a "<digits>-<letters>[-<digits>]"
+  // form ("ZONE 1- HA", "ZONE 122-AF-1") the letter-first patterns above cannot
+  // read, so without this the single-zone vision extractor gets no expectedZone,
+  // the two passes cannot agree on a (nonexistent) "ZONE (Plan général)" box, and
+  // it throws `no-zone` on EVERY page. The dash separator keeps prose like "ZONE 5
+  // cases" out (a digit run with no dash-letters tail never matches), and the
+  // letter-first usage codes in the body (H-1, C-1…) are not digit-first so they
+  // never shadow the title. ANTI-INVENTION: this only PINS the page's zone to the
+  // verbatim title code — it fabricates no norm value.
+  const titleZone = text.match(
+    /\bZONE\s+(\d{1,3}\s*[-–—]\s*[A-Z]{1,3}(?:\s*[-–—]\s*\d{1,2})?)\b/i,
+  );
+  if (titleZone?.[1]) return normalizeExpectedZone(titleZone[1]);
+
   const header = text.split(/\r?\n/).slice(0, 24).join("\n");
   const standalone = header.match(
     /^\s*([A-Z]{1,4}\s*[-–—]\s*\d+(?:\.\d+)?(?:\s*[A-Z])?)\s*(?:[-–—]?\s*abrog(?:e|é|ée))?\s*$/im,
@@ -164,46 +184,8 @@ interface RouteDecision {
   reason: string;
 }
 
-/**
- * Detect a multi-zone HORIZONTAL grille page: zones are COLUMN headers and the
- * norms run DOWN as rows (e.g. Compton "Grille des normes relatives à
- * l'implantation…" with a `H1 H2 … H10` header row, or "Grille de zonage" sheets
- * with `Co-01 Co-02 …` columns).
- *
- * WHY THIS MATTERS (the bug this fixes): these pages look NOTHING like the
- * Sherbrooke native anchors, so `isGrillePage` rejects them (0 native rows), AND
- * they carry no "grille des spécifications" marker — so today they fall through to
- * the SINGLE-zone vision route, which cannot pick one of N column-zones and fails
- * `no-zone` on EVERY page (observed: Compton 39 pages → 0 zones). The multi-zone
- * extractor reads zones-in-columns and recovers them.
- *
- * ANTI-INVENTION: this only changes the ROUTE. The multi-zone extractor keeps the
- * exact same 2-pass concordance + semantic + plausibility guards, so no value is
- * fabricated — a non-grille page still yields 0 concordant zones.
- *
- * Signal (both required, to avoid matching prose like "…dans la zone H-14…"):
- *   1. a grille TITLE ("grille des normes|usages|spécifications" / "grille de
- *      zonage"), AND
- *   2. at least one tabular HEADER ROW carrying ≥3 zone-code-like tokens separated
- *      by column whitespace (2+ spaces) — e.g. "H1   H2   H3 …".
- */
-function isMultiZoneHorizontalPage(text: string): boolean {
-  const hasGrilleTitle =
-    /grille\s+des?\s+(?:normes|usages|sp[ée]cifications)/i.test(text) ||
-    /grille\s+de\s+zonage/i.test(text);
-  if (!hasGrilleTitle) return false;
-  // A zone-code token: letters then digits, optionally separated/suffixed by a
-  // single dash or dot (H1, H10, Ra-1, Co-01, AFT1-3). Must contain a digit so a
-  // word like "Zones" or "Code" never counts.
-  const zoneTok = /^[A-Z]{1,4}-?\d{1,3}(?:[-.]\d{1,3})?[A-Z]?$/i;
-  for (const line of text.split(/\r?\n/)) {
-    const cells = line.trim().split(/\s{2,}/).filter((t) => t.length > 0);
-    if (cells.length < 3) continue;
-    const zoneLike = cells.filter((c) => zoneTok.test(c)).length;
-    if (zoneLike >= 3) return true;
-  }
-  return false;
-}
+// `isMultiZoneHorizontalPage` (zones-as-columns header detector) is shared with the
+// discovery routeur and lives in `grille-pdf-classifier.ts` (imported above).
 
 /**
  * Decide the route by probing the layout text with the frozen parser:
@@ -493,6 +475,31 @@ async function main(): Promise<void> {
           crossval,
           visionUsd,
           sampleZones: zones.slice(0, 3),
+        },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+
+  // ANTI-INVENTION DEPOSIT GATE: publish a `qc-zonage-norms-<slug>` product ONLY
+  // when at least MIN_DEPOSIT_ZONE_CODES distinct REAL zone codes were recovered.
+  // A handful of zones is the signature of a misread/misroute (a non-grille page
+  // yielding one stray code, or a layout the extractor cannot read) — refusing the
+  // deposit keeps a thin/fabricated product out of the registry. `null` (no deposit)
+  // always beats a 1–2-zone false grille.
+  if (crossval.extractedZoneCodes < MIN_DEPOSIT_ZONE_CODES) {
+    console.log(
+      JSON.stringify(
+        {
+          slug: args.slug,
+          deposited: false,
+          reason: `below deposit gate: ${crossval.extractedZoneCodes} unique zone_code(s) < ${MIN_DEPOSIT_ZONE_CODES} (anti-invention)`,
+          route: decision.route,
+          methode,
+          uniqueZoneCodes: crossval.extractedZoneCodes,
+          visionUsd,
         },
         null,
         2,
