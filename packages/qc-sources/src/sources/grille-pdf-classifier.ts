@@ -142,6 +142,60 @@ export function isZoneHeaderGrillePage(pageText: string): boolean {
   return GRILLE_CONTEXT.test(fold(pageText)) || countGrilleRows(pageText) >= 1;
 }
 
+/**
+ * A multi-zone HORIZONTAL grille page: zones are COLUMN headers and norms run DOWN
+ * as rows (Compton "Grille des normes relatives à l'implantation…" with a header
+ * row `H1 H2 … H10`; "Grille de zonage" sheets with `Co-01 Co-02 …` columns).
+ *
+ * WHY A SEPARATE SIGNAL FROM `isZoneHeaderGrillePage`. The zone-header signal (C)
+ * requires the zone codes to DOMINATE the header line (≥50 % of its tokens). On
+ * some horizontal sheets the column codes share the line with other tokens (a
+ * "Réf." label, classe-d'usage words, sub-headers) so signal C misses them and the
+ * page reports `zoneHeaderPages = 0`; the doc then falls to the single-zone vision
+ * route, which cannot pick one of N column-zones and fails `no-zone` on EVERY page.
+ * This looser, title-gated signal catches exactly those pages so the route logic
+ * can send them to the MULTI-zone extractor instead.
+ *
+ * ANTI-INVENTION: this only changes the ROUTE. The multi-zone extractor keeps the
+ * same 2-pass concordance + semantic + plausibility guards, so a non-grille page
+ * still yields 0 concordant zones. Both signals are required (a grille TITLE AND a
+ * tabular header row of ≥3 zone-code tokens) so prose like "…dans la zone H-14…"
+ * never matches.
+ */
+const MZH_TITLE =
+  /grille\s+des?\s+(?:normes|usages|sp[eé]cifications?)|grille\s+de\s+zonage/;
+/** A zone-code token: letters then digits, optionally dash/dot separated/suffixed. */
+const MZH_ZONE_TOKEN = /^[A-Z]{1,4}-?\d{1,3}(?:[-.]\d{1,3})?[A-Z]?$/i;
+
+export function isMultiZoneHorizontalPage(pageText: string): boolean {
+  if (!MZH_TITLE.test(fold(pageText))) return false;
+  for (const line of pageText.split(/\r?\n/)) {
+    // Column cells are separated by RUNS of whitespace (2+ spaces) in the layout
+    // projection; a header row carries ≥3 zone-code tokens across those columns.
+    const cells = line.trim().split(/\s{2,}/).filter((t) => t.length > 0);
+    if (cells.length < 3) continue;
+    const zoneLike = cells.filter((c) => MZH_ZONE_TOKEN.test(c)).length;
+    if (zoneLike >= 3) return true;
+  }
+  return false;
+}
+
+/** Count multi-zone HORIZONTAL grille pages within a page-text range (inclusive,
+ *  1-based first/last), or over the whole array when bounds are omitted. */
+export function countMultiZoneHorizontalPages(
+  pages: ReadonlyArray<string>,
+  first = 1,
+  last = pages.length,
+): number {
+  let n = 0;
+  const lo = Math.max(1, first);
+  const hi = Math.min(pages.length, last);
+  for (let i = lo - 1; i < hi; i++) {
+    if (isMultiZoneHorizontalPage(pages[i] ?? "")) n++;
+  }
+  return n;
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 //  Signal D — a BROAD grille title gated by tabular structure.
 //

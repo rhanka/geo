@@ -44,13 +44,16 @@ function fold(s: string): string {
  * "GRI LLES DES USAGES ET DES NORM ES" (intra-word spaces) still hits.
  */
 const TITLE_ANCHORS: ReadonlyArray<RegExp> = [
-  /grilles?\s*des\s*specifications/,
+  // "grille(s) de(s) spécification(s)" — `des?` + `s?` so the codified-bylaw
+  // running header "ANNEXE J GRILLES DE SPÉCIFICATION" (de, singular — la-durantaye,
+  // saint-neree) is located, not just the canonical "grille des spécifications".
+  /grilles?\s*des?\s*specifications?/,
   /grilles?\s*des\s*usages\s*et\s*(?:des\s*)?normes/,
 ];
 
 /** Whitespace-stripped fallbacks (catch OCR'd intra-word spaces fully). */
 const TITLE_ANCHORS_NOSPACE: ReadonlyArray<RegExp> = [
-  /grilles?desspecifications/,
+  /grilles?des?specifications?/,
   /grilles?desusageset(?:des)?normes/,
 ];
 
@@ -83,6 +86,19 @@ const ENUM_PREFIX = /^\s*(?:[a-z]\)|\d+[°.)]|[•–-])\s/i;
  * multi-zone page is NOT mistaken for a one-zone banner.
  */
 const ONE_ZONE_BANNER = /^\s*zone\s*[:°]\s*[a-z]{1,3}\s?-?\s?\d/i;
+
+/**
+ * The DIGIT-FIRST one-zone-per-page banner of the codified-bylaw gabarit
+ * ("ANNEXE J GRILLES DE SPÉCIFICATION … ZONE 1- HA" — la-durantaye, saint-neree):
+ * the page's own zone is named at the END of the running-header line as
+ * "<digits>-<letters>", which the letter-first `ONE_ZONE_BANNER` cannot see.
+ * Anchored to the SAME line as the grille-spécification title and requiring the
+ * digit-dash-LETTERS shape, so it can only match this one-zone title (not a
+ * multi-zone column band, where the codes are a separate header row, nor prose).
+ * Applied to the accent-folded line, so "ZONE 1- HA" → "zone 1- ha".
+ */
+const TITLE_ONE_ZONE_BANNER =
+  /grilles?\s+des?\s+specifications?\b.*\bzone\s+\d{1,3}\s*-\s*[a-z]/;
 
 /** How many grille-row-shaped lines a page must carry to count as a grille TABLE. */
 export const MIN_GRILLE_ROWS = 3;
@@ -163,7 +179,10 @@ export function locateGrillePages(pages: ReadonlyArray<string>): GrilleLocation 
     grilleIdx.push(i + 1); // 1-based
     const hasBanner = text
       .split("\n")
-      .some((ln) => ONE_ZONE_BANNER.test(fold(ln)));
+      .some((ln) => {
+        const f = fold(ln);
+        return ONE_ZONE_BANNER.test(f) || TITLE_ONE_ZONE_BANNER.test(f);
+      });
     if (hasBanner) oneZoneBannerPages++;
   }
   if (grilleIdx.length === 0) return null;

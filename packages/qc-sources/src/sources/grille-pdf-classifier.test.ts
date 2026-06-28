@@ -2,7 +2,9 @@ import { describe, it, expect } from "vitest";
 
 import {
   classifyGrillePdf,
+  countMultiZoneHorizontalPages,
   gateGrilleCandidate,
+  isMultiZoneHorizontalPage,
   isTitleGatedGrillePage,
   isZoneCodeHeaderLine,
   isZoneHeaderGrillePage,
@@ -268,5 +270,58 @@ describe("gateGrilleCandidate", () => {
     expect(gateGrilleCandidate(grille, false).priority).toBeGreaterThan(
       gateGrilleCandidate(unknown, false).priority,
     );
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Multi-zone HORIZONTAL detection (route-fix signal): zones-as-columns pages the
+//  zone-header signal C can miss → must route MULTIZONE, not single-zone vision.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** A horizontal multi-zone sheet: grille title + a header ROW of zone-code columns. */
+const MZ_HORIZONTAL_PAGE = `
+        Grille des normes relatives à l'implantation
+   Réf.   classe        H1     H2     H3     H4     H10
+   Marge avant (m)       6      6      5      5      4
+   Hauteur (étages)      2      2      3      3      6
+`;
+
+/** The la-durantaye / saint-neree ONE-zone-per-page codified-bylaw gabarit: one
+ *  zone in the title, usage codes listed ONE PER LINE (never ≥3 codes on a row). */
+const ONE_ZONE_PER_PAGE = `
+ANNEXE J GRILLES DE SPÉCIFICATION                                   ZONE 1- HA
+                  USAGE PERMIS                          NORMES D'IMPLANTATION
+                       Unifamiliale isolée    H-1    x      Marge avant (m)   5   -
+                     Unifamiliale jumelée     H-2    x    Marge latérale (m)  2   -
+                   Unifamiliale en rangée     H-3         Marge arrière (m)   6   -
+                              Multifamiliale  H-7              Hauteur (m)     5  10
+`;
+
+describe("isMultiZoneHorizontalPage", () => {
+  it("detects a zones-as-columns horizontal grille (title + ≥3 codes on a row)", () => {
+    expect(isMultiZoneHorizontalPage(MZ_HORIZONTAL_PAGE)).toBe(true);
+  });
+
+  it("does NOT fire on a one-zone-per-page codified gabarit (≤1 code per line)", () => {
+    // Route-fix guardrail: la-durantaye/saint-neree must stay single-zone vision,
+    // not be rerouted to multizone.
+    expect(isMultiZoneHorizontalPage(ONE_ZONE_PER_PAGE)).toBe(false);
+  });
+
+  it("does NOT fire on prose that merely names zones", () => {
+    const prose =
+      "Dans la grille des spécifications, les zones H-1, H-2 et H-3 sont visées.";
+    expect(isMultiZoneHorizontalPage(prose)).toBe(false);
+  });
+
+  it("requires the grille title (a bare code row without a title does not match)", () => {
+    expect(isMultiZoneHorizontalPage("   H1   H2   H3   H4   H10\n")).toBe(false);
+  });
+
+  it("counts horizontal pages within a 1-based page range", () => {
+    const pages = [ONE_ZONE_PER_PAGE, MZ_HORIZONTAL_PAGE, MZ_HORIZONTAL_PAGE];
+    expect(countMultiZoneHorizontalPages(pages)).toBe(2);
+    expect(countMultiZoneHorizontalPages(pages, 1, 1)).toBe(0);
+    expect(countMultiZoneHorizontalPages(pages, 2, 3)).toBe(2);
   });
 });
