@@ -203,11 +203,18 @@ class Browser {
     // <profile>/DevToolsActivePort). Avoids cross-process collisions when several
     // sweep lanes spawn chromium in parallel (random fixed ports collided → rc=1).
     const profile = mkdtempSync(join(tmpdir(), "zones-obscura-"));
-    const proc = spawn(chrome, [
+    // Optional egress proxy (e.g. Tor SOCKS) so the browser's public IP is not the
+    // datacenter pod IP — goazimut/reCAPTCHA blocks datacenter ranges. Set
+    // CHROME_PROXY=socks5://127.0.0.1:9050 in the pod after starting tor.
+    const proxy = process.env.CHROME_PROXY;
+    const chromeArgs = [
       "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
       "--hide-scrollbars", "--mute-audio", "--no-first-run", "--disable-extensions",
-      `--remote-debugging-port=0`, `--user-data-dir=${profile}`, "about:blank",
-    ], { stdio: ["ignore", "ignore", "ignore"] });
+      `--remote-debugging-port=0`, `--user-data-dir=${profile}`,
+      ...(proxy ? [`--proxy-server=${proxy}`, "--proxy-bypass-list=127.0.0.1,localhost"] : []),
+      "about:blank",
+    ];
+    const proc = spawn(chrome, chromeArgs, { stdio: ["ignore", "ignore", "ignore"] });
     const b = new Browser(proc, profile, 0);
     const wsUrl = await b.waitDevtools();
     b.ws = new WebSocket(wsUrl);
