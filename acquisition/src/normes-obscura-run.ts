@@ -54,7 +54,7 @@
  *   --manifest FILE          chemin du manifest émis (défaut delegation-mass/normes-obscura-manifest.json).
  *   --nav-ms MS              délai de rendu JS par page (défaut 9000).
  *   --max-follow N           liens nav urbanisme/zonage/règlement à suivre (défaut 6).
- *   --max-eval N             PDF candidats à télécharger+classer par ville (défaut 4).
+ *   --max-eval N             PDF candidats à télécharger+classer par ville (défaut 8).
  *   --threshold N            seuil du classifieur de lien (défaut 4).
  *   --delay-ms MS            délai de politesse entre fetchs PDF (défaut 1200).
  *   --out FILE               chemin du rapport JSON.
@@ -394,6 +394,18 @@ class Browser {
   }
 }
 
+// ── Image-grille → vision rescue thresholds (FIX 1) ─────────────────────────────
+// When a candidate's LINK is an explicit, high-confidence grille anchor
+// (`classifyGrilleLink` ≥ IMAGE_VISION_LINK_SCORE — e.g. "Grille de spécification
+// pour le périmètre urbain") BUT the downloaded PDF is an image-only SCAN (empty
+// text layer → `classifyGrillePdf` = "plan-image"), it is a REAL grille whose
+// table lives in pixels, not a map. We route it to VISION (Mistral reads the image
+// grille) instead of rejecting it as a carte — the anti-carte guard still rejects
+// every WEAK link (score < threshold). A page-count ceiling protects the Mistral
+// budget so a big scanned règlement is never vision-swept whole.
+const IMAGE_VISION_LINK_SCORE = 10;
+const IMAGE_VISION_MAX_PAGES = 30;
+
 // ── PDF download (anti-invention: magic-byte %PDF, size guard) ──────────────────
 const MAX_PDF_BYTES = 80 * 1024 * 1024;
 
@@ -538,6 +550,40 @@ function applyRoute(muni: ManifestMuni, probe: RouteProbe, cls: GrillePdfClass):
   muni.routeReason = reason;
 }
 
+/**
+ * FIX 1 — build a VISION manifest entry for a strong-link grille that downloaded as
+ * an image-only scan. Returns null (→ normal reject) unless ALL hold:
+ *   - the LINK is an explicit grille anchor (`cand.score ≥ IMAGE_VISION_LINK_SCORE`);
+ *   - the PDF is an image-only scan (`cls.kind === "plan-image"`);
+ *   - the scan is small enough (`pageCount ≤ IMAGE_VISION_MAX_PAGES`) to vision-sweep
+ *     whole within the per-muni Mistral budget.
+ * Anti-invention: deposit is still gated by the batch's ≥3-zone_codes rule; this only
+ * routes a real-but-scanned grille to the extractor that can actually read it.
+ */
+function imageGrilleVisionRescue(
+  t: SlugTarget,
+  cand: DocCandidate,
+  cls: GrillePdfClass,
+): ManifestMuni | null {
+  if (cls.kind !== "plan-image") return null;
+  if (cand.score < IMAGE_VISION_LINK_SCORE) return null;
+  const pc = cls.signals.pageCount;
+  if (pc < 1 || pc > IMAGE_VISION_MAX_PAGES) return null;
+  return {
+    slug: t.slug,
+    route: "vision",
+    sourceUrl: cand.url,
+    discoveredFrom: cand.sourceUrl,
+    scoreClassif: cand.score,
+    titre: cand.title,
+    classifKind: cls.kind,
+    discoveryTrack: "js-walled-render",
+    first: 1,
+    last: pc,
+    routeReason: `rescue→vision: strong grille link (score ${cand.score}) but image-only scan (${cls.signals.avgCharsPerPage} chars/page over ${pc} p) — Mistral reads the image grille`,
+  };
+}
+
 function pdfPageCount(pdfPath: string): number | undefined {
   const r = spawnSync("pdfinfo", [pdfPath], { encoding: "utf8" });
   const m = r.stdout?.match(/Pages:\s+(\d+)/);
@@ -584,7 +630,10 @@ function parseArgs(argv: string[]): Args {
       get("manifest") ?? join(REPO, "work", "delegation-mass", "normes-obscura-manifest.json"),
     navMs: Number(get("nav-ms") ?? 9000),
     maxFollow: Number(get("max-follow") ?? 6),
-    maxEval: Number(get("max-eval") ?? 4),
+    // Wider default (rerank fix): download+pdftotext are free, only Mistral costs, so
+    // we eval more candidates to reach the base codification past the amendments; the
+    // `best.priority >= 3` early break still short-circuits once a real grille lands.
+    maxEval: Number(get("max-eval") ?? 8),
     threshold: Number(get("threshold") ?? 4),
     delayMs: Number(get("delay-ms") ?? 1200),
     timeoutMs: Number(get("timeout-ms") ?? 30000),
@@ -712,8 +761,24 @@ async function processCity(
     const probe = decideRouteFromPages(pages, cand.url);
     const gate = gateGrilleCandidate(cls, probe.route !== "auto");
     if (!gate.keep) {
-      rejected++;
-      rejectKinds.push(cls.kind);
+      // FIX 1 — image-grille → vision rescue. A STRONG, explicit grille LINK whose
+      // PDF is an image-only scan (`plan-image`) is a real grille whose table is in
+      // pixels; route the whole (small) scan to VISION instead of rejecting it as a
+      // carte. The anti-carte guard still rejects every weaker link.
+      const rescue = imageGrilleVisionRescue(t, cand, cls);
+      if (!rescue) {
+        rejected++;
+        rejectKinds.push(cls.kind);
+        continue;
+      }
+      const viable: ViableCandidate = {
+        muni: rescue,
+        bytes: dl.bytes,
+        priority: 3, // beats a false bounded grille and triggers the early break
+        grillePages: cls.signals.grillePages,
+        score: cand.score,
+      };
+      if (!best || isBetter(viable, best)) best = viable;
       continue;
     }
     const muni: ManifestMuni = {
