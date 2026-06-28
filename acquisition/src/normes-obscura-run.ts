@@ -79,6 +79,7 @@ import {
 } from "../../packages/qc-sources/src/sources/grille-discovery.js";
 import {
   classifyGrillePdf,
+  countMultiZoneHorizontalPages,
   gateGrilleCandidate,
   type GrillePdfClass,
 } from "../../packages/qc-sources/src/sources/grille-pdf-classifier.js";
@@ -406,6 +407,18 @@ class Browser {
 const IMAGE_VISION_LINK_SCORE = 10;
 const IMAGE_VISION_MAX_PAGES = 30;
 
+// FIX 2 (image-scan → vision, broadened). A scanned grille whose LINK does not
+// clear the strong-score bar above can still be rescued when its TITLE explicitly
+// names a grille sheet (not just a generic "zonage" link): a "grille des
+// spécifications/normes/usages", a "grille de zonage", or a "cahier des
+// spécifications" (saint-narcisse) titled scan is a real grille whose table is in
+// pixels. We route those to VISION too, with the SAME page ceiling so a big scanned
+// règlement is never swept whole. ANTI-CARTE stays intact: a bare "plan/carte de
+// zonage" title (no "grille"/"spécification" word) is NOT matched and still rejects.
+const IMAGE_VISION_TITLE_RE =
+  /grille\s+des?\s+(?:sp[ée]cifications?|normes?|usages?)|grille\s+de\s+zonage|cahier\s+des?\s+sp[ée]cifications?/i;
+const IMAGE_VISION_TITLE_MIN_SCORE = 5;
+
 // ── PDF download (anti-invention: magic-byte %PDF, size guard) ──────────────────
 const MAX_PDF_BYTES = 80 * 1024 * 1024;
 
@@ -521,10 +534,26 @@ interface ManifestMuni {
 
 /**
  * Set the muni's route from the probe, rescuing a confirmed grille whose probe
- * stayed "auto" to a bounded route (multizone over zone-header pages, or vision
- * over the grille span). Anti-invention: rescue only fires for kind="grille".
+ * stayed "auto" to a bounded route. Anti-invention: rescue only fires for
+ * kind="grille".
+ *
+ * The rescue ladder (when the locator could not bound a route itself):
+ *   1. zone-header pages present (signal C) → MULTIZONE over them.
+ *   2. ELSE, the grille span carries multi-zone HORIZONTAL pages that signal C
+ *      MISSED (codes present on the header line but not dominating it — a codified
+ *      bylaw's "grille de spécification" sheet with zones in columns) → MULTIZONE.
+ *      Without this (FIX 1) these fell to single-zone vision, which cannot pick one
+ *      of N column-zones and fails `no-zone` on every page.
+ *   3. ELSE → single-zone VISION over the grille span (one-zone-per-page vertical
+ *      gabarit — the page's own zone is in its title/banner). `Ne casse pas les
+ *      vrais 1-zone-par-page` : a sheet with ≤1 zone code per line stays here.
  */
-function applyRoute(muni: ManifestMuni, probe: RouteProbe, cls: GrillePdfClass): void {
+function applyRoute(
+  muni: ManifestMuni,
+  probe: RouteProbe,
+  cls: GrillePdfClass,
+  pages: string[] | null,
+): void {
   let route = probe.route;
   let first = probe.first;
   let last = probe.last;
@@ -536,10 +565,19 @@ function applyRoute(muni: ManifestMuni, probe: RouteProbe, cls: GrillePdfClass):
       last = cls.signals.lastZoneHeaderPage;
       reason = `rescue→multizone: ${cls.signals.zoneHeaderPages} zone-header pages ${first}..${last}`;
     } else if (cls.signals.firstGrillePage >= 1) {
-      route = "vision";
       first = cls.signals.firstGrillePage;
       last = cls.signals.lastGrillePage;
-      reason = `rescue→vision: grille span ${first}..${last} (${cls.signals.grillePages} pages)`;
+      // FIX 1 — multi-zone HORIZONTAL pages that the zone-header signal missed.
+      const horiz = pages
+        ? countMultiZoneHorizontalPages(pages, first, last)
+        : 0;
+      if (horiz >= 1) {
+        route = "multizone";
+        reason = `rescue→multizone: ${horiz} multi-zone horizontal grille page(s) in span ${first}..${last} (zone-header signal missed them)`;
+      } else {
+        route = "vision";
+        reason = `rescue→vision: grille span ${first}..${last} (${cls.signals.grillePages} pages, one-zone-per-page)`;
+      }
     }
   }
   muni.route = route;
@@ -551,14 +589,19 @@ function applyRoute(muni: ManifestMuni, probe: RouteProbe, cls: GrillePdfClass):
 }
 
 /**
- * FIX 1 — build a VISION manifest entry for a strong-link grille that downloaded as
- * an image-only scan. Returns null (→ normal reject) unless ALL hold:
- *   - the LINK is an explicit grille anchor (`cand.score ≥ IMAGE_VISION_LINK_SCORE`);
- *   - the PDF is an image-only scan (`cls.kind === "plan-image"`);
- *   - the scan is small enough (`pageCount ≤ IMAGE_VISION_MAX_PAGES`) to vision-sweep
- *     whole within the per-muni Mistral budget.
- * Anti-invention: deposit is still gated by the batch's ≥3-zone_codes rule; this only
- * routes a real-but-scanned grille to the extractor that can actually read it.
+ * FIX 2 — build a VISION manifest entry for a grille that downloaded as an
+ * image-only scan. Returns null (→ normal reject) unless the PDF is an image-only
+ * scan (`cls.kind === "plan-image"`), it fits the page ceiling
+ * (`pageCount ≤ IMAGE_VISION_MAX_PAGES`, to bound the Mistral budget), AND ONE of:
+ *   - the LINK clears the strong-score bar (`cand.score ≥ IMAGE_VISION_LINK_SCORE`), OR
+ *   - the LINK TITLE explicitly names a grille sheet (`IMAGE_VISION_TITLE_RE`:
+ *     "grille des spécifications/normes/usages", "grille de zonage", "cahier des
+ *     spécifications") at a modest score (`≥ IMAGE_VISION_TITLE_MIN_SCORE`).
+ * The title path (broadened) catches scanned grilles the strong-score bar missed
+ * (saint-narcisse-style cahiers). ANTI-CARTE stays intact: a bare "plan/carte de
+ * zonage" scan (no grille word in the title, weak score) is still rejected.
+ * Anti-invention: deposit is still gated by the ≥3-zone_codes rule downstream; this
+ * only routes a real-but-scanned grille to the extractor that can read it.
  */
 function imageGrilleVisionRescue(
   t: SlugTarget,
@@ -566,9 +609,15 @@ function imageGrilleVisionRescue(
   cls: GrillePdfClass,
 ): ManifestMuni | null {
   if (cls.kind !== "plan-image") return null;
-  if (cand.score < IMAGE_VISION_LINK_SCORE) return null;
   const pc = cls.signals.pageCount;
   if (pc < 1 || pc > IMAGE_VISION_MAX_PAGES) return null;
+  const strongScore = cand.score >= IMAGE_VISION_LINK_SCORE;
+  const titledGrille =
+    cand.score >= IMAGE_VISION_TITLE_MIN_SCORE && IMAGE_VISION_TITLE_RE.test(cand.title);
+  if (!strongScore && !titledGrille) return null;
+  const why = strongScore
+    ? `strong grille link (score ${cand.score})`
+    : `grille-titled scan ("${cand.title.slice(0, 48)}", score ${cand.score})`;
   return {
     slug: t.slug,
     route: "vision",
@@ -580,7 +629,7 @@ function imageGrilleVisionRescue(
     discoveryTrack: "js-walled-render",
     first: 1,
     last: pc,
-    routeReason: `rescue→vision: strong grille link (score ${cand.score}) but image-only scan (${cls.signals.avgCharsPerPage} chars/page over ${pc} p) — Mistral reads the image grille`,
+    routeReason: `rescue→vision: ${why} but image-only scan (${cls.signals.avgCharsPerPage} chars/page over ${pc} p) — Mistral reads the image grille`,
   };
 }
 
@@ -772,7 +821,7 @@ async function processCity(
       classifKind: cls.kind,
       discoveryTrack: "js-walled-render",
     };
-    applyRoute(muni, probe, cls);
+    applyRoute(muni, probe, cls, pages);
     // Gate on the FINAL (post-rescue) route, not the raw locator probe. A confirmed
     // grille that applyRoute bounded is directly extractable (priority 3); without
     // this, a real single-page grille (probe="auto" → priority 1) loses the ranking
