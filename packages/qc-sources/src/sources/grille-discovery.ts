@@ -82,6 +82,12 @@ const GRILLE_SIGNALS: readonly KeywordSignal[] = [
   { re: /grilles?[-_\s]*(de[-_\s]*)?zonage/, weight: 5, label: "grille de zonage" },
   { re: /reglement\s+de\s+zonage/, weight: 5, label: "règlement de zonage" },
   { re: /usages?\s+et\s+normes?/, weight: 4, label: "usages et normes" },
+  // Base-codification preference (rerank fix): the codified BASE règlement de zonage
+  // is the one that actually carries the grille — prefer it over the amendments that
+  // merely "modify" it. A "codification administrative" / "à jour au" / "refondu(e)"
+  // title is the base; this boost lifts it above same-named amendments at eval time.
+  { re: /codification\s+administrative/, weight: 4, label: "codification administrative" },
+  { re: /\ba\s+jour\s+au\b|consolidation|consolide|refondue?/, weight: 2, label: "codification/à jour" },
   // Medium markers — meaningful but appear in many municipal docs.
   { re: /\bgrilles?\b/, weight: 3, label: "grille" },
   { re: /\bzonage\b/, weight: 3, label: "zonage" },
@@ -106,6 +112,23 @@ const GRILLE_NEGATIVE_SIGNALS: readonly KeywordSignal[] = [
   { re: /permis\s+et\s+certificat/, weight: 2, label: "permis et certificats" },
   { re: /proces[-\s]?verba/, weight: 4, label: "procès-verbal (PV, not a grille)" },
   { re: /ordre\s+du\s+jour/, weight: 4, label: "ordre du jour" },
+  // Amendment penalty (rerank fix): a "… modifiant/amendant le règlement de zonage"
+  // or a "projet de règlement / avis de motion" is an AMENDMENT, not the base grille.
+  // The base codification never carries these words, so penalising them ranks the
+  // amendments below the base (and drops the noisier ones below threshold).
+  { re: /\bmodifiant\b/, weight: 4, label: "modifiant (amendement)" },
+  { re: /\bamend(?:ant|ement|er)\b/, weight: 4, label: "amendement" },
+  { re: /projet\s+(?:de\s+reglement|d['e ]?\s*adoption)/, weight: 3, label: "projet de règlement" },
+  { re: /avis\s+de\s+motion/, weight: 3, label: "avis de motion" },
+  // Livestock-distance-table false positive (anti-faux-positif fix): an "annexe …
+  // élevage / installation d'élevage / unités animales / distances séparatrices /
+  // gestion des odeurs" is the agricultural distance-separation table, NOT the
+  // zoning grille des spécifications.
+  {
+    re: /elevage|unites?\s+animales?|distances?\s+separatrices?|gestion\s+des\s+odeurs/,
+    weight: 3,
+    label: "élevage/installations (distances, pas grille)",
+  },
 ];
 
 /** Result of scoring one candidate link. */
