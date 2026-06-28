@@ -36,9 +36,11 @@ WAIT_BOOT="${WAIT_BOOT:-75}"
 NEWNYM_WAIT="${NEWNYM_WAIT:-12}"
 SEEDS="${SEEDS:?need SEEDS=\"slug=municode,...\"}"
 
-# Repo root: this script lives at $ROOT/acquisition/scripts/tor-fleet-gonet.sh
+# Repo root: this script lives at $ROOT/acquisition/scripts/tor-fleet-gonet.sh.
+# Honor a ROOT env override so the wrapper can be decoded/run from anywhere
+# (e.g. /tmp on a pod) while acquisition/ still points at the real workspace.
 SELF="$(cd "$(dirname "$0")" && pwd)"
-ROOT="$(cd "$SELF/../.." && pwd)"
+ROOT="${ROOT:-$(cd "$SELF/../.." && pwd)}"
 ACQ="$ROOT/acquisition"
 OUTDIR="${OUTDIR:-$ROOT/work/delegation-mass/tor-fleet-out}"
 mkdir -p "$OUTDIR"
