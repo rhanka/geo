@@ -78,6 +78,14 @@ const ZONE_CODE_FIELD_PATTERNS = [
   /^REGZONE$/i, /^ZONE_ID$/i, /^NOM_ZONE$/i, /^etiquette$/i, /^no_zonage$/i,
 ];
 const AFFECTATION_FIELD_PATTERNS = [/affectation/i, /grande_affect/i];
+// Decision (user): when a zonage layer carries BOTH a usage-label field
+// (e.g. `Zonage` = "Habitation") AND a real zone-identifier field
+// (`code`/`no_zone`/`num_zone`/…), prefer the code field. These are the
+// code-like names checked first by pickGonetZoneField, ahead of the broader set.
+const ZONE_CODE_FIELD_CODELIKE = [
+  /^zone_?code$/i, /^num_?zone$/i, /^no_?zone$/i, /^code_?zone$/i,
+  /^codezonage$/i, /^no_zonage$/i, /^zone_?id$/i, /^code$/i, /^zonagemunicipalid$/i,
+];
 const ZONAGE_TITLE_PATTERNS = [/\bzonage\b/i, /\bzoning\b/i, /\bzones?\b/i, /grille.*zone/i, /regl.*zone/i];
 const AFFECTATION_TITLE_PATTERNS = [/\baffectation\b/i, /milieu.*humide/i, /\bpiia\b/i, /inondab/i, /patrimo/i, /contrainte/i];
 
@@ -569,6 +577,7 @@ function pickGonetZoneField(fields: FieldInfo[]): string | null {
     /string/i.test(f.type) &&
     !AFFECTATION_FIELD_PATTERNS.some((p) => p.test(f.name)) &&
     !/^shape|shape_|^objectid|^producteur$|^matricule$|^nommuni$|^nom_?mrc$/i.test(f.name));
+  for (const f of usable) if (ZONE_CODE_FIELD_CODELIKE.some((p) => p.test(f.name))) return f.name; // prefer a code field over a usage label
   for (const f of usable) if (ZONE_CODE_FIELD_PATTERNS.some((p) => p.test(f.name))) return f.name; // zonage/no_zone/…
   for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zone/i.test(f.name)) return f.name; // ex. `Code`
   return usable[0]?.name ?? null; // layer already confirmed "Zonage municipal"
