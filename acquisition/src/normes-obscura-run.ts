@@ -759,7 +759,25 @@ async function processCity(
     const pages = pagesFromBytes(dl.bytes);
     const cls = classifyGrillePdf(pages ?? []);
     const probe = decideRouteFromPages(pages, cand.url);
-    const gate = gateGrilleCandidate(cls, probe.route !== "auto");
+    // Build the manifest entry and resolve the route FIRST: applyRoute rescues a
+    // CONTENT-CONFIRMED grille (kind="grille") whose locator probe stayed "auto" to
+    // a bounded multizone/vision span over its own grille/zone-header pages.
+    const muni: ManifestMuni = {
+      slug: t.slug,
+      route: "auto",
+      sourceUrl: cand.url,
+      discoveredFrom: cand.sourceUrl,
+      scoreClassif: cand.score,
+      titre: cand.title,
+      classifKind: cls.kind,
+      discoveryTrack: "js-walled-render",
+    };
+    applyRoute(muni, probe, cls);
+    // Gate on the FINAL (post-rescue) route, not the raw locator probe. A confirmed
+    // grille that applyRoute bounded is directly extractable (priority 3); without
+    // this, a real single-page grille (probe="auto" → priority 1) loses the ranking
+    // to a FALSE-POSITIVE p-N the locator bounded inside a big règlement (priority 3).
+    const gate = gateGrilleCandidate(cls, muni.route !== "auto");
     if (!gate.keep) {
       // FIX 1 — image-grille → vision rescue. A STRONG, explicit grille LINK whose
       // PDF is an image-only scan (`plan-image`) is a real grille whose table is in
@@ -781,17 +799,6 @@ async function processCity(
       if (!best || isBetter(viable, best)) best = viable;
       continue;
     }
-    const muni: ManifestMuni = {
-      slug: t.slug,
-      route: "auto",
-      sourceUrl: cand.url,
-      discoveredFrom: cand.sourceUrl,
-      scoreClassif: cand.score,
-      titre: cand.title,
-      classifKind: cls.kind,
-      discoveryTrack: "js-walled-render",
-    };
-    applyRoute(muni, probe, cls);
     const viable: ViableCandidate = {
       muni,
       bytes: dl.bytes,
