@@ -199,14 +199,16 @@ class Browser {
   }
 
   static async launch(chrome: string): Promise<Browser> {
-    const port = 9300 + Math.floor(Math.random() * 400);
+    // Port 0 → chromium picks a free ephemeral port (the real one is written to
+    // <profile>/DevToolsActivePort). Avoids cross-process collisions when several
+    // sweep lanes spawn chromium in parallel (random fixed ports collided → rc=1).
     const profile = mkdtempSync(join(tmpdir(), "zones-obscura-"));
     const proc = spawn(chrome, [
       "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
       "--hide-scrollbars", "--mute-audio", "--no-first-run", "--disable-extensions",
-      `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, "about:blank",
+      `--remote-debugging-port=0`, `--user-data-dir=${profile}`, "about:blank",
     ], { stdio: ["ignore", "ignore", "ignore"] });
-    const b = new Browser(proc, profile, port);
+    const b = new Browser(proc, profile, 0);
     const wsUrl = await b.waitDevtools();
     b.ws = new WebSocket(wsUrl);
     await new Promise<void>((res, rej) => { b.ws.onopen = () => res(); b.ws.onerror = () => rej(new Error("ws error")); });
@@ -221,10 +223,17 @@ class Browser {
   }
 
   private async waitDevtools(): Promise<string> {
-    for (let i = 0; i < 60; i++) {
+    const portFile = join(this.profile, "DevToolsActivePort");
+    for (let i = 0; i < 80; i++) {
       try {
-        const r = await fetch(`http://127.0.0.1:${this.port}/json/version`);
-        if (r.ok) { const j = (await r.json()) as { webSocketDebuggerUrl: string }; return j.webSocketDebuggerUrl; }
+        if (existsSync(portFile)) {
+          const realPort = Number(readFileSync(portFile, "utf8").trim().split("\n")[0]);
+          if (realPort > 0) {
+            this.port = realPort;
+            const r = await fetch(`http://127.0.0.1:${this.port}/json/version`);
+            if (r.ok) { const j = (await r.json()) as { webSocketDebuggerUrl: string }; return j.webSocketDebuggerUrl; }
+          }
+        }
       } catch { /* not up yet */ }
       await sleep(250);
     }
