@@ -46,7 +46,7 @@ const BUDGET_USD = process.env["NORMS_BUDGET_USD"] ?? "4";
 
 interface Muni {
   slug: string;
-  route?: "auto" | "native" | "vision" | "multizone";
+  route?: "auto" | "native" | "vision" | "multizone" | "ocr";
   pages?: number;
   first?: number;
   last?: number;
@@ -65,12 +65,13 @@ function loadMunis(path: string): Muni[] {
   return [];
 }
 
-/** native/multizone deposit first; vision (slowest) last. */
+/** native (free) → ocr (cheap+fast) → multizone/auto → vision (slowest) last. */
 const ROUTE_ORDER: Record<string, number> = {
   native: 0,
-  multizone: 1,
-  auto: 2,
-  vision: 3,
+  ocr: 1,
+  multizone: 2,
+  auto: 3,
+  vision: 4,
 };
 
 async function main(): Promise<void> {
@@ -81,16 +82,21 @@ async function main(): Promise<void> {
       (ROUTE_ORDER[b.route ?? "auto"] ?? 9),
   );
 
-  // MISTRAL_API_KEY (vision + multizone need it) → CHILD env only, never logged.
-  // Prefer the local env file when it exists; otherwise fall back to the key
-  // already in process.env (remote runner injects it as a job env var).
+  // Keys → CHILD env only, never logged. The OCR route (multi-zone primary) uses
+  // OCR_API_KEY, falling back to MISTRAL_API_KEY; the chat-vision routes use
+  // MISTRAL_API_KEY. Prefer the local env file when present; else the key already
+  // in process.env (remote runner injects it as a job env var). Any OCR_* config
+  // (provider/model/base for Chandra) is inherited via {...process.env}.
   const childEnv = { ...process.env };
-  const mistralKey = existsSync(MISTRAL_ENV)
-    ? loadEnv(MISTRAL_ENV)["MISTRAL_API_KEY"]
-    : process.env["MISTRAL_API_KEY"];
+  const fileEnv = existsSync(MISTRAL_ENV) ? loadEnv(MISTRAL_ENV) : {};
+  const mistralKey = fileEnv["MISTRAL_API_KEY"] ?? process.env["MISTRAL_API_KEY"];
   if (mistralKey) childEnv["MISTRAL_API_KEY"] = mistralKey;
+  const ocrKey = fileEnv["OCR_API_KEY"] ?? process.env["OCR_API_KEY"];
+  if (ocrKey) childEnv["OCR_API_KEY"] = ocrKey;
   console.error(
-    `[batch] MISTRAL_API_KEY ${childEnv["MISTRAL_API_KEY"] ? "chargée" : "ABSENTE"}`,
+    `[batch] MISTRAL_API_KEY ${childEnv["MISTRAL_API_KEY"] ? "chargée" : "ABSENTE"}` +
+      ` | OCR provider=${process.env["OCR_PROVIDER"] ?? "mistral-ocr"}` +
+      ` key=${childEnv["OCR_API_KEY"] || childEnv["MISTRAL_API_KEY"] ? "présente" : "ABSENTE"}`,
   );
 
   // Strong idempotence: which slugs are already deposited in S3?

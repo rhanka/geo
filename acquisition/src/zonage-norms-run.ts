@@ -7,9 +7,14 @@
  *        - native-text HORIZONTAL grille (Sherbrooke-type): pages pass the frozen
  *          `isGrillePage` header anchor AND `parseGrillePage` accepts them →
  *          run `extractGrilleDocument` (NO Mistral, $0).
- *        - VERTICAL / image grille: header anchors absent or every grille page is
- *          rejected → route to the Mistral 2-pass vision extractor, ONE rendered
- *          page at a time (cost-tracked).
+ *        - MULTI-ZONE grille (zones-in-columns "grille des spécifications" /
+ *          horizontal): route to the Document-AI OCR path (mistral-ocr by default,
+ *          ~$1/1000 pages — 5–10× cheaper + more robust than chat-vision, per
+ *          work/coverage/BENCH-OCR.md). Backend is env-parametrable (OCR_PROVIDER
+ *          mistral-ocr|chandra, OCR_MODEL, OCR_API_BASE, OCR_API_KEY).
+ *        - VERTICAL / image scan grille (single-zone-per-page): header anchors
+ *          absent → Mistral 2-pass CHAT-VISION extractor, ONE rendered page at a
+ *          time (the bench case where vision beats OCR 100% vs 3.6%).
  *   3. CROSS-VALIDATE the extracted zone codes against the muni's SIG grille.
  *   4. DEPOSIT `qc-zonage-norms-<slug>.parquet` + refresh manifest (idempotent).
  *
@@ -18,7 +23,8 @@
  *
  * Usage (npx tsx):
  *   tsx src/zonage-norms-run.ts --slug saint-alban --pdf /path/grille.pdf \
- *       --source-url https://… [--reglement 123] [--route auto|native|vision] \
+ *       --source-url https://… [--reglement 123] \
+ *       [--route auto|native|ocr|multizone|vision] \
  *       [--max-vision-pages N] [--budget-usd 15] [--dry-run] [--force]
  */
 import { readFile } from "node:fs/promises";
@@ -44,8 +50,10 @@ import {
   type MultiZoneRawExtraction,
 } from "../../packages/qc-sources/src/sources/grille-vision-multizone.js";
 import { isMultiZoneHorizontalPage } from "../../packages/qc-sources/src/sources/grille-pdf-classifier.js";
+import { extractGrilleOcrFromPdf } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 
 import { s3Client } from "./lib/s3.js";
+import { resolveOcrCall } from "./lib/ocr.js";
 import {
   crossValidateZoneCodes,
   depositZonageNorms,
@@ -64,7 +72,7 @@ interface Args {
   pdf: string;
   sourceUrl: string;
   reglement?: string;
-  route: "auto" | "native" | "vision" | "multizone";
+  route: "auto" | "native" | "vision" | "multizone" | "ocr";
   maxVisionPages: number;
   budgetUsd: number;
   dryRun: boolean;
@@ -178,7 +186,7 @@ function expectedZoneFromPage(text: string): string | undefined {
 }
 
 interface RouteDecision {
-  route: "native" | "vision" | "multizone" | "none";
+  route: "native" | "vision" | "multizone" | "ocr" | "none";
   nativeGrillePages: number;
   nativeAcceptedRows: number;
   reason: string;
@@ -189,10 +197,16 @@ interface RouteDecision {
 
 /**
  * Decide the route by probing the layout text with the frozen parser:
- *   - native: Sherbrooke-type pages pass `isGrillePage` AND `parseGrillePage`.
- *   - multizone: pages carry the "GRILLE DES SPÉCIFICATIONS" / "feuillet" markers
- *     (MRC de Portneuf / Estrie multi-zone-per-page format) → multi-zone vision.
- *   - vision: otherwise (single-zone vertical / image grille) → single-zone vision.
+ *   - native: Sherbrooke-type pages pass `isGrillePage` AND `parseGrillePage`
+ *     (NO Mistral, $0).
+ *   - ocr: pages carry the "GRILLE DES SPÉCIFICATIONS" / "feuillet" markers OR a
+ *     multi-zone HORIZONTAL header (zones in columns — MRC de Portneuf / Estrie /
+ *     Compton). These are the dense multi-zone grilles where the Document-AI OCR
+ *     path is 5–10× cheaper, faster and more robust than chat-vision
+ *     (work/coverage/BENCH-OCR.md, 2026-06-23) → PRIMARY = OCR. The chat-vision
+ *     multi-zone extractor stays reachable via `--route multizone` (fallback).
+ *   - vision: otherwise (single-zone vertical / image grille — saint-stanislas
+ *     type, where the bench showed vision 100% vs OCR 3.6%) → single-zone vision.
  */
 function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): RouteDecision {
   const pages = layoutText.split("\f").filter((p) => p.trim().length > 0);
@@ -226,10 +240,10 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
         ? `${specPages} "grille des spécifications" pages`
         : `${horizPages} multi-zone horizontal grille pages (zones in columns)`;
     return {
-      route: "multizone",
+      route: "ocr",
       nativeGrillePages: grillePages,
       nativeAcceptedRows: acceptedRows,
-      reason: `${why} → multizone vision`,
+      reason: `${why} → OCR (mistral-ocr Document-AI, primary)`,
     };
   }
   return {
@@ -380,6 +394,62 @@ async function main(): Promise<void> {
     console.error(
       `[vision] zones=${zones.length} attempted=${visionPagesAttempted} ` +
         `failed=${visionPagesFailed} calls=${visionCalls} estUsd=$${visionUsd.toFixed(3)}`,
+    );
+  } else if (decision.route === "ocr") {
+    // PRIMARY path for multi-zone grilles: Document-AI OCR (mistral-ocr by
+    // default; OCR_PROVIDER=chandra + OCR_API_BASE switches backend). One bounded
+    // OCR call over the annex page range → markdown → SAME guarded ZoneNorms.
+    const ocr = resolveOcrCall();
+    if (!ocr.config.apiKey) {
+      throw new Error(
+        "ocr route requires OCR_API_KEY or MISTRAL_API_KEY (load sentropic/.env)",
+      );
+    }
+    methode = ocr.methode;
+    const pageCount = pdfPageCount(args.pdf);
+    const first = args.firstPage ?? 1;
+    const last = Math.min(args.lastPage ?? pageCount, first - 1 + args.maxVisionPages, pageCount);
+    // Budget guard: trim the page set so estimated cost stays within --budget-usd.
+    const maxByBudget =
+      ocr.costPerPage > 0 ? Math.max(1, Math.floor(args.budgetUsd / ocr.costPerPage)) : last - first + 1;
+    const pages: number[] = [];
+    for (let p = first; p <= last && pages.length < maxByBudget; p++) pages.push(p);
+    console.error(
+      `[ocr] provider=${ocr.config.provider} model=${ocr.config.model} ` +
+        `pdf pages=${pageCount} range=${first}..${last} pages=${pages.length} ` +
+        `budget=$${args.budgetUsd} ~$${(pages.length * ocr.costPerPage).toFixed(4)}`,
+    );
+    visionPagesAttempted = pages.length;
+    const byZone = new Map<string, ZoneNormsT>();
+    try {
+      const res = await extractGrilleOcrFromPdf(args.pdf, pages, {
+        source_url: args.sourceUrl,
+        snapshot: args.snapshot,
+        methode: ocr.methode,
+        ocr: ocr.call,
+        costPerPage: ocr.costPerPage,
+      });
+      visionUsd = res.usd;
+      // Merge by zone_code, preferring the row that carries more published norm
+      // values (a zone family can span a USAGES + a NORMES feuillet). Anti-
+      // invention: never overwrite a value with null.
+      for (const zn of res.zones) {
+        const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
+        const prev = byZone.get(key);
+        if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+      }
+      console.error(
+        `[ocr] pagesBilled=${res.pagesProcessed} zones=${byZone.size} ` +
+          `usd=$${res.usd.toFixed(4)} latency=${res.latencyMs}ms`,
+      );
+    } catch (e) {
+      visionPagesFailed = pages.length;
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`[ocr] FAILED: ${msg.slice(0, 200)}`);
+    }
+    zones = [...byZone.values()];
+    console.error(
+      `[ocr] zones=${zones.length} attempted=${visionPagesAttempted} failed=${visionPagesFailed} estUsd=$${visionUsd.toFixed(4)}`,
     );
   } else if (decision.route === "multizone") {
     if (!process.env["MISTRAL_API_KEY"]) {
