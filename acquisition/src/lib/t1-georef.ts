@@ -169,38 +169,125 @@ function fitAffine(pts: Array<[number, number]>, vals: number[]): [number, numbe
 }
 
 // ---------------------------------------------------------------------------
+// GEO Measure + Viewport BBox enumeration (robust to dict serialization order).
+//
+// Real GeoPDFs vary in how they lay out the registration:
+//   - Esri ArcGIS Pro 3.1 (delson): /Type/Viewport near the dict start, Measure
+//     inline → a forward window works.
+//   - Esri ArcGIS Pro 3.6 (la-prairie) / QGIS (pointe-claire): the Measure is
+//     inline but /Type/Viewport is at the END of the dict, so /GPTS sits BEHIND
+//     the Viewport token (a forward-only window misses it).
+//   - ESRI ArcMap 10.x (candiac, saint-mathieu): the Measure is an INDIRECT
+//     object (`/Measure 219 0 R`) with no inline /BBox; the BBox lives in the
+//     Viewport dict and the WKT in an indirect /GCS object.
+// We therefore anchor on the /GPTS array (the geographic corners), read /Bounds
+// + WKT around it, and take the neatline /BBox from the /VP[...] arrays — never
+// a /Subtype/RL (rectilinear scale-bar) measure, which carries no geo anchor.
+// ---------------------------------------------------------------------------
+function geoSpan(gpts: number[]): number {
+  let mnLat = Infinity, mxLat = -Infinity, mnLon = Infinity, mxLon = -Infinity;
+  for (let i = 0; i + 1 < gpts.length; i += 2) {
+    const la = gpts[i]!, lo = gpts[i + 1]!;
+    if (la < mnLat) mnLat = la;
+    if (la > mxLat) mxLat = la;
+    if (lo < mnLon) mnLon = lo;
+    if (lo > mxLon) mxLon = lo;
+  }
+  return Math.abs((mxLat - mnLat) * (mxLon - mnLon));
+}
+
+/** Best-effort raw dict text of a top-level `N 0 obj … endobj` (not ObjStm). */
+function resolveObj(hay: string, n: number): string {
+  const m = hay.match(new RegExp("(?:^|[^0-9])" + n + "\\s+0\\s+obj([\\s\\S]{0,4000}?)endobj"));
+  return m ? m[1]! : "";
+}
+
+/** Every /BBox found INSIDE a /VP[…] viewport array (bracket-balanced). */
+function bboxesInVPArrays(hay: string): number[][] {
+  const out: number[][] = [];
+  const re = /\/VP\s*\[/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(hay)) !== null) {
+    const start = m.index + m[0].length - 1; // at '['
+    let depth = 0;
+    let j = start;
+    for (; j < hay.length && j < start + 40000; j++) {
+      const ch = hay[j];
+      if (ch === "[") depth++;
+      else if (ch === "]") {
+        depth--;
+        if (depth === 0) {
+          j++;
+          break;
+        }
+      }
+    }
+    const arr = hay.slice(start, j);
+    for (const bm of arr.matchAll(/\/BBox\s*\[([^\]]+)\]/g)) {
+      const a = numArray(bm[1]!);
+      if (a.length >= 4) out.push(a);
+    }
+  }
+  return out;
+}
+
+interface GeoMeasure {
+  bounds: number[];
+  gpts: number[];
+  wkt: string;
+  nearBBox: number[];
+}
+
+/** Enumerate every GEO Measure, anchored on its /GPTS array. */
+function geoMeasures(hay: string): GeoMeasure[] {
+  const out: GeoMeasure[] = [];
+  const re = /\/GPTS\s*\[([^\]]+)\]/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(hay)) !== null) {
+    const gpts = numArray(m[1]!);
+    if (gpts.length < 8) continue;
+    const before = hay.slice(Math.max(0, m.index - 6000), m.index);
+    const after = hay.slice(m.index, m.index + 1200);
+    const ctx = before + after;
+    if (!/\/Subtype\s*\/GEO/.test(ctx)) continue; // GEO only (never /RL scale)
+    const bm = [...before.matchAll(/\/Bounds\s*\[([^\]]+)\]/g)];
+    let bounds = bm.length ? numArray(bm[bm.length - 1]![1]!) : [];
+    const bpos = bm.length ? before.lastIndexOf("/Bounds") : -1;
+    if (bounds.length < 8) {
+      const a = after.match(/\/Bounds\s*\[([^\]]+)\]/);
+      if (a) bounds = numArray(a[1]!);
+    }
+    if (bounds.length < 8) continue;
+    // WKT: inline in the measure context, or via the indirect /GCS object.
+    let wkt = (ctx.match(/\/WKT\s*\(([^)]*PROJCS[^)]*)\)/) || [, ""])[1] ?? "";
+    if (!/PROJCS/.test(wkt)) {
+      const gm = ctx.match(/\/GCS\s+(\d+)\s+0\s+R/);
+      if (gm) {
+        const g = resolveObj(hay, Number(gm[1]));
+        const wm = g.match(/\/WKT\s*\(([\s\S]*?)\)\s*>>/);
+        if (wm && /PROJCS/.test(wm[1]!)) wkt = wm[1]!;
+      }
+    }
+    // inline-Viewport case: the BBox just precedes this measure's /Bounds.
+    let nearBBox: number[] = [];
+    if (bpos >= 0) {
+      const region = before.slice(0, bpos);
+      const bx = [...region.matchAll(/\/BBox\s*\[([^\]]+)\]/g)];
+      if (bx.length) nearBBox = numArray(bx[bx.length - 1]![1]!);
+    }
+    out.push({ bounds, gpts, wkt, nearBBox });
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // Extract georeferencing from a GeoPDF buffer.
 // ---------------------------------------------------------------------------
 export function extractGeoRef(pdf: Buffer, pdfPath?: string): GeoRef | null {
   const hay = inflatePdfText(pdf);
 
-  // Enumerate every Viewport with a GEO Measure and pick the LARGEST BBox (the
-  // main map, not an inset/legend). A single-VP plan (delson) is unaffected; a
-  // multi-VP plan (saint-amable, 6 viewports) selects the municipal frame.
-  type VP = { bbox: number[]; bounds: number[]; gpts: number[]; wkt: string; area: number };
-  const vps: VP[] = [];
-  const vpRe = /\/Type\s*\/Viewport/g;
-  let vm: RegExpExecArray | null;
-  while ((vm = vpRe.exec(hay)) !== null) {
-    const win = hay.slice(vm.index, vm.index + 4000);
-    if (!/\/Subtype\s*\/GEO/.test(win)) continue;
-    const bbox = numArray((win.match(/\/BBox\s*\[([^\]]+)\]/) || [, ""])[1] ?? "");
-    const bounds = numArray((win.match(/\/Bounds\s*\[([^\]]+)\]/) || [, ""])[1] ?? "");
-    const gpts = numArray((win.match(/\/GPTS\s*\[([^\]]+)\]/) || [, ""])[1] ?? "");
-    const wkt = (win.match(/\/WKT\s*\(([^)]+)\)/) || [, ""])[1] ?? "";
-    if (bbox.length < 4 || bounds.length < 8 || gpts.length < 8) continue;
-    const area = Math.abs((bbox[2]! - bbox[0]!) * (bbox[3]! - bbox[1]!));
-    vps.push({ bbox, bounds, gpts, wkt, area });
-  }
-  if (vps.length === 0) return null;
-  vps.sort((a, b) => b.area - a.area);
-  const main = vps[0]!;
-  const bboxArr = main.bbox;
-  const bounds = main.bounds;
-  const gpts = main.gpts;
-  const wkt = main.wkt;
-
-  // page MediaBox (for top-left conversion). Prefer pdfinfo; fall back to MediaBox.
+  // page MediaBox FIRST (needed to reject the giant XObject /Form BBox, which is
+  // the map's internal drawing space, not the page-space neatline).
   let pageW = 0;
   let pageH = 0;
   if (pdfPath) {
@@ -222,6 +309,35 @@ export function extractGeoRef(pdf: Buffer, pdfPath?: string): GeoRef | null {
       pageH = mb[3]! - mb[1]!;
     }
   }
+
+  // The GEO Measure (geographic registration). A plan with only /Subtype/RL
+  // rectilinear scale measures (CAD scale bar, no geo anchor) yields none → null.
+  const gms = geoMeasures(hay);
+  if (gms.length === 0) return null;
+  gms.sort((a, b) => geoSpan(b.gpts) - geoSpan(a.gpts)); // widest = municipal frame
+  const gm = gms[0]!;
+
+  // Neatline BBox: a viewport BBox (/VP arrays) or the measure-adjacent BBox,
+  // restricted to within the page (rejects the XObject /Form BBox), largest first.
+  const cands = [...bboxesInVPArrays(hay)];
+  if (gm.nearBBox.length >= 4) cands.push(gm.nearBBox);
+  const lim = 1.05;
+  const valid = cands.filter((b) => {
+    if (!pageW || !pageH) return b.length >= 4;
+    const maxX = Math.max(Math.abs(b[0]!), Math.abs(b[2]!));
+    const maxY = Math.max(Math.abs(b[1]!), Math.abs(b[3]!));
+    const area = Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
+    return maxX <= pageW * lim && maxY <= pageH * lim && area > 0.05 * pageW * pageH;
+  });
+  if (valid.length === 0) return null;
+  valid.sort(
+    (a, b) =>
+      Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!)) - Math.abs((a[2]! - a[0]!) * (a[3]! - a[1]!)),
+  );
+  const bboxArr = valid[0]!;
+  const bounds = gm.bounds;
+  const gpts = gm.gpts;
+  const wkt = gm.wkt;
 
   const [bx0, by0, bx1, by1] = bboxArr as [number, number, number, number];
   const nCorners = Math.min(Math.floor(bounds.length / 2), Math.floor(gpts.length / 2));

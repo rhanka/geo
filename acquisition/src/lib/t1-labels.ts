@@ -122,8 +122,15 @@ export function extractLabels(pdfPath: string, geo: GeoRef): ExtractLabelsResult
   // pdftotext page units vs PDF user-space (MediaBox) — usually 1:1.
   const sx = pageW > 0 ? geo.pageW / pageW : 1;
   const sy = pageH > 0 ? geo.pageH / pageH : 1;
-  const [bx0, by0, bx1, by1] = geo.bbox;
-  // small inward margin so a label glued to the neatline still counts (5% pad out)
+  // Normalize the neatline corners: some viewport BBoxes store y inverted
+  // (top-left origin, by0 > by1 — ESRI ArcMap candiac/saint-mathieu), which
+  // would make the pad negative and reject every label.
+  const [rx0, ry0, rx1, ry1] = geo.bbox;
+  const bx0 = Math.min(rx0, rx1);
+  const bx1 = Math.max(rx0, rx1);
+  const by0 = Math.min(ry0, ry1);
+  const by1 = Math.max(ry0, ry1);
+  // small outward margin so a label glued to the neatline still counts (5% pad)
   const padX = (bx1 - bx0) * 0.05;
   const padY = (by1 - by0) * 0.05;
 
