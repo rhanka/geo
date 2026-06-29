@@ -39,10 +39,14 @@ import {
 export const liveMistralOcrLib: OcrCallImpl = async (pdfPath: string): Promise<OcrResult> => {
   const apiKey = process.env["OCR_API_KEY"] ?? process.env["MISTRAL_API_KEY"];
   if (!apiKey) throw new Error("MISTRAL_API_KEY / OCR_API_KEY is not set (load sentropic/.env)");
+  // Honor OCR_MODEL (e.g. "mistral-ocr-4-0") so the proven npm-lib path pins the
+  // EXACT model rather than the lib's built-in default ("mistral-ocr-latest"). Read
+  // at call-time, never logged. Unset → the lib keeps its own default.
+  const model = process.env["OCR_MODEL"];
   const mod = (await import("mistral-ocr")) as unknown as {
     convertPdf: (
       input: string,
-      opts: { apiKey: string; generateDocx: boolean; logger: false },
+      opts: { apiKey: string; generateDocx: boolean; logger: false; model?: string },
     ) => Promise<{
       ocrResponse: {
         pages: Array<{ markdown: string }>;
@@ -50,7 +54,12 @@ export const liveMistralOcrLib: OcrCallImpl = async (pdfPath: string): Promise<O
       };
     }>;
   };
-  const res = await mod.convertPdf(pdfPath, { apiKey, generateDocx: false, logger: false });
+  const res = await mod.convertPdf(pdfPath, {
+    apiKey,
+    generateDocx: false,
+    logger: false,
+    ...(model ? { model } : {}),
+  });
   const pages = (res.ocrResponse.pages ?? []).map((p) => ({ markdown: p.markdown ?? "" }));
   const pagesProcessed = res.ocrResponse.usageInfo?.pagesProcessed ?? pages.length;
   return { pages, pagesProcessed };
