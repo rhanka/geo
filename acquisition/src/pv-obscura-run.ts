@@ -42,6 +42,12 @@
  *   --nav-ms MS           délai de rendu JS par page (défaut 12000).
  *   --max-follow N        si l'index rend 0 PV, suivre jusqu'à N liens "PV/séances"
  *                         rendus (même site) et re-rendre (défaut 4).
+ *   --max-path-probes N   si toujours 0 PV, RENDRE jusqu'à N chemins PV canoniques
+ *                         (`/conseil-municipal/proces-verbaux/`, …) — récupère les
+ *                         sites JS-wall dont le menu d'accueil n'est PAS des ancres
+ *                         exploitables (shadow-DOM / builders : vplus, etc.) où la
+ *                         page PV canonique rend pourtant la liste complète. 0 =
+ *                         désactivé (défaut 10).
  *   --force               réécrire un manifest déjà présent en S3 (défaut : skip).
  *   --out FILE            chemin du rapport JSON.
  */
@@ -180,6 +186,32 @@ function resolveChrome(): string | null {
 
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
 
+// ── Chemins PV canoniques (rendus en dernier recours) ──────────────────────────
+// Beaucoup de sites JS-wall (builders à menu en shadow-DOM, SaaS « vplus », etc.)
+// ne rendent AUCUNE ancre PV exploitable sur la page d'accueil : `extractPvNavigationLinks`
+// y voit 0 lien à suivre. Mais leur page PV CANONIQUE (`/conseil-municipal/proces-verbaux/`,
+// `/seances-du-conseil/`, …) rend, elle, la liste complète des PV (.pdf/.doc/handler).
+// On rend donc directement un sous-ensemble curé de ces chemins (les plus productifs,
+// ordre de fréquence décroissante) quand accueil + nav-follow donnent 0 PV. Liste
+// courte VOLONTAIREMENT (coût d'un rendu headless par chemin) : on s'arrête au 1er
+// chemin qui rend ≥3 PV réels. Anti-invention : on n'extrait que ce que le DOM rend.
+const CANONICAL_PV_PATHS = [
+  "/conseil-municipal/proces-verbaux/",
+  "/seances-du-conseil/",
+  "/proces-verbaux/",
+  "/proces-verbaux",
+  "/vie-democratique/seances-du-conseil/",
+  "/municipalite/proces-verbaux/",
+  "/conseil-municipal/seances-du-conseil/",
+  "/conseil-municipal/",
+  "/vie-democratique/proces-verbaux/",
+  "/conseil/proces-verbaux/",
+  "/ordres-du-jour-et-proces-verbaux/",
+  "/la-ville/vie-democratique/seances-du-conseil/",
+  "/administration/seances-et-proces-verbaux/",
+  "/mairie/seances-du-conseil/",
+];
+
 // ── Args ──────────────────────────────────────────────────────────────────────
 interface SlugTarget { slug: string; pvIndexUrl: string | null }
 interface Args {
@@ -188,6 +220,7 @@ interface Args {
   windowDays: number;
   navMs: number;
   maxFollow: number;
+  pathProbes: number;
   force: boolean;
   outFile?: string;
 }
@@ -210,6 +243,7 @@ function parseArgs(argv: string[]): Args {
     windowDays: Number(get("window-days") ?? 0),
     navMs: Number(get("nav-ms") ?? 12_000),
     maxFollow: Number(get("max-follow") ?? 4),
+    pathProbes: Number(get("max-path-probes") ?? 10),
     force: has("force"),
     ...(get("out") ? { outFile: get("out") } : {}),
   };
@@ -353,6 +387,7 @@ interface SlugResult {
   deposited: boolean;
   domLen?: number;
   followed?: number;
+  pathProbed?: number;
   detail: string;
 }
 
@@ -372,12 +407,15 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
 
   let best: { url: string; entries: PvManifestEntry[] } = { url: pvIndexUrl, entries: pvEntriesFromRenderedDom(dom, pvIndexUrl) };
   let followed = 0;
+  let pathProbed = 0;
+  const tried = new Set<string>([pvIndexUrl]);
 
   // 2) Si l'index rend 0 PV, suivre les liens "PV/séances" rendus (même site) et
   //    re-rendre — certains index JS pointent vers des sous-pages par année.
   if (best.entries.length === 0) {
     const navLinks = extractPvNavigationLinks(dom, pvIndexUrl).slice(0, args.maxFollow);
     for (const link of navLinks) {
+      tried.add(link);
       followed++;
       const subDom = await browser.visit(link, args.navMs);
       if (!subDom) continue;
@@ -387,23 +425,46 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
     }
   }
 
+  // 3) Toujours 0 PV : RENDRE les chemins PV canoniques de l'origine. Récupère les
+  //    sites JS-wall dont l'accueil n'a aucune ancre PV exploitable (menu shadow-DOM,
+  //    builders « vplus », etc.) mais dont la page PV canonique rend la liste complète.
+  if (best.entries.length === 0 && args.pathProbes > 0) {
+    let origin: string;
+    try { origin = new URL(pvIndexUrl).origin; } catch { origin = ""; }
+    if (origin) {
+      for (const path of CANONICAL_PV_PATHS) {
+        if (pathProbed >= args.pathProbes) break;
+        const url = `${origin}${path}`;
+        if (tried.has(url)) continue;
+        tried.add(url);
+        pathProbed++;
+        const probeDom = await browser.visit(url, args.navMs);
+        if (!probeDom) continue;
+        const probeEntries = pvEntriesFromRenderedDom(probeDom, url);
+        if (probeEntries.length > best.entries.length) best = { url, entries: probeEntries };
+        if (best.entries.length >= 3) break; // 1er chemin clairement PV suffit
+      }
+    }
+  }
+
   const entries = best.entries.filter((e) => withinWindow(e, args.windowDays));
   base.finalIndexUrl = best.url;
   base.domLen = dom.length;
   base.followed = followed;
+  base.pathProbed = pathProbed;
   base.count = entries.length;
 
-  // 3) Anti-invention : 0 PV réel rendu → SKIP justifié, aucun dépôt.
+  // 4) Anti-invention : 0 PV réel rendu → SKIP justifié, aucun dépôt.
   if (entries.length === 0) {
     const navCount = extractPvNavigationLinks(dom, pvIndexUrl).length;
     return {
       ...base,
       status: "no-pv-rendered",
-      detail: `rendu OK (domLen=${dom.length}, navLinks=${navCount}, suivis=${followed}) mais 0 PV réel extrait — JS-wall non extractible (scroll/clic/auth ?) ou index réellement vide`,
+      detail: `rendu OK (domLen=${dom.length}, navLinks=${navCount}, suivis=${followed}, chemins=${pathProbed}) mais 0 PV réel extrait — JS-wall non extractible (scroll/clic/auth ?) ou index réellement vide`,
     };
   }
 
-  // 4) Dépôt (ou probe si --no-deposit).
+  // 5) Dépôt (ou probe si --no-deposit).
   const manifest: PvObscuraManifest = {
     _note:
       "PV index discovered by pv-obscura-run.ts (headless render of a JS-walled index). " +
@@ -433,7 +494,7 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (args.targets.length === 0) {
-    console.error("usage: --slugs slug=url[,slug=url] [--pv-index-url URL] [--deposit|--no-deposit] [--window-days N] [--nav-ms MS] [--max-follow N] [--force]");
+    console.error("usage: --slugs slug=url[,slug=url] [--pv-index-url URL] [--deposit|--no-deposit] [--window-days N] [--nav-ms MS] [--max-follow N] [--max-path-probes N] [--force]");
     process.exit(2);
   }
 
