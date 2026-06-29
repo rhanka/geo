@@ -659,7 +659,12 @@ async function processGonetZonage(
   slug: string, muni: MuniEntry | undefined, viewerUrl: string,
   browser: Browser, s3: S3Client | null, args: Args, base: SlugResult,
 ): Promise<SlugResult> {
-  const session = await browser.openSession(viewerUrl, args.navMs + 8_000);
+  // The GOnet6 viewer is a heavy JS map: the in-session MapServer proxy request
+  // (the only signal that the muni IS on goazimut) is not fired until the map
+  // finishes booting — empirically ~40s, well past the 12s default nav window.
+  // Floor the session render at 40s so a too-short --nav-ms cannot turn a real
+  // goazimut muni into a false "aucune requête proxy" (session/recaptcha?) miss.
+  const session = await browser.openSession(viewerUrl, Math.max(args.navMs, 40_000) + 8_000);
   try {
     const mapBase = gonetMapServerBase(session.requests);
     if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
