@@ -21,19 +21,20 @@ const FOCUS_REQUESTED_23 = [
 ];
 
 async function servedSlugs(): Promise<Set<string>> {
+  // Source de vérité = même prefix que coverage-reconcile : normalized/ca-qc-zonage/
+  // (layout plat `qc-zonage-<slug>.geojson` OU sous-dossier `qc-zonage-<slug>/qc-zonage-…`).
   const s3 = s3Client();
   const have = new Set<string>();
-  for (const pfx of ["normalized/qc-zonage-", "registry/qc-zonage-"]) {
-    let token: string | undefined;
-    do {
-      const r = await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, Prefix: pfx, ContinuationToken: token, MaxKeys: 1000 }));
-      for (const o of r.Contents ?? []) {
-        const m = (o.Key ?? "").match(/qc-zonage-([a-z0-9-]+?)(\.|\/|$)/);
-        if (m) have.add(m[1]);
-      }
-      token = r.IsTruncated ? r.NextContinuationToken : undefined;
-    } while (token);
-  }
+  let token: string | undefined;
+  do {
+    const r = await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, Prefix: "normalized/ca-qc-zonage/", ContinuationToken: token, MaxKeys: 1000 }));
+    for (const o of r.Contents ?? []) {
+      const k = o.Key ?? "";
+      const m = k.match(/ca-qc-zonage\/qc-zonage-([^/]+)\.geojson$/) ?? k.match(/ca-qc-zonage\/qc-zonage-([^/]+)\/qc-zonage-/);
+      if (m) have.add(m[1]);
+    }
+    token = r.IsTruncated ? r.NextContinuationToken : undefined;
+  } while (token);
   return have;
 }
 
