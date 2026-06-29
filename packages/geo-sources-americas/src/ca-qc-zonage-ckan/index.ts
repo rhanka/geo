@@ -1011,16 +1011,6 @@ const SUPPLEMENTAL_ZONAGE_CKAN_DATASETS: readonly SupplementalCkanZonageDataset[
     url: "https://donneesouvertes-sherbrooke.opendata.arcgis.com/api/download/v1/items/cde79f04c7d649b8860594fd5c50a8ef/geojson?layers=0",
   },
   {
-    sourceId: "ca-qc/zonage-gatineau-affectations-territoire",
-    datasetId: "qc-zonage-gatineau-affectations-territoire",
-    title: "Affectations du territoire — Ville de Gatineau",
-    description: "Polygones d'affectations du territoire publiés par la Ville de Gatineau.",
-    providerName: "Ville de Gatineau",
-    providerUrl: "https://www.donneesquebec.ca",
-    packageId: "affectations-du-territoire",
-    url: "https://www.donneesquebec.ca/recherche/dataset/e57cc953-a96c-41df-8822-a5e456e76c35/resource/99bef1cc-4ebc-4cdd-a7ad-7d519a0bb7c2/download/affectations_territoire.json",
-  },
-  {
     sourceId: "ca-qc/zonage-rimouski-affectations-sol",
     datasetId: "qc-zonage-rimouski-affectations-sol",
     title: "Affectations du sol — Ville de Rimouski",
