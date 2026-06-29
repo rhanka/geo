@@ -134,6 +134,8 @@ interface Args {
   readonly dryRun: boolean;
   readonly force: boolean;
   readonly robots: boolean;
+  readonly noGoNetGate: boolean;
+  readonly verifyHead: number;
   readonly maxPvCandidates: number;
   readonly maxGoNetCandidates: number;
   readonly outFile?: string;
@@ -195,10 +197,11 @@ interface PvIndexManifest {
   readonly slug: string;
   readonly sourceId: string;
   readonly pvIndexUrl: string;
-  readonly discoveryTrack: "gonet-adjacent-site";
+  readonly discoveryTrack: "gonet-adjacent-site" | "static-municipal-site";
   readonly goNetLinks: GoNetLink[];
   readonly userAgent: string;
   readonly count: number;
+  readonly verifiedSample?: { checked: number; live: number };
   readonly entries: PvManifestEntry[];
 }
 
@@ -225,6 +228,12 @@ function parseArgs(argv: string[]): Args {
     dryRun: has("dry-run"),
     force: has("force"),
     robots: !has("no-robots"),
+    // Skip the GoNet-adjacency requirement and run static PV discovery on ANY
+    // reachable municipal site (the STATIC-MISS recovery track). `--static` alias.
+    noGoNetGate: has("no-gonet-gate") || has("static"),
+    // HEAD-verify up to N parsed entries before depositing (anti-invention:
+    // confirm the index actually serves live documents). 0 = off.
+    verifyHead: Number(get("verify-head") ?? 0),
     maxPvCandidates: Number(get("max-pv-candidates") ?? DEFAULT_MAX_PV_CANDIDATES),
     maxGoNetCandidates: Number(get("max-gonet-candidates") ?? DEFAULT_MAX_GONET_CANDIDATES),
     outFile: get("out"),
@@ -381,27 +390,87 @@ export function extractPvNavigationLinks(html: string, baseUrl: string): string[
   );
 }
 
+/**
+ * A PV document href, aligned with `parsePvIndex`'s `looksLikeDocumentHref`: a
+ * direct file (.pdf/.doc(x)/.odt) OR a CMS download endpoint (`?download=`,
+ * `/telecharger/`, `/download/…`). The previous predicate accepted ONLY
+ * file-extension URLs and silently dropped every download-endpoint PV — e.g.
+ * `municipalityshigawake.com/download/220/proces-verbaux/<id>/pv-reunion-…` —
+ * which made whole download-CMS municipalities (shigawake: 41 real PVs) look
+ * empty even though the static HTML listed them all.
+ */
 function looksLikeDocumentUrl(url: string): boolean {
-  return /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url);
+  return (
+    /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
+    /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
+    /\/(?:download|telecharger|getfile|fichier)[/?]/i.test(url)
+  );
 }
 
 function contentTypeFor(url: string): string {
-  return /\.pdf(?:[?#].*)?$/i.test(url) ? "application/pdf" : "application/octet-stream";
+  if (/\.pdf(?:[?#].*)?$/i.test(url)) return "application/pdf";
+  if (/\.docx?(?:[?#].*)?$/i.test(url)) return "application/msword";
+  if (/\.odt(?:[?#].*)?$/i.test(url)) return "application/vnd.oasis.opendocument.text";
+  return "application/octet-stream";
+}
+
+/**
+ * The INDEX page is itself an unambiguous procès-verbaux / séance page (path,
+ * not just any keyword in the body). The bare homepage ("/") NEVER qualifies —
+ * that is the anti-pattern (pv-discover-unlisted homepage-PDF sin) where
+ * infolettres / avis publics / horaires get mistaken for PV.
+ */
+const PV_CONTEXT_PATH_RE =
+  /proc[eè]s[-_]?verb|seances?[-_](?:du[-_])?conseil|conseil[-_]municipal|ordre[-_]du[-_]jour|registre[-_]des[-_]proces|\/pv[\/_-]/i;
+
+/** A séance date carried by the link (French long-form or ISO/file year-month(-day)). */
+const PV_DATE_RE =
+  /\b(?:\d{1,2}\s+(?:janv|f[eé]vr|mars|avril|mai|juin|juill|ao[uû]t|sept|octo|nov|d[eé]c)[a-zàâçéèêëîïôûù.]*\s+20\d{2}|20\d{2}[-_/](?:0[1-9]|1[0-2])(?:[-_/](?:0[1-9]|[12]\d|3[01]))?)\b/i;
+
+function indexIsPvContext(indexUrl?: string): boolean {
+  if (!indexUrl) return false;
+  try {
+    const p = new URL(indexUrl).pathname;
+    if (p === "/" || p === "") return false;
+    return PV_CONTEXT_PATH_RE.test(p);
+  } catch {
+    return false;
+  }
 }
 
 export function pvEntriesFromHtml(html: string, baseUrl: string): PvManifestEntry[] {
   const items = parsePvIndex(html, baseUrl);
-  return pvEntriesFromItems(items);
+  return pvEntriesFromItems(items, baseUrl);
 }
 
-export function pvEntriesFromItems(items: readonly PvIndexItemT[]): PvManifestEntry[] {
+/**
+ * Quality-gated conversion of parsed index items to deposited PV entries.
+ *
+ * GARDE-FOU QUALITÉ — a document link is kept ONLY when it is PV-identified:
+ *   (a) the link itself names a procès-verbal / séance (PV_DOC_RE on title+url), OR
+ *   (b) the INDEX page is unambiguously a PV/séance page (`indexIsPvContext`,
+ *       which excludes the homepage) AND the link carries a séance DATE.
+ * Ordres-du-jour are always dropped. This recovers date-only-labelled PVs on a
+ * genuine /proces-verbaux/ page (riviere-heva) while still rejecting generic
+ * homepage PDFs (east-farnham 168.pdf, horaire_*.pdf — no PV keyword, homepage
+ * is not PV-context).
+ *
+ * `indexUrl` is optional: when omitted (e.g. unit tests passing raw items) only
+ * rule (a) applies, preserving the original strict behaviour.
+ */
+export function pvEntriesFromItems(
+  items: readonly PvIndexItemT[],
+  indexUrl?: string,
+): PvManifestEntry[] {
   const seen = new Set<string>();
   const entries: PvManifestEntry[] = [];
+  const pvContext = indexIsPvContext(indexUrl);
   for (const item of items) {
     if (!looksLikeDocumentUrl(item.url)) continue;
     const hay = `${item.title} ${item.url}`;
     if (ODJ_RE.test(hay)) continue;
-    if (!PV_DOC_RE.test(hay)) continue;
+    const keyword = PV_DOC_RE.test(hay);
+    if (!keyword && !(pvContext && PV_DATE_RE.test(hay))) continue;
     if (seen.has(item.url)) continue;
     seen.add(item.url);
     entries.push({
@@ -501,6 +570,54 @@ class Fetcher {
       clearTimeout(timer);
     }
   }
+
+  /**
+   * Liveness probe for a parsed document URL (anti-invention). Tries HEAD, then
+   * falls back to a 1-byte ranged GET when HEAD is refused (405/501). Returns
+   * true when the server answers with a non-error status (< 400, or 405/501
+   * which mean "exists, method not allowed"). Robots-disallowed or network
+   * failures return false.
+   */
+  async liveDocument(url: string): Promise<boolean> {
+    if (this.robots && !(await this.robots.isAllowed(url))) return false;
+    const ok = (s: number): boolean => s < 400 || s === 405 || s === 501;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    try {
+      const head = await this.fetchImpl(url, {
+        method: "HEAD",
+        signal: controller.signal,
+        headers: { "user-agent": PV_USER_AGENT },
+      });
+      if (ok(head.status)) return true;
+      if (head.status === 405 || head.status === 501 || head.status === 403) {
+        const get = await this.fetchImpl(url, {
+          signal: controller.signal,
+          headers: { "user-agent": PV_USER_AGENT, range: "bytes=0-0" },
+        });
+        return ok(get.status);
+      }
+      return false;
+    } catch {
+      return false;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+}
+
+/** HEAD-verify up to `limit` entries; returns how many are live. Side-effect free. */
+async function verifyEntries(
+  entries: readonly PvManifestEntry[],
+  fetcher: Fetcher,
+  limit: number,
+): Promise<{ checked: number; live: number }> {
+  let live = 0;
+  const checked = Math.min(limit, entries.length);
+  for (let i = 0; i < checked; i++) {
+    if (await fetcher.liveDocument(entries[i]!.url)) live++;
+  }
+  return { checked, live };
 }
 
 async function discoverGoNetEvidence(
@@ -589,8 +706,16 @@ async function processCity(
   if (home === "robots") return { slug, siteUrl, goNetLinks: [], outcome: "robots-skip", reason: "homepage disallowed" };
   if (!home) return { slug, siteUrl, goNetLinks: [], outcome: "error", reason: "homepage fetch failed" };
 
-  const goNetLinks = await discoverGoNetEvidence(siteUrl, home, fetcher, args.maxGoNetCandidates, deadline);
-  if (goNetLinks.length === 0) return { slug, siteUrl, goNetLinks, outcome: "not-gonet" };
+  // GoNet track: require GoNet/GoAzimut adjacency as the city-selection signal.
+  // Static track (--no-gonet-gate / --static): skip that requirement and run the
+  // same robots-allowed, quality-gated PV discovery on any reachable site.
+  let goNetLinks: GoNetLink[] = [];
+  if (!args.noGoNetGate) {
+    goNetLinks = await discoverGoNetEvidence(siteUrl, home, fetcher, args.maxGoNetCandidates, deadline);
+    if (goNetLinks.length === 0) return { slug, siteUrl, goNetLinks, outcome: "not-gonet" };
+  }
+  const discoveryTrack: PvIndexManifest["discoveryTrack"] =
+    args.noGoNetGate ? "static-municipal-site" : "gonet-adjacent-site";
 
   const pv = await discoverPvIndex(siteUrl, home, fetcher, args.maxPvCandidates, deadline);
   if (!pv || pv.entries.length === 0) {
@@ -603,19 +728,35 @@ async function processCity(
     };
   }
 
+  // Anti-invention: optionally HEAD-verify a sample of the parsed entries. When
+  // verification is requested and NOTHING is live, the page parsed to phantom
+  // links — refuse to deposit.
+  let verifiedSample: { checked: number; live: number } | undefined;
+  if (args.verifyHead > 0) {
+    verifiedSample = await verifyEntries(pv.entries, fetcher, args.verifyHead);
+    if (verifiedSample.checked > 0 && verifiedSample.live === 0) {
+      return { slug, siteUrl, goNetLinks, outcome: "not-found", reason: `0/${verifiedSample.checked} sampled entries verified live` };
+    }
+  }
+
   const manifest: PvIndexManifest = {
     _note:
-      "PV index discovered by pv-gonet-run.ts. GoNet/GoAzimut was used only " +
-      "as a city-selection signal; entries are real PV document links parsed " +
-      "from robots-allowed municipal pages. No fabrication.",
+      discoveryTrack === "gonet-adjacent-site"
+        ? "PV index discovered by pv-gonet-run.ts. GoNet/GoAzimut was used only " +
+          "as a city-selection signal; entries are real PV document links parsed " +
+          "from robots-allowed municipal pages. No fabrication."
+        : "PV index discovered by pv-gonet-run.ts (static track). Entries are real " +
+          "PV/séance document links parsed from a robots-allowed municipal " +
+          "procès-verbaux page, quality-gated to PV-identified documents. No fabrication.",
     _generatedAt: new Date().toISOString(),
     slug,
     sourceId: `proces-verbaux-${slug}`,
     pvIndexUrl: pv.pvIndexUrl,
-    discoveryTrack: "gonet-adjacent-site",
+    discoveryTrack,
     goNetLinks,
     userAgent: PV_USER_AGENT,
     count: pv.entries.length,
+    ...(verifiedSample ? { verifiedSample } : {}),
     entries: pv.entries,
   };
 
@@ -661,7 +802,8 @@ export async function runPvGoNet(argv: string[]): Promise<ReturnType<typeof summ
   const outcomes: CityOutcome[] = [];
 
   console.error(
-    `[pv-gonet] targets=${slugs.length} dryRun=${args.dryRun} force=${args.force} robots=${args.robots ? "on" : "OFF"}`,
+    `[pv-gonet] targets=${slugs.length} dryRun=${args.dryRun} force=${args.force} robots=${args.robots ? "on" : "OFF"}` +
+    ` track=${args.noGoNetGate ? "static" : "gonet"} verifyHead=${args.verifyHead}`,
   );
 
   for (let i = 0; i < slugs.length; i++) {

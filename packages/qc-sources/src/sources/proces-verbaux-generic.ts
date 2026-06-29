@@ -58,7 +58,7 @@ export class PvSourceFetchError extends Error {
 /** Minimal fetch signature so the PV adapter is testable without globals. */
 export type PvFetchLike = (
   url: string,
-  init?: { signal?: AbortSignal; headers?: Record<string, string> },
+  init?: { signal?: AbortSignal; headers?: Record<string, string>; method?: string },
 ) => Promise<{
   ok: boolean;
   status: number;

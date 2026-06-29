@@ -24,6 +24,7 @@ import {
   PV_BARNSTON_OUEST_INDEX_HTML,
   PV_GESTIONWEBLEX_INDEX_HTML,
   PV_ASPNET_GATINEAU_INDEX_HTML,
+  PV_SHIGAWAKE_DOWNLOAD_INDEX_HTML,
 } from "./proces-verbaux-link-extraction.fixture.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -186,5 +187,31 @@ describe("detectIndexRenderMode – server-rendered pages do NOT need a browser"
   it("returns requiresBrowser=false for a plain PDF list", () => {
     const mode = detectIndexRenderMode(PV_BARNSTON_OUEST_INDEX_HTML);
     expect(mode.requiresBrowser).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Family 4 — download-endpoint CMS (shigawake): PVs are extension-less /download/
+// URLs, not .pdf hrefs. Previously these whole municipalities looked empty.
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("parsePvIndex – shigawake extension-less /download/ PV endpoints", () => {
+  const BASE = "https://municipalityshigawake.com/fr/documentation/proces-verbaux/";
+  const items = parsePvIndex(PV_SHIGAWAKE_DOWNLOAD_INDEX_HTML, BASE);
+
+  it("extracts every /download/ PV endpoint as a document (was 0: no .pdf href)", () => {
+    const docs = items.filter((i) => i.url.includes("/download/"));
+    expect(docs.length).toBe(3);
+    for (const d of docs) expect(d.url).toMatch(/^https:\/\/municipalityshigawake\.com\/download\//);
+  });
+
+  it("does NOT mistake the sibling 'Règlements' nav link for a PV document", () => {
+    const reglements = items.find((i) => i.url.includes("/documentation/reglements/"));
+    // It may appear as a non-document nav item, but never with a /download/ doc URL.
+    expect(reglements?.url.includes("/download/")).not.toBe(true);
+  });
+
+  it("is server-rendered (no browser needed)", () => {
+    expect(detectIndexRenderMode(PV_SHIGAWAKE_DOWNLOAD_INDEX_HTML).requiresBrowser).toBe(false);
   });
 });
