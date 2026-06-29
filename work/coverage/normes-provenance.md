@@ -1,8 +1,8 @@
 # Registre de provenance — normes 2-moteurs (keep-best)
 
-_Généré 2026-06-29T13:01:48.995Z — 174 villes._
+_Généré 2026-06-29T13:11:40.189Z — 198 villes._
 
-**Gagnants:** OCR-4.0 = 33 · Claude-4.8 = 4 · existant gardé = 125 · déposés (apply) = 37
+**Gagnants:** OCR-4.0 = 34 · Claude-4.8 = 4 · existant gardé = 142 · déposés (apply) = 38
 
 Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. Anti-invention: garde `buildVisionField` partagée (verbatim ou null) → invention_ok partout.
 
@@ -10,6 +10,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 |---|---|---|---|---|---|---|---|---|---|
 | amqui | — | 228 | 0 | 0 | kept-existing | 398/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 228->0 |
 | ascot-corner | — | 126 | 115 | 0 | kept-existing | 52/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 126->115 |
+| beaconsfield | — | 77 | 12 | 0 | kept-existing | 273/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 77->12 |
 | becancour | — | 17 | 61 | 0 | kept-existing | 69/57/0 | 0 |  | claude rate-limit (sauté); payload régresserait 69->57 |
 | berthier-sur-mer | — | 1 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 1->0 |
 | blue-sea | — | 12 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | moins de 3 zones extraites |
@@ -17,33 +18,43 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | bolton-est | — | 16 | 48 | 0 | ocr-4.0 | 31/48/0 | 0 | ✓ | claude rate-limit (sauté); recall 16->48, publié 31->48 |
 | brossard | — | 55 | 4 | 0 | kept-existing | 53/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 55->4 |
 | bury | — | 73 | 72 | 0 | kept-existing | 100/14/0 | 0 |  | claude rate-limit (sauté); recall régresserait 73->72 |
+| carleton-sur-mer | 160 | 0 | 0 | 0 | kept-existing | 422/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | chambly | — | 247 | 20 | 0 | kept-existing | 789/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 247->20 |
 | chateau-richer | — | 66 | 95 | 0 | kept-existing | 144/51/0 | 0 |  | claude rate-limit (sauté); payload régresserait 144->51 |
 | chesterville | — | 1 | 18 | 0 | ocr-4.0 | 6/18/0 | 0 | ✓ | claude rate-limit (sauté); recall 1->18, publié 6->18 |
 | contrecoeur | — | 15 | 0 | 0 | kept-existing | 81/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| daveluyville | — | 55 | 0 | 0 | kept-existing | 177/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | deleage | — | 3 | 7 | 0 | kept-existing | 1/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 1->0 |
 | deschaillons-sur-saint-laurent | — | 33 | 0 | 0 | kept-existing | 79/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | dixville | — | 46 | 0 | 0 | kept-existing | 30/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| dollard-des-ormeaux | — | 32 | 7 | 0 | kept-existing | 247/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 32->7 |
+| dorval | — | 12 | 23 | 0 | kept-existing | 42/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 42->0 |
 | duhamel | — | 49 | 0 | 0 | kept-existing | 76/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | eastman | — | 112 | 109 | 27 | kept-existing | 1/0/70 | 0 |  | recall régresserait 112->109 |
 | egan-sud | — | 4 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | fassett | — | 30 | 90 | 0 | kept-existing | 46/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 46->0 |
 | fossambault-sur-le-lac | — | 1 | 0 | 0 | kept-existing | 2/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | frelighsburg | — | 6 | 0 | 0 | kept-existing | 6/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| ham-nord | — | 19 | 203 | 0 | ocr-4.0 | 126/392/0 | 0 | ✓ | claude rate-limit (sauté); recall 19->203, publié 126->392 |
 | ham-sud | — | 9 | 0 | 0 | kept-existing | 8/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 9->0 |
 | herouxville | — | 88 | 0 | 0 | kept-existing | 151/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | joliette | — | 10 | 0 | 0 | kept-existing | 28/6/0 | 0 |  | claude rate-limit (sauté); recall régresserait 10->0 |
 | kingsey-falls | — | 43 | 0 | 0 | error | 132/0/0 | 0 |  | HTTP 404 |
+| la-durantaye | — | 30 | 154 | 0 | kept-existing | 101/4/0 | 0 |  | claude rate-limit (sauté); payload régresserait 101->4 |
+| la-minerve | — | 19 | 134 | 0 | kept-existing | 68/30/0 | 0 |  | claude rate-limit (sauté); payload régresserait 68->30 |
 | la-motte | — | 29 | 0 | 0 | kept-existing | 30/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 29->0 |
 | lac-beauport | — | 80 | 0 | 0 | error | 154/0/0 | 0 |  | HTTP 404 |
 | lac-des-aigles | — | 2 | 0 | 0 | kept-existing | 5/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| lac-des-ecorces | — | 122 | 0 | 0 | error | 431/0/0 | 0 |  | HTTP 404 |
 | lac-des-seize-iles | — | 5 | 0 | 0 | kept-existing | 2/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 5->0 |
+| lac-saguay | — | 33 | 30 | 0 | kept-existing | 111/108/0 | 0 |  | claude rate-limit (sauté); recall régresserait 33->30 |
 | lac-sainte-marie | — | 57 | 0 | 0 | error | 169/0/0 | 0 |  | HTTP 404 |
 | lac-simon | 74 | 1 | 0 | 0 | kept-existing | 221/8/0 | 0 |  | claude rate-limit (sauté); recall régresserait 1->0 |
 | lac-tremblant-nord | — | 28 | 6 | 0 | kept-existing | 59/18/0 | 0 |  | claude rate-limit (sauté); recall régresserait 28->6 |
 | lacolle | — | 92 | 0 | 0 | error | 91/0/0 | 0 |  | fetch failed |
 | lancienne-lorette | — | 8 | 15 | 0 | kept-existing | 4/1/0 | 0 |  | claude rate-limit (sauté); payload régresserait 4->1 |
 | lanoraie | — | 32 | 0 | 0 | kept-existing | 25/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 32->0 |
+| lascension | — | 51 | 0 | 0 | kept-existing | 172/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | laurier-station | — | 52 | 0 | 0 | kept-existing | 88/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | lebel-sur-quevillon | — | 408 | 154 | 0 | kept-existing | 548/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 408->154 |
 | lejeune | — | 2 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
@@ -59,11 +70,15 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | metis-sur-mer | — | 73 | 0 | 0 | kept-existing | 80/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 73->0 |
 | milan | — | 9 | 47 | 0 | ocr-4.0 | 9/45/0 | 0 | ✓ | claude rate-limit (sauté); recall 9->47, publié 9->45 |
 | mont-blanc | — | 3 | 3 | 1 | ocr-4.0 | 4/6/7 | 0 | ✓ | recall 3->3, publié 4->6 |
+| mont-laurier | — | 6 | 0 | 0 | error | 20/0/0 | 0 |  | HTTP 404 |
 | mont-saint-gregoire | — | 67 | 69 | 0 | ocr-4.0 | 41/204/0 | 0 | ✓ | claude rate-limit (sauté); recall 67->69, publié 41->204 |
+| mont-saint-hilaire | 170 | 158 | 0 | 0 | error | 840/0/0 | 0 |  | fetch failed |
+| mont-saint-michel | — | 21 | 0 | 0 | error | 77/0/0 | 0 |  | HTTP 404 |
 | montcalm | — | 1 | 6 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 1->6, publié 0->0 |
 | montcerf-lytton | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | montebello | — | 40 | 103 | 0 | kept-existing | 1/0/0 | 0 |  | payload régresserait 1->0 |
 | montreal-est | — | 75 | 0 | 0 | kept-existing | 326/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| montreal-ouest | — | 30 | 14 | 0 | kept-existing | 97/6/0 | 0 |  | claude rate-limit (sauté); recall régresserait 30->14 |
 | notre-dame-des-bois | — | 43 | 47 | 0 | ocr-4.0 | 28/40/0 | 0 | ✓ | claude rate-limit (sauté); recall 43->47, publié 28->40 |
 | plessisville | — | 4 | 8 | 0 | kept-existing | 4/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 4->0 |
 | preissac | 25 | 12 | 0 | 0 | kept-existing | 25/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 12->0 |
@@ -75,7 +90,9 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | roxton-pond | — | 4 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | recall régresserait 4->0 |
 | saint-adolphe-dhoward | — | 1 | 43 | 0 | ocr-4.0 | 3/208/0 | 43 | ✓ | claude rate-limit (sauté); recall 1->43, publié 3->208 |
 | saint-agapit | — | 22 | 0 | 0 | kept-existing | 66/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| saint-aime | — | 5 | 0 | 0 | kept-existing | 17/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | saint-alexis | — | 11 | 0 | 0 | error | 16/0/0 | 0 |  | HTTP 404 |
+| saint-amable | 104 | 95 | 0 | 0 | error | 402/0/0 | 0 |  | fetch failed |
 | saint-antoine-de-lisle-aux-grues | — | 6 | 0 | 0 | kept-existing | 6/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 6->0 |
 | saint-apollinaire | — | 22 | 0 | 0 | error | 1/0/0 | 0 |  | not a PDF |
 | saint-augustin-de-woburn | — | 18 | 49 | 0 | ocr-4.0 | 30/33/0 | 0 | ✓ | claude rate-limit (sauté); recall 18->49, publié 30->33 |
@@ -101,6 +118,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | saint-germain-de-grantham | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | saint-gilles | — | 25 | 24 | 0 | kept-existing | 44/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 25->24 |
 | saint-henri | — | 94 | 0 | 0 | kept-existing | 283/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| saint-hugues | — | 17 | 0 | 0 | error | 62/0/0 | 0 |  | HTTP 404 |
 | saint-isidore-de-clifton | — | 28 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | saint-jean-port-joli | — | 43 | 100 | 0 | kept-existing | 7/0/0 | 0 |  | payload régresserait 7->0 |
 | saint-jean-sur-richelieu | — | 716 | 0 | 0 | kept-existing | 550/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
@@ -126,10 +144,12 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | saint-rosaire | — | 1 | 10 | 10 | claude-4.8 | 0/0/35 | 0 | ✓ | recall 1->10, publié 0->35 |
 | saint-sebastien--le-haut-richelieu | — | 3 | 0 | 0 | kept-existing | 5/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | saint-telesphore | — | 9 | 9 | 0 | kept-existing | 20/12/0 | 0 |  | claude rate-limit (sauté); payload régresserait 20->12 |
+| saint-tite-des-caps | — | 2 | 49 | 0 | kept-existing | 7/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 7->0 |
 | saint-valerien-de-milton | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | saint-zotique | — | 86 | 0 | 0 | kept-existing | 154/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | sainte-adele | — | 22 | 0 | 0 | kept-existing | 57/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 22->0 |
 | sainte-beatrix | — | 32 | 146 | 0 | kept-existing | 21/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 21->0 |
+| sainte-brigide-diberville | — | 6 | 14 | 0 | kept-existing | 18/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 18->0 |
 | sainte-brigitte-de-laval | — | 38 | 73 | 0 | ocr-4.0 | 113/149/0 | 0 | ✓ | claude rate-limit (sauté); recall 38->73, publié 113->149 |
 | sainte-catherine-de-la-jacques-cartier | — | 59 | 0 | 0 | kept-existing | 143/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | sainte-cecile-de-levrard | — | 10 | 0 | 0 | kept-existing | 25/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
@@ -156,6 +176,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | scotstown | — | 14 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | scott | — | 4 | 103 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 4->103, publié 0->0 |
 | senneville | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| shannon | — | 96 | 6 | 0 | kept-existing | 341/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 96->6 |
 | shawinigan | — | 6 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | shefford | — | 7 | 7 | 0 | ocr-4.0 | 2/24/59 | 7 | ✓ | recall 7->7, publié 2->24 |
 | stanbridge-east | — | 29 | 25 | 0 | kept-existing | 38/7/0 | 0 |  | claude rate-limit (sauté); recall régresserait 29->25 |
@@ -164,6 +185,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | stoneham-et-tewkesbury | — | 1 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | stornoway | — | 8 | 67 | 0 | ocr-4.0 | 6/46/0 | 0 | ✓ | claude rate-limit (sauté); recall 8->67, publié 6->46 |
 | stratford | 50 | 49 | 39 | 39 | kept-existing | 14/54/125 | 39 |  | recall régresserait 49->39 |
+| sutton | 216 | 0 | 0 | 0 | kept-existing | 164/9/0 | 0 |  | claude rate-limit (sauté); payload régresserait 164->9 |
 | tingwick | — | 3 | 66 | 0 | kept-existing | 6/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 6->0 |
 | tres-saint-redempteur | — | 6 | 91 | 0 | ocr-4.0 | 0/3/0 | 0 | ✓ | recall 6->91, publié 0->3 |
 | tring-jonction | — | 16 | 34 | 46 | claude-4.8 | 0/32/69 | 46 | ✓ | recall 16->46, publié 0->69 |
@@ -172,11 +194,13 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | val-alain | — | 6 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | val-des-bois | — | 5 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | recall régresserait 5->0 |
 | val-des-lacs | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| val-dor | — | 619 | 604 | 0 | kept-existing | 1921/165/0 | 0 |  | claude rate-limit (sauté); recall régresserait 619->604 |
 | val-joli | — | 2 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | val-morin | — | 2 | 0 | 0 | kept-existing | 84/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | val-racine | — | 4 | 35 | 35 | claude-4.8 | 0/20/59 | 0 | ✓ | recall 4->35, publié 0->59 |
 | valcourt--le-val-saint-francois | — | 15 | 162 | 0 | kept-existing | 9/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 9->0 |
 | varennes | — | 26 | 24 | 0 | kept-existing | 81/2/0 | 0 |  | claude rate-limit (sauté); recall régresserait 26->24 |
+| vaudreuil-sur-le-lac | — | 15 | 10 | 0 | kept-existing | 50/4/0 | 0 |  | claude rate-limit (sauté); recall régresserait 15->10 |
 | vercheres | — | 8 | 118 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 8->118, publié 0->0 |
 | waterloo | — | 124 | 0 | 0 | kept-existing | 322/17/0 | 0 |  | claude rate-limit (sauté); recall régresserait 124->0 |
 | waterville | — | 9 | 82 | 34 | ocr-4.0 | 0/4/170 | 0 | ✓ | recall 9->82, publié 0->4 |
