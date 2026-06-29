@@ -111,6 +111,7 @@ import { resolveOcrCall } from "./lib/ocr.js";
 import {
   crossValidateZoneCodes,
   depositZonageNorms,
+  depositParquetOnly,
   publishedFieldPct,
   type CrossValResult,
 } from "./lib/zonage-norms.js";
@@ -196,10 +197,23 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const apply = argv.includes("--apply");
   const allStaged = argv.includes("--all-staged");
-  const budgetUsd = Number((argv[argv.indexOf("--budget-usd") + 1]) || "4");
   const localDir = argv.indexOf("--local-dir") >= 0 ? argv[argv.indexOf("--local-dir") + 1] : undefined;
   const residuePath = argv.indexOf("--residue") >= 0 ? argv[argv.indexOf("--residue") + 1] : undefined;
-  const optVals = new Set(["--budget-usd", "--local-dir", "--residue"]);
+  // MANIFEST-SAFE: write parquet only, never touch the shared manifest (avoids
+  // racing a concurrent stock run's read-modify-write). Merge later from S3 truth.
+  const noManifest = argv.includes("--no-manifest");
+  // STRICT residue anti-invention gate (defaults are strict):
+  //  - SIG grille present  → deposit iff overlap >= minSigOverlap (spatial gate);
+  //  - no SIG grille        → deposit iff >= minGridlessPub published norm values
+  //    (real grille tables publish dimensions; misread usage-lists publish ~0 → §4 noise).
+  const argNum = (flag: string, def: number): number => {
+    const i = argv.indexOf(flag);
+    return i >= 0 && argv[i + 1] ? Number(argv[i + 1]) : def;
+  };
+  const budgetUsd = argNum("--budget-usd", 4);
+  const minSigOverlap = argNum("--min-sig-overlap", 3);
+  const minGridlessPub = argNum("--min-gridless-pub", 3);
+  const optVals = new Set(["--budget-usd", "--local-dir", "--residue", "--min-sig-overlap", "--min-gridless-pub"]);
   const slugsArg = argv.filter((a) => !a.startsWith("--") && !optVals.has(argv[argv.indexOf(a) - 1] ?? ""));
 
   // Residue mode: NEW deposits from a discovered-candidate manifest (slug +
@@ -319,35 +333,67 @@ async function main(): Promise<void> {
       row.ocrUzc = cross.extractedZoneCodes;
       row.ocrOverlap = cross.overlap;
       row.ocrPublished = totalPublished(zones);
-      row.recallAfter = gridFound ? cross.overlap : cross.extractedZoneCodes;
+      if (rc) row.gridFound = cross.gridFound; // residue: trust the LIVE crossval
+      row.recallAfter = (rc ? cross.gridFound : gridFound) ? cross.overlap : cross.extractedZoneCodes;
 
-      // KEEP-BEST gate: strict Pareto (no regression on recall OR payload; strict
-      // gain on at least one). recall = SIG overlap when gridFound, else uzc.
-      const recallOk = row.recallAfter >= row.recallBefore;
-      const payloadOk = row.ocrPublished >= row.cvPublished;
-      const strictGain = row.recallAfter > row.recallBefore || row.ocrPublished > row.cvPublished;
-      const improved = recallOk && payloadOk && strictGain && zones.length >= 3;
+      let improved: boolean;
+      let why = "";
+      if (rc) {
+        // RESIDUE / MASS mode: NEW deposit (no chat-vision baseline). STRICT
+        // anti-invention gate — never deposit unvalidated grilles (§4 noise lesson):
+        //  - SIG grille present → require spatial overlap >= minSigOverlap;
+        //  - no SIG grille      → require >= minGridlessPub published norm VALUES
+        //    (a real grille table publishes dimensions; a misread usage list ~0).
+        const hasRange = rc.first != null && rc.last != null;
+        // Use the LIVE crossval (cross.gridFound), NOT the stale baseline `gridFound`
+        // (which is always false for a NEW residue slug with no manifest entry).
+        if (zones.length < 3) { improved = false; why = "below 3-code gate"; }
+        else if (cross.gridFound) {
+          // SIG present → spatial gate (noise-proof: full-doc OCR garbage does not
+          // overlap the muni's real SIG codes — saint-guillaume 123 noise zones → overlap 0).
+          improved = row.ocrOverlap >= minSigOverlap;
+          if (!improved) why = `SIG overlap ${row.ocrOverlap} < ${minSigOverlap} (sig=${cross.sigZoneCodes})`;
+        } else if (!hasRange) {
+          // No SIG AND no located range → only the full doc to scan, which yields
+          // §4 noise with no way to validate. Refuse.
+          improved = false; why = "gridless + no located range (unvalidatable)";
+        } else {
+          // No SIG but a located grille range → require real published norm VALUES
+          // (a misread usage list publishes ~0; a real grille table publishes many).
+          improved = row.ocrPublished >= minGridlessPub;
+          if (!improved) why = `gridless, published ${row.ocrPublished} < ${minGridlessPub} (unvalidated)`;
+        }
+      } else {
+        // KEEP-BEST gate vs existing deposit: strict Pareto (no regression on
+        // recall OR payload; strict gain on at least one).
+        const recallOk = row.recallAfter >= row.recallBefore;
+        const payloadOk = row.ocrPublished >= row.cvPublished;
+        const strictGain = row.recallAfter > row.recallBefore || row.ocrPublished > row.cvPublished;
+        improved = recallOk && payloadOk && strictGain && zones.length >= 3;
+        why = !recallOk ? `recall would drop ${row.recallBefore}->${row.recallAfter}`
+          : !payloadOk ? `payload would drop ${row.cvPublished}->${row.ocrPublished}`
+          : !strictGain ? "no strict gain (tie)"
+          : "below 3-code gate";
+      }
 
       if (improved) {
         row.decision = "DEPOSIT-OCR";
         row.note = `${chunkNote}recall ${row.recallBefore}->${row.recallAfter}, published ${row.cvPublished}->${row.ocrPublished}`;
         if (apply) {
-          await depositZonageNorms({
-            s3, slug, zones,
-            meta: {
-              source_url: base?.source_url ?? cfg?.sourceUrl ?? "non-disponible",
-              ...(base?.reglement ? { reglement: base.reglement } : {}),
-              methode: ocr.methode, snapshot,
-            },
-            crossval: cross, idempotent: false,
-          });
+          const meta = {
+            source_url: base?.source_url ?? cfg?.sourceUrl ?? "non-disponible",
+            ...(base?.reglement ? { reglement: base.reglement } : {}),
+            methode: ocr.methode, snapshot,
+          };
+          if (noManifest) {
+            // Parquet-only: never touch the shared manifest (merge later from S3).
+            await depositParquetOnly({ s3, slug, zones, meta, crossval: cross });
+          } else {
+            await depositZonageNorms({ s3, slug, zones, meta, crossval: cross, idempotent: false });
+          }
         }
       } else {
         row.decision = "KEEP-CV";
-        const why = !recallOk ? `recall would drop ${row.recallBefore}->${row.recallAfter}`
-          : !payloadOk ? `payload would drop ${row.cvPublished}->${row.ocrPublished}`
-          : !strictGain ? "no strict gain (tie)"
-          : "below 3-code gate";
         row.note = chunkNote + why;
       }
     } catch (e) {
@@ -358,7 +404,7 @@ async function main(): Promise<void> {
     }
     rows.push(row);
     console.error(
-      `[${slug}] ${row.decision} gridFound=${gridFound} ` +
+      `[${slug}] ${row.decision} gridFound=${rc ? row.gridFound : gridFound} ` +
       `overlap ${cvOverlap}->${row.ocrOverlap} uzc ${cvUzc}->${row.ocrUzc} ` +
       `pub ${cvPublished}->${row.ocrPublished} $${row.ocrUsd.toFixed(3)} :: ${row.note}`,
     );
