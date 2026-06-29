@@ -137,6 +137,20 @@ function pdfPageCount(pdfPath: string): number {
   return m ? Number(m[1]) : 0;
 }
 
+/**
+ * Sorted, de-duplicated page numbers where OCR found grille zones. Read from the
+ * `zone_page` provenance ("PAGE N ZONE X") the OCR mapper stamps. Used to target
+ * Engine B at exactly the grille pages for cities with no calibrated munis range.
+ */
+function ocrGrillePages(zones: ZoneNormsT[]): number[] {
+  const pages = new Set<number>();
+  for (const z of zones) {
+    const m = /^PAGE\s+(\d+)\b/.exec(z.zone_page);
+    if (m) pages.add(Number(m[1]));
+  }
+  return [...pages].sort((a, b) => a - b);
+}
+
 /** Merge per-page zones by zone code, preferring the row with more published values. */
 function mergeByZone(zones: ZoneNormsT[]): ZoneNormsT[] {
   const byZone = new Map<string, ZoneNormsT>();
@@ -398,20 +412,30 @@ async function main(): Promise<void> {
     const dir = await mkdtemp(join(tmpdir(), `2eng-${slug}-`));
     let pdfPath: string | null = null;
     try {
-      // Resolve PDF.
+      // Resolve PDF — MATCHED PAIR. The munis page range {first,last} is calibrated
+      // to munis.sourceUrl (the grille-only PDF), NOT to the staged S3 doc, which may
+      // be a different full-reglement PDF (e.g. stratford: staged = 174-page règlement,
+      // range 1-8 = the 8-page STR_GRILLE). So when a munis range exists, download the
+      // range-calibrated URL; otherwise prefer the staged S3 doc (whole-doc OCR), then
+      // the manifest source_url.
       const stagedKey = `${GRILLE_PREFIX}/${slug}.pdf`;
       const local = findLocalGrille(slug);
-      const srcUrl = base?.source_url && /^https?:/.test(base.source_url)
-        ? base.source_url
-        : (cfg?.sourceUrl && /^https?:/.test(cfg.sourceUrl) ? cfg.sourceUrl : undefined);
-      if (await exists(s3, stagedKey)) {
+      const munisUrl = cfg?.sourceUrl && /^https?:/.test(cfg.sourceUrl) ? cfg.sourceUrl : undefined;
+      const baseUrl = base?.source_url && /^https?:/.test(base.source_url) ? base.source_url : undefined;
+      const hasMunisRange = cfg?.first != null && cfg?.last != null;
+      const sourceUrlMeta = munisUrl ?? baseUrl ?? base?.source_url ?? "non-disponible";
+
+      if (hasMunisRange && (munisUrl ?? baseUrl)) {
+        pdfPath = join(dir, "grille.pdf");
+        await downloadPdf((munisUrl ?? baseUrl)!, pdfPath);
+      } else if (await exists(s3, stagedKey)) {
         pdfPath = join(dir, "grille.pdf");
         await writeFile(pdfPath, await getBytes(s3, stagedKey));
       } else if (local) {
         pdfPath = local;
-      } else if (srcUrl) {
+      } else if (baseUrl ?? munisUrl) {
         pdfPath = join(dir, "grille.pdf");
-        await downloadPdf(srcUrl, pdfPath);
+        await downloadPdf((baseUrl ?? munisUrl)!, pdfPath);
       } else {
         row.winner = "skip-no-grille";
         row.raison_si_garde = "aucune grille (S3/local/url) disponible";
@@ -419,43 +443,55 @@ async function main(): Promise<void> {
       }
 
       const pageCount = pdfPageCount(pdfPath);
-      const first = cfg?.first ?? 1;
-      const last = Math.min(cfg?.last ?? pageCount, pageCount || (cfg?.last ?? 1));
-      const sourceUrlMeta = base?.source_url ?? srcUrl ?? "non-disponible";
+      const ocrFirst = hasMunisRange ? cfg!.first! : 1;
+      const ocrLastFull = hasMunisRange ? Math.min(cfg!.last!, pageCount || cfg!.last!) : (pageCount || 1);
 
-      // ── Run Engine A (OCR) and Engine B (Claude) in parallel ──
-      const runOcr = engine !== "claude"
-        ? (async () => {
-            const maxByBudget = Math.max(1, Math.floor(budgetUsd / ocr.costPerPage));
-            const ocrLast = Math.min(last, first - 1 + maxByBudget);
-            return ocrEngine(pdfPath!, first, ocrLast, ocrCall, ocr.costPerPage,
-              { source_url: sourceUrlMeta, snapshot, methode: ocr.methode });
-          })()
-        : Promise.resolve(null);
-
-      const runClaude = (engine !== "ocr" && !globalClaudeRateLimited)
-        ? (async () => {
-            const claudeLast = Math.min(last, first - 1 + claudePageCap);
-            return extractGrilleClaudeFromPdf(pdfPath!, first, claudeLast, {
-              source_url: sourceUrlMeta, snapshot, dpi,
-              cli: { timeoutMs: claudeTimeoutMs },
-            });
-          })()
-        : Promise.resolve(null);
-
-      const [ocrRes, claudeRes] = await Promise.all([runOcr, runClaude]);
-
-      // ── Engine A result ──
+      // ── Engine A (OCR) FIRST — cheap, and it identifies the grille pages so
+      //    Engine B (expensive, rate-limited) can target ONLY those pages. ──
+      let ocrRes: Awaited<ReturnType<typeof ocrEngine>> | null = null;
       let ocrZones: ZoneNormsT[] = [];
-      if (ocrRes) {
+      if (engine !== "claude") {
+        const maxByBudget = Math.max(1, Math.floor(budgetUsd / ocr.costPerPage));
+        const ocrLast = Math.min(ocrLastFull, ocrFirst - 1 + maxByBudget);
+        ocrRes = await ocrEngine(pdfPath, ocrFirst, ocrLast, ocrCall, ocr.costPerPage,
+          { source_url: sourceUrlMeta, snapshot, methode: ocr.methode });
         ocrZones = mergeByZone(ocrRes.zones);
         totalOcrUsd += ocrRes.usd;
         row.engineA_ocr_usd = Math.round(ocrRes.usd * 1000) / 1000;
         row.engineA_ocr_published = totalPublished(ocrZones);
       }
-      // ── Engine B result ──
+
+      // ── Determine Engine B page window ──
+      //   - munis range → use it (capped);
+      //   - else the contiguous span of pages where OCR found grille zones (capped);
+      //   - else, when OCR ran and found nothing, skip B (no grille to read — don't
+      //     burn subscription budget on non-grille pages).
+      let cFirst: number | null = null;
+      let cLast: number | null = null;
+      if (engine !== "ocr" && !globalClaudeRateLimited) {
+        if (hasMunisRange) {
+          cFirst = ocrFirst;
+          cLast = Math.min(ocrLastFull, ocrFirst - 1 + claudePageCap);
+        } else {
+          const gp = ocrGrillePages(ocrRes ? ocrRes.zones : []);
+          if (gp.length) {
+            cFirst = gp[0]!;
+            cLast = Math.min(gp[gp.length - 1]!, cFirst - 1 + claudePageCap);
+          } else if (!ocrRes) {
+            // claude-only mode with no range → fall back to the head of the doc.
+            cFirst = 1;
+            cLast = Math.min(pageCount || claudePageCap, claudePageCap);
+          }
+        }
+      }
+
+      // ── Engine B (Claude) over the targeted window ──
       let claudeZones: ZoneNormsT[] = [];
-      if (claudeRes) {
+      if (cFirst != null && cLast != null && cLast >= cFirst) {
+        const claudeRes = await extractGrilleClaudeFromPdf(pdfPath, cFirst, cLast, {
+          source_url: sourceUrlMeta, snapshot, dpi,
+          cli: { timeoutMs: claudeTimeoutMs },
+        });
         claudeZones = mergeByZone(claudeRes.zones);
         totalClaudeSeconds += claudeRes.durationMs / 1000;
         row.engineB_claude_pages = claudeRes.pagesRead;
