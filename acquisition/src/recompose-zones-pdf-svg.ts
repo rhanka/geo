@@ -376,7 +376,7 @@ function assignAndBuildGeoJSON(
   pdfSource: string,
   candidates: SvgPathCandidate[],
   labels: PdfLabel[],
-  gdal: Required<Pick<GdalInfo, "geoTransform" | "pixelSize" | "projDef">>,
+  gdal: { [K in "geoTransform" | "pixelSize" | "projDef"]: NonNullable<GdalInfo[K]> },
 ): FeatureCollection {
   const features: Feature<Polygon>[] = [];
 
