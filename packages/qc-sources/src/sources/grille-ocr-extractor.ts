@@ -288,12 +288,16 @@ function isSeparatorRow(cells: string[]): boolean {
   return cells.length > 0 && cells.every((c) => /^:?-{2,}:?$/.test(c.replace(/\s/g, "")));
 }
 
-/** Does this cell look like a zone code header (e.g. "Ra-1", "A.2", "A-Z", "1")? */
+/** Does this cell look like a zone code header (e.g. "Ra-1", "A.2", "A-Z", "Cons 1")? */
 export function looksLikeZoneCode(c: string): boolean {
   const s = c.trim();
   if (!s || s.length > 12) return false;
+  // Allow up to a 4-letter alpha prefix: real QC grille prefixes run to 4 chars
+  // ("Cons 1", "AFT1", "VILL 2"). A 3-letter cap silently dropped whole "grille des
+  // spécifications" feuillets (e.g. Stratford "Cons 1".."Cons 12") below the
+  // zone-header detection threshold, losing every zone on those pages.
   return (
-    /^[A-Za-z]{0,3}[ .-]?\d{1,4}([ .-]?\d{1,3})?$/.test(s) ||
+    /^[A-Za-z]{0,4}[ .-]?\d{1,4}([ .-]?\d{1,3})?$/.test(s) ||
     /^[A-Za-z]-?[A-Za-z0-9]{1,3}$/.test(s)
   );
 }
