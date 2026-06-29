@@ -29,6 +29,7 @@
  */
 
 import { readFileSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import {
   emptyMatrix,
   markDone,
@@ -47,9 +48,16 @@ export const MEASURED = {
   pvReady: 563, // 'ready' → planned (scraper-configured)
 } as const;
 
+// Seed snapshots vendored with the package so the measured-state seed is
+// deterministic and portable (CI, any checkout). Override with GEO_AUDIT_ZONAGE
+// / GEO_NORMS_MUNIS to read live `work/` data on a machine that runs the
+// scrapers.
+const dataPath = (name: string): string =>
+  fileURLToPath(new URL(`../data/${name}`, import.meta.url));
 const AUDIT_ZONAGE =
-  "/home/antoinefa/src/geo/work/immo-audit/zonage-resolution.json";
-const NORMS_MUNIS = "/home/antoinefa/src/geo/work/zonage-norms/munis.json";
+  process.env["GEO_AUDIT_ZONAGE"] ?? dataPath("zonage-resolution.json");
+const NORMS_MUNIS =
+  process.env["GEO_NORMS_MUNIS"] ?? dataPath("munis.json");
 
 interface ZonageAuditRow {
   readonly ville: string;
