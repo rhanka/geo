@@ -10,6 +10,8 @@ import {
   findGrilleTables,
   mapMarkdownPageToZones,
   mapOcrResultToZones,
+  zonePrefixFromRow,
+  asTextLineZoneHeader,
   resolveOcrConfig,
   ocrMethodeTag,
   parseOcrHttpResponse,
@@ -284,5 +286,171 @@ describe("createMistralOcrHttpCall (injected fetch — no network)", () => {
     const fakeFetch: typeof fetch = async () => new Response("unauthorized", { status: 401 });
     const call = createMistralOcrHttpCall(resolveOcrConfig({ OCR_API_KEY: "k" }), fakeFetch);
     await expect(call(pdf)).rejects.toThrow(/HTTP 401/);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  5. HARDENING — recover the multi-zone markdown shapes mistral-ocr-4-0 emits
+//     that the first parser dropped (measured on the live corpus, see
+//     work/delegation-mass/NORMES-OCR-HARDEN.md). Every fixture below is a
+//     VERBATIM excerpt of real mistral-ocr-4-0 output. Anti-invention is intact:
+//     these fixes only recover zone CODES; cell VALUES still flow through
+//     buildVisionField unchanged.
+// ───────────────────────────────────────────────────────────────────────────
+
+const OPTS2 = { source_url: "local://muni/grille.pdf", snapshot: "2026-06-29" };
+
+/**
+ * MRC-Portneuf "FEUILLETS DES USAGES" feuillet (portneuf p.38, verbatim): the zone
+ * PREFIX ("Zones Ra") sits one row above a BARE-NUMBER header (101…108). The parser
+ * used to read bare "101", which is the wrong code AND collides every feuillet's
+ * "101" into one zone (portneuf collapsed 161→36). Must yield Ra-101…Ra-108.
+ */
+const PORTNEUF_USAGES_MD = `Ville de Portneuf
+
+|  GRILLE DES SPÉCIFICATIONS : FEUILLETS DES USAGES |   |   | Section II, feuillet A-1  |   |   |   |   |   |   |   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  GROUPES D'USAGE | CLASSES D'USAGES | RÉFÉRENCE AU RÈGLEMENT | Zones Ra  |   |   |   |   |   |   |   |
+|   |   |   |  101 | 102 | 103 | 104 | 105 | 106 | 107 | 108  |
+|  HABITATION (H) | 1° Faible densité | 4.4.1 | • | • | • | • | • | • | • | •  |
+`;
+
+/**
+ * MRC-Portneuf "FEUILLETS DES NORMES" feuillet (saint-raymond p.2, verbatim): the
+ * prefix is buried in prose ("Zones agricoles dynamiques AD"), suffixes 1…8 below,
+ * and the data rows carry real dimensional values. Must yield AD-1…AD-8 AND publish
+ * the verbatim margin value (8 m) for every zone.
+ */
+const SAINTRAYMOND_NORMES_MD = `|  GRILLE DES SPÉCIFICATIONS : FEUILLETS DES NORMES |   |   | Feuillet B-1  |   |   |   |   |   |   |   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  DISPOSITIONS APPLICABLES |   | RÉFÉRENCE AU RÈGLEMENT | Zones agricoles dynamiques AD  |   |   |   |   |   |   |   |
+|   |  |  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8  |
+|  IMPLANTATION DU BÂTIMENT PRINCIPAL | Marge de recul avant minimale (mètre) | 7.1 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8  |
+`;
+
+/**
+ * Stratford feuillet 7 (verbatim): mistral-ocr lifted the zone header OUT of the
+ * grid onto its own text line ("B1 B2 … M10"), so findGrilleTables saw a table with
+ * no in-grid header and dropped all 15 zones.
+ */
+const STRATFORD_TEXTLINE_MD = `# Municipalité de Stratford (Périmètre d'urbanisation)
+
+B1 B2 B3 B4 B5 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10
+
+|  CHASSES D USAGES | HABITATION | résidence | 6.4 | ● | ● | ● | ● | ● | ● | ● | ● | ● | ●  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|   |   | nombre de logements (max) | 6.4 | 3 | 3 | 3 | 1 | 3 | — | — | — | — | —  |
+`;
+
+/**
+ * Stratford feuillet 8 (verbatim): a lone mono-letter zone "Q" rode in the header
+ * "| P 1 |  | I 1 | I 2 | Q |…", dragging the ratio below the old 80 % bar and
+ * rejecting the WHOLE header (4 zones lost). Must yield P 1, I 1, I 2, Q.
+ */
+const STRATFORD_MONO_MD = `| GRILLE DES SPÉCIFICATIONS | Réf. au règle. zonage | Municipalité de Stratford (Périmètre d'urbanisation) |
+| --- | --- | --- |
+| P 1 |  | I 1 | I 2 | Q |  |  |  |
+| **CLASSES D USAGES** | HABITATION | résidence | 6.4 |  |  |  |  |  |  |  |  |
+`;
+
+describe("zonePrefixFromRow", () => {
+  it("extracts the trailing zone prefix from a 'Zones …' label cell", () => {
+    expect(zonePrefixFromRow(["GROUPES", "CLASSES", "RÉF", "Zones Ra"])).toBe("Ra");
+    expect(zonePrefixFromRow(["x", "Zones agricoles dynamiques AD"])).toBe("AD");
+    expect(zonePrefixFromRow(["Zones résidentielles de moyenne densité **Rb**"])).toBe("Rb");
+    expect(zonePrefixFromRow(["Zones M"])).toBe("M");
+  });
+  it("returns null when no 'Zones <code>' cell is present (never invents one)", () => {
+    expect(zonePrefixFromRow(["GROUPES D'USAGE", "CLASSES", "RÉFÉRENCE"])).toBeNull();
+    expect(zonePrefixFromRow(["Zones résidentielles de faible densité"])).toBeNull();
+  });
+});
+
+describe("asTextLineZoneHeader", () => {
+  it("reads a standalone space-separated zone-code line", () => {
+    expect(asTextLineZoneHeader("B1 B2 B3 M1 M2")).toEqual(["B1", "B2", "B3", "M1", "M2"]);
+  });
+  it("rejects prose / non-zone lines (no guessing)", () => {
+    expect(asTextLineZoneHeader("Municipalité de Stratford (Périmètre)")).toBeNull();
+    expect(asTextLineZoneHeader("Section I du règlement de zonage")).toBeNull();
+    expect(asTextLineZoneHeader("Ra-1 only")).toBeNull(); // a prose word disqualifies
+  });
+});
+
+describe("hardening — MRC-Portneuf numeric+prefix feuillets", () => {
+  it("prefixes a bare-number header with the 'Zones Ra' row above (Ra-101…Ra-108)", () => {
+    const t = findGrilleTables(PORTNEUF_USAGES_MD);
+    expect(t.length).toBe(1);
+    expect(t[0]!.zoneCodes).toEqual([
+      "Ra-101", "Ra-102", "Ra-103", "Ra-104", "Ra-105", "Ra-106", "Ra-107", "Ra-108",
+    ]);
+  });
+
+  it("de-collides identical suffixes across feuillets (Ra-101 ≠ M-101)", () => {
+    const ra = mapMarkdownPageToZones(PORTNEUF_USAGES_MD, 38, OPTS2);
+    const m = mapMarkdownPageToZones(PORTNEUF_USAGES_MD.replace("Zones Ra", "Zones M"), 52, OPTS2);
+    const codes = new Set([...ra, ...m].map((z) => z.zone_code.toUpperCase()));
+    expect(codes.has("RA-101")).toBe(true);
+    expect(codes.has("M-101")).toBe(true);
+    expect(codes.size).toBe(16); // 8 Ra + 8 M, no collision
+  });
+
+  it("publishes verbatim NORMES values under prefixed codes (AD-1 marge avant = 8)", () => {
+    const zones = mapMarkdownPageToZones(SAINTRAYMOND_NORMES_MD, 2, OPTS2);
+    expect(zones.map((z) => z.zone_code)).toEqual([
+      "AD-1", "AD-2", "AD-3", "AD-4", "AD-5", "AD-6", "AD-7", "AD-8",
+    ]);
+    const ad1 = zones.find((z) => z.zone_code === "AD-1")!;
+    expect(ad1.marges.avant_min?.value).toBe(8);
+    expect(ad1.marges.avant_min?.unit).toBe("m");
+  });
+
+  it("bare numbers WITHOUT a 'Zones' prefix row are NOT prefixed (no invention)", () => {
+    const md = PORTNEUF_USAGES_MD.replace("Zones Ra", "Référence");
+    const t = findGrilleTables(md);
+    // falls back to the plain numeric header → bare codes, never an invented prefix
+    expect(t[0]!.zoneCodes.every((c) => /^\d+$/.test(c))).toBe(true);
+  });
+});
+
+describe("hardening — header lifted out of the grid (text line)", () => {
+  it("recovers all 15 zones from a standalone header line above the table", () => {
+    const zones = mapMarkdownPageToZones(STRATFORD_TEXTLINE_MD, 7, OPTS2);
+    expect(zones.map((z) => z.zone_code)).toEqual([
+      "B1", "B2", "B3", "B4", "B5", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10",
+    ]);
+  });
+});
+
+describe("hardening — mono-letter zone code in the header", () => {
+  it("keeps a lone 'Q' instead of rejecting the whole header", () => {
+    const zones = mapMarkdownPageToZones(STRATFORD_MONO_MD, 8, OPTS2);
+    expect(zones.map((z) => z.zone_code)).toEqual(["P 1", "I 1", "I 2", "Q"]);
+  });
+  it("does NOT manufacture a header from mono-letters alone (≥2 strong codes required)", () => {
+    // "Total | A | B" — two mono-letters but no strong (prefix+digit) code → no table.
+    expect(findGrilleTables("| Total | A | B |\n| --- | --- | --- |\n| x | y | z |")).toEqual([]);
+  });
+});
+
+describe("hardening — anti-invention preserved end-to-end", () => {
+  it("every published value across the hardened fixtures is verbatim in its raw cell", () => {
+    const all = [
+      ...mapMarkdownPageToZones(PORTNEUF_USAGES_MD, 38, OPTS2),
+      ...mapMarkdownPageToZones(SAINTRAYMOND_NORMES_MD, 2, OPTS2),
+      ...mapMarkdownPageToZones(STRATFORD_TEXTLINE_MD, 7, OPTS2),
+      ...mapMarkdownPageToZones(STRATFORD_MONO_MD, 8, OPTS2),
+    ];
+    for (const z of all) {
+      const served = [
+        z.densite, z.hauteur_max, z.frontage_min, z.superficie_min,
+        z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min,
+      ].filter((f) => f && f.value !== null);
+      for (const f of served) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
   });
 });

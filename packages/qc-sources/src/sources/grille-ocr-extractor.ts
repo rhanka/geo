@@ -309,41 +309,131 @@ export interface MarkdownTable {
   rows: string[][];
 }
 
+/** A single uppercase letter — an ambiguous-but-real zone code (Stratford "Q", "P"). */
+const MONO_LETTER_CODE = /^[A-Z]$/;
+
+/** A bare numeric suffix (the MRC-Portneuf "feuillet" family lists 101, 102, …). */
+function looksLikeBareNumber(c: string): boolean {
+  return /^\d{1,4}$/.test(c.trim());
+}
+
 /**
  * Detect a standalone zone-header row: a row whose cells are ALL (or almost all)
  * zone-code-looking. The QC "grille des spécifications" emits the zone header on
  * its OWN markdown line, separate from the data rows, so we anchor on it.
+ *
+ * Single uppercase-letter codes (Stratford feuillet 8 "P 1 … I 2 Q") are real but
+ * too ambiguous to anchor a header alone, so they count only as WEAK support: the
+ * row still needs ≥2 strong (prefix+digit) codes, and the dominance bar is 70 %
+ * (was 80 % with mono-letters counted as noise, which dropped whole headers when a
+ * lone "Q" rode along).
  */
 function asZoneHeader(cells: string[]): string[] | null {
   const nonEmpty = cells.filter((c) => c.length > 0);
   if (nonEmpty.length < 2) return null;
-  const zoneish = nonEmpty.filter(looksLikeZoneCode).length;
-  // Require the row to be dominated by zone-code-looking cells (≥80%).
-  if (zoneish < 2 || zoneish < Math.ceil(nonEmpty.length * 0.8)) return null;
+  const strong = nonEmpty.filter(looksLikeZoneCode).length;
+  const mono = nonEmpty.filter(
+    (c) => !looksLikeZoneCode(c) && MONO_LETTER_CODE.test(c.trim()),
+  ).length;
+  if (strong < 2) return null;
+  if (strong + mono < Math.ceil(nonEmpty.length * 0.7)) return null;
   return nonEmpty.map((c) => c.trim());
 }
 
-/** Find every markdown table on a page that carries a standalone zone header. */
+/**
+ * Extract a zone PREFIX from a "Zones …" label cell that sits in the row ABOVE a
+ * numeric header (the MRC-Portneuf family splits the prefix off the suffix list):
+ *   "Zones Ra"  ·  "Zones M"  ·  "Zones agricoles dynamiques AD"
+ *   "Zones résidentielles de moyenne densité **Rb**"
+ * Returns the trailing short capital-initial token ("Ra", "M", "AD", "Rb"), read
+ * VERBATIM (never invented) — or null when no such code is present.
+ */
+export function zonePrefixFromRow(cells: string[]): string | null {
+  for (const raw of cells) {
+    const c = raw.replace(/[*_`]/g, "").trim();
+    if (!/\bzones?\b/i.test(c)) continue;
+    const tokens = c.split(/\s+/);
+    for (let k = tokens.length - 1; k >= 0; k--) {
+      const t = tokens[k]!;
+      if (/^zones?$/i.test(t)) continue;
+      // A zone prefix is a short, capital-initial code: "Ra", "Rb", "AD", "M", "A".
+      if (/^[A-Z][A-Za-z]{0,3}\d{0,2}$/.test(t)) return t;
+    }
+  }
+  return null;
+}
+
+/**
+ * Detect a bare-numeric header row (cells are 101, 102, …) whose zone PREFIX lives
+ * in `prevCells` ("Zones Ra" → Ra-101, Ra-102…). This is the dominant MRC-Portneuf
+ * "FEUILLETS DES USAGES/NORMES" layout (portneuf, saint-raymond, cap-sante,
+ * saint-marc-des-carrieres). Without it the suffixes are read as bare "101", which
+ * (a) is the wrong code and (b) COLLIDES every feuillet's 101 into one zone — e.g.
+ * portneuf collapsed from 161 real zones to 36. Returns prefixed codes or null.
+ */
+function asPrefixedNumericHeader(cells: string[], prevCells?: string[]): string[] | null {
+  if (!prevCells) return null;
+  const nonEmpty = cells.filter((c) => c.length > 0);
+  if (nonEmpty.length < 2) return null;
+  const numeric = nonEmpty.filter(looksLikeBareNumber);
+  if (numeric.length < 2 || numeric.length < Math.ceil(nonEmpty.length * 0.8)) return null;
+  const prefix = zonePrefixFromRow(prevCells);
+  if (!prefix) return null;
+  return numeric.map((n) => `${prefix}-${n.trim()}`);
+}
+
+/**
+ * Detect a zone header emitted as a STANDALONE text line OUTSIDE the markdown table
+ * (mistral-ocr sometimes lifts the header out of the grid):
+ *   "B1 B2 B3 B4 B5 M1 M2 M3 M4 M5 M6 M7 M8 M9 M10"
+ * Every whitespace-separated token must be a strong zone code (one prose word
+ * disqualifies the whole line, so this never fires on a caption/sentence).
+ */
+export function asTextLineZoneHeader(line: string): string[] | null {
+  const s = line.replace(/[#*_`|]/g, " ").trim();
+  if (!s) return null;
+  const tokens = s.split(/\s+/);
+  if (tokens.length < 3) return null;
+  if (!tokens.every(looksLikeZoneCode)) return null;
+  return tokens;
+}
+
+/** Find every markdown table on a page that carries a (recoverable) zone header. */
 export function findGrilleTables(markdown: string): MarkdownTable[] {
   const lines = markdown.split("\n");
   const tables: MarkdownTable[] = [];
   let i = 0;
+  // Track the last non-empty TEXT line before a table block, so a zone header that
+  // mistral-ocr emitted outside the grid ("B1 B2 … M10") can still anchor a table.
+  let precedingText = "";
   while (i < lines.length) {
     if (!lines[i]!.includes("|")) {
+      if (lines[i]!.trim()) precedingText = lines[i]!;
       i++;
       continue;
     }
+    const blockPrecedingText = precedingText;
     const block: string[] = [];
     while (i < lines.length && lines[i]!.includes("|")) {
       block.push(lines[i]!);
       i++;
     }
+    precedingText = "";
     if (block.length < 2) continue;
     const rows = block.map(splitRow).filter((r) => !isSeparatorRow(r));
-    // Locate the standalone zone-header row (first one wins).
+    // Locate the zone-header row (first one wins). Try the numeric-with-prefix
+    // form FIRST (so "Zones Ra" + "101 102 …" → Ra-101…, not bare 101), then the
+    // ordinary alpha-coded standalone header.
     let header: string[] | null = null;
     let headerIdx = -1;
-    for (let r = 0; r < Math.min(rows.length, 6); r++) {
+    for (let r = 0; r < Math.min(rows.length, 8); r++) {
+      const prev = r > 0 ? rows[r - 1] : undefined;
+      const numeric = asPrefixedNumericHeader(rows[r]!, prev);
+      if (numeric) {
+        header = numeric;
+        headerIdx = r;
+        break;
+      }
       const h = asZoneHeader(rows[r]!);
       if (h) {
         header = h;
@@ -351,7 +441,16 @@ export function findGrilleTables(markdown: string): MarkdownTable[] {
         break;
       }
     }
-    if (!header) continue;
+    // Fallback: no in-table header, but the text line just above the block is a
+    // standalone zone-code row → every block row is data under that header.
+    if (!header) {
+      const textHeader = asTextLineZoneHeader(blockPrecedingText);
+      if (textHeader) {
+        tables.push({ zoneCodes: textHeader, rows });
+        continue;
+      }
+      continue;
+    }
     tables.push({ zoneCodes: header, rows: rows.slice(headerIdx + 1) });
   }
   return tables;
