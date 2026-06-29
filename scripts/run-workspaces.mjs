@@ -35,18 +35,33 @@ export function getOrderedWorkspaces(root = defaultRoot) {
   const discovered = [];
 
   for (const pattern of workspacePatterns) {
-    const base = pattern.endsWith("/*") ? pattern.slice(0, -2) : pattern;
-    const baseDir = join(root, base);
-    if (!existsSync(baseDir)) continue;
+    if (pattern.endsWith("/*")) {
+      // Glob pattern (e.g. "packages/*"): enumerate immediate subdirectories.
+      const base = pattern.slice(0, -2);
+      const baseDir = join(root, base);
+      if (!existsSync(baseDir)) continue;
 
-    const entries = readdirSync(baseDir, { withFileTypes: true }).sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
+      const entries = readdirSync(baseDir, { withFileTypes: true }).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
 
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
 
-      const workspaceDir = join(baseDir, entry.name);
+        const workspaceDir = join(baseDir, entry.name);
+        const manifestPath = join(workspaceDir, "package.json");
+        if (!existsSync(manifestPath)) continue;
+
+        const workspaceManifest = readJson(manifestPath);
+        discovered.push({
+          dir: workspaceDir,
+          manifest: workspaceManifest,
+          name: workspaceManifest.name ?? `${base}/${entry.name}`,
+        });
+      }
+    } else {
+      // Direct workspace path (e.g. "acquisition"): the directory itself is the workspace.
+      const workspaceDir = join(root, pattern);
       const manifestPath = join(workspaceDir, "package.json");
       if (!existsSync(manifestPath)) continue;
 
@@ -54,7 +69,7 @@ export function getOrderedWorkspaces(root = defaultRoot) {
       discovered.push({
         dir: workspaceDir,
         manifest: workspaceManifest,
-        name: workspaceManifest.name ?? `${base}/${entry.name}`,
+        name: workspaceManifest.name ?? pattern,
       });
     }
   }
