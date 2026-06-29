@@ -1,0 +1,411 @@
+{
+  "_comment": "Manifest des villes dures A-L (stratégies complémentaires). Agent codex-immo — 2026-06-14.",
+  "_format": "slug → { strategy, pvIndexUrl, status, notes }",
+  "vplus_verified": {
+    "_description": "Villes utilisant VPlus/Portail Citoyen (modellium.com). PDFs servis depuis vplus-documents.s3.ca-central-1.amazonaws.com. API: GET /api/{hostname}/structure/detail/{uuid}",
+    "batiscan": {
+      "strategy": "vplus",
+      "hostname": "batiscan.ca",
+      "uuid": "E1B63304-B021-451F-B0D1-458F17400A11",
+      "pvIndexUrl": "https://batiscan.ca/proces-verbaux",
+      "pdf_count": 20,
+      "status": "graphified",
+      "scw_key": "graph/batiscan/latest.json"
+    },
+    "boileau": {
+      "strategy": "vplus",
+      "hostname": "boileau.ca",
+      "uuid": "4342C881-44F3-4594-B9B2-E5AE40A23279",
+      "pvIndexUrl": "https://boileau.ca/proces-verbaux",
+      "pdf_count": 164,
+      "status": "graphified",
+      "scw_key": "graph/boileau/latest.json"
+    },
+    "bowman": {
+      "strategy": "vplus",
+      "hostname": "bowman.ca",
+      "uuid": "CA9CE655-C80F-4FCD-93AE-FD4E166934AC",
+      "pvIndexUrl": "https://bowman.ca/les-proces-verbaux",
+      "pdf_count": 13,
+      "status": "graphified",
+      "scw_key": "graph/bowman/latest.json"
+    },
+    "chibougamau": {
+      "strategy": "vplus",
+      "hostname": "ville.chibougamau.qc.ca",
+      "uuid": "07AB1863-1C79-40C0-B8AB-3AF4F1CD7550",
+      "pvIndexUrl": "https://ville.chibougamau.qc.ca/seances-du-conseil",
+      "pdf_count": 270,
+      "status": "graphified",
+      "notes": "270 PVs, 2016 nodes, 2664 edges",
+      "scw_key": "graph/chibougamau/latest.json"
+    },
+    "dunham": {
+      "strategy": "vplus",
+      "hostname": "ville.dunham.qc.ca",
+      "uuid": "AAEAC377-4DCA-419B-8457-816D5E82A568",
+      "pvIndexUrl": "https://ville.dunham.qc.ca/seances-du-conseil-municipal",
+      "pdf_count": 132,
+      "status": "graphified",
+      "scw_key": "graph/dunham/latest.json"
+    },
+    "grenville": {
+      "strategy": "vplus",
+      "hostname": "grenville.ca",
+      "uuid": "016527C8-1DD8-42AC-9878-013947F1F66C",
+      "pvIndexUrl": "https://grenville.ca/seances-du-conseil",
+      "pdf_count": 12,
+      "status": "graphified",
+      "scw_key": "graph/grenville/latest.json"
+    },
+    "lac-saint-paul": {
+      "strategy": "vplus",
+      "hostname": "lac-saint-paul.ca",
+      "uuid": "2D2DB56D-AADB-48C1-88BD-67FCE2D99283",
+      "pvIndexUrl": "https://lac-saint-paul.ca/proces-verbaux",
+      "pdf_count": 82,
+      "status": "graphified",
+      "scw_key": "graph/lac-saint-paul/latest.json",
+      "notes": "3 PDFs 2024 déjà en SCW, 2 403 (fichiers anciens supprimés)"
+    },
+    "laurierville": {
+      "strategy": "vplus",
+      "hostname": "laurierville.ca",
+      "uuid": "B7364266-9FC6-4AC7-9B35-119A1137E4F9",
+      "pvIndexUrl": "https://laurierville.ca/proces-verbaux",
+      "pdf_count": 227,
+      "status": "graphified",
+      "notes": "227 PVs, 1575 nodes, 2324 edges",
+      "scw_key": "graph/laurierville/latest.json"
+    },
+    "lorrainville": {
+      "strategy": "vplus",
+      "hostname": "lorrainville.ca",
+      "uuid": "40030C70-0557-4C0E-8F1D-7466BBA57EC3",
+      "pvIndexUrl": "https://lorrainville.ca/proces-verbaux",
+      "pdf_count": 60,
+      "status": "graphified",
+      "scw_key": "graph/lorrainville/latest.json",
+      "notes": "60 PDFs scannés/image → 62 noeuds seulement (OCR non disponible)"
+    },
+    "lyster": {
+      "strategy": "vplus",
+      "hostname": "lyster.ca",
+      "uuid": "EF709034-00F9-49B8-B424-8CE7B1C5835B",
+      "pvIndexUrl": "https://lyster.ca/proces-verbaux",
+      "pdf_count": 251,
+      "status": "graphified",
+      "notes": "251 PVs, 1924 nodes, 3155 edges",
+      "scw_key": "graph/lyster/latest.json"
+    },
+    "baie-des-sables": {
+      "strategy": "vplus",
+      "hostname": "baiedessables.ca",
+      "uuid": "DF5D6441-A00F-4595-A96A-BC90A54BAA9D",
+      "pvIndexUrl": "https://baiedessables.ca/documents-et-publications/proces-verbaux",
+      "pdf_count": 215,
+      "status": "graphified",
+      "notes": "215 PVs, 1610 nodes, 2658 edges",
+      "scw_key": "graph/baie-des-sables/latest.json"
+    },
+    "beaupre": {
+      "strategy": "vplus",
+      "hostname": "villedebeaupre.com",
+      "uuid": "25831DB8-CFFF-40E7-B1F6-108BF95A3AF0",
+      "pvIndexUrl": "https://villedebeaupre.com/conseil-municipal/seance-du-conseil",
+      "pdf_count": 114,
+      "status": "graphified",
+      "scw_key": "graph/beaupre/latest.json"
+    },
+    "grand-remous": {
+      "strategy": "vplus",
+      "hostname": "grandremous.ca",
+      "uuid": "679C5E47-64D5-41D5-BA89-8688BA4F4A3D",
+      "pvIndexUrl": "https://grandremous.ca/proces-verbaux",
+      "pdf_count": 323,
+      "status": "graphified",
+      "notes": "323 PVs, 2073 nodes, 3337 edges",
+      "scw_key": "graph/grand-remous/latest.json"
+    }
+  },
+  "other_scraped": {
+    "_description": "Villes avec PDFs accessibles via stratégie alternative (non-VPlus)",
+    "lac-frontiere": {
+      "strategy": "wordpress-wpdm",
+      "pvIndexUrl": "https://www.lac-frontiere.ca/web/proces-verbaux/",
+      "pvArchiveUrl": "https://www.lac-frontiere.ca/web/proces-verbaux-archive/",
+      "pdf_count": 85,
+      "status": "graphified",
+      "scw_key": "graph/lac-frontiere/latest.json",
+      "notes": "WordPress Download Manager (wpdmdl=N redirect). 658 nodes, 902 edges."
+    },
+    "clarendon": {
+      "strategy": "wordpress-events",
+      "pvIndexUrl": "https://clarendon.ca/municipality/council-meetings/",
+      "pdf_count": 56,
+      "status": "graphified",
+      "scw_key": "graph/clarendon/latest.json",
+      "notes": "42 Minutes PDFs depuis pages événements + 14 depuis zip 2023-frn. Bilingue EN/FR. 603 nodes, 872 edges."
+    }
+  },
+  "configured_not_scraped": {
+    "_description": "Villes déjà dans ALL_PV_CITIES mais pas encore scrapées (raw/ absent de SCW). Ces villes sont confirmées irréductibles pour l'instant.",
+    "brossard": {
+      "pvIndexUrl": "https://brossard.ca/assemblees-du-conseil-municipal/",
+      "status": "irreductible",
+      "notes": "WordPress city-event (1902 PDFs total) — PV non présents dans event pages, aucun PDF PV trouvé via REST API ni HTML scraping"
+    },
+    "lefebvre": {
+      "pvIndexUrl": "https://municipalites-du-quebec.ca/lefebvre/pdf_procesverbaux/",
+      "status": "irreductible",
+      "notes": "403 Forbidden sur le dossier PDF"
+    }
+  },
+  "irreductible": {
+    "_description": "Villes sans PDFs PV accessibles programmatiquement. Raison documentée.",
+    "amqui": {
+      "status": "irreductible",
+      "notes": "WordPress Elementor, PDFs non indexés directement dans le HTML"
+    },
+    "audet": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "baie-johan-beetz": {
+      "status": "irreductible",
+      "notes": "Population=75, très petite. Domaine non résolu."
+    },
+    "beaulac-garthby": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "beaumont": {
+      "status": "irreductible",
+      "notes": "beaumont.ca = directory index, pas le site municipal. Site officiel inaccessible."
+    },
+    "belcourt": {
+      "status": "irreductible",
+      "notes": "Template municipalites-du-quebec.ca, aucun contenu PV"
+    },
+    "belleterre": {
+      "status": "irreductible",
+      "notes": "Site en construction (villedebelleterre.ca)"
+    },
+    "bethanie": {
+      "status": "irreductible",
+      "notes": "Template municipalites-du-quebec.ca, aucun contenu PV"
+    },
+    "bonne-esperance": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "bonsecours": {
+      "status": "irreductible",
+      "notes": "Template municipalites-du-quebec.ca, aucun contenu PV"
+    },
+    "bristol": {
+      "status": "irreductible",
+      "notes": "bristol.ca répond sur AWS mais connexion TLS timeout. Anti-bot probable."
+    },
+    "bryson": {
+      "status": "irreductible",
+      "notes": "WordPress avec calendrier d'événements, aucun téléchargement PDF PV"
+    },
+    "cacouna": {
+      "status": "irreductible",
+      "notes": "Challenge JS / anti-bot"
+    },
+    "charette": {
+      "status": "irreductible",
+      "notes": "Memphis Documents Library avec 7 fichiers (politiques, calendrier) mais AUCUN procès-verbal"
+    },
+    "caniapiscau": {
+      "status": "irreductible",
+      "notes": "caniapiscau.ca = MRC (pas une ville). Territoire non-organisé, gouvernance distincte."
+    },
+    "cascapedia-saint-jules": {
+      "status": "irreductible",
+      "notes": "cascapedia.ca = Cascapedia River Society (pas la municipalité). Domaine officiel inconnu."
+    },
+    "chambord": {
+      "status": "irreductible",
+      "notes": "WordPress, aucune page conseil/proc-verbaux trouvée"
+    },
+    "chapais": {
+      "status": "irreductible",
+      "notes": "villedechapais.com = Next.js SPA, PDFs non accessibles statiquement"
+    },
+    "la-durantaye": {
+      "status": "irreductible",
+      "notes": "munladurantaye.qc.ca utilise gestionweblex.ca (ASP.NET AJAX-only SPA), non scrapable"
+    },
+    "chateau-richer": {
+      "status": "irreductible",
+      "notes": "chateauricher.qc.ca utilise gestionweblex.ca (ASP.NET AJAX-only SPA), non scrapable"
+    },
+    "chichester": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "chute-aux-outardes": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "colombier": {
+      "status": "irreductible",
+      "notes": "Template mun-qc.ca, aucun contenu PV"
+    },
+    "cote-nord-du-golfe-du-saint-laurent": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "disraeli--les-appalaches--2": {
+      "status": "irreductible",
+      "notes": "Slug ambigu (MRC vs ville). Domaine non résolu."
+    },
+    "duhamel-ouest": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "eeyou-istchee-james-bay": {
+      "status": "irreductible",
+      "notes": "Territoire Eeyou Istchee, gouvernance Cree Nation. Domaine non résolu."
+    },
+    "entrelacs": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "escuminac": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "fort-coulonge": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "franquelin": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "fugereville": {
+      "status": "irreductible",
+      "notes": "Template municipalites-du-quebec.ca, aucun contenu PV"
+    },
+    "gros-mecatina": {
+      "status": "irreductible",
+      "notes": "grosmecatina.ca = Wix site anglophone, aucun PDF PV"
+    },
+    "grosse-ile": {
+      "status": "irreductible",
+      "notes": "grosseile.ca = site touristique Parks Canada (Grosse-Île), pas la municipalité"
+    },
+    "guerin": {
+      "status": "irreductible",
+      "notes": "Template municipalites-du-quebec.ca, aucun contenu PV"
+    },
+    "honfleur": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "irlande": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "kipawa": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "kirkland": {
+      "status": "irreductible",
+      "notes": "403 anti-bot"
+    },
+    "la-conception": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu (la-conception.ca, laconception.ca, mun-laconception.ca)"
+    },
+    "la-macaza": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "la-malbaie": {
+      "status": "irreductible",
+      "notes": "PDFs sur Google Drive, non scrapables"
+    },
+    "la-reine": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "la-visitation-de-lile-dupas": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "la-visitation-de-yamaska": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lac-delage": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lac-des-plages": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lac-megantic": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu (Angular SPA présumé)"
+    },
+    "lac-poulin": {
+      "status": "irreductible",
+      "notes": "gestionweblex.ca = ASP.NET AJAX-only SPA, non scrapable"
+    },
+    "landrienne": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lascension-de-patapedia": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lemieux": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "les-bergeronnes": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu (lesbergeronnes.ca, bergeronnes.ca)"
+    },
+    "les-hauteurs": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "les-mechins": {
+      "status": "irreductible",
+      "notes": "WordPress, aucun lien PDF direct trouvé"
+    },
+    "lile-dorval": {
+      "status": "irreductible",
+      "notes": "Pop=9, île minuscule. Domaine non résolu."
+    },
+    "lingwick": {
+      "status": "irreductible",
+      "notes": "lingwick.ca = Wix site, 1 seul PDF non-PV. Lien vers portailcitoyen.cauca.ca (alertes, pas PVs)"
+    },
+    "lisle-aux-allumettes": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lisle-verte": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "longue-pointe-de-mingan": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    },
+    "lotbiniere": {
+      "status": "irreductible",
+      "notes": "Domaine non résolu"
+    }
+  }
+}
