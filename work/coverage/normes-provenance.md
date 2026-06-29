@@ -1,8 +1,8 @@
 # Registre de provenance — normes 2-moteurs (keep-best)
 
-_Généré 2026-06-29T11:45:12.119Z — 38 villes._
+_Généré 2026-06-29T11:51:12.933Z — 44 villes._
 
-**Gagnants:** OCR-4.0 = 12 · Claude-4.8 = 2 · existant gardé = 23 · déposés (apply) = 14
+**Gagnants:** OCR-4.0 = 13 · Claude-4.8 = 4 · existant gardé = 26 · déposés (apply) = 17
 
 Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. Anti-invention: garde `buildVisionField` partagée (verbatim ou null) → invention_ok partout.
 
@@ -46,3 +46,9 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | senneville | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | shawinigan | — | 6 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | stanstead--memphremagog--2 | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| tring-jonction | — | 16 | 34 | 46 | claude-4.8 | 0/32/69 | 46 | ✓ | recall 16->46, publié 0->69 |
+| ulverton | — | 7 | 172 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 7->172, publié 0->0 |
+| val-des-bois | — | 5 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | recall régresserait 5->0 |
+| val-des-lacs | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| val-joli | — | 2 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| val-racine | — | 4 | 35 | 35 | claude-4.8 | 0/20/59 | 0 | ✓ | recall 4->35, publié 0->59 |
