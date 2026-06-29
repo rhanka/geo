@@ -1,6 +1,6 @@
 # TRACK-REPORT — couverture QC par couche × track
 
-Généré : 2026-06-29T13:12:24.688Z
+Généré : 2026-06-29T13:22:24.781Z
 Cible : **1106 municipalités** sur chaque couche.
 Régénérable : lit `work/coverage/coverage-matrix.json` (lecture pure, 0 LLM, 0 crédit).
 
