@@ -204,6 +204,17 @@ export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
   return set;
 }
 
+/** Resolve the SIG grille key for a slug, tolerating BOTH layouts the corpus
+ *  uses: the flat `qc-zonage-<slug>.geojson` and the subfolder
+ *  `qc-zonage-<slug>/qc-zonage-<slug>.geojson` (mirrors coverage-reconcile). */
+export async function resolveGridKey(s3: S3Client, slug: string): Promise<string | null> {
+  const flat = gridKey(slug);
+  if (await exists(s3, flat)) return flat;
+  const sub = `${ZONAGE_GRIDS_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+  if (await exists(s3, sub)) return sub;
+  return null;
+}
+
 /** Cross-validate the extracted zone codes against the muni's SIG grille. */
 export async function crossValidateZoneCodes(
   s3: S3Client,
@@ -214,9 +225,10 @@ export async function crossValidateZoneCodes(
   let gridFound = false;
   let sigSet = new Set<string>();
   try {
-    if (await exists(s3, gridKey(slug))) {
+    const k = await resolveGridKey(s3, slug);
+    if (k) {
       gridFound = true;
-      const geojson = (await getBytes(s3, gridKey(slug))).toString("utf8");
+      const geojson = (await getBytes(s3, k)).toString("utf8");
       sigSet = sigZoneCodesFromGeojson(geojson);
     }
   } catch {
@@ -347,6 +359,55 @@ export async function upsertManifest(
     JSON.stringify(updated, null, 2),
     "application/json",
   );
+}
+
+/**
+ * MANIFEST-SAFE deposit: write ONLY the `qc-zonage-norms-<slug>.parquet` product
+ * to S3 and DO NOT touch the shared manifest. Used by concurrent residue/mass
+ * runs that must not race the stock run's manifest writer (read-modify-write
+ * without a lock → lost updates). `coverage-reconcile.ts` counts norms from
+ * parquet existence, so the coverage counter rises immediately; the manifest is
+ * reconciled afterwards from the S3 parquet truth (see zonage-norms-manifest-merge.ts).
+ * Returns the entry that a later merge would upsert (also derivable from the parquet).
+ */
+export async function depositParquetOnly(
+  opts: Omit<DepositOptions, "idempotent" | "now"> & { now?: () => Date },
+): Promise<{ result: DepositResult; entry: ManifestEntry }> {
+  const { s3, slug, zones, meta } = opts;
+  const now = opts.now ?? (() => new Date());
+  const key = normsKey(slug);
+  const rows = flattenZoneNorms(zones, meta);
+  const parquet = await writeNormsParquet(rows);
+  await putBytes(s3, key, parquet, "application/octet-stream");
+  const uniqueZoneCodes = new Set(zones.map((z) => z.zone_code)).size;
+  const fieldPct = publishedFieldPct(zones);
+  const entry: ManifestEntry = {
+    slug,
+    key,
+    ...(meta.reglement ? { reglement: meta.reglement } : {}),
+    source_url: meta.source_url,
+    methode: meta.methode,
+    snapshot: meta.snapshot,
+    zone_rows: zones.length,
+    unique_zone_codes: uniqueZoneCodes,
+    published_field_pct: fieldPct,
+    ...(opts.crossval
+      ? {
+          crossval: {
+            gridFound: opts.crossval.gridFound,
+            sigZoneCodes: opts.crossval.sigZoneCodes,
+            overlap: opts.crossval.overlap,
+            recoupExtracted: Math.round(opts.crossval.recoupExtracted * 1000) / 1000,
+            recoupSig: Math.round(opts.crossval.recoupSig * 1000) / 1000,
+          },
+        }
+      : {}),
+    deposited_at: now().toISOString(),
+  };
+  return {
+    result: { skipped: false, key, rows: zones.length, uniqueZoneCodes, publishedFieldPct: fieldPct, bytes: parquet.length },
+    entry,
+  };
 }
 
 /**
