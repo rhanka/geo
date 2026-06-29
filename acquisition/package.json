@@ -1,0 +1,43 @@
+{
+  "name": "@sentropic/geo-acquisition",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Province-wide QC acquisition scripts (cadastre clip, rôle foncier, index-immo, lot attrs). Ported from Python to TypeScript — runs via tsx/node, reads S3 (Scaleway, forcePathStyle) read-only except its own output prefix. NO Python in the geo repo (ADR: Node/TS libs only).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "clip:province": "tsx src/cadastre-clip-province.ts",
+    "role:province": "tsx src/cadastre-role-province.ts",
+    "index:province": "tsx src/cadastre-index-province.ts",
+    "enrich:codezone": "tsx src/enrich-lots-codezone.ts",
+    "lot-attrs": "tsx src/lot-attrs-geom.ts",
+    "role:one": "tsx src/role-foncier.ts",
+    "request-manager": "tsx src/request-manager.ts",
+    "coverage:to-track": "tsx src/coverage-to-track.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.658.0",
+    "@dsnp/parquetjs": "^1.8.7",
+    "@turf/turf": "^7.3.5",
+    "@types/proj4": "^2.5.6",
+    "fast-xml-parser": "^4.5.0",
+    "hyparquet": "^1.26.1",
+    "hyparquet-compressors": "^1.1.1",
+    "mistral-ocr": "^0.1.1",
+    "proj4": "^2.20.9",
+    "tesseract.js": "^7.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "allowScripts": {
+    "tesseract.js@7.0.0": true
+  }
+}
