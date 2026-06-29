@@ -129,3 +129,30 @@ export const PV_ASPNET_GATINEAU_INDEX_HTML = `<!doctype html>
 </main>
 </body>
 </html>`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. download-endpoint CMS — municipalityshigawake.com (real PV via /download/)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Real excerpt from the procès-verbaux page of the Municipality of Shigawake
+ * (Gaspésie), captured 2026-06-27 from:
+ *   https://municipalityshigawake.com/fr/documentation/proces-verbaux/
+ *   HTTP 200, public / no login. robots.txt: no Disallow on the path.
+ *
+ * The CMS serves every PV through an extension-less DOWNLOAD ENDPOINT
+ * (`/download/<cat>/<slug>/<id>/<file-slug>`), NOT a `.pdf` href. The static
+ * link extractor must treat these as documents (looksLikeDocumentHref matches
+ * the `/download/` path segment). The page lists 40+ such PVs; this excerpt
+ * keeps three verbatim anchors plus a sibling navigation link.
+ */
+export const PV_SHIGAWAKE_DOWNLOAD_INDEX_HTML = `<!doctype html>
+<html lang="fr-CA"><head><title>Procès-verbaux</title></head><body>
+<nav><a href="https://municipalityshigawake.com/fr/documentation/reglements/" class="elementor-sub-item">Règlements</a></nav>
+<main><h1>Procès-verbaux</h1>
+<ul>
+<li><a href="https://municipalityshigawake.com/download/230/proces-verbaux-2026/3434/pv-reunion-extraordinaire-26-mai-2026">PV réunion extraordinaire 26 mai 2026</a></li>
+<li><a href="https://municipalityshigawake.com/download/230/proces-verbaux-2026/3436/pv-12-mai-2026">PV 12 mai 2026</a></li>
+<li><a href="https://municipalityshigawake.com/download/220/proces-verbaux/3281/pv-reunion-reguliere-du-05-mai-2025">Procès-verbal réunion régulière 5 mai 2025</a></li>
+</ul>
+</main></body></html>`;

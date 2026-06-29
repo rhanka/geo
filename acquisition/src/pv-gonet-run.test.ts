@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   extractGoNetLinks,
   extractPvNavigationLinks,
+  pvEntriesFromHtml,
   pvEntriesFromItems,
   runPvGoNet,
 } from "./pv-gonet-run.js";
@@ -79,6 +80,59 @@ describe("pv-gonet-run helpers", () => {
         contentType: "application/pdf",
       },
     ]);
+  });
+
+  // STATIC-MISS recovery: download-endpoint CMS + date-labelled lists + the
+  // homepage-junk garde-fou. Excerpts are verbatim from real index pages
+  // (municipalityshigawake.com, riviere-heva.com, municipalite.eastfarnham.qc.ca)
+  // captured 2026-06-27.
+  describe("pvEntriesFromHtml – STATIC-MISS recovery + quality guard", () => {
+    it("keeps extension-less /download/ PV endpoints (shigawake) — was 0", () => {
+      const html = `
+        <a href="https://municipalityshigawake.com/download/230/proces-verbaux-2026/3434/pv-reunion-extraordinaire-26-mai-2026">PV réunion extraordinaire 26 mai 2026</a>
+        <a href="https://municipalityshigawake.com/download/220/proces-verbaux/3281/pv-reunion-reguliere-du-05-mai-2025">Procès-verbal réunion régulière 5 mai 2025</a>`;
+      const entries = pvEntriesFromHtml(
+        html,
+        "https://municipalityshigawake.com/fr/documentation/proces-verbaux/",
+      );
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://municipalityshigawake.com/download/230/proces-verbaux-2026/3434/pv-reunion-extraordinaire-26-mai-2026",
+        "https://municipalityshigawake.com/download/220/proces-verbaux/3281/pv-reunion-reguliere-du-05-mai-2025",
+      ]);
+    });
+
+    it("keeps date-labelled PV PDFs on a CDN host from a procès-verbaux page (riviere-heva)", () => {
+      const html = `
+        <a href="https://riviere-heva.nyc3.digitaloceanspaces.com/site/documents/PV-du-2-mars-2026-adopte.pdf" download>Procès-verbal 2 mars 2026 - Séance ordinaire</a>
+        <a href="https://riviere-heva.nyc3.digitaloceanspaces.com/site/documents/Proces-verbal-21-janvier-2026.pdf" download>Procès-verbal 21 janvier 2026</a>`;
+      const entries = pvEntriesFromHtml(html, "https://riviere-heva.com/registre-des-proces-verbaux");
+      expect(entries.length).toBe(2);
+      expect(entries[0]?.contentType).toBe("application/pdf");
+    });
+
+    it("garde-fou: rejects generic homepage PDFs (east-farnham 168.pdf / horaire)", () => {
+      // Real homepage links: opaque numeric PDFs and a schedule ('horaire'),
+      // none carrying a PV keyword. Homepage is never a PV-context page.
+      const html = `
+        <a href="docs/fichiers_documents/168.pdf"></a>
+        <a href="docs/images_infos/horaire_2026-06-04.pdf"></a>
+        <a href="docs/fichiers_documents/79.pdf">Cliquez ici pour accéder à la résolution adoptée!</a>`;
+      const entries = pvEntriesFromHtml(html, "https://www.municipalite.eastfarnham.qc.ca/");
+      expect(entries).toEqual([]);
+    });
+
+    it("garde-fou: a bare-date PDF is kept on a /proces-verbaux/ page but rejected on the homepage", () => {
+      const link = `<a href="/docs/2026-03-02.pdf">Séance du 2 mars 2026</a>`;
+      // On an unambiguous PV-context page → kept via the date relaxation.
+      expect(pvEntriesFromHtml(link, "https://ville.qc.ca/conseil/proces-verbaux/").length).toBe(1);
+      // Same link on the homepage → rejected (no PV keyword, homepage not PV-context).
+      expect(pvEntriesFromHtml(link, "https://ville.qc.ca/").length).toBe(0);
+    });
+
+    it("garde-fou: a download endpoint with NO PV keyword is rejected even on a PV page", () => {
+      const html = `<a href="https://ville.qc.ca/download/55/finances/900/budget-2026">Budget 2026</a>`;
+      expect(pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/")).toEqual([]);
+    });
   });
 
   it("should follow nested municipal PV navigation pages when the first PV page is only a hub", async () => {
