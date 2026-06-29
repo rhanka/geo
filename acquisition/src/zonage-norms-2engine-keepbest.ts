@@ -247,8 +247,28 @@ interface ProvenanceRow {
   retested_at: string;
 }
 
-async function writeProvenance(rows: ProvenanceRow[]): Promise<void> {
+/**
+ * Load the prior provenance registry (if any). Lets a RESUMED run merge its rows
+ * into the full audit instead of clobbering the cities it did not re-process.
+ */
+function loadExistingProvenance(): ProvenanceRow[] {
+  if (!existsSync(PROVENANCE_JSON)) return [];
+  try {
+    const j = JSON.parse(readFileSync(PROVENANCE_JSON, "utf8")) as { rows?: ProvenanceRow[] };
+    return Array.isArray(j.rows) ? j.rows : [];
+  } catch {
+    return [];
+  }
+}
+
+async function writeProvenance(runRows: ProvenanceRow[]): Promise<void> {
   await mkdir(PROVENANCE_DIR, { recursive: true });
+  // Merge by slug: this run's rows take precedence; prior rows for cities NOT in
+  // this run are preserved verbatim (resumable, no audit loss).
+  const bySlug = new Map<string, ProvenanceRow>();
+  for (const r of loadExistingProvenance()) bySlug.set(r.slug, r);
+  for (const r of runRows) bySlug.set(r.slug, r);
+  const rows = [...bySlug.values()];
   await writeFile(PROVENANCE_JSON, JSON.stringify({ updated_at: new Date().toISOString(), rows }, null, 2));
   const aWin = rows.filter((r) => r.winner === "ocr-4.0").length;
   const bWin = rows.filter((r) => r.winner === "claude-4.8").length;
