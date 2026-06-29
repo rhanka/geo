@@ -152,15 +152,56 @@ function contentTypeFor(url: string): string {
   return "application/octet-stream";
 }
 /**
+ * Famille CMS « fichiers_documents » (sites municipaux QC type villagehowick.com,
+ * tres-st-sacrement.ca, stanbridge-station.ca, …). La liste PV rendue est un
+ * tableau où chaque séance est DEUX ancres séparées que `parsePvIndex` ne sait pas
+ * réassocier :
+ *   <a href="…/documents/?id=89">2026-05-04 : Séance ordinaire</a>   ← titre+date
+ *   <a href="…/docs/fichiers_documents/89.pdf">89.pdf</a>             ← fichier réel
+ * Le `.pdf` porte un nom inutile (« 89.pdf ») donc la garde-fou générale le rejette
+ * (ni mot-clé PV, ni date). On RÉ-ASSOCIE par le NUMÉRO (id=N ↔ N.pdf — convention
+ * du CMS), en n'émettant que les paires dont le LABEL `?id=N` est explicitement
+ * PV-identifié par mot-clé (séance/procès-verbal — PAS la seule date, sinon les
+ * docs d'urbanisme « Plan d'urbanisme (mars 2020) » passeraient). Anti-invention :
+ * l'URL émise est l'ancre `.pdf` RÉELLE du DOM ; le titre vient de l'ancre sœur réelle.
+ */
+function extractHowickCmsEntries(dom: string, baseUrl: string): PvManifestEntry[] {
+  const labelById = new Map<string, string>();
+  for (const m of dom.matchAll(/<a\b[^>]*\shref=["'][^"']*[?&]id=(\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const id = m[1]!; const label = labelText(m[2] ?? "");
+    if (label && !labelById.has(id)) labelById.set(id, label);
+  }
+  const out: PvManifestEntry[] = [];
+  const seen = new Set<string>();
+  for (const m of dom.matchAll(/<a\b[^>]*\shref=["']([^"']*fichiers_documents\/(\d+)\.pdf)["']/gi)) {
+    let url: string;
+    try { url = new URL(decodeEntities(m[1]!), baseUrl).href; } catch { continue; }
+    const label = labelById.get(m[2]!);
+    if (!label) continue;
+    if (OBSCURA_ODJ_RE.test(label)) continue;        // jamais d'ordre-du-jour
+    if (!PV_KW_RE.test(label)) continue;             // mot-clé PV obligatoire (pas date seule)
+    if (seen.has(url)) continue;
+    seen.add(url);
+    const iso = isoFromLabel(label);
+    out.push({ url, title: label, ...(iso ? { publishedAt: iso } : {}), contentType: "application/pdf" });
+  }
+  return out;
+}
+/**
  * PV entries from a rendered DOM: first the shared quality-gated parser
  * (`pvEntriesFromHtml`, covers JS sites that render normal .pdf links), then the
- * gestionweblex/obscura extractor for what the shared parser structurally defers.
+ * gestionweblex/obscura extractor for what the shared parser structurally defers,
+ * then the « fichiers_documents » CMS family (id↔pdf re-association).
  * Merged + de-duplicated by URL.
  */
 function pvEntriesFromRenderedDom(dom: string, baseUrl: string): PvManifestEntry[] {
   const out: PvManifestEntry[] = [];
   const seen = new Set<string>();
-  for (const e of [...pvEntriesFromHtml(dom, baseUrl), ...extractGestionweblexEntries(dom, baseUrl)]) {
+  for (const e of [
+    ...pvEntriesFromHtml(dom, baseUrl),
+    ...extractGestionweblexEntries(dom, baseUrl),
+    ...extractHowickCmsEntries(dom, baseUrl),
+  ]) {
     if (seen.has(e.url)) continue;
     seen.add(e.url);
     out.push(e);
@@ -269,6 +310,13 @@ class Browser {
     const proc = spawn(chrome, [
       "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
       "--hide-scrollbars", "--mute-audio", "--no-first-run", "--disable-extensions",
+      // Beaucoup de sites municipaux QC ont un certificat TLS cassé (CN/SAN qui ne
+      // matche pas le hostname, certificat « Plesk » par défaut, auto-signé). Sans
+      // ce flag, chromium rend l'interstitiel d'erreur (net::ERR_CERT_*) au lieu de
+      // la page → 0 PV (faux négatif). curl -k confirme que le contenu EST servi ;
+      // on charge donc malgré le cert (lecture seule, anti-invention inchangée :
+      // on n'extrait que les liens PV réellement présents dans le DOM rendu).
+      "--ignore-certificate-errors",
       `--remote-debugging-port=0`, `--user-data-dir=${profile}`, "about:blank",
     ], { stdio: ["ignore", "ignore", "ignore"] });
     const b = new Browser(proc, profile, 0);
@@ -411,18 +459,24 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
   const tried = new Set<string>([pvIndexUrl]);
 
   // 2) Si l'index rend 0 PV, suivre les liens "PV/séances" rendus (même site) et
-  //    re-rendre — certains index JS pointent vers des sous-pages par année.
+  //    re-rendre. Beaucoup de sites éclatent leurs PV sur PLUSIEURS sous-pages par
+  //    année (CMS « fichiers_documents » : `?c=7&sc=2` 2025, `?c=7&sc=4` 2026, …).
+  //    On ACCUMULE donc les PV de toutes les sous-pages suivies (dédupe par URL)
+  //    au lieu de s'arrêter à la première non vide — sinon on perd les autres années.
   if (best.entries.length === 0) {
     const navLinks = extractPvNavigationLinks(dom, pvIndexUrl).slice(0, args.maxFollow);
+    const merged = new Map<string, PvManifestEntry>();
+    let firstHit = "";
     for (const link of navLinks) {
       tried.add(link);
       followed++;
       const subDom = await browser.visit(link, args.navMs);
       if (!subDom) continue;
       const subEntries = pvEntriesFromRenderedDom(subDom, link);
-      if (subEntries.length > best.entries.length) best = { url: link, entries: subEntries };
-      if (best.entries.length > 0) break; // premier sous-index non vide suffit
+      if (subEntries.length > 0 && !firstHit) firstHit = link;
+      for (const e of subEntries) if (!merged.has(e.url)) merged.set(e.url, e);
     }
+    if (merged.size > best.entries.length) best = { url: firstHit || pvIndexUrl, entries: [...merged.values()] };
   }
 
   // 3) Toujours 0 PV : RENDRE les chemins PV canoniques de l'origine. Récupère les
