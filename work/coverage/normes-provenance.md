@@ -1,8 +1,8 @@
 # Registre de provenance — normes 2-moteurs (keep-best)
 
-_Généré 2026-06-29T12:14:29.893Z — 70 villes._
+_Généré 2026-06-29T12:16:54.148Z — 75 villes._
 
-**Gagnants:** OCR-4.0 = 20 · Claude-4.8 = 4 · existant gardé = 43 · déposés (apply) = 24
+**Gagnants:** OCR-4.0 = 22 · Claude-4.8 = 4 · existant gardé = 46 · déposés (apply) = 26
 
 Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. Anti-invention: garde `buildVisionField` partagée (verbatim ou null) → invention_ok partout.
 
@@ -13,6 +13,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | deleage | — | 3 | 7 | 0 | kept-existing | 1/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 1->0 |
 | dixville | — | 46 | 0 | 0 | kept-existing | 30/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | eastman | — | 112 | 109 | 27 | kept-existing | 1/0/70 | 0 |  | recall régresserait 112->109 |
+| egan-sud | — | 4 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | lac-des-seize-iles | — | 5 | 0 | 0 | kept-existing | 2/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 5->0 |
 | lancienne-lorette | — | 8 | 15 | 0 | kept-existing | 4/1/0 | 0 |  | claude rate-limit (sauté); payload régresserait 4->1 |
 | lile-perrot | — | 10 | 42 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 10->42, publié 0->0 |
@@ -24,6 +25,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | montcerf-lytton | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | montebello | — | 40 | 103 | 0 | kept-existing | 1/0/0 | 0 |  | payload régresserait 1->0 |
 | notre-dame-des-bois | — | 43 | 47 | 0 | ocr-4.0 | 28/40/0 | 0 | ✓ | claude rate-limit (sauté); recall 43->47, publié 28->40 |
+| preissac | 25 | 12 | 0 | 0 | kept-existing | 25/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 12->0 |
 | richmond | — | 26 | 104 | 83 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 26->104, publié 0->0 |
 | riviere-rouge | — | 5 | 159 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 5->159, publié 0->0 |
 | roxton-pond | — | 4 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | recall régresserait 4->0 |
@@ -54,6 +56,8 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | saint-roch-ouest | — | 1 | 4 | 0 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 1->4, publié 0->0 |
 | saint-rosaire | — | 1 | 10 | 10 | claude-4.8 | 0/0/35 | 0 | ✓ | recall 1->10, publié 0->35 |
 | saint-valerien-de-milton | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| sainte-beatrix | — | 32 | 146 | 0 | kept-existing | 21/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 21->0 |
+| sainte-christine-dauvergne | — | 71 | 165 | 0 | ocr-4.0 | 44/240/0 | 0 | ✓ | claude rate-limit (sauté); recall 71->165, publié 44->240 |
 | sainte-clotilde-de-horton | — | 1 | 13 | 1 | ocr-4.0 | 0/4/1 | 0 | ✓ | recall 1->13, publié 0->4 |
 | sainte-edwidge-de-clifton | — | 3 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | sainte-thecle | — | 6 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
@@ -65,6 +69,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | shefford | — | 7 | 7 | 0 | ocr-4.0 | 2/24/59 | 7 | ✓ | recall 7->7, publié 2->24 |
 | stanstead--memphremagog | — | 49 | 70 | 0 | kept-existing | 16/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 16->0 |
 | stanstead--memphremagog--2 | — | 1 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
+| stornoway | — | 8 | 67 | 0 | ocr-4.0 | 6/46/0 | 0 | ✓ | claude rate-limit (sauté); recall 8->67, publié 6->46 |
 | stratford | 50 | 49 | 39 | 39 | kept-existing | 14/54/125 | 39 |  | recall régresserait 49->39 |
 | tres-saint-redempteur | — | 6 | 91 | 0 | ocr-4.0 | 0/3/0 | 0 | ✓ | recall 6->91, publié 0->3 |
 | tring-jonction | — | 16 | 34 | 46 | claude-4.8 | 0/32/69 | 46 | ✓ | recall 16->46, publié 0->69 |
