@@ -38,8 +38,10 @@ const KNOWN_HOSTS = [/geoserver\.geocentralis\.com/i];
 const GS_URL_RE = /https?:\/\/[a-z0-9.\-]+(?::\d+)?\/[^\s"'<>)]*?(?:geoserver|service=wfs|request=getcapabilities|\/ows\b|\/wfs\b)[^\s"'<>)]*/gi;
 // Liens carto/urbanisme à suivre (1 hop) — même esprit que zones-platform-probe.
 const CARTO_LINK_RE = /carte|g[ée]oportail|cartograph|zonage|urbanis|interactiv|matrice|\bsig\b|g[ée]omati|services?[-_]en[-_]ligne/i;
-// Sous-domaines GIS courants.
-const SUB_PREFIXES = ["geo", "carte", "cartes", "sig", "gis", "carto", "map", "maps", "geomatique"];
+// Sous-domaines GIS courants. (geoserver/wfs/donnees ajoutés : un GeoServer dédié
+// vit souvent sous geoserver.<domaine> ou wfs.<domaine>, angle non couvert par la
+// passe précédente.)
+const SUB_PREFIXES = ["geo", "carte", "cartes", "sig", "gis", "carto", "map", "maps", "geomatique", "geoserver", "wfs", "donnees", "ows"];
 // Une couche "zonage" plausible (nom OU titre).
 const ZONE_LAYER_RE = /zonage|zoning|affectation|urbanis|\bgrille\b|plan.?urb|reglement.*zon/i;
 
@@ -144,11 +146,17 @@ async function probeSubs(host: string, bases: Set<string>, subHits: string[]): P
   const root = bd.replace(/^[a-z0-9-]+\./i, "");
   const hosts = new Set<string>();
   for (const p of SUB_PREFIXES) { hosts.add(`${p}.${bd}`); if (root !== bd && root.includes(".")) hosts.add(`${p}.${root}`); }
+  // Try several WFS capability paths: /geoserver/ows (GeoServer), bare /ows and
+  // /wfs (mapserver/qgis-server or a vhosted geoserver.<domain> root).
+  const CAP_PATHS = ["/geoserver/ows", "/ows", "/wfs", "/geoserver/wfs"];
   await Promise.all([...hosts].map(async (h) => {
-    const cap = `https://${h}/geoserver/ows?service=WFS&version=2.0.0&request=GetCapabilities`;
-    const r = await fetchText(cap, SUB_TIMEOUT);
-    if (r && r.ok && /WFS_Capabilities|FeatureTypeList|wfs:WFS_Capabilities/i.test(r.body)) {
-      const b = geoserverBase(cap); if (b) { bases.add(b); subHits.push(`https://${h}/geoserver`); }
+    for (const p of CAP_PATHS) {
+      const cap = `https://${h}${p}?service=WFS&version=2.0.0&request=GetCapabilities`;
+      const r = await fetchText(cap, SUB_TIMEOUT);
+      if (r && r.ok && /WFS_Capabilities|FeatureTypeList|wfs:WFS_Capabilities/i.test(r.body)) {
+        const b = geoserverBase(cap); if (b) { bases.add(b); subHits.push(`https://${h}${p}`); }
+        break; // first working path wins for this host
+      }
     }
   }));
 }
