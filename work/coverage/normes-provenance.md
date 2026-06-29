@@ -1,8 +1,8 @@
 # Registre de provenance — normes 2-moteurs (keep-best)
 
-_Généré 2026-06-29T12:13:33.851Z — 69 villes._
+_Généré 2026-06-29T12:14:29.893Z — 70 villes._
 
-**Gagnants:** OCR-4.0 = 20 · Claude-4.8 = 4 · existant gardé = 42 · déposés (apply) = 24
+**Gagnants:** OCR-4.0 = 20 · Claude-4.8 = 4 · existant gardé = 43 · déposés (apply) = 24
 
 Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. Anti-invention: garde `buildVisionField` partagée (verbatim ou null) → invention_ok partout.
 
@@ -11,6 +11,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | ascot-corner | — | 126 | 115 | 0 | kept-existing | 52/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 126->115 |
 | blue-sea | — | 12 | 0 | 0 | kept-existing | 3/0/0 | 0 |  | moins de 3 zones extraites |
 | deleage | — | 3 | 7 | 0 | kept-existing | 1/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 1->0 |
+| dixville | — | 46 | 0 | 0 | kept-existing | 30/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | eastman | — | 112 | 109 | 27 | kept-existing | 1/0/70 | 0 |  | recall régresserait 112->109 |
 | lac-des-seize-iles | — | 5 | 0 | 0 | kept-existing | 2/0/0 | 0 |  | claude rate-limit (sauté); recall régresserait 5->0 |
 | lancienne-lorette | — | 8 | 15 | 0 | kept-existing | 4/1/0 | 0 |  | claude rate-limit (sauté); payload régresserait 4->1 |
