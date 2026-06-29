@@ -176,6 +176,31 @@ function collectPvRoutes(tree: unknown): { name: string; elementId: string }[] {
   return hits;
 }
 
+/** Collect EVERY (name, elementId) route in the tree (no name filter).
+ * Used as a last-resort fallback: some hosts file their PV under a generically
+ * named node (e.g. « Document ») that `collectPvRoutes` never matches. Scanning
+ * all routes is only safe paired with a STRICT filename gate (PV token), so the
+ * fallback runs `vplusPvEntriesFromApiText(text, false)` (strong=false) which keeps
+ * ONLY files explicitly named « PV / procès-verbal » — never a bare-date file. */
+function collectAllRoutes(tree: unknown): { name: string; elementId: string }[] {
+  const hits: { name: string; elementId: string }[] = [];
+  const seen = new Set<string>();
+  const walk = (o: unknown): void => {
+    if (o == null) return;
+    if (Array.isArray(o)) { for (const x of o) walk(x); return; }
+    if (typeof o === "object") {
+      const n = o as RouteNode;
+      if (typeof n.name === "string" && typeof n.elementId === "string" && n.elementId && !seen.has(n.elementId)) {
+        seen.add(n.elementId);
+        hits.push({ name: n.name.trim(), elementId: n.elementId });
+      }
+      for (const k of Object.keys(n)) walk(n[k]);
+    }
+  };
+  walk(tree);
+  return hits;
+}
+
 function hostCandidates(slug: string, explicit?: string): string[] {
   if (explicit) return [explicit];
   const site = websiteForSlug(slug);
@@ -217,14 +242,16 @@ async function processCity(
   if (!host) return { ...base, host: hosts[0]!, status: "not-vplus", detail: "config/pc vplus introuvable (pas un site vplus/modellium ?)" };
   base.host = host;
 
-  let routes: { name: string; elementId: string }[] = [];
-  try { routes = collectPvRoutes(JSON.parse(cfg).routesTree); } catch { routes = []; }
-  if (routes.length === 0) return { ...base, status: "no-pv", detail: "aucune route PV/séance dans routesTree" };
+  let tree: unknown;
+  try { tree = JSON.parse(cfg).routesTree; } catch { tree = null; }
+  const routes = collectPvRoutes(tree);
 
   // 2) structure/detail de chaque route PV → extraire les PDF PV (merge, dédupe).
   const merged = new Map<string, PvManifestEntry>();
   const usedRoutes: string[] = [];
+  const triedRoutes = new Set<string>();
   for (const route of routes) {
+    triedRoutes.add(route.elementId);
     const r = await getText(
       `${API}/${host}/structure/detail/${encodeURIComponent(route.elementId)}?inStructure=false&localisation=fr`,
     );
@@ -234,6 +261,26 @@ async function processCity(
     if (entries.length > 0) usedRoutes.push(`${route.name} (${entries.length})`);
     for (const e of entries) if (!merged.has(e.url)) merged.set(e.url, e);
   }
+
+  // 2b) Fallback dernier recours : aucune route PV-nommée n'a rendu de PV, mais le
+  //     host PEUT classer ses procès-verbaux sous un nœud générique (« Document »).
+  //     On balaie alors TOUTES les routes, en n'acceptant QUE les fichiers dont le
+  //     NOM porte explicitement le token « PV / procès-verbal » (strong=false) :
+  //     jamais un fichier daté-seul, jamais un OJ. Anti-invention préservée.
+  if (merged.size === 0) {
+    for (const route of collectAllRoutes(tree)) {
+      if (triedRoutes.has(route.elementId)) continue;
+      const r = await getText(
+        `${API}/${host}/structure/detail/${encodeURIComponent(route.elementId)}?inStructure=false&localisation=fr`,
+      );
+      if (!r.ok) continue;
+      const entries = vplusPvEntriesFromApiText(r.text, false);
+      if (entries.length > 0) usedRoutes.push(`${route.name} [fallback] (${entries.length})`);
+      for (const e of entries) if (!merged.has(e.url)) merged.set(e.url, e);
+    }
+  }
+
+  if (routes.length === 0 && merged.size === 0) return { ...base, status: "no-pv", detail: "aucune route PV/séance dans routesTree (et fallback toutes-routes vide)" };
   const entries = [...merged.values()];
   base.count = entries.length;
   base.routes = usedRoutes;
