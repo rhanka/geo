@@ -22,7 +22,8 @@
  *
  * Usage:
  *   tsx src/t2-build.ts --slug saint-constant --gcp work/gcp/saint-constant.gcp.json \
- *        [--pdf <url|path>] [--page 8] [--labels text|ocr] [--ocr-reviewed] [--dry-run] [--out <dir>]
+ *        [--pdf <url|path>] [--page 8] [--labels text|ocr|gpt55] [--dict <codes.json>]
+ *        [--ocr-reviewed] [--dry-run] [--out <dir>]
  *        [--cutoff-m 1500] [--min-codes 10] [--max-residual-m 50] [--spatial-km 8]
  *        [--cadastre <path>] [--ocr-dpi 200]
  *
@@ -46,7 +47,8 @@ interface Args {
   gcp: string;
   pdf?: string;
   page?: number;
-  labels: "text" | "ocr";
+  labels: "text" | "ocr" | "gpt55";
+  dict?: string;
   ocrReviewed: boolean;
   dryRun: boolean;
   out?: string;
@@ -59,6 +61,7 @@ interface Args {
   requireIndependentGcps: boolean;
   source: string;
   confidence: string;
+  labelRegion?: [number, number, number, number];
 }
 
 function parseArgs(argv: string[]): Args {
@@ -77,13 +80,19 @@ function parseArgs(argv: string[]): Args {
   }
   if (!a["slug"] || !a["gcp"]) throw new Error("required: --slug <slug> --gcp <file.gcp.json>");
   const labels = String(a["labels"] ?? "text");
-  if (labels !== "text" && labels !== "ocr") throw new Error("--labels must be text|ocr");
+  if (labels !== "text" && labels !== "ocr" && labels !== "gpt55") throw new Error("--labels must be text|ocr|gpt55");
+  let labelRegion: [number, number, number, number] | undefined;
+  if (typeof a["label-region"] === "string") {
+    const r = a["label-region"].split(",").map(Number);
+    if (r.length === 4 && r.every((x) => Number.isFinite(x))) labelRegion = r as [number, number, number, number];
+  }
   return {
     slug: String(a["slug"]),
     gcp: String(a["gcp"]),
     pdf: a["pdf"] ? String(a["pdf"]) : undefined,
     page: a["page"] ? Number(a["page"]) : undefined,
     labels,
+    dict: a["dict"] ? String(a["dict"]) : undefined,
     ocrReviewed: Boolean(a["ocr-reviewed"]),
     dryRun: Boolean(a["dry-run"]),
     out: a["out"] ? String(a["out"]) : undefined,
@@ -96,6 +105,7 @@ function parseArgs(argv: string[]): Args {
     requireIndependentGcps: Boolean(a["require-independent-gcps"]),
     source: a["source"] ? String(a["source"]) : "t2-gcp3",
     confidence: a["confidence"] ? String(a["confidence"]) : "contour-manual-gcp",
+    labelRegion,
   };
 }
 
@@ -123,6 +133,17 @@ export function pdfPageSize(pdfPath: string, page = 1): { pageW: number; pageH: 
 function fail(msg: string): never {
   console.error(`\n[t2-build] ABORT (anti-invention): ${msg}`);
   process.exit(2);
+}
+
+function loadDict(path: string): { codes: string[]; kindByPrefix?: Record<string, string> } {
+  const j = JSON.parse(readFileSync(path, "utf8")) as unknown;
+  const codes = Array.isArray(j) ? j : (j as { codes?: unknown }).codes;
+  if (!Array.isArray(codes)) throw new Error("--dict must be a JSON array of codes or { codes: [...] }");
+  const kindByPrefix =
+    !Array.isArray(j) && (j as { kindByPrefix?: Record<string, string> }).kindByPrefix
+      ? (j as { kindByPrefix: Record<string, string> }).kindByPrefix
+      : undefined;
+  return { codes: codes.map(String), kindByPrefix };
 }
 
 async function main(): Promise<void> {
@@ -172,8 +193,9 @@ async function main(): Promise<void> {
     fail(`GCP calibration residual ${cal.maxResidualM.toFixed(1)} m > ${args.maxResidualM} m — recheck the GCP picks`);
   }
 
-  // 2. Labels (text via pdftotext, or glyphs via positioned OCR) -------------
+  // 2. Labels (text via pdftotext, glyphs via OCR, or GPT-validated vision) --
   let lab: ExtractLabelsResult;
+  let gpt55Stats: Record<string, unknown> = {};
   if (args.labels === "ocr") {
     const { extractLabelsOcr } = await import("./lib/t2-labels-ocr.js");
     lab = await extractLabelsOcr(pdfPath, geo, { dpi: args.ocrDpi, page });
@@ -181,6 +203,41 @@ async function main(): Promise<void> {
       "[t2-build] NOTE: OCR label path is EXPERIMENTAL (tesseract glyph reading). " +
         "Codes MUST be human-reviewed before serving; pass --ocr-reviewed only after that check.",
     );
+  } else if (args.labels === "gpt55") {
+    if (!args.dict) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
+    const { codes: dict, kindByPrefix } = loadDict(args.dict);
+    console.error(`[t2-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
+    const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
+    const gptLab = await extractLabelsGpt55(pdfPath, geo, dict, {
+      dpi: args.ocrDpi,
+      page,
+      slug: args.slug,
+      region: args.labelRegion,
+      excludeRegions: gcpFile.excludeRegions,
+      ...(kindByPrefix ? { kindByPrefix } : {}),
+    });
+    lab = gptLab;
+    gpt55Stats = {
+      dict_size: dict.length,
+      gpt55_reads: gptLab.nReads,
+      gpt55_validated: gptLab.nValidated,
+      gpt55_exact: gptLab.nExact,
+      gpt55_canonical: gptLab.nCanonical,
+      gpt55_rejected: gptLab.nRejected,
+      gpt55_distinct: gptLab.nDistinct,
+      gpt55_crop: gptLab.crop,
+      gpt55_latency_ms: gptLab.latencyMs,
+      gpt55_tokens_input: gptLab.usage.inputTokens,
+      gpt55_tokens_output: gptLab.usage.outputTokens,
+      gpt55_tokens_reasoning: gptLab.usage.reasoningOutputTokens,
+      gpt55_reject_samples: gptLab.rejectSamples,
+    };
+    console.error(
+      `[t2-build] GPT-5.5 labels: ${gptLab.nReads} reads, ${gptLab.nCodeLike} code-like, ` +
+        `${gptLab.nValidated} validated (${gptLab.nExact} exact + ${gptLab.nCanonical} canonical), ` +
+        `${gptLab.nRejected} rejected, ${gptLab.nDistinct} distinct codes`,
+    );
+    console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.rejectSamples.join(" | ")}`);
   } else {
     lab = extractLabels(pdfPath, geo, { page, excludeRegions: gcpFile.excludeRegions });
   }
@@ -270,6 +327,7 @@ async function main(): Promise<void> {
     label_spatial_km_from_cadastre: Number(spatialKm.toFixed(3)),
     lot_to_zone_pct: Number(lotToZonePct.toFixed(2)),
     compute_seconds: Number(elapsedS.toFixed(1)),
+    ...gpt55Stats,
     ...stats,
   };
 
