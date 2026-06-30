@@ -44,6 +44,10 @@ const CARTO_LINK_RE = /carte|g[ée]oportail|cartograph|zonage|urbanis|interactiv
 const SUB_PREFIXES = ["geo", "carte", "cartes", "sig", "gis", "carto", "map", "maps", "geomatique", "geoserver", "wfs", "donnees", "ows"];
 // Une couche "zonage" plausible (nom OU titre).
 const ZONE_LAYER_RE = /zonage|zoning|affectation|urbanis|\bgrille\b|plan.?urb|reglement.*zon/i;
+const AFFECT_LAYER_RE = /affectation|agricole|cptaq|zone\s*verte|milieux?.humide|inondation|contrainte|risque/i;
+const ZONE_FIELD_RE = /^(zone_?code|zonage|zoning|zone|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
+const FIELD_EXCLUDE_RE = /objectid|^fid$|globalid|shape|superfic|^area$|longueur|length|perimet|date|^modif$|matricule|adresse|propri[eé]t|code_?postal|municipalit|id_?municip|code_?mun|mamh|cadastre|no_?lot|\blot\b/i;
+const MUNI_FIELD_RE = /^(id_?municipalite|code_?mun|mun_?code|id_?muni|municipalit|sdr|geocode_?mun|no_?muni|cod[_]?mun)$/i;
 
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
 
@@ -165,7 +169,7 @@ async function probeSubs(host: string, bases: Set<string>, subHits: string[]): P
 export interface LayerInfo { name: string; title: string; zoneish: boolean }
 export interface CapsInfo {
   base: string; reachable: boolean; layerCount: number;
-  zoneLayers: LayerInfo[]; sampleLayers: string[]; error?: string;
+  layers: LayerInfo[]; zoneLayers: LayerInfo[]; sampleLayers: string[]; error?: string;
 }
 
 export function parseFeatureTypes(xml: string): LayerInfo[] {
@@ -192,13 +196,13 @@ async function getCapabilities(base: string): Promise<CapsInfo> {
     // retry 1.1.0 (some old servers)
     const r2 = await fetchText(`${base}?service=WFS&version=1.1.0&request=GetCapabilities`, CAPS_TIMEOUT);
     if (!r2 || !r2.ok || !/WFS_Capabilities|FeatureTypeList/i.test(r2.body)) {
-      return { base, reachable: false, layerCount: 0, zoneLayers: [], sampleLayers: [], error: r ? `http/no-caps` : "unreachable" };
+      return { base, reachable: false, layerCount: 0, layers: [], zoneLayers: [], sampleLayers: [], error: r ? `http/no-caps` : "unreachable" };
     }
     const layers2 = parseFeatureTypes(r2.body);
-    return { base, reachable: true, layerCount: layers2.length, zoneLayers: layers2.filter((l) => l.zoneish), sampleLayers: layers2.slice(0, 12).map((l) => l.name) };
+    return { base, reachable: true, layerCount: layers2.length, layers: layers2, zoneLayers: layers2.filter((l) => l.zoneish), sampleLayers: layers2.slice(0, 12).map((l) => l.name) };
   }
   const layers = parseFeatureTypes(r.body);
-  return { base, reachable: true, layerCount: layers.length, zoneLayers: layers.filter((l) => l.zoneish), sampleLayers: layers.slice(0, 12).map((l) => l.name) };
+  return { base, reachable: true, layerCount: layers.length, layers, zoneLayers: layers.filter((l) => l.zoneish), sampleLayers: layers.slice(0, 12).map((l) => l.name) };
 }
 
 export async function describeFeatureType(base: string, layer: string): Promise<{ fields: { name: string; type: string }[]; raw: string } | null> {
@@ -220,10 +224,79 @@ async function pool<T, R>(items: T[], conc: number, fn: (t: T, i: number) => Pro
   return out;
 }
 
+interface DeepLayerCandidate {
+  name: string;
+  title: string;
+  zoneish: boolean;
+  affectationish: boolean;
+  zoneFields: string[];
+  muniFields: string[];
+  fields: string[];
+}
+
+function classifyDeepLayer(layer: LayerInfo, fields: { name: string; type: string }[]): DeepLayerCandidate {
+  const hay = `${layer.name} ${layer.title}`;
+  const zoneFields = fields
+    .map((f) => f.name)
+    .filter((name) => ZONE_FIELD_RE.test(name) && !FIELD_EXCLUDE_RE.test(name));
+  const muniFields = fields.map((f) => f.name).filter((name) => MUNI_FIELD_RE.test(name));
+  return {
+    name: layer.name,
+    title: layer.title,
+    zoneish: layer.zoneish,
+    affectationish: AFFECT_LAYER_RE.test(hay),
+    zoneFields,
+    muniFields,
+    fields: fields.map((f) => `${f.name}:${f.type}`),
+  };
+}
+
+async function deepCapabilities(baseRaw: string, out: string | undefined, maxLayers: number): Promise<void> {
+  const base = geoserverBase(baseRaw) ?? baseRaw;
+  const caps = await getCapabilities(base);
+  const candidates: DeepLayerCandidate[] = [];
+  const rejected: DeepLayerCandidate[] = [];
+  if (caps.reachable) {
+    const layers = caps.layers.slice(0, maxLayers);
+    let done = 0;
+    for (const layer of layers) {
+      const d = await describeFeatureType(base, layer.name);
+      done++;
+      if (!d) continue;
+      const c = classifyDeepLayer(layer, d.fields);
+      if (c.zoneFields.length > 0 && !c.affectationish) candidates.push(c);
+      else if (c.zoneish || c.zoneFields.length > 0) rejected.push(c);
+      if (done % 50 === 0) console.error(`[deep-caps] described ${done}/${layers.length}`);
+      await sleep(120);
+    }
+  }
+  const report = {
+    generatedAt: new Date().toISOString(),
+    base,
+    reachable: caps.reachable,
+    layerCount: caps.layerCount,
+    describedLayers: caps.reachable ? Math.min(caps.layers.length, maxLayers) : 0,
+    candidateCount: candidates.length,
+    candidates,
+    rejectedZoneish: rejected,
+    error: caps.error,
+  };
+  const path = out ?? resolve(HERE, "../../work/delegation-mass/zones-wfs-deep-caps.json");
+  writeFileSync(path, JSON.stringify(report, null, 2) + "\n");
+  console.error(`[deep-caps] candidates=${candidates.length} rejectedZoneish=${rejected.length} → ${path}`);
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string) => argv.includes(`--${k}`);
+
+  // deep-caps mode: describe every layer in a known catalog and surface harvest candidates.
+  const deepCaps = get("deep-caps");
+  if (deepCaps) {
+    await deepCapabilities(deepCaps, get("out"), Number(get("max-layers") ?? 5000));
+    return;
+  }
 
   // caps-only mode: just GetCapabilities + describe zone layers of an explicit base
   const capsOnly = get("caps-only");

@@ -7,6 +7,7 @@ import {
   normalizeWfsFeatures,
   parsePairs,
   positionsOf,
+  validateWfsZoneCodes,
   type GeoFeature,
   type WfsConfig,
 } from "./zones-wfs-run.js";
@@ -55,6 +56,62 @@ describe("zones-wfs-run helpers", () => {
     expect(norm.map((f) => f.properties.zone_code)).toEqual(["155 Ha", null, null]);
     expect(norm[0]!.properties.confidence).toBe("obscura-wfs-geoserver");
     expect(norm[0]!.properties.source).toBe("src#layer");
+  });
+
+  it("accepts an explicit WFS regulatory zone field with three distinct real codes", () => {
+    const raw: GeoFeature[] = ["AFV-1", "PUm-3", "REC-19"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { etiquette_1: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "etiquette_1");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.distinct).toBe(3);
+    expect(verdict.stats.sample).toEqual(["AFV-1", "PUm-3", "REC-19"]);
+  });
+
+  it("rejects OBJECTID even when values are present and distinct", () => {
+    const raw: GeoFeature[] = [101, 205, 309].map((id) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { OBJECTID: id },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "OBJECTID");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("champ zone interdit");
+  });
+
+  it("rejects fewer than three distinct zone codes", () => {
+    const raw: GeoFeature[] = ["H-1", "H-1", "P-2"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { CODE_ZONE: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "CODE_ZONE");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("<3 codes distincts");
+  });
+
+  it("rejects sequential integer identifiers even under a zone-like field name", () => {
+    const raw: GeoFeature[] = [1, 2, 3, 4, 5].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { NO_ZONE: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "NO_ZONE");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("séquentielles");
+  });
+
+  it("rejects generic Zone fields that contain usage labels instead of zone codes", () => {
+    const raw: GeoFeature[] = ["Rurale", "Urbaine", "Industrielle"].map((label) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: label },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("champ générique");
   });
 
   it("walks every position of a nested MultiPolygon and finds the bbox centre", () => {

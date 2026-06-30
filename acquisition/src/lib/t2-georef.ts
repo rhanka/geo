@@ -43,6 +43,10 @@ export interface Gcp {
   lat: number;
   /** Optional human note (landmark name) — informational only. */
   note?: string;
+  /** Optional machine-readable source tag for QA gates. */
+  source?: string;
+  /** True when this point was derived from a real visible feature, not a bbox/extent corner. */
+  independent?: boolean;
 }
 
 /** Optional neatline (map frame) in page-fraction coords, to drop legend/title labels. */
@@ -81,6 +85,60 @@ export interface BuildGeoRefResult {
   maxResidualM: number;
   /** RMS residual, metres. */
   rmsResidualM: number;
+}
+
+export interface IndependentGcpCheck {
+  independentCount: number;
+  bboxDerivedCount: number;
+  maxTriangleArea2Pt: number;
+}
+
+export function gcpLooksBboxDerived(g: Gcp): boolean {
+  const text = `${g.source ?? ""} ${g.note ?? ""}`.toLowerCase();
+  return (
+    /\bbox\b/.test(text) ||
+    text.includes("cadastre bbox") ||
+    text.includes("map bbox") ||
+    text.includes("extent matched to cadastre") ||
+    text.includes("rectangular extent") ||
+    text.includes("diagnostic main-frame")
+  );
+}
+
+export function checkIndependentGcps(gcps: Gcp[], pageW: number, pageH: number): IndependentGcpCheck {
+  const independent = gcps.filter((g) => g.independent !== false && !gcpLooksBboxDerived(g));
+  let maxArea2 = 0;
+  const pts = independent.map((g) => [g.fx * pageW, (1 - g.fy) * pageH] as [number, number]);
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      for (let k = j + 1; k < pts.length; k++) {
+        const a = pts[i]!;
+        const b = pts[j]!;
+        const c = pts[k]!;
+        const area2 = Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]));
+        if (area2 > maxArea2) maxArea2 = area2;
+      }
+    }
+  }
+  return {
+    independentCount: independent.length,
+    bboxDerivedCount: gcps.length - independent.length,
+    maxTriangleArea2Pt: maxArea2,
+  };
+}
+
+export function assertIndependentGcps(gcps: Gcp[], pageW: number, pageH: number): IndependentGcpCheck {
+  const check = checkIndependentGcps(gcps, pageW, pageH);
+  if (check.independentCount < 3) {
+    throw new Error(
+      `need >=3 independent non-bbox GCPs, got ${check.independentCount} ` +
+        `(${check.bboxDerivedCount} bbox/extent-derived)`,
+    );
+  }
+  if (check.maxTriangleArea2Pt < 1e-6 * pageW * pageH) {
+    throw new Error("independent GCPs are (near-)collinear");
+  }
+  return check;
 }
 
 /**

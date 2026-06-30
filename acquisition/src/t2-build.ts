@@ -37,7 +37,7 @@ import type { FeatureCollection } from "geojson";
 
 import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
 import { buildZones } from "./lib/t1-zones.js";
-import { buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
+import { assertIndependentGcps, buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
 import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
 
@@ -56,6 +56,9 @@ interface Args {
   spatialKm: number;
   cadastre?: string;
   ocrDpi: number;
+  requireIndependentGcps: boolean;
+  source: string;
+  confidence: string;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -90,6 +93,9 @@ function parseArgs(argv: string[]): Args {
     spatialKm: a["spatial-km"] ? Number(a["spatial-km"]) : 8,
     cadastre: a["cadastre"] ? String(a["cadastre"]) : undefined,
     ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
+    requireIndependentGcps: Boolean(a["require-independent-gcps"]),
+    source: a["source"] ? String(a["source"]) : "t2-gcp3",
+    confidence: a["confidence"] ? String(a["confidence"]) : "contour-manual-gcp",
   };
 }
 
@@ -135,6 +141,17 @@ async function main(): Promise<void> {
   const { pageW, pageH } = gcpFile.pageW && gcpFile.pageH
     ? { pageW: gcpFile.pageW, pageH: gcpFile.pageH }
     : pdfPageSize(pdfPath, page);
+  if (args.requireIndependentGcps) {
+    try {
+      const check = assertIndependentGcps(gcpFile.gcps, pageW, pageH);
+      console.error(
+        `[t2-build] independent-gcp gate: ${check.independentCount} independent, ` +
+          `${check.bboxDerivedCount} bbox/extent-derived`,
+      );
+    } catch (e) {
+      fail(`independent-GCP gate failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
 
   let cal;
   try {
@@ -220,8 +237,8 @@ async function main(): Promise<void> {
   const { featureCollection, stats } = buildZones(cadastre, lab.codePoints, {
     lat0,
     cutoffM: args.cutoffM,
-    source: "t2-gcp3",
-    confidence: "contour-manual-gcp",
+    source: args.source,
+    confidence: args.confidence,
     dissolve: true,
   });
   const lotToZonePct = (100 * stats.n_lots_assigned) / stats.n_lots_total;
@@ -236,8 +253,8 @@ async function main(): Promise<void> {
   const elapsedS = (Date.now() - t0) / 1000;
   const report = {
     slug: args.slug,
-    source: "t2-gcp3",
-    confidence: "contour-manual-gcp",
+    source: args.source,
+    confidence: args.confidence,
     pdf: pdfArg,
     page,
     label_mode: args.labels,
