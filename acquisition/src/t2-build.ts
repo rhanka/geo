@@ -165,7 +165,7 @@ async function main(): Promise<void> {
         "Codes MUST be human-reviewed before serving; pass --ocr-reviewed only after that check.",
     );
   } else {
-    lab = extractLabels(pdfPath, geo, { page });
+    lab = extractLabels(pdfPath, geo, { page, excludeRegions: gcpFile.excludeRegions });
   }
   const distinct = new Set(lab.codePoints.map((c) => c.code));
   const minCodes = Math.max(3, args.minCodes);
