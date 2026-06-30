@@ -57,6 +57,7 @@ import { resolveOcrCall } from "./lib/ocr.js";
 import {
   crossValidateZoneCodes,
   depositZonageNorms,
+  depositParquetOnly,
 } from "./lib/zonage-norms.js";
 
 // Mistral medium pricing (per 1M tokens), used only for cost reporting.
@@ -77,6 +78,8 @@ interface Args {
   budgetUsd: number;
   dryRun: boolean;
   force: boolean;
+  /** Parquet-only deposit (NO manifest write) — safe for concurrent lanes; reconcile via zonage-norms-manifest-merge.ts. */
+  noManifest: boolean;
   snapshot: string;
   dpi?: number;
   /** 1-based inclusive page range to read (vision/multizone). Default: all. */
@@ -106,6 +109,7 @@ function parseArgs(argv: string[]): Args {
     budgetUsd: Number(get("budget-usd") ?? "15"),
     dryRun: has("dry-run"),
     force: has("force"),
+    noManifest: has("no-manifest"),
     snapshot: get("snapshot") ?? new Date().toISOString().slice(0, 10),
     ...(get("dpi") ? { dpi: Number(get("dpi")) } : {}),
     ...(get("first-page") ? { firstPage: Number(get("first-page")) } : {}),
@@ -578,19 +582,33 @@ async function main(): Promise<void> {
     return;
   }
 
-  const result = await depositZonageNorms({
-    s3,
-    slug: args.slug,
-    zones,
-    meta: {
-      source_url: args.sourceUrl,
-      ...(args.reglement ? { reglement: args.reglement } : {}),
-      methode,
-      snapshot: args.snapshot,
-    },
-    crossval,
-    idempotent: !args.force,
-  });
+  const depositMeta = {
+    source_url: args.sourceUrl,
+    ...(args.reglement ? { reglement: args.reglement } : {}),
+    methode,
+    snapshot: args.snapshot,
+  };
+  // --no-manifest: parquet-only deposit (no shared-manifest write) so concurrent
+  // lanes never race the manifest writer; reconcile later with
+  // zonage-norms-manifest-merge.ts (parquet existence is the truth).
+  const result = args.noManifest
+    ? (
+        await depositParquetOnly({
+          s3,
+          slug: args.slug,
+          zones,
+          meta: depositMeta,
+          crossval,
+        })
+      ).result
+    : await depositZonageNorms({
+        s3,
+        slug: args.slug,
+        zones,
+        meta: depositMeta,
+        crossval,
+        idempotent: !args.force,
+      });
 
   console.log(
     JSON.stringify(
