@@ -105,6 +105,13 @@ export interface Gpt55PathResult {
   reasons: string[];
 }
 
+export class Gpt55UsageLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "Gpt55UsageLimitError";
+  }
+}
+
 interface PageCacheRecord {
   page: number;
   extraction: ClaudeRawExtraction;
@@ -194,6 +201,11 @@ function spawnCollect(
       settled = true;
       clearTimeout(timer);
       if (code !== 0) {
+        const combined = `${stdout}\n${stderr}`;
+        if (/usage limit|try again at/i.test(combined)) {
+          reject(new Gpt55UsageLimitError(combined.slice(0, 1200)));
+          return;
+        }
         reject(new Error(`${bin} exit=${code}: stdout=${stdout.slice(0, 800)} stderr=${stderr.slice(0, 500)}`));
         return;
       }
@@ -322,6 +334,7 @@ export async function extractGrilleGpt55FromPdf(
       pagesRead++;
       opts.onPage?.({ page, ok: true, latencyMs: cached ? res.latencyMs : Date.now() - pageStart, cached });
     } catch (e) {
+      if (e instanceof Gpt55UsageLimitError) throw e;
       pagesFailed++;
       const error = (e instanceof Error ? e.message : String(e)).slice(0, 1200);
       reasons.push(`page ${page}: ${error}`);
