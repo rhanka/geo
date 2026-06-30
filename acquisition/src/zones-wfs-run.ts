@@ -18,7 +18,8 @@
  *   `cql_filter=id_municipalite='<code>'`, sortie GeoJSON WGS84, pagination
  *   startIndex/count. On normalise `zone_code = no_zonage_municipal`, on passe le
  *   GATE SPATIAL (bbox des features ≤ --spatial-km du centroïde registre) et
- *   l'ANTI-INVENTION (zone_code non-null ≥50%), puis on dépose
+ *   l'ANTI-INVENTION (champ zone réel, zone_code non-null ≥50%, ≥3 codes
+ *   distincts, jamais OBJECTID/id séquentiel), puis on dépose
  *   `normalized/ca-qc-zonage/qc-zonage-<slug>.geojson`.
  *
  * ANTI-INVENTION : seul un zone_code RÉEL servi par le WFS est déposé. Le gate
@@ -68,9 +69,29 @@ export interface WfsResult {
   nonNullZoneCode?: number;
   distanceKm?: number;
   deposited: boolean;
-  status: "deposited" | "no-features" | "zone-null" | "spatial-fail" | "error";
+  status: "deposited" | "no-features" | "zone-null" | "zone-invalid" | "spatial-fail" | "error";
   detail: string;
 }
+
+export interface ZoneCodeStats {
+  total: number;
+  nonNull: number;
+  distinct: number;
+  nullRatio: number;
+  maxLen: number;
+  pureIntRatio: number;
+  codeLikeRatio: number;
+  sequentialIdLike: boolean;
+  fieldExcluded: boolean;
+  realFieldName: boolean;
+  explicitZoneFieldName: boolean;
+  sample: string[];
+}
+
+const FIELD_EXCLUDE_RE = /objectid|^fid$|globalid|shape|superfic|^area$|longueur|length|perimet|date|^modif$|matricule|adresse|propri[eé]t|code_?postal|municipalit|id_?municip|code_?mun|mamh|cadastre|no_?lot|\blot\b/i;
+const REAL_ZONE_FIELD_RE = /^(zone_?code|zonage|zoning|zone|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
+const EXPLICIT_ZONE_FIELD_RE = /^(zone_?code|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
+const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d/;
 
 // ── Utilitaires géo (alignés sur zones-obscura-run.ts) ────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
@@ -128,6 +149,53 @@ export function normalizeWfsFeatures(features: GeoFeature[], zoneField: string, 
   });
 }
 
+function looksSequentialIds(codes: string[]): boolean {
+  const ints = codes.filter((s) => /^\d+$/.test(s)).map((s) => Number(s));
+  if (codes.length === 0 || ints.length / codes.length <= 0.8) return false;
+  const distinct = [...new Set(ints)].sort((a, b) => a - b);
+  if (distinct.length < 3) return false;
+  const range = distinct[distinct.length - 1]! - distinct[0]! + 1;
+  return range <= distinct.length * 1.2;
+}
+
+export function zoneCodeStats(features: GeoFeature[], zoneField: string): ZoneCodeStats {
+  const codes = features
+    .map((f) => f.properties?.[zoneField])
+    .map((v) => (v === null || v === undefined ? "" : String(v).trim()))
+    .filter((s) => s !== "" && s.toLowerCase() !== "null");
+  const distinct = [...new Set(codes)];
+  const maxLen = codes.length ? Math.max(...codes.map((s) => s.length)) : 0;
+  const pureInt = codes.filter((s) => /^\d+$/.test(s)).length;
+  const codeLike = codes.filter((s) => CODE_PATTERN_RE.test(s)).length;
+  return {
+    total: features.length,
+    nonNull: codes.length,
+    distinct: distinct.length,
+    nullRatio: features.length ? 1 - codes.length / features.length : 1,
+    maxLen,
+    pureIntRatio: codes.length ? pureInt / codes.length : 1,
+    codeLikeRatio: codes.length ? codeLike / codes.length : 0,
+    sequentialIdLike: looksSequentialIds(codes),
+    fieldExcluded: FIELD_EXCLUDE_RE.test(zoneField),
+    realFieldName: REAL_ZONE_FIELD_RE.test(zoneField),
+    explicitZoneFieldName: EXPLICIT_ZONE_FIELD_RE.test(zoneField),
+    sample: distinct.slice(0, 10),
+  };
+}
+
+export function validateWfsZoneCodes(features: GeoFeature[], zoneField: string): { ok: boolean; reason: string; stats: ZoneCodeStats } {
+  const stats = zoneCodeStats(features, zoneField);
+  if (stats.total === 0) return { ok: false, reason: "0 feature", stats };
+  if (stats.fieldExcluded) return { ok: false, reason: `champ zone interdit: ${zoneField}`, stats };
+  if (!stats.realFieldName) return { ok: false, reason: `champ zone non réglementaire: ${zoneField}`, stats };
+  if (stats.nonNull / stats.total < 0.5) return { ok: false, reason: `zone_code null >50% (${stats.nonNull}/${stats.total})`, stats };
+  if (stats.distinct < 3) return { ok: false, reason: `<3 codes distincts (${stats.distinct})`, stats };
+  if (!stats.explicitZoneFieldName && stats.codeLikeRatio < 0.5) return { ok: false, reason: `champ générique sans signature code-zone (${zoneField})`, stats };
+  if (stats.maxLen > 24) return { ok: false, reason: `code trop long (maxLen=${stats.maxLen})`, stats };
+  if (stats.sequentialIdLike) return { ok: false, reason: "valeurs entières séquentielles (id technique probable)", stats };
+  return { ok: true, reason: "ok", stats };
+}
+
 /** Bbox centre of a normalized feature set (projection-free; WGS84 in). */
 export function featuresBboxCenter(features: GeoFeature[]): { lat: number; lon: number; n: number } {
   let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity, n = 0;
@@ -175,13 +243,20 @@ export async function processWfsMuni(
 
   const raw = await fetchMuniFeatures(cfg, code);
   if (raw.length === 0) return { ...base, status: "no-features", detail: `WFS: 0 feature pour ${cfg.muniField}=${code}` };
+  const codeVerdict = validateWfsZoneCodes(raw, cfg.zoneField);
+  if (!codeVerdict.ok) {
+    const status = codeVerdict.reason.includes("null >50%") ? "zone-null" : "zone-invalid";
+    return {
+      ...base,
+      featureCount: raw.length,
+      nonNullZoneCode: codeVerdict.stats.nonNull,
+      status,
+      detail: `${codeVerdict.reason} — rejet (champ ${cfg.zoneField}, distinct=${codeVerdict.stats.distinct}, sample=${JSON.stringify(codeVerdict.stats.sample.slice(0, 5))})`,
+    };
+  }
   const norm = normalizeWfsFeatures(raw, cfg.zoneField, layerUrl);
 
-  // Anti-invention : zone_code réel non-null ≥50%.
-  const nonNull = norm.filter((f) => f.properties.zone_code !== null).length;
-  if (nonNull / norm.length < 0.5) {
-    return { ...base, featureCount: norm.length, nonNullZoneCode: nonNull, status: "zone-null", detail: `zone_code null >50% (${nonNull}/${norm.length}) — rejet` };
-  }
+  const nonNull = codeVerdict.stats.nonNull;
 
   // Gate spatial : centre bbox des features ≤ spatialKm du centroïde registre.
   let distanceKm: number | undefined;
@@ -200,9 +275,9 @@ export async function processWfsMuni(
     const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
     const fc: GeoFC = { type: "FeatureCollection", features: norm };
     await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
-    return { ...result, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${cfg.zoneField}) via WFS` };
+    return { ...result, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, ${codeVerdict.stats.distinct} codes distincts, champ ${cfg.zoneField}) via WFS` };
   }
-  return { ...result, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (${nonNull} avec zone_code) via WFS` };
+  return { ...result, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (${nonNull} avec zone_code, ${codeVerdict.stats.distinct} codes distincts) via WFS` };
 }
 
 // ── Pool de concurrence ───────────────────────────────────────────────────────
