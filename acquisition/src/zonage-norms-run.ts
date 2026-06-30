@@ -64,6 +64,7 @@ import {
   crossValidateZoneCodes,
   depositZonageNorms,
   depositParquetOnly,
+  shouldRejectForZeroOverlap,
 } from "./lib/zonage-norms.js";
 
 // Mistral medium pricing (per 1M tokens), used only for cost reporting.
@@ -635,6 +636,41 @@ async function main(): Promise<void> {
           crossval,
           visionUsd,
           sampleZones: zones.slice(0, 3),
+        },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+
+  // ANTI-INVENTION CROSS-CHECK GATE: when a SIG/reglement grille WAS found but
+  // NONE of the extracted codes match a real grille code (overlap=0), the codes
+  // are mis-routed OCR garbage (e.g. row LABELS read as zone codes — kirkland).
+  // The count gate below cannot catch this (≥3 distinct strings still exist), so
+  // we reject here. Only fires when a grille exists; gridFound=false keeps the
+  // legitimate "no reference grille" path on the count gate alone.
+  if (shouldRejectForZeroOverlap(crossval)) {
+    console.error(
+      `[gate] REJET anti-invention : grille trouvée (${crossval.sigZoneCodes} codes SIG) ` +
+        `mais overlap=0 → les ${crossval.extractedZoneCodes} codes extraits ne matchent ` +
+        `AUCUN code réglementaire (probable OCR mal-routé lisant des labels). Pas de dépôt.`,
+    );
+    console.log(
+      JSON.stringify(
+        {
+          slug: args.slug,
+          deposited: false,
+          reason: `anti-invention reject: grid found (${crossval.sigZoneCodes} SIG codes) but overlap=0 — ${crossval.extractedZoneCodes} extracted code(s) match NO regulatory code (likely mis-routed OCR reading labels)`,
+          route: decision.route,
+          methode,
+          uniqueZoneCodes: crossval.extractedZoneCodes,
+          crossval: {
+            gridFound: crossval.gridFound,
+            sigZoneCodes: crossval.sigZoneCodes,
+            overlap: crossval.overlap,
+          },
+          visionUsd,
         },
         null,
         2,

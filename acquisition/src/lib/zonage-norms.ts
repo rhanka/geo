@@ -251,6 +251,25 @@ export async function crossValidateZoneCodes(
   };
 }
 
+/**
+ * Anti-invention rejection rule (pure, unit-testable).
+ *
+ * REJECT a deposit when a SIG/reglement grille WAS found (`gridFound === true`)
+ * yet NONE of the extracted codes match a real grille code (`overlap === 0`).
+ * That signature is mis-routed OCR garbage — e.g. the OCR read row LABELS as
+ * zone codes (kirkland). There can be ≥3 distinct strings, so the count gate
+ * lets them through; only the grille cross-check catches them.
+ *
+ * It does NOT fire when `gridFound === false`: with no reference grille we cannot
+ * cross-validate, so the count gate (`MIN_DEPOSIT_ZONE_CODES`) remains the sole
+ * guard and the legitimate "no grille on S3" path is untouched.
+ */
+export function shouldRejectForZeroOverlap(
+  crossval: Pick<CrossValResult, "gridFound" | "overlap">,
+): boolean {
+  return crossval.gridFound === true && crossval.overlap === 0;
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 //  3. Deposit (idempotent) + manifest refresh.
 // ───────────────────────────────────────────────────────────────────────────
