@@ -8,6 +8,7 @@ export const VERSION = "0.1.0";
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as GeoMapLegend } from "./GeoMapLegend.svelte";
 export { default as GeoSearch, foldText } from "./GeoSearch.svelte";
+export { default as ZonesLayer } from "./ZonesLayer.svelte";
 export { default as GeoDetailPanel } from "./GeoDetailPanel.svelte";
 export { default as DatasetCard } from "./DatasetCard.svelte";
 export { default as DatasetCatalog } from "./DatasetCatalog.svelte";
@@ -21,6 +22,16 @@ export type {
 } from "./GeoMap.svelte";
 export type { GeoMapLegendProps } from "./GeoMapLegend.svelte";
 export type { GeoSearchProps } from "./GeoSearch.svelte";
+export type {
+  ZonesLayerHit,
+  ZonesLayerProps,
+  ZonesLayerLegendPosition,
+} from "./ZonesLayer.svelte";
+export {
+  zoneCodeFromProperties,
+  zoneUsageFromProperties,
+  toZonesLayerHit,
+} from "./ZonesLayer.svelte";
 export type {
   GeoDetailField,
   GeoDetailSchema,
