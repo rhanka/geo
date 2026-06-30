@@ -40,6 +40,7 @@ import {
   GPT55_DEFAULT_EFFORT,
   GPT55_DEFAULT_MODEL,
   GPT55_METHODE,
+  Gpt55UsageLimitError,
   type CodexUsage,
 } from "./lib/grille-gpt55-codex.js";
 
@@ -241,6 +242,44 @@ function pdfPageCount(pdfPath: string): number {
   return m ? Number(m[1]) : 0;
 }
 
+function pdftotextPages(pdfPath: string): string[] {
+  const r = spawnSync("pdftotext", ["-q", "-layout", "-enc", "UTF-8", pdfPath, "-"], {
+    encoding: "utf8",
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  if (r.status !== 0 || !r.stdout) return [];
+  const pages = r.stdout.split("\f");
+  if (pages[pages.length - 1] === "") pages.pop();
+  return pages;
+}
+
+function foldText(s: string): string {
+  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+function likelyGrillePage(text: string): boolean {
+  const t = foldText(text);
+  if (t.trim().length < 30) return false;
+  const strongGrid =
+    /grille[s]? (des |d[' ]|de )?(usages|usage|normes|specifications|zonage)/i.test(t) ||
+    /annexe\s+[a-z0-9-]+\s+.*grille/i.test(t);
+  if (strongGrid) return true;
+  const zoneCodes = t.match(/\b[a-z]{1,4}\s*-\s*\d{1,4}[a-z]?(?:\s*-\s*\d{1,2})?\b/gi) ?? [];
+  const normPair =
+    /(marge[\s\S]{0,240}hauteur|hauteur[\s\S]{0,240}marge|superficie[\s\S]{0,240}marge|largeur[\s\S]{0,240}hauteur)/i.test(t);
+  const tableSignal = /(\|\s*){3,}|_{8,}|\.{5,}|\t/.test(t);
+  return zoneCodes.length >= 3 && normPair && tableSignal;
+}
+
+function candidatePagesFromText(pdfPath: string): number[] {
+  const texts = pdftotextPages(pdfPath);
+  const pages: number[] = [];
+  texts.forEach((text, idx) => {
+    if (likelyGrillePage(text)) pages.push(idx + 1);
+  });
+  return pages;
+}
+
 function findLocalGrille(slug: string): string | null {
   const dir = join(LOCAL_GRILLE_DIR, slug);
   if (!existsSync(dir)) return null;
@@ -344,12 +383,15 @@ function selectPages(
   pageCount: number,
   baselineHints: number[],
   pageCap: number,
+  textCandidates: number[] = [],
 ): number[] {
   if (cfg?.first != null && cfg.last != null) {
     return applyPageCap(pageList(cfg.first, Math.min(cfg.last, pageCount || cfg.last)), pageCap);
   }
   const hinted = baselineHints.filter((p) => p >= 1 && (!pageCount || p <= pageCount));
   if (hinted.length) return applyPageCap([...new Set(hinted)].sort((a, b) => a - b), pageCap);
+  const candidates = textCandidates.filter((p) => p >= 1 && (!pageCount || p <= pageCount));
+  if (candidates.length) return applyPageCap([...new Set(candidates)].sort((a, b) => a - b), pageCap);
   return applyPageCap(pageList(1, Math.max(1, pageCount)), pageCap);
 }
 
@@ -571,6 +613,10 @@ function loadRaw(path: string): RawFile | null {
   }
 }
 
+function rowHitUsageLimit(row: RunRow): boolean {
+  return row.errors.some((e) => /usage limit|try again at/i.test(e)) || /usage limit|try again at/i.test(row.note);
+}
+
 async function writeRaw(path: string, raw: RawFile): Promise<void> {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, JSON.stringify(raw, null, 2) + "\n", "utf8");
@@ -748,6 +794,7 @@ async function main(): Promise<void> {
   const pending = targets.filter((e) => {
     const prev = rowsBySlug.get(e.slug);
     if (!prev) return true;
+    if (rowHitUsageLimit(prev)) return true;
     return args.retryErrors && (prev.decision === "ERROR" || prev.decision === "SKIP-NO-PDF");
   });
 
@@ -762,12 +809,19 @@ async function main(): Promise<void> {
     const row = initialRow(base.slug, baseline);
     const cfg = munis.get(base.slug);
     const dir = await mkdtemp(join(tmpdir(), `gpt55-${base.slug}-`));
+    let recordRow = true;
     try {
       const pdf = await resolvePdf(s3, base.slug, base, cfg, dir);
       row.pdfSource = pdf.kind;
       if (pdf.notes.length) row.errors.push(...pdf.notes);
       const pageCount = pdfPageCount(pdf.path);
-      const pages = selectPages(cfg, pageCount, baseline.pageHints, args.pageCap);
+      const textCandidates = cfg?.first == null && baseline.pageHints.length === 0
+        ? candidatePagesFromText(pdf.path)
+        : [];
+      if (textCandidates.length > 0 && textCandidates.length < pageCount) {
+        row.errors.push(`text page selector: ${textCandidates.length}/${pageCount} candidate pages`);
+      }
+      const pages = selectPages(cfg, pageCount, baseline.pageHints, args.pageCap, textCandidates);
       row.pagesPlanned = pages.length;
       row.pageWindow = pageWindow(pages);
       if (pages.length === 0) throw new Error("no pages selected");
@@ -839,6 +893,10 @@ async function main(): Promise<void> {
           : "aucun gain strict (egalite)";
       }
     } catch (e) {
+      if (e instanceof Gpt55UsageLimitError) {
+        recordRow = false;
+        throw e;
+      }
       row.decision = /no PDF source|failed|HTTP|not a PDF/.test(e instanceof Error ? e.message : String(e))
         ? "SKIP-NO-PDF"
         : "ERROR";
@@ -847,6 +905,7 @@ async function main(): Promise<void> {
       row.afterPublished = baseline.published;
     } finally {
       await rm(dir, { recursive: true, force: true }).catch(() => undefined);
+      if (!recordRow) return;
       rowsBySlug.set(base.slug, row);
       raw.rows = targets.map((t) => rowsBySlug.get(t.slug)).filter((r): r is RunRow => !!r);
       await writeRaw(args.raw, raw);
