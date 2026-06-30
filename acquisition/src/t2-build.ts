@@ -205,39 +205,47 @@ async function main(): Promise<void> {
     );
   } else if (args.labels === "gpt55") {
     if (!args.dict) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
-    const { codes: dict, kindByPrefix } = loadDict(args.dict);
+    const { codes: dict } = loadDict(args.dict);
     console.error(`[t2-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
     const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
-    const gptLab = await extractLabelsGpt55(pdfPath, geo, dict, {
+    const neatlineRegion = gcpFile.neatline
+      ? [
+          gcpFile.neatline.fx0 * pageW,
+          gcpFile.neatline.fy0 * pageH,
+          gcpFile.neatline.fx1 * pageW,
+          gcpFile.neatline.fy1 * pageH,
+        ] as [number, number, number, number]
+      : undefined;
+    const gptLab = await extractLabelsGpt55(pdfPath, geo, dict, args.slug, {
       dpi: args.ocrDpi,
       page,
-      slug: args.slug,
-      region: args.labelRegion,
-      excludeRegions: gcpFile.excludeRegions,
-      ...(kindByPrefix ? { kindByPrefix } : {}),
+      region: args.labelRegion ?? neatlineRegion,
     });
     lab = gptLab;
     gpt55Stats = {
       dict_size: dict.length,
-      gpt55_reads: gptLab.nReads,
-      gpt55_validated: gptLab.nValidated,
-      gpt55_exact: gptLab.nExact,
-      gpt55_canonical: gptLab.nCanonical,
-      gpt55_rejected: gptLab.nRejected,
-      gpt55_distinct: gptLab.nDistinct,
-      gpt55_crop: gptLab.crop,
-      gpt55_latency_ms: gptLab.latencyMs,
+      ocr_engine: gptLab.ocr_engine,
+      gpt55_reads: gptLab.n_model_labels,
+      gpt55_validated: gptLab.n_validated,
+      gpt55_exact: gptLab.n_exact,
+      gpt55_canonical: gptLab.n_canonical,
+      gpt55_rejected: gptLab.n_rejected,
+      gpt55_distinct: gptLab.n_distinct,
+      gpt55_crop: gptLab.image_path,
+      gpt55_snap_rate_pct: gptLab.snap_rate_pct,
+      gpt55_latency_ms: gptLab.latency_ms,
       gpt55_tokens_input: gptLab.usage.inputTokens,
       gpt55_tokens_output: gptLab.usage.outputTokens,
       gpt55_tokens_reasoning: gptLab.usage.reasoningOutputTokens,
-      gpt55_reject_samples: gptLab.rejectSamples,
+      gpt55_reject_samples: gptLab.reject_samples,
     };
     console.error(
-      `[t2-build] GPT-5.5 labels: ${gptLab.nReads} reads, ${gptLab.nCodeLike} code-like, ` +
-        `${gptLab.nValidated} validated (${gptLab.nExact} exact + ${gptLab.nCanonical} canonical), ` +
-        `${gptLab.nRejected} rejected, ${gptLab.nDistinct} distinct codes`,
+      `[t2-build] GPT-5.5 labels: ${gptLab.n_model_labels} reads, ${gptLab.nCodeLike} code-like, ` +
+        `${gptLab.n_validated} validated ` +
+        `(${gptLab.n_exact} exact + ${gptLab.n_canonical} canonical), ` +
+        `${gptLab.n_rejected} rejected, ${gptLab.n_distinct} distinct codes`,
     );
-    console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.rejectSamples.join(" | ")}`);
+    console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
   } else {
     lab = extractLabels(pdfPath, geo, { page, excludeRegions: gcpFile.excludeRegions });
   }
