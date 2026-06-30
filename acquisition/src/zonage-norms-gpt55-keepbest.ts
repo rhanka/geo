@@ -98,6 +98,7 @@ interface Args {
   retryErrors: boolean;
   report: string;
   raw: string;
+  pageCacheDir: string;
   slugs: Set<string>;
   dpi: number;
   timeoutMs: number;
@@ -170,6 +171,7 @@ function parseArgs(argv: string[]): Args {
     "--lanes",
     "--report",
     "--raw",
+    "--page-cache-dir",
     "--dpi",
     "--timeout-ms",
   ]);
@@ -184,6 +186,7 @@ function parseArgs(argv: string[]): Args {
     retryErrors: argv.includes("--retry-errors"),
     report: argVal(argv, "--report") ?? REPORT,
     raw: argVal(argv, "--raw") ?? RAW,
+    pageCacheDir: argVal(argv, "--page-cache-dir") ?? join(REPO, "work", "delegation-mass", "gpt55-page-cache"),
     slugs: new Set(slugs),
     dpi: Number(argVal(argv, "--dpi") ?? process.env["GPT55_DPI"] ?? "150"),
     timeoutMs: Number(argVal(argv, "--timeout-ms") ?? process.env["GPT55_TIMEOUT_MS"] ?? "240000"),
@@ -222,10 +225,13 @@ function targetSort(a: ManifestEntry, b: ManifestEntry, munis: Map<string, MuniC
   const ar = ac?.route === "multizone" ? 3 : ac?.route === "vision" ? 2 : 1;
   const br = bc?.route === "multizone" ? 3 : bc?.route === "vision" ? 2 : 1;
   if (br !== ar) return br - ar;
+  const ad = manifestPublished(a) / Math.max(1, a.unique_zone_codes * 8);
+  const bd = manifestPublished(b) / Math.max(1, b.unique_zone_codes * 8);
+  if (ad !== bd) return ad - bd;
+  if (b.unique_zone_codes !== a.unique_zone_codes) return b.unique_zone_codes - a.unique_zone_codes;
   const ap = pageSpan(ac) ?? 0;
   const bp = pageSpan(bc) ?? 0;
   if (bp !== ap) return bp - ap;
-  if (b.unique_zone_codes !== a.unique_zone_codes) return b.unique_zone_codes - a.unique_zone_codes;
   return a.slug.localeCompare(b.slug);
 }
 
@@ -772,6 +778,13 @@ async function main(): Promise<void> {
         methode: GPT55_METHODE,
         dpi: args.dpi,
         cli: { timeoutMs: args.timeoutMs },
+        pageCacheDir: join(args.pageCacheDir, base.slug),
+        onPage: (ev) => {
+          console.error(
+            `[${base.slug}] page ${ev.page} ${ev.ok ? "ok" : "failed"}${ev.cached ? " cached" : ""} ${Math.round(ev.latencyMs / 1000)}s` +
+            (ev.error ? ` :: ${ev.error.slice(0, 120)}` : ""),
+          );
+        },
       });
       row.pagesRead = res.pagesRead;
       row.pagesFailed = res.pagesFailed;
