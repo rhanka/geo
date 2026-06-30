@@ -22,6 +22,7 @@
  *
  * USAGE :
  *   npx tsx src/zones-agol-owner-harvest.ts --owners a,b,c [--km 8] [--maxdiag 35] [--dry-run] [--out f.json]
+ *   npx tsx src/zones-agol-owner-harvest.ts --discover-owners [--min-owner-items 2]
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -36,7 +37,18 @@ const PREFIX = "normalized/ca-qc-zonage/";
 const UA = "sentropic-geo/0.1";
 
 interface MuniEntry { slug: string; name: string; lat: number; lon: number }
-interface Args { owners: string[]; km: number; maxDiag: number; dryRun: boolean; out: string; concOwners: number }
+interface Args {
+  owners: string[];
+  km: number;
+  maxDiag: number;
+  dryRun: boolean;
+  out: string;
+  concOwners: number;
+  discoverOwners: boolean;
+  ownerQueries: string[];
+  minOwnerItems: number;
+  maxDiscoveryItems: number;
+}
 
 // Owners "zonage" éprouvés (preuves : logs AGOL fleet 06-26 "Trouvé via AGOL ... (owner)").
 const DEFAULT_OWNERS = [
@@ -51,7 +63,20 @@ const DEFAULT_OWNERS = [
   "admin_magog", "cadrin", "vthomas7",
 ];
 // Owners BRUITÉS à NE PAS seed par défaut (faux positifs documentés) :
-//   joliveau (PLU France), UNOWACA ("vue publique" sur-matche), a.mercier.mrchsf (zonage agricole=affectation).
+//   joliveau (PLU France), UNOWACA ("vue publique" sur-matche), a.mercier.mrchsf (zonage agricole=affectation),
+//   Martin_Lessard0 (milieux humides / Roussillon).
+const NOISY_OWNERS = new Set(["joliveau", "UNOWACA", "a.mercier.mrchsf", "Martin_Lessard0"]);
+const NOISY_OWNERS_LC = new Set([...NOISY_OWNERS].map((s) => s.toLowerCase()));
+
+const DEFAULT_OWNER_DISCOVERY_QUERIES = [
+  'title:"Zonage Municipal"',
+  "title:ZonageMuni",
+  'title:"Plan de zonage"',
+  'title:"Zonage municipal"',
+  'title:"Zonage_EnVigueur"',
+  'title:"Grille de zonage"',
+  'title:"Limite de zone"',
+];
 
 const ZONE_TITLE_RE = /zonage|zoning|\bzone\b|plan.?d?.?urb|r[eè]glement.*zon|grille.*zon/i;
 // Titres à REJETER (faux positifs : couches démographiques/marketing/électorales,
@@ -65,6 +90,7 @@ const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d/;
 
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
+  const csv = (k: string): string[] => (get(k) ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   const ownersRaw = get("owners");
   const owners = ownersRaw ? ownersRaw.split(",").map((s) => s.trim()).filter(Boolean) : DEFAULT_OWNERS;
   return {
@@ -74,6 +100,10 @@ function parseArgs(argv: string[]): Args {
     dryRun: argv.includes("--dry-run"),
     out: get("out") ?? resolve(HERE, "../../work/delegation-mass/zones-agol-owner-harvest.json"),
     concOwners: Number(get("conc-owners") ?? 1),
+    discoverOwners: argv.includes("--discover-owners"),
+    ownerQueries: csv("owner-query").length ? csv("owner-query") : DEFAULT_OWNER_DISCOVERY_QUERIES,
+    minOwnerItems: Number(get("min-owner-items") ?? 2),
+    maxDiscoveryItems: Number(get("max-discovery-items") ?? 800),
   };
 }
 
@@ -96,10 +126,10 @@ function* positions(c: any): Generator<[number, number]> {
 
 // ── AGOL: tout le contenu Feature Service d'un owner ──────────────────────────
 interface AgolItem { id: string; title: string; owner: string; type: string; url: string | null }
-async function searchOwnerItems(owner: string): Promise<AgolItem[]> {
+async function searchAgolItems(query: string, maxItems: number): Promise<AgolItem[]> {
   const items: AgolItem[] = []; let start = 1;
-  for (let page = 0; page < 20; page++) {
-    const q = encodeURIComponent(`owner:${owner} (type:"Feature Service" OR type:"Map Service")`);
+  for (let page = 0; page < 20 && items.length < maxItems; page++) {
+    const q = encodeURIComponent(`${query} (type:"Feature Service" OR type:"Map Service")`);
     const u = `https://www.arcgis.com/sharing/rest/search?f=json&q=${q}&num=100&start=${start}&sortField=title`;
     const d = await jget<{ results?: AgolItem[]; nextStart?: number }>(u);
     if (!d || !Array.isArray(d.results)) break;
@@ -107,7 +137,34 @@ async function searchOwnerItems(owner: string): Promise<AgolItem[]> {
     if (!d.nextStart || d.nextStart < 0) break;
     start = d.nextStart; await sleep(120);
   }
-  return items;
+  return items.slice(0, maxItems);
+}
+
+async function searchOwnerItems(owner: string): Promise<AgolItem[]> {
+  return searchAgolItems(`owner:${owner}`, 2000);
+}
+
+interface DiscoveredOwner { owner: string; candidateItems: number; sampleTitles: string[] }
+async function discoverOwners(seedOwners: string[], queries: string[], minItems: number, maxItems: number): Promise<DiscoveredOwner[]> {
+  const known = new Set(seedOwners.map((s) => s.toLowerCase()));
+  const byOwner = new Map<string, { owner: string; titles: Set<string> }>();
+  for (const query of queries) {
+    const items = await searchAgolItems(query, maxItems);
+    console.error(`[owner-discovery] query=${JSON.stringify(query)} items=${items.length}`);
+    for (const it of items) {
+      if (!it.owner || !it.url) continue;
+      if (known.has(it.owner.toLowerCase()) || NOISY_OWNERS_LC.has(it.owner.toLowerCase())) continue;
+      if (!ZONE_TITLE_RE.test(it.title) || AFFECT_RE.test(it.title)) continue;
+      const e = byOwner.get(it.owner) ?? { owner: it.owner, titles: new Set<string>() };
+      e.titles.add(it.title);
+      byOwner.set(it.owner, e);
+    }
+    await sleep(200);
+  }
+  return [...byOwner.values()]
+    .map((e) => ({ owner: e.owner, candidateItems: e.titles.size, sampleTitles: [...e.titles].slice(0, 8) }))
+    .filter((e) => e.candidateItems >= minItems)
+    .sort((a, b) => b.candidateItems - a.candidateItems || a.owner.localeCompare(b.owner));
 }
 
 // ── ArcGIS service → couche(s) zonage polygonale(s) ──────────────────────────
@@ -251,13 +308,17 @@ async function main(): Promise<void> {
   const reg = JSON.parse(readFileSync(REG, "utf8")) as MuniEntry[];
   const s3 = s3Client();
   const served = await listServed(s3);
-  console.error(`[owner-harvest] owners=${a.owners.length} km=${a.km} maxdiag=${a.maxDiag} dryRun=${a.dryRun} | servedS3=${served.size}`);
+  const discoveredOwners = a.discoverOwners
+    ? await discoverOwners(a.owners, a.ownerQueries, a.minOwnerItems, a.maxDiscoveryItems)
+    : [];
+  const owners = [...a.owners, ...discoveredOwners.map((o) => o.owner)];
+  console.error(`[owner-harvest] owners=${owners.length} (seed=${a.owners.length}, discovered=${discoveredOwners.length}) km=${a.km} maxdiag=${a.maxDiag} dryRun=${a.dryRun} | servedS3=${served.size}`);
 
   const deposits: { slug: string; owner: string; title: string; layer: string; field: string; feats: number; distinct: number }[] = [];
   const skips: { owner: string; title: string; reason: string }[] = [];
   const seenSlug = new Set<string>();
 
-  for (const owner of a.owners) {
+  for (const owner of owners) {
     const items = await searchOwnerItems(owner);
     const zoneItems = items.filter((it) => it.url && ZONE_TITLE_RE.test(it.title) && !AFFECT_RE.test(it.title));
     console.error(`\n[owner ${owner}] ${items.length} services, ${zoneItems.length} candidats zonage`);
@@ -299,7 +360,7 @@ async function main(): Promise<void> {
     }
   }
 
-  const report = { generatedAt: new Date().toISOString(), dryRun: a.dryRun, owners: a.owners, depositsCount: deposits.length, deposits, skipsCount: skips.length, skips };
+  const report = { generatedAt: new Date().toISOString(), dryRun: a.dryRun, seedOwners: a.owners, discoveredOwners, owners, depositsCount: deposits.length, deposits, skipsCount: skips.length, skips };
   writeFileSync(a.out, JSON.stringify(report, null, 2) + "\n");
   console.error(`\n=== ${a.dryRun ? "DRY " : ""}DÉPÔTS net-new=${deposits.length} [${deposits.map((d) => d.slug).join(",")}]`);
   console.error(`rapport → ${a.out}`);
