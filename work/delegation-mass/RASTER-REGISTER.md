@@ -1,0 +1,25 @@
+# RASTER-REGISTER
+
+Date: 2026-06-29
+
+Scope: `boucherville`, `chateauguay`, `kirkland`, `montreal-est`, `montreal-ouest`.
+
+Built a TS-only local raster-registration path:
+
+- `acquisition/src/lib/t2-raster-register.ts`: rasterizes a local PDF page with Poppler, renders local cadastre lot edges into seeded page space, detects raster corners/edges, patch-verifies plan-vs-cadastre candidates, fits affine GCPs, and requires residual plus holdout <= 30 m.
+- `acquisition/src/t2-raster-register.ts`: local-only CLI. It has no S3 fallback and writes a failed structured report when the local PDF/GCP/cadastre inputs are missing.
+- Unit coverage: `TMPDIR=/tmp npx vitest run src/lib/t2-raster-register.test.ts` -> 3/3 passed.
+
+Local input gate: the focus PDFs/seeds are staged in `/tmp` / `work/gcp`, but the required local reference cadastres are not staged at `normalized/qc-cadastre-lots/<slug>.geojson` (nor under `/tmp` or `.cache-tmp`). Per anti-invention rules, the raster path refused to render a reference image from S3 or from a fabricated extent.
+
+- boucherville -> {flagged needs_human_gcp=true: local-only raster registration could not run because `../normalized/qc-cadastre-lots/boucherville.geojson` is absent. Raster report: plan corners 0, reference corners 0, cadastre vertices 0, selected GCPs 0, residual null, holdout null. Prior vector-autogcp evidence exists but does not authorize serving: 14,793 seed candidate matches, 48 independent GCPs, residual 9.382 m, holdout 6.373 m; prior blocker was 0 clean/verbatim zone codes from the flattened labels.}
+- chateauguay -> {flagged needs_human_gcp=true: local-only raster registration could not run because `../normalized/qc-cadastre-lots/chateauguay.geojson` is absent. Raster report: plan corners 0, reference corners 0, cadastre vertices 0, selected GCPs 0, residual null, holdout null. Prior vector-autogcp had 0 SVG points, 0 seed candidate matches, 0 selected GCPs, residual null, holdout null, despite 282,084 cadastre vertices in the earlier non-local run.}
+- kirkland -> {flagged needs_human_gcp=true: local-only raster registration could not run because `../normalized/qc-cadastre-lots/kirkland.geojson` is absent. Raster report: plan corners 0, reference corners 0, cadastre vertices 0, selected GCPs 0, residual null, holdout null. Prior vector-autogcp evidence exists but does not authorize serving: 6,129 seed candidate matches, 48 independent GCPs, residual 4.666 m, holdout 2.658 m; prior blocker was 0 clean/verbatim zone codes from the flattened labels.}
+- montreal-est -> {flagged needs_human_gcp=true: local-only raster registration could not run because `../normalized/qc-cadastre-lots/montreal-est.geojson` is absent. Raster report: plan corners 0, reference corners 0, cadastre vertices 0, selected GCPs 0, residual null, holdout null. Prior vector-autogcp saw only 296 SVG points, 0 seed candidate matches, 0 selected GCPs, residual null, holdout null, with 17,742 cadastre vertices in the earlier non-local run.}
+- montreal-ouest -> {flagged needs_human_gcp=true: local-only raster registration could not run because the staged seed has 0 controls (`need >=3 coarse controls before raster matching`) and records `no usable zoning-map page in available official cache`. Raster report: plan corners 0, reference corners 0, cadastre vertices 0, selected GCPs 0, residual null, holdout null. No honest autonomous controls can be derived from the current local cache.}
+
+No `qc-zonage-<slug>` was served for these five. GPT-5.5/OCR label placement was not attempted because no focus city produced a reliable local raster-derived spatial gate in this run; placing codes without that gate would violate the anti-invention rule.
+
+Sanity smoke outside the focus set: the same raster path was run on locally staged `saint-lambert` inputs (`/tmp/georef-real-cadastre/saint-lambert.geojson` + cached PDF) and passed with 1,347 plan raster corners, 550 reference raster corners, 67,229 cadastre vertices, 296 patch-verified matches, 34 selected independent GCPs, residual max 17.407 m, holdout max 14.881 m. This proves the new TS path executes when the local cadastre reference is actually staged; it does not change the focus-city result.
+
+HONEST VERDICT: 0/5 focus cities served by autonomous raster-registration in this local-only run. 5/5 are flagged: four cities stopped at the missing local cadastre-reference gate, and `montreal-ouest` stopped earlier because its staged seed has 0 controls/no usable map page. Feature-match counts for the new raster path are therefore 0 selected GCPs and null residual/holdout for every focus city. Existing evidence does not justify a forced serve: `boucherville` and `kirkland` have good prior independent georef residuals (9.382/6.373 m and 4.666/2.658 m residual/holdout) but no validated verbatim labels; `chateauguay`, `montreal-est`, and `montreal-ouest` have 0 autonomous independent GCPs in the available focus evidence. Under the stated rules, these require human 3-GCP/UI handling or restaging the local cadastre files and rerunning; bbox stretch or fabricated codes are not acceptable.
