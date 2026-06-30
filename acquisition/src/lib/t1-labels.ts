@@ -27,12 +27,13 @@ export const STOPWORDS = new Set([
  * QC zone code formats covered:
  *   LETTERS [digits] [-.] DIGITS [letter]  → A-1, H-71, H2, RB-300, RU-100a,
  *                                            A1-10, A2-85, A3-109 (saint-amable)
+ *                                            N1 s.1 / N1s.1 (Pointe-Claire sectors)
  *   DIGITS - LETTERS                        → 605-Cb, 314-P (val-dor/saint-tite)
  * Requires both a letter and a digit (the anti-#74 rule: a pure sequential
  * integer is NOT a regulatory zone code).
  */
 export const ZONE_CODE_RE =
-  /^(?:[A-Z]{1,4}\d{0,3}[-.]?\d{0,4}[A-Za-z]?|\d{1,4}-[A-Za-z]{1,5})$/i;
+  /^(?:[A-Z]{1,4}\d{0,3}[-.]?\d{0,4}[A-Za-z]?(?:s\.?\d+)?|\d{1,4}-[A-Za-z]{1,5})$/i;
 
 export function looksLikeZoneCode(text: string): boolean {
   const t = text.trim();
@@ -68,11 +69,17 @@ export interface RawLabel {
   pageY: number;
 }
 
+export interface PdfTextOptions {
+  /** 1-based page to read. When omitted, preserves the historical all-page scan. */
+  page?: number;
+}
+
 /** Run pdftotext -bbox-layout and return all words with their center. */
-export function pdftotextWords(pdfPath: string): { words: RawLabel[]; pageW: number; pageH: number } {
+export function pdftotextWords(pdfPath: string, opts: PdfTextOptions = {}): { words: RawLabel[]; pageW: number; pageH: number } {
   let xml: string;
+  const pageArgs = opts.page && opts.page > 0 ? ` -f ${opts.page} -l ${opts.page}` : "";
   try {
-    xml = execSync(`pdftotext -bbox-layout ${JSON.stringify(pdfPath)} - 2>/dev/null`, {
+    xml = execSync(`pdftotext${pageArgs} -bbox-layout ${JSON.stringify(pdfPath)} - 2>/dev/null`, {
       encoding: "utf8",
       timeout: 120_000,
       maxBuffer: 200 * 1024 * 1024,
@@ -117,8 +124,8 @@ export interface ExtractLabelsResult {
  * - converts pdftotext's page units to PDF user-space (origin top-left → the
  *   GeoRef expects top-left via `topLeftToLonLat`, scaled to the MediaBox).
  */
-export function extractLabels(pdfPath: string, geo: GeoRef): ExtractLabelsResult {
-  const { words, pageW, pageH } = pdftotextWords(pdfPath);
+export function extractLabels(pdfPath: string, geo: GeoRef, opts: PdfTextOptions = {}): ExtractLabelsResult {
+  const { words, pageW, pageH } = pdftotextWords(pdfPath, opts);
   // pdftotext page units vs PDF user-space (MediaBox) — usually 1:1.
   const sx = pageW > 0 ? geo.pageW / pageW : 1;
   const sy = pageH > 0 ? geo.pageH / pageH : 1;
