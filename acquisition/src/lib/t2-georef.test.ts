@@ -9,7 +9,7 @@
  */
 import { describe, it, expect } from "vitest";
 
-import { buildGeoRefFromGcps, type Gcp } from "./t2-georef.js";
+import { assertIndependentGcps, buildGeoRefFromGcps, gcpLooksBboxDerived, type Gcp } from "./t2-georef.js";
 
 // A plausible Rive-Sud plan: ~3370×2384 pt landscape page, ~6 km wide near 45.4°N.
 const PAGE_W = 3370;
@@ -94,5 +94,29 @@ describe("t2-georef — 3-GCP affine calibration", () => {
     );
     const collinear = [gcpAt(0.1, 0.1, "a"), gcpAt(0.5, 0.5, "b"), gcpAt(0.9, 0.9, "c")];
     expect(() => buildGeoRefFromGcps(collinear, PAGE_W, PAGE_H)).toThrow(/collinear/);
+  });
+
+  it("classifies bbox-corner controls as non-independent for real-GCP serving", () => {
+    const bboxGcps = [
+      { ...gcpAt(0.1, 0.1, "map bbox northwest -> cadastre bbox northwest") },
+      { ...gcpAt(0.9, 0.1, "map bbox northeast -> cadastre bbox northeast") },
+      { ...gcpAt(0.1, 0.9, "map bbox southwest -> cadastre bbox southwest") },
+    ];
+    expect(gcpLooksBboxDerived(bboxGcps[0]!)).toBe(true);
+    expect(() => assertIndependentGcps(bboxGcps, PAGE_W, PAGE_H)).toThrow(/independent non-bbox/);
+    expect(() =>
+      assertIndependentGcps(
+        bboxGcps.map((g) => ({ ...g, independent: true })),
+        PAGE_W,
+        PAGE_H,
+      ),
+    ).toThrow(/independent non-bbox/);
+
+    const realGcps = [
+      { ...gcpAt(0.1, 0.12, "parcel corner match"), source: "cadastre-parcel-corner-match", independent: true },
+      { ...gcpAt(0.88, 0.15, "street intersection match"), source: "cadastre-parcel-corner-match", independent: true },
+      { ...gcpAt(0.45, 0.9, "municipal-boundary vertex"), source: "cadastre-boundary-vertex", independent: true },
+    ];
+    expect(assertIndependentGcps(realGcps, PAGE_W, PAGE_H).independentCount).toBe(3);
   });
 });
