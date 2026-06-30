@@ -64,7 +64,10 @@ import {
   crossValidateZoneCodes,
   depositZonageNorms,
   depositParquetOnly,
+  publishedFieldPct,
   shouldRejectForZeroOverlap,
+  shouldRejectForZeroNormFields,
+  looksLikeTableOfContents,
 } from "./lib/zonage-norms.js";
 
 // Mistral medium pricing (per 1M tokens), used only for cost reporting.
@@ -195,13 +198,19 @@ interface GridWindow {
  * a grille page when ≥AUTO_GRID_MIN_CODES DISTINCT zone-code tokens sit on a
  * SINGLE line — the zones-in-columns header band, e.g. "Références A1 A2 A3 …" —
  * after dropping lines that look like by-law/article refs or carry a year (so a
- * règlement number / "ARTICLE 12" never trips it). Returns the
- * [min−margin, max+margin] page window (1-based, clamped) or null if none found.
+ * règlement number / "ARTICLE 12" never trips it). Table-of-contents / sommaire
+ * pages are skipped wholesale (`looksLikeTableOfContents`) — they are dense with
+ * article refs + page numbers and otherwise mis-detect as a grille header band.
+ * Returns the [min−margin, max+margin] page window (1-based, clamped) or null.
  */
 function detectGridPages(pageTexts: string[], pageCount: number): GridWindow | null {
   const hits: number[] = [];
   for (let i = 0; i < pageTexts.length; i++) {
     const text = pageTexts[i] ?? "";
+    // Anti-false-positive: a table-of-contents / sommaire page is dense with
+    // code-shaped article refs + page numbers and can trip the code-count
+    // heuristic below (carignan 483-39-U ToC on p.12). Never a grille page.
+    if (looksLikeTableOfContents(text)) continue;
     for (const line of text.split(/\r?\n/)) {
       if (GRID_HEADER_EXCLUDE.test(line)) continue;
       const codes = new Set<string>();
@@ -695,6 +704,37 @@ async function main(): Promise<void> {
           route: decision.route,
           methode,
           uniqueZoneCodes: crossval.extractedZoneCodes,
+          visionUsd,
+        },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+
+  // ANTI-INVENTION NORM-FIELDS GATE (general net, complements the overlap gate):
+  // a product with codes but 0% published norm values is not a grille — it is OCR
+  // of body text / a table-of-contents misread as zone codes (carignan 483-39-U:
+  // --auto-grid-page locked onto the ToC, OCR'd the article body, 125 bogus codes,
+  // 0% norm fields). Unlike the overlap gate this fires even when no reference
+  // grille sits on S3. A legitimate grille always publishes some value (> 0%).
+  const fieldPct = publishedFieldPct(zones);
+  if (shouldRejectForZeroNormFields(fieldPct)) {
+    console.error(
+      "[gate] REJET anti-invention : 0% de champs-normes remplis → codes sans " +
+        "normes (probable OCR de corps de texte/ToC). Pas de dépôt.",
+    );
+    console.log(
+      JSON.stringify(
+        {
+          slug: args.slug,
+          deposited: false,
+          reason: `anti-invention reject: publishedFieldPct=0 — ${crossval.extractedZoneCodes} code(s) with NO norm field published (likely OCR of body text / table-of-contents)`,
+          route: decision.route,
+          methode,
+          uniqueZoneCodes: crossval.extractedZoneCodes,
+          publishedFieldPct: fieldPct,
           visionUsd,
         },
         null,
