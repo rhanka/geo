@@ -141,6 +141,47 @@ function pdftotextLayout(pdfPath: string): string {
   return r.stdout ?? "";
 }
 
+/**
+ * RAW (non-`-layout`) projection. `-layout` reconstructs 2D position and so
+ * interleaves a rotated ZONE-box label with the body cells; the raw stream keeps
+ * the box label on its own line, which `zoneBoxFromRawPage` relies on.
+ */
+function pdftotextRaw(pdfPath: string): string {
+  const r = spawnSync("pdftotext", ["-q", "-enc", "UTF-8", pdfPath, "-"], {
+    encoding: "utf8",
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  if (r.status !== 0) {
+    throw new Error(`pdftotext failed (${r.status}): ${r.stderr?.slice(0, 200)}`);
+  }
+  return r.stdout ?? "";
+}
+
+/**
+ * VERBATIM zone code from a ROTATED "ZONE" BOX on a one-zone-per-page grille
+ * (e.g. saint-mathieu R315: the code "A-1" sits in a 90°-rotated box on the right
+ * margin). On these sheets the page-wide `expectedZoneFromPage` mis-anchors on the
+ * title "GRILLES DES USAGES ET NORMES PAR ZONE" + the first usage-class row
+ * ("A1 Activités") and fabricates "A1A"; the box code is instead found by reading
+ * the RAW stream for a line that is EXACTLY "ZONE" (the box label) followed by the
+ * FIRST letters-dash-digits code (blank lines / box glyphs ■□ / "(n)" note refs in
+ * between are skipped; usage-exclusion codes like "C1-02-01" carry a digit BEFORE
+ * the dash so they never match). Returns undefined when there is no standalone
+ * "ZONE" box line — so inline-title grilles fall back to `expectedZoneFromPage`
+ * unchanged. ANTI-INVENTION: the code is read verbatim, never synthesised.
+ */
+function zoneBoxFromRawPage(rawPageText: string): string | undefined {
+  const lines = rawPageText.split(/\r?\n/).map((s) => s.trim());
+  const zi = lines.indexOf("ZONE");
+  if (zi < 0) return undefined;
+  const codeRe = /^([A-ZÉÈ]{1,4}[ \t]*[-–—][ \t]*\d+(?:\.\d+)?)(?:[ \t]*\(\d\/\d\))?$/;
+  for (let j = zi + 1; j < lines.length; j++) {
+    const m = lines[j].match(codeRe);
+    if (m?.[1]) return normalizeExpectedZone(m[1]);
+  }
+  return undefined;
+}
+
 /** How many of a zone's 8 norm fields carry a published (non-null) value. */
 function publishedCount(z: ZoneNormsT): number {
   const fs = [
@@ -404,6 +445,8 @@ async function main(): Promise<void> {
 
   const layoutText = pdftotextLayout(args.pdf);
   const pageTexts = pageTextsByNumber(layoutText);
+  // RAW projection feeds the rotated-ZONE-box anchor (one-zone-per-page grilles).
+  const rawPageTexts = pageTextsByNumber(pdftotextRaw(args.pdf));
   const decision =
     args.route === "auto"
       ? decideRoute(layoutText, args.sourceUrl, args.snapshot)
@@ -474,7 +517,11 @@ async function main(): Promise<void> {
       }
       visionPagesAttempted++;
       try {
-        const expectedZone = expectedZoneFromPage(pageTexts[page - 1] ?? "");
+        // Prefer the verbatim rotated-ZONE-box code (saint-mathieu-type sheets);
+        // fall back to the page-wide title/standalone anchor for inline-title grilles.
+        const expectedZone =
+          zoneBoxFromRawPage(rawPageTexts[page - 1] ?? "") ??
+          expectedZoneFromPage(pageTexts[page - 1] ?? "");
         const zn = await extractZonePageFromPdf(args.pdf, page, {
           source_url: args.sourceUrl,
           snapshot: args.snapshot,
