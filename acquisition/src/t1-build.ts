@@ -28,13 +28,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from "geojson";
-import * as polyclip from "polyclip-ts";
+import type { FeatureCollection } from "geojson";
 
 import { extractGeoRef } from "./lib/t1-georef.js";
 import { extractLabels } from "./lib/t1-labels.js";
-import { buildZones, projConstants, type CodePoint } from "./lib/t1-zones.js";
+import { buildZones, projConstants } from "./lib/t1-zones.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
+import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
 
 interface Args {
   slug: string;
@@ -78,39 +78,6 @@ function parseArgs(argv: string[]): Args {
   };
 }
 
-function haversineKm(a: [number, number], b: [number, number]): number {
-  const R = 6371;
-  const dLat = ((b[1] - a[1]) * Math.PI) / 180;
-  const dLon = ((b[0] - a[0]) * Math.PI) / 180;
-  const la1 = (a[1] * Math.PI) / 180;
-  const la2 = (b[1] * Math.PI) / 180;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
-
-function bboxCenter(fc: FeatureCollection): { center: [number, number]; bbox: [number, number, number, number] } {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-  for (const f of fc.features) {
-    const g = f.geometry;
-    if (!g) continue;
-    const scan = (poly: number[][][]): void => {
-      for (const ring of poly)
-        for (const p of ring) {
-          if (p[0]! < minX) minX = p[0]!;
-          if (p[0]! > maxX) maxX = p[0]!;
-          if (p[1]! < minY) minY = p[1]!;
-          if (p[1]! > maxY) maxY = p[1]!;
-        }
-    };
-    if (g.type === "Polygon") scan(g.coordinates as number[][][]);
-    else if (g.type === "MultiPolygon") for (const pp of g.coordinates as number[][][][]) scan(pp);
-  }
-  return { center: [(minX + maxX) / 2, (minY + maxY) / 2], bbox: [minX, minY, maxX, maxY] };
-}
-
 async function resolvePdf(pdf: string): Promise<string> {
   if (!/^https?:/.test(pdf)) {
     if (!existsSync(pdf)) throw new Error(`pdf not found: ${pdf}`);
@@ -124,52 +91,6 @@ async function resolvePdf(pdf: string): Promise<string> {
 function fail(msg: string): never {
   console.error(`\n[t1-build] ABORT (anti-invention): ${msg}`);
   process.exit(2);
-}
-
-/**
- * Serving step: 1 feature per DISTINCT zone_code (the served contract, matching
- * the saint-amable golden). build_zones.py keeps multi-spot labels separate
- * (one feature per code point); here we union the spots of each code into a
- * single MultiPolygon and sum n_lots. Geometry is still 100% real cadastre.
- */
-function mergeByZoneCode(fc: FeatureCollection): FeatureCollection {
-  const byCode = new Map<string, Feature[]>();
-  for (const f of fc.features) {
-    const code = String(f.properties?.["zone_code"]);
-    const arr = byCode.get(code) ?? [];
-    arr.push(f);
-    byCode.set(code, arr);
-  }
-  const merged: Feature[] = [];
-  for (const [code, group] of byCode) {
-    const parts: Position[][][] = [];
-    let nLots = 0;
-    for (const f of group) {
-      const g = f.geometry;
-      if (g?.type === "Polygon") parts.push(g.coordinates);
-      else if (g?.type === "MultiPolygon") for (const p of g.coordinates) parts.push(p);
-      nLots += Number(f.properties?.["n_lots"] ?? 0);
-    }
-    let geometry: Polygon | MultiPolygon = { type: "MultiPolygon", coordinates: parts };
-    if (parts.length > 1) {
-      try {
-        const [first, ...rest] = parts as unknown as Parameters<typeof polyclip.union>;
-        const u = polyclip.union(first!, ...rest) as unknown as Position[][][];
-        if (u && u.length > 0) geometry = { type: "MultiPolygon", coordinates: u };
-      } catch {
-        /* keep raw union of lots — never drop real geometry */
-      }
-    }
-    const props = { ...group[0]!.properties, zone_code: code, n_lots: nLots };
-    delete (props as Record<string, unknown>)["assign_method"];
-    merged.push({ type: "Feature", properties: props, geometry });
-  }
-  return {
-    type: "FeatureCollection",
-    // @ts-expect-error legacy CRS84 member, accepted by consumers
-    crs: fc.crs,
-    features: merged,
-  };
 }
 
 async function main(): Promise<void> {
@@ -198,13 +119,14 @@ async function main(): Promise<void> {
   // 2. Labels ----------------------------------------------------------------
   const lab = extractLabels(pdfPath, geo);
   const distinct = new Set(lab.codePoints.map((c) => c.code));
+  const minCodes = Math.max(3, args.minCodes);
   console.error(
     `[t1-build] labels: ${lab.nWords} words, ${lab.nCodeLike} code-like, ` +
       `${lab.nInsideFrame} in-frame (${lab.rejectedOutsideFrame} rejected outside), ` +
       `${distinct.size} distinct codes`,
   );
-  if (distinct.size < args.minCodes) {
-    fail(`only ${distinct.size} distinct zone codes (< ${args.minCodes}); labels may be glyphs → OCR path`);
+  if (distinct.size < minCodes) {
+    fail(`only ${distinct.size} distinct zone codes (< ${minCodes}); labels may be glyphs → OCR path`);
   }
   // anti-#74 + anti-affectation: every code lettered + no banned tokens.
   const banned = /^(affectation|cmm|mrc|sad|pmad)/i;
