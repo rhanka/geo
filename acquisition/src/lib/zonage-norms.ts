@@ -270,6 +270,64 @@ export function shouldRejectForZeroOverlap(
   return crossval.gridFound === true && crossval.overlap === 0;
 }
 
+/**
+ * Anti-invention rejection rule #2 (pure, unit-testable).
+ *
+ * REJECT a deposit when NOT A SINGLE norm field carries a value
+ * (`publishedFieldPct === 0`). A product with codes but 0% published norms is
+ * not a grille — it is OCR of body text / a table-of-contents misread as zone
+ * codes (carignan 483-39-U: --auto-grid-page locked onto the ToC, OCR'd the
+ * article body, deposited 125 bogus codes with 0% norm fields). A real grille
+ * always publishes some hauteur/marges/densité value, so `publishedFieldPct > 0`.
+ * General net, independent of `shouldRejectForZeroOverlap` (which needs a
+ * reference grille on S3); this one fires even when no grille is on S3.
+ */
+export function shouldRejectForZeroNormFields(publishedFieldPct: number): boolean {
+  return publishedFieldPct === 0;
+}
+
+/**
+ * Heuristic table-of-contents / sommaire detector (pure, unit-testable).
+ *
+ * A codified by-law's ToC page is dense with code-shaped tokens (article refs)
+ * and page numbers, so `--auto-grid-page` can mistake it for the grille header
+ * band and OCR the wrong window (carignan 483-39-U: ToC on p.12 → OCR'd the body
+ * → 125 bogus codes, 0% norm fields). This excludes a candidate page when it
+ * carries (a) a ToC/sommaire title, (b) ≥2 dotted-leader lines ("Article 3 .... 12"),
+ * or (c) a high density of page-renvoi lines (heading text + gap + a trailing page
+ * number, with FEW numbers on the line). A real grille page carries VALUES in
+ * numeric columns (hauteur/marges/densité) — many numbers per row, no renvois —
+ * so it is never excluded.
+ */
+export function looksLikeTableOfContents(pageText: string): boolean {
+  const text = pageText ?? "";
+  // (a) Explicit table-of-contents / sommaire title.
+  if (/\bTABLE\s+DES\s+MATI[ÈE]RES\b|\bSOMMAIRE\b|\bTABLE\s+OF\s+CONTENTS\b/i.test(text)) {
+    return true;
+  }
+  const lines = text.split(/\r?\n/);
+  const dottedLeader = /\.{3,}\s*\d{1,4}\s*$/; // "Hauteur des bâtiments .......... 12"
+  // A page-renvoi line: heading text, a gap (≥2 spaces) or dotted leader, then a
+  // trailing page number. Guard on FEW numbers (≤3) so a grille VALUE row — which
+  // carries many numeric columns — is never counted as a renvoi.
+  const renvoi = /[A-Za-zÀ-ÿ].*?(?:\s{2,}|\.{2,})\s*\d{1,4}\s*$/;
+  let dotted = 0;
+  let renvois = 0;
+  let nonEmpty = 0;
+  for (const line of lines) {
+    if (line.trim().length === 0) continue;
+    nonEmpty++;
+    if (dottedLeader.test(line)) dotted++;
+    const nums = (line.match(/\d{1,4}/g) ?? []).length;
+    if (nums <= 3 && renvoi.test(line)) renvois++;
+  }
+  // (b) Several dotted-leader lines.
+  if (dotted >= 2) return true;
+  // (c) High density of page-renvoi lines.
+  if (nonEmpty >= 6 && renvois / nonEmpty >= 0.5) return true;
+  return false;
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 //  3. Deposit (idempotent) + manifest refresh.
 // ───────────────────────────────────────────────────────────────────────────
