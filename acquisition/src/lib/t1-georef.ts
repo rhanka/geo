@@ -122,8 +122,10 @@ export function wktToProj4(wkt: string): { def: string; name: string } | null {
 
 // ---------------------------------------------------------------------------
 // Affine fit page(x,y) → value, least squares (≥3 correspondences).
+// Exported so the T2 manual-GCP georef (lib/t2-georef.ts) reuses the exact same
+// least-squares solver as the embedded-GeoPDF path — no reinvention.
 // ---------------------------------------------------------------------------
-function fitAffine(pts: Array<[number, number]>, vals: number[]): [number, number, number] {
+export function fitAffine(pts: Array<[number, number]>, vals: number[]): [number, number, number] {
   let Sxx = 0;
   let Sxy = 0;
   let Sx = 0;
