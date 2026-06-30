@@ -161,7 +161,11 @@ function normalizeExpectedZone(raw: string): string {
 }
 
 function expectedZoneFromPage(text: string): string | undefined {
-  const zoneLabel = text.match(/\bZONE\s+([A-Z]{1,4}\s*[-–—]?\s*\d+(?:\.\d+)?(?:\s*[A-Z])?)/i);
+  // NB: the optional trailing suffix-letter (e.g. "H-1A") must stay on the SAME
+  // line as the digits — `[ \t]*` not `\s*`. With `\s*` the group spanned the
+  // blank lines under a one-zone-per-page title ("ZONE CW-1\n\n\nUSES …") and
+  // swallowed the leading "U" of "USES", pinning a fabricated "CW-1U" zone_code.
+  const zoneLabel = text.match(/\bZONE\s+([A-Z]{1,4}\s*[-–—]?\s*\d+(?:\.\d+)?(?:[ \t]*[A-Z])?)/i);
   if (zoneLabel?.[1]) return normalizeExpectedZone(zoneLabel[1]);
 
   // DIGIT-FIRST page-title gabarit (the "ANNEXE J/L GRILLES DE SPÉCIFICATION …
