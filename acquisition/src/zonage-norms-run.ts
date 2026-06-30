@@ -25,7 +25,13 @@
  *   tsx src/zonage-norms-run.ts --slug saint-alban --pdf /path/grille.pdf \
  *       --source-url https://… [--reglement 123] \
  *       [--route auto|native|ocr|multizone|vision] \
- *       [--max-vision-pages N] [--budget-usd 15] [--dry-run] [--force]
+ *       [--max-vision-pages N] [--budget-usd 15] [--auto-grid-page] \
+ *       [--dry-run] [--force]
+ *
+ * `--auto-grid-page` (ADDITIVE, off by default): pre-scan the PDF text to locate
+ * the deep ANNEXE "grille des usages et normes" of a codified by-law and restrict
+ * the OCR window to it, overriding the ~80-page cap (e.g. dudswell grille p.223–
+ * 228 of 287). Without it the cap slices the annex off → 0 zones extracted.
  */
 import { readFile } from "node:fs/promises";
 
@@ -80,6 +86,8 @@ interface Args {
   force: boolean;
   /** Parquet-only deposit (NO manifest write) — safe for concurrent lanes; reconcile via zonage-norms-manifest-merge.ts. */
   noManifest: boolean;
+  /** Pre-scan the PDF text for the deep grille annex and bound the OCR window to it (overrides the page cap). */
+  autoGridPage: boolean;
   snapshot: string;
   dpi?: number;
   /** 1-based inclusive page range to read (vision/multizone). Default: all. */
@@ -110,6 +118,7 @@ function parseArgs(argv: string[]): Args {
     dryRun: has("dry-run"),
     force: has("force"),
     noManifest: has("no-manifest"),
+    autoGridPage: has("auto-grid-page"),
     snapshot: get("snapshot") ?? new Date().toISOString().slice(0, 10),
     ...(get("dpi") ? { dpi: Number(get("dpi")) } : {}),
     ...(get("first-page") ? { firstPage: Number(get("first-page")) } : {}),
@@ -154,6 +163,59 @@ function pageTextsByNumber(layoutText: string): string[] {
   const pages = layoutText.split("\f");
   if (pages[pages.length - 1] === "") pages.pop();
   return pages;
+}
+
+// ── Auto-grid-page detection (additive; gated on --auto-grid-page) ──────────
+// Codified zoning by-laws bury their ANNEXE "grille des usages et normes" deep
+// in the document (dudswell: p.223–228 of 287). The default ~80-page OCR cap
+// (`maxVisionPages`) then slices the annex off → 0 zones extracted even though
+// the grille exists. When `--auto-grid-page` is set we pre-scan the
+// `pdftotext -layout` projection page-by-page and, on a hit, bound the OCR window
+// to the grille block (±AUTO_GRID_MARGIN pages), overriding the cap. OFF by
+// default, so default-behaviour runs (and any concurrent lane) are untouched.
+
+/** Min DISTINCT zone-code tokens on a single header line to flag a grille page. */
+const AUTO_GRID_MIN_CODES = 6;
+/** Pages of slack added on each side of the detected grille block. */
+const AUTO_GRID_MARGIN = 2;
+/** Zone-code token: 1–4 leading letters + optional dash + 1–3 digits (RA-1, C2, VIL9). */
+const ZONE_CODE_TOKEN = /\b[A-Z]{1,4}-?\d{1,3}\b/g;
+/** Lines never treated as a grille header: by-law/article refs and 19xx/20xx years. */
+const GRID_HEADER_EXCLUDE = /\b(?:ARTICLES?|R[ÈE]GLEMENTS?|REGLEMENTS?)\b|\b(?:19|20)\d{2}\b/i;
+
+interface GridWindow {
+  pages: number[];
+  firstPage: number;
+  lastPage: number;
+}
+
+/**
+ * Scan per-page layout text for the grille des usages et normes annex. A page is
+ * a grille page when ≥AUTO_GRID_MIN_CODES DISTINCT zone-code tokens sit on a
+ * SINGLE line — the zones-in-columns header band, e.g. "Références A1 A2 A3 …" —
+ * after dropping lines that look like by-law/article refs or carry a year (so a
+ * règlement number / "ARTICLE 12" never trips it). Returns the
+ * [min−margin, max+margin] page window (1-based, clamped) or null if none found.
+ */
+function detectGridPages(pageTexts: string[], pageCount: number): GridWindow | null {
+  const hits: number[] = [];
+  for (let i = 0; i < pageTexts.length; i++) {
+    const text = pageTexts[i] ?? "";
+    for (const line of text.split(/\r?\n/)) {
+      if (GRID_HEADER_EXCLUDE.test(line)) continue;
+      const codes = new Set<string>();
+      for (const m of line.matchAll(ZONE_CODE_TOKEN)) codes.add(m[0].toUpperCase());
+      if (codes.size >= AUTO_GRID_MIN_CODES) {
+        hits.push(i + 1); // 1-based PDF page number
+        break;
+      }
+    }
+  }
+  if (hits.length === 0) return null;
+  const total = pageCount > 0 ? pageCount : Math.max(...hits);
+  const firstPage = Math.max(1, Math.min(...hits) - AUTO_GRID_MARGIN);
+  const lastPage = Math.min(total, Math.max(...hits) + AUTO_GRID_MARGIN);
+  return { pages: hits, firstPage, lastPage };
 }
 
 function normalizeExpectedZone(raw: string): string {
@@ -342,6 +404,26 @@ async function main(): Promise<void> {
           reason: `forced route=${args.route}`,
         };
   console.error(`[route] ${decision.route}: ${decision.reason}`);
+
+  // ADDITIVE: when --auto-grid-page is set, locate the deep grille annex and bound
+  // the OCR window to it (overriding the page cap). On miss → log + normal fallback.
+  // Native route ignores firstPage/lastPage, so this only steers the OCR/vision paths.
+  if (args.autoGridPage) {
+    const win = detectGridPages(pageTexts, pdfPageCount(args.pdf));
+    if (win) {
+      args.firstPage = win.firstPage;
+      args.lastPage = win.lastPage;
+      // Override the page cap: ensure maxVisionPages spans the whole detected
+      // window (the cap is computed as first-1+maxVisionPages in each route).
+      args.maxVisionPages = Math.max(args.maxVisionPages, win.lastPage - win.firstPage + 1);
+      console.error(
+        `[auto-grid] grille pages detected: ${win.pages.join(",")} → OCR window ` +
+          `${win.firstPage}..${win.lastPage} (±${AUTO_GRID_MARGIN}, page cap overridden)`,
+      );
+    } else {
+      console.error("[auto-grid] aucune page-grille détectée — fallback comportement normal");
+    }
+  }
 
   let zones: ZoneNormsT[] = [];
   let methode = "";
