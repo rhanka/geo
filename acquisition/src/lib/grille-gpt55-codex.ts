@@ -8,7 +8,8 @@
  * `buildVisionField` guard; no norm parsing or value normalisation lives here.
  */
 import { spawn } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -91,6 +92,8 @@ export interface Gpt55ExtractOptions {
   methode?: string;
   dpi?: number;
   cli?: Gpt55CliOptions;
+  pageCacheDir?: string;
+  onPage?: (event: { page: number; ok: boolean; latencyMs: number; cached?: boolean; error?: string }) => void;
 }
 
 export interface Gpt55PathResult {
@@ -100,6 +103,14 @@ export interface Gpt55PathResult {
   durationMs: number;
   usage: CodexUsage;
   reasons: string[];
+}
+
+interface PageCacheRecord {
+  page: number;
+  extraction: ClaudeRawExtraction;
+  usage: CodexUsage;
+  latencyMs: number;
+  generated_at: string;
 }
 
 function emptyUsage(): CodexUsage {
@@ -272,9 +283,36 @@ export async function extractGrilleGpt55FromPdf(
 
   for (const page of pages) {
     let png: string | null = null;
+    const pageStart = Date.now();
     try {
-      png = await renderPageToPng(pdfPath, page, dpi);
-      const res = await runGpt55Vision(png, page, slug, opts.cli);
+      const cachePath = opts.pageCacheDir
+        ? join(opts.pageCacheDir, `page-${String(page).padStart(4, "0")}.json`)
+        : null;
+      let res: Gpt55PageResult;
+      let cached = false;
+      if (cachePath && existsSync(cachePath)) {
+        const cachedRecord = JSON.parse(await readFile(cachePath, "utf8")) as PageCacheRecord;
+        res = {
+          extraction: cachedRecord.extraction,
+          usage: cachedRecord.usage,
+          latencyMs: cachedRecord.latencyMs,
+          stderr: "",
+        };
+        cached = true;
+      } else {
+        png = await renderPageToPng(pdfPath, page, dpi);
+        res = await runGpt55Vision(png, page, slug, opts.cli);
+        if (cachePath) {
+          await mkdir(opts.pageCacheDir!, { recursive: true });
+          await writeFile(cachePath, JSON.stringify({
+            page,
+            extraction: res.extraction,
+            usage: res.usage,
+            latencyMs: res.latencyMs,
+            generated_at: new Date().toISOString(),
+          } satisfies PageCacheRecord, null, 2) + "\n", "utf8");
+        }
+      }
       usage = addCodexUsage(usage, res.usage);
       zones.push(...mapClaudeExtractionToZones(res.extraction, page, {
         source_url: opts.source_url,
@@ -282,9 +320,12 @@ export async function extractGrilleGpt55FromPdf(
         methode,
       }));
       pagesRead++;
+      opts.onPage?.({ page, ok: true, latencyMs: cached ? res.latencyMs : Date.now() - pageStart, cached });
     } catch (e) {
       pagesFailed++;
-      reasons.push(`page ${page}: ${(e instanceof Error ? e.message : String(e)).slice(0, 1200)}`);
+      const error = (e instanceof Error ? e.message : String(e)).slice(0, 1200);
+      reasons.push(`page ${page}: ${error}`);
+      opts.onPage?.({ page, ok: false, latencyMs: Date.now() - pageStart, error });
     } finally {
       if (png) {
         await rm(png.replace(/\/[^/]+$/, ""), { recursive: true, force: true }).catch(
