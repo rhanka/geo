@@ -65,6 +65,8 @@ export interface GcpFile {
   gcps: Gcp[];
   /** Optional map-frame rectangle (page fractions) to restrict in-frame labels. */
   neatline?: NeatlineFrac;
+  /** Optional page-fraction masks for title boxes / legends inside the map frame. */
+  excludeRegions?: NeatlineFrac[];
   /** Optional CRS the GCP lon/lat are in (default WGS84 / epsg:4326). */
   crs?: string;
 }
