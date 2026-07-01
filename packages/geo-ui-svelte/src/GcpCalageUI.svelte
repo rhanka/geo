@@ -88,6 +88,99 @@
     return Math.max(0, Math.min(1, value));
   }
 
+  /**
+   * The rectangle the PDF page actually paints inside its `object-fit: contain`
+   * box, expressed as fractions of that box. `contain` scales the image to fit
+   * while preserving its aspect ratio, so unless the box and the image share an
+   * aspect ratio the paint is letterboxed (bars top/bottom) or pillarboxed (bars
+   * left/right). PDF fractions MUST be measured against the painted page, not the
+   * full box, or every click drifts by the bar width.
+   */
+  export interface GcpContainBox {
+    /** Left edge of the painted image, as a fraction of the box width. */
+    offsetXFrac: number;
+    /** Top edge of the painted image, as a fraction of the box height. */
+    offsetYFrac: number;
+    /** Painted image width, as a fraction of the box width. */
+    widthFrac: number;
+    /** Painted image height, as a fraction of the box height. */
+    heightFrac: number;
+  }
+
+  /** Identity box: image fills the whole container (or dimensions unknown). */
+  export const FULL_CONTAIN_BOX: GcpContainBox = {
+    offsetXFrac: 0,
+    offsetYFrac: 0,
+    widthFrac: 1,
+    heightFrac: 1,
+  };
+
+  /**
+   * Compute the `object-fit: contain` paint rectangle of an image of natural
+   * size `naturalWidth × naturalHeight` inside a `boxWidth × boxHeight`
+   * container. When any dimension is unknown/degenerate the image is assumed to
+   * fill the box (identity), so callers degrade to plain box-relative fractions.
+   */
+  export function containImageBox(
+    boxWidth: number,
+    boxHeight: number,
+    naturalWidth: number,
+    naturalHeight: number,
+  ): GcpContainBox {
+    if (
+      !(boxWidth > 0) ||
+      !(boxHeight > 0) ||
+      !(naturalWidth > 0) ||
+      !(naturalHeight > 0)
+    ) {
+      return FULL_CONTAIN_BOX;
+    }
+    const boxAspect = boxWidth / boxHeight;
+    const imageAspect = naturalWidth / naturalHeight;
+    if (imageAspect > boxAspect) {
+      // Wider than the box → full width, letterbox bars top and bottom.
+      const heightFrac = boxAspect / imageAspect;
+      return {
+        offsetXFrac: 0,
+        offsetYFrac: (1 - heightFrac) / 2,
+        widthFrac: 1,
+        heightFrac,
+      };
+    }
+    // Taller than the box → full height, pillarbox bars left and right.
+    const widthFrac = imageAspect / boxAspect;
+    return {
+      offsetXFrac: (1 - widthFrac) / 2,
+      offsetYFrac: 0,
+      widthFrac,
+      heightFrac: 1,
+    };
+  }
+
+  /**
+   * Map a click expressed as fractions of the container box onto fractions of
+   * the painted PDF page, removing any letterbox/pillarbox bars. Clicks landing
+   * on a bar clamp to the nearest page edge.
+   */
+  export function pdfPointFromContainClick(
+    clickXFrac: number,
+    clickYFrac: number,
+    box: GcpContainBox,
+  ): GcpCalagePdfPoint {
+    return {
+      fx: clampUnit(
+        box.widthFrac > 0
+          ? (clickXFrac - box.offsetXFrac) / box.widthFrac
+          : clickXFrac,
+      ),
+      fy: clampUnit(
+        box.heightFrac > 0
+          ? (clickYFrac - box.offsetYFrac) / box.heightFrac
+          : clickYFrac,
+      ),
+    };
+  }
+
   export function isCompleteGcp(point: GcpCalagePoint): boolean {
     return (
       Number.isFinite(point.fx) &&
@@ -133,6 +226,14 @@
   }: GcpCalageUIProps = $props();
 
   let mapContainer = $state<HTMLDivElement>();
+  let pageFrame = $state<HTMLDivElement>();
+  let pageImage = $state<HTMLImageElement>();
+  /**
+   * The painted-page rectangle inside the `object-fit: contain` frame, tracked
+   * reactively so both the click math and the GCP dots share one source of
+   * truth. Defaults to the identity box until the image loads / is measured.
+   */
+  let imageContainBox = $state<GcpContainBox>(FULL_CONTAIN_BOX);
   let map:
     | (import("maplibre-gl").Map & {
         getSource: (id: string) => { setData?: (data: unknown) => void } | undefined;
@@ -192,15 +293,56 @@
     return point.id ?? `${index}:${point.fx}:${point.fy}:${point.lon}:${point.lat}`;
   }
 
+  /**
+   * Re-measure where the PDF page actually paints inside its `contain` frame.
+   * Called on image load and whenever the frame resizes.
+   */
+  function measureImageBox(): void {
+    const frame = pageFrame;
+    const image = pageImage;
+    if (!frame || !image) {
+      imageContainBox = FULL_CONTAIN_BOX;
+      return;
+    }
+    imageContainBox = containImageBox(
+      frame.clientWidth,
+      frame.clientHeight,
+      image.naturalWidth,
+      image.naturalHeight,
+    );
+  }
+
+  /** Absolute placement of a GCP dot, offset into the painted-page rectangle. */
+  function dotStyle(fx: number, fy: number): string {
+    const left =
+      (imageContainBox.offsetXFrac + clampUnit(fx) * imageContainBox.widthFrac) *
+      100;
+    const top =
+      (imageContainBox.offsetYFrac + clampUnit(fy) * imageContainBox.heightFrac) *
+      100;
+    return `left:${left}%;top:${top}%;`;
+  }
+
   function handlePdfClick(event: MouseEvent): void {
     const target = event.currentTarget as HTMLElement | null;
     if (!target) return;
     const rect = target.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return;
-    onPdfPoint?.({
-      fx: clampUnit((event.clientX - rect.left) / rect.width),
-      fy: clampUnit((event.clientY - rect.top) / rect.height),
-    });
+    // The overlay button fills the frame, but the image is `object-fit: contain`
+    // — normalize against the painted page so letterbox bars don't skew fx/fy.
+    const box = containImageBox(
+      rect.width,
+      rect.height,
+      pageImage?.naturalWidth ?? 0,
+      pageImage?.naturalHeight ?? 0,
+    );
+    onPdfPoint?.(
+      pdfPointFromContainClick(
+        (event.clientX - rect.left) / rect.width,
+        (event.clientY - rect.top) / rect.height,
+        box,
+      ),
+    );
   }
 
   function blankMapStyle(): unknown {
@@ -327,6 +469,16 @@
   });
 
   onMount(() => {
+    // Keep the painted-page box fresh: the frame is a fluid grid cell, so the
+    // letterbox bars shift as it resizes. Guard for jsdom/SSR (no ResizeObserver).
+    measureImageBox();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => measureImageBox());
+    if (pageFrame) observer.observe(pageFrame);
+    return () => observer.disconnect();
+  });
+
+  onMount(() => {
     if (!mapEnabled || !mapContainer || typeof window === "undefined") return;
     let disposed = false;
 
@@ -403,9 +555,15 @@
         <h3 id="gcp-page-heading">{pageLabelFr}</h3>
         <span>{gcps.length} / {minGcps}</span>
       </div>
-      <div class="gcp-page-frame">
+      <div bind:this={pageFrame} class="gcp-page-frame">
         {#if imageUrl}
-          <img src={imageUrl} alt={imageAltFr} class="gcp-page-image" />
+          <img
+            bind:this={pageImage}
+            src={imageUrl}
+            alt={imageAltFr}
+            class="gcp-page-image"
+            onload={measureImageBox}
+          />
           <button
             type="button"
             class="gcp-page-hit"
@@ -415,7 +573,7 @@
           {#each gcps as point, index (pointKey(point, index))}
             <span
               class="gcp-dot"
-              style={`left:${clampUnit(point.fx) * 100}%;top:${clampUnit(point.fy) * 100}%;`}
+              style={dotStyle(point.fx, point.fy)}
               aria-label={`GCP ${index + 1} PDF`}
             >
               {index + 1}
@@ -424,7 +582,7 @@
           {#if pendingPdfPoint}
             <span
               class="gcp-dot gcp-dot-pending"
-              style={`left:${clampUnit(pendingPdfPoint.fx) * 100}%;top:${clampUnit(pendingPdfPoint.fy) * 100}%;`}
+              style={dotStyle(pendingPdfPoint.fx, pendingPdfPoint.fy)}
               aria-label={`GCP ${gcps.length + 1} PDF en attente`}
             >
               {gcps.length + 1}
@@ -706,7 +864,7 @@
     border-radius: 999px;
     background: var(--st-color-blue-60, #2563eb);
     box-shadow: var(--st-shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.08));
-    color: #ffffff;
+    color: var(--st-semantic-text-inverse, #ffffff);
     font-size: 0.75rem;
     font-weight: 800;
     pointer-events: none;
@@ -838,7 +996,7 @@
   .gcp-button-primary {
     border-color: var(--st-color-blue-60, #2563eb);
     background: var(--st-color-blue-60, #2563eb);
-    color: #ffffff;
+    color: var(--st-semantic-text-inverse, #ffffff);
   }
 
   .gcp-button-primary:hover:not(:disabled) {
@@ -855,7 +1013,7 @@
     border-radius: 999px;
     background: var(--st-color-blue-60, #2563eb);
     box-shadow: var(--st-shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.08));
-    color: #ffffff;
+    color: var(--st-semantic-text-inverse, #ffffff);
     font-size: 0.75rem;
     font-weight: 800;
   }
