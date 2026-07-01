@@ -359,8 +359,41 @@
             type: "geojson",
             data: source,
           } as unknown as import("maplibre-gl").SourceSpecification);
+          // Track the queryable geometry layers (fill/circle) so hover/select
+          // can be wired below. Heatmap and symbol layers are not queryable, so
+          // density ships a transparent `-hit` circle to catch pointer events.
+          const aggInteractive: string[] = [];
           for (const layer of layers) {
             map.addLayer(layer as import("maplibre-gl").LayerSpecification);
+            const spec = layer as { id?: unknown; type?: unknown };
+            if (
+              typeof spec.id === "string" &&
+              (spec.type === "fill" || spec.type === "circle")
+            ) {
+              aggInteractive.push(spec.id);
+            }
+          }
+
+          // Aggregate features carry no stable feature-state id (no highlight),
+          // but the hover/select callbacks MUST still fire so SignalsLayer's
+          // forwarded handlers are honoured — parity with the choropleth branch.
+          for (const layerId of aggInteractive) {
+            map.on("mousemove", layerId, (e) => {
+              if (!map) return;
+              const feature = e.features?.[0];
+              if (!feature) return;
+              map.getCanvas().style.cursor = "pointer";
+              onHover?.(emitHit(feature));
+            });
+            map.on("mouseleave", layerId, () => {
+              if (!map) return;
+              map.getCanvas().style.cursor = "";
+              onHover?.(null);
+            });
+            map.on("click", layerId, (e) => {
+              const feature = e.features?.[0];
+              if (feature) onSelect?.(emitHit(feature));
+            });
           }
         } else if (!isEmpty && data) {
           // Our RFC-7946 FeatureCollection is structurally a maplibre GeoJSON

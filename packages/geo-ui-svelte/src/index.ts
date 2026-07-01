@@ -3,16 +3,21 @@
  * datasets, styled by the Sent Tech design-system tokens.
  */
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as GeoMapLegend } from "./GeoMapLegend.svelte";
 export { default as GeoSearch, foldText } from "./GeoSearch.svelte";
 export { default as ZonesLayer } from "./ZonesLayer.svelte";
+export { default as CitySearch } from "./CitySearch.svelte";
+export { default as LotsLayer } from "./LotsLayer.svelte";
+export { default as SignalsLayer } from "./SignalsLayer.svelte";
+export { default as SourceView } from "./SourceView.svelte";
 export { default as GeoDetailPanel } from "./GeoDetailPanel.svelte";
 export { default as DatasetCard } from "./DatasetCard.svelte";
 export { default as DatasetCatalog } from "./DatasetCatalog.svelte";
 export { default as AttributionBar } from "./AttributionBar.svelte";
+export { default as GcpCalageUI } from "./GcpCalageUI.svelte";
 
 export type {
   GeoCategory,
@@ -33,12 +38,63 @@ export {
   toZonesLayerHit,
 } from "./ZonesLayer.svelte";
 export type {
+  CitySearchCity,
+  CitySearchProps,
+} from "./CitySearch.svelte";
+export {
+  citiesToFeatureCollection,
+  citySearchToFeature,
+  citySlugFromFeature,
+} from "./CitySearch.svelte";
+export type {
+  LotsLayerHit,
+  LotsLayerProps,
+} from "./LotsLayer.svelte";
+export {
+  lotIdFromProperties,
+  toLotsLayerHit,
+} from "./LotsLayer.svelte";
+export type {
+  SignalsLayerAggregation,
+  SignalsLayerHit,
+  SignalsLayerProps,
+} from "./SignalsLayer.svelte";
+export {
+  signalIdFromProperties,
+  toSignalsLayerHit,
+} from "./SignalsLayer.svelte";
+export type {
+  SourceViewHit,
+  SourceViewProps,
+  SourceViewState,
+  SourceViewSummaryItem,
+} from "./SourceView.svelte";
+export {
+  sourceIdFromProperties,
+  sourceStateFromProperties,
+  sourceStatesToCategories,
+  toSourceViewHit,
+} from "./SourceView.svelte";
+export type {
   GeoDetailField,
   GeoDetailSchema,
   GeoDetailPanelProps,
 } from "./GeoDetailPanel.svelte";
 export type { DatasetCardProps } from "./DatasetCard.svelte";
 export type { AttributionBarProps } from "./AttributionBar.svelte";
+export type {
+  GcpCalagePdfPoint,
+  GcpCalageMapPoint,
+  GcpCalagePoint,
+  GcpCalageReport,
+  GcpCalageStatus,
+  GcpCalageUIProps,
+} from "./GcpCalageUI.svelte";
+export {
+  clampUnit,
+  isCompleteGcp,
+  isGcpSetReady,
+} from "./GcpCalageUI.svelte";
 
 export {
   computeChoroplethBins,
