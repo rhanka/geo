@@ -41,6 +41,11 @@ section("FOCUS-30");
 const f30 = sh("npx tsx src/focus30-status.ts", ACQ);
 console.log(f30.split("\n").filter((l) => /FOCUS-30 zonage servi|MANQUANTES/.test(l)).join("\n").trim() || "(focus30 indisponible)");
 
+// 2b. FOCUS-30 par couche (zones/normes/pv) — cohérence démo
+section("FOCUS-30 PAR COUCHE");
+const f30all = sh("npx tsx src/focus30-allayers.ts", ACQ);
+console.log(f30all.split("\n").filter((l) => /TOTAUX|MANQUE/.test(l)).join("\n").trim() || "(focus30-allayers indisponible)");
+
 // 3. provenance normes
 section("PROVENANCE NORMES");
 const ls = sh("npx tsx src/loop-status.ts", ACQ);
