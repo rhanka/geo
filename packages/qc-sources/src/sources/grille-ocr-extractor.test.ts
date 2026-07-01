@@ -433,6 +433,124 @@ describe("hardening — mono-letter zone code in the header", () => {
   });
 });
 
+// ───────────────────────────────────────────────────────────────────────────
+//  6. TWO-TIER "implantation" grilles (valcourt family) — the norm LABEL sits on
+//     its own row with EMPTY cells, VALUES follow under "bâtiment principal" /
+//     "- maximum"; wide sheets STACK a second zone-band ("AG-1…AF-1" then "AF-2…")
+//     in ONE OCR block and pad each data row with a TRAILING empty cell. This
+//     whole family used to publish at 0% fields (labels mapped to nothing, the
+//     values sat on unmapped sub-rows) → rejected by the 0%-fields gate despite
+//     carrying real 12/3/6 m margins, 1–3 étages, 30/10 % occupation. The fixture
+//     below is a VERBATIM mistral-ocr-4-0 excerpt (valcourt, 200-…-par-zone.pdf).
+// ───────────────────────────────────────────────────────────────────────────
+
+const VALCOURT_2TIER_MD = `## Grille des normes relatives à l'implantation des bâtiments par zones
+
+|  Normes d'implantation et dimensions | ZONES  |   |   |   |   |   |   |   |   |   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|   |  AG-1 | AG-2 | AG-3 | AG-4 | AG-5 | AG-6 | AG-7 | AG-8 | AF-1 |   |
+|  **Marge de recul avant minimale (mètres):**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 12^{1} | 12^{1} | 12 | 12 | 12^{1} | 12^{1} | 12^{1} | 12 | 12 |   |
+|  bâtiments accessoires | 12^{1} | 12^{1} | 12 | 12 | 12^{1} | 12^{1} | 12^{1} | 12 | 12 |   |
+|  **Marge de recul arrière minimale (mètres):**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 12 | 12 | 12 | 12 | 12 | 12 | 12 | 12 | 12 |   |
+|  bâtiments accessoires | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} |   |
+|  **Marge de recul latérale minimale (mètres):**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |   |
+|  bâtiments accessoires | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} | 1^{2} |   |
+|  **Somme minimale des marges de recul latérales**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |   |
+|  **Hauteur du bâtiment principal:**  |   |   |   |   |   |   |   |   |   |   |
+|  Nombre d'étages du bâtiment principal: |  |  |  |  |  |  |  |  |  |   |
+|  - minimum | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |   |
+|  - maximum | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |   |
+|  hauteur en mètres (m): |  |  |  |  |  |  |  |  |  |   |
+|  - minimum | - | - | - | - | - | - | - | - | - |   |
+|  - maximum | - | - | - | - | - | - | - | - | - |   |
+|  **Pourcentage maximal d'occupation du sol:**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 30 | 30 | 30 | 30 | 30 | 30 | 30 | 30 | 30 |   |
+|  bâtiments accessoires | 10 | 10 | 10 | 10 | 10 | 10 | 10 | 10 | 10 |   |
+|  Normes d'implantation et dimensions | ZONES  |   |   |   |   |   |   |   |   |   |
+|   |  AF-2 | AF-3 | AF-4 | AF-5 | AFD-1 | AFD-2 | AFD-3 | AFD-4 | AFD-5 | AFD-6  |
+|  **Marge de recul avant minimale (mètres):**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 12 | 12 | 12 | 12 | 12 | 12 | 12 | 12^{1} | 12 | 12^{1}  |
+|  **Hauteur du bâtiment principal:**  |   |   |   |   |   |   |   |   |   |   |
+|  Nombre d'étages du bâtiment principal: |  |  |  |  |  |  |  |  |  |   |
+|  - minimum | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1  |
+|  - maximum | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3 | 3  |
+|  **Pourcentage maximal d'occupation du sol:**  |   |   |   |   |   |   |   |   |   |   |
+|  bâtiment principal | 30 | 30 | 30 | 30 | 30 | 30 | 30 | 30 | 30 | 30  |
+`;
+
+describe("widened mapper — valcourt 2-tier / stacked-band 'implantation' grille", () => {
+  it("maps the widened QC vocabulary to the 8 fields", () => {
+    expect(labelToFieldId("Marge de recul avant minimale (mètres):")).toBe("marge_avant_min");
+    expect(labelToFieldId("Marge de recul latérale minimale (mètres):")).toBe("marge_laterale_min");
+    expect(labelToFieldId("Marge de recul arrière minimale (mètres):")).toBe("marge_arriere_min");
+    expect(labelToFieldId("Nombre d'étages du bâtiment principal:")).toBe("hauteur_etages");
+    expect(labelToFieldId("hauteur en mètres (m):")).toBe("hauteur_metres");
+    expect(labelToFieldId("Pourcentage maximal d'occupation du sol:")).toBe("densite");
+    expect(labelToFieldId("Superficie minimale du terrain")).toBe("superficie_min");
+    expect(labelToFieldId("Largeur minimale du terrain (m)")).toBe("frontage_min");
+    expect(labelToFieldId("Coefficient d'emprise au sol")).toBe("densite");
+  });
+
+  it("does NOT over-map a SUM of margins or a floor-area ratio (anti-over-mapping)", () => {
+    expect(labelToFieldId("Somme minimale des marges de recul latérales")).toBeNull();
+    expect(labelToFieldId("Rapport plancher/terrain maximal")).toBeNull();
+  });
+
+  it("splits the two stacked zone-bands in one OCR block (9 + 10 zones)", () => {
+    const t = findGrilleTables(VALCOURT_2TIER_MD);
+    expect(t.length).toBe(2);
+    expect(t[0]!.zoneCodes).toEqual(["AG-1", "AG-2", "AG-3", "AG-4", "AG-5", "AG-6", "AG-7", "AG-8", "AF-1"]);
+    expect(t[1]!.zoneCodes).toEqual(["AF-2", "AF-3", "AF-4", "AF-5", "AFD-1", "AFD-2", "AFD-3", "AFD-4", "AFD-5", "AFD-6"]);
+  });
+
+  it("carries the section label down to 'bâtiment principal' value rows (0% → >0%)", () => {
+    const zones = mapMarkdownPageToZones(VALCOURT_2TIER_MD, 1, OPTS2);
+    expect(zones.length).toBe(19);
+    const ag1 = byCode(zones, "AG-1");
+    // Column-index aligned despite the trailing padding cell → AG-1 gets AG-1's value.
+    expect(ag1.marges.avant_min?.value).toBe(12);
+    expect(ag1.marges.avant_min?.unit).toBe("m");
+    expect(ag1.marges.avant_min?.raw).toBe("12^{1}"); // verbatim, footnote glyph kept
+    expect(ag1.marges.laterale_min?.value).toBe(3); // NOT the "somme" (6)
+    expect(ag1.marges.arriere_min?.value).toBe(12);
+    expect(ag1.densite?.value).toBe(30);
+    // hauteur split into "- minimum"(1) / "- maximum"(3) → we publish the MAX.
+    expect(ag1.hauteur_max?.value).toBe(3);
+    expect(ag1.hauteur_max?.unit).toBe("etages");
+    // A zone from the SECOND band publishes too (was entirely lost before).
+    expect(byCode(zones, "AFD-6").marges.avant_min?.value).toBe(12);
+    expect(byCode(zones, "AFD-6").hauteur_max?.value).toBe(3);
+  });
+
+  it("prefers the 'principal' row over 'accessoires' for margins (first-seen)", () => {
+    const zones = mapMarkdownPageToZones(VALCOURT_2TIER_MD, 1, OPTS2);
+    // arrière: principal=12, accessoires=1 → we keep the principal (12).
+    expect(byCode(zones, "AG-2").marges.arriere_min?.value).toBe(12);
+  });
+
+  it("METRIC — every published value is verbatim in its raw cell (0 fausse valeur)", () => {
+    const zones = mapMarkdownPageToZones(VALCOURT_2TIER_MD, 1, OPTS2);
+    let published = 0;
+    for (const z of zones) {
+      const served = [
+        z.densite, z.hauteur_max, z.frontage_min, z.superficie_min,
+        z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min,
+      ].filter((f) => f && f.value !== null);
+      published += served.length;
+      for (const f of served) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
+    expect(published).toBeGreaterThan(0);
+  });
+});
+
 describe("hardening — anti-invention preserved end-to-end", () => {
   it("every published value across the hardened fixtures is verbatim in its raw cell", () => {
     const all = [
@@ -440,6 +558,7 @@ describe("hardening — anti-invention preserved end-to-end", () => {
       ...mapMarkdownPageToZones(SAINTRAYMOND_NORMES_MD, 2, OPTS2),
       ...mapMarkdownPageToZones(STRATFORD_TEXTLINE_MD, 7, OPTS2),
       ...mapMarkdownPageToZones(STRATFORD_MONO_MD, 8, OPTS2),
+      ...mapMarkdownPageToZones(VALCOURT_2TIER_MD, 1, OPTS2),
     ];
     for (const z of all) {
       const served = [
