@@ -253,27 +253,99 @@ export async function slicePdf(
 //  Markdown grille parsing — TRANSPOSED table (zones in columns) → ZoneNorms[].
 // ───────────────────────────────────────────────────────────────────────────
 
-/** Match a French norm-row label to a FieldId (verbatim-anchored, no guessing). */
+/**
+ * Match a French norm-row label to a FieldId (verbatim-anchored, no guessing).
+ *
+ * The synonym table is WIDE because the QC "grille des spécifications" family uses
+ * many surface forms for the same 8 norms — "Marge de recul avant minimale",
+ * "Nombre d'étages du bâtiment principal", "Pourcentage maximal d'occupation du
+ * sol", "Largeur minimale du terrain", … A whole family of grilles (valcourt-type
+ * Excel sheets) carries REAL values but was published at 0% fields purely because
+ * these labels mapped to nothing. ANTI-INVENTION: this maps LABELS → the CORRECT
+ * field only; it never touches cell VALUES (those stay verbatim, gated downstream)
+ * and never over-maps (e.g. a "somme des marges" or a floor-area "rapport
+ * plancher/terrain" is a DIFFERENT norm → left unmapped rather than mis-folded).
+ */
 export function labelToFieldId(label: string): FieldId | null {
   const s = label
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "");
+    .replace(/[̀-ͯ]/g, "") // strip accents
+    .replace(/[*_`]/g, "") // strip markdown emphasis (OCR bolds section titles)
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // A SUM of margins ("somme minimale des marges de recul latérales") is its OWN
+  // distinct norm — NEVER fold it into a marge_* minimum (anti-over-mapping).
+  if (/\bsomme\b/.test(s)) return null;
+
   // Order matters: most specific first.
-  if (/marge.*avant/.test(s) && /min/.test(s)) return "marge_avant_min";
-  if (/marge.*(laterale|lateral)/.test(s) && /min/.test(s)) return "marge_laterale_min";
-  if (/marge.*arriere/.test(s) && /min/.test(s)) return "marge_arriere_min";
+  // ── Marges de recul (avant / latérale / arrière); "de recul" is optional and
+  //    "minimale"/"min." may sit on the label OR be implicit. A "…maximale" marge
+  //    is a different bound → excluded via !/max/. ──
   if (/marge.*avant/.test(s) && !/max/.test(s)) return "marge_avant_min";
   if (/marge.*(laterale|lateral)/.test(s) && !/max/.test(s)) return "marge_laterale_min";
   if (/marge.*arriere/.test(s) && !/max/.test(s)) return "marge_arriere_min";
-  if (/hauteur.*(etage)/.test(s) && /max/.test(s)) return "hauteur_etages";
-  if (/hauteur.*(metre|metr)/.test(s) && /max/.test(s)) return "hauteur_metres";
-  if (/hauteur.*(metre|metr)/.test(s)) return "hauteur_metres";
-  if (/hauteur.*(etage)/.test(s)) return "hauteur_etages";
-  if (/(facade|frontale|largeur).*min/.test(s)) return "frontage_min";
-  if (/(superficie|aire).*(min)/.test(s)) return "superficie_min";
-  if (/(indice|coefficient).*(occupation|emprise|sol)/.test(s)) return "densite";
+
+  // ── Hauteur — étages vs mètres. "Nombre d'étages …" carries no "hauteur" word,
+  //    so match it explicitly; a bare "…(m)"/"mètre(s)" hauteur → metres. An
+  //    ambiguous unit-less "hauteur" is left UNMAPPED (null beats a wrong window). ──
+  if (/(hauteur|nombre|nbre|\bnb\b).*etage/.test(s)) return "hauteur_etages";
+  if (/\betages?\b/.test(s)) return "hauteur_etages";
+  if (/hauteur.*(metre|\(m\)|\bm\b)/.test(s)) return "hauteur_metres";
+
+  // ── Largeur frontale / façade minimale du terrain ou du lot (frontage). ──
+  if (/(largeur|facade|frontage|frontale).*min/.test(s)) return "frontage_min";
+  if (/min.*(largeur|facade|frontage|frontale)/.test(s)) return "frontage_min";
+
+  // ── Superficie / aire minimale du terrain ou du lot. ──
+  if (/(superficie|aire).*min/.test(s)) return "superficie_min";
+  if (/min.*(superficie|aire)/.test(s)) return "superficie_min";
+
+  // ── Densité : coefficient / indice / rapport / pourcentage / % d'occupation ou
+  //    d'emprise AU SOL (CES). A "rapport plancher/terrain" (COS floor-area ratio)
+  //    is a DIFFERENT quantity → it lacks "occupation|emprise …sol" so it never
+  //    matches here (anti-over-mapping). ──
+  if (/(coefficient|indice|rapport|pourcentage|%).*(occupation|emprise).*sol/.test(s))
+    return "densite";
+  if (/(occupation|emprise).*sol/.test(s)) return "densite";
+  if (/\(ces\)|\bc\.e\.s\.?\b/.test(s)) return "densite";
+
   return null;
+}
+
+/**
+ * The bound we publish for a field, used to pick the RIGHT sub-row when a norm is
+ * split across "- minimum" / "- maximum" (or "principal"/"accessoire") lines under
+ * a section header (valcourt 2-tier grille). We publish hauteur as a MAX and every
+ * dimensional minimum as a MIN, so a "maximum" sub-row wins for hauteur and a
+ * "minimum" sub-row wins for the mins; an unlabelled sub-row (e.g. "bâtiment
+ * principal", read first) is the neutral default. Anti-invention: this only
+ * chooses WHICH verbatim cell to keep — it never alters a value.
+ */
+const PREFERRED_BOUND: Partial<Record<FieldId, "min" | "max">> = {
+  hauteur_etages: "max",
+  hauteur_metres: "max",
+  marge_avant_min: "min",
+  marge_laterale_min: "min",
+  marge_arriere_min: "min",
+  frontage_min: "min",
+  superficie_min: "min",
+};
+
+/**
+ * Priority of a value-row for a field given its (sub-)label. 2 = the preferred
+ * bound's own row, 1 = an unlabelled/neutral row (default, first-seen wins), 0 =
+ * the opposite bound. A higher priority row with a real value overrides a lower one.
+ */
+function subRowRank(label: string, field: FieldId): number {
+  const pref = PREFERRED_BOUND[field];
+  if (!pref) return 1;
+  const s = label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const hasMax = /\bmax/.test(s);
+  const hasMin = /\bmin/.test(s);
+  if (pref === "max") return hasMax ? 2 : hasMin ? 0 : 1;
+  return hasMin ? 2 : hasMax ? 0 : 1;
 }
 
 /** Split one GitHub-markdown table row into trimmed cells (drops outer pipes). */
@@ -307,10 +379,33 @@ export interface MarkdownTable {
   zoneCodes: string[];
   /** All body rows (already split into cells). */
   rows: string[][];
+  /**
+   * Column INDEX (in the split row) of each zone code, when the header was an
+   * in-table row. Data-row values are read at THESE indices — not right-aligned —
+   * so a trailing padding column (the valcourt Excel sheets emit a stray empty
+   * cell after the last zone) can never shift a value into the wrong zone.
+   * Absent for a text-line header (values then right-align, as before).
+   */
+  zoneCols?: number[];
+}
+
+/** A header row match: the ordered zone codes and their original column indices. */
+interface HeaderMatch {
+  codes: string[];
+  cols: number[];
 }
 
 /** A single uppercase letter — an ambiguous-but-real zone code (Stratford "Q", "P"). */
 const MONO_LETTER_CODE = /^[A-Z]$/;
+
+/**
+ * A LETTER-prefixed zone code ("AG-1", "AFD-6", "Ra-101"): 1–4 leading letters,
+ * an optional separator, then digits. Unlike `looksLikeZoneCode` this REQUIRES a
+ * letter prefix, so a bare numeric DATA cell ("12", "30") never matches — that is
+ * what lets `asMidBlockZoneHeader` split a stacked second zone-band without ever
+ * mistaking a row of values for a header.
+ */
+const ALPHA_ZONE_CODE = /^[A-Za-z]{1,4}[ .-]?\d{1,4}(?:[ .-]?\d{1,3})?$/;
 
 /** A bare numeric suffix (the MRC-Portneuf "feuillet" family lists 101, 102, …). */
 function looksLikeBareNumber(c: string): boolean {
@@ -328,16 +423,41 @@ function looksLikeBareNumber(c: string): boolean {
  * (was 80 % with mono-letters counted as noise, which dropped whole headers when a
  * lone "Q" rode along).
  */
-function asZoneHeader(cells: string[]): string[] | null {
-  const nonEmpty = cells.filter((c) => c.length > 0);
+function asZoneHeader(cells: string[]): HeaderMatch | null {
+  const nonEmpty = cells
+    .map((c, i) => ({ c: c.trim(), i }))
+    .filter((x) => x.c.length > 0);
   if (nonEmpty.length < 2) return null;
-  const strong = nonEmpty.filter(looksLikeZoneCode).length;
+  const strong = nonEmpty.filter((x) => looksLikeZoneCode(x.c)).length;
   const mono = nonEmpty.filter(
-    (c) => !looksLikeZoneCode(c) && MONO_LETTER_CODE.test(c.trim()),
+    (x) => !looksLikeZoneCode(x.c) && MONO_LETTER_CODE.test(x.c),
   ).length;
   if (strong < 2) return null;
   if (strong + mono < Math.ceil(nonEmpty.length * 0.7)) return null;
-  return nonEmpty.map((c) => c.trim());
+  return { codes: nonEmpty.map((x) => x.c), cols: nonEmpty.map((x) => x.i) };
+}
+
+/**
+ * Detect a SECOND (or third…) zone-header band stacked inside the SAME OCR table
+ * block. Wide QC grilles (valcourt: 27 zones) exceed the page width, so the Excel
+ * export wraps the columns into successive bands — "AG-1 … AF-1", then "AF-2 …
+ * AFD-6" — that mistral-ocr emits as one continuous pipe block. Without splitting,
+ * every band after the first is read as data under the first band's zones (its
+ * real zones lost, its values mis-attributed).
+ *
+ * To split SAFELY we require ≥2 LETTER-prefixed codes (`ALPHA_ZONE_CODE`) that
+ * DOMINATE the row: a row of bare numeric VALUES ("12 12 30 …") has zero
+ * letter-prefixed cells and so is never mistaken for a header (anti-invention).
+ */
+function asMidBlockZoneHeader(cells: string[]): HeaderMatch | null {
+  const nonEmpty = cells
+    .map((c, i) => ({ c: c.trim(), i }))
+    .filter((x) => x.c.length > 0);
+  if (nonEmpty.length < 2) return null;
+  const alpha = nonEmpty.filter((x) => ALPHA_ZONE_CODE.test(x.c));
+  if (alpha.length < 2) return null;
+  if (alpha.length < Math.ceil(nonEmpty.length * 0.7)) return null;
+  return { codes: alpha.map((x) => x.c), cols: alpha.map((x) => x.i) };
 }
 
 /**
@@ -371,15 +491,17 @@ export function zonePrefixFromRow(cells: string[]): string | null {
  * (a) is the wrong code and (b) COLLIDES every feuillet's 101 into one zone — e.g.
  * portneuf collapsed from 161 real zones to 36. Returns prefixed codes or null.
  */
-function asPrefixedNumericHeader(cells: string[], prevCells?: string[]): string[] | null {
+function asPrefixedNumericHeader(cells: string[], prevCells?: string[]): HeaderMatch | null {
   if (!prevCells) return null;
-  const nonEmpty = cells.filter((c) => c.length > 0);
+  const nonEmpty = cells
+    .map((c, i) => ({ c: c.trim(), i }))
+    .filter((x) => x.c.length > 0);
   if (nonEmpty.length < 2) return null;
-  const numeric = nonEmpty.filter(looksLikeBareNumber);
+  const numeric = nonEmpty.filter((x) => looksLikeBareNumber(x.c));
   if (numeric.length < 2 || numeric.length < Math.ceil(nonEmpty.length * 0.8)) return null;
   const prefix = zonePrefixFromRow(prevCells);
   if (!prefix) return null;
-  return numeric.map((n) => `${prefix}-${n.trim()}`);
+  return { codes: numeric.map((x) => `${prefix}-${x.c}`), cols: numeric.map((x) => x.i) };
 }
 
 /**
@@ -421,10 +543,10 @@ export function findGrilleTables(markdown: string): MarkdownTable[] {
     precedingText = "";
     if (block.length < 2) continue;
     const rows = block.map(splitRow).filter((r) => !isSeparatorRow(r));
-    // Locate the zone-header row (first one wins). Try the numeric-with-prefix
+    // Locate the FIRST zone-header row (first one wins). Try the numeric-with-prefix
     // form FIRST (so "Zones Ra" + "101 102 …" → Ra-101…, not bare 101), then the
     // ordinary alpha-coded standalone header.
-    let header: string[] | null = null;
+    let header: HeaderMatch | null = null;
     let headerIdx = -1;
     for (let r = 0; r < Math.min(rows.length, 8); r++) {
       const prev = r > 0 ? rows[r - 1] : undefined;
@@ -442,8 +564,9 @@ export function findGrilleTables(markdown: string): MarkdownTable[] {
       }
     }
     // Fallback: no in-table header, but the text line just above the block is a
-    // standalone zone-code row → every block row is data under that header.
-    if (!header) {
+    // standalone zone-code row → every block row is data under that header
+    // (right-aligned, since a text line carries no column indices).
+    if (!header || headerIdx < 0) {
       const textHeader = asTextLineZoneHeader(blockPrecedingText);
       if (textHeader) {
         tables.push({ zoneCodes: textHeader, rows });
@@ -451,7 +574,25 @@ export function findGrilleTables(markdown: string): MarkdownTable[] {
       }
       continue;
     }
-    tables.push({ zoneCodes: header, rows: rows.slice(headerIdx + 1) });
+    // Walk the rest of the block, splitting it into successive zone BANDS: each
+    // time a further zone-header row appears (a stacked column-group — valcourt
+    // AG-1…AF-1 then AF-2…AFD-6), close the current table and open the next. Bare
+    // numeric value rows never trip `asMidBlockZoneHeader` (letter prefix required),
+    // so this only ever recovers real extra zones — it never invents one.
+    let curHeader = header;
+    let curRows: string[][] = [];
+    for (let r = headerIdx + 1; r < rows.length; r++) {
+      const prev = rows[r - 1]!;
+      const next = asPrefixedNumericHeader(rows[r]!, prev) ?? asMidBlockZoneHeader(rows[r]!);
+      if (next) {
+        tables.push({ zoneCodes: curHeader.codes, rows: curRows, zoneCols: curHeader.cols });
+        curHeader = next;
+        curRows = [];
+        continue;
+      }
+      curRows.push(rows[r]!);
+    }
+    tables.push({ zoneCodes: curHeader.codes, rows: curRows, zoneCols: curHeader.cols });
   }
   return tables;
 }
@@ -478,24 +619,72 @@ export function mapMarkdownPageToZones(
   const out: ZoneNormsT[] = [];
   const seen = new Set<string>();
   for (const table of tables) {
-    const n = table.zoneCodes.length;
-    // For each zone column, collect its per-field verbatim cell text.
+    const codes = table.zoneCodes;
+    const n = codes.length;
+    const cols = table.zoneCols;
+    const minCol = cols && cols.length ? Math.min(...cols) : -1;
+    // For each zone column, collect its per-field verbatim cell text + the rank of
+    // the sub-row that supplied it (so a "- maximum" row can override a "- minimum").
     const perZone = new Map<string, Partial<Record<FieldId, string | null>>>();
-    for (const code of table.zoneCodes) if (!perZone.has(code)) perZone.set(code, {});
+    const perRank = new Map<string, Partial<Record<FieldId, number>>>();
+    for (const code of codes)
+      if (!perZone.has(code)) {
+        perZone.set(code, {});
+        perRank.set(code, {});
+      }
+    // Section context for the QC 2-tier grille: the norm LABEL sits on its own row
+    // ("Marge de recul avant minimale (mètres):") with EMPTY value cells, and the
+    // VALUES follow one row below under "bâtiment principal" / "- maximum" / etc.
+    // We carry the mapped field forward from the header row to those value rows.
+    let section: FieldId | null = null;
     for (const row of table.rows) {
-      // A data row's TRAILING N cells are the per-zone values; the cells before
-      // are the (category +) norm label. Skip rows that don't carry N values.
-      if (row.length < n + 1) continue;
-      const values = row.slice(row.length - n);
-      const label = row.slice(0, row.length - n).join(" ").trim();
-      const fieldId = labelToFieldId(label);
-      if (!fieldId) continue;
-      table.zoneCodes.forEach((code, idx) => {
+      let values: (string | undefined)[];
+      let label: string;
+      if (cols) {
+        // Column-index aligned: read each zone's value at its header column; the
+        // label is everything left of the first zone column.
+        values = cols.map((ci) => row[ci]);
+        label = row.slice(0, minCol).join(" ").trim();
+      } else {
+        // Text-line header (no columns) → right-align, as before.
+        if (row.length < n + 1) continue;
+        values = row.slice(row.length - n);
+        label = row.slice(0, row.length - n).join(" ").trim();
+      }
+      const nonEmpty = values.filter((v) => v && v.trim().length).length;
+      const ownField = labelToFieldId(label);
+
+      // (1) A section-header row carries NO values on its own line: its label SETS
+      //     the section context (or, mapping to nothing — a title like "Somme…" /
+      //     "Hauteur du bâtiment principal:" — CLEARS it, closing the prior section).
+      if (nonEmpty === 0) {
+        section = ownField;
+        continue;
+      }
+      // (2) A self-contained data row (label + values on one line — Sherbrooke-flat,
+      //     the classic single-row grille) OR (3) a continuation value row under an
+      //     open section (valcourt "bâtiment principal"). Resolve the field, then
+      //     record each zone's verbatim cell (higher-ranked sub-row wins).
+      const field = ownField ?? section;
+      if (!field) continue;
+      if (ownField) section = null; // a titled value row closes any open section
+      const rank = subRowRank(label, field);
+      codes.forEach((code, idx) => {
         const cell = values[idx];
+        const val = cell && cell.trim().length ? cell : null;
         const fields = perZone.get(code)!;
-        // Keep the FIRST non-empty read for this field (a label can recur).
-        if (fields[fieldId] === undefined) {
-          fields[fieldId] = cell && cell.length ? cell : null;
+        const ranks = perRank.get(code)!;
+        const prev = ranks[field];
+        if (prev === undefined) {
+          // First read of this field (records null too, so an empty first cell is
+          // a faithful "no value here" — matches the frozen first-seen semantics).
+          fields[field] = val;
+          ranks[field] = rank;
+        } else if (rank > prev && val !== null) {
+          // A higher-priority sub-row (e.g. a "maximum" over a "minimum") with a
+          // real value overrides. Anti-invention: it only swaps WHICH verbatim cell.
+          fields[field] = val;
+          ranks[field] = rank;
         }
       });
     }
