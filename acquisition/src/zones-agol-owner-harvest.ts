@@ -61,6 +61,9 @@ const DEFAULT_OWNERS = [
   "jdube_mrcbellechasse", "RPDC", "agoupli_boisbriand", "rmorin_mrctemis",
   "sherbrooke.ca", "melement", "VilleLongueuil", "villedebeaupre",
   "admin_magog", "cadrin", "vthomas7",
+  // découvert gz-wave1 06-30 (min-owner-items=1) : Saint-Augustin-de-Desmaures,
+  // champ ZONE_26, 406 codes lettrés — titre non couvert par les seeds précédents.
+  "daniel.huntington_vsad",
 ];
 // Owners BRUITÉS à NE PAS seed par défaut (faux positifs documentés) :
 //   joliveau (PLU France), UNOWACA ("vue publique" sur-matche), a.mercier.mrchsf (zonage agricole=affectation),
