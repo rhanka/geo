@@ -226,7 +226,9 @@ export function buildClusterLayer(
 
 /**
  * Density layer: `buildGeoDensityModel` → a GeoJSON point source (one point per
- * cell at its center, weighted by `density`) + a MapLibre `heatmap` layer.
+ * cell at its center, weighted by `density`) + a MapLibre `heatmap` layer, plus
+ * a transparent `-hit` circle so the (unqueryable) heatmap can still report a
+ * hovered/selected cell to `GeoMap`.
  */
 export function buildDensityLayer(
   data: FeatureCollection,
@@ -281,6 +283,19 @@ export function buildDensityLayer(
           ],
           "heatmap-radius": 24,
           "heatmap-opacity": 0.75,
+        },
+      },
+      {
+        // Invisible but queryable circle at each cell centre. A `heatmap` layer
+        // cannot be picked (no `queryRenderedFeatures`), so this transparent
+        // layer is what lets GeoMap fire hover/select for density cells.
+        id: `${layerId}-hit`,
+        type: "circle",
+        source: sourceId,
+        paint: {
+          "circle-radius": 16,
+          "circle-color": "#000000",
+          "circle-opacity": 0,
         },
       },
     ],
