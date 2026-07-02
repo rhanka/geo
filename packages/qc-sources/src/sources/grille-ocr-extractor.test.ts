@@ -10,6 +10,10 @@ import {
   findGrilleTables,
   mapMarkdownPageToZones,
   mapOcrResultToZones,
+  mapZoneHeaderGrillePage,
+  parseNumberedGrilleNativePage,
+  parseZoneHeader,
+  isNumberedGrilleSpec,
   zonePrefixFromRow,
   asTextLineZoneHeader,
   resolveOcrConfig,
@@ -548,6 +552,250 @@ describe("widened mapper — valcourt 2-tier / stacked-band 'implantation' grill
       }
     }
     expect(published).toBeGreaterThan(0);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  7. SINGLE-ZONE-per-page "grille des spécifications" (Nicolet-family). The whole
+//     page is ONE zone named in a "ZONE: <code>" header; the norm matrix is the
+//     numbered NORMES-PRESCRITES rows grouped under section titles, each with a
+//     "min."/"max." bound and one value column per intra-zone use-case. We publish
+//     the LEFTMOST value column as the zone's representative norm. The fixture
+//     below is a VERBATIM mistral-ocr-4-0 excerpt of Nicolet g-2807 page 1
+//     (zone I01-132) — note the OCR misreads the serif "I" prefix as "1"
+//     ("ZONE: 101-132"), which is why the runner overrides the code from the
+//     reliable native text layer. Anti-invention is intact: values stay verbatim
+//     and flow through the frozen buildVisionField guard.
+// ───────────────────────────────────────────────────────────────────────────
+
+const NICOLET_I01_132_MD = `41 - 2018.12
+
+# CATEGORIES D'USAGES
+
+ZONE: 101-132
+
+|  1 | HABITATION | H |  |  |  |  |  |  |  |   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  4 | multifamiliale | h3 | * | * |  |  |  |  |  |   |
+|  13 | INDUSTRIEL | I |  |  |  |  |  |  |  |   |
+
+# NORMES PRESCRITES
+
+|  33 | STRUCTURE |  |  |  |  |  |  |  |  |   |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  34 | isolée |  | * |  | * |  | * | * | * | *  |
+|  37 | TERRAIN DESSERVI (AQUEDUC ET EGOUT) |  |  |  |  |  |  |  |  |   |
+|  38 | Terrain d'angle |  |  |  |  |  |  |  |  |   |
+|  39 | superficie (m²) | min. | 702 | 486 | 702 | 486 | 594 | 594 | 594 | 810  |
+|  40 | profondeur (m) | min. | 27 | 27 | 27 | 27 | 27 | 27 | 27 | 27  |
+|  41 | largeur (m) | min. | 26 | 18 | 26 | 18 | 22 | 22 | 22 | 30  |
+|  42 | Terrain intérieur |  |  |  |  |  |  |  |  |   |
+|  43 | superficie (m²) | min. | 594 | 405 | 594 | 405 | 540 | 540 | 540 | 810  |
+|  45 | largeur (m) | min. | 22 | 15 | 22 | 15 | 20 | 20 | 20 | 30  |
+|  46 | MARGES |  |  |  |  |  |  |  |  |   |
+|  47 | avant (m) | min. | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8  |
+|  48 | latérale (m) | min. | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1  |
+|  49 | latérale sur rue (m) | min. | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6  |
+|  50 | arrière (m) | min. |  |  |  |  |  |  |  |   |
+|  51 | BATIMENT |  |  |  |  |  |  |  |  |   |
+|  52 | hauteur (étages) | min. | 2 | 2 | 2 | 2 |  |  |  |   |
+|  53 | hauteur (étages) | max. | 3 | 3 | 3 | 3 |  |  |  |   |
+|  54 | hauteur (m) | max. | 10 | 10 | 10 | 10 | 16 | 16 | 16 | 16  |
+|  55 | superficie d'implantation (m²) | min. | 50 | 50 | 50 | 50 | 50 | 50 | 50 | 50  |
+|  56 | largeur (m) | min. | 7 | 7 | 7 | 7 | 7 | 7 | 7 | 7  |
+|  57 | RAPPORTS |  |  |  |  |  |  |  |  |   |
+|  58 | logement/bâtiment | max. |  |  |  |  |  |  |  |   |
+|  60 | plancher/terrain (C.O.S.) | max. |  |  |  |  |  |  |  |   |
+
+# DISPOSITIONS PARTICULIERES
+
+|   |  |  |  |  |  |  |  | a. 282 a. 288 a. 297 | a. 282 a. 288 a. 297  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+Ville de Nicolet
+Règlement de zonage numéro 77-2004
+Annexe A: Grille des spécifications`;
+
+describe("parseZoneHeader", () => {
+  it("reads a 'ZONE: <code>' header verbatim (native + OCR-misread forms)", () => {
+    expect(parseZoneHeader("ZONE: I01-132")).toBe("I01-132");
+    expect(parseZoneHeader("CATÉGORIES D'USAGES        ZONE: 101-132")).toBe("101-132");
+    expect(parseZoneHeader("ZONE:C01-181")).toBe("C01-181");
+    expect(parseZoneHeader("ZONE  H01-104")).toBe("H01-104");
+    expect(parseZoneHeader("ZONE: A-4-402")).toBe("A-4-402");
+  });
+  it("does NOT match a bare 'ZONES' band header or prose (no invention)", () => {
+    expect(parseZoneHeader("| Normes | ZONES |   |   |")).toBeNull();
+    expect(parseZoneHeader("Municipalité de Stratford (zone urbaine)")).toBeNull();
+    expect(parseZoneHeader("no zone here")).toBeNull();
+  });
+});
+
+describe("isNumberedGrilleSpec", () => {
+  it("flags the numbered NORMES-PRESCRITES layout, not the transposed grids", () => {
+    expect(isNumberedGrilleSpec(NICOLET_I01_132_MD)).toBe(true);
+    expect(isNumberedGrilleSpec(GRILLE_MD)).toBe(false);
+    expect(isNumberedGrilleSpec(VALCOURT_2TIER_MD)).toBe(false);
+    expect(isNumberedGrilleSpec(PORTNEUF_USAGES_MD)).toBe(false);
+  });
+});
+
+describe("mapZoneHeaderGrillePage — single-zone Nicolet-family grille", () => {
+  // The runner overrides the OCR-misread "101-132" with the native-text "I01-132".
+  const zones = mapZoneHeaderGrillePage(NICOLET_I01_132_MD, 1, {
+    ...OPTS2,
+    zoneCode: "I01-132",
+  });
+
+  it("emits exactly ONE zone, code taken verbatim from the override header", () => {
+    expect(zones.length).toBe(1);
+    expect(zones[0]!.zone_code).toBe("I01-132");
+    expect(zones[0]!.zone_page).toBe("PAGE 1 ZONE I01-132");
+  });
+
+  it("reads the LEFTMOST value column, section-disambiguated", () => {
+    const z = zones[0]!;
+    expect(z.marges.avant_min?.value).toBe(8);
+    expect(z.marges.avant_min?.unit).toBe("m");
+    // "latérale (m)" (1) — NOT "latérale sur rue" (6), which stays unmapped.
+    expect(z.marges.laterale_min?.value).toBe(1);
+    // arrière is blank on this zone → honest null (never borrowed from a column).
+    expect(z.marges.arriere_min?.value).toBeNull();
+    // terrain superficie/largeur (frontage), first-seen "terrain d'angle" column.
+    expect(z.superficie_min?.value).toBe(702);
+    expect(z.superficie_min?.unit).toBe("m2");
+    expect(z.frontage_min?.value).toBe(26); // NOT the BÂTIMENT "largeur (m)" (7)
+    // hauteur: étages min 2 / max 3, mètres max 10 → publish the metres max.
+    expect(z.hauteur_max?.value).toBe(10);
+    expect(z.hauteur_max?.unit).toBe("m");
+    // RAPPORTS rows are empty on this zone → densité null (no fabrication).
+    expect(z.densite?.value).toBeNull();
+  });
+
+  it("METRIC — every published value is verbatim in its leftmost raw cell", () => {
+    for (const z of zones) {
+      const served = [
+        z.densite, z.hauteur_max, z.frontage_min, z.superficie_min,
+        z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min,
+      ].filter((f) => f && f.value !== null);
+      for (const f of served) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
+  });
+
+  it("REJECTS a page with no ZONE header and no override (anti-invention)", () => {
+    const noHeader = NICOLET_I01_132_MD.replace("ZONE: 101-132", "").trim();
+    expect(mapZoneHeaderGrillePage(noHeader, 1, OPTS2)).toEqual([]);
+  });
+
+  it("without an override, uses the page's own header VERBATIM (the OCR misread)", () => {
+    const z = mapZoneHeaderGrillePage(NICOLET_I01_132_MD, 1, OPTS2);
+    expect(z.length).toBe(1);
+    expect(z[0]!.zone_code).toBe("101-132"); // documents why the native override matters
+  });
+});
+
+describe("mapMarkdownPageToZones auto-routes the Nicolet single-zone layout", () => {
+  it("delegates to the single-zone mapper when a ZONE header + NORMES PRESCRITES", () => {
+    const zones = mapMarkdownPageToZones(NICOLET_I01_132_MD, 1, { ...OPTS2, zoneCode: "I01-132" });
+    expect(zones.map((z) => z.zone_code)).toEqual(["I01-132"]);
+    expect(zones[0]!.marges.avant_min?.value).toBe(8);
+  });
+  it("mapOcrResultToZones threads a per-page native zone code override", () => {
+    const result: OcrResult = { pages: [{ markdown: NICOLET_I01_132_MD }], pagesProcessed: 1 };
+    const zones = mapOcrResultToZones(result, [1], OPTS2, ["I01-132"]);
+    expect(zones.map((z) => z.zone_code)).toEqual(["I01-132"]);
+  });
+  it("the transposed multi-zone grids are UNAFFECTED (no ZONE header / NORMES band)", () => {
+    // valcourt still splits into its two stacked bands (19 zones) — not single-zone.
+    expect(mapMarkdownPageToZones(VALCOURT_2TIER_MD, 1, OPTS2).length).toBe(19);
+    // the classic Ra-1…X-9 grid still yields its 4 zones.
+    expect(mapMarkdownPageToZones(GRILLE_MD, 5, OPTS).map((z) => z.zone_code).sort()).toEqual([
+      "Ra-1", "Ra-2", "Ra-3", "X-9",
+    ]);
+  });
+});
+
+// A VERBATIM `pdftotext -layout` excerpt of Nicolet g-2807 page 1 (zone I01-132):
+// the whitespace-aligned native text layer — the code is CORRECT here ("I01-132",
+// not the OCR "101-132"), and every norm value is present. This is the $0 path.
+const NICOLET_I01_132_LAYOUT = `41 - 2018.12
+CATÉGORIES D'USAGES                                                    ZONE: I01-132
+   1    HABITATION                                                  H
+   4         multifamiliale                                         h3     *     *
+  13 INDUSTRIEL                                                     I
+NORMES PRESCRITES
+  33 STRUCTURE
+  34      isolée                                                            *           *
+  37 TERRAIN DESSERVI (AQUEDUC ET EGOUT)
+  38 Terrain d'angle
+  39      superficie (m2)                                           min.   702   486   702   486   594   594   594   810
+  40      profondeur (m)                                            min.   27    27    27    27    27    27    27    27
+  41      largeur (m)                                               min.   26    18    26    18    22    22    22    30
+  42 Terrain intérieur
+  43      superficie (m2)                                           min.   594   405   594   405   540   540   540   810
+  45      largeur (m)                                               min.   22    15    22    15    20    20    20    30
+  46 MARGES
+  47      avant (m)                                                 min.   8     8     8     8     8     8     8     8
+  48      latérale (m)                                              min.   1     1     1     1     1     1     1     1
+  49      latérale sur rue (m)                                      min.   6     6     6     6     6     6     6     6
+  50      arrière (m)                                               min.
+  51 BÂTIMENT
+  52      hauteur (étages)                                          min.    2     2     2     2
+  53      hauteur (étages)                                          max.    3     3     3     3
+  54      hauteur (m)                                               max.   10    10    10    10    16    16    16    16
+  55      superficie d'implantation (m2)                            min.   50    50    50    50    50    50    50    50
+  56      largeur (m)                                               min.    7     7     7     7     7     7     7     7
+  57 RAPPORTS
+  58      logement/bâtiment                                         max.
+  60      plancher/terrain (C.O.S.)                                 max.
+DISPOSITIONS PARTICULIÈRES
+Ville de Nicolet`;
+
+describe("parseNumberedGrilleNativePage — deterministic $0 native-text path", () => {
+  const zones = parseNumberedGrilleNativePage(NICOLET_I01_132_LAYOUT, 1, OPTS2);
+
+  it("reads the CORRECT code from the native text layer (no OCR I→1 misread)", () => {
+    expect(zones.length).toBe(1);
+    expect(zones[0]!.zone_code).toBe("I01-132");
+  });
+
+  it("reads the LEFTMOST value column verbatim, section-disambiguated", () => {
+    const z = zones[0]!;
+    expect(z.marges.avant_min?.value).toBe(8);
+    expect(z.marges.laterale_min?.value).toBe(1); // "latérale (m)", not "latérale sur rue" (6)
+    expect(z.marges.arriere_min?.value).toBeNull(); // blank → honest null
+    expect(z.superficie_min?.value).toBe(702);
+    expect(z.frontage_min?.value).toBe(26); // terrain d'angle largeur, not BÂTIMENT (7)
+    expect(z.hauteur_max?.value).toBe(10); // hauteur (m) max
+    expect(z.hauteur_max?.unit).toBe("m");
+  });
+
+  it("matches the OCR path's values (native ⇔ OCR agreement, $0 preferred)", () => {
+    const ocrZone = mapZoneHeaderGrillePage(NICOLET_I01_132_MD, 1, { ...OPTS2, zoneCode: "I01-132" })[0]!;
+    expect(zones[0]!.superficie_min?.value).toBe(ocrZone.superficie_min?.value);
+    expect(zones[0]!.marges.avant_min?.value).toBe(ocrZone.marges.avant_min?.value);
+    expect(zones[0]!.frontage_min?.value).toBe(ocrZone.frontage_min?.value);
+    expect(zones[0]!.hauteur_max?.value).toBe(ocrZone.hauteur_max?.value);
+  });
+
+  it("REJECTS a page with no ZONE header (anti-invention: no header, no zone)", () => {
+    const noHeader = NICOLET_I01_132_LAYOUT.replace("ZONE: I01-132", "");
+    expect(parseNumberedGrilleNativePage(noHeader, 1, OPTS2)).toEqual([]);
+  });
+
+  it("METRIC — every published value is verbatim in its raw cell", () => {
+    for (const f of [
+      zones[0]!.superficie_min, zones[0]!.frontage_min, zones[0]!.hauteur_max,
+      zones[0]!.marges.avant_min, zones[0]!.marges.laterale_min,
+    ].filter((x) => x && x.value !== null)) {
+      const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+      expect(raw.includes(String(f!.value))).toBe(true);
+      expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+    }
   });
 });
 
