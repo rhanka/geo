@@ -24,6 +24,13 @@
  *                       [--max-residual-m 50] [--spatial-km 8]
  *                       [--labels text|gpt55] [--dict <codes.json>]
  *                       [--page 1] [--ocr-dpi 200] [--label-region x0,y0,x1,y1]
+ *                       [--allow-numeric-codes]
+ *
+ * --allow-numeric-codes (default OFF) is the SAFE relaxation of the anti-#74
+ * lettered rule for munis that zone with PURE-NUMERIC codes (val-dor 100–1000,
+ * acton-vale 101–105). It REQUIRES --dict and admits a numeric code only when it
+ * is verbatim in the dict, the dict is not a trivial 1..N run, and the extracted
+ * set matches the dict SET (see lib/numeric-codes.ts). Otherwise it ABORTS.
  *
  * --labels gpt55 is for a GEOREFERENCED *glyph* GeoPDF (labels drawn as vector
  * outlines → pdftotext sees 0 words) in an environment WITHOUT tesseract: it
@@ -40,6 +47,7 @@ import type { FeatureCollection } from "geojson";
 
 import { extractGeoRef } from "./lib/t1-georef.js";
 import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
+import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from "./lib/numeric-codes.js";
 import { buildZones, projConstants } from "./lib/t1-zones.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
 import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
@@ -61,6 +69,8 @@ interface Args {
   page?: number;
   ocrDpi: number;
   labelRegion?: [number, number, number, number];
+  /** SAFE, dict-gated relaxation of the anti-#74 rule for numeric zone codes. */
+  allowNumericCodes: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -102,6 +112,7 @@ function parseArgs(argv: string[]): Args {
     page: a["page"] ? Number(a["page"]) : undefined,
     ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
     labelRegion,
+    allowNumericCodes: Boolean(a["allow-numeric-codes"]),
   };
 }
 
@@ -156,11 +167,18 @@ async function main(): Promise<void> {
   // vision reads are dict-validated (verbatim, unambiguous) against the by-law
   // code list — the same anti-invention guard as the T2 gpt55 path.
   const source = args.labels === "gpt55" ? "geopdf-gpt55-vision" : "geopdf-esri";
+  // Dict + numeric relaxation (default OFF; requires --dict). Hoisted so both the
+  // text and gpt55 paths admit dict-backed pure-numeric codes when enabled.
+  let dictCodes: string[] | undefined;
+  if (args.dict) dictCodes = loadDict(args.dict).codes;
+  if (args.allowNumericCodes && !dictCodes) fail("--allow-numeric-codes requires --dict <authoritative-zone-codes.json>");
+  const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
+  if (numericDict) console.error(`[t1-build] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
   let lab: ExtractLabelsResult;
   let gpt55Stats: Record<string, unknown> = {};
   if (args.labels === "gpt55") {
-    if (!args.dict) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
-    const { codes: dict } = loadDict(args.dict);
+    if (!dictCodes) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
     console.error(`[t1-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
     const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
     // Default crop = the embedded neatline (geo.bbox is PDF user-space, y-up);
@@ -177,6 +195,7 @@ async function main(): Promise<void> {
       dpi: args.ocrDpi,
       page,
       region: args.labelRegion ?? neatlineRegion,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
     });
     lab = gptLab;
     gpt55Stats = {
@@ -202,7 +221,10 @@ async function main(): Promise<void> {
     );
     console.error(`[t1-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
   } else {
-    lab = extractLabels(pdfPath, geo, args.page ? { page: args.page } : {});
+    lab = extractLabels(pdfPath, geo, {
+      ...(args.page ? { page: args.page } : {}),
+      ...(numericDict ? { numericDict } : {}),
+    });
   }
   const distinct = new Set(lab.codePoints.map((c) => c.code));
   const minCodes = Math.max(3, args.minCodes);
@@ -219,12 +241,21 @@ async function main(): Promise<void> {
           : "vision OCR yielded too few real codes → ABORT (no fabrication)"),
     );
   }
-  // anti-#74 + anti-affectation: every code lettered + no banned tokens.
+  // anti-affectation always; anti-#74 lettered rule unless the SAFE numeric
+  // relaxation is on (dict-gated) — then dict-backed numeric codes are allowed.
   const banned = /^(affectation|cmm|mrc|sad|pmad)/i;
-  const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
   const bannedHit = [...distinct].filter((c) => banned.test(c));
-  if (nonLettered.length > 0) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
   if (bannedHit.length > 0) fail(`affectation/CMM tokens present: ${bannedHit.join(", ")}`);
+  if (numericDict && dictCodes) {
+    const bad = nonAdmissibleCodes([...distinct], numericDict);
+    if (bad.length > 0) fail(`codes neither lettered nor dict-numeric present: ${bad.slice(0, 8).join(", ")}`);
+    const guard = validateNumericRelaxation({ distinctExtracted: [...distinct], dictCodes });
+    if (!guard.ok) fail(`numeric-code guard: ${guard.reason}`);
+    console.error(`[t1-build] numeric-code guard OK: ${guard.numericInDict} dict-validated numeric codes (dict has ${guard.dictNumeric})`);
+  } else {
+    const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
+    if (nonLettered.length > 0) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
+  }
 
   // 3. Cadastre --------------------------------------------------------------
   const s3 = s3Client();
@@ -282,6 +313,7 @@ async function main(): Promise<void> {
     label_mode: args.labels,
     pdf: args.pdf,
     crs: geo.crsName,
+    allow_numeric_codes: args.allowNumericCodes,
     ...gpt55Stats,
     georef_residual_m: Number(geo.maxResidualM.toFixed(3)),
     scale_m_per_pt: Number(geo.scaleMPerPt.toFixed(3)),
