@@ -602,6 +602,205 @@ export interface OcrMapOptions {
   snapshot: string;
   /** Provenance method tag (e.g. "ocr/mistral-ocr"). Default "mistral-ocr". */
   methode?: string;
+  /**
+   * VERBATIM zone code to pin for a SINGLE-ZONE-per-page "grille des spécifications"
+   * (Nicolet-family) page, OVERRIDING the code the OCR markdown carries. mistral-ocr
+   * misreads a serif "I" prefix as "1" (renders "ZONE: I01-132" → "ZONE: 101-132"),
+   * which then matches no SIG code. The runner reads the code from the PDF's own
+   * native text layer (where it is correct) and passes it here — anti-invention: it
+   * is still the grille's own verbatim header code, just from the reliable source.
+   */
+  zoneCode?: string;
+  /**
+   * Single-zone-header handling. "auto" (default): when a page carries a "ZONE: <code>"
+   * header AND the numbered NORMES-PRESCRITES matrix, read it as ONE zone (leftmost
+   * value column). "off": always use the transposed (zones-in-columns) mapper.
+   */
+  zoneHeaderMode?: "auto" | "off";
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  SINGLE-ZONE-per-page "grille des spécifications" (Nicolet-family). The whole
+//  page documents ONE zone named in a "ZONE: <code>" header (top-right); the norm
+//  matrix is a fixed set of NUMBERED rows (1..60) grouped under section titles
+//  (CATÉGORIES D'USAGES · NORMES PRESCRITES · STRUCTURE · TERRAIN DESSERVI ·
+//  MARGES · BÂTIMENT · RAPPORTS), each norm row carrying a "min."/"max." bound and
+//  one value column PER intra-zone use-case variant. We publish the LEFTMOST value
+//  column as the zone's representative norm (the same convention the frozen vision
+//  extractor uses — "lis la colonne de gauche des valeurs"). Zone codes and cell
+//  values are read VERBATIM; a wrong-unit / out-of-range / empty cell → null.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Fold a label for keyword matching: lowercase, strip accents + markdown emphasis. */
+function foldLabel(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[*_`]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Tolerant "ZONE: <code>" header reader. Accepts an optional colon and arbitrary
+ * spacing ("ZONE: I01-132", "ZONE:C01-181", "ZONE  H01-104") and the OCR-misread
+ * digit-prefixed form ("101-132"). Returns the VERBATIM captured code (long dashes
+ * normalised to "-") or null. A bare "ZONES" band header (valcourt) never matches:
+ * the capture requires an immediate <alnum>-<digits> code, which "ZONES  |" lacks.
+ */
+const ZONE_HEADER_RE =
+  /\bZONE\s*:?\s*([A-Za-z0-9]{1,4}[-–—]\d{1,4}(?:[-–—]\d{1,3})?)/i;
+export function parseZoneHeader(text: string): string | null {
+  const m = text.match(ZONE_HEADER_RE);
+  if (!m?.[1]) return null;
+  return m[1].replace(/[–—]/g, "-").trim();
+}
+
+/** The Nicolet-family "grille des spécifications" carries a NORMES PRESCRITES band. */
+export function isNumberedGrilleSpec(markdown: string): boolean {
+  return /NORMES\s+PRESCRITES/i.test(markdown);
+}
+
+/** Section context while walking a numbered grille-spec page. */
+type GrilleSection = "usages" | "terrain" | "marges" | "batiment" | "rapports" | "other";
+
+/** Update the section context from a NON-value (title/label) row's text. */
+function detectSection(label: string, prev: GrilleSection): GrilleSection {
+  const s = foldLabel(label);
+  if (/\bmarges?\b/.test(s)) return "marges";
+  if (/\bbatiment\b/.test(s)) return "batiment";
+  if (/\brapports?\b/.test(s)) return "rapports";
+  if (/\bterrain\b/.test(s)) return "terrain"; // "terrain desservi" · "terrain d'angle/intérieur"
+  if (/categories|usages|structure/.test(s)) return "usages";
+  if (/dispositions|notes/.test(s)) return "other";
+  return prev;
+}
+
+/**
+ * Map a TERSE Nicolet norm label to a FieldId GIVEN the section it sits under —
+ * the terse labels ("avant (m)", "largeur (m)") are ambiguous without it: "largeur"
+ * is the terrain FRONTAGE under TERRAIN but the building width (unmapped) under
+ * BÂTIMENT. Anti-over-mapping: "latérale sur rue" (a distinct margin), "profondeur",
+ * "superficie d'implantation", "logement/bâtiment", "plancher/terrain (C.O.S.)" all
+ * stay UNMAPPED (a wrong fold is worse than a null).
+ */
+function sectionedLabelToFieldId(label: string, section: GrilleSection): FieldId | null {
+  const s = foldLabel(label);
+  switch (section) {
+    case "marges":
+      if (/avant/.test(s)) return "marge_avant_min";
+      if (/arriere/.test(s)) return "marge_arriere_min";
+      if (/lateral/.test(s) && !/sur\s+rue/.test(s)) return "marge_laterale_min";
+      return null;
+    case "terrain":
+      if (/superficie/.test(s)) return "superficie_min";
+      if (/largeur/.test(s)) return "frontage_min";
+      return null; // profondeur → unmapped
+    case "batiment":
+      if (/hauteur/.test(s) && /etage/.test(s)) return "hauteur_etages";
+      if (/hauteur/.test(s) && /\(m\)|metre/.test(s)) return "hauteur_metres";
+      return null; // largeur (building) · superficie d'implantation → unmapped
+    case "rapports":
+      if (/espace\s+bati\s*\/\s*terrain|emprise/.test(s)) return "densite";
+      return null; // logement/bâtiment · plancher/terrain (C.O.S. — floor ratio) → unmapped
+    default:
+      return null;
+  }
+}
+
+/** A norm value row carries a "min." / "max." bound cell; find its index (or -1). */
+function boundCellIndex(cells: string[]): number {
+  return cells.findIndex((c) => /^(min|max)\.?$/i.test(c.trim()));
+}
+
+/** Rank a value row's bound for a field (mirrors PREFERRED_BOUND: prefer the max
+ *  sub-row for hauteur, the min sub-row for every dimensional minimum). */
+function boundRank(field: FieldId, bound: string): number {
+  const pref = PREFERRED_BOUND[field];
+  if (!pref) return 1;
+  const isMax = /max/i.test(bound);
+  const isMin = /min/i.test(bound);
+  if (pref === "max") return isMax ? 2 : isMin ? 0 : 1;
+  return isMin ? 2 : isMax ? 0 : 1;
+}
+
+/**
+ * Map ONE single-zone "grille des spécifications" page → [ZoneNorms] (0 or 1). The
+ * zone is `opts.zoneCode` (native-text override) or the page's own "ZONE:" header;
+ * with neither, nothing is emitted (anti-invention — no header, no zone). Every
+ * norm's value is the LEFTMOST value column, run through the frozen per-cell guard.
+ */
+export function mapZoneHeaderGrillePage(
+  markdown: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? DEFAULT_OCR_METHODE;
+  const zoneCode = opts.zoneCode ?? parseZoneHeader(markdown);
+  if (!zoneCode) return [];
+
+  const fields: Partial<Record<FieldId, string | null>> = {};
+  const ranks: Partial<Record<FieldId, number>> = {};
+  let section: GrilleSection = "other";
+
+  for (const line of markdown.split("\n")) {
+    const isTable = line.includes("|");
+    const cells = isTable ? splitRow(line) : [line.replace(/[#*_`]/g, " ").trim()];
+    if (isTable && isSeparatorRow(cells)) continue;
+    const bi = isTable ? boundCellIndex(cells) : -1;
+    if (bi < 0) {
+      // Non-value row → it may set the section context (MARGES / TERRAIN / BÂTIMENT…).
+      section = detectSection(cells.join(" "), section);
+      continue;
+    }
+    const label = cells.slice(0, bi).join(" ");
+    const field = sectionedLabelToFieldId(label, section);
+    if (!field) continue;
+    // LEFTMOST value column = the zone's representative use-case (frozen convention).
+    const raw = cells[bi + 1];
+    const val = raw && raw.trim().length ? raw.trim() : null;
+    const rank = boundRank(field, cells[bi]!);
+    const prev = ranks[field];
+    if (prev === undefined) {
+      fields[field] = val;
+      ranks[field] = rank;
+    } else if (rank > prev && val !== null) {
+      fields[field] = val;
+      ranks[field] = rank;
+    }
+  }
+
+  const provenance = (): FieldProvenanceT => ({
+    source_url: opts.source_url,
+    methode,
+    snapshot: opts.snapshot,
+    page: `PAGE ${page} ZONE ${zoneCode}`,
+  });
+  const field = (id: FieldId): NormFieldT => {
+    const spec = FIELD_SPECS.find((s) => s.id === id)!;
+    const raw = fields[id] ?? null;
+    return buildVisionField(spec, raw, raw, provenance());
+  };
+  const hauteurMetres = field("hauteur_metres");
+  const hauteurEtages = field("hauteur_etages");
+  const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+  const zn: ZoneNormsT = {
+    zone_code: zoneCode,
+    zone_page: `PAGE ${page} ZONE ${zoneCode}`,
+    usages: [],
+    densite: field("densite"),
+    hauteur_min: null,
+    hauteur_max: hauteurMax,
+    marges: {
+      avant_min: field("marge_avant_min"),
+      laterale_min: field("marge_laterale_min"),
+      arriere_min: field("marge_arriere_min"),
+    },
+    frontage_min: field("frontage_min"),
+    superficie_min: field("superficie_min"),
+  };
+  return [ZoneNorms.parse(zn)];
 }
 
 /**
@@ -615,6 +814,17 @@ export function mapMarkdownPageToZones(
   opts: OcrMapOptions,
 ): ZoneNormsT[] {
   const methode = opts.methode ?? DEFAULT_OCR_METHODE;
+  // SINGLE-ZONE-per-page "grille des spécifications" (Nicolet-family): a "ZONE:
+  // <code>" header + the numbered NORMES-PRESCRITES matrix. Route it to the
+  // single-zone mapper (leftmost value column). Distinct from the transposed
+  // (zones-in-columns) grid below — the transposed grilles carry no "ZONE:" header
+  // and no NORMES-PRESCRITES band, so this never fires on them.
+  if ((opts.zoneHeaderMode ?? "auto") !== "off") {
+    const headerCode = opts.zoneCode ?? parseZoneHeader(markdown);
+    if (headerCode && isNumberedGrilleSpec(markdown)) {
+      return mapZoneHeaderGrillePage(markdown, page, { ...opts, zoneCode: headerCode });
+    }
+  }
   const tables = findGrilleTables(markdown);
   const out: ZoneNormsT[] = [];
   const seen = new Set<string>();
@@ -728,15 +938,109 @@ export function mapMarkdownPageToZones(
   return out;
 }
 
-/** Map a whole OCR result (per page) back to ZoneNorms[], page numbers aligned. */
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the SAME single-zone numbered
+ * "grille des spécifications" layout — the preferred path when the PDF carries a
+ * real text layer (the Nicolet-family grilles are native text, not scans). It
+ * reads `pdftotext -layout` output: the zone code from the "ZONE:" header and,
+ * for each numbered norm row, the LEFTMOST value token AFTER its "min."/"max."
+ * bound, section-disambiguated exactly like the OCR mapper. Avoids the OCR pitfall
+ * entirely (mistral-ocr misreads the "I" prefix AND can read row labels as codes);
+ * every value is a verbatim token, gated by the frozen `buildVisionField`.
+ *
+ * Returns [] when there is no "ZONE:" header (anti-invention: no header, no zone) —
+ * the caller then falls back to OCR/vision for that page (image-only scan).
+ */
+export function parseNumberedGrilleNativePage(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-spec";
+  const zoneCode = opts.zoneCode ?? parseZoneHeader(layoutText);
+  if (!zoneCode) return [];
+
+  const fields: Partial<Record<FieldId, string | null>> = {};
+  const ranks: Partial<Record<FieldId, number>> = {};
+  let section: GrilleSection = "other";
+
+  for (const raw of layoutText.split(/\r?\n/)) {
+    const line = raw.replace(/\s+$/, "");
+    // A norm value row carries a standalone "min."/"max." bound (the word boundary +
+    // lookahead keep "minimum"/"maximum" prose out). No bound → it may set the section.
+    const bm = line.match(/(?:^|\s)(min|max)\.?(?=\s|$)/i);
+    if (!bm) {
+      section = detectSection(line, section);
+      continue;
+    }
+    const label = line.slice(0, bm.index).trim();
+    const field = sectionedLabelToFieldId(label, section);
+    if (!field) continue;
+    const after = line.slice((bm.index ?? 0) + bm[0].length);
+    // LEFTMOST value column = the first numeric token (or a "-" absent marker) after
+    // the bound. A row with no value tail (e.g. an empty "arrière" min) → null.
+    const tok = after.match(/(-|\d+(?:[.,]\d+)?)/);
+    const val = tok ? tok[1]! : null;
+    const rank = boundRank(field, bm[1]!);
+    const prev = ranks[field];
+    if (prev === undefined) {
+      fields[field] = val;
+      ranks[field] = rank;
+    } else if (rank > prev && val !== null) {
+      fields[field] = val;
+      ranks[field] = rank;
+    }
+  }
+
+  const provenance = (): FieldProvenanceT => ({
+    source_url: opts.source_url,
+    methode,
+    snapshot: opts.snapshot,
+    page: `PAGE ${page} ZONE ${zoneCode}`,
+  });
+  const field = (id: FieldId): NormFieldT => {
+    const spec = FIELD_SPECS.find((s) => s.id === id)!;
+    const r = fields[id] ?? null;
+    return buildVisionField(spec, r, r, provenance());
+  };
+  const hauteurMetres = field("hauteur_metres");
+  const hauteurEtages = field("hauteur_etages");
+  const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+  const zn: ZoneNormsT = {
+    zone_code: zoneCode,
+    zone_page: `PAGE ${page} ZONE ${zoneCode}`,
+    usages: [],
+    densite: field("densite"),
+    hauteur_min: null,
+    hauteur_max: hauteurMax,
+    marges: {
+      avant_min: field("marge_avant_min"),
+      laterale_min: field("marge_laterale_min"),
+      arriere_min: field("marge_arriere_min"),
+    },
+    frontage_min: field("frontage_min"),
+    superficie_min: field("superficie_min"),
+  };
+  return [ZoneNorms.parse(zn)];
+}
+
+/**
+ * Map a whole OCR result (per page) back to ZoneNorms[], page numbers aligned.
+ * `zoneCodes` (optional, aligned to `pages`) supplies a VERBATIM native-text zone
+ * header per page for the single-zone "grille des spécifications" layout, so the
+ * reliable text-layer code (e.g. "I01-132") overrides the OCR misread ("101-132").
+ */
 export function mapOcrResultToZones(
   result: OcrResult,
   pages: number[],
   opts: OcrMapOptions,
+  zoneCodes?: (string | undefined)[],
 ): ZoneNormsT[] {
   const zones: ZoneNormsT[] = [];
   result.pages.forEach((p, idx) => {
-    zones.push(...mapMarkdownPageToZones(p.markdown, pages[idx] ?? idx + 1, opts));
+    const zc = zoneCodes?.[idx];
+    const pageOpts = zc ? { ...opts, zoneCode: zc } : opts;
+    zones.push(...mapMarkdownPageToZones(p.markdown, pages[idx] ?? idx + 1, pageOpts));
   });
   return zones;
 }
@@ -756,7 +1060,13 @@ export interface OcrPathResult {
 export async function extractGrilleOcrFromPdf(
   pdfPath: string,
   pages: number[],
-  opts: OcrMapOptions & { ocr?: OcrCallImpl; costPerPage?: number },
+  opts: OcrMapOptions & {
+    ocr?: OcrCallImpl;
+    costPerPage?: number;
+    /** Verbatim native-text zone header per page (aligned to `pages`), for the
+     *  single-zone "grille des spécifications" layout (overrides OCR misreads). */
+    zoneCodes?: (string | undefined)[];
+  },
 ): Promise<OcrPathResult> {
   const ocr = opts.ocr ?? createMistralOcrHttpCall(resolveOcrConfig());
   const costPerPage = opts.costPerPage ?? MISTRAL_OCR_USD_PER_PAGE;
@@ -765,7 +1075,7 @@ export async function extractGrilleOcrFromPdf(
     const t0 = Date.now();
     const res = await ocr(slicePath);
     const latencyMs = Date.now() - t0;
-    const zones = mapOcrResultToZones(res, pages, opts);
+    const zones = mapOcrResultToZones(res, pages, opts, opts.zoneCodes);
     return {
       zones,
       pagesProcessed: res.pagesProcessed,
