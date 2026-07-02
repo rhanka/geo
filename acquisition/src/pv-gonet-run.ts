@@ -16,7 +16,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
-import { parsePvIndex, type PvIndexItemT } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
+import { parsePvIndex, pvHeadingContextUrls, type PvIndexItemT } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
 import { PV_USER_AGENT, type PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import { RobotsCache } from "../../packages/qc-sources/src/sources/robots-txt.js";
 
@@ -440,7 +440,7 @@ function indexIsPvContext(indexUrl?: string): boolean {
 
 export function pvEntriesFromHtml(html: string, baseUrl: string): PvManifestEntry[] {
   const items = parsePvIndex(html, baseUrl);
-  return pvEntriesFromItems(items, baseUrl);
+  return pvEntriesFromItems(items, baseUrl, pvHeadingContextUrls(html, baseUrl));
 }
 
 /**
@@ -448,19 +448,25 @@ export function pvEntriesFromHtml(html: string, baseUrl: string): PvManifestEntr
  *
  * GARDE-FOU QUALITÉ — a document link is kept ONLY when it is PV-identified:
  *   (a) the link itself names a procès-verbal / séance (PV_DOC_RE on title+url), OR
- *   (b) the INDEX page is unambiguously a PV/séance page (`indexIsPvContext`,
- *       which excludes the homepage) AND the link carries a séance DATE.
- * Ordres-du-jour are always dropped. This recovers date-only-labelled PVs on a
- * genuine /proces-verbaux/ page (riviere-heva) while still rejecting generic
- * homepage PDFs (east-farnham 168.pdf, horaire_*.pdf — no PV keyword, homepage
- * is not PV-context).
+ *   (b) the link carries a séance DATE AND a PV/séance context is established,
+ *       EITHER by the INDEX page URL (`indexIsPvContext`, which excludes the
+ *       homepage) OR by a « Procès-verbaux » / « Séances du conseil » heading
+ *       that heads the link in the DOM (`domPvContextUrls`, from
+ *       `pvHeadingContextUrls`). The DOM-heading path recovers date-only PVs on
+ *       pages whose URL carries no PV keyword (albanel `/documents`, saint-félix
+ *       `/pv2024`) while ordre-du-jour headings disqualify their section.
+ * Ordres-du-jour are always dropped (label-level ODJ_RE). This recovers
+ * date-only-labelled PVs on a genuine /proces-verbaux/ page (riviere-heva) while
+ * still rejecting generic homepage PDFs (east-farnham 168.pdf, horaire_*.pdf).
  *
- * `indexUrl` is optional: when omitted (e.g. unit tests passing raw items) only
- * rule (a) applies, preserving the original strict behaviour.
+ * `indexUrl` and `domPvContextUrls` are optional: when both are omitted (e.g.
+ * unit tests passing raw items) only rule (a) applies, preserving the original
+ * strict behaviour.
  */
 export function pvEntriesFromItems(
   items: readonly PvIndexItemT[],
   indexUrl?: string,
+  domPvContextUrls?: ReadonlySet<string>,
 ): PvManifestEntry[] {
   const seen = new Set<string>();
   const entries: PvManifestEntry[] = [];
@@ -470,7 +476,9 @@ export function pvEntriesFromItems(
     const hay = `${item.title} ${item.url}`;
     if (ODJ_RE.test(hay)) continue;
     const keyword = PV_DOC_RE.test(hay);
-    if (!keyword && !(pvContext && PV_DATE_RE.test(hay))) continue;
+    const dateContext =
+      (pvContext || domPvContextUrls?.has(item.url) === true) && PV_DATE_RE.test(hay);
+    if (!keyword && !dateContext) continue;
     if (seen.has(item.url)) continue;
     seen.add(item.url);
     entries.push({
