@@ -26,6 +26,8 @@ export interface Gpt55LabelOptions {
   effort?: string;
   timeoutMs?: number;
   codexHome?: string;
+  /** SAFE numeric relaxation (default OFF): accept dict-backed pure-numeric codes. */
+  allowNumeric?: boolean;
 }
 
 export interface Gpt55Usage {
@@ -292,12 +294,17 @@ export function validateGpt55LabelReads(
   reads: Gpt55LabelRead[],
   geo: GeoRef,
   validCodes: string[],
-  opts: { region?: [number, number, number, number] } = {},
+  opts: { region?: [number, number, number, number]; allowNumeric?: boolean } = {},
 ): Gpt55ValidatedLabels {
   const region = opts.region ?? [0, 0, geo.pageW, geo.pageH];
   const [rx0, ry0, rx1, ry1] = region;
   const rw = rx1 - rx0;
   const rh = ry1 - ry0;
+  // Numeric relaxation: a dict-backed pure-numeric read is a real zone code; the
+  // `byCanon` dictionary match below still requires verbatim dict membership.
+  const numericDict = opts.allowNumeric
+    ? new Set(validCodes.map((c) => String(c).trim()).filter((c) => /^\d{1,4}$/.test(c)))
+    : undefined;
   const byCanon = new Map<string, string[]>();
   for (const code of validCodes) {
     const c = normalizeForSnap(String(code));
@@ -323,7 +330,7 @@ export function validateGpt55LabelReads(
       continue;
     }
     const cleaned = String(read.text ?? "").replace(/[^A-Za-z0-9.\- ]/g, "").trim();
-    if (!looksLikeZoneCode(cleaned)) {
+    if (!looksLikeZoneCode(cleaned, { numericDict })) {
       nRejected++;
       reject(rejects, "not-code-like");
       continue;
@@ -402,7 +409,7 @@ export async function extractLabelsGpt55(
     (raw.labels ?? []).map((l) => ({ text: l.code, x: l.x, y: l.y })),
     geo,
     dict,
-    { region },
+    { region, ...(opts.allowNumeric ? { allowNumeric: true } : {}) },
   );
   const snapRate = validated.nCodeLike > 0 ? (100 * validated.nValidated) / validated.nCodeLike : 0;
   return {
