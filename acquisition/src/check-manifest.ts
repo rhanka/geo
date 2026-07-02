@@ -2,7 +2,7 @@ import { s3Client, getBytes } from './lib/s3.js';
 
 async function main() {
   const s3 = s3Client();
-  const manifest = JSON.parse(await getBytes(s3, 'registry/qc-zonage-norms/manifest.json'));
+  const manifest = JSON.parse((await getBytes(s3, 'registry/qc-zonage-norms/manifest.json')).toString("utf8"));
   const entries = manifest.entries || [];
   console.log('Manifest entries:', entries.length);
   const today = '2026-06-23';
