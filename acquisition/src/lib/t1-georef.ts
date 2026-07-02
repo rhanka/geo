@@ -53,13 +53,110 @@ export interface GeoRef {
 
 // ---------------------------------------------------------------------------
 // PDF stream inflate + marker scan (same technique as the pilot probe).
+//
+// HARDENING (anti-crash on very large règlement GeoPDFs, e.g. cantley 2020):
+// the georeferencing lives in tiny dict objects (/VP /Measure /GEO /GCS), never
+// in the megabyte map-drawing content streams. A naive "concatenate every
+// inflated stream + the whole raw file into one latin1 string" overflows V8's
+// ~512 MB string cap (`Invalid string length`) and throws instead of returning
+// a clean null. We therefore:
+//   1. cap each stream inflate (`maxInflateBytes`) so an enormous content stream
+//      is SKIPPED without ever being allocated or stringified,
+//   2. keep only inflated chunks that actually carry a georef marker (drops the
+//      drawing streams that can never hold the registration),
+//   3. bound the total accumulated string (`maxChars`) well under the V8 cap,
+//      slicing to the remaining budget so a `.toString` is never oversized,
+//   4. for a truly gigantic RAW buffer, extract marker-guided windows instead of
+//      stringifying the whole file.
+// A big PDF with no parseable georef then yields null → the caller ABORTS
+// cleanly (like every other non-T1 plan), never throwing.
 // ---------------------------------------------------------------------------
-export function inflatePdfText(buf: Buffer): string {
+
+/** Tokens that anchor the embedded georeferencing; used to keep only relevant
+ * inflated object streams and to window a gigantic raw buffer. */
+const GEOREF_MARKERS: Buffer[] = [
+  "/GPTS", "/Bounds", "/Measure", "/GCS", "/WKT", "PROJCS", "/VP", "/Viewport",
+  "/BBox", "/MediaBox", "/LGIDict", "/Neatline",
+].map((s) => Buffer.from(s, "latin1"));
+
+function bufHasGeorefMarker(b: Buffer): boolean {
+  for (const m of GEOREF_MARKERS) if (b.indexOf(m) !== -1) return true;
+  return false;
+}
+
+/** Marker-guided extraction of a gigantic raw buffer (> string budget): pull a
+ * generous window around each georef anchor rather than stringifying it whole. */
+function rawGeorefWindows(buf: Buffer, budget: number): string {
+  if (budget <= 0) return "";
+  const windows: Array<[number, number]> = [];
+  const scan = (needle: string, back: number, fwd: number): void => {
+    const nb = Buffer.from(needle, "latin1");
+    let from = 0;
+    for (let k = 0; k < 4000; k++) {
+      const i = buf.indexOf(nb, from);
+      if (i < 0) break;
+      windows.push([Math.max(0, i - back), Math.min(buf.length, i + fwd)]);
+      from = i + nb.length;
+    }
+  };
+  scan("/GPTS", 6000, 4000);
+  scan("/VP", 2000, 45000);
+  scan("/WKT", 2000, 6000);
+  scan("/Bounds", 6000, 2000);
+  scan("/Measure", 4000, 4000);
+  scan("/BBox", 2000, 2000);
+  scan("/MediaBox", 400, 600);
+  scan("/LGIDict", 4000, 8000);
+  if (windows.length === 0) return "";
+  windows.sort((a, b) => a[0] - b[0]);
+  const merged: Array<[number, number]> = [];
+  for (const w of windows) {
+    const last = merged[merged.length - 1];
+    if (last && w[0] <= last[1]) last[1] = Math.max(last[1], w[1]);
+    else merged.push([w[0], w[1]]);
+  }
+  const parts: string[] = [];
+  let used = 0;
+  for (const [a, b] of merged) {
+    if (used >= budget) break;
+    const end = Math.min(b, a + (budget - used));
+    const s = buf.subarray(a, end).toString("latin1");
+    parts.push(s);
+    used += s.length + 1;
+  }
+  return "\n" + parts.join("\n");
+}
+
+export interface InflateOptions {
+  /** Hard ceiling on the assembled string, well under V8's ~512 MB cap. */
+  maxChars?: number;
+  /** Per-stream inflate ceiling; a stream that would exceed it is skipped. */
+  maxInflateBytes?: number;
+}
+
+/** V8 tops out near 512 MB chars; stay comfortably below with headroom. */
+const DEFAULT_MAX_CHARS = 400 * 1024 * 1024;
+/** Georef dicts are tiny; anything past this is a drawing stream we can skip. */
+const DEFAULT_MAX_INFLATE = 64 * 1024 * 1024;
+
+export function inflatePdfText(buf: Buffer, opts: InflateOptions = {}): string {
+  const maxChars = Math.max(1, opts.maxChars ?? DEFAULT_MAX_CHARS);
+  const maxInflate = Math.max(1, opts.maxInflateBytes ?? DEFAULT_MAX_INFLATE);
   const STREAM = Buffer.from("stream");
   const ENDSTREAM = Buffer.from("endstream");
+  const parts: string[] = [];
+  let total = 0;
+  const pushBuf = (b: Buffer): void => {
+    if (total >= maxChars) return;
+    const room = maxChars - total;
+    const slice = b.length > room ? b.subarray(0, room) : b;
+    const s = slice.toString("latin1");
+    parts.push(s);
+    total += s.length;
+  };
+
   let idx = 0;
-  let all = "";
-  while (true) {
+  while (total < maxChars) {
     const i = buf.indexOf(STREAM, idx);
     if (i < 0) break;
     let p = i + 6;
@@ -70,18 +167,35 @@ export function inflatePdfText(buf: Buffer): string {
     const chunk = buf.subarray(p, j);
     let out: Buffer | null = null;
     try {
-      out = zlib.inflateSync(chunk);
+      out = zlib.inflateSync(chunk, { maxOutputLength: maxInflate });
     } catch {
       try {
-        out = zlib.inflateRawSync(chunk);
+        out = zlib.inflateRawSync(chunk, { maxOutputLength: maxInflate });
       } catch {
-        out = null;
+        out = null; // not deflate, or larger than maxInflate → skip (drawing stream)
       }
     }
-    if (out) all += "\n" + out.toString("latin1");
+    // Keep only streams that carry a georef marker; drawing streams are dropped.
+    if (out && bufHasGeorefMarker(out)) {
+      parts.push("\n");
+      total += 1;
+      pushBuf(out);
+    }
     idx = j + 9;
   }
-  return all + "\n" + buf.toString("latin1");
+
+  // Raw buffer: append whole when it fits the remaining budget (preserves the
+  // exact prior behaviour for normal-size PDFs, incl. indirect /GCS object
+  // resolution); otherwise pull marker-guided windows from the giant file.
+  const room = maxChars - total;
+  if (buf.length + 1 <= room) {
+    parts.push("\n");
+    total += 1;
+    pushBuf(buf);
+  } else {
+    parts.push(rawGeorefWindows(buf, room));
+  }
+  return parts.join("");
 }
 
 function numArray(s: string): number[] {
