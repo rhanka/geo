@@ -387,6 +387,14 @@ export const URBANISME_PATH_HINTS: readonly string[] = [
   "reglements-durbanisme",
   "amenagement-et-urbanisme",
   "permis-et-reglements",
+  // Document-centre / CMS hubs: many munis park the grille in a generic document
+  // library rather than an urbanisme page (probed HTTP 200; a miss is skipped).
+  "documents",
+  "documentation",
+  "centre-de-documents",
+  "publications",
+  "reglements/documents",
+  "urbanisme/documents",
 ];
 
 /**
@@ -424,6 +432,73 @@ export function candidatePagesForCity(pvIndexUrl: string): string[] {
     }
   }
   return pages;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Curated grille-URL seed (doc-center / CMS bypass)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** One curated grille-PDF URL to ingest directly (bypasses the crawler). */
+export interface GrilleUrlSeedEntry {
+  /** Municipality slug (matches the SIG registry). */
+  readonly slug: string;
+  /** Absolute PDF URL (still confirmed HTTP 200 + PDF by the runner). */
+  readonly url: string;
+}
+
+/**
+ * Parse a CURATED grille-URL seed file — the doc-center / CMS bypass for grilles
+ * the crawler cannot reach (Québec municipal document centres serve grilles behind
+ * opaque `/file-NNNN` / `/documents/<id>` endpoints with NO classifiable anchor
+ * text, and JS-rendered SaaS portals expose no static link at all). A human curates
+ * `{slug,url}` pairs; the runner confirms + classifies + downloads them exactly like
+ * a crawled candidate, so anti-invention holds (every URL is still HTTP-confirmed).
+ *
+ * Accepts either JSON (`[{"slug","url"}, …]` or `{"munis":[…]}`) or a plain-text
+ * list, one entry per line as `slug <whitespace|comma> url` (‘#’ comments + blank
+ * lines ignored). Deduplicates by (slug,url). Pure; never throws on a bad line
+ * (skips it) — only a malformed top-level JSON structure surfaces as [].
+ */
+export function parseGrilleUrlSeed(content: string): GrilleUrlSeedEntry[] {
+  const out: GrilleUrlSeedEntry[] = [];
+  const seen = new Set<string>();
+  const push = (slug: unknown, url: unknown): void => {
+    if (typeof slug !== "string" || typeof url !== "string") return;
+    const s = slug.trim();
+    const u = url.trim();
+    if (!s || !/^https?:\/\//i.test(u)) return;
+    const key = `${s} ${u}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ slug: s, url: u });
+  };
+
+  const trimmed = content.trim();
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+    try {
+      const j = JSON.parse(trimmed) as unknown;
+      const arr = Array.isArray(j)
+        ? j
+        : Array.isArray((j as { munis?: unknown }).munis)
+          ? (j as { munis: unknown[] }).munis
+          : [];
+      for (const e of arr) {
+        const r = (e ?? {}) as Record<string, unknown>;
+        push(r["slug"], r["url"] ?? r["sourceUrl"] ?? r["pdfUrl"]);
+      }
+      return out;
+    } catch {
+      return out;
+    }
+  }
+  // Plain text: "slug <ws|,> url" per line.
+  for (const raw of content.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const m = line.match(/^([^\s,]+)[\s,]+(\S+)$/);
+    if (m) push(m[1], m[2]);
+  }
+  return out;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
