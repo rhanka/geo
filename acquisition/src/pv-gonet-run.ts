@@ -393,17 +393,19 @@ export function extractPvNavigationLinks(html: string, baseUrl: string): string[
 /**
  * A PV document href, aligned with `parsePvIndex`'s `looksLikeDocumentHref`: a
  * direct file (.pdf/.doc(x)/.odt) OR a CMS download endpoint (`?download=`,
- * `/telecharger/`, `/download/…`). The previous predicate accepted ONLY
- * file-extension URLs and silently dropped every download-endpoint PV — e.g.
- * `municipalityshigawake.com/download/220/proces-verbaux/<id>/pv-reunion-…` —
- * which made whole download-CMS municipalities (shigawake: 41 real PVs) look
- * empty even though the static HTML listed them all.
+ * `/telecharger/`, `/download/…`, `/download_file/…`). The previous predicate
+ * accepted ONLY file-extension URLs and silently dropped every download-endpoint
+ * PV — e.g. `municipalityshigawake.com/download/220/proces-verbaux/<id>/pv-…`
+ * (shigawake: 41 real PVs) and Concrete5's `/download_file/view/<id>/<pkg>`
+ * (papineauville: dozens of « Procès-verbal » links) — which made whole
+ * download-CMS municipalities look empty even though the static HTML listed
+ * them all. The keyword/date PV gate + live HEAD verify still apply downstream.
  */
 function looksLikeDocumentUrl(url: string): boolean {
   return (
     /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
     /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
-    /\/(?:download|telecharger|getfile|fichier)[/?]/i.test(url)
+    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url)
   );
 }
 

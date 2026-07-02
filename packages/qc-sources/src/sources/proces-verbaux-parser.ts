@@ -253,12 +253,13 @@ function effectiveBase(html: string, indexUrl: string): string {
   return indexUrl;
 }
 
-/** True when the href points at a PV-style document (PDF, DOC, or a download endpoint). */
+/** True when the href points at a PV-style document (PDF, DOC, or a download
+ * endpoint — incl. Concrete5's `/download_file/view/<id>/<pkg>`). */
 function looksLikeDocumentHref(url: string): boolean {
   return (
     /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
     /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
-    /\/(?:download|telecharger|getfile|fichier)[/?]/i.test(url)
+    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url)
   );
 }
 
