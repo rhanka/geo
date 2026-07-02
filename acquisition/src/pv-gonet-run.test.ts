@@ -133,6 +133,40 @@ describe("pv-gonet-run helpers", () => {
       const html = `<a href="https://ville.qc.ca/download/55/finances/900/budget-2026">Budget 2026</a>`;
       expect(pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/")).toEqual([]);
     });
+
+    // DOM heading-context widener: date-only PVs on a page whose URL has NO PV
+    // keyword are recovered when a « Procès-verbaux » / « Séances du conseil »
+    // heading heads the link in the DOM (albanel /documents, saint-félix /pv2024).
+    it("recovers date-only PVs under a DOM « Procès-verbaux » heading on a non-PV URL", () => {
+      // Real albanel /documents shape: a Joomla document_title section title
+      // heads a run of date-only, `…-pvbl.pdf` links; the URL is just /documents.
+      const html = `
+        <div class="document_title">Finances</div>
+        <a href="images/uploads/25-Rapport-financier-2023.pdf">Rapport financier 2023</a>
+        <div class="document_title">Procès-verbaux</div>
+        <a href="images/uploads/25-2024-01-15-pvbl.pdf">15 janvier 2024</a>
+        <a href="images/uploads/25-2024-02-05-pvbl.pdf">5 février 2024</a>`;
+      const entries = pvEntriesFromHtml(html, "https://albanel.ca/documents");
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://albanel.ca/images/uploads/25-2024-01-15-pvbl.pdf",
+        "https://albanel.ca/images/uploads/25-2024-02-05-pvbl.pdf",
+      ]);
+      // The finance PDF under a neutral heading is NOT recovered.
+    });
+
+    it("does NOT recover date-only PDFs under an « ordre du jour » heading (non-PV URL)", () => {
+      const html = `
+        <div class="document_title">Ordres du jour</div>
+        <a href="/docs/2024-01-15.pdf">15 janvier 2024</a>`;
+      expect(pvEntriesFromHtml(html, "https://ville.qc.ca/documents")).toEqual([]);
+    });
+
+    it("does NOT recover date-only PDFs when the page has no PV heading (non-PV URL)", () => {
+      const html = `
+        <h1>Documents municipaux</h1>
+        <a href="/docs/2024-01-15.pdf">15 janvier 2024</a>`;
+      expect(pvEntriesFromHtml(html, "https://ville.qc.ca/documents")).toEqual([]);
+    });
   });
 
   it("should follow nested municipal PV navigation pages when the first PV page is only a hub", async () => {
