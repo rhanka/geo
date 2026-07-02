@@ -9,7 +9,7 @@
  */
 import { describe, it, expect } from "vitest";
 
-import { decideRotation, type MeasuredRotation } from "./t2-rotation-disambig.js";
+import { decideAnisoArbitration, decideRotation, type MeasuredRotation } from "./t2-rotation-disambig.js";
 import type { GcpFile } from "./t2-georef.js";
 
 const GCP_STUB: GcpFile = { slug: "x", pdf: "", gcps: [] };
@@ -90,5 +90,50 @@ describe("decideRotation", () => {
     const d = decideRotation([m(0, 95, 98, 2), m(180, 20, 90, 1)]);
     expect(d.decisive).toBe(false);
     expect(d.reason).toMatch(/distinct codes/);
+  });
+});
+
+describe("decideAnisoArbitration (moderate-anisotropy stretch confirmation)", () => {
+  it("SERVES arundel: a moderate-aniso north-up fit serving 99% of lots with 47 codes (tight only 17%)", () => {
+    // Empirically arundel serves ~89–99% of lots; the tight-300m cutoff is only
+    // ~8–17% even for the CORRECT georef (sparse rural zone labels) → serving decides.
+    const d = decideAnisoArbitration([m(0, 16.98, 99.29, 47)]);
+    expect(d.serve).toBe(true);
+    expect(d.winner?.rotation).toBe(0);
+    expect(d.reason).toMatch(/CONFIRMED/);
+  });
+
+  it("picks the best-SERVING candidate among several moderate-aniso north-up fits", () => {
+    const d = decideAnisoArbitration([
+      m(0, 7.78, 89.62, 30, { extent: "density", residual_max_m: 11 }),
+      m(0, 16.98, 99.29, 47, { extent: "full", residual_max_m: 28 }),
+    ]);
+    expect(d.serve).toBe(true);
+    expect(d.winner?.serving_coverage_pct).toBe(99.29);
+    expect(d.winner?.extent).toBe("full");
+  });
+
+  it("SKIPS when serving coverage is below the floor (stretch NOT confirmed real)", () => {
+    // A spurious stretch scatters the independent labels: serving coverage collapses.
+    const d = decideAnisoArbitration([m(0, 20, 55, 25)]);
+    expect(d.serve).toBe(false);
+    expect(d.reason).toMatch(/NOT confirmed real/);
+  });
+
+  it("SKIPS when too few distinct codes (anti-#74)", () => {
+    const d = decideAnisoArbitration([m(0, 40, 98, 2)]);
+    expect(d.serve).toBe(false);
+    expect(d.reason).toMatch(/distinct codes/);
+  });
+
+  it("SKIPS an empty candidate set", () => {
+    const d = decideAnisoArbitration([]);
+    expect(d.serve).toBe(false);
+    expect(d.reason).toMatch(/no moderate-anisotropy candidate/);
+  });
+
+  it("honours a custom serving-coverage floor", () => {
+    const d = decideAnisoArbitration([m(0, 10, 80, 20)], { servingCoverageFloorPct: 75 });
+    expect(d.serve).toBe(true);
   });
 });
