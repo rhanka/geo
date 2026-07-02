@@ -12,7 +12,7 @@ import { dirname } from "node:path";
 import type { FeatureCollection } from "geojson";
 
 import { getBytes, s3Client } from "./lib/s3.js";
-import { deriveAutoSeedGcps, deriveAutonomousGcps } from "./lib/t2-autogcp.js";
+import { deriveAutoSeedGcps, deriveAutonomousGcps, type FitMode } from "./lib/t2-autogcp.js";
 import { decideRotation, measureRotationLotAssignment, type MeasuredRotation } from "./lib/t2-rotation-disambig.js";
 import type { GcpFile } from "./lib/t2-georef.js";
 
@@ -29,6 +29,8 @@ interface Args {
   maxResidualM: number;
   minGcps: number;
   maxGcps: number;
+  /** Page→ground model fitted & gated: "affine" (default) or "similarity". */
+  fit: FitMode;
   /** When "lots", resolve an orientation-ambiguity reject via cadastre lot-assignment. */
   rotationDisambig?: string;
   /** Tight cutoff (m) for the discrimination coverage (the orientation signal). Default 300. */
@@ -53,6 +55,9 @@ function parseArgs(argv: string[]): Args {
   }
   const autoSeed = Boolean(a["auto-seed"]);
   if (!a["slug"]) throw new Error("required: --slug <slug>");
+  if (a["fit"] !== undefined && a["fit"] !== "affine" && a["fit"] !== "similarity") {
+    throw new Error(`--fit must be "affine" or "similarity", got "${String(a["fit"])}"`);
+  }
   if (autoSeed) {
     if (!a["pdf"]) throw new Error("--auto-seed requires --pdf <local pdf path>");
   } else if (!a["gcp"]) {
@@ -71,6 +76,7 @@ function parseArgs(argv: string[]): Args {
     maxResidualM: a["max-residual-m"] ? Number(a["max-residual-m"]) : 30,
     minGcps: a["min-gcps"] ? Number(a["min-gcps"]) : 12,
     maxGcps: a["max-gcps"] ? Number(a["max-gcps"]) : 48,
+    fit: a["fit"] === "similarity" ? "similarity" : "affine",
     rotationDisambig: a["rotation-disambig"] ? String(a["rotation-disambig"]) : undefined,
     disambigCutoffM: a["disambig-cutoff-m"] ? Number(a["disambig-cutoff-m"]) : 300,
     disambigCoverageFloor: a["disambig-coverage-floor"] ? Number(a["disambig-coverage-floor"]) : 70,
@@ -115,6 +121,7 @@ async function main(): Promise<void> {
       maxResidualM: args.maxResidualM,
       minGcps: args.minGcps,
       maxGcps: args.maxGcps,
+      fit: args.fit,
     });
 
     // Winning GCP file (either the direct auto-seed winner, or the rotation the
@@ -213,6 +220,7 @@ async function main(): Promise<void> {
     maxResidualM: args.maxResidualM,
     minGcps: args.minGcps,
     maxGcps: args.maxGcps,
+    fit: args.fit,
   });
   if (args.outGcp && report.gcp_file) {
     mkdirSync(dirname(args.outGcp), { recursive: true });
