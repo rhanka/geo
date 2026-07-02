@@ -32,6 +32,19 @@ export interface AutoGcpOptions {
   maxResidualM?: number;
   minGcps?: number;
   maxGcps?: number;
+  /** Reuse a pre-rendered page SVG (avoids re-running pdftocairo in a loop). */
+  svgPath?: string;
+  /**
+   * Reuse already-extracted full-page linework points (they are re-filtered by
+   * `seed.neatline` here). Lets a multi-candidate driver render/parse once.
+   */
+  pagePoints?: Pt[];
+  /**
+   * Skip the informational coordinate-tick OCR (tesseract + pdftotext). The
+   * ticks are never used by the matcher or the residual gate, so an auto-seed
+   * sweep that calls this many times should skip them for speed.
+   */
+  skipVisualOcr?: boolean;
 }
 
 export interface AutoGcpReport {
@@ -55,7 +68,7 @@ export interface AutoGcpReport {
   gcp_file?: GcpFile;
 }
 
-interface Pt {
+export interface Pt {
   x: number;
   y: number;
 }
@@ -628,11 +641,15 @@ export async function deriveAutonomousGcps(opts: AutoGcpOptions): Promise<AutoGc
   const maxResidualM = opts.maxResidualM ?? 30;
   const minGcps = opts.minGcps ?? 12;
   const maxGcps = opts.maxGcps ?? 48;
-  const ticks = textCoordinateTickCandidates(opts.pdfPath, opts.page);
-  const visualTicks = await visualOcrCoordinateTickCandidates(opts.pdfPath, opts.page, opts.pageW, opts.pageH, opts.seed.neatline);
+  const ticks = opts.skipVisualOcr ? [] : textCoordinateTickCandidates(opts.pdfPath, opts.page);
+  const visualTicks = opts.skipVisualOcr
+    ? { ticks: [] as string[] }
+    : await visualOcrCoordinateTickCandidates(opts.pdfPath, opts.page, opts.pageW, opts.pageH, opts.seed.neatline);
 
-  const svgPath = runPdftocairoSvg(opts.pdfPath, opts.page);
-  const pagePoints = extractSvgVectorPoints(svgPath, opts.pageW, opts.pageH, opts.seed.neatline);
+  const svgPath = opts.svgPath ?? runPdftocairoSvg(opts.pdfPath, opts.page);
+  const pagePoints = opts.pagePoints
+    ? opts.pagePoints.filter((p) => inNeatline(p, opts.seed.neatline, opts.pageW, opts.pageH))
+    : extractSvgVectorPoints(svgPath, opts.pageW, opts.pageH, opts.seed.neatline);
   const { vertices, lat0 } = cadastreVertices(opts.cadastre);
   const grid = new VertexGrid(vertices, Math.max(20, maxCandidateDistanceM * 2));
 
@@ -689,5 +706,312 @@ export async function deriveAutonomousGcps(opts: AutoGcpOptions): Promise<AutoGc
     max_candidate_distance_m: maxCandidateDistanceM,
     max_residual_gate_m: maxResidualM,
     ...(pass ? { gcp_file: buildGcpFileFromMatches(opts, selected) } : {}),
+  };
+}
+
+/* ------------------------------------------------------------------------- *
+ * Auto-seed: synthesise the coarse 4-corner seed instead of requiring a hand
+ * placed one, then let the EXISTING residual+holdout gate pick the winner.
+ *
+ * The seed maps the four corners of the plan's drawn map body (in page
+ * fractions) to the four corners of the municipality cadastre bbox (WGS84),
+ * over four candidate page rotations (0/90/180/270). Each (extent × rotation)
+ * seed is fed to `deriveAutonomousGcps`, which re-derives INDEPENDENT parcel-
+ * corner control points and gates them at ≤maxResidualM + holdout. A synthetic
+ * seed is ONLY a search hint — no bbox corner ever becomes a served control
+ * point, and a run that never clears the gate aborts (pass:false) instead of
+ * fabricating one. This is the exact anti-invention contract of the manual
+ * path, with the coarse human step removed.
+ * ------------------------------------------------------------------------- */
+
+export interface AutoSeedOptions {
+  slug: string;
+  pdfPath: string;
+  page: number;
+  pageW: number;
+  pageH: number;
+  cadastre: FeatureCollection;
+  /** Candidate-match search radius (m). Wider than the manual path because the
+   * synthetic seed is coarser; the residual gate stays strict. */
+  maxCandidateDistanceM?: number;
+  maxResidualM?: number;
+  minGcps?: number;
+  maxGcps?: number;
+}
+
+export interface AutoSeedAttempt {
+  extent: string;
+  rotation: number;
+  extent_frac: NeatlineFrac;
+  pass: boolean;
+  reason?: string;
+  selected_gcps: number;
+  residual_max_m: number | null;
+  residual_rms_m: number | null;
+  holdout_max_m: number | null;
+  holdout_rms_m: number | null;
+  seed_candidate_matches: number;
+}
+
+export interface AutoSeedReport {
+  slug: string;
+  method: "auto-seed-cadastre-bbox-rotations";
+  pass: boolean;
+  reason?: string;
+  cadastre_features: number;
+  cadastre_bbox_wgs84: [number, number, number, number];
+  svg_points: number;
+  extents: Record<string, NeatlineFrac | null>;
+  attempts: AutoSeedAttempt[];
+  best?: { extent: string; rotation: number };
+  residual_max_m: number | null;
+  holdout_max_m: number | null;
+  selected_gcps: number | null;
+  max_candidate_distance_m: number;
+  max_residual_gate_m: number;
+  gcp_file?: GcpFile;
+}
+
+/** WGS84 bbox [lonMin, latMin, lonMax, latMax] of the cadastre lots. */
+function cadastreLonLatBbox(cadastre: FeatureCollection): [number, number, number, number] {
+  let lonMin = Infinity;
+  let latMin = Infinity;
+  let lonMax = -Infinity;
+  let latMax = -Infinity;
+  for (const f of cadastre.features) {
+    scanCoords(f.geometry, (p) => {
+      const lon = p[0]!;
+      const lat = p[1]!;
+      if (lon < lonMin) lonMin = lon;
+      if (lon > lonMax) lonMax = lon;
+      if (lat < latMin) latMin = lat;
+      if (lat > latMax) latMax = lat;
+    });
+  }
+  return [lonMin, latMin, lonMax, latMax];
+}
+
+function fracBox(x0: number, y0: number, x1: number, y1: number, pageW: number, pageH: number): NeatlineFrac {
+  return {
+    fx0: Math.max(0, Math.min(1, x0 / pageW)),
+    fy0: Math.max(0, Math.min(1, y0 / pageH)),
+    fx1: Math.max(0, Math.min(1, x1 / pageW)),
+    fy1: Math.max(0, Math.min(1, y1 / pageH)),
+  };
+}
+
+/** Full page-point bbox — correct when the drawn cadastre fills the map frame. */
+function drawnExtentFull(points: Pt[], pageW: number, pageH: number): NeatlineFrac | null {
+  if (points.length < 8) return null;
+  const [x0, y0, x1, y1] = bboxOfPts(points);
+  return fracBox(x0, y0, x1, y1, pageW, pageH);
+}
+
+/** Percentile-trimmed bbox — drops a few sparse legend/title outliers. */
+function drawnExtentPercentile(points: Pt[], pageW: number, pageH: number, f = 0.02): NeatlineFrac | null {
+  if (points.length < 50) return null;
+  const xs = points.map((p) => p.x).sort((a, b) => a - b);
+  const ys = points.map((p) => p.y).sort((a, b) => a - b);
+  const q = (a: number[], t: number): number => a[Math.max(0, Math.min(a.length - 1, Math.floor((a.length - 1) * t)))]!;
+  return fracBox(q(xs, f), q(ys, f), q(xs, 1 - f), q(ys, 1 - f), pageW, pageH);
+}
+
+/**
+ * 2D-density bbox with a thin-line erosion: keeps only cells that are dense AND
+ * have dense neighbours in BOTH axes, which discards the 1-cell-wide map frame,
+ * scale bar and north arrow while retaining the parcel mesh. Best when the map
+ * body is a sub-region of the sheet (title block / legend inside the frame).
+ */
+function drawnExtentDensity(points: Pt[], pageW: number, pageH: number): NeatlineFrac | null {
+  if (points.length < 200) return null;
+  const cell = Math.max(pageW, pageH) / 120;
+  const nx = Math.max(4, Math.ceil(pageW / cell));
+  const ny = Math.max(4, Math.ceil(pageH / cell));
+  const counts = new Int32Array(nx * ny);
+  for (const p of points) {
+    const ix = Math.min(nx - 1, Math.max(0, Math.floor(p.x / cell)));
+    const iy = Math.min(ny - 1, Math.max(0, Math.floor(p.y / cell)));
+    counts[iy * nx + ix]!++;
+  }
+  const nz = [...counts].filter((c) => c > 0).sort((a, b) => a - b);
+  if (nz.length < 10) return null;
+  const p85 = nz[Math.floor(nz.length * 0.85)]!;
+  const thMain = Math.max(3, p85 * 0.15);
+  const thLow = Math.max(2, p85 * 0.08);
+  const at = (ix: number, iy: number): number => (ix < 0 || iy < 0 || ix >= nx || iy >= ny ? 0 : counts[iy * nx + ix]!);
+  let minix = nx;
+  let miniy = ny;
+  let maxix = -1;
+  let maxiy = -1;
+  let kept = 0;
+  for (let iy = 0; iy < ny; iy++) {
+    for (let ix = 0; ix < nx; ix++) {
+      if (at(ix, iy) < thMain) continue;
+      const hor = at(ix - 1, iy) >= thLow || at(ix + 1, iy) >= thLow;
+      const ver = at(ix, iy - 1) >= thLow || at(ix, iy + 1) >= thLow;
+      if (!hor || !ver) continue;
+      kept++;
+      if (ix < minix) minix = ix;
+      if (ix > maxix) maxix = ix;
+      if (iy < miniy) miniy = iy;
+      if (iy > maxiy) maxiy = iy;
+    }
+  }
+  if (kept < 4 || maxix < 0) return null;
+  return fracBox(minix * cell, miniy * cell, (maxix + 1) * cell, (maxiy + 1) * cell, pageW, pageH);
+}
+
+/** Grow a frac bbox by `pad` fraction of its own size on every side (clamped). */
+function inflateFrac(b: NeatlineFrac, pad: number): NeatlineFrac {
+  const w = b.fx1 - b.fx0;
+  const h = b.fy1 - b.fy0;
+  return {
+    fx0: Math.max(0, b.fx0 - w * pad),
+    fy0: Math.max(0, b.fy0 - h * pad),
+    fx1: Math.min(1, b.fx1 + w * pad),
+    fy1: Math.min(1, b.fy1 + h * pad),
+  };
+}
+
+/**
+ * Four coarse corner GCPs mapping the extent's page corners to the cadastre
+ * bbox corners, rotated by `rot` × 90° (page corners taken clockwise from
+ * top-left, cadastre corners clockwise from NW).
+ */
+function buildRotationSeedGcps(
+  extent: NeatlineFrac,
+  bbox: [number, number, number, number],
+  rot: number,
+): Gcp[] {
+  const [lonMin, latMin, lonMax, latMax] = bbox;
+  const x0 = Math.min(extent.fx0, extent.fx1);
+  const x1 = Math.max(extent.fx0, extent.fx1);
+  const y0 = Math.min(extent.fy0, extent.fy1);
+  const y1 = Math.max(extent.fy0, extent.fy1);
+  // Page corners clockwise from top-left (fy top-down).
+  const pageCorners: Array<[number, number]> = [
+    [x0, y0], // TL
+    [x1, y0], // TR
+    [x1, y1], // BR
+    [x0, y1], // BL
+  ];
+  // Cadastre corners clockwise from NW.
+  const cadCorners: Array<[number, number]> = [
+    [lonMin, latMax], // NW
+    [lonMax, latMax], // NE
+    [lonMax, latMin], // SE
+    [lonMin, latMin], // SW
+  ];
+  const shift = ((rot % 4) + 4) % 4;
+  return pageCorners.map(([fx, fy], i) => {
+    const [lon, lat] = cadCorners[(i + shift) % 4]!;
+    return {
+      fx,
+      fy,
+      lon,
+      lat,
+      source: "auto-seed-cadastre-bbox-corner",
+      note: `auto-seed coarse corner (rot${shift * 90}); COARSE SEED ONLY`,
+    };
+  });
+}
+
+export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSeedReport> {
+  const maxCandidateDistanceM = opts.maxCandidateDistanceM ?? 450;
+  const maxResidualM = opts.maxResidualM ?? 30;
+  const minGcps = opts.minGcps ?? 12;
+  const maxGcps = opts.maxGcps ?? 48;
+
+  const bbox = cadastreLonLatBbox(opts.cadastre);
+  if (!Number.isFinite(bbox[0]) || bbox[0] >= bbox[2] || bbox[1] >= bbox[3]) {
+    throw new Error(`cadastre has no usable WGS84 bbox for ${opts.slug}`);
+  }
+
+  const svgPath = runPdftocairoSvg(opts.pdfPath, opts.page);
+  const allPoints = extractSvgVectorPoints(svgPath, opts.pageW, opts.pageH);
+
+  const density = drawnExtentDensity(allPoints, opts.pageW, opts.pageH);
+  const extents: Record<string, NeatlineFrac | null> = {
+    density,
+    "density+10%": density ? inflateFrac(density, 0.1) : null,
+    "density+20%": density ? inflateFrac(density, 0.2) : null,
+    percentile: drawnExtentPercentile(allPoints, opts.pageW, opts.pageH, 0.02),
+    full: drawnExtentFull(allPoints, opts.pageW, opts.pageH),
+  };
+
+  const attempts: AutoSeedAttempt[] = [];
+  let best: { attempt: AutoSeedAttempt; report: AutoGcpReport } | null = null;
+
+  for (const [extentName, extent] of Object.entries(extents)) {
+    if (!extent) continue;
+    for (const rot of [0, 1, 2, 3]) {
+      const seed: GcpFile = {
+        slug: opts.slug,
+        pdf: opts.pdfPath,
+        page: opts.page,
+        pageW: opts.pageW,
+        pageH: opts.pageH,
+        gcps: buildRotationSeedGcps(extent, bbox, rot),
+        neatline: extent,
+      };
+      const report = await deriveAutonomousGcps({
+        slug: opts.slug,
+        pdfPath: opts.pdfPath,
+        page: opts.page,
+        pageW: opts.pageW,
+        pageH: opts.pageH,
+        seed,
+        cadastre: opts.cadastre,
+        maxCandidateDistanceM,
+        maxResidualM,
+        minGcps,
+        maxGcps,
+        svgPath,
+        pagePoints: allPoints,
+        skipVisualOcr: true,
+      });
+      const attempt: AutoSeedAttempt = {
+        extent: extentName,
+        rotation: rot * 90,
+        extent_frac: extent,
+        pass: report.pass,
+        ...(report.reason ? { reason: report.reason } : {}),
+        selected_gcps: report.selected_gcps,
+        residual_max_m: report.residual_max_m,
+        residual_rms_m: report.residual_rms_m,
+        holdout_max_m: report.holdout_max_m,
+        holdout_rms_m: report.holdout_rms_m,
+        seed_candidate_matches: report.seed_candidate_matches,
+      };
+      attempts.push(attempt);
+      if (
+        report.pass &&
+        (!best ||
+          (report.residual_max_m ?? Infinity) < (best.report.residual_max_m ?? Infinity) ||
+          ((report.residual_max_m ?? Infinity) === (best.report.residual_max_m ?? Infinity) &&
+            report.selected_gcps > best.report.selected_gcps))
+      ) {
+        best = { attempt, report };
+      }
+    }
+  }
+
+  return {
+    slug: opts.slug,
+    method: "auto-seed-cadastre-bbox-rotations",
+    pass: !!best,
+    ...(best ? {} : { reason: "no (extent × rotation) seed cleared the residual+holdout gate" }),
+    cadastre_features: opts.cadastre.features.length,
+    cadastre_bbox_wgs84: bbox,
+    svg_points: allPoints.length,
+    extents,
+    attempts,
+    ...(best ? { best: { extent: best.attempt.extent, rotation: best.attempt.rotation } } : {}),
+    residual_max_m: best ? best.report.residual_max_m : null,
+    holdout_max_m: best ? best.report.holdout_max_m : null,
+    selected_gcps: best ? best.report.selected_gcps : null,
+    max_candidate_distance_m: maxCandidateDistanceM,
+    max_residual_gate_m: maxResidualM,
+    ...(best && best.report.gcp_file ? { gcp_file: best.report.gcp_file } : {}),
   };
 }
