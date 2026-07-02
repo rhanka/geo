@@ -373,6 +373,114 @@ export function parsePvIndex(html: string, baseUrl: string): PvIndexItemT[] {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// DOM heading-context detection (widens the date-only PV gate)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Heading / section-title text that signals a procès-verbal / séance context.
+ * Matches the exact phrases a municipal page uses to head its PV list:
+ * « procès-verbal(-verbaux) », « séance(s) du conseil », « conseil municipal ».
+ */
+export const PV_HEADING_CONTEXT_RE =
+  /proc[èeé]s[-\s]?verb(?:al|aux)|s[ée]ances?\s+du\s+conseil|conseil\s+municipal/i;
+
+/**
+ * Heading text that DISQUALIFIES a section from the date-only PV relaxation.
+ * An « ordre du jour » / « avis public » heading must never let a bare-date PDF
+ * beneath it be treated as a procès-verbal (anti-invention guardrail (b)).
+ */
+export const ODJ_HEADING_CONTEXT_RE =
+  /ordre[-\s]?du[-\s]?jour|\bodj\b|avis\s+publics?/i;
+
+/**
+ * Longest gap (chars) tolerated between a governing heading and an anchor for
+ * that heading to still count as the anchor's section context. Generous enough
+ * to span a whole real PV section (albanel: 27 links ≈ 4.5 kchars; saint-félix:
+ * 12 links ≈ 3.7 kchars) while bounding page-wide leakage.
+ */
+const HEADING_CONTEXT_MAX_DISTANCE = 6000;
+
+/**
+ * Matches heading-like section markers in the raw HTML: h1–h4 headings AND the
+ * common section-title / breadcrumb containers used by municipal CMS themes
+ * (Joomla `document_title`, WordPress `entry-title`, `page-title`, `breadcrumb`).
+ * Group 2 captures h-tag text; group 3 captures container text.
+ */
+const HEADING_MARKER_RE =
+  /<(h[1-4])\b[^>]*>([\s\S]*?)<\/\1>|<(?:div|span|p|li|nav|a)\b[^>]*(?:class|id)=["'][^"']*(?:document[_-]?title|section[_-]?title|entry[_-]?title|page[_-]?title|breadcrumb)[^"']*["'][^>]*>([\s\S]*?)<\/(?:div|span|p|li|nav|a)>/gi;
+
+/** A heading-like marker: its byte offset and PV/ODJ/neutral classification. */
+interface HeadingMarker {
+  readonly index: number;
+  readonly kind: "pv" | "odj" | "neutral";
+}
+
+function classifyHeadingText(text: string): HeadingMarker["kind"] {
+  // ODJ is checked first: an "ordre du jour" heading disqualifies, even if it
+  // also happens to contain a PV word ("Ordres du jour et procès-verbaux").
+  if (ODJ_HEADING_CONTEXT_RE.test(text)) return "odj";
+  if (PV_HEADING_CONTEXT_RE.test(text)) return "pv";
+  return "neutral";
+}
+
+/**
+ * Scan the raw HTML for heading-like markers and return the resolved document
+ * URLs whose NEAREST PRECEDING heading is a procès-verbal / séance context (and
+ * not an ordre-du-jour / avis heading).
+ *
+ * This widens the date-only PV gate (used by `pvEntriesFromItems` and the
+ * live-host re-classifier): a bare-date PDF that a municipal page lists under a
+ * « Procès-verbaux » / « Séances du conseil » heading is a genuine PV even when
+ * the page URL carries no PV keyword (albanel `/documents`, saint-félix
+ * `/pv2024`).
+ *
+ * Guardrails (anti-invention):
+ *   - The nearest preceding marker governs the anchor (same section/container).
+ *     A closer neutral OR ordre-du-jour heading shadows a PV heading further up,
+ *     so the URL is NOT returned — the PV heading must actually head the link.
+ *   - The governing PV heading must be within `HEADING_CONTEXT_MAX_DISTANCE`.
+ *   - Callers still require a valid séance date, drop ODJ/avis labels, and
+ *     HEAD/GET-verify a live 200 application/pdf before any deposit.
+ *
+ * Pure + side-effect-free; never throws.
+ */
+export function pvHeadingContextUrls(html: string, baseUrl: string): Set<string> {
+  const urls = new Set<string>();
+
+  // 1. Collect classified heading markers in document order.
+  const markers: HeadingMarker[] = [];
+  for (const m of html.matchAll(new RegExp(HEADING_MARKER_RE.source, "gi"))) {
+    const text = stripTags(m[2] ?? m[3] ?? "");
+    if (!text) continue;
+    markers.push({ index: m.index ?? 0, kind: classifyHeadingText(text) });
+  }
+  markers.sort((a, b) => a.index - b.index);
+  if (!markers.some((mk) => mk.kind === "pv")) return urls;
+
+  // 2. Keep each document anchor whose nearest preceding marker is a PV context
+  //    within the proximity bound. `resolveHref`/`effectiveBase` mirror
+  //    `parsePvIndex` so the returned URLs match the parsed item URLs exactly.
+  const base = effectiveBase(html, baseUrl);
+  const anchorRe = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
+  for (const m of html.matchAll(anchorRe)) {
+    const idx = m.index ?? 0;
+    const href = (m[1] ?? "").match(/(?:^|\s)href=["']([^"']+)["']/i)?.[1];
+    if (!href) continue;
+    const url = resolveHref(href, base);
+    if (!url) continue;
+    let governing: HeadingMarker | undefined;
+    for (const mk of markers) {
+      if (mk.index >= idx) break;
+      governing = mk;
+    }
+    if (!governing || governing.kind !== "pv") continue;
+    if (idx - governing.index > HEADING_CONTEXT_MAX_DISTANCE) continue;
+    urls.add(url);
+  }
+  return urls;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Render-mode detection (obscura routing)
 // ─────────────────────────────────────────────────────────────────────────────
 
