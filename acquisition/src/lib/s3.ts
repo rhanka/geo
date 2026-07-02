@@ -15,6 +15,7 @@ import {
   HeadObjectCommand,
   PutObjectCommand,
   CopyObjectCommand,
+  DeleteObjectCommand,
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 
@@ -129,6 +130,15 @@ export async function putBytes(
       ...(contentType ? { ContentType: contentType } : {}),
     }),
   );
+}
+
+/** Delete a single object (idempotent — S3 delete of a missing key is a no-op). */
+export async function deleteObject(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
 }
 
 /** Server-side copy (used for the non-destructive *-preclip backups). */

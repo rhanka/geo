@@ -105,7 +105,7 @@ const LAYERS: Layer[] = [
     // (Grand Montréal + région de Québec), N/A ailleurs. Dépôt: 1 geojson/muni.
     field: "tod",
     prefix: "normalized/qc-tod/",
-    pick: (k) => k.match(/qc-tod\/([^/]+)\.geojson$/)?.[1] ?? null,
+    pick: (k) => k.match(/qc-tod\/qc-tod-([^/]+)\.geojson$/)?.[1] ?? null,
     track: (s) => `qc-tod-${s}`,
   },
 ];
