@@ -56,7 +56,12 @@ import {
   type MultiZoneRawExtraction,
 } from "../../packages/qc-sources/src/sources/grille-vision-multizone.js";
 import { isMultiZoneHorizontalPage } from "../../packages/qc-sources/src/sources/grille-pdf-classifier.js";
-import { extractGrilleOcrFromPdf } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
+import {
+  extractGrilleOcrFromPdf,
+  parseZoneHeader,
+  isNumberedGrilleSpec,
+  parseNumberedGrilleNativePage,
+} from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 
 import { s3Client } from "./lib/s3.js";
 import { resolveOcrCall } from "./lib/ocr.js";
@@ -559,44 +564,86 @@ async function main(): Promise<void> {
     // Budget guard: trim the page set so estimated cost stays within --budget-usd.
     const maxByBudget =
       ocr.costPerPage > 0 ? Math.max(1, Math.floor(args.budgetUsd / ocr.costPerPage)) : last - first + 1;
-    const pages: number[] = [];
-    for (let p = first; p <= last && pages.length < maxByBudget; p++) pages.push(p);
+    const allPages: number[] = [];
+    for (let p = first; p <= last && allPages.length < maxByBudget; p++) allPages.push(p);
+    const byZone = new Map<string, ZoneNormsT>();
+    const mergeZone = (zn: ZoneNormsT): void => {
+      // Merge by zone_code, preferring the row that carries more published norm
+      // values (a zone can span a USAGES + a NORMES feuillet, or 2 pages). Anti-
+      // invention: never overwrite a value with null.
+      const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
+      const prev = byZone.get(key);
+      if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+    };
+
+    // ── NATIVE-TEXT-FIRST ($0, deterministic) ──────────────────────────────────
+    // Single-zone "grille des spécifications" (Nicolet-family) grilles are usually
+    // NATIVE TEXT: a "ZONE: <code>" header + the numbered NORMES-PRESCRITES matrix.
+    // Parse them straight from `pdftotext -layout` (no LLM, exact code + values) and
+    // OCR ONLY the pages the native path could not read (image-only scans). This
+    // also dodges the OCR pitfalls: mistral-ocr misreads a serif "I" prefix as "1"
+    // ("I01-132"→"101-132", matching no SIG code) and can read row LABELS as codes.
+    const ocrPages: number[] = [];
+    let nativeZones = 0;
+    for (const p of allPages) {
+      const t = pageTexts[p - 1] ?? "";
+      if (parseZoneHeader(t) && isNumberedGrilleSpec(t)) {
+        const zs = parseNumberedGrilleNativePage(t, p, {
+          source_url: args.sourceUrl,
+          snapshot: args.snapshot,
+          methode: "native-text/grille-spec",
+        });
+        if (zs.length > 0 && publishedCount(zs[0]!) > 0) {
+          mergeZone(zs[0]!);
+          nativeZones++;
+          continue;
+        }
+      }
+      ocrPages.push(p); // native path did not apply / found no values → OCR fallback
+    }
+
+    // ── OCR fallback for the remaining pages (transposed grids / scans) ─────────
+    const zoneCodes = ocrPages.map((p) => parseZoneHeader(pageTexts[p - 1] ?? "") ?? undefined);
     console.error(
       `[ocr] provider=${ocr.config.provider} model=${ocr.config.model} ` +
-        `pdf pages=${pageCount} range=${first}..${last} pages=${pages.length} ` +
-        `budget=$${args.budgetUsd} ~$${(pages.length * ocr.costPerPage).toFixed(4)}`,
+        `pdf pages=${pageCount} range=${first}..${last} nativeZones=${nativeZones} ` +
+        `ocrPages=${ocrPages.length} budget=$${args.budgetUsd} ` +
+        `~$${(ocrPages.length * ocr.costPerPage).toFixed(4)}`,
     );
-    visionPagesAttempted = pages.length;
-    const byZone = new Map<string, ZoneNormsT>();
-    try {
-      const res = await extractGrilleOcrFromPdf(args.pdf, pages, {
-        source_url: args.sourceUrl,
-        snapshot: args.snapshot,
-        methode: ocr.methode,
-        ocr: ocr.call,
-        costPerPage: ocr.costPerPage,
-      });
-      visionUsd = res.usd;
-      // Merge by zone_code, preferring the row that carries more published norm
-      // values (a zone family can span a USAGES + a NORMES feuillet). Anti-
-      // invention: never overwrite a value with null.
-      for (const zn of res.zones) {
-        const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
-        const prev = byZone.get(key);
-        if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+    visionPagesAttempted = ocrPages.length;
+    if (ocrPages.length > 0) {
+      try {
+        const res = await extractGrilleOcrFromPdf(args.pdf, ocrPages, {
+          source_url: args.sourceUrl,
+          snapshot: args.snapshot,
+          methode: ocr.methode,
+          ocr: ocr.call,
+          costPerPage: ocr.costPerPage,
+          zoneCodes,
+        });
+        visionUsd = res.usd;
+        for (const zn of res.zones) mergeZone(zn);
+        console.error(
+          `[ocr] pagesBilled=${res.pagesProcessed} usd=$${res.usd.toFixed(4)} ` +
+            `latency=${res.latencyMs}ms`,
+        );
+      } catch (e) {
+        visionPagesFailed = ocrPages.length;
+        const msg = e instanceof Error ? e.message : String(e);
+        console.error(`[ocr] FAILED: ${msg.slice(0, 200)}`);
       }
-      console.error(
-        `[ocr] pagesBilled=${res.pagesProcessed} zones=${byZone.size} ` +
-          `usd=$${res.usd.toFixed(4)} latency=${res.latencyMs}ms`,
-      );
-    } catch (e) {
-      visionPagesFailed = pages.length;
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error(`[ocr] FAILED: ${msg.slice(0, 200)}`);
     }
     zones = [...byZone.values()];
+    // Deposit-level provenance tag: native-only ($0), OCR-only, or hybrid. Per-field
+    // provenance already records the exact method that read each value.
+    methode =
+      nativeZones > 0 && ocrPages.length === 0
+        ? "native-text/grille-spec"
+        : nativeZones > 0
+          ? `native-text/grille-spec+${ocr.methode}`
+          : ocr.methode;
     console.error(
-      `[ocr] zones=${zones.length} attempted=${visionPagesAttempted} failed=${visionPagesFailed} estUsd=$${visionUsd.toFixed(4)}`,
+      `[ocr] zones=${zones.length} nativeZones=${nativeZones} attempted=${visionPagesAttempted} failed=${visionPagesFailed} estUsd=$${visionUsd.toFixed(4)}`,
     );
   } else if (decision.route === "multizone") {
     if (!process.env["MISTRAL_API_KEY"]) {
