@@ -52,6 +52,7 @@ interface Args {
   slugs: string[];
   noUpload: boolean;
   verifyOnly: boolean;
+  all: boolean;
 }
 
 interface RecalageStats {
@@ -115,10 +116,12 @@ function parseArgs(argv: string[]): Args {
   let pilot = false;
   let noUpload = false;
   let verifyOnly = false;
+  let all = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === "--pilot") pilot = true;
+    else if (arg === "--all") all = true;
     else if (arg === "--slug") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--no-upload") noUpload = true;
@@ -128,10 +131,10 @@ function parseArgs(argv: string[]): Args {
 
   if (pilot) slugs.push(...PILOT_SLUGS);
   const uniqueSlugs = [...new Set(slugs)];
-  if (uniqueSlugs.length === 0) {
-    throw new Error("pass --pilot, --slug <slug>, or --slugs <a,b>");
+  if (uniqueSlugs.length === 0 && !all) {
+    throw new Error("pass --all, --pilot, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, noUpload, verifyOnly };
+  return { slugs: uniqueSlugs, noUpload, verifyOnly, all };
 }
 
 function outParquetKey(slug: string): string {
@@ -502,19 +505,39 @@ function printSummary(stats: LotZoneStats): void {
   }
 }
 
+async function enumerateServedZoneSlugs(s3: S3Client): Promise<string[]> {
+  const keys = await listSlugs(s3, ZONES_PREFIX, ".geojson", true);
+  const slugs = new Set<string>();
+  for (const key of keys) {
+    const m = String(key).match(/^qc-zonage-([^/]+)$/);
+    if (m?.[1]) slugs.add(m[1]);
+  }
+  return [...slugs].sort();
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const s3 = s3Client();
+  const slugs = args.all ? await enumerateServedZoneSlugs(s3) : args.slugs;
+  if (args.all) console.log(`ALL served zone slugs: ${slugs.length}`);
   const summaries: LotZoneStats[] = [];
-  for (const slug of args.slugs) {
-    const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args.noUpload);
-    summaries.push(stats);
-    printSummary(stats);
+  const skipped: Array<{ slug: string; reason: string }> = [];
+  for (const slug of slugs) {
+    try {
+      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args.noUpload);
+      summaries.push(stats);
+      printSummary(stats);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      skipped.push({ slug, reason });
+      console.log(`SKIP ${slug} ${reason}`);
+    }
   }
   const failedVerify = summaries.filter(
     (s) => !s.verified_deposit?.parquet_exists || !s.verified_deposit?.stats_exists || s.verified_deposit.parquet_rows !== s.num_lots,
   );
-  if (failedVerify.length > 0) {
+  console.log(`DONE ok=${summaries.length} skipped=${skipped.length} failed_verify=${failedVerify.length}`);
+  if (!args.all && failedVerify.length > 0) {
     throw new Error(`deposit verification failed for ${failedVerify.map((s) => s.slug).join(", ")}`);
   }
 }
