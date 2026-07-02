@@ -89,6 +89,31 @@ describe("t1-labels zone-code parser", () => {
     expect(got).toEqual(["H-511-E", "H-530-A"]);
   });
 
+  it("rejects pure-numeric labels by default (anti-#74)", () => {
+    const got = codes([
+      word("100", 100, 100, 140, 116, 1, 1),
+      word("515", 200, 100, 240, 116, 2, 2),
+      word("H-101", 300, 100, 340, 116, 3, 3),
+    ]);
+    // numerics dropped; only the lettered code survives
+    expect(got).toEqual(["H-101"]);
+  });
+
+  it("admits dict-backed pure-numeric labels under the numeric relaxation", () => {
+    const numericDict = new Set(["100", "515", "300"]);
+    const got = codes(
+      [
+        word("100", 100, 100, 140, 116, 1, 1),
+        word("515", 200, 100, 240, 116, 2, 2),
+        word("999", 300, 100, 340, 116, 3, 3), // NOT in dict → dropped
+        word("H-101", 400, 100, 440, 116, 4, 4),
+      ],
+      { numericDict },
+    );
+    expect(got.sort()).toEqual(["100", "515", "H-101"]);
+    expect(got).not.toContain("999");
+  });
+
   it("masks Saint-Lambert title-box revision pseudo-codes", () => {
     const revisionRows = Array.from({ length: 12 }, (_, i) =>
       word(`V${i + 1}`, 520, 235 + i * 12, 535, 247 + i * 12, 1, i + 1),
