@@ -13,7 +13,7 @@
  */
 import { describe, it, expect } from "vitest";
 
-import { decomposeGcpAffine, evaluateAffineGate } from "./t2-autogcp.js";
+import { decomposeGcpAffine, decomposeGcpSimilarity, evaluateAffineGate } from "./t2-autogcp.js";
 import type { Gcp } from "./t2-georef.js";
 
 const PAGE_W = 3370;
@@ -142,6 +142,64 @@ describe("evaluateAffineGate", () => {
   });
 });
 
+describe("decomposeGcpSimilarity (Umeyama/Procrustes 2D fit)", () => {
+  it("recovers scale + rotation of a pure north-up similarity, anisotropy exactly 1", () => {
+    const d = decomposeGcpSimilarity(sampleGcps({ scaleRightM: 6, scaleUpM: 6, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+    expect(d).not.toBeNull();
+    expect(d.anisotropy).toBe(1); // isotropic BY CONSTRUCTION
+    expect(d.singularRatio).toBe(1);
+    expect(d.shearDeg).toBe(0);
+    expect(d.mirror).toBe(false);
+    expect(d.scaleRightM).toBeCloseTo(6, 1);
+    expect(d.bearingRightDeg).toBeCloseTo(0, 1);
+    expect(d.bearingDownDeg).toBeCloseTo(-90, 1);
+  });
+
+  it("recovers an arbitrary rotation of a pure similarity", () => {
+    const d = decomposeGcpSimilarity(sampleGcps({ scaleRightM: 5, scaleUpM: 5, bearingRightDeg: 30 }), PAGE_W, PAGE_H)!;
+    expect(d.bearingRightDeg).toBeCloseTo(30, 1);
+    expect(d.anisotropy).toBe(1);
+    expect(d.mirror).toBe(false);
+  });
+
+  it("NEVER reports a reflection: a mirrored sample still decomposes to det>0 (no reflection representable)", () => {
+    // A similarity has 4 DOF and cannot encode a reflection; the closed-form
+    // solution always yields a PROPER rotation (det(R)=+1). This is the mission's
+    // structural anti-mirror guarantee (vs the affine path, which must gate det<0).
+    const affine = decomposeGcpAffine(sampleGcps({ scaleRightM: 6, scaleUpM: 6, bearingRightDeg: 0, mirror: true }), PAGE_W, PAGE_H)!;
+    expect(affine.mirror).toBe(true); // affine SEES the reflection
+    const sim = decomposeGcpSimilarity(sampleGcps({ scaleRightM: 6, scaleUpM: 6, bearingRightDeg: 0, mirror: true }), PAGE_W, PAGE_H)!;
+    expect(sim.mirror).toBe(false); // similarity cannot represent it
+    expect(sim.determinant).toBeGreaterThan(0);
+  });
+
+  it("is isotropic even on genuinely anisotropic data (the residual gate, not the decomposition, must reject that)", () => {
+    // scaleRight 3 vs scaleUp 7: the AFFINE decomposition trips the iso-gate…
+    const aff = decomposeGcpAffine(sampleGcps({ scaleRightM: 3, scaleUpM: 7, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+    expect(evaluateAffineGate(aff).pass).toBe(false);
+    expect(evaluateAffineGate(aff).reasons.join(" ")).toMatch(/anisotropy/);
+    // …while the SIMILARITY decomposition is isotropic by construction and would
+    // clear the iso/orientation gate — it is the SEPARATE similarity-residual
+    // gate (measured in deriveAutonomousGcps) that keeps such a stretch honest.
+    const sim = decomposeGcpSimilarity(sampleGcps({ scaleRightM: 3, scaleUpM: 7, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+    expect(sim.anisotropy).toBe(1);
+    expect(evaluateAffineGate(sim).pass).toBe(true);
+  });
+
+  it("REJECTS a 180°-flipped similarity on orientation (isometric, non-mirror, wrong bearing)", () => {
+    const d = decomposeGcpSimilarity(sampleGcps({ scaleRightM: 6, scaleUpM: 6, bearingRightDeg: 180 }), PAGE_W, PAGE_H)!;
+    expect(d.mirror).toBe(false);
+    expect(d.anisotropy).toBe(1);
+    const g = evaluateAffineGate(d);
+    expect(g.pass).toBe(false);
+    expect(g.reasons.join(" ")).toMatch(/orientation not north-up/);
+  });
+
+  it("returns null for too few points", () => {
+    expect(decomposeGcpSimilarity([{ fx: 0.1, fy: 0.1, lon: LON0, lat: LAT0 }], PAGE_W, PAGE_H)).toBeNull();
+  });
+});
+
 // PROVEN-correct served control points for coteau-du-lac (work/gcp/
 // coteau-du-lac.autogcp.json) — the reference "servi correct" plan. Columns:
 // [fx, fy, lon, lat]. Must clear the gate: near-isometric, north-up, non-mirror.
@@ -188,5 +246,14 @@ describe("evaluateAffineGate — coteau-du-lac reference (servi correct)", () =>
   it("PASSES the gate (must not reject a proven-correct served plan)", () => {
     const g = evaluateAffineGate(decomposeGcpAffine(gcps, COTEAU_PAGE_W, COTEAU_PAGE_H)!);
     expect(g.pass).toBe(true);
+  });
+
+  it("similarity decomposition is also north-up, non-mirror and PASSES the gate", () => {
+    const d = decomposeGcpSimilarity(gcps, COTEAU_PAGE_W, COTEAU_PAGE_H)!;
+    expect(d.mirror).toBe(false);
+    expect(d.anisotropy).toBe(1);
+    expect(Math.abs(d.bearingRightDeg)).toBeLessThan(5); // ≈0° East
+    expect(Math.abs(d.bearingDownDeg + 90)).toBeLessThan(5); // ≈-90° South
+    expect(evaluateAffineGate(d).pass).toBe(true);
   });
 });
