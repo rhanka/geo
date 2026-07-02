@@ -140,6 +140,52 @@ describe("evaluateAffineGate", () => {
     expect(g.pass).toBe(false);
     expect(g.reasons.join(" ")).toMatch(/orientation not north-up/);
   });
+
+  it("does NOT flag anisoArbitrate by default (legacy: empty band)", () => {
+    // aniso 7/3 ≈ 2.33, north-up: reject with no hardAnisotropy → not arbitrable.
+    const g = evaluateAffineGate(
+      decomposeGcpAffine(sampleGcps({ scaleRightM: 3, scaleUpM: 7, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!,
+    );
+    expect(g.pass).toBe(false);
+    expect(g.anisoArbitrate).toBe(false);
+  });
+});
+
+describe("evaluateAffineGate — moderate-anisotropy arbitration band (arundel lever)", () => {
+  it("FLAGS anisoArbitrate for a north-up, non-mirror fit with aniso in (max, hard] (arundel ≈1.2)", () => {
+    // scaleRight 6 vs scaleUp 7.2 → aniso 1.2: still pass:false (not clean) but
+    // arbitrable, because it is north-up, non-mirror and within the 1.5 band.
+    const d = decomposeGcpAffine(sampleGcps({ scaleRightM: 6, scaleUpM: 7.2, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+    expect(d.anisotropy).toBeCloseTo(1.2, 1);
+    const g = evaluateAffineGate(d, { hardAnisotropy: 1.5 });
+    expect(g.pass).toBe(false); // never clean on geometry alone
+    expect(g.anisoArbitrate).toBe(true);
+  });
+
+  it("HARD-rejects (not arbitrable) anisotropy above the band (saint-cesaire 2.6 / sainte-brigide 2.3)", () => {
+    for (const aniso of [2.3, 2.6, 2.9]) {
+      const d = decomposeGcpAffine(sampleGcps({ scaleRightM: 6, scaleUpM: 6 * aniso, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+      const g = evaluateAffineGate(d, { hardAnisotropy: 1.5 });
+      expect(g.pass).toBe(false);
+      expect(g.anisoArbitrate).toBe(false); // above 1.5 → never re-opened by lot-coverage
+    }
+  });
+
+  it("does NOT flag arbitrate for a moderate-aniso but WRONG-orientation fit (orientation stays hard)", () => {
+    // aniso 1.3 but 180°-flipped: orientation is a hard reject, so NOT arbitrable.
+    const d = decomposeGcpAffine(sampleGcps({ scaleRightM: 6, scaleUpM: 7.8, bearingRightDeg: 180 }), PAGE_W, PAGE_H)!;
+    const g = evaluateAffineGate(d, { hardAnisotropy: 1.5 });
+    expect(g.pass).toBe(false);
+    expect(g.anisoArbitrate).toBe(false);
+    expect(g.reasons.join(" ")).toMatch(/orientation not north-up/);
+  });
+
+  it("does NOT flag arbitrate for a clean isotropic fit (aniso ≤ max → no arbitration needed)", () => {
+    const d = decomposeGcpAffine(sampleGcps({ scaleRightM: 6, scaleUpM: 6, bearingRightDeg: 0 }), PAGE_W, PAGE_H)!;
+    const g = evaluateAffineGate(d, { hardAnisotropy: 1.5 });
+    expect(g.pass).toBe(true);
+    expect(g.anisoArbitrate).toBe(false);
+  });
 });
 
 describe("decomposeGcpSimilarity (Umeyama/Procrustes 2D fit)", () => {

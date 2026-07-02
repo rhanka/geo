@@ -893,6 +893,18 @@ export interface AutoSeedOptions {
    * `minGcps` to be SERVED. Default min(6, minGcps).
    */
   ambiguityMinGcps?: number;
+  /**
+   * Re-open the MODERATE-anisotropy band `(maxAnisotropy, anisoArbitrateMaxAnisotropy]`
+   * for lot-coverage arbitration instead of hard-rejecting it. A partial-extent /
+   * CAD-stretched sheet (arundel) whose honest affine is legitimately anisotropic
+   * (~1.2) yet non-mirror + north-up is surfaced as `aniso_arbitrate_candidates`
+   * (never served here); a downstream tight lot-coverage check confirms the
+   * stretch is REAL before serving. Off by default (legacy hard iso-gate).
+   * Anisotropy above the band max stays a hard reject (big stretch = suspect).
+   */
+  anisoLotArbitrate?: boolean;
+  /** Upper anisotropy bound of the arbitration band (hard reject above). Default 1.5. */
+  anisoArbitrateMaxAnisotropy?: number;
 }
 
 export interface AutoSeedAttempt {
@@ -960,6 +972,13 @@ export interface AutoSeedReport {
   gcp_file?: GcpFile;
   /** Present only on an orientation-ambiguity reject: candidates to disambiguate. */
   orientation_candidates?: OrientationCandidate[];
+  /**
+   * Present only when `anisoLotArbitrate` re-opened a MODERATE-anisotropy reject:
+   * non-mirror, north-up fits whose anisotropy is in the arbitration band
+   * `(maxAnisotropy, anisoArbitrateMaxAnisotropy]`, to be CONFIRMED (or skipped)
+   * by tight lot-coverage. Emitted only when no clean isotropic winner exists.
+   */
+  aniso_arbitrate_candidates?: OrientationCandidate[];
 }
 
 /** WGS84 bbox [lonMin, latMin, lonMax, latMax] of the cadastre lots. */
@@ -1155,19 +1174,40 @@ export interface AffineGateOptions {
   orientationToleranceDeg?: number;
   /** Reject when the page axes are non-orthogonal by more than this (deg). */
   maxShearDeg?: number;
+  /**
+   * Anisotropy at/above which stretch is a HARD reject (big stretch = suspect,
+   * e.g. saint-cesaire 2.6, sainte-brigide 2.3). Anisotropy in the MODERATE band
+   * `(maxAnisotropy, hardAnisotropy]` is NOT clean but is not hard-rejected
+   * either: it is flagged `anisoArbitrate` so the caller can confirm the stretch
+   * is REAL via tight lot-coverage before serving (arundel ≈1.2). Defaults to
+   * `maxAnisotropy` — i.e. no band, legacy behaviour (aniso > maxAnisotropy hard).
+   */
+  hardAnisotropy?: number;
 }
 
 export interface AffineGateResult {
   pass: boolean;
   reasons: string[];
   decomposition: AffineDecomposition;
+  /**
+   * true when the fit clears every HARD criterion (non-mirror, non-shear,
+   * north-up, anisotropy ≤ hardAnisotropy) and the ONLY thing keeping it from a
+   * clean pass is a MODERATE anisotropy in `(maxAnisotropy, hardAnisotropy]`.
+   * Such a fit must be confirmed by tight lot-coverage before serving; it is
+   * never served on geometry alone. Always false when hardAnisotropy is unset.
+   */
+  anisoArbitrate: boolean;
 }
 
 export const DEFAULT_AFFINE_GATE: Required<AffineGateOptions> = {
   maxAnisotropy: 1.1,
   orientationToleranceDeg: 15,
   maxShearDeg: 10,
+  hardAnisotropy: 1.1,
 };
+
+/** Default upper anisotropy bound of the lot-arbitration band (hard reject above). */
+export const DEFAULT_ANISO_ARBITRATE_MAX_ANISOTROPY = 1.5;
 
 function normalizeDeg(deg: number): number {
   let d = deg % 360;
@@ -1301,6 +1341,10 @@ export function decomposeGcpSimilarity(gcps: Gcp[], pageW: number, pageH: number
  */
 export function evaluateAffineGate(decomp: AffineDecomposition, options: AffineGateOptions = {}): AffineGateResult {
   const o = { ...DEFAULT_AFFINE_GATE, ...options };
+  // Hard-reject anisotropy threshold: at/above it, stretch is refused outright.
+  // Between o.maxAnisotropy (clean floor) and here is the arbitration band. When
+  // no hardAnisotropy was supplied it equals maxAnisotropy → band is empty.
+  const hardAniso = Math.max(o.maxAnisotropy, o.hardAnisotropy);
   const reasons: string[] = [];
   if (decomp.mirror) reasons.push(`mirror/reflection (det=${decomp.determinant.toFixed(2)} < 0)`);
   if (decomp.anisotropy > o.maxAnisotropy) {
@@ -1309,18 +1353,27 @@ export function evaluateAffineGate(decomp: AffineDecomposition, options: AffineG
   if (decomp.singularRatio > o.maxAnisotropy) {
     reasons.push(`singular-value anisotropy ${decomp.singularRatio.toFixed(3)} > ${o.maxAnisotropy}`);
   }
-  if (decomp.shearDeg > o.maxShearDeg) {
+  const shearOff = decomp.shearDeg > o.maxShearDeg;
+  if (shearOff) {
     reasons.push(`sheared axes ${decomp.shearDeg.toFixed(1)}° from orthogonal > ${o.maxShearDeg}°`);
   }
   const rightOff = angularDistDeg(decomp.bearingRightDeg, 0); // East
   const downOff = angularDistDeg(decomp.bearingDownDeg, -90); // South
-  if (rightOff > o.orientationToleranceDeg || downOff > o.orientationToleranceDeg) {
+  const orientationOff = rightOff > o.orientationToleranceDeg || downOff > o.orientationToleranceDeg;
+  if (orientationOff) {
     reasons.push(
       `orientation not north-up: page-right ${decomp.bearingRightDeg.toFixed(1)}° (Δ${rightOff.toFixed(1)}° from East), ` +
         `page-down ${decomp.bearingDownDeg.toFixed(1)}° (Δ${downOff.toFixed(1)}° from South), tol ${o.orientationToleranceDeg}°`,
     );
   }
-  return { pass: reasons.length === 0, reasons, decomposition: decomp };
+  // Moderate-anisotropy arbitration band: mirror/shear/orientation all clean and
+  // the sole blemish is a scale/singular anisotropy in (maxAnisotropy, hardAniso].
+  // Anisotropy above hardAniso is a hard reject (never arbitrable). Empty band
+  // (hardAniso == maxAnisotropy) ⇒ always false — no behavioural change.
+  const anisoMetric = Math.max(decomp.anisotropy, decomp.singularRatio);
+  const anisoArbitrate =
+    !decomp.mirror && !shearOff && !orientationOff && anisoMetric > o.maxAnisotropy && anisoMetric <= hardAniso;
+  return { pass: reasons.length === 0, reasons, decomposition: decomp, anisoArbitrate };
 }
 
 export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSeedReport> {
@@ -1354,10 +1407,15 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     full: drawnExtentFull(allPoints, opts.pageW, opts.pageH),
   };
 
+  // Moderate-aniso arbitration band upper bound (only meaningful when enabled).
+  const anisoArbitrateMax = opts.anisoArbitrateMaxAnisotropy ?? DEFAULT_ANISO_ARBITRATE_MAX_ANISOTROPY;
   const affineGateOpts: AffineGateOptions = {
     ...(opts.maxAnisotropy !== undefined ? { maxAnisotropy: opts.maxAnisotropy } : {}),
     ...(opts.orientationToleranceDeg !== undefined ? { orientationToleranceDeg: opts.orientationToleranceDeg } : {}),
     ...(opts.maxShearDeg !== undefined ? { maxShearDeg: opts.maxShearDeg } : {}),
+    // Raising the HARD-reject threshold opens the arbitration band; it does NOT
+    // relax `pass` (a band fit is still pass:false), only the `anisoArbitrate` flag.
+    ...(opts.anisoLotArbitrate ? { hardAnisotropy: anisoArbitrateMax } : {}),
   };
 
   const maxAniso = affineGateOpts.maxAnisotropy ?? DEFAULT_AFFINE_GATE.maxAnisotropy;
@@ -1369,6 +1427,11 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
   // wrong bearing here is exactly what lot-assignment resolves. NOT constrained
   // to north-up (that is what makes a genuinely rotated true plan recoverable).
   const servable: OrientationCandidate[] = [];
+  // Servable (≥minGcps), non-mirror, north-up fits whose ONLY blemish is a
+  // MODERATE anisotropy in (maxAniso, anisoArbitrateMax] — the "real stretch?"
+  // band. Surfaced (when anisoLotArbitrate is on) for tight lot-coverage
+  // confirmation. Empty unless the feature is enabled.
+  const anisoArbitrable: OrientationCandidate[] = [];
 
   for (const [extentName, extent] of Object.entries(extents)) {
     if (!extent) continue;
@@ -1437,6 +1500,20 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
           // arbitrates when the orientation gate cannot.
           if (isometric && report.selected_gcps >= minGcps && report.gcp_file) {
             servable.push({
+              extent: extentName,
+              rotation: rot * 90,
+              bearing_right_deg: Number(decomp.bearingRightDeg.toFixed(1)),
+              selected_gcps: report.selected_gcps,
+              residual_max_m: report.residual_max_m,
+              holdout_max_m: report.holdout_max_m,
+              gcp_file: report.gcp_file,
+            });
+          }
+          // Moderate-aniso arbitration candidate (feature-gated): the gate cleared
+          // every hard check but anisotropy sits in the band. It is NOT served on
+          // geometry — tight lot-coverage decides whether the stretch is real.
+          if (opts.anisoLotArbitrate && gate.anisoArbitrate && report.selected_gcps >= minGcps && report.gcp_file) {
+            anisoArbitrable.push({
               extent: extentName,
               rotation: rot * 90,
               bearing_right_deg: Number(decomp.bearingRightDeg.toFixed(1)),
@@ -1521,6 +1598,16 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     }
   }
 
+  // Moderate-anisotropy arbitration set: only when no clean isotropic winner
+  // emerged (a genuinely stretched sheet has NO isotropic fit) and the feature
+  // is on. Best-residual first; the caller confirms via tight lot-coverage.
+  let anisoArbitrateCandidates: OrientationCandidate[] | undefined;
+  if (!best && opts.anisoLotArbitrate && anisoArbitrable.length >= 1) {
+    anisoArbitrateCandidates = [...anisoArbitrable].sort(
+      (a, b) => (a.residual_max_m ?? Infinity) - (b.residual_max_m ?? Infinity),
+    );
+  }
+
   const anyResidualPass = attempts.some((a) => a.pass);
   let reason: string | undefined;
   if (!best) {
@@ -1553,5 +1640,6 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     ...(best ? { affine_gate: best.gate } : {}),
     ...(best && best.report.gcp_file ? { gcp_file: best.report.gcp_file } : {}),
     ...(orientationCandidates ? { orientation_candidates: orientationCandidates } : {}),
+    ...(anisoArbitrateCandidates ? { aniso_arbitrate_candidates: anisoArbitrateCandidates } : {}),
   };
 }

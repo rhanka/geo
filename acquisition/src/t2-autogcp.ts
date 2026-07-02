@@ -13,7 +13,12 @@ import type { FeatureCollection } from "geojson";
 
 import { getBytes, s3Client } from "./lib/s3.js";
 import { deriveAutoSeedGcps, deriveAutonomousGcps, type FitMode } from "./lib/t2-autogcp.js";
-import { decideRotation, measureRotationLotAssignment, type MeasuredRotation } from "./lib/t2-rotation-disambig.js";
+import {
+  decideAnisoArbitration,
+  decideRotation,
+  measureRotationLotAssignment,
+  type MeasuredRotation,
+} from "./lib/t2-rotation-disambig.js";
 import type { GcpFile } from "./lib/t2-georef.js";
 
 interface Args {
@@ -37,6 +42,14 @@ interface Args {
   disambigCutoffM: number;
   disambigCoverageFloor: number;
   disambigMarginPct: number;
+  /** When set, re-open the MODERATE-anisotropy iso-gate reject via lot-coverage confirmation. */
+  anisoLotArbitrate: boolean;
+  /** Upper anisotropy bound of the arbitration band (hard reject above). Default 1.5. */
+  anisoArbitrateMax: number;
+  /** Serving-cutoff (1500 m) lot-coverage (%) floor to confirm the stretch is real. Default 85. */
+  anisoServingCoverageFloor: number;
+  /** Distinct lettered codes floor for an arbitrated fit. Default 3. */
+  anisoMinDistinctCodes: number;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -81,6 +94,10 @@ function parseArgs(argv: string[]): Args {
     disambigCutoffM: a["disambig-cutoff-m"] ? Number(a["disambig-cutoff-m"]) : 300,
     disambigCoverageFloor: a["disambig-coverage-floor"] ? Number(a["disambig-coverage-floor"]) : 70,
     disambigMarginPct: a["disambig-margin-pct"] ? Number(a["disambig-margin-pct"]) : 15,
+    anisoLotArbitrate: Boolean(a["aniso-lot-arbitrate"]),
+    anisoArbitrateMax: a["aniso-arbitrate-max"] ? Number(a["aniso-arbitrate-max"]) : 1.5,
+    anisoServingCoverageFloor: a["aniso-serving-coverage-floor"] ? Number(a["aniso-serving-coverage-floor"]) : 85,
+    anisoMinDistinctCodes: a["aniso-min-distinct-codes"] ? Number(a["aniso-min-distinct-codes"]) : 3,
   };
 }
 
@@ -122,12 +139,16 @@ async function main(): Promise<void> {
       minGcps: args.minGcps,
       maxGcps: args.maxGcps,
       fit: args.fit,
+      ...(args.anisoLotArbitrate
+        ? { anisoLotArbitrate: true, anisoArbitrateMaxAnisotropy: args.anisoArbitrateMax }
+        : {}),
     });
 
     // Winning GCP file (either the direct auto-seed winner, or the rotation the
     // lot-assignment disambiguator decisively selects on an orientation-only reject).
     let winnerGcp: GcpFile | undefined = report.gcp_file;
     let disambiguation: unknown;
+    let anisoArbitration: unknown;
 
     if (
       !report.pass &&
@@ -185,7 +206,66 @@ async function main(): Promise<void> {
       }
     }
 
-    const outReport = { ...report, rotation_disambiguation: disambiguation };
+    // Moderate-anisotropy arbitration: a partial-extent / CAD-stretched sheet
+    // (arundel ≈1.2) whose honest affine is legitimately anisotropic is served
+    // ONLY if the cadastre confirms the stretch is real (tight lot-coverage ≥
+    // floor). Anisotropy above the band (saint-cesaire 2.6, sainte-brigide 2.3)
+    // never reaches here — it is hard-rejected upstream.
+    if (
+      !report.pass &&
+      args.anisoLotArbitrate &&
+      report.aniso_arbitrate_candidates &&
+      report.aniso_arbitrate_candidates.length >= 1
+    ) {
+      console.error(
+        `[t2-autogcp] moderate-anisotropy reject → tight lot-coverage arbitration over ` +
+          `${report.aniso_arbitrate_candidates.length} north-up candidate(s) in band (>maxAniso, ≤${args.anisoArbitrateMax}]`,
+      );
+      const measured: MeasuredRotation[] = [];
+      for (const cand of report.aniso_arbitrate_candidates) {
+        const m = measureRotationLotAssignment(cand, {
+          pdfPath,
+          page,
+          pageW: size.pageW,
+          pageH: size.pageH,
+          cadastre,
+          discriminationCutoffM: args.disambigCutoffM,
+        });
+        console.error(
+          `[t2-autogcp]   ${cand.extent}/rot${m.rotation}° (${m.selected_gcps} GCPs, residual ${m.residual_max_m}m): ` +
+            `tight ${m.coverage_pct}% / serving ${m.serving_coverage_pct}% lots, ${m.n_distinct_codes} codes, ${m.n_empty_labels} empty`,
+        );
+        measured.push(m);
+      }
+      const decision = decideAnisoArbitration(measured, {
+        servingCoverageFloorPct: args.anisoServingCoverageFloor,
+        minDistinctCodes: args.anisoMinDistinctCodes,
+      });
+      console.error(`[t2-autogcp] aniso-arbitration: ${decision.serve ? "SERVE" : "SKIP"} — ${decision.reason}`);
+      anisoArbitration = {
+        method: "moderate-anisotropy-lot-coverage",
+        serve: decision.serve,
+        reason: decision.reason,
+        tight_diagnostic_cutoff_m: args.disambigCutoffM,
+        aniso_arbitrate_max: args.anisoArbitrateMax,
+        serving_coverage_floor_pct: args.anisoServingCoverageFloor,
+        min_distinct_codes: args.anisoMinDistinctCodes,
+        winner: decision.winner ? { rotation: decision.winner.rotation, extent: decision.winner.extent } : undefined,
+        ranking: decision.ranking.map((r) => ({ ...r, gcp_file: undefined })),
+      };
+      if (decision.serve && decision.winner) {
+        winnerGcp = decision.winner.gcp_file;
+        report.pass = true;
+        report.reason = undefined;
+        report.best = { extent: decision.winner.extent, rotation: decision.winner.rotation };
+        report.gcp_file = decision.winner.gcp_file;
+        report.residual_max_m = decision.winner.residual_max_m;
+        report.holdout_max_m = decision.winner.holdout_max_m;
+        report.selected_gcps = decision.winner.selected_gcps;
+      }
+    }
+
+    const outReport = { ...report, rotation_disambiguation: disambiguation, aniso_arbitration: anisoArbitration };
     if (args.outGcp && winnerGcp) {
       mkdirSync(dirname(args.outGcp), { recursive: true });
       writeFileSync(args.outGcp, JSON.stringify(winnerGcp, null, 2));
@@ -194,10 +274,16 @@ async function main(): Promise<void> {
       mkdirSync(dirname(args.report), { recursive: true });
       writeFileSync(
         args.report,
-        JSON.stringify({ ...outReport, gcp_file: undefined, orientation_candidates: undefined }, null, 2),
+        JSON.stringify(
+          { ...outReport, gcp_file: undefined, orientation_candidates: undefined, aniso_arbitrate_candidates: undefined },
+          null,
+          2,
+        ),
       );
     }
-    console.log(JSON.stringify({ ...outReport, orientation_candidates: undefined }, null, 2));
+    console.log(
+      JSON.stringify({ ...outReport, orientation_candidates: undefined, aniso_arbitrate_candidates: undefined }, null, 2),
+    );
     if (!report.pass) process.exitCode = 2;
     return;
   }
