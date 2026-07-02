@@ -3,7 +3,9 @@
  * PMAD "aires TOD" (transit-oriented development areas) for every applicable
  * municipality of the Grand Montréal (CMM) — and, when a comparable open layer
  * exists, the région de Québec (CMQ). Feeds the `tod` coverage layer, whose
- * per-muni deposit is `normalized/qc-tod/<slug>.geojson`.
+ * per-muni deposit is `normalized/qc-tod/qc-tod-<slug>.geojson` — the `qc-tod-`
+ * filename prefix is what the geo-api turns into the OGC collection id
+ * `qc-tod-<slug>` (same basename→id rule as `qc-zonage-<slug>`).
  *
  * Unlike the lot-centric `tod-ingest.ts` (which needs each city's cadastre and
  * also tags lots with `in_tod`), this script is muni-centric and cadastre-free:
@@ -28,6 +30,12 @@
  *   tsx src/tod-province-ingest.ts                        # deposit missing munis
  *   tsx src/tod-province-ingest.ts --force                # re-deposit all munis
  *   tsx src/tod-province-ingest.ts --only laval,brossard  # restrict to slugs
+ *   tsx src/tod-province-ingest.ts --migrate-legacy       # migrate legacy
+ *                                                         # bare-name keys
+ *                                                         # normalized/qc-tod/<slug>.geojson
+ *                                                         # (pre-`qc-tod-` naming) to
+ *                                                         # `qc-tod-<slug>.geojson`, then
+ *                                                         # delete the legacy key
  */
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -37,7 +45,7 @@ import type { S3Client } from "@aws-sdk/client-s3";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 
 import { norm } from "./cadastre-clip-sda.js";
-import { exists, putBytes, s3Client } from "./lib/s3.js";
+import { copyObject, deleteObject, exists, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MATRIX = resolve(HERE, "..", "..", "work", "coverage", "coverage-matrix.json");
@@ -91,23 +99,66 @@ interface Args {
   plan: boolean;
   force: boolean;
   only: Set<string> | null;
+  migrateLegacy: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
   let plan = false;
   let force = false;
   let only: Set<string> | null = null;
+  let migrateLegacy = false;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === "--plan" || arg === "--no-upload") plan = true;
     else if (arg === "--force") force = true;
+    else if (arg === "--migrate-legacy") migrateLegacy = true;
     else if (arg === "--only") {
       only = new Set(
         String(argv[++i] ?? "").split(",").map((s) => s.trim()).filter(Boolean),
       );
     } else throw new Error(`unknown argument: ${arg}`);
   }
-  return { plan, force, only };
+  return { plan, force, only, migrateLegacy };
+}
+
+/**
+ * Migrate the legacy bare-name deposits `normalized/qc-tod/<slug>.geojson` that
+ * predate the `qc-tod-<slug>.geojson` naming onto the new name, then delete the
+ * legacy key. A legacy key is any `.geojson` directly under the prefix whose
+ * filename does NOT start with `qc-tod-`.
+ *
+ * For each legacy key: if the `qc-tod-<slug>.geojson` target already exists
+ * (typically because this run just re-deposited it from source), the legacy key
+ * is simply deleted; otherwise the legacy object is server-side-copied onto the
+ * new name FIRST (so no municipality is ever dropped — e.g. a slug that a fresh
+ * province run no longer matches), then the legacy key is deleted. Idempotent;
+ * respects `plan` (reports, mutates nothing).
+ */
+async function migrateLegacyKeys(s3: S3Client, plan: boolean): Promise<number> {
+  const names = await listSlugs(s3, TOD_OUT_PREFIX, ".geojson");
+  const legacy = names.filter((n) => !n.startsWith("qc-tod-") && !n.includes("/"));
+  let migrated = 0;
+  for (const name of legacy) {
+    const legacyKey = `${TOD_OUT_PREFIX}${name}.geojson`;
+    const newKey = todGeojsonKey(name);
+    const newExists = await exists(s3, newKey);
+    if (plan) {
+      console.log(
+        newExists
+          ? `PLAN migrate-legacy -> would delete ${legacyKey} (${newKey} already present)`
+          : `PLAN migrate-legacy -> would copy ${legacyKey} -> ${newKey} then delete legacy`,
+      );
+      continue;
+    }
+    if (!newExists) {
+      await copyObject(s3, legacyKey, newKey);
+      console.log(`MIGRATE legacy -> copied ${legacyKey} -> ${newKey}`);
+    }
+    await deleteObject(s3, legacyKey);
+    console.log(`MIGRATE legacy -> deleted ${legacyKey}`);
+    migrated++;
+  }
+  return migrated;
 }
 
 // ── coverage slug space (read-only view of the matrix) ───────────────────────
@@ -212,7 +263,7 @@ function todFeatureCollection(
 }
 
 function todGeojsonKey(slug: string): string {
-  return `${TOD_OUT_PREFIX}${slug}.geojson`;
+  return `${TOD_OUT_PREFIX}qc-tod-${slug}.geojson`;
 }
 
 interface MuniGroup {
@@ -295,6 +346,9 @@ async function main(): Promise<void> {
     );
   }
 
+  let migrated = 0;
+  if (args.migrateLegacy) migrated = await migrateLegacyKeys(s3, args.plan);
+
   console.log(
     [
       `DONE`,
@@ -305,6 +359,7 @@ async function main(): Promise<void> {
       args.plan ? `planned` : `deposited=${deposited}`,
       `skipped_existing=${skippedExisting}`,
       args.only ? `skipped_filter=${skippedFilter}` : ``,
+      args.migrateLegacy ? `${args.plan ? "would_migrate_legacy" : "migrated_legacy"}=${migrated}` : ``,
       noMuni.length ? `no_muni_features=${noMuni.length}` : ``,
     ]
       .filter(Boolean)
