@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { ParquetSchema, ParquetWriter } from "@dsnp/parquetjs";
 import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon, Position } from "geojson";
 import {
@@ -28,7 +29,7 @@ import {
 
 import { readParquetRows, readParquetRowsFromBuffer } from "./lib/parquet-read.js";
 import { norm as normCadastreSlug } from "./cadastre-clip-sda.js";
-import { exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
+import { BUCKET, exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 import { projConstants } from "./lib/t1-zones.js";
 
 const PILOT_SLUGS = ["windsor", "arundel", "coteau-du-lac", "hudson", "granby"] as const;
@@ -515,12 +516,22 @@ function printSummary(stats: LotZoneStats): void {
 }
 
 async function enumerateServedZoneSlugs(s3: S3Client): Promise<string[]> {
-  const keys = await listSlugs(s3, ZONES_PREFIX, ".geojson", true);
+  // Mirror zones-s3-check: catch both flat qc-zonage-<slug>.geojson and the
+  // subdir variant qc-zonage-<slug>/qc-zonage-<slug>.geojson.
   const slugs = new Set<string>();
-  for (const key of keys) {
-    const m = String(key).match(/^qc-zonage-([^/]+)$/);
-    if (m?.[1]) slugs.add(m[1]);
-  }
+  let token: string | undefined;
+  do {
+    const r = await s3.send(
+      new ListObjectsV2Command({ Bucket: BUCKET, Prefix: ZONES_PREFIX, ContinuationToken: token, MaxKeys: 1000 }),
+    );
+    for (const o of r.Contents ?? []) {
+      const k = o.Key ?? "";
+      const m =
+        k.match(/ca-qc-zonage\/qc-zonage-([^/]+)\.geojson$/) ?? k.match(/ca-qc-zonage\/qc-zonage-([^/]+)\/qc-zonage-/);
+      if (m?.[1]) slugs.add(m[1]);
+    }
+    token = r.IsTruncated ? r.NextContinuationToken : undefined;
+  } while (token);
   return [...slugs].sort();
 }
 
