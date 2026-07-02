@@ -53,6 +53,7 @@ interface Args {
   noUpload: boolean;
   verifyOnly: boolean;
   all: boolean;
+  shard: { index: number; total: number } | null;
 }
 
 interface RecalageStats {
@@ -117,6 +118,7 @@ function parseArgs(argv: string[]): Args {
   let noUpload = false;
   let verifyOnly = false;
   let all = false;
+  let shard: { index: number; total: number } | null = null;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -126,7 +128,14 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--no-upload") noUpload = true;
     else if (arg === "--verify-only") verifyOnly = true;
-    else throw new Error(`unknown argument: ${arg}`);
+    else if (arg === "--shard") {
+      const spec = String(argv[++i] ?? "");
+      const [idx, total] = spec.split("/").map((v) => parseInt(v, 10));
+      if (!Number.isInteger(idx) || !Number.isInteger(total) || total <= 0 || idx < 0 || idx >= total) {
+        throw new Error(`--shard expects i/n with 0<=i<n, got "${spec}"`);
+      }
+      shard = { index: idx, total };
+    } else throw new Error(`unknown argument: ${arg}`);
   }
 
   if (pilot) slugs.push(...PILOT_SLUGS);
@@ -134,7 +143,7 @@ function parseArgs(argv: string[]): Args {
   if (uniqueSlugs.length === 0 && !all) {
     throw new Error("pass --all, --pilot, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, noUpload, verifyOnly, all };
+  return { slugs: uniqueSlugs, noUpload, verifyOnly, all, shard };
 }
 
 function outParquetKey(slug: string): string {
@@ -518,8 +527,16 @@ async function enumerateServedZoneSlugs(s3: S3Client): Promise<string[]> {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const s3 = s3Client();
-  const slugs = args.all ? await enumerateServedZoneSlugs(s3) : args.slugs;
-  if (args.all) console.log(`ALL served zone slugs: ${slugs.length}`);
+  const allSlugs = args.all ? await enumerateServedZoneSlugs(s3) : args.slugs;
+  const slugs = args.shard
+    ? allSlugs.filter((_, i) => i % args.shard!.total === args.shard!.index)
+    : allSlugs;
+  if (args.all) {
+    console.log(
+      `ALL served zone slugs: ${allSlugs.length}` +
+        (args.shard ? ` | shard ${args.shard.index}/${args.shard.total} -> ${slugs.length}` : ""),
+    );
+  }
   const summaries: LotZoneStats[] = [];
   const skipped: Array<{ slug: string; reason: string }> = [];
   for (const slug of slugs) {
