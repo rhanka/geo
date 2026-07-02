@@ -46,6 +46,7 @@ import {
   extractPvNavigationLinks,
   type PvManifestEntry,
 } from "./pv-gonet-run.js";
+import { pvHeadingContextUrls } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
 
 // Le résidu compte des sites à certificat TLS cassé qui servent pourtant un vrai
 // contenu (cf. pv-deep) ; comme un navigateur lenient, on n'échoue pas sur le cert.
@@ -167,11 +168,17 @@ async function harvest(slug: string, baseUrl: string, strictPath: boolean): Prom
   let raw = 0;
   const pvPages = new Set<string>();
   const toVisit = new Set<string>();
-  const absorb = (ents: PvManifestEntry[], pageUrl: string): void => {
-    const ctx = pageIsPvContext(pageUrl);
+  const absorb = (ents: PvManifestEntry[], pageUrl: string, html: string): void => {
+    // PV context comes from the page URL OR from a « Procès-verbaux » /
+    // « Séances du conseil » heading that heads the link in the DOM. The latter
+    // unblocks genuine date-only PVs on pages whose URL has no PV keyword
+    // (albanel /documents, saint-félix /pv2024); ODJ headings disqualify.
+    const urlCtx = pageIsPvContext(pageUrl);
+    const domCtx = pvHeadingContextUrls(html, pageUrl);
     let kept = 0;
     for (const e of ents) {
       raw++;
+      const ctx = urlCtx || domCtx.has(e.url);
       if (!isRealPv(e.title ?? "", e.url, ctx)) continue;
       kept++;
       if (!merged.has(e.url)) merged.set(e.url, e);
@@ -180,7 +187,7 @@ async function harvest(slug: string, baseUrl: string, strictPath: boolean): Prom
   };
 
   if (home) {
-    absorb(pvEntriesFromHtml(home, baseUrl), baseUrl);
+    absorb(pvEntriesFromHtml(home, baseUrl), baseUrl, home);
     for (const l of extractPvNavigationLinks(home, baseUrl)) if (inScope(l)) toVisit.add(l);
   }
   if (!strictPath) for (const p of PV_PATHS) toVisit.add(origin + p);
@@ -225,7 +232,7 @@ async function harvest(slug: string, baseUrl: string, strictPath: boolean): Prom
       visited.add(u);
       const html = await getHtml(u);
       if (!html) return;
-      absorb(pvEntriesFromHtml(html, u), u);
+      absorb(pvEntriesFromHtml(html, u), u, html);
       for (const l of extractPvNavigationLinks(html, u))
         if (!visited.has(l) && !NOISE.test(l) && inScope(l)) deeper.add(l);
     }),
@@ -237,7 +244,7 @@ async function harvest(slug: string, baseUrl: string, strictPath: boolean): Prom
       visited.add(u);
       const html = await getHtml(u);
       if (!html) return;
-      absorb(pvEntriesFromHtml(html, u), u);
+      absorb(pvEntriesFromHtml(html, u), u, html);
     }),
   );
   return { slug, host: origin, count: merged.size, raw, pvPages: [...pvPages], entries: [...merged.values()] };
