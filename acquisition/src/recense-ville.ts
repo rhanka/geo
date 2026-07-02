@@ -26,7 +26,7 @@ import {
   recensePlatformForCity,
   type PlatformDetectionResult,
   type CityNotInDirectoryResult,
-} from "../../packages/geo/dist/catalog/recense-platform.js";
+} from "@sentropic/geo/catalog/recense-platform.js";
 import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { ALL_PV_CITIES } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import {

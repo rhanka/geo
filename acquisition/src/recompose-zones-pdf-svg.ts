@@ -45,6 +45,12 @@ interface GdalInfo {
   creator: string | null;
 }
 
+interface ResolvedGdalInfo {
+  geoTransform: number[];
+  pixelSize: [number, number];
+  projDef: string;
+}
+
 interface PdfLabel {
   text: string;
   x: number;
@@ -376,7 +382,7 @@ function assignAndBuildGeoJSON(
   pdfSource: string,
   candidates: SvgPathCandidate[],
   labels: PdfLabel[],
-  gdal: Required<Pick<GdalInfo, "geoTransform" | "pixelSize" | "projDef">>,
+  gdal: ResolvedGdalInfo,
 ): FeatureCollection {
   const features: Feature<Polygon>[] = [];
 
@@ -398,9 +404,10 @@ function assignAndBuildGeoJSON(
     if (matches.size !== 1) continue;
 
     const zoneCode = [...matches][0]!;
-    const wgsRing = cand.pageRing.map((p) =>
-      pageToWgs84(p, gdal.pixelSize, gdal.geoTransform, gdal.projDef),
-    );
+    const wgsRing = cand.pageRing
+      .map((p) => pageToWgs84(p, gdal.pixelSize, gdal.geoTransform, gdal.projDef))
+      .filter((p): p is [number, number] => p !== null);
+    if (wgsRing.length !== cand.pageRing.length) continue;
     features.push({
       type: "Feature",
       geometry: {
