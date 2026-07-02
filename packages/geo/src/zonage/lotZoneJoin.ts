@@ -155,6 +155,22 @@ function assignOneLot(
 
   const lotBox = bboxOf(lotForIntersection.geometry);
   const candidates = tree.search(toSearchBox(lotBox));
+
+  // Fast path: when the lot's bbox touches exactly one zone and every lot vertex
+  // lies inside that zone, the lot is fully contained (no other zone can overlap
+  // it — it was the only candidate), so skip the expensive polygon clip.
+  if (candidates.length === 1 && allVerticesInside(lotForIntersection.geometry, candidates[0]!.geometry)) {
+    const only = candidates[0]!;
+    return {
+      lotId,
+      zoneCode: only.rawCode,
+      dominantFraction: 1,
+      multiZone: false,
+      zoneCodes: [only.rawCode],
+      method: "area-majority",
+    };
+  }
+
   const areas = new Map<string, AreaByZone>();
   let exactFailed = false;
 
@@ -517,6 +533,20 @@ function pointFeature(coordinates: Position): Feature<Point> {
     properties: {},
     geometry: { type: "Point", coordinates },
   };
+}
+
+function allVerticesInside(lot: PolygonalGeometry, zone: PolygonalGeometry): boolean {
+  const rings = lot.type === "Polygon" ? lot.coordinates : lot.coordinates.flat();
+  for (const ring of rings) {
+    for (const pos of ring) {
+      try {
+        if (!booleanPointInPolygon(pointFeature(pos), zone)) return false;
+      } catch {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 function reprojectFeature<P extends Record<string, unknown>>(
