@@ -163,7 +163,7 @@ function parseArgs(argv: string[]): Args {
 }
 
 function todGeojsonKey(slug: string): string {
-  return `${TOD_OUT_PREFIX}${slug}.geojson`;
+  return `${TOD_OUT_PREFIX}qc-tod-${slug}.geojson`;
 }
 function lotTodParquetKey(slug: string): string {
   return `${LOT_TOD_OUT_PREFIX}${slug}.parquet`;
