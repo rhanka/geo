@@ -45,6 +45,7 @@ interface Args {
   out: string;
   concOwners: number;
   discoverOwners: boolean;
+  discoverOnly: boolean;
   ownerQueries: string[];
   minOwnerItems: number;
   maxDiscoveryItems: number;
@@ -103,7 +104,8 @@ function parseArgs(argv: string[]): Args {
     dryRun: argv.includes("--dry-run"),
     out: get("out") ?? resolve(HERE, "../../work/delegation-mass/zones-agol-owner-harvest.json"),
     concOwners: Number(get("conc-owners") ?? 1),
-    discoverOwners: argv.includes("--discover-owners"),
+    discoverOwners: argv.includes("--discover-owners") || argv.includes("--discover-only"),
+    discoverOnly: argv.includes("--discover-only"),
     ownerQueries: csv("owner-query").length ? csv("owner-query") : DEFAULT_OWNER_DISCOVERY_QUERIES,
     minOwnerItems: Number(get("min-owner-items") ?? 2),
     maxDiscoveryItems: Number(get("max-discovery-items") ?? 800),
@@ -314,6 +316,17 @@ async function main(): Promise<void> {
   const discoveredOwners = a.discoverOwners
     ? await discoverOwners(a.owners, a.ownerQueries, a.minOwnerItems, a.maxDiscoveryItems)
     : [];
+  // --discover-only : liste les nouveaux owners candidats (nom + titres échantillon)
+  // SANS moisson lourde. Sert à jauger cheaply l'espace fresh (ex. single-item à
+  // min-owner-items=1) avant d'engager un harvest ciblé via --owners.
+  if (a.discoverOnly) {
+    const report = { generatedAt: new Date().toISOString(), mode: "discover-only", minOwnerItems: a.minOwnerItems, seedOwners: a.owners, discoveredCount: discoveredOwners.length, discoveredOwners };
+    writeFileSync(a.out, JSON.stringify(report, null, 2) + "\n");
+    console.error(`\n=== DISCOVER-ONLY : ${discoveredOwners.length} nouveaux owners (min-items=${a.minOwnerItems}) ===`);
+    for (const o of discoveredOwners) console.error(`  ${o.owner}  (${o.candidateItems} items) :: ${o.sampleTitles.slice(0, 4).join(" | ")}`);
+    console.error(`rapport → ${a.out}`);
+    return;
+  }
   const owners = [...a.owners, ...discoveredOwners.map((o) => o.owner)];
   console.error(`[owner-harvest] owners=${owners.length} (seed=${a.owners.length}, discovered=${discoveredOwners.length}) km=${a.km} maxdiag=${a.maxDiag} dryRun=${a.dryRun} | servedS3=${served.size}`);
 
