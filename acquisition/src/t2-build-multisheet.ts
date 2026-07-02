@@ -42,8 +42,13 @@
  *     [--labels text|gpt55] [--dict codes.json] \
  *     [--cadastre file.geojson] [--dry-run] [--out dir] \
  *     [--min-codes 3] [--max-residual-m 30] [--spatial-km 8] \
- *     [--cutoff-m 1500] [--min-cadastre-pct 50] \
+ *     [--cutoff-m 1500] [--min-cadastre-pct 50] [--allow-numeric-codes] \
  *     [--max-candidate-m 450] [--min-gcps 12] [--max-gcps 48] [--ocr-dpi 200]
+ *
+ * --allow-numeric-codes (default OFF) SAFELY relaxes the anti-#74 lettered rule
+ * for pure-numeric-zoned munis; it REQUIRES --dict and admits a numeric code only
+ * when it is verbatim in the dict, the dict is not a trivial 1..N run, and the
+ * fused extracted set matches the dict SET (lib/numeric-codes.ts). Else WITHHOLD.
  *
  * A `--sheets` entry ending in `.pdf` (or an http URL) is auto-seeded here; an
  * entry ending in `.json` is loaded as a `GcpFile` (its `pdf` must resolve).
@@ -57,6 +62,7 @@ import type { FeatureCollection } from "geojson";
 
 import { extractLabels } from "./lib/t1-labels.js";
 import { kindForPrefix, splitCode } from "./lib/t1-labels.js";
+import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from "./lib/numeric-codes.js";
 import { buildZones, type CodePoint } from "./lib/t1-zones.js";
 import { deriveAutoSeedGcps } from "./lib/t2-autogcp.js";
 import { assertIndependentGcps, buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
@@ -82,6 +88,8 @@ interface Args {
   ocrDpi: number;
   source: string;
   confidence: string;
+  /** SAFE, dict-gated relaxation of the anti-#74 rule for numeric zone codes. */
+  allowNumericCodes: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -127,6 +135,7 @@ function parseArgs(argv: string[]): Args {
     ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
     source: a["source"] ? String(a["source"]) : "t2-multisheet-autogcp",
     confidence: a["confidence"] ? String(a["confidence"]) : "contour-autogcp-multisheet",
+    allowNumericCodes: Boolean(a["allow-numeric-codes"]),
   };
 }
 
@@ -207,13 +216,20 @@ async function main(): Promise<void> {
 
   // dict (verbatim + authoritative label filter) ----------------------------
   let dictCanon: Map<string, string> | undefined;
+  let dictCodes: string[] | undefined;
   if (args.dict) {
-    dictCanon = dictCanonicalMap(loadDict(args.dict));
+    dictCodes = loadDict(args.dict);
+    dictCanon = dictCanonicalMap(dictCodes);
     console.error(`[t2-multisheet] dictionary: ${dictCanon.size} authoritative codes`);
   }
   if (args.labels === "gpt55" && !dictCanon) {
     throw new Error("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
   }
+  if (args.allowNumericCodes && !dictCodes) {
+    throw new Error("--allow-numeric-codes requires --dict <authoritative-zone-codes.json>");
+  }
+  const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
+  if (numericDict) console.error(`[t2-multisheet] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
 
   // 1. Per-feuillet: georef + labels; each passes its OWN gates or is excluded.
   const sheetResults: SheetResult[] = [];
@@ -304,11 +320,16 @@ async function main(): Promise<void> {
           dpi: args.ocrDpi,
           page,
           region: neatlineRegion,
+          ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
         });
         codePoints = gptLab.codePoints;
         nInFrame = gptLab.nInsideFrame;
       } else {
-        const lab = extractLabels(pdfPath, geo, { page, excludeRegions: gcpFile.excludeRegions });
+        const lab = extractLabels(pdfPath, geo, {
+          page,
+          excludeRegions: gcpFile.excludeRegions,
+          ...(numericDict ? { numericDict } : {}),
+        });
         codePoints = lab.codePoints;
         nInFrame = lab.nInsideFrame;
       }
@@ -398,10 +419,18 @@ async function main(): Promise<void> {
   const minCodes = Math.max(3, args.minCodes);
   if (distinct.size < minCodes) withhold(`only ${distinct.size} distinct fused zone codes (< ${minCodes})`);
   const banned = /^(affectation|cmm|mrc|sad|pmad)/i;
-  const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
   const bannedHit = [...distinct].filter((c) => banned.test(c));
-  if (nonLettered.length > 0) withhold(`non-lettered (sequential?) fused codes: ${nonLettered.slice(0, 8).join(", ")}`);
   if (bannedHit.length > 0) withhold(`affectation/CMM tokens present: ${bannedHit.join(", ")}`);
+  if (numericDict && dictCodes) {
+    const bad = nonAdmissibleCodes([...distinct], numericDict);
+    if (bad.length > 0) withhold(`fused codes neither lettered nor dict-numeric: ${bad.slice(0, 8).join(", ")}`);
+    const guard = validateNumericRelaxation({ distinctExtracted: [...distinct], dictCodes });
+    if (!guard.ok) withhold(`numeric-code guard: ${guard.reason}`);
+    console.error(`[t2-multisheet] numeric-code guard OK: dict-validated numeric codes across feuillets`);
+  } else {
+    const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
+    if (nonLettered.length > 0) withhold(`non-lettered (sequential?) fused codes: ${nonLettered.slice(0, 8).join(", ")}`);
+  }
 
   // fused spatial gate
   const fusedCentroid: [number, number] = combined.reduce(
@@ -433,6 +462,7 @@ async function main(): Promise<void> {
     source: args.source,
     confidence: args.confidence,
     label_mode: args.labels,
+    allow_numeric_codes: args.allowNumericCodes,
     n_sheets_input: args.sheets.length,
     n_sheets_included: included.length,
     n_fused_labels: combined.length,
