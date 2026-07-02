@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@turf/*": ["../../acquisition/node_modules/@turf/*"],
+      "proj4": ["../../acquisition/node_modules/proj4"],
+      "vitest": ["../../acquisition/node_modules/vitest"],
+      "vitest/config": ["../../acquisition/node_modules/vitest/config"]
+    },
+    "typeRoots": ["../../acquisition/node_modules/@types"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/dist", "**/node_modules"]
+}
