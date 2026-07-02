@@ -32,6 +32,16 @@ export interface AutoGcpOptions {
   maxResidualM?: number;
   minGcps?: number;
   maxGcps?: number;
+  /**
+   * Page→ground model fitted to the matched control points and gated by the
+   * residual+holdout. "affine" (default) is the free 6-parameter map; the
+   * pruning, residuals and holdout all use it. "similarity" constrains the map
+   * to a 2D similarity (uniform scale + rotation + translation, 4 params) with a
+   * PROPER rotation (det(R)=+1, no reflection): a genuine north-up zoning sheet
+   * is a similarity by construction, so this cannot absorb the bbox-stretch that
+   * makes a partial-extent affine come out anisotropic and get iso-gate-rejected.
+   */
+  fit?: FitMode;
   /** Reuse a pre-rendered page SVG (avoids re-running pdftocairo in a loop). */
   svgPath?: string;
   /**
@@ -67,6 +77,9 @@ export interface AutoGcpReport {
   max_residual_gate_m: number;
   gcp_file?: GcpFile;
 }
+
+/** Page→ground model fitted to matched control points and residual/holdout-gated. */
+export type FitMode = "affine" | "similarity";
 
 export interface Pt {
   x: number;
@@ -415,6 +428,113 @@ function affineResiduals(matches: Match[], pageW: number, pageH: number): { resi
   return { residuals, max, rms: Math.sqrt(sumSq / matches.length) };
 }
 
+/* ------------------------------------------------------------------------- *
+ * Similarity (Umeyama/Procrustes) fit.
+ *
+ * A genuine north-up zoning sheet is a SIMILARITY of the ground: one uniform
+ * scale, a rotation, a translation — anisotropy = 1, no shear, no reflection,
+ * by construction. The free affine can absorb a systematic seed/extent mismatch
+ * into an anisotropic stretch (partial-extent urban plans, "feuillet 1 de 2"),
+ * which then trips the iso-gate even when the parcel matches are essentially
+ * right. Constraining the fit to a similarity removes that degree of freedom: it
+ * cannot stretch, so a self-consistent set of matches yields an honestly
+ * isotropic geometry (or a residual that is legitimately too high → SKIP).
+ *
+ * Closed-form 2D solution (no SVD): for centred source x_i (page, y-up) and
+ * target y_i (ground metres), the proper rotation that maximises Σ y_i·(R x_i)
+ * is θ = atan2(B, A) with A = Σ (x·y dot), B = Σ (x→y cross); this ALWAYS yields
+ * det(R)=+1 (no reflection is representable), the uniform scale is
+ * s = √(A²+B²)/Σ‖x_i‖², and t = μy − s R μx.
+ * ------------------------------------------------------------------------- */
+interface Similarity2D {
+  /** Uniform scale (ground metres per page unit). */
+  s: number;
+  /** Rotation cos/sin: R = [[cos, −sin], [sin, cos]] (proper, det=+1). */
+  cos: number;
+  sin: number;
+  /** Translation (ground metres). */
+  tx: number;
+  ty: number;
+}
+
+/** Least-squares 2D similarity mapping `src`→`dst`; null when degenerate. */
+function fitSimilarity2D(src: Array<[number, number]>, dst: Array<[number, number]>): Similarity2D | null {
+  const n = src.length;
+  if (n < 2 || dst.length !== n) return null;
+  let mux = 0;
+  let muy = 0;
+  let mvx = 0;
+  let mvy = 0;
+  for (let i = 0; i < n; i++) {
+    mux += src[i]![0];
+    muy += src[i]![1];
+    mvx += dst[i]![0];
+    mvy += dst[i]![1];
+  }
+  mux /= n;
+  muy /= n;
+  mvx /= n;
+  mvy /= n;
+  let A = 0; // Σ (src·dst)  → cosθ term
+  let B = 0; // Σ (src→dst cross) → sinθ term
+  let sxx = 0; // Σ ‖src_centred‖²
+  for (let i = 0; i < n; i++) {
+    const ax = src[i]![0] - mux;
+    const ay = src[i]![1] - muy;
+    const bx = dst[i]![0] - mvx;
+    const by = dst[i]![1] - mvy;
+    A += bx * ax + by * ay;
+    B += by * ax - bx * ay;
+    sxx += ax * ax + ay * ay;
+  }
+  if (sxx === 0) return null;
+  const norm = Math.hypot(A, B);
+  if (norm === 0) return null; // no correlated rotation (degenerate/collinear)
+  const cos = A / norm;
+  const sin = B / norm;
+  const s = norm / sxx;
+  const tx = mvx - s * (cos * mux - sin * muy);
+  const ty = mvy - s * (sin * mux + cos * muy);
+  if (![s, cos, sin, tx, ty].every(Number.isFinite)) return null;
+  return { s, cos, sin, tx, ty };
+}
+
+/** Apply a similarity to a page point (y-up) → ground metres. */
+function applySimilarity(sim: Similarity2D, x: number, y: number): [number, number] {
+  return [sim.s * (sim.cos * x - sim.sin * y) + sim.tx, sim.s * (sim.sin * x + sim.cos * y) + sim.ty];
+}
+
+/**
+ * Similarity-fit residuals (metres), mirroring `affineResiduals`. Page points
+ * are y-up (`pageH − pageY`) and ground is local metres (East = lon·m/deg at the
+ * match mean latitude, North = lat·m/deg), so a residual is a Euclidean ground
+ * distance. Returns +∞ residuals on a degenerate fit so the caller prunes it.
+ */
+function similarityResiduals(matches: Match[], pageH: number): { residuals: number[]; max: number; rms: number } {
+  const meanLat = matches.reduce((a, m) => a + m.lat, 0) / matches.length;
+  const mPerLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
+  const src = matches.map((m) => [m.pageX, pageH - m.pageY] as [number, number]);
+  const dst = matches.map((m) => [m.lon * mPerLon, m.lat * M_PER_DEG_LAT] as [number, number]);
+  const sim = fitSimilarity2D(src, dst);
+  if (!sim) return { residuals: matches.map(() => Infinity), max: Infinity, rms: Infinity };
+  const residuals: number[] = [];
+  let max = 0;
+  let sumSq = 0;
+  for (let i = 0; i < matches.length; i++) {
+    const [ex, ey] = applySimilarity(sim, src[i]![0], src[i]![1]);
+    const r = Math.hypot(ex - dst[i]![0], ey - dst[i]![1]);
+    residuals.push(r);
+    sumSq += r * r;
+    if (r > max) max = r;
+  }
+  return { residuals, max, rms: Math.sqrt(sumSq / matches.length) };
+}
+
+/** Dispatch residuals by fit model (affine default). */
+function fitResiduals(matches: Match[], pageW: number, pageH: number, fit: FitMode): { residuals: number[]; max: number; rms: number } {
+  return fit === "similarity" ? similarityResiduals(matches, pageH) : affineResiduals(matches, pageW, pageH);
+}
+
 function spreadMatches(matches: Match[], pageW: number, pageH: number, maxGcps: number): Match[] {
   const bestByCell = new Map<string, Match>();
   for (const m of matches) {
@@ -444,11 +564,11 @@ function spreadMatches(matches: Match[], pageW: number, pageH: number, maxGcps: 
   return out.sort((a, b) => a.pageX - b.pageX || a.pageY - b.pageY);
 }
 
-function tryFitMatches(matches: Match[], pageW: number, pageH: number, maxResidualM: number, minGcps: number): Match[] {
+function tryFitMatches(matches: Match[], pageW: number, pageH: number, maxResidualM: number, minGcps: number, fit: FitMode): Match[] {
   let selected = matches;
   for (let iter = 0; iter < 6; iter++) {
     if (selected.length < minGcps) return selected;
-    const { residuals } = affineResiduals(selected, pageW, pageH);
+    const { residuals } = fitResiduals(selected, pageW, pageH, fit);
     selected = selected
       .map((m, i) => ({ ...m, residualM: residuals[i]! }))
       .filter((m) => m.residualM! <= maxResidualM)
@@ -457,16 +577,31 @@ function tryFitMatches(matches: Match[], pageW: number, pageH: number, maxResidu
   return selected;
 }
 
-function holdoutStats(matches: Match[], pageW: number, pageH: number): { max: number; rms: number } | null {
+function holdoutStats(matches: Match[], pageW: number, pageH: number, fit: FitMode): { max: number; rms: number } | null {
   if (matches.length < 8) return null;
   const train = matches.filter((_, i) => i % 5 !== 0);
   const holdout = matches.filter((_, i) => i % 5 === 0);
   if (train.length < 3 || holdout.length === 0) return null;
+  const meanLat = train.reduce((a, b) => a + b.lat, 0) / train.length;
+  const mPerLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
+  if (fit === "similarity") {
+    const src = train.map((m) => [m.pageX, pageH - m.pageY] as [number, number]);
+    const dst = train.map((m) => [m.lon * mPerLon, m.lat * M_PER_DEG_LAT] as [number, number]);
+    const sim = fitSimilarity2D(src, dst);
+    if (!sim) return null;
+    let max = 0;
+    let sumSq = 0;
+    for (const m of holdout) {
+      const [ex, ey] = applySimilarity(sim, m.pageX, pageH - m.pageY);
+      const r = Math.hypot(ex - m.lon * mPerLon, ey - m.lat * M_PER_DEG_LAT);
+      sumSq += r * r;
+      if (r > max) max = r;
+    }
+    return { max, rms: Math.sqrt(sumSq / holdout.length) };
+  }
   const pagePts = train.map((m) => [m.pageX, pageH - m.pageY] as [number, number]);
   const cLon = fitAffine(pagePts, train.map((m) => m.lon));
   const cLat = fitAffine(pagePts, train.map((m) => m.lat));
-  const meanLat = train.reduce((a, b) => a + b.lat, 0) / train.length;
-  const mPerLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
   let max = 0;
   let sumSq = 0;
   for (const m of holdout) {
@@ -641,6 +776,7 @@ export async function deriveAutonomousGcps(opts: AutoGcpOptions): Promise<AutoGc
   const maxResidualM = opts.maxResidualM ?? 30;
   const minGcps = opts.minGcps ?? 12;
   const maxGcps = opts.maxGcps ?? 48;
+  const fit: FitMode = opts.fit ?? "affine";
   const ticks = opts.skipVisualOcr ? [] : textCoordinateTickCandidates(opts.pdfPath, opts.page);
   const visualTicks = opts.skipVisualOcr
     ? { ticks: [] as string[] }
@@ -664,7 +800,7 @@ export async function deriveAutonomousGcps(opts: AutoGcpOptions): Promise<AutoGc
   }
 
   let selected = spreadMatches(matches.sort((a, b) => a.distM - b.distM), opts.pageW, opts.pageH, maxGcps);
-  selected = tryFitMatches(selected, opts.pageW, opts.pageH, maxResidualM, minGcps);
+  selected = tryFitMatches(selected, opts.pageW, opts.pageH, maxResidualM, minGcps, fit);
   selected = spreadMatches(selected, opts.pageW, opts.pageH, maxGcps);
 
   let residualMax: number | null = null;
@@ -676,11 +812,11 @@ export async function deriveAutonomousGcps(opts: AutoGcpOptions): Promise<AutoGc
   if (selected.length < minGcps) {
     reason = `only ${selected.length} independent parcel/linework matches after residual pruning (< ${minGcps})`;
   } else {
-    const res = affineResiduals(selected, opts.pageW, opts.pageH);
+    const res = fitResiduals(selected, opts.pageW, opts.pageH, fit);
     selected = selected.map((m, i) => ({ ...m, residualM: res.residuals[i]! }));
     residualMax = Number(res.max.toFixed(3));
     residualRms = Number(res.rms.toFixed(3));
-    const h = holdoutStats(selected, opts.pageW, opts.pageH);
+    const h = holdoutStats(selected, opts.pageW, opts.pageH, fit);
     holdoutMax = h ? Number(h.max.toFixed(3)) : null;
     holdoutRms = h ? Number(h.rms.toFixed(3)) : null;
     pass = res.max <= maxResidualM && (!h || h.max <= maxResidualM);
@@ -737,6 +873,13 @@ export interface AutoSeedOptions {
   maxResidualM?: number;
   minGcps?: number;
   maxGcps?: number;
+  /**
+   * Page→ground model (default "affine"). "similarity" fits a 4-param 2D
+   * similarity (uniform scale + proper rotation + translation) so a partial-
+   * extent plan whose free affine comes out anisotropic (iso-gate reject) is
+   * instead fitted isotropically-by-construction and judged only on orientation.
+   */
+  fit?: FitMode;
   /** Orientation/isotropy gate thresholds (see DEFAULT_AFFINE_GATE). */
   maxAnisotropy?: number;
   orientationToleranceDeg?: number;
@@ -797,6 +940,8 @@ export interface OrientationCandidate {
 export interface AutoSeedReport {
   slug: string;
   method: "auto-seed-cadastre-bbox-rotations";
+  /** Page→ground model fitted & gated ("affine" default, or "similarity"). */
+  fit: FitMode;
   pass: boolean;
   reason?: string;
   cadastre_features: number;
@@ -1099,6 +1244,50 @@ export function decomposeGcpAffine(gcps: Gcp[], pageW: number, pageH: number): A
 }
 
 /**
+ * Decompose the least-squares page→ground SIMILARITY implied by a set of control
+ * points, returned in the SAME `AffineDecomposition` shape so the auto-seed
+ * loop, orientation-candidate set and lot-disambig plumbing are model-agnostic.
+ *
+ * By construction a similarity has anisotropy = 1, singularRatio = 1, shear = 0
+ * and det = s² > 0 (never a reflection), so the shared `evaluateAffineGate` only
+ * exercises its ORIENTATION check on this — which is exactly the intent: on a
+ * partial-extent plan the free affine trips the anisotropy gate, but the honest
+ * similarity geometry is isotropic and is judged solely on being north-up (or,
+ * failing that, disambiguated by cadastre lot-assignment like the affine path).
+ */
+export function decomposeGcpSimilarity(gcps: Gcp[], pageW: number, pageH: number): AffineDecomposition | null {
+  if (gcps.length < 2) return null;
+  const lats = gcps.map((g) => g.lat);
+  const meanLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+  const mPerLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
+  const src = gcps.map((g) => [g.fx * pageW, (1 - g.fy) * pageH] as [number, number]);
+  const dst = gcps.map((g) => [g.lon * mPerLon, g.lat * M_PER_DEG_LAT] as [number, number]);
+  const sim = fitSimilarity2D(src, dst);
+  if (!sim || sim.s <= 0 || !Number.isFinite(sim.s)) return null;
+  const s = sim.s;
+  // page-right (1,0) → s·(cos, sin); page-up (0,1) → s·(−sin, cos); page-down = −up.
+  const bearingRightDeg = (Math.atan2(sim.sin, sim.cos) * 180) / Math.PI;
+  const bearingDownDeg = (Math.atan2(-sim.cos, sim.sin) * 180) / Math.PI;
+  const angRight = Math.atan2(sim.sin, sim.cos);
+  const angUp = Math.atan2(sim.cos, -sim.sin);
+  const axisAngleDeg = normalizeDeg(((angUp - angRight) * 180) / Math.PI); // +90 (proper rotation)
+  return {
+    sx: s,
+    sy: s,
+    scaleRightM: s,
+    scaleUpM: s,
+    anisotropy: 1,
+    singularRatio: 1,
+    determinant: s * s,
+    mirror: false,
+    bearingRightDeg,
+    bearingDownDeg,
+    axisAngleDeg,
+    shearDeg: 0,
+  };
+}
+
+/**
  * Hard gate on a decomposed affine. Fails (with explicit reasons) on:
  *  - reflection/mirror (det < 0),
  *  - anisotropy — scale ratio OR singular-value ratio — above `maxAnisotropy`,
@@ -1139,6 +1328,11 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
   const maxResidualM = opts.maxResidualM ?? 30;
   const minGcps = opts.minGcps ?? 12;
   const maxGcps = opts.maxGcps ?? 48;
+  const fit: FitMode = opts.fit ?? "affine";
+  // Model-agnostic decomposition: the affine fit can come out anisotropic on a
+  // partial-extent plan (iso-gate reject); the similarity fit is isotropic by
+  // construction, so its decomposition only ever exercises the orientation gate.
+  const decompose = fit === "similarity" ? decomposeGcpSimilarity : decomposeGcpAffine;
   // Probe floor: derive at a lower GCP count so a sparse flipped/rotated fit is
   // visible to the orientation-ambiguity check; SERVING still requires minGcps.
   const ambiguityMinGcps = Math.max(3, Math.min(opts.ambiguityMinGcps ?? Math.min(6, minGcps), minGcps));
@@ -1200,6 +1394,7 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
         maxResidualM,
         minGcps: ambiguityMinGcps,
         maxGcps,
+        fit,
         svgPath,
         pagePoints: allPoints,
         skipVisualOcr: true,
@@ -1219,7 +1414,7 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
       };
       // Only residual-passing attempts produce servable GCPs; decompose & gate.
       if (report.pass && report.gcp_file) {
-        const decomp = decomposeGcpAffine(report.gcp_file.gcps, opts.pageW, opts.pageH);
+        const decomp = decompose(report.gcp_file.gcps, opts.pageW, opts.pageH);
         if (decomp) {
           const gate = evaluateAffineGate(decomp, affineGateOpts);
           attempt.anisotropy = Number(decomp.anisotropy.toFixed(3));
@@ -1341,6 +1536,7 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
   return {
     slug: opts.slug,
     method: "auto-seed-cadastre-bbox-rotations",
+    fit,
     pass: !!best,
     ...(reason ? { reason } : {}),
     cadastre_features: opts.cadastre.features.length,
