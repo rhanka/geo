@@ -737,6 +737,19 @@ export interface AutoSeedOptions {
   maxResidualM?: number;
   minGcps?: number;
   maxGcps?: number;
+  /** Orientation/isotropy gate thresholds (see DEFAULT_AFFINE_GATE). */
+  maxAnisotropy?: number;
+  orientationToleranceDeg?: number;
+  maxShearDeg?: number;
+  /** Max page-right bearing spread across plausible fits before ambiguity reject. */
+  convergenceToleranceDeg?: number;
+  /**
+   * GCP floor used ONLY to surface competing orientations for the ambiguity
+   * probe (a sparse flipped/rotated fit that still matches isometrically must
+   * be seen to be judged). Lower than `minGcps`; a candidate must still reach
+   * `minGcps` to be SERVED. Default min(6, minGcps).
+   */
+  ambiguityMinGcps?: number;
 }
 
 export interface AutoSeedAttempt {
@@ -751,6 +764,16 @@ export interface AutoSeedAttempt {
   holdout_max_m: number | null;
   holdout_rms_m: number | null;
   seed_candidate_matches: number;
+  /** Present when the attempt cleared the residual gate and yielded GCPs. */
+  anisotropy?: number;
+  singular_ratio?: number;
+  bearing_right_deg?: number;
+  bearing_down_deg?: number;
+  mirror?: boolean;
+  shear_deg?: number;
+  /** true only when the derived affine also cleared the orientation/isotropy gate. */
+  affine_gate_pass?: boolean;
+  affine_gate_reason?: string;
 }
 
 export interface AutoSeedReport {
@@ -769,6 +792,8 @@ export interface AutoSeedReport {
   selected_gcps: number | null;
   max_candidate_distance_m: number;
   max_residual_gate_m: number;
+  /** Decomposition + gate verdict of the served (winning) affine. */
+  affine_gate?: AffineGateResult;
   gcp_file?: GcpFile;
 }
 
@@ -916,11 +941,187 @@ function buildRotationSeedGcps(
   });
 }
 
+/* ------------------------------------------------------------------------- *
+ * Hard orientation / isotropy gate on the auto-seed's winning affine.
+ *
+ * The residual+holdout gate proves the derived control points are MUTUALLY
+ * consistent, but on partial-extent (urban-perimeter, cropped sheet) or sparse
+ * plans the parcel matcher can lock onto a self-consistent yet GLOBALLY WRONG
+ * fit: anisotropically stretched (bbox forced to fill a mismatched extent),
+ * mirrored, or rotated/flipped 90°/180°. Those pass residual but serve false
+ * geometry. This gate decomposes the fitted affine and refuses to serve unless
+ * the geometry is a near-isometric, non-mirrored, north-up map — matching the
+ * PROVEN-correct reference (coteau-du-lac: page-right≈East, page-down≈South,
+ * anisotropy≈1.01, non-mirror). It is a SELECTION+REJECT gate on --auto-seed
+ * only; the manual-GCP path (t2-build) is untouched.
+ * ------------------------------------------------------------------------- */
+
+export interface AffineDecomposition {
+  /** QR scale of the page +x (right) axis, in metres per page unit. */
+  sx: number;
+  /** QR signed scale of the page +y axis (= det/sx); negative ⇒ reflection. */
+  sy: number;
+  /** Euclidean length of the page-right column vector (m/page-unit). */
+  scaleRightM: number;
+  /** Euclidean length of the page-up column vector (m/page-unit). */
+  scaleUpM: number;
+  /** max(|sx|,|sy|)/min(|sx|,|sy|) — the mission's scale-anisotropy metric. */
+  anisotropy: number;
+  /** Ratio of singular values (condition number): catches stretch AND shear. */
+  singularRatio: number;
+  /** Signed determinant of the page→ground linear map. */
+  determinant: number;
+  /** true when det < 0 ⇒ the map is mirrored/reflected. */
+  mirror: boolean;
+  /** Compass-math bearing of page +x (right); East=0°, North=+90°, CCW. */
+  bearingRightDeg: number;
+  /** Compass-math bearing of page +y-down; South is −90° for a north-up map. */
+  bearingDownDeg: number;
+  /** Signed angle page-right→page-up; +90° north-up, −90° mirrored. */
+  axisAngleDeg: number;
+  /** |90 − |axisAngle||: deviation from orthogonal axes (shear/skew), degrees. */
+  shearDeg: number;
+}
+
+export interface AffineGateOptions {
+  /** Reject when the scale/singular anisotropy exceeds this ratio. */
+  maxAnisotropy?: number;
+  /** Reject when page-right/page-down deviate from East/South by more (deg). */
+  orientationToleranceDeg?: number;
+  /** Reject when the page axes are non-orthogonal by more than this (deg). */
+  maxShearDeg?: number;
+}
+
+export interface AffineGateResult {
+  pass: boolean;
+  reasons: string[];
+  decomposition: AffineDecomposition;
+}
+
+export const DEFAULT_AFFINE_GATE: Required<AffineGateOptions> = {
+  maxAnisotropy: 1.1,
+  orientationToleranceDeg: 15,
+  maxShearDeg: 10,
+};
+
+function normalizeDeg(deg: number): number {
+  let d = deg % 360;
+  if (d > 180) d -= 360;
+  if (d <= -180) d += 360;
+  return d;
+}
+
+/** Shortest absolute angular distance (deg) between two bearings. */
+function angularDistDeg(a: number, b: number): number {
+  return Math.abs(normalizeDeg(a - b));
+}
+
+/**
+ * Decompose the least-squares page→ground affine implied by a set of control
+ * points into interpretable scale / orientation / shear / mirror terms.
+ *
+ * Page space uses PDF units with y pointing UP (fy is top-down, so we flip it),
+ * exactly like `affineResiduals`. Ground space is local metres (East = +x via
+ * lon·m/deg at the mean latitude, North = +y via lat·m/deg). Returns null when
+ * there are too few points or the fit is degenerate (no usable geometry).
+ */
+export function decomposeGcpAffine(gcps: Gcp[], pageW: number, pageH: number): AffineDecomposition | null {
+  if (gcps.length < 3) return null;
+  const pagePts = gcps.map((g) => [g.fx * pageW, (1 - g.fy) * pageH] as [number, number]);
+  const lons = gcps.map((g) => g.lon);
+  const lats = gcps.map((g) => g.lat);
+  const meanLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+  const mPerLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
+  const cLon = fitAffine(pagePts, lons);
+  const cLat = fitAffine(pagePts, lats);
+  // Linear map (page +x, page +y-up) → (East m, North m); matrix columns are
+  // the images of the page basis vectors: right=(a,b), up=(c,d).
+  const a = cLon[0] * mPerLon; // ∂East/∂px
+  const c = cLon[1] * mPerLon; // ∂East/∂py_up
+  const b = cLat[0] * M_PER_DEG_LAT; // ∂North/∂px
+  const d = cLat[1] * M_PER_DEG_LAT; // ∂North/∂py_up
+  if (![a, b, c, d].every(Number.isFinite)) return null;
+  const determinant = a * d - b * c;
+  const sx = Math.hypot(a, b);
+  if (sx === 0) return null;
+  const sy = determinant / sx;
+  const scaleRightM = Math.hypot(a, b);
+  const scaleUpM = Math.hypot(c, d);
+  const absSx = Math.abs(sx);
+  const absSy = Math.abs(sy);
+  const anisotropy = Math.min(absSx, absSy) === 0 ? Infinity : Math.max(absSx, absSy) / Math.min(absSx, absSy);
+  // Singular values of [[a,c],[b,d]] (condition number = stretch incl. shear).
+  const eAvg = (a * a + b * b + c * c + d * d) / 2;
+  const fRad = Math.hypot((a * a + b * b - c * c - d * d) / 2, a * c + b * d);
+  const s1 = Math.sqrt(Math.max(0, eAvg + fRad));
+  const s2 = Math.sqrt(Math.max(0, eAvg - fRad));
+  const singularRatio = s2 === 0 ? Infinity : s1 / s2;
+  const bearingRightDeg = (Math.atan2(b, a) * 180) / Math.PI; // page +x
+  const bearingDownDeg = (Math.atan2(-d, -c) * 180) / Math.PI; // page +y-down = −(up)
+  const angRight = Math.atan2(b, a);
+  const angUp = Math.atan2(d, c);
+  const axisAngleDeg = normalizeDeg(((angUp - angRight) * 180) / Math.PI);
+  const shearDeg = Math.abs(Math.abs(axisAngleDeg) - 90);
+  return {
+    sx,
+    sy,
+    scaleRightM,
+    scaleUpM,
+    anisotropy,
+    singularRatio,
+    determinant,
+    mirror: determinant < 0,
+    bearingRightDeg,
+    bearingDownDeg,
+    axisAngleDeg,
+    shearDeg,
+  };
+}
+
+/**
+ * Hard gate on a decomposed affine. Fails (with explicit reasons) on:
+ *  - reflection/mirror (det < 0),
+ *  - anisotropy — scale ratio OR singular-value ratio — above `maxAnisotropy`,
+ *  - non-orthogonal (sheared) page axes above `maxShearDeg`,
+ *  - orientation that is not coherent north-up: page-right must be East±tol and
+ *    page-down must be South±tol. A merely-rotated (e.g. 90°/180°-flipped)
+ *    affine is NOT trusted here even when isometric, because a single affine
+ *    cannot distinguish a genuinely rotated sheet from a wrong-orientation lock;
+ *    the auto-seed's cross-candidate convergence check is what would clear a
+ *    truly rotated plan. This keeps the served geometry provably north-up.
+ */
+export function evaluateAffineGate(decomp: AffineDecomposition, options: AffineGateOptions = {}): AffineGateResult {
+  const o = { ...DEFAULT_AFFINE_GATE, ...options };
+  const reasons: string[] = [];
+  if (decomp.mirror) reasons.push(`mirror/reflection (det=${decomp.determinant.toFixed(2)} < 0)`);
+  if (decomp.anisotropy > o.maxAnisotropy) {
+    reasons.push(`scale anisotropy ${decomp.anisotropy.toFixed(3)} > ${o.maxAnisotropy}`);
+  }
+  if (decomp.singularRatio > o.maxAnisotropy) {
+    reasons.push(`singular-value anisotropy ${decomp.singularRatio.toFixed(3)} > ${o.maxAnisotropy}`);
+  }
+  if (decomp.shearDeg > o.maxShearDeg) {
+    reasons.push(`sheared axes ${decomp.shearDeg.toFixed(1)}° from orthogonal > ${o.maxShearDeg}°`);
+  }
+  const rightOff = angularDistDeg(decomp.bearingRightDeg, 0); // East
+  const downOff = angularDistDeg(decomp.bearingDownDeg, -90); // South
+  if (rightOff > o.orientationToleranceDeg || downOff > o.orientationToleranceDeg) {
+    reasons.push(
+      `orientation not north-up: page-right ${decomp.bearingRightDeg.toFixed(1)}° (Δ${rightOff.toFixed(1)}° from East), ` +
+        `page-down ${decomp.bearingDownDeg.toFixed(1)}° (Δ${downOff.toFixed(1)}° from South), tol ${o.orientationToleranceDeg}°`,
+    );
+  }
+  return { pass: reasons.length === 0, reasons, decomposition: decomp };
+}
+
 export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSeedReport> {
   const maxCandidateDistanceM = opts.maxCandidateDistanceM ?? 450;
   const maxResidualM = opts.maxResidualM ?? 30;
   const minGcps = opts.minGcps ?? 12;
   const maxGcps = opts.maxGcps ?? 48;
+  // Probe floor: derive at a lower GCP count so a sparse flipped/rotated fit is
+  // visible to the orientation-ambiguity check; SERVING still requires minGcps.
+  const ambiguityMinGcps = Math.max(3, Math.min(opts.ambiguityMinGcps ?? Math.min(6, minGcps), minGcps));
 
   const bbox = cadastreLonLatBbox(opts.cadastre);
   if (!Number.isFinite(bbox[0]) || bbox[0] >= bbox[2] || bbox[1] >= bbox[3]) {
@@ -939,8 +1140,15 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     full: drawnExtentFull(allPoints, opts.pageW, opts.pageH),
   };
 
+  const affineGateOpts: AffineGateOptions = {
+    ...(opts.maxAnisotropy !== undefined ? { maxAnisotropy: opts.maxAnisotropy } : {}),
+    ...(opts.orientationToleranceDeg !== undefined ? { orientationToleranceDeg: opts.orientationToleranceDeg } : {}),
+    ...(opts.maxShearDeg !== undefined ? { maxShearDeg: opts.maxShearDeg } : {}),
+  };
+
   const attempts: AutoSeedAttempt[] = [];
-  let best: { attempt: AutoSeedAttempt; report: AutoGcpReport } | null = null;
+  const gateClean: Array<{ attempt: AutoSeedAttempt; report: AutoGcpReport; gate: AffineGateResult }> = [];
+  const plausible: AffineDecomposition[] = []; // residual-pass, non-mirror, isometric
 
   for (const [extentName, extent] of Object.entries(extents)) {
     if (!extent) continue;
@@ -964,7 +1172,7 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
         cadastre: opts.cadastre,
         maxCandidateDistanceM,
         maxResidualM,
-        minGcps,
+        minGcps: ambiguityMinGcps,
         maxGcps,
         svgPath,
         pagePoints: allPoints,
@@ -983,24 +1191,94 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
         holdout_rms_m: report.holdout_rms_m,
         seed_candidate_matches: report.seed_candidate_matches,
       };
+      // Only residual-passing attempts produce servable GCPs; decompose & gate.
+      if (report.pass && report.gcp_file) {
+        const decomp = decomposeGcpAffine(report.gcp_file.gcps, opts.pageW, opts.pageH);
+        if (decomp) {
+          const gate = evaluateAffineGate(decomp, affineGateOpts);
+          attempt.anisotropy = Number(decomp.anisotropy.toFixed(3));
+          attempt.singular_ratio = Number(decomp.singularRatio.toFixed(3));
+          attempt.bearing_right_deg = Number(decomp.bearingRightDeg.toFixed(1));
+          attempt.bearing_down_deg = Number(decomp.bearingDownDeg.toFixed(1));
+          attempt.mirror = decomp.mirror;
+          attempt.shear_deg = Number(decomp.shearDeg.toFixed(1));
+          attempt.affine_gate_pass = gate.pass;
+          if (!gate.pass) attempt.affine_gate_reason = gate.reasons.join("; ");
+          // SERVING eligibility: cleared the affine gate AND has enough GCPs.
+          if (gate.pass && report.selected_gcps >= minGcps) gateClean.push({ attempt, report, gate });
+          // AMBIGUITY probe set: any non-mirror, isometric fit (incl. sparse
+          // ones below the serving floor) — a flipped isometric competitor here
+          // is the tell-tale of an unresolvable orientation.
+          const maxAniso = affineGateOpts.maxAnisotropy ?? DEFAULT_AFFINE_GATE.maxAnisotropy;
+          if (!decomp.mirror && decomp.anisotropy <= maxAniso && decomp.singularRatio <= maxAniso) {
+            plausible.push(decomp);
+          }
+        }
+      }
       attempts.push(attempt);
-      if (
-        report.pass &&
-        (!best ||
-          (report.residual_max_m ?? Infinity) < (best.report.residual_max_m ?? Infinity) ||
-          ((report.residual_max_m ?? Infinity) === (best.report.residual_max_m ?? Infinity) &&
-            report.selected_gcps > best.report.selected_gcps))
-      ) {
-        best = { attempt, report };
+    }
+  }
+
+  // Winner = lowest-residual attempt that ALSO cleared the orientation/isotropy
+  // gate. A residual-only "best" (possibly flipped/stretched) never wins.
+  let best: { attempt: AutoSeedAttempt; report: AutoGcpReport; gate: AffineGateResult } | null = null;
+  for (const c of gateClean) {
+    if (
+      !best ||
+      (c.report.residual_max_m ?? Infinity) < (best.report.residual_max_m ?? Infinity) ||
+      ((c.report.residual_max_m ?? Infinity) === (best.report.residual_max_m ?? Infinity) &&
+        c.report.selected_gcps > best.report.selected_gcps)
+    ) {
+      best = c;
+    }
+  }
+
+  // Cross-candidate convergence (anti-invention): if geometrically plausible
+  // (non-mirror, isometric) fits disagree on page-right bearing by more than
+  // `convergenceToleranceDeg`, the parcel matcher is not confidently resolving
+  // orientation (e.g. prevost: some fits East, some flipped West/South) → the
+  // north-up winner is not trustworthy, so REJECT the whole slug.
+  const convTol = opts.convergenceToleranceDeg ?? 10;
+  let ambiguityReason: string | undefined;
+  if (best && plausible.length >= 2) {
+    let maxSpread = 0;
+    let a0 = 0;
+    let a1 = 0;
+    for (let i = 0; i < plausible.length; i++) {
+      for (let j = i + 1; j < plausible.length; j++) {
+        const s = angularDistDeg(plausible[i]!.bearingRightDeg, plausible[j]!.bearingRightDeg);
+        if (s > maxSpread) {
+          maxSpread = s;
+          a0 = plausible[i]!.bearingRightDeg;
+          a1 = plausible[j]!.bearingRightDeg;
+        }
       }
     }
+    if (maxSpread > convTol) {
+      ambiguityReason =
+        `orientation ambiguity: ${plausible.length} plausible (non-mirror, isometric) fits ` +
+        `disagree on page-right bearing by ${maxSpread.toFixed(1)}° (e.g. ${a0.toFixed(1)}° vs ${a1.toFixed(1)}°) > ${convTol}°`;
+    }
+  }
+  if (ambiguityReason) best = null;
+
+  const anyResidualPass = attempts.some((a) => a.pass);
+  let reason: string | undefined;
+  if (!best) {
+    if (ambiguityReason) reason = ambiguityReason;
+    else if (!anyResidualPass) reason = "no (extent × rotation) seed cleared the residual+holdout gate";
+    else if (gateClean.length === 0) {
+      reason =
+        `${attempts.filter((a) => a.pass).length} seed(s) cleared the residual+holdout gate but none cleared ` +
+        `the orientation/isotropy gate (anisotropy/mirror/north-up)`;
+    } else reason = "auto-seed rejected by orientation/isotropy gate";
   }
 
   return {
     slug: opts.slug,
     method: "auto-seed-cadastre-bbox-rotations",
     pass: !!best,
-    ...(best ? {} : { reason: "no (extent × rotation) seed cleared the residual+holdout gate" }),
+    ...(reason ? { reason } : {}),
     cadastre_features: opts.cadastre.features.length,
     cadastre_bbox_wgs84: bbox,
     svg_points: allPoints.length,
@@ -1012,6 +1290,7 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     selected_gcps: best ? best.report.selected_gcps : null,
     max_candidate_distance_m: maxCandidateDistanceM,
     max_residual_gate_m: maxResidualM,
+    ...(best ? { affine_gate: best.gate } : {}),
     ...(best && best.report.gcp_file ? { gcp_file: best.report.gcp_file } : {}),
   };
 }
