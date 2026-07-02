@@ -228,3 +228,107 @@ export function decideRotation(measured: MeasuredRotation[], options: RotationDe
     coverage_margin_pct: covMargin,
   };
 }
+
+/* ------------------------------------------------------------------------- *
+ * Moderate-anisotropy ARBITRATION by lot-coverage.
+ *
+ * The iso-gate hard-rejects any affine with anisotropy > ~1.1. But a partial-
+ * extent / CAD-stretched zoning sheet (arundel ≈1.2) is LEGITIMATELY anisotropic:
+ * its stretch is the true géoréf, and forcing a similarity (aniso = 1) breaks it
+ * (residual > 30 m). Within the arbitration band the fit has ALREADY cleared the
+ * hard proofs upstream: it is non-mirror, non-shear, NORTH-UP, and its control
+ * points — real cadastre parcel corners, never bbox corners — pass the
+ * residual+holdout gate at ≤30 m INCLUDING on held-out corners (arundel ~11 m).
+ * That held-out geometric agreement is the direct proof the anisotropic affine
+ * matches the real cadastre; anisotropy above the band (saint-cesaire 2.6,
+ * sainte-brigide 2.3) is hard-rejected before it ever reaches here.
+ *
+ * The remaining confirmation is the CADASTRE serving the INDEPENDENT zone labels:
+ * a real stretch lands the printed labels ON the lots they annotate, so serving
+ * coverage stays high (arundel 89–99 %); a spurious stretch scatters them and
+ * serving collapses. NOTE: the tight-cutoff (300 m) coverage that discriminates
+ * ORIENTATION (a 180° flip collapses it) is NOT a usable anisotropy signal on a
+ * large RURAL muni — one zone label covers many far lots, so tight coverage is
+ * ~8–17 % even for the CORRECT georef (arundel). It is reported as a diagnostic,
+ * never a serve gate.
+ *
+ * Unlike `decideRotation` (which arbitrates BETWEEN orientations by a relative
+ * MARGIN on tight coverage), this arbitrates a single "is this stretch real?"
+ * question by an ABSOLUTE serving-coverage floor: serve the best-serving
+ * candidate ONLY if its serving coverage ≥ servingCoverageFloorPct AND it places
+ * ≥ minDistinctCodes lettered codes. Anything short → SKIP.
+ * ------------------------------------------------------------------------- */
+export interface AnisoArbitrationOptions {
+  /**
+   * Serving-cutoff (1500 m) lot-coverage (%) the winner must reach to confirm the
+   * stretch is real (labels land on lots). This is arundel's proven ~97 %. Default 85.
+   */
+  servingCoverageFloorPct?: number;
+  /** Distinct lettered codes the winner must place (anti-#74 sanity). Default 3. */
+  minDistinctCodes?: number;
+}
+
+export const DEFAULT_ANISO_ARBITRATION: Required<AnisoArbitrationOptions> = {
+  servingCoverageFloorPct: 85,
+  minDistinctCodes: 3,
+};
+
+export interface AnisoArbitrationDecision {
+  serve: boolean;
+  reason: string;
+  winner?: MeasuredRotation;
+  /** Candidates sorted best-first (serving coverage desc, then residual asc). */
+  ranking: MeasuredRotation[];
+}
+
+/**
+ * PURE decision: given the measured moderate-anisotropy candidates (already
+ * north-up, non-mirror, residual+holdout-gated on real parcel corners), is the
+ * best one's stretch CONFIRMED real by the cadastre? Serve only when ALL hold:
+ *   1. ≥1 candidate measured;
+ *   2. the best serving coverage (1500 m) ≥ servingCoverageFloorPct — the
+ *      independent labels land on the lots (arundel ~97 %);
+ *   3. it places ≥ minDistinctCodes lettered codes (anti-#74).
+ * Otherwise SKIP — an anisotropic fit is never served without label confirmation.
+ */
+export function decideAnisoArbitration(
+  measured: MeasuredRotation[],
+  options: AnisoArbitrationOptions = {},
+): AnisoArbitrationDecision {
+  const o = { ...DEFAULT_ANISO_ARBITRATION, ...options };
+  const ranking = [...measured].sort(
+    (a, b) =>
+      b.serving_coverage_pct - a.serving_coverage_pct ||
+      (a.residual_max_m ?? Infinity) - (b.residual_max_m ?? Infinity) ||
+      b.n_distinct_codes - a.n_distinct_codes,
+  );
+  if (ranking.length === 0) {
+    return { serve: false, reason: "no moderate-anisotropy candidate to arbitrate", ranking };
+  }
+  const top = ranking[0]!;
+  if (top.serving_coverage_pct < o.servingCoverageFloorPct) {
+    return {
+      serve: false,
+      reason:
+        `best candidate ${top.extent}/rot${top.rotation}° serving coverage ${top.serving_coverage_pct}% ` +
+        `< floor ${o.servingCoverageFloorPct}% — anisotropy NOT confirmed real (labels do not land on lots) → SKIP`,
+      ranking,
+    };
+  }
+  if (top.n_distinct_codes < o.minDistinctCodes) {
+    return {
+      serve: false,
+      reason: `best candidate places only ${top.n_distinct_codes} distinct codes (< ${o.minDistinctCodes}) → SKIP`,
+      ranking,
+    };
+  }
+  return {
+    serve: true,
+    reason:
+      `moderate anisotropy CONFIRMED real by cadastre: ${top.extent}/rot${top.rotation}° serving coverage ` +
+      `${top.serving_coverage_pct}% (≥${o.servingCoverageFloorPct}%), tight-cutoff ${top.coverage_pct}% (diagnostic), ` +
+      `${top.n_distinct_codes} codes, residual ${top.residual_max_m}m / holdout ${top.holdout_max_m}m on real parcel corners`,
+    winner: top,
+    ranking,
+  };
+}
