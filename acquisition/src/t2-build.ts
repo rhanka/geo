@@ -23,9 +23,14 @@
  * Usage:
  *   tsx src/t2-build.ts --slug saint-constant --gcp work/gcp/saint-constant.gcp.json \
  *        [--pdf <url|path>] [--page 8] [--labels text|ocr|gpt55] [--dict <codes.json>]
- *        [--ocr-reviewed] [--dry-run] [--out <dir>]
+ *        [--ocr-reviewed] [--dry-run] [--out <dir>] [--allow-numeric-codes]
  *        [--cutoff-m 1500] [--min-codes 10] [--max-residual-m 50] [--spatial-km 8]
  *        [--cadastre <path>] [--ocr-dpi 200]
+ *
+ * --allow-numeric-codes (default OFF) SAFELY relaxes the anti-#74 lettered rule
+ * for pure-numeric-zoned munis; it REQUIRES --dict and admits a numeric code only
+ * when it is verbatim in the dict, the dict is not a trivial 1..N run, and the
+ * extracted set matches the dict SET (lib/numeric-codes.ts). Otherwise it ABORTS.
  *
  * The --gcp file is a `GcpFile` (see lib/t2-georef.ts); --pdf overrides its `pdf`.
  */
@@ -37,6 +42,7 @@ import { join } from "node:path";
 import type { FeatureCollection } from "geojson";
 
 import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
+import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from "./lib/numeric-codes.js";
 import { buildZones } from "./lib/t1-zones.js";
 import { assertIndependentGcps, buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
@@ -62,6 +68,8 @@ interface Args {
   source: string;
   confidence: string;
   labelRegion?: [number, number, number, number];
+  /** SAFE, dict-gated relaxation of the anti-#74 rule for numeric zone codes. */
+  allowNumericCodes: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -106,6 +114,7 @@ function parseArgs(argv: string[]): Args {
     source: a["source"] ? String(a["source"]) : "t2-gcp3",
     confidence: a["confidence"] ? String(a["confidence"]) : "contour-manual-gcp",
     labelRegion,
+    allowNumericCodes: Boolean(a["allow-numeric-codes"]),
   };
 }
 
@@ -194,6 +203,13 @@ async function main(): Promise<void> {
   }
 
   // 2. Labels (text via pdftotext, glyphs via OCR, or GPT-validated vision) --
+  // Dict + numeric relaxation (default OFF; requires --dict), hoisted so the text
+  // and gpt55 paths admit dict-backed pure-numeric codes when enabled.
+  let dictCodes: string[] | undefined;
+  if (args.dict) dictCodes = loadDict(args.dict).codes;
+  if (args.allowNumericCodes && !dictCodes) fail("--allow-numeric-codes requires --dict <authoritative-zone-codes.json>");
+  const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
+  if (numericDict) console.error(`[t2-build] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
   let lab: ExtractLabelsResult;
   let gpt55Stats: Record<string, unknown> = {};
   if (args.labels === "ocr") {
@@ -204,8 +220,8 @@ async function main(): Promise<void> {
         "Codes MUST be human-reviewed before serving; pass --ocr-reviewed only after that check.",
     );
   } else if (args.labels === "gpt55") {
-    if (!args.dict) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
-    const { codes: dict } = loadDict(args.dict);
+    if (!dictCodes) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
     console.error(`[t2-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
     const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
     const neatlineRegion = gcpFile.neatline
@@ -220,6 +236,7 @@ async function main(): Promise<void> {
       dpi: args.ocrDpi,
       page,
       region: args.labelRegion ?? neatlineRegion,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
     });
     lab = gptLab;
     gpt55Stats = {
@@ -247,7 +264,11 @@ async function main(): Promise<void> {
     );
     console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
   } else {
-    lab = extractLabels(pdfPath, geo, { page, excludeRegions: gcpFile.excludeRegions });
+    lab = extractLabels(pdfPath, geo, {
+      page,
+      excludeRegions: gcpFile.excludeRegions,
+      ...(numericDict ? { numericDict } : {}),
+    });
   }
   const distinct = new Set(lab.codePoints.map((c) => c.code));
   const minCodes = Math.max(3, args.minCodes);
@@ -262,12 +283,21 @@ async function main(): Promise<void> {
         (args.labels === "text" ? "labels may be glyphs → retry with --labels ocr" : "OCR yield too low"),
     );
   }
-  // anti-#74 + anti-affectation: every code lettered + no banned tokens.
+  // anti-affectation always; anti-#74 lettered rule unless the SAFE numeric
+  // relaxation is on (dict-gated) — then dict-backed numeric codes are allowed.
   const banned = /^(affectation|cmm|mrc|sad|pmad)/i;
-  const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
   const bannedHit = [...distinct].filter((c) => banned.test(c));
-  if (nonLettered.length > 0) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
   if (bannedHit.length > 0) fail(`affectation/CMM tokens present: ${bannedHit.join(", ")}`);
+  if (numericDict && dictCodes) {
+    const bad = nonAdmissibleCodes([...distinct], numericDict);
+    if (bad.length > 0) fail(`codes neither lettered nor dict-numeric present: ${bad.slice(0, 8).join(", ")}`);
+    const guard = validateNumericRelaxation({ distinctExtracted: [...distinct], dictCodes });
+    if (!guard.ok) fail(`numeric-code guard: ${guard.reason}`);
+    console.error(`[t2-build] numeric-code guard OK: ${guard.numericInDict} dict-validated numeric codes (dict has ${guard.dictNumeric})`);
+  } else {
+    const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
+    if (nonLettered.length > 0) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
+  }
 
   // 3. Cadastre --------------------------------------------------------------
   const s3 = s3Client();
@@ -324,6 +354,7 @@ async function main(): Promise<void> {
     page,
     label_mode: args.labels,
     ocr_reviewed: args.labels === "ocr" ? args.ocrReviewed : undefined,
+    allow_numeric_codes: args.allowNumericCodes,
     crs: geo.crsName,
     n_gcps: gcpFile.gcps.length,
     gcp_residual_max_m: Number(cal.maxResidualM.toFixed(3)),

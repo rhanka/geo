@@ -41,10 +41,22 @@ export function normalizeZoneCodeText(text: string): string {
   return text.trim().replace(/\s+/g, "-");
 }
 
-export function looksLikeZoneCode(text: string): boolean {
+export interface ZoneCodeOptions {
+  /**
+   * SAFE numeric relaxation (default OFF). When provided, a PURE-NUMERIC token
+   * (1–4 digits) is accepted as a zone code IFF it is a verbatim member of this
+   * authoritative dictionary. Absent → default lettered-only behaviour (the
+   * anti-#74 rule). See lib/numeric-codes.ts for the full guard.
+   */
+  numericDict?: Set<string>;
+}
+
+export function looksLikeZoneCode(text: string, opts: ZoneCodeOptions = {}): boolean {
   const t = normalizeZoneCodeText(text);
   if (!t || t.length > 16) return false;
   if (STOPWORDS.has(t.toLowerCase())) return false;
+  // Numeric relaxation: a dict-backed pure-numeric code is a real zone code.
+  if (opts.numericDict && /^\d{1,4}$/.test(t) && opts.numericDict.has(t)) return true;
   if (!/[A-Za-z]/.test(t) || !/\d/.test(t)) return false; // anti-#74
   if (/^REG(?:[-.]|\d)/i.test(t)) return false;
   return ZONE_CODE_RE.test(t);
@@ -99,6 +111,8 @@ export interface PdfTextOptions {
   page?: number;
   /** Page-fraction regions to mask out before emitting labels, e.g. title boxes. */
   excludeRegions?: LabelRegionFrac[];
+  /** SAFE numeric relaxation (default OFF): dict-backed pure-numeric zone codes. */
+  numericDict?: Set<string>;
 }
 
 /** Run pdftotext -bbox-layout and return all words with their center. */
@@ -286,12 +300,12 @@ function isTinyCandidate(w: RawLabel): boolean {
   return w.xMax - w.xMin < 8 && w.yMax - w.yMin < 8;
 }
 
-export function zoneLabelCandidatesFromWords(words: RawLabel[]): RawLabel[] {
+export function zoneLabelCandidatesFromWords(words: RawLabel[], opts: ZoneCodeOptions = {}): RawLabel[] {
   const candidates: LabelCandidate[] = [];
   for (let i = 0; i < words.length; i++) {
     const first = words[i]!;
     const single = normalizeZoneCodeText(first.text);
-    if (looksLikeZoneCode(single)) candidates.push(makeCandidate(words, [i], single));
+    if (looksLikeZoneCode(single, opts)) candidates.push(makeCandidate(words, [i], single));
     if (!isCodePart(first.text)) continue;
 
     const parts = [first.text.trim()];
@@ -303,6 +317,8 @@ export function zoneLabelCandidatesFromWords(words: RawLabel[]): RawLabel[] {
       parts.push(next.text.trim());
       indexes.push(j);
       const code = joinCodeParts(parts);
+      // Multi-word joins stay lettered-only (safeMultiWordCode already refuses a
+      // digit-leading join), so the numericDict never fabricates a joined code.
       if (looksLikeZoneCode(code) && safeMultiWordCode(parts, code)) {
         candidates.push(makeCandidate(words, [...indexes], code));
       }
@@ -346,7 +362,7 @@ export function extractLabelsFromWords(
   geo: GeoRef,
   opts: PdfTextOptions = {},
 ): ExtractLabelsResult {
-  const candidates = zoneLabelCandidatesFromWords(words);
+  const candidates = zoneLabelCandidatesFromWords(words, { numericDict: opts.numericDict });
   const hasSplitPrefixCompounds = candidates.some(
     (c) => (c.sourceWordCount ?? 1) > 1 && /^[A-Z]{1,4}\d{0,3}(?:-[A-Z])?-\d{2,4}(?:-[A-Z0-9]{1,4})?$/i.test(c.text),
   );
@@ -370,7 +386,7 @@ export function extractLabelsFromWords(
   let nInside = 0;
   let rejectedOutside = 0;
   for (const w of candidates) {
-    if (!looksLikeZoneCode(w.text)) continue;
+    if (!looksLikeZoneCode(w.text, { numericDict: opts.numericDict })) continue;
     if (isTinyCandidate(w)) continue;
     if (hasSplitPrefixCompounds && (w.sourceWordCount ?? 1) === 1 && isDigitLeadingSingleLetter(w.text)) continue;
     nCodeLike++;
