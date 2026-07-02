@@ -1,0 +1,31 @@
+{
+  "name": "@sentropic/geo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure geospatial compute helpers shared by Sentropic geo acquisition and products.",
+  "license": "UNLICENSED",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog/recense-platform.js": "./src/catalog/recense-platform.ts",
+    "./zonage/lotZoneJoin.js": "./src/zonage/lotZoneJoin.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@turf/area": "^7.3.5",
+    "@turf/boolean-point-in-polygon": "^7.3.5",
+    "@turf/buffer": "^7.3.5",
+    "@turf/helpers": "^7.3.5",
+    "@turf/intersect": "^7.3.5",
+    "proj4": "^2.20.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
