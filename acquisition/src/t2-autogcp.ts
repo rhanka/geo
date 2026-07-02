@@ -13,6 +13,7 @@ import type { FeatureCollection } from "geojson";
 
 import { getBytes, s3Client } from "./lib/s3.js";
 import { deriveAutoSeedGcps, deriveAutonomousGcps } from "./lib/t2-autogcp.js";
+import { decideRotation, measureRotationLotAssignment, type MeasuredRotation } from "./lib/t2-rotation-disambig.js";
 import type { GcpFile } from "./lib/t2-georef.js";
 
 interface Args {
@@ -28,6 +29,12 @@ interface Args {
   maxResidualM: number;
   minGcps: number;
   maxGcps: number;
+  /** When "lots", resolve an orientation-ambiguity reject via cadastre lot-assignment. */
+  rotationDisambig?: string;
+  /** Tight cutoff (m) for the discrimination coverage (the orientation signal). Default 300. */
+  disambigCutoffM: number;
+  disambigCoverageFloor: number;
+  disambigMarginPct: number;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -64,6 +71,10 @@ function parseArgs(argv: string[]): Args {
     maxResidualM: a["max-residual-m"] ? Number(a["max-residual-m"]) : 30,
     minGcps: a["min-gcps"] ? Number(a["min-gcps"]) : 12,
     maxGcps: a["max-gcps"] ? Number(a["max-gcps"]) : 48,
+    rotationDisambig: a["rotation-disambig"] ? String(a["rotation-disambig"]) : undefined,
+    disambigCutoffM: a["disambig-cutoff-m"] ? Number(a["disambig-cutoff-m"]) : 300,
+    disambigCoverageFloor: a["disambig-coverage-floor"] ? Number(a["disambig-coverage-floor"]) : 70,
+    disambigMarginPct: a["disambig-margin-pct"] ? Number(a["disambig-margin-pct"]) : 15,
   };
 }
 
@@ -105,15 +116,81 @@ async function main(): Promise<void> {
       minGcps: args.minGcps,
       maxGcps: args.maxGcps,
     });
-    if (args.outGcp && report.gcp_file) {
+
+    // Winning GCP file (either the direct auto-seed winner, or the rotation the
+    // lot-assignment disambiguator decisively selects on an orientation-only reject).
+    let winnerGcp: GcpFile | undefined = report.gcp_file;
+    let disambiguation: unknown;
+
+    if (
+      !report.pass &&
+      args.rotationDisambig === "lots" &&
+      report.orientation_candidates &&
+      report.orientation_candidates.length >= 2
+    ) {
+      console.error(
+        `[t2-autogcp] orientation-only reject → lot-assignment disambiguation over ` +
+          `${report.orientation_candidates.length} candidate orientation(s)`,
+      );
+      const measured: MeasuredRotation[] = [];
+      for (const cand of report.orientation_candidates) {
+        const m = measureRotationLotAssignment(cand, {
+          pdfPath,
+          page,
+          pageW: size.pageW,
+          pageH: size.pageH,
+          cadastre,
+          discriminationCutoffM: args.disambigCutoffM,
+        });
+        console.error(
+          `[t2-autogcp]   rot${m.rotation}° (bearing ${m.bearing_right_deg}°, ${m.selected_gcps} GCPs, ` +
+            `residual ${m.residual_max_m}m): tight ${m.coverage_pct}% / serving ${m.serving_coverage_pct}% lots, ` +
+            `${m.n_distinct_codes} codes, ${m.n_empty_labels} empty, spatial ${m.spatial_km}km`,
+        );
+        measured.push(m);
+      }
+      const decision = decideRotation(measured, {
+        coverageFloorPct: args.disambigCoverageFloor,
+        marginPct: args.disambigMarginPct,
+      });
+      console.error(`[t2-autogcp] disambiguation: ${decision.decisive ? "DECISIVE" : "SKIP"} — ${decision.reason}`);
+      // Keep the ranking (without bulky per-candidate GCP files) in the report.
+      disambiguation = {
+        method: "lot-assignment",
+        decisive: decision.decisive,
+        reason: decision.reason,
+        discrimination_cutoff_m: args.disambigCutoffM,
+        coverage_floor_pct: args.disambigCoverageFloor,
+        margin_pct: args.disambigMarginPct,
+        coverage_margin_pct: decision.coverage_margin_pct,
+        winner: decision.winner ? { rotation: decision.winner.rotation, extent: decision.winner.extent } : undefined,
+        ranking: decision.ranking.map((r) => ({ ...r, gcp_file: undefined })),
+      };
+      if (decision.decisive && decision.winner) {
+        winnerGcp = decision.winner.gcp_file;
+        report.pass = true;
+        report.reason = undefined;
+        report.best = { extent: decision.winner.extent, rotation: decision.winner.rotation };
+        report.gcp_file = decision.winner.gcp_file;
+        report.residual_max_m = decision.winner.residual_max_m;
+        report.holdout_max_m = decision.winner.holdout_max_m;
+        report.selected_gcps = decision.winner.selected_gcps;
+      }
+    }
+
+    const outReport = { ...report, rotation_disambiguation: disambiguation };
+    if (args.outGcp && winnerGcp) {
       mkdirSync(dirname(args.outGcp), { recursive: true });
-      writeFileSync(args.outGcp, JSON.stringify(report.gcp_file, null, 2));
+      writeFileSync(args.outGcp, JSON.stringify(winnerGcp, null, 2));
     }
     if (args.report) {
       mkdirSync(dirname(args.report), { recursive: true });
-      writeFileSync(args.report, JSON.stringify({ ...report, gcp_file: undefined }, null, 2));
+      writeFileSync(
+        args.report,
+        JSON.stringify({ ...outReport, gcp_file: undefined, orientation_candidates: undefined }, null, 2),
+      );
     }
-    console.log(JSON.stringify(report, null, 2));
+    console.log(JSON.stringify({ ...outReport, orientation_candidates: undefined }, null, 2));
     if (!report.pass) process.exitCode = 2;
     return;
   }

@@ -776,6 +776,24 @@ export interface AutoSeedAttempt {
   affine_gate_reason?: string;
 }
 
+/**
+ * One servable GCP file per DISTINCT candidate orientation, emitted ONLY when a
+ * run is rejected for orientation ambiguity alone (several non-mirror, isometric
+ * fits pass residual+holdout but disagree on page-right bearing). A downstream
+ * lot-assignment disambiguator (lib/t2-rotation-disambig) uses these to pick the
+ * data-correct rotation. Never emitted on a clean pass or a hard mirror/
+ * anisotropy/shear reject.
+ */
+export interface OrientationCandidate {
+  extent: string;
+  rotation: number;
+  bearing_right_deg: number;
+  selected_gcps: number;
+  residual_max_m: number | null;
+  holdout_max_m: number | null;
+  gcp_file: GcpFile;
+}
+
 export interface AutoSeedReport {
   slug: string;
   method: "auto-seed-cadastre-bbox-rotations";
@@ -795,6 +813,8 @@ export interface AutoSeedReport {
   /** Decomposition + gate verdict of the served (winning) affine. */
   affine_gate?: AffineGateResult;
   gcp_file?: GcpFile;
+  /** Present only on an orientation-ambiguity reject: candidates to disambiguate. */
+  orientation_candidates?: OrientationCandidate[];
 }
 
 /** WGS84 bbox [lonMin, latMin, lonMax, latMax] of the cadastre lots. */
@@ -1146,9 +1166,15 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     ...(opts.maxShearDeg !== undefined ? { maxShearDeg: opts.maxShearDeg } : {}),
   };
 
+  const maxAniso = affineGateOpts.maxAnisotropy ?? DEFAULT_AFFINE_GATE.maxAnisotropy;
   const attempts: AutoSeedAttempt[] = [];
   const gateClean: Array<{ attempt: AutoSeedAttempt; report: AutoGcpReport; gate: AffineGateResult }> = [];
   const plausible: AffineDecomposition[] = []; // residual-pass, non-mirror, isometric
+  // Servable (≥minGcps), non-mirror, isometric fits — one per candidate rotation.
+  // These are the disambiguation set surfaced on an orientation-only reject; a
+  // wrong bearing here is exactly what lot-assignment resolves. NOT constrained
+  // to north-up (that is what makes a genuinely rotated true plan recoverable).
+  const servable: OrientationCandidate[] = [];
 
   for (const [extentName, extent] of Object.entries(extents)) {
     if (!extent) continue;
@@ -1209,9 +1235,21 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
           // AMBIGUITY probe set: any non-mirror, isometric fit (incl. sparse
           // ones below the serving floor) — a flipped isometric competitor here
           // is the tell-tale of an unresolvable orientation.
-          const maxAniso = affineGateOpts.maxAnisotropy ?? DEFAULT_AFFINE_GATE.maxAnisotropy;
-          if (!decomp.mirror && decomp.anisotropy <= maxAniso && decomp.singularRatio <= maxAniso) {
-            plausible.push(decomp);
+          const isometric = !decomp.mirror && decomp.anisotropy <= maxAniso && decomp.singularRatio <= maxAniso;
+          if (isometric) plausible.push(decomp);
+          // Disambiguation candidate: isometric AND servable (≥minGcps), keeping
+          // its refined GCP file. Distinct rotations here are what lot-assignment
+          // arbitrates when the orientation gate cannot.
+          if (isometric && report.selected_gcps >= minGcps && report.gcp_file) {
+            servable.push({
+              extent: extentName,
+              rotation: rot * 90,
+              bearing_right_deg: Number(decomp.bearingRightDeg.toFixed(1)),
+              selected_gcps: report.selected_gcps,
+              residual_max_m: report.residual_max_m,
+              holdout_max_m: report.holdout_max_m,
+              gcp_file: report.gcp_file,
+            });
           }
         }
       }
@@ -1262,6 +1300,32 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
   }
   if (ambiguityReason) best = null;
 
+  // Whenever no clean winner emerged (the ambiguity reject NULLED a north-up
+  // best, OR no fit was north-up at all — a genuinely rotated landscape plan
+  // like lacolle) yet ≥2 DISTINCT isotropic orientations passed residual+holdout,
+  // surface one servable candidate per distinct orientation (best-residual
+  // representative per 90° bearing bucket) so the lot-assignment disambiguator
+  // can pick the data-correct rotation. `servable` already excludes the hard
+  // errors (mirror/anisotropy/shear), so this only re-opens pure orientation.
+  let orientationCandidates: OrientationCandidate[] | undefined;
+  if (!best && servable.length >= 2) {
+    const byBucket = new Map<number, OrientationCandidate>();
+    for (const c of servable) {
+      const bucket = ((Math.round(c.bearing_right_deg / 90) * 90) % 360 + 360) % 360;
+      const prev = byBucket.get(bucket);
+      if (
+        !prev ||
+        (c.residual_max_m ?? Infinity) < (prev.residual_max_m ?? Infinity) ||
+        ((c.residual_max_m ?? Infinity) === (prev.residual_max_m ?? Infinity) && c.selected_gcps > prev.selected_gcps)
+      ) {
+        byBucket.set(bucket, c);
+      }
+    }
+    if (byBucket.size >= 2) {
+      orientationCandidates = [...byBucket.values()].sort((a, b) => a.bearing_right_deg - b.bearing_right_deg);
+    }
+  }
+
   const anyResidualPass = attempts.some((a) => a.pass);
   let reason: string | undefined;
   if (!best) {
@@ -1292,5 +1356,6 @@ export async function deriveAutoSeedGcps(opts: AutoSeedOptions): Promise<AutoSee
     max_residual_gate_m: maxResidualM,
     ...(best ? { affine_gate: best.gate } : {}),
     ...(best && best.report.gcp_file ? { gcp_file: best.report.gcp_file } : {}),
+    ...(orientationCandidates ? { orientation_candidates: orientationCandidates } : {}),
   };
 }
