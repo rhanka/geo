@@ -187,9 +187,36 @@ export interface CrossValResult {
   extractedNotInSig: string[];
 }
 
-/** Light normalisation for code comparison (uppercase, strip spaces/zero-pad). */
-function canonZone(code: string): string {
-  return code.toUpperCase().replace(/\s+/g, "").replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
+/**
+ * Light normalisation for zone-code comparison (uppercase, strip spaces, zero-pad).
+ *
+ * Order-invariant reconciliation of the ONE ambiguous format families use — a
+ * digit-first vs letter-first swap of a SINGLE "one letter-block + one digit-block"
+ * code — so all of `HA-20`, `HA20`, `20HA`, `20-HA`, `"20 Ha"`, `HA-020` collapse to
+ * the SAME canonical key `HA-20`. This is the Matapédia/Mitis famille case: the SIG
+ * grille emits `"20 Ha"` while the extracted norms grille emits `"Ha-20"` — the same
+ * zone, previously counted as overlap=0 (false negative).
+ *
+ * ANTI-FUSION GUARANTEE — the reorder fires ONLY when the entire code is, anchored
+ * end-to-end, exactly one alpha run + one digit run (either order, at most one
+ * separator). Two codes collapse together IFF they share the same letters AND the
+ * same numeric value (leading zeros ignored). Consequences:
+ *   • `H-1` ≠ `H-10`     — digit blocks differ (1 vs 10), never merged.
+ *   • `A-1` ≡ `1-A` ≡ `A-01` — a real order/zero-pad swap of one code, merged (intended).
+ *   • `H-1-2`, `RA-2-1`, `20-A-1` (multi-segment) — NOT matched by either anchored
+ *     rule, so they fall through to the strict legacy leading-zero normalisation and
+ *     are NEVER reordered. Distinct multi-segment codes can never be fused.
+ */
+export function canonZone(code: string): string {
+  const up = code.toUpperCase().replace(/\s+/g, "");
+  // letter-first single code: HA20 / HA-20 / HA-020  (0* consumes leading zeros)
+  const letterFirst = /^([A-Z]+)-?0*(\d+)$/.exec(up);
+  if (letterFirst) return `${letterFirst[1]}-${letterFirst[2]}`;
+  // digit-first single code: 20HA / 20-HA / 020-HA  → same canonical LETTERS-DIGITS
+  const digitFirst = /^0*(\d+)-?([A-Z]+)$/.exec(up);
+  if (digitFirst) return `${digitFirst[2]}-${digitFirst[1]}`;
+  // Anything else (multi-segment / unusual) — strict legacy normalisation, no reorder.
+  return up.replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
 }
 
 /** Pull zone codes from a SIG grille geojson (zone_code / code_zone properties). */
