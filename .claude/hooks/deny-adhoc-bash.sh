@@ -38,6 +38,8 @@ case "$work" in
   'git '*|'git -C '*) allow ;;
   'gh '*) allow ;;
   'kubectl '*) allow ;;
+  'curl '*|'wget '*) allow ;;        # subagents download public source PDFs (pipeline step)
+  'mkdir '*|'mkdir -p '*) allow ;;   # subagents stage work dirs
 esac
 
 # Anything else (ad-hoc stat/date/for/grep/cat/... , unknown): fail-safe deny.
