@@ -25,6 +25,7 @@ import { s3Client, getBytes, listSlugs } from "./lib/s3.js";
 import {
   resolveGridKey,
   sigZoneCodesFromGeojson,
+  canonZone,
   normsKey,
   ZONAGE_NORMS_PREFIX,
 } from "./lib/zonage-norms.js";
@@ -53,10 +54,9 @@ function verbatimZoneCode(props: Record<string, unknown> | null): string {
   return "";
 }
 
-function canon(code: string): string {
-  // Same rule as lib/zonage-norms.canonZone (kept local: that one is not exported).
-  return code.toUpperCase().replace(/\s+/g, "").replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
-}
+// Shared canonicalisation (order-invariant digit⇄letter reconciliation) — the very
+// rule the overlap gate uses, imported to keep the report and the gate in lockstep.
+const canon = canonZone;
 
 interface CityDelta {
   slug: string;
