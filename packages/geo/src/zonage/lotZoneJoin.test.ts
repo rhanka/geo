@@ -70,6 +70,23 @@ describe("canonicalizeZoneCodeForJoin", () => {
     expect(canonicalizeZoneCodeForJoin("mixte centre")).toBe("MIXTECENTRE");
     expect(canonicalizeZoneCodeForJoin("100")).toBe("100");
   });
+
+  it("LOCKSTEP fix #2: folds a trailing arrondissement annotation onto the bare code (Longueuil)", () => {
+    // The SIG stores "A12-024 (STH)"; the grille emits "A12-024". Same physical zone.
+    expect(canonicalizeZoneCodeForJoin("A12-024 (STH)")).toBe(canonicalizeZoneCodeForJoin("A12-024"));
+    expect(canonicalizeZoneCodeForJoin("H34-327 (VLO)")).toBe(canonicalizeZoneCodeForJoin("H34-327"));
+    expect(canonicalizeZoneCodeForJoin("C31-003 (GP)")).toBe(canonicalizeZoneCodeForJoin("C31-003"));
+  });
+
+  it("ANTI-FUSION: the annotation strip never touches the core, dash secteurs stay distinct", () => {
+    // Different core under the same annotation → distinct.
+    expect(canonicalizeZoneCodeForJoin("A12-024 (STH)")).not.toBe(
+      canonicalizeZoneCodeForJoin("A12-025 (STH)"),
+    );
+    // A DASH secteur suffix is NOT a parenthetical annotation (mont-royal).
+    expect(canonicalizeZoneCodeForJoin("H-531-F")).not.toBe(canonicalizeZoneCodeForJoin("H-531-G"));
+    expect(canonicalizeZoneCodeForJoin("H-531-F")).not.toBe(canonicalizeZoneCodeForJoin("H-531"));
+  });
 });
 
 describe("assignLotZones", () => {
