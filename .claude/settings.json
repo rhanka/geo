@@ -1,4 +1,29 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npx tsx acquisition/src/*)",
+      "Bash(npx tsx packages/*)",
+      "Bash(npx vitest*)",
+      "Bash(npx tsc*)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npm ci*)",
+      "Bash(npm install*)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(kubectl *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(mkdir *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git reset --hard*)",
+      "Bash(rm -rf*)",
+      "Bash(rm -fr*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
