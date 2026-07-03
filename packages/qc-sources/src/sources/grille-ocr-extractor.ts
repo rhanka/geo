@@ -1494,13 +1494,18 @@ export function parseTransposedColumnsGrille(
       const label = labelParts.join(" ").trim();
       const ownField = labelToFieldId(label);
 
-      // (1) A TITLE row (at the LEFT margin) with NO aligned values SETS the section
-      //     (or, mapping to nothing — "Somme…", "Marge …maximale:" — CLEARS it). An
-      //     INDENTED empty sub-label ("     bâtiment principal") is a spacer between
-      //     the title and its value row (Valcourt latérale: value sits on the deeper
-      //     "- bâtiment isolé" line) — it must NOT touch the section.
+      // (1) A TITLE row with NO aligned values SETS the section — when it sits at the
+      //     LEFT margin (firstCol<=2, e.g. baie-comeau "Avant"/"MARGE"), OR when its
+      //     label MAPS to a real norm field. The latter recovers grilles that INDENT
+      //     the WHOLE grid (stoke: every row 4-space-indented), so a mappable title
+      //     like "Marge de recul avant minimale (mètres):" at col 4 still opens its
+      //     section (without it, no value row bound → 132 real zones at 0% fields).
+      //     A margin title mapping to nothing ("Somme…", "Marge …maximale:") still
+      //     CLEARS the section. An INDENTED empty sub-label spacer ("     bâtiment
+      //     principal", Valcourt latérale) maps to nothing AND sits at firstCol>2, so
+      //     BOTH clauses stay false and it never touches the section (Valcourt-safe).
       if (valueByAnchor.size === 0) {
-        if (firstCol <= 2) section = ownField;
+        if (firstCol <= 2 || ownField !== null) section = ownField;
         continue;
       }
       // (2) A self-contained data row (Sept-Îles/Saint-Tite single-tier) OR a value
