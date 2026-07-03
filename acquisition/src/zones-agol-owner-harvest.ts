@@ -89,8 +89,10 @@ const AFFECT_RE = /affectation|agricole|cptaq|zone\s*verte|\bplu\b|milieux?.humi
 // Champs à NE JAMAIS retenir comme zone_code (id technique, bylaw, surface, usage,
 // adresse, code postal/propriétaire — anti faux-positif démographique).
 const FIELD_EXCLUDE_RE = /objectid|shape|^fid$|globalid|superfic|^area$|longueur|length|perimet|^maj$|date|^modif$|no_?reg|reglement|^statut$|^dominante$|usage|adresse|matricule|^nom$|municipalit|codepostal|code_?postal|postal|proprietaire|propri[eé]t|courriel|email|t[eé]l[eé]phone|nom_?prop/i;
-// Signature d'un VRAI code de zonage : préfixe lettre(s) + chiffre(s) (FA-2, RH-11, C-15, PU-1).
-const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d/;
+// Signature d'un VRAI code de zonage : soit préfixe lettre(s)+chiffre(s) (FA-2, RH-11, C-15, PU-1),
+// soit format QC chiffre-d'abord <n°zone>-<usage> (100-A, 101 C) — séparateur OBLIGATOIRE
+// dans l'alternance chiffre-d'abord pour ne PAS admettre entiers/adresses nus.
+const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d|^\d{1,4}[-_. ][A-Za-z]/;
 
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
