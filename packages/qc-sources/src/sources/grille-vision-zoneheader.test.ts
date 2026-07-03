@@ -1,0 +1,56 @@
+import { describe, it, expect } from "vitest";
+
+import { extractZoneHeaderPageFromPdf, MistralVisionZoneHeader } from "./grille-vision-zoneheader.js";
+import type { VisionCallImpl, VisionRawExtraction } from "./grille-vision-extractor.js";
+
+// A canned two-pass vision call (both passes concord) — NO network, NO poppler.
+const canned: VisionCallImpl = async (
+  _img: string,
+  _pass: 0 | 1,
+  _expected: string | undefined,
+): Promise<VisionRawExtraction> => ({
+  zone_code: "H-11",
+  usages: [],
+  fields: { marge_avant_min: "10 m", superficie_min: "1500 m2", hauteur_metres: "9 m" },
+});
+
+describe("grille-vision-zoneheader — scan fallback wiring", () => {
+  it("delegates to the frozen 2-pass pipeline and guards each cell", async () => {
+    const zn = await extractZoneHeaderPageFromPdf("fake.pdf", 1, {
+      source_url: "https://ex/scan.pdf",
+      snapshot: "2026-07-03",
+      expectedZone: "H-11",
+      vision: canned,
+      // injected renderer → no poppler; path lacks "grille-vision-" so no cleanup rm.
+      render: async () => "/nonexistent/fake.png",
+    });
+    expect(zn.zone_code).toBe("H-11");
+    expect(zn.marges.avant_min.value).toBe(10);
+    expect(zn.superficie_min.value).toBe(1500);
+    expect(zn.hauteur_max.value).toBe(9);
+    // Provenance stamped by the frozen single-zone pipeline (mistral-vision).
+    expect(zn.superficie_min._provenance.methode).toBe("mistral-vision");
+  });
+
+  it("still guards the cell values when the model code is present (concordant read)", async () => {
+    const divergent: VisionCallImpl = async () => ({
+      zone_code: "H-11",
+      usages: [],
+      fields: { marge_avant_min: "10 m" },
+    });
+    const zn = await extractZoneHeaderPageFromPdf("fake.pdf", 1, {
+      source_url: "https://ex/scan.pdf",
+      snapshot: "2026-07-03",
+      expectedZone: "H-11",
+      vision: divergent,
+      render: async () => "/nonexistent/fake.png",
+    });
+    expect(zn.zone_code).toBe("H-11");
+    expect(zn.marges.avant_min.value).toBe(10);
+  });
+
+  it("exposes a VisionCallImpl-shaped extract on the production class", () => {
+    const m = new MistralVisionZoneHeader();
+    expect(typeof m.extract).toBe("function");
+  });
+});
