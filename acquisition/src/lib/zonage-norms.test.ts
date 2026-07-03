@@ -11,7 +11,45 @@ import {
   shouldRejectForZeroOverlap,
   shouldRejectForZeroNormFields,
   looksLikeTableOfContents,
+  canonZone,
 } from "./zonage-norms.js";
+
+describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
+  it("reconciles every format of one letter+digit code to the SAME key (Matapédia/Mitis 'Ha' famille)", () => {
+    const canon = "HA-20";
+    for (const v of ["20 Ha", "20HA", "20-HA", "HA-20", "HA20", "Ha-020", "020-ha"]) {
+      expect(canonZone(v)).toBe(canon);
+    }
+  });
+
+  it("ANTI-FUSION: distinct digit blocks never merge (H-1 ≠ H-10)", () => {
+    expect(canonZone("H-1")).toBe("H-1");
+    expect(canonZone("H-10")).toBe("H-10");
+    expect(canonZone("H-1")).not.toBe(canonZone("H-10"));
+  });
+
+  it("ANTI-FUSION: multi-segment codes are kept strict (no reorder, never fused)", () => {
+    // Three genuinely distinct multi-segment codes must stay three distinct keys.
+    expect(canonZone("H-1-2")).toBe("H-1-2");
+    expect(canonZone("H-2-1")).toBe("H-2-1");
+    expect(canonZone("RA-2-1")).toBe("RA-2-1");
+    expect(canonZone("20-A-1")).toBe("20-A-1"); // digit-first multi-segment: unchanged
+    const set = new Set(["H-1-2", "H-2-1", "RA-2-1", "20-A-1"].map(canonZone));
+    expect(set.size).toBe(4);
+  });
+
+  it("zero-pad reconciliation still holds and does not over-merge", () => {
+    expect(canonZone("A-01")).toBe("A-1");
+    expect(canonZone("A-1")).toBe("A-1");
+    expect(canonZone("A-10")).toBe("A-10"); // trailing zero preserved
+    expect(canonZone("A-1")).not.toBe(canonZone("A-10"));
+  });
+
+  it("pure-numeric and pure-alpha codes pass through unchanged", () => {
+    expect(canonZone("200")).toBe("200");
+    expect(canonZone("HA")).toBe("HA");
+  });
+});
 
 describe("shouldRejectForZeroOverlap", () => {
   it("A — gridFound:true, overlap:0 → REJECTED (kirkland mis-routed OCR)", () => {
