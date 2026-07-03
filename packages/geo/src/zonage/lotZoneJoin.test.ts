@@ -1,7 +1,12 @@
 import type { Feature, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
-import { assignLotZones, enrichWithNorms, normalizeZoneCode } from "./lotZoneJoin.js";
+import {
+  assignLotZones,
+  canonicalizeZoneCodeForJoin,
+  enrichWithNorms,
+  normalizeZoneCode,
+} from "./lotZoneJoin.js";
 
 type Props = Record<string, unknown>;
 
@@ -36,6 +41,34 @@ describe("normalizeZoneCode", () => {
     expect(normalizeZoneCode("  h --  12  ")).toBe("H-12");
     expect(normalizeZoneCode("a\u201312")).toBe("A-12");
     expect(normalizeZoneCode("mixte   centre")).toBe("MIXTE CENTRE");
+  });
+});
+
+describe("canonicalizeZoneCodeForJoin", () => {
+  it("folds leading-zero / dash / space format variants of one code onto H-1", () => {
+    const canonical = canonicalizeZoneCodeForJoin("H-1");
+    expect(canonical).toBe("H-1");
+    for (const variant of ["H01", "H-01", "H 1", "H1", "h01", "  H-01 ", "H\u201301"]) {
+      expect(canonicalizeZoneCodeForJoin(variant)).toBe(canonical);
+    }
+  });
+
+  it("folds C408 and C-408 onto the same key", () => {
+    expect(canonicalizeZoneCodeForJoin("C408")).toBe("C-408");
+    expect(canonicalizeZoneCodeForJoin("C-408")).toBe("C-408");
+    expect(canonicalizeZoneCodeForJoin("C408")).toBe(canonicalizeZoneCodeForJoin("C-408"));
+  });
+
+  it("never merges distinct codes (H-1 != H-10, only leading zeros drop)", () => {
+    expect(canonicalizeZoneCodeForJoin("H-10")).toBe("H-10");
+    expect(canonicalizeZoneCodeForJoin("H-1")).not.toBe(canonicalizeZoneCodeForJoin("H-10"));
+    expect(canonicalizeZoneCodeForJoin("H-01")).toBe(canonicalizeZoneCodeForJoin("H-1"));
+    expect(canonicalizeZoneCodeForJoin("C-40")).not.toBe(canonicalizeZoneCodeForJoin("C-408"));
+  });
+
+  it("leaves multiword / prefix-only codes untouched", () => {
+    expect(canonicalizeZoneCodeForJoin("mixte centre")).toBe("MIXTECENTRE");
+    expect(canonicalizeZoneCodeForJoin("100")).toBe("100");
   });
 });
 
@@ -137,5 +170,23 @@ describe("assignLotZones", () => {
     );
 
     expect(enriched[0]?.norms).toEqual({ hauteur_max_value: 12 });
+  });
+
+  it("joins a zones-layer H-1 to a grille keyed H01 (leading-zero mismatch fix)", () => {
+    const enriched = enrichWithNorms(
+      [
+        {
+          lotId: "lot-8",
+          zoneCode: "H-1",
+          dominantFraction: 1,
+          multiZone: false,
+          zoneCodes: ["H-1"],
+          method: "area-majority",
+        },
+      ],
+      new Map([["H01", { hauteur_max_value: 20 }]]),
+    );
+
+    expect(enriched[0]?.norms).toEqual({ hauteur_max_value: 20 });
   });
 });
