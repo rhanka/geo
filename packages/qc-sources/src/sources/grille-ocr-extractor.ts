@@ -275,9 +275,10 @@ export function labelToFieldId(label: string): FieldId | null {
     .replace(/\s+/g, " ")
     .trim();
 
-  // A SUM of margins ("somme minimale des marges de recul latérales") is its OWN
-  // distinct norm — NEVER fold it into a marge_* minimum (anti-over-mapping).
-  if (/\bsomme\b/.test(s)) return null;
+  // A SUM / COMBINED width of margins ("somme minimale des marges de recul
+  // latérales", "largeur combinée des marges/cours latérales") is its OWN distinct
+  // norm — NEVER fold it into a marge_* minimum NOR a frontage (anti-over-mapping).
+  if (/\bsomme\b/.test(s) || /combinee/.test(s)) return null;
 
   // Order matters: most specific first.
   // ── Marges de recul (avant / latérale / arrière); "de recul" is optional and
@@ -302,13 +303,14 @@ export function labelToFieldId(label: string): FieldId | null {
   if (/(superficie|aire).*min/.test(s)) return "superficie_min";
   if (/min.*(superficie|aire)/.test(s)) return "superficie_min";
 
-  // ── Densité : coefficient / indice / rapport / pourcentage / % d'occupation ou
-  //    d'emprise AU SOL (CES). A "rapport plancher/terrain" (COS floor-area ratio)
-  //    is a DIFFERENT quantity → it lacks "occupation|emprise …sol" so it never
+  // ── Densité : coefficient / indice / rapport / pourcentage / % d'occupation,
+  //    d'emprise ou d'implantation AU SOL (CES). "Coefficient d'implantation au sol"
+  //    (sept-îles) is the same land-coverage norm. A "rapport plancher/terrain"
+  //    (COS floor-area ratio) is a DIFFERENT quantity → it lacks "…sol" so it never
   //    matches here (anti-over-mapping). ──
-  if (/(coefficient|indice|rapport|pourcentage|%).*(occupation|emprise).*sol/.test(s))
+  if (/(coefficient|indice|rapport|pourcentage|%).*(occupation|emprise|implantation).*sol/.test(s))
     return "densite";
-  if (/(occupation|emprise).*sol/.test(s)) return "densite";
+  if (/(occupation|emprise|implantation).*sol/.test(s)) return "densite";
   if (/\(ces\)|\bc\.e\.s\.?\b/.test(s)) return "densite";
 
   return null;
@@ -1235,6 +1237,265 @@ export function parseTransposedGrilleNativePage(
       if (seen.has(key)) continue;
       seen.add(key);
       const fields = perZone.get(ai) ?? {};
+      const provenance = (): FieldProvenanceT => ({
+        source_url: opts.source_url,
+        methode,
+        snapshot: opts.snapshot,
+        page: `PAGE ${page} ZONE ${code}`,
+      });
+      const field = (id: FieldId): NormFieldT => {
+        const spec = FIELD_SPECS.find((s) => s.id === id)!;
+        const raw = fields[id] ?? null;
+        return buildVisionField(spec, raw, raw, provenance());
+      };
+      const hauteurMetres = field("hauteur_metres");
+      const hauteurEtages = field("hauteur_etages");
+      const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+      const zn: ZoneNormsT = {
+        zone_code: code,
+        zone_page: `PAGE ${page} ZONE ${code}`,
+        usages: [],
+        densite: field("densite"),
+        hauteur_min: null,
+        hauteur_max: hauteurMax,
+        marges: {
+          avant_min: field("marge_avant_min"),
+          laterale_min: field("marge_laterale_min"),
+          arriere_min: field("marge_arriere_min"),
+        },
+        frontage_min: field("frontage_min"),
+        superficie_min: field("superficie_min"),
+      };
+      out.push(ZoneNorms.parse(zn));
+    }
+  }
+  return out;
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  TRANSPOSED "grille des spécifications" where the header row carries the zone
+//  CODES DIRECTLY as columns (Sept-Îles / Saint-Tite / Valcourt family) — the
+//  OTHER transposed layout, distinct from the Matapédia number+usage split header
+//  above. The zone codes ARE the column headers ("107 R … 110 I", "A-1 … A-5",
+//  "1-F 2-VB … 20-Aa"); the norm labels are ROWS below, one VALUE per zone COLUMN.
+//
+//  WHY A DEDICATED $0 PATH. These grilles carry a real, complete text layer, but
+//  the frozen extractors returned 0 zones on them: the Matapédia parser refuses
+//  (no "Numéro de zone"/"Usage dominant" rows) and the markdown-OCR mapper needs a
+//  paid OCR pass whose pipe-table reconstruction is brittle on the very wide
+//  sheets. `pdftotext -layout` projects the columns cleanly, so we read them here
+//  straight from the text layer — deterministic, no LLM, no cost.
+//
+//  ANTI-INVENTION (identical spirit to every other path):
+//    • a header column is counted ONLY when it is a LETTER-BEARING zone code
+//      (alpha-first, digit-letter, or a "107" + "R" pair) — a row of bare numeric
+//      VALUES has zero letter-bearing tokens and so is NEVER read as a header;
+//    • label↔field via the frozen `labelToFieldId`; value↔zone by COLUMN position
+//      (nearest anchor within tolerance) — a stray token (renvoi "7.1", footnote)
+//      that lands far from every zone column is dropped, never mis-attributed;
+//    • two-tier sheets (valcourt: a "Marge …:" title row with EMPTY cells, then a
+//      "bâtiment principal" / "- minimum" / "- maximum" value row) reuse the SAME
+//      section-carry + min/max sub-row ranking as the markdown mapper;
+//    • every value is the VERBATIM column token, gated by `buildVisionField`.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Alpha-first zone code ("A-1", "Ra-3", "H12"): letters then digits. */
+const ZC_ALPHA_FIRST = /^[A-Za-zÀ-ÿ]{1,3}-?\d{1,4}(?:-\d{1,3})?$/;
+/** Digit-letter zone code ("1-F", "9-Ag", "20-Aa"): a number, then a letter block. */
+const ZC_DIGIT_LETTER = /^\d{1,4}(?:-\d{1,3})?-[A-Za-zÀ-ÿ]{1,4}$/;
+/** A bare numeric core ("107", "108-1", "110") — a code ONLY once a short letter
+ *  suffix is column-adjacent (Sept-Îles emits "107 R" as two tokens). */
+const ZC_NUM_CORE = /^\d{1,4}(?:-\d{1,3})?$/;
+/**
+ * A short standalone letter block ("R", "I", "REC", "Ag") that can suffix a numeric
+ * core. It MUST be UPPERCASE-INITIAL: every real QC zone-class letter (R, C, I, S,
+ * REC, Ra, Ag…) is capitalised, whereas a French connector/range word in a note
+ * ("…CUBF 2011 à 2020 et 2041 à 2051") is lowercase — so a "<number> <connector>"
+ * pair in prose is NEVER fabricated into a zone code (anti-invention). Saint-Tite's
+ * NOTES page emitted the fake codes "2011 à", "2020 et", "2041 à" through the old
+ * accent-any-case suffix; the uppercase anchor drops them (and the page with them).
+ */
+const ZC_LETTER_SUFFIX = /^[A-ZÀ-Ö][A-Za-zÀ-ÿ]{0,3}$/;
+
+/** One zone column: its verbatim code and the character column of its left edge. */
+interface ColZone {
+  code: string;
+  start: number;
+}
+
+/**
+ * Extract the zone-code columns from ONE header line. Counts ONLY letter-bearing
+ * codes (a row of bare numeric values yields none), and MERGES a "107" + "R" pair
+ * (Sept-Îles) into one code anchored at the number's column.
+ */
+export function columnsHeaderZones(line: string): ColZone[] {
+  const toks = tokensWithCols(line);
+  const out: ColZone[] = [];
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i]!;
+    if (ZC_ALPHA_FIRST.test(t.t) || ZC_DIGIT_LETTER.test(t.t)) {
+      out.push({ code: t.t, start: t.start });
+      continue;
+    }
+    if (ZC_NUM_CORE.test(t.t)) {
+      const nxt = toks[i + 1];
+      if (nxt && ZC_LETTER_SUFFIX.test(nxt.t) && nxt.start - t.end <= 3) {
+        out.push({ code: `${t.t} ${nxt.t}`, start: t.start });
+        i++; // consume the merged letter suffix
+      }
+      // A bare number with no adjacent letter is NOT a code (anti-invention).
+    }
+  }
+  return out;
+}
+
+/**
+ * Does this page carry the zones-in-COLUMNS transposed signature — a header line
+ * with ≥3 letter-bearing zone codes AND at least one mappable norm label? (The
+ * dual anchor keeps a random wide numeric table from qualifying.)
+ */
+export function looksLikeTransposedColumnsGrille(text: string): boolean {
+  const lines = text.split(/\r?\n/);
+  const hasHeader = lines.some((l) => columnsHeaderZones(l).length >= 3);
+  if (!hasHeader) return false;
+  return /marge de recul|hauteur|superficie|largeur|coefficient|occupation|emprise|implantation|nombre d.?etage/i.test(
+    text,
+  );
+}
+
+/** Adapt a ColZone anchor set to the ColToken shape `nearestAnchor`/tolerance want. */
+function anchorTokens(anchors: ColZone[]): ColToken[] {
+  return anchors.map((a) => ({ t: a.code, start: a.start, end: a.start + a.code.length }));
+}
+
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the zones-in-COLUMNS transposed
+ * grille (Sept-Îles / Saint-Tite / Valcourt family). Reads ONE page's `pdftotext
+ * -layout` text → one `ZoneNorms` per zone COLUMN. Handles a header SPLIT across
+ * adjacent staggered lines (Saint-Tite) and TWO-TIER value rows (Valcourt).
+ *
+ * Returns [] for a page with no ≥3-code header band — anti-invention: no header,
+ * no zone. The caller falls back to OCR/vision for that page.
+ */
+export function parseTransposedColumnsGrille(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-transposee-colonnes";
+  const lines = layoutText.split(/\r?\n/);
+
+  // Every line dominated by ≥3 letter-bearing zone codes is a header line. Group
+  // consecutive-ish header lines (gap ≤2) into ONE band — a wide sheet staggers
+  // its header across two adjacent rows (Saint-Tite: odd codes up, even codes down).
+  const headerZones = new Map<number, ColZone[]>();
+  const headerIdx: number[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    const zs = columnsHeaderZones(lines[i]!);
+    if (zs.length >= 3) {
+      headerZones.set(i, zs);
+      headerIdx.push(i);
+    }
+  }
+  if (headerIdx.length === 0) return [];
+  const bands: number[][] = [];
+  for (const idx of headerIdx) {
+    const last = bands[bands.length - 1];
+    if (last && idx - last[last.length - 1]! <= 2) last.push(idx);
+    else bands.push([idx]);
+  }
+
+  const out: ZoneNormsT[] = [];
+  const seen = new Set<string>();
+  for (let b = 0; b < bands.length; b++) {
+    const band = bands[b]!;
+    const bandEnd = band[band.length - 1]!;
+    // Union the codes across the band's lines; drop a duplicate at (near) the same
+    // column so a code repeated on both staggered lines is not double-anchored.
+    const anchors: ColZone[] = [];
+    for (const li of band) {
+      for (const z of headerZones.get(li)!) {
+        if (anchors.some((a) => Math.abs(a.start - z.start) <= 2)) continue;
+        anchors.push(z);
+      }
+    }
+    anchors.sort((x, y) => x.start - y.start);
+    if (anchors.length < 3) continue;
+
+    const anchTok = anchorTokens(anchors);
+    const tol = anchorColTolerance(anchTok);
+    const valueRegionStart = anchors[0]!.start - 6;
+    const bodyEnd = b + 1 < bands.length ? bands[b + 1]![0]! : lines.length;
+
+    // Per zone column: verbatim field cells + the rank of the sub-row that supplied
+    // each (so a "- maximum" row overrides a "- minimum"). First-seen otherwise.
+    const perZone = anchors.map(() => ({}) as Partial<Record<FieldId, string>>);
+    const perRank = anchors.map(() => ({}) as Partial<Record<FieldId, number>>);
+    let section: FieldId | null = null;
+
+    for (let r = bandEnd + 1; r < bodyEnd; r++) {
+      const line = lines[r]!;
+      if (!line.trim()) continue;
+      // Split the row's tokens into COLUMN-ALIGNED values (right of the label region,
+      // nearest a zone anchor within tol) vs the label (everything else — including a
+      // renvoi/unit token that lands far from every zone column).
+      const toks = tokensWithCols(line);
+      const firstCol = toks.length ? toks[0]!.start : 0;
+      const valueByAnchor = new Map<number, string>();
+      const valueDist = new Map<number, number>();
+      const labelParts: string[] = [];
+      for (const tk of toks) {
+        if (tk.start >= valueRegionStart) {
+          const ai = nearestAnchor(anchTok, tk.start, tol);
+          if (ai >= 0) {
+            const d = Math.abs(tk.start - anchors[ai]!.start);
+            const prev = valueDist.get(ai);
+            if (prev === undefined || d < prev) {
+              valueByAnchor.set(ai, tk.t);
+              valueDist.set(ai, d);
+            }
+            continue;
+          }
+        }
+        labelParts.push(tk.t);
+      }
+      const label = labelParts.join(" ").trim();
+      const ownField = labelToFieldId(label);
+
+      // (1) A TITLE row (at the LEFT margin) with NO aligned values SETS the section
+      //     (or, mapping to nothing — "Somme…", "Marge …maximale:" — CLEARS it). An
+      //     INDENTED empty sub-label ("     bâtiment principal") is a spacer between
+      //     the title and its value row (Valcourt latérale: value sits on the deeper
+      //     "- bâtiment isolé" line) — it must NOT touch the section.
+      if (valueByAnchor.size === 0) {
+        if (firstCol <= 2) section = ownField;
+        continue;
+      }
+      // (2) A self-contained data row (Sept-Îles/Saint-Tite single-tier) OR a value
+      //     row under an open section (Valcourt "bâtiment principal" / "- maximum").
+      const field = ownField ?? section;
+      if (!field) continue;
+      if (ownField) section = null; // a titled value row closes any open section
+      const rank = subRowRank(label, field);
+      for (const [ai, cell] of valueByAnchor) {
+        const val = cell && cell.trim().length ? cell : null;
+        const prev = perRank[ai]![field];
+        if (prev === undefined) {
+          if (val !== null) perZone[ai]![field] = val;
+          perRank[ai]![field] = rank;
+        } else if (rank > prev && val !== null) {
+          perZone[ai]![field] = val;
+          perRank[ai]![field] = rank;
+        }
+      }
+    }
+
+    for (let ai = 0; ai < anchors.length; ai++) {
+      const code = anchors[ai]!.code;
+      const key = code.toUpperCase().replace(/\s+/g, "");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const fields = perZone[ai]!;
       const provenance = (): FieldProvenanceT => ({
         source_url: opts.source_url,
         methode,
