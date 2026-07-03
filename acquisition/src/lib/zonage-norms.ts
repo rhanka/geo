@@ -264,6 +264,9 @@ export const SIG_ZONE_CODE_FIELDS = [
   "ZONE_ID",
   "zone_id",
   "Zonage_ID",
+  "ID_ZONE",
+  "NUMZONE",
+  "ZONAGEMUNICIPALID",
 ] as const;
 
 /**
