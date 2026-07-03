@@ -91,7 +91,10 @@ export interface ZoneCodeStats {
 const FIELD_EXCLUDE_RE = /objectid|^fid$|globalid|shape|superfic|^area$|longueur|length|perimet|date|^modif$|matricule|adresse|propri[eé]t|code_?postal|municipalit|id_?municip|code_?mun|mamh|cadastre|no_?lot|\blot\b/i;
 const REAL_ZONE_FIELD_RE = /^(zone_?code|zonage|zoning|zone|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
 const EXPLICIT_ZONE_FIELD_RE = /^(zone_?code|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
-const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d/;
+// Signature d'un VRAI code de zonage : soit préfixe lettre(s)+chiffre(s) (FA-2, C-15),
+// soit format QC chiffre-d'abord <n°zone>-<usage> (100-A, 101 C) — séparateur OBLIGATOIRE
+// dans l'alternance chiffre-d'abord pour ne PAS admettre entiers/adresses nus.
+const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d|^\d{1,4}[-_. ][A-Za-z]/;
 
 // ── Utilitaires géo (alignés sur zones-obscura-run.ts) ────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
