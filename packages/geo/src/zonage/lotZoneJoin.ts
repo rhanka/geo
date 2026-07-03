@@ -85,13 +85,35 @@ export function normalizeZoneCode(value: unknown): string {
     .replace(/\s+/g, " ");
 }
 
+/**
+ * Canonical key used ONLY to join a zones layer against a norms grille.
+ *
+ * On top of `normalizeZoneCode` (case, unicode dashes, dash/space collapse) it
+ * folds together the FORMAT variants of one letter+number code: it strips the
+ * spaces and any leading zeros that sit right after the letter prefix and forces
+ * a single canonical dash. So `H01`, `H-01`, `H 1`, `H1` all fold to `H-1` \u2014 the
+ * same physical zone written differently by the SIG layer vs the norms table.
+ *
+ * This mirrors `acquisition/src/zone-codes-report.ts` `canon()` exactly, so the
+ * diagnostic's reported norms\u2229zones overlap equals the join's realized match.
+ *
+ * ANTI-INVENTION: it only drops leading zeros (never significant digits) and
+ * only rewrites the letter\u2192number boundary, so it never merges distinct codes \u2014
+ * `H-1` and `H-10` stay distinct, `C-408` and `C-40` stay distinct.
+ */
+export function canonicalizeZoneCodeForJoin(value: unknown): string {
+  return normalizeZoneCode(value)
+    .replace(/\s+/g, "")
+    .replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
+}
+
 export function enrichWithNorms(
   assignments: LotZoneAssignment[],
   normsByZoneCode: Map<string, NormsRecord>,
 ): LotZoneNormAssignment[] {
   const normalizedNorms = new Map<string, NormsRecord>();
   for (const [code, norms] of normsByZoneCode) {
-    const normalized = normalizeZoneCode(code);
+    const normalized = canonicalizeZoneCodeForJoin(code);
     if (normalized && !normalizedNorms.has(normalized)) normalizedNorms.set(normalized, norms);
   }
 
@@ -99,7 +121,7 @@ export function enrichWithNorms(
     const norms =
       assignment.zoneCode === null
         ? null
-        : normalizedNorms.get(normalizeZoneCode(assignment.zoneCode)) ?? null;
+        : normalizedNorms.get(canonicalizeZoneCodeForJoin(assignment.zoneCode)) ?? null;
     return { ...assignment, norms };
   });
 }

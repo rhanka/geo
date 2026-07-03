@@ -1,5 +1,6 @@
 export {
   assignLotZones,
+  canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
   type LotZoneAssignment,

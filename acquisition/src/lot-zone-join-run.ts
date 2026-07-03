@@ -20,6 +20,7 @@ import { ParquetSchema, ParquetWriter } from "@dsnp/parquetjs";
 import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon, Position } from "geojson";
 import {
   assignLotZones,
+  canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
   type LotZoneNormAssignment,
@@ -291,8 +292,11 @@ async function loadNorms(
   for (const row of rows) {
     const code = row["zone_code"];
     if (code === null || code === undefined || !String(code).trim()) continue;
-    const normalized = normalizeZoneCode(code);
-    if (!byCode.has(normalized)) byCode.set(normalized, row);
+    // Key the grille by the join-canonical code so H01/H-01/H 1 fold to the
+    // same bucket the zones layer's H-1 will look up (enrichWithNorms applies
+    // the same canon on both sides; keying here also dedups grille duplicates).
+    const canonical = canonicalizeZoneCodeForJoin(code);
+    if (!byCode.has(canonical)) byCode.set(canonical, row);
   }
   return { rows, byCode };
 }
