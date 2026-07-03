@@ -288,6 +288,19 @@ export function labelToFieldId(label: string): FieldId | null {
   if (/marge.*(laterale|lateral)/.test(s) && !/max/.test(s)) return "marge_laterale_min";
   if (/marge.*arriere/.test(s) && !/max/.test(s)) return "marge_arriere_min";
 
+  // ── Bare directional MARGE sub-section titles (baie-comeau / Côte-Nord family). A
+  //    "MARGE(S)" band splits into one-word sub-titles — "Avant" / "Arrière" /
+  //    "Latérales" — each sitting on its OWN line ABOVE a "Générale" value row that
+  //    carries the actual per-zone value. The title word alone IS the margin
+  //    direction (no "marge"/"recul" word), so the transposed-columns parser sets it
+  //    as the section context and carries it down to the "Générale" row. Map ONLY a
+  //    label that is *exactly* the direction word (optionally "…s"/":"), so a value
+  //    row label like "39 Générale" — or any prose — never matches. "Riveraine" (a
+  //    shoreline setback) is a DISTINCT margin and stays UNMAPPED (anti-over-mapping).
+  if (/^avant$/.test(s)) return "marge_avant_min";
+  if (/^arrieres?$/.test(s)) return "marge_arriere_min";
+  if (/^lateral(e|es|)$/.test(s)) return "marge_laterale_min";
+
   // ── Hauteur — étages vs mètres. "Nombre d'étages …" carries no "hauteur" word,
   //    so match it explicitly; a bare "…(m)"/"mètre(s)" hauteur → metres. An
   //    ambiguous unit-less "hauteur" is left UNMAPPED (null beats a wrong window). ──
@@ -1392,7 +1405,15 @@ export function parseTransposedColumnsGrille(
   const headerIdx: number[] = [];
   for (let i = 0; i < lines.length; i++) {
     const zs = columnsHeaderZones(lines[i]!);
-    if (zs.length >= 3) {
+    // A header band carries ≥3 zone codes that are DISTINCT (real zones are unique
+    // per grille). A note/renvoi VALUE row repeats ONE annex reference across its
+    // columns ("N-2 N-2 N-2 …", baie-comeau's "Riveraine" row) — "N-2" matches the
+    // alpha-first zone-code shape, so without this it was read as a spurious header,
+    // fragmenting the table, injecting a bogus "N-2" zone AND stealing the DENSITE /
+    // hauteur rows into a mis-anchored band. Requiring ≥3 DISTINCT codes rejects the
+    // all-identical note row while keeping every real header (anti-invention).
+    const distinct = new Set(zs.map((z) => z.code.toUpperCase().replace(/\s+/g, ""))).size;
+    if (zs.length >= 3 && distinct >= 3) {
       headerZones.set(i, zs);
       headerIdx.push(i);
     }
@@ -1405,8 +1426,19 @@ export function parseTransposedColumnsGrille(
     else bands.push([idx]);
   }
 
-  const out: ZoneNormsT[] = [];
-  const seen = new Set<string>();
+  // Accumulate each zone's verbatim field cells ACROSS all bands (keyed by canonical
+  // code). A single page splits the SAME zone columns into a USAGES-header band and a
+  // MARGE/NORMES-header band (baie-comeau / Côte-Nord family: identical codes at
+  // identical columns): the USAGES band carries no norm field, the NORMES band carries
+  // every value. A first-band-wins emit (the old per-page `seen` set) let the EMPTY
+  // usages zone SHADOW the norms zone with the same code, so every real value was
+  // dropped (fieldPct≈0 despite overlap≈93%). Merging by code recovers them — a later
+  // band's value fills an empty field, a higher-rank sub-row still wins — and remains
+  // anti-invention (verbatim cells only, gated by buildVisionField at emit).
+  const acc = new Map<
+    string,
+    { code: string; fields: Partial<Record<FieldId, string>>; ranks: Partial<Record<FieldId, number>> }
+  >();
   for (let b = 0; b < bands.length; b++) {
     const band = bands[b]!;
     const bandEnd = band[band.length - 1]!;
@@ -1493,40 +1525,59 @@ export function parseTransposedColumnsGrille(
     for (let ai = 0; ai < anchors.length; ai++) {
       const code = anchors[ai]!.code;
       const key = code.toUpperCase().replace(/\s+/g, "");
-      if (seen.has(key)) continue;
-      seen.add(key);
+      let entry = acc.get(key);
+      if (!entry) {
+        entry = { code, fields: {}, ranks: {} };
+        acc.set(key, entry);
+      }
       const fields = perZone[ai]!;
-      const provenance = (): FieldProvenanceT => ({
-        source_url: opts.source_url,
-        methode,
-        snapshot: opts.snapshot,
-        page: `PAGE ${page} ZONE ${code}`,
-      });
-      const field = (id: FieldId): NormFieldT => {
-        const spec = FIELD_SPECS.find((s) => s.id === id)!;
-        const raw = fields[id] ?? null;
-        return buildVisionField(spec, raw, raw, provenance());
-      };
-      const hauteurMetres = field("hauteur_metres");
-      const hauteurEtages = field("hauteur_etages");
-      const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
-      const zn: ZoneNormsT = {
-        zone_code: code,
-        zone_page: `PAGE ${page} ZONE ${code}`,
-        usages: [],
-        densite: field("densite"),
-        hauteur_min: null,
-        hauteur_max: hauteurMax,
-        marges: {
-          avant_min: field("marge_avant_min"),
-          laterale_min: field("marge_laterale_min"),
-          arriere_min: field("marge_arriere_min"),
-        },
-        frontage_min: field("frontage_min"),
-        superficie_min: field("superficie_min"),
-      };
-      out.push(ZoneNorms.parse(zn));
+      const ranks = perRank[ai]!;
+      for (const fid of Object.keys(fields) as FieldId[]) {
+        const val = fields[fid];
+        if (val === undefined) continue;
+        const rank = ranks[fid] ?? 1;
+        // Fill an empty field, or let a higher-rank sub-row (a "- maximum" over a
+        // "- minimum") override — never a lower-rank one (anti-invention preserved).
+        if (entry.fields[fid] === undefined || rank > (entry.ranks[fid] ?? -1)) {
+          entry.fields[fid] = val;
+          entry.ranks[fid] = rank;
+        }
+      }
     }
+  }
+
+  const out: ZoneNormsT[] = [];
+  for (const { code, fields } of acc.values()) {
+    const provenance = (): FieldProvenanceT => ({
+      source_url: opts.source_url,
+      methode,
+      snapshot: opts.snapshot,
+      page: `PAGE ${page} ZONE ${code}`,
+    });
+    const field = (id: FieldId): NormFieldT => {
+      const spec = FIELD_SPECS.find((s) => s.id === id)!;
+      const raw = fields[id] ?? null;
+      return buildVisionField(spec, raw, raw, provenance());
+    };
+    const hauteurMetres = field("hauteur_metres");
+    const hauteurEtages = field("hauteur_etages");
+    const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+    const zn: ZoneNormsT = {
+      zone_code: code,
+      zone_page: `PAGE ${page} ZONE ${code}`,
+      usages: [],
+      densite: field("densite"),
+      hauteur_min: null,
+      hauteur_max: hauteurMax,
+      marges: {
+        avant_min: field("marge_avant_min"),
+        laterale_min: field("marge_laterale_min"),
+        arriere_min: field("marge_arriere_min"),
+      },
+      frontage_min: field("frontage_min"),
+      superficie_min: field("superficie_min"),
+    };
+    out.push(ZoneNorms.parse(zn));
   }
   return out;
 }
