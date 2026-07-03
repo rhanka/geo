@@ -62,6 +62,15 @@ import {
   isNumberedGrilleSpec,
   parseNumberedGrilleNativePage,
 } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
+import {
+  locateZoneHeaderGrille,
+  readZoneHeaderCode,
+} from "../../packages/qc-sources/src/sources/grille-zoneheader-locator.js";
+import { parseLabelValueGrillePage } from "../../packages/qc-sources/src/sources/grille-zoneheader-parser.js";
+import {
+  extractZoneHeaderPageFromPdf,
+  MistralVisionZoneHeader,
+} from "../../packages/qc-sources/src/sources/grille-vision-zoneheader.js";
 
 import { s3Client } from "./lib/s3.js";
 import { resolveOcrCall } from "./lib/ocr.js";
@@ -88,7 +97,7 @@ interface Args {
   pdf: string;
   sourceUrl: string;
   reglement?: string;
-  route: "auto" | "native" | "vision" | "multizone" | "ocr";
+  route: "auto" | "native" | "vision" | "multizone" | "ocr" | "zoneheader";
   maxVisionPages: number;
   budgetUsd: number;
   dryRun: boolean;
@@ -312,7 +321,7 @@ function expectedZoneFromPage(text: string): string | undefined {
 }
 
 interface RouteDecision {
-  route: "native" | "vision" | "multizone" | "ocr" | "none";
+  route: "native" | "vision" | "multizone" | "ocr" | "zoneheader" | "none";
   nativeGrillePages: number;
   nativeAcceptedRows: number;
   reason: string;
@@ -320,6 +329,15 @@ interface RouteDecision {
 
 // `isMultiZoneHorizontalPage` (zones-as-columns header detector) is shared with the
 // discovery routeur and lives in `grille-pdf-classifier.ts` (imported above).
+
+/** Pick up to `k` items spread EVENLY across an array (for a representative sample). */
+function sampleAcross<T>(items: ReadonlyArray<T>, k: number): T[] {
+  if (items.length <= k) return [...items];
+  const out: T[] = [];
+  const step = (items.length - 1) / (k - 1);
+  for (let i = 0; i < k; i++) out.push(items[Math.round(i * step)]!);
+  return out;
+}
 
 /**
  * Decide the route by probing the layout text with the frozen parser:
@@ -351,6 +369,46 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
       nativeAcceptedRows: acceptedRows,
       reason: `${grillePages} native grille pages, ${acceptedRows} accepted rows`,
     };
+  }
+  // ── ONE-ZONE-PER-PAGE "label : value" grille (voie B — durham-sud / lachute /
+  //    blainville family) ──────────────────────────────────────────────────────
+  // Each page carries a single per-page ZONE header + self-labelled norm rows. The
+  // deterministic native field-mapper reads these at $0 (with a per-page vision
+  // fallback for true scans). We take this BEFORE the OCR branch because the OCR
+  // path mis-reads these pages badly: the transposed-grid mapper reads the USAGES
+  // class column (H1/C1/I3…) as zone codes → overlap=0, and the single big OCR call
+  // 400s on a deep annex. EXCLUDED: the Nicolet "ZONE: <code>" + "NORMES PRESCRITES"
+  // native family, which the OCR route's native-first already reads for free — so a
+  // window whose pages satisfy that exact pair stays on the OCR route (no cost regress).
+  const rawPages = layoutText.split("\f");
+  const zhWin = locateZoneHeaderGrille(rawPages);
+  if (zhWin && zhWin.uniqueZoneCodes >= MIN_DEPOSIT_ZONE_CODES) {
+    // Robust discriminator: actually run the zoneheader native field-mapper on a
+    // spread SAMPLE of the located window and route here iff it publishes real norm
+    // fields. Self-consistent (route to zoneheader exactly when zoneheader succeeds)
+    // and side-steps the fragile "NORMES PRESCRITES + body 'Zone H-100' prose"
+    // heuristic (blainville). The Nicolet family that the OCR route reads for free
+    // either also maps here at $0 (harmless) or fails the sample → falls to OCR.
+    const sample = sampleAcross(zhWin.pages, 8);
+    const mapped = sample.filter((p) => {
+      const zs = parseLabelValueGrillePage(rawPages[p - 1] ?? "", p, {
+        source_url: sourceUrl,
+        snapshot,
+      });
+      return zs.length > 0 && publishedCount(zs[0]!) > 0;
+    }).length;
+    if (mapped >= Math.ceil(sample.length / 2)) {
+      return {
+        route: "zoneheader",
+        nativeGrillePages: grillePages,
+        nativeAcceptedRows: acceptedRows,
+        reason:
+          `one-zone-per-page label:value grille (${zhWin.uniqueZoneCodes} codes, ` +
+          `pages ${zhWin.firstPage}..${zhWin.lastPage}, conf=${zhWin.confidence}; ` +
+          `${mapped}/${sample.length} sample pages mapped norms) → native field-mapper ` +
+          `(+ per-page vision fallback)`,
+      };
+    }
   }
   // The "grille des spécifications" multi-zone format (zones in columns) is the
   // dominant rural/Portneuf layout; route it to the multi-zone vision extractor.
@@ -441,6 +499,31 @@ function costTrackedMultiZone(): {
   };
 }
 
+/** Cost-tracking wrapper around the ZONE-header per-page vision call (voie B scan
+ *  fallback). Same estimate basis as the single-zone tracker (one zone/page). */
+function costTrackedZoneHeaderVision(): {
+  call: MistralVisionGrille["extract"];
+  usd: () => number;
+  calls: () => number;
+} {
+  const base = new MistralVisionZoneHeader();
+  let inTok = 0;
+  let outTok = 0;
+  let nCalls = 0;
+  const wrapped: MistralVisionGrille["extract"] = async (imagePath, pass, expectedZone) => {
+    nCalls++;
+    const out: VisionRawExtraction = await base.extract(imagePath, pass, expectedZone);
+    inTok += 2100;
+    outTok += 300;
+    return out;
+  };
+  return {
+    call: wrapped,
+    usd: () => (inTok / 1e6) * MISTRAL_IN_PER_M + (outTok / 1e6) * MISTRAL_OUT_PER_M,
+    calls: () => nCalls,
+  };
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const s3 = s3Client();
@@ -501,6 +584,95 @@ async function main(): Promise<void> {
       `[native] pages=${res.stats.totalPages} grille=${res.stats.grillePages} ` +
         `rejected=${res.stats.rejectedGrillePages} rows=${res.stats.zoneRows} ` +
         `uniqueZones=${res.stats.uniqueZoneCodes}`,
+    );
+  } else if (decision.route === "zoneheader") {
+    // VOIE B — ONE-ZONE-PER-PAGE "label : value" grille (durham-sud / lachute /
+    // blainville family). BORNAGE + per-page DETERMINISTIC field-mapper first ($0);
+    // per-page CHAT-VISION fallback for pages carrying a header but no readable
+    // native norms (true scans). Same guarded ZoneNorms, same anti-invention gates.
+    const pageCount = pdfPageCount(args.pdf);
+    const win = locateZoneHeaderGrille(pageTexts);
+    // Native-first is $0, so it runs over the WHOLE located window (or --first/--last).
+    // Only the paid per-page VISION fallback is bounded by maxVisionPages + budget.
+    const first = args.firstPage ?? win?.firstPage ?? 1;
+    const last = Math.min(args.lastPage ?? win?.lastPage ?? pageCount, pageCount);
+    console.error(
+      `[zoneheader] pdf pages=${pageCount} window ${first}..${last} ` +
+        `(loc=${win ? `${win.firstPage}..${win.lastPage} codes=${win.uniqueZoneCodes} conf=${win.confidence}` : "none"})`,
+    );
+    const byZone = new Map<string, ZoneNormsT>();
+    const mergeZone = (zn: ZoneNormsT): void => {
+      const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
+      const prev = byZone.get(key);
+      if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+    };
+    // ── NATIVE-FIRST ($0, deterministic) — read the norms straight from the text. ──
+    const scanPages: number[] = [];
+    let nativeZones = 0;
+    for (let p = first; p <= last; p++) {
+      const t = pageTexts[p - 1] ?? "";
+      const zs = parseLabelValueGrillePage(t, p, {
+        source_url: args.sourceUrl,
+        snapshot: args.snapshot,
+        methode: "native-text/zoneheader",
+      });
+      if (zs.length > 0 && publishedCount(zs[0]!) > 0) {
+        mergeZone(zs[0]!);
+        nativeZones++;
+        continue;
+      }
+      // A header code but no native norm values → likely an image scan → vision fallback.
+      if (readZoneHeaderCode(t)) scanPages.push(p);
+    }
+    // ── PER-PAGE CHAT-VISION fallback (only for the true-scan pages) ──────────────
+    // Bounded by maxVisionPages (count) AND budget — native above is unbounded/$0.
+    const tracker = costTrackedZoneHeaderVision();
+    const visionScanPages = scanPages.slice(0, args.maxVisionPages);
+    if (visionScanPages.length > 0 && process.env["MISTRAL_API_KEY"]) {
+      console.error(
+        `[zoneheader] native zones=${nativeZones} → ${scanPages.length} scan page(s), ` +
+          `${visionScanPages.length} via vision (cap ${args.maxVisionPages})`,
+      );
+      for (const p of visionScanPages) {
+        if (tracker.usd() >= args.budgetUsd) {
+          console.error(`[budget] reached $${tracker.usd().toFixed(2)} — stopping at page ${p}`);
+          break;
+        }
+        visionPagesAttempted++;
+        try {
+          const expectedZone = readZoneHeaderCode(pageTexts[p - 1] ?? "") ?? undefined;
+          const zn = await extractZoneHeaderPageFromPdf(args.pdf, p, {
+            source_url: args.sourceUrl,
+            snapshot: args.snapshot,
+            ...(expectedZone ? { expectedZone } : {}),
+            ...(args.dpi ? { dpi: args.dpi } : {}),
+            vision: tracker.call,
+          });
+          mergeZone(zn);
+        } catch (e) {
+          visionPagesFailed++;
+          const msg = e instanceof Error ? e.message : String(e);
+          console.error(`[zoneheader] page ${p} vision skipped: ${msg.slice(0, 120)}`);
+        }
+      }
+    } else if (scanPages.length > 0) {
+      console.error(
+        `[zoneheader] ${scanPages.length} scan page(s) need vision but MISTRAL_API_KEY unset — native-only`,
+      );
+    }
+    zones = [...byZone.values()];
+    visionUsd = tracker.usd();
+    visionCalls = tracker.calls();
+    methode =
+      nativeZones > 0 && visionCalls === 0
+        ? "native-text/zoneheader"
+        : nativeZones > 0
+          ? "native-text/zoneheader+mistral-vision"
+          : "mistral-vision/zoneheader";
+    console.error(
+      `[zoneheader] zones=${zones.length} nativeZones=${nativeZones} ` +
+        `visionCalls=${visionCalls} attempted=${visionPagesAttempted} failed=${visionPagesFailed} ` +
+        `estUsd=$${visionUsd.toFixed(3)}`,
     );
   } else if (decision.route === "vision") {
     if (!process.env["MISTRAL_API_KEY"]) {
