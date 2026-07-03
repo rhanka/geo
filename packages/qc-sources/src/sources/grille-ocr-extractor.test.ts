@@ -14,6 +14,9 @@ import {
   parseNumberedGrilleNativePage,
   parseTransposedGrilleNativePage,
   looksLikeTransposedGrille,
+  parseTransposedColumnsGrille,
+  looksLikeTransposedColumnsGrille,
+  columnsHeaderZones,
   parseZoneHeader,
   isNumberedGrilleSpec,
   zonePrefixFromRow,
@@ -952,5 +955,181 @@ describe("parseTransposedGrilleNativePage — anti-invention on ragged / absent 
   it("REFUSES text with no 'Numéro de zone' anchor row", () => {
     expect(parseTransposedGrilleNativePage("just some prose\nUsage dominant Cp Hb", 1, OPTS2)).toEqual([]);
     expect(parseTransposedGrilleNativePage(NICOLET_I01_132_LAYOUT, 1, OPTS2)).toEqual([]);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  TRANSPOSED native-text grille — zones as COLUMNS (Sept-Îles / Saint-Tite /
+//  Valcourt family). The header row carries the zone CODES DIRECTLY as columns;
+//  the norm labels are ROWS below, one VALUE per zone COLUMN. Distinct from the
+//  Matapédia number+usage split header above. Fixtures below reproduce, via the
+//  column-placement helper, the exact codes + verbatim values read from the real
+//  `pdftotext -layout` projections (Sept-Îles Grille de spécifications p.3;
+//  Saint-Tite Annexe D p.2).
+// ───────────────────────────────────────────────────────────────────────────
+
+// Sept-Îles page 3 (VERBATIM codes + values): the header emits each zone as a
+// "<number> <class-letter>" pair ("107 R", "110 I"), two tokens the parser merges
+// into one column code. The unit "(m)" / "(%)" sits in the LABEL region (left of
+// the value columns). "Largeur combinée des marges latérales minimales" is a SUM →
+// never mapped to frontage (anti-over-mapping); "(2)" in parens is a note → null.
+const SI_COLS = [64, 80, 96, 112, 128];
+const SEPTILES_COLS_LAYOUT = [
+  placeCols(SI_COLS, ["107 R", "108 R", "108-1 R", "109 R", "110 I"]),
+  placeCols([0, ...SI_COLS], ["Hauteur maximale (m)", "7.5", "7.5", "7.5", "7.5", "20"]),
+  placeCols([0, ...SI_COLS], ["Marge de recul avant minimale (m)", "7.5", "7.5", "7.5", "7.5", "10"]),
+  placeCols([0, ...SI_COLS], ["Marge de recul arrière minimale (m)", "8", "8", "8", "8", "20"]),
+  placeCols([0, ...SI_COLS], ["Marge de recul latérale minimale (m)", "2-4", "2-4", "(2)", "2-4", "10"]),
+  placeCols([0, ...SI_COLS], ["Largeur combinée des marges latérales minimales (m)", "6", "6", "(2)", "6", "20"]),
+  placeCols([0, ...SI_COLS], ["Coefficient d'implantation au sol (%)", "30", "30", "30", "30", "50"]),
+].join("\n");
+
+// Saint-Tite Annexe D page 2 (VERBATIM codes): the wide zone header STAGGERS across
+// two adjacent lines (odd/even bands) that TOGETHER form the full column set —
+// "9-Ag 11-Af 13-Af" up, "1-F 3-F 5-VB" down. The parser groups the two adjacent
+// header lines into ONE band and unions their codes. Codes are digit-letter form.
+const SAINTTITE_STAGGERED_LAYOUT = [
+  placeCols([72, 92, 112], ["9-Ag", "11-Af", "13-Af"]),
+  placeCols([60, 80, 100], ["1-F", "3-F", "5-VB"]),
+  placeCols([0, 60, 72, 80, 92, 100, 112], ["Marge de recul avant minimale (m)", "7.6", "5", "7.6", "5", "7.6", "5"]),
+].join("\n");
+
+// Saint-Tite page 1 is a NOTES page, NOT a grille. N.B.20 lists CUBF code RANGES
+// ("…2011 à 2020 et 2041 à 2051") — the old suffix rule fabricated the zone codes
+// "2011 à" / "2020 et" / "2041 à" (a number + a lowercase connector word). The
+// uppercase-initial suffix anchor rejects them, so this page yields NO zone.
+const SAINTTITE_NOTE_LINE =
+  "N.B.20   Industrie d'aliments et de boissons seulement à l'exception des CUBF 2011 à 2020 et 2041 à 2051.";
+const SAINTTITE_NOTES_PAGE = [
+  "                     NOTES DE LA GRILLE DES SPÉCIFICATIONS",
+  "N.B.4    Lorsque le terrain est adjacent aux routes 153, la marge de recul avant minimale est de 10 mètres.",
+  SAINTTITE_NOTE_LINE,
+].join("\n");
+
+function cByCode(zones: ZoneNormsT[], code: string): ZoneNormsT {
+  const z = zones.find((x) => x.zone_code === code);
+  if (!z) throw new Error(`no zone ${code} in [${zones.map((x) => x.zone_code).join(", ")}]`);
+  return z;
+}
+
+describe("columnsHeaderZones — zones-in-columns header parsing", () => {
+  it("merges a '<number> <class-letter>' pair into one column code (Sept-Îles)", () => {
+    const header = placeCols(SI_COLS, ["107 R", "108 R", "108-1 R", "109 R", "110 I"]);
+    const zs = columnsHeaderZones(header);
+    expect(zs.map((z) => z.code)).toEqual(["107 R", "108 R", "108-1 R", "109 R", "110 I"]);
+    // Each code is anchored at the NUMBER's left column.
+    expect(zs[0]!.start).toBe(64);
+  });
+
+  it("reads digit-letter codes directly (Saint-Tite '1-F', '9-Ag')", () => {
+    const zs = columnsHeaderZones(placeCols([60, 80, 100], ["1-F", "3-F", "5-VB"]));
+    expect(zs.map((z) => z.code)).toEqual(["1-F", "3-F", "5-VB"]);
+  });
+
+  it("ANTI-INVENTION: a range NOTE never fabricates '<number> <connector>' codes", () => {
+    // "…CUBF 2011 à 2020 et 2041 à 2051" — the lowercase connectors à/et are NOT
+    // class-letters, so no "2011 à" / "2020 et" / "2041 à" is ever emitted.
+    expect(columnsHeaderZones(SAINTTITE_NOTE_LINE)).toEqual([]);
+  });
+
+  it("a row of bare numeric VALUES yields no header code (no letter-bearing token)", () => {
+    expect(columnsHeaderZones(placeCols([64, 80, 96], ["12", "12", "30"]))).toEqual([]);
+  });
+});
+
+describe("looksLikeTransposedColumnsGrille — detection", () => {
+  it("fires on a real zones-in-columns page (≥3 codes + a norm keyword)", () => {
+    expect(looksLikeTransposedColumnsGrille(SEPTILES_COLS_LAYOUT)).toBe(true);
+    expect(looksLikeTransposedColumnsGrille(SAINTTITE_STAGGERED_LAYOUT)).toBe(true);
+  });
+  it("does NOT fire on the Matapédia number+usage grille (no code-per-column header)", () => {
+    expect(looksLikeTransposedColumnsGrille(TRANSPOSED_LAYOUT)).toBe(false);
+  });
+  it("does NOT fire on a NOTES page whose only 'codes' were fabricated ranges", () => {
+    expect(looksLikeTransposedColumnsGrille(SAINTTITE_NOTES_PAGE)).toBe(false);
+  });
+});
+
+describe("parseTransposedColumnsGrille — Sept-Îles single-line header", () => {
+  const zones = parseTransposedColumnsGrille(SEPTILES_COLS_LAYOUT, 3, OPTS2);
+
+  it("emits one ZoneNorms per column code, verbatim", () => {
+    expect(zones.map((z) => z.zone_code)).toEqual(["107 R", "108 R", "108-1 R", "109 R", "110 I"]);
+  });
+
+  it("reads each zone's norm values by COLUMN (107 R)", () => {
+    const z = cByCode(zones, "107 R");
+    expect(z.marges.avant_min?.value).toBe(7.5);
+    expect(z.marges.avant_min?.unit).toBe("m");
+    expect(z.marges.arriere_min?.value).toBe(8);
+    expect(z.densite?.value).toBe(30);
+    expect(z.hauteur_max?.value).toBe(7.5);
+    expect(z.hauteur_max?.unit).toBe("m");
+  });
+
+  it("reads a distinct column independently (110 I — industrial)", () => {
+    const z = cByCode(zones, "110 I");
+    expect(z.marges.avant_min?.value).toBe(10);
+    expect(z.densite?.value).toBe(50);
+  });
+
+  it("ANTI-OVER-MAPPING: a 'Largeur combinée … latérales' SUM is NOT a frontage", () => {
+    // frontage stays null even though the combinée row carries a value column.
+    expect(cByCode(zones, "107 R").frontage_min?.value).toBeNull();
+    expect(cByCode(zones, "108 R").frontage_min?.value).toBeNull();
+  });
+
+  it("reads a mid-band column independently (109 R)", () => {
+    const z = cByCode(zones, "109 R");
+    expect(z.marges.avant_min?.value).toBe(7.5);
+    expect(z.marges.arriere_min?.value).toBe(8);
+    expect(z.densite?.value).toBe(30);
+  });
+
+  it("METRIC — every published value is verbatim in its raw cell (0 fausse valeur)", () => {
+    let published = 0;
+    for (const z of zones) {
+      const served = [
+        z.densite, z.hauteur_max, z.frontage_min, z.superficie_min,
+        z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min,
+      ].filter((f) => f && f.value !== null);
+      published += served.length;
+      for (const f of served) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
+    expect(published).toBeGreaterThan(0);
+  });
+
+  it("stamps the zones-in-columns provenance methode", () => {
+    expect(cByCode(zones, "107 R").marges.avant_min?._provenance.methode).toBe(
+      "native-text/grille-transposee-colonnes",
+    );
+  });
+});
+
+describe("parseTransposedColumnsGrille — Saint-Tite staggered two-line header", () => {
+  const zones = parseTransposedColumnsGrille(SAINTTITE_STAGGERED_LAYOUT, 2, OPTS2);
+
+  it("unions the codes across BOTH staggered header lines into one band", () => {
+    expect(zones.map((z) => z.zone_code).sort()).toEqual(
+      ["1-F", "11-Af", "13-Af", "3-F", "5-VB", "9-Ag"].sort(),
+    );
+  });
+
+  it("reads a norm value per column across the merged band", () => {
+    expect(cByCode(zones, "1-F").marges.avant_min?.value).toBe(7.6); // lower-line zone
+    expect(cByCode(zones, "9-Ag").marges.avant_min?.value).toBe(5); // upper-line zone
+  });
+});
+
+describe("parseTransposedColumnsGrille — anti-invention on a NOTES page", () => {
+  it("returns [] for a notes page (no real column header after the fix)", () => {
+    expect(parseTransposedColumnsGrille(SAINTTITE_NOTES_PAGE, 1, OPTS2)).toEqual([]);
+  });
+  it("does NOT bleed into the Matapédia number+usage layout", () => {
+    expect(parseTransposedColumnsGrille(NICOLET_I01_132_LAYOUT, 1, OPTS2)).toEqual([]);
   });
 });

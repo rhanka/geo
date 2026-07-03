@@ -39,7 +39,11 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { ZoneNormsT } from "../../packages/qc-sources/src/sources/grille-specifications-parser.js";
-import { parseTransposedGrilleNativePage } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
+import {
+  parseTransposedGrilleNativePage,
+  parseTransposedColumnsGrille,
+  looksLikeTransposedColumnsGrille,
+} from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 
 import { s3Client } from "./lib/s3.js";
 import {
@@ -56,6 +60,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const SNAPSHOT = new Date().toISOString().slice(0, 10);
 const METHODE = "native-text/grille-transposee";
+/** Provenance tag for the zones-in-COLUMNS variant (Sept-Îles/Saint-Tite/Valcourt). */
+const METHODE_COLS = "native-text/grille-transposee-colonnes";
 /** Anti-invention floor: never deposit a product with fewer real zone codes. */
 const MIN_DEPOSIT_ZONE_CODES = 3;
 /** Default provenance anchor for the MRC de La Matapédia family (override with --source-url). */
@@ -98,6 +104,7 @@ function publishedCount(z: ZoneNormsT): number {
 interface IngestReport {
   slug: string;
   pdf: string;
+  methode: string;
   transposedPages: number;
   distinctZones: number;
   publishedFieldPct: number;
@@ -118,15 +125,30 @@ async function ingestSlug(
   if (!existsSync(pdf)) throw new Error(`missing staged grille PDF: ${pdf}`);
 
   const pages = pageTexts(pdf);
-  // Parse every page; merge by canon zone key (more published fields wins).
+  // Parse every page; merge by canon zone key (more published fields wins). Try the
+  // Matapédia number+usage split-header parser FIRST; when a page yields nothing
+  // there, fall back to the zones-in-COLUMNS parser (Sept-Îles/Saint-Tite/Valcourt),
+  // which reads the header codes directly. The two signatures are exclusive.
   const byZone = new Map<string, ZoneNormsT>();
   let transposedPages = 0;
+  let matPages = 0;
+  let colPages = 0;
   for (let i = 0; i < pages.length; i++) {
-    const zs = parseTransposedGrilleNativePage(pages[i] ?? "", i + 1, {
+    const text = pages[i] ?? "";
+    let zs = parseTransposedGrilleNativePage(text, i + 1, {
       source_url: opts.sourceUrl,
       snapshot: SNAPSHOT,
       methode: METHODE,
     });
+    if (zs.length > 0) matPages++;
+    if (zs.length === 0 && looksLikeTransposedColumnsGrille(text)) {
+      zs = parseTransposedColumnsGrille(text, i + 1, {
+        source_url: opts.sourceUrl,
+        snapshot: SNAPSHOT,
+        methode: METHODE_COLS,
+      });
+      if (zs.length > 0) colPages++;
+    }
     if (zs.length > 0) transposedPages++;
     for (const zn of zs) {
       const key = canonZone(zn.zone_code);
@@ -134,6 +156,9 @@ async function ingestSlug(
       if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
     }
   }
+  // The deposit's summary methode reflects the parser that produced the majority of
+  // pages (per-field provenance already carries the exact method per zone).
+  const depositMethode = colPages > matPages ? METHODE_COLS : METHODE;
   const zones = [...byZone.values()];
   const fieldPct = publishedFieldPct(zones);
 
@@ -143,6 +168,7 @@ async function ingestSlug(
   const report: IngestReport = {
     slug,
     pdf,
+    methode: depositMethode,
     transposedPages,
     distinctZones: zones.length,
     publishedFieldPct: fieldPct,
@@ -180,7 +206,7 @@ async function ingestSlug(
 
   const meta = {
     source_url: opts.sourceUrl,
-    methode: METHODE,
+    methode: depositMethode,
     snapshot: SNAPSHOT,
     ...(opts.reglement ? { reglement: opts.reglement } : {}),
   };
@@ -215,6 +241,7 @@ async function main(): Promise<void> {
       reports.push({
         slug,
         pdf: pdf ?? `work/zonage-norms/${slug}/grille.pdf`,
+        methode: METHODE_COLS,
         transposedPages: 0,
         distinctZones: 0,
         publishedFieldPct: 0,
