@@ -19,11 +19,14 @@
  */
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 
-import { s3Client, getBytes } from "./lib/s3.js";
+import { normalizeZoneCode, canonicalizeZoneCodeForJoin } from "@sentropic/geo";
+
+import { s3Client, getBytes, listSlugs } from "./lib/s3.js";
 import {
   resolveGridKey,
   sigZoneCodesFromGeojson,
   normsKey,
+  ZONAGE_NORMS_PREFIX,
 } from "./lib/zonage-norms.js";
 import { exists } from "./lib/s3.js";
 import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
@@ -55,14 +58,38 @@ function canon(code: string): string {
   return code.toUpperCase().replace(/\s+/g, "").replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
 }
 
-async function reportCity(slug: string): Promise<void> {
-  const s3 = s3Client();
+interface CityDelta {
+  slug: string;
+  hasGrid: boolean;
+  hasNorms: boolean;
+  /** overlap under the OLD runtime join canonicalisation (normalizeZoneCode). */
+  oldOverlap: number;
+  /** overlap under the NEW runtime join canonicalisation (canonicalizeZoneCodeForJoin). */
+  newOverlap: number;
+  normsCodes: number;
+}
+
+/** Count codes shared by two verbatim sets once each side is passed through `key`. */
+function overlapUnder(zonesVerbatim: Set<string>, normsVerbatim: Set<string>, key: (v: string) => string): number {
+  const zk = new Set([...zonesVerbatim].map(key).filter(Boolean));
+  let n = 0;
+  const seen = new Set<string>();
+  for (const c of normsVerbatim) {
+    const k = key(c);
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    if (zk.has(k)) n++;
+  }
+  return n;
+}
+
+async function reportCity(slug: string, s3: ReturnType<typeof s3Client>): Promise<CityDelta> {
   console.log(`\n=== ${slug} ===`);
 
   const gridKeyResolved = await resolveGridKey(s3, slug);
   if (!gridKeyResolved) {
     console.log(`SIG zones layer: ABSENT (normalized/ca-qc-zonage/qc-zonage-${slug}.geojson)`);
-    return;
+    return { slug, hasGrid: false, hasNorms: false, oldOverlap: 0, newOverlap: 0, normsCodes: 0 };
   }
   const geojsonBuf = await getBytes(s3, gridKeyResolved);
   const geojsonStr = geojsonBuf.toString("utf8");
@@ -100,7 +127,7 @@ async function reportCity(slug: string): Promise<void> {
   if (!(await exists(s3, nk))) {
     console.log(`NORMS product: ABSENT (${nk})`);
     console.log(`  overlap: n/a (no grille) → lot->zone->norms match would be 0%`);
-    return;
+    return { slug, hasGrid: true, hasNorms: false, oldOverlap: 0, newOverlap: 0, normsCodes: 0 };
   }
   const rows = await readParquetRowsFromBuffer(await getBytes(s3, nk), ["zone_code"]);
   const normsVerbatim = new Set<string>();
@@ -113,25 +140,59 @@ async function reportCity(slug: string): Promise<void> {
   }
   let overlap = 0;
   for (const c of normsCanon) if (canonSet.has(c)) overlap++;
+  // JOIN-accurate before/after: model the runtime join exactly by keying BOTH
+  // sides with the library funcs the join uses — normalizeZoneCode (OLD) vs
+  // canonicalizeZoneCodeForJoin (NEW). The delta is the codes the canon fix
+  // retroactively unlocks for this city's already-served lots.
+  const oldOverlap = overlapUnder(verbatim, normsVerbatim, normalizeZoneCode);
+  const newOverlap = overlapUnder(verbatim, normsVerbatim, canonicalizeZoneCodeForJoin);
   const normsSample = [...normsVerbatim].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
   console.log(`NORMS product: PRESENT (${nk})`);
   console.log(`  norms rows: ${rows.length} | distinct codes (verbatim): ${normsVerbatim.size}`);
   console.log(`  overlap (canonical) norms∩zones: ${overlap} / zones ${canonSet.size} / norms ${normsCanon.size}`);
+  console.log(
+    `  JOIN overlap OLD(normalize)=${oldOverlap} -> NEW(canon)=${newOverlap} | canon unlocks ${newOverlap - oldOverlap} code(s)`,
+  );
   console.log(`  norms sample: ${normsSample.slice(0, 40).join(", ")}`);
+  return { slug, hasGrid: true, hasNorms: true, oldOverlap, newOverlap, normsCodes: normsVerbatim.size };
 }
 
 async function main(): Promise<void> {
-  const slugs = process.argv.slice(2).filter(Boolean);
-  if (slugs.length === 0) {
-    throw new Error("usage: npx tsx acquisition/src/zone-codes-report.ts <slug> [<slug> ...]");
+  const argv = process.argv.slice(2).filter(Boolean);
+  const all = argv.includes("--all");
+  const s3 = s3Client();
+  let slugs = argv.filter((a) => a !== "--all");
+  if (all) {
+    // Every deposited norms grille — the exhaustive set of cities where a
+    // lot->zone->norms join is even possible, so the canon-delta sweep is total.
+    const products = await listSlugs(s3, ZONAGE_NORMS_PREFIX, ".parquet", true);
+    const fromProducts = products
+      .map((p) => p.replace(/^qc-zonage-norms-/, ""))
+      .filter((p) => p && !p.includes("/"));
+    slugs = [...new Set([...slugs, ...fromProducts])].sort();
+    console.log(`--all: ${slugs.length} deposited norms grille(s)`);
   }
+  if (slugs.length === 0) {
+    throw new Error("usage: npx tsx acquisition/src/zone-codes-report.ts [--all] <slug> [<slug> ...]");
+  }
+  const results: CityDelta[] = [];
   for (const slug of slugs) {
     try {
-      await reportCity(slug);
+      results.push(await reportCity(slug, s3));
     } catch (e) {
       console.log(`\n=== ${slug} ===\nERROR ${(e as Error).message}`);
     }
   }
+  const withNorms = results.filter((r) => r.hasNorms);
+  const unlocked = withNorms.filter((r) => r.newOverlap > r.oldOverlap);
+  console.log(`\n=== SUMMARY ===`);
+  console.log(`cities examined: ${results.length} | with grid+norms: ${withNorms.length}`);
+  console.log(
+    `canon retroactively unlocks (newOverlap > oldOverlap): ${unlocked.length} city/cities` +
+      (unlocked.length
+        ? ` -> ${unlocked.map((r) => `${r.slug}(+${r.newOverlap - r.oldOverlap})`).join(", ")}`
+        : " (none — every city's zones & norms already share one format under normalizeZoneCode)"),
+  );
 }
 
 main().catch((e) => {
