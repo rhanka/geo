@@ -206,9 +206,28 @@ export interface CrossValResult {
  *   • `H-1-2`, `RA-2-1`, `20-A-1` (multi-segment) — NOT matched by either anchored
  *     rule, so they fall through to the strict legacy leading-zero normalisation and
  *     are NEVER reordered. Distinct multi-segment codes can never be fused.
+ *
+ * TRAILING PRESENTATIONAL ANNOTATION (fix #2, strict superset like #1) — a SIG grille
+ * sometimes appends a redundant arrondissement/secteur LABEL in parentheses to an
+ * otherwise-identical code: Longueuil's SIG stores `A12-024 (STH)` / `H34-327 (VLO)`
+ * (STH = Saint-Hubert, VLO = Vieux-Longueuil, GP = Greenfield Park) while its grille
+ * emits the bare `A12-024`. The numeric core ALONE identifies the zone (the district
+ * prefix `12`/`34` already encodes the arrondissement), so the ` (…)` tail is pure
+ * presentation — the SAME zone written two ways, previously counted as overlap=0.
+ * Stripping a single trailing parenthetical (mirrors `plausibleCode`'s existing
+ * annotation strip) reconciles them.
+ *   ANTI-FUSION: two codes collapse under this rule IFF they are byte-identical after
+ *   removing a trailing `(…)`. It NEVER touches the code core, so `A12-024` and
+ *   `A12-025 (STH)` stay distinct, and a DASH secteur suffix (mont-royal `H-531-F` vs
+ *   `H-531-G`) is untouched — those remain two distinct multi-segment codes. Proven on
+ *   Longueuil: 1927 distinct SIG codes → 1927 after the strip (zero collapse), while
+ *   the extraction's overlap rose 0 → 665/666.
  */
 export function canonZone(code: string): string {
-  const up = code.toUpperCase().replace(/\s+/g, "");
+  // Drop a trailing presentational parenthetical annotation ("A12-024 (STH)" →
+  // "A12-024") BEFORE any other normalisation (see docstring, fix #2).
+  const core = code.replace(/\s*\([^)]*\)\s*$/, "");
+  const up = core.toUpperCase().replace(/\s+/g, "");
   // letter-first single code: HA20 / HA-20 / HA-020  (0* consumes leading zeros)
   const letterFirst = /^([A-Z]+)-?0*(\d+)$/.exec(up);
   if (letterFirst) return `${letterFirst[1]}-${letterFirst[2]}`;
