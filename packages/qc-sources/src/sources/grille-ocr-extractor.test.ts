@@ -1133,3 +1133,113 @@ describe("parseTransposedColumnsGrille — anti-invention on a NOTES page", () =
     expect(parseTransposedColumnsGrille(NICOLET_I01_132_LAYOUT, 1, OPTS2)).toEqual([]);
   });
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+//  BAIE-COMEAU / Côte-Nord family — the SAME zone columns appear on a page under
+//  TWO header bands (a USAGES band then a MARGE/NORMES band, identical codes at
+//  identical columns), and the MARGE section splits into one-word directional
+//  sub-titles ("Avant" / "Arrière" / "Latérales") each ABOVE a numbered "Générale"
+//  value row. This whole muni (260 zones, SIG overlap 220/237) published at ~0%
+//  fields for TWO compounding reasons the fixture below reproduces from the real
+//  `pdftotext -layout` projection (baie-comeau feuillet 1, verbatim columns):
+//    1. the empty USAGES-band zone SHADOWED the value-bearing NORMES-band zone
+//       (per-page first-band-wins) → every real value dropped;
+//    2. the "Avant/Arrière/Latérales" sub-titles mapped to nothing → the "Générale"
+//       value rows had no field to bind to;
+//  and a THIRD anti-invention hazard: the "Riveraine → Générale" row is filled with
+//  the annex-note reference "N-2", whose shape matches a zone code — it must NOT be
+//  read as a header band (no bogus "N-2" zone) NOR mapped to a margin.
+const BC_COLS = [50, 66, 82, 98];
+const BAIECOMEAU_MARGES_LAYOUT = [
+  placeCols([0, ...BC_COLS], ["RÉSIDENTIEL", "1 CO", "8 CO", "11 V", "15 I"]),
+  " 1    unifamilial isolé et jumelé",
+  " 2    bifamilial isolé",
+  " 7    multifamilial",
+  placeCols([0, ...BC_COLS], ["MARGE", "1 CO", "8 CO", "11 V", "15 I"]),
+  "Avant",
+  placeCols([1, 4, ...BC_COLS], ["39", "Générale", "12.0", "12.0", "10.0", "12.0"]),
+  "Arrière",
+  placeCols([1, 4, ...BC_COLS], ["42", "Générale", "10.0", "10.0", "10.0", "10.0"]),
+  "Latérales",
+  placeCols([1, 4, ...BC_COLS], ["45", "Générale", "10.0-10.0", "10.0-10.0", "6.0-6.0", "10.0-10.0"]),
+  "Riveraine",
+  placeCols([1, 4, ...BC_COLS], ["51", "Générale", "N-2", "N-2", "N-2", "N-2"]),
+  "DENSITE",
+  placeCols([1, 4, ...BC_COLS], ["57", "indice maximal d'occupation au sol", "0.1", "0.5", "", "0.25"]),
+  "AUTRES NORMES",
+  placeCols([1, 4, BC_COLS[2]!, BC_COLS[3]!], ["58", "Hauteur en étages (maximum)", "2", "3"]),
+].join("\n");
+
+describe("labelToFieldId — bare directional MARGE sub-section titles (baie-comeau)", () => {
+  it("maps a one-word margin sub-title to the right margin field", () => {
+    expect(labelToFieldId("Avant")).toBe("marge_avant_min");
+    expect(labelToFieldId("Arrière")).toBe("marge_arriere_min");
+    expect(labelToFieldId("Latérales")).toBe("marge_laterale_min");
+    expect(labelToFieldId("Latérale")).toBe("marge_laterale_min");
+  });
+  it("does NOT map 'Riveraine' (a distinct shoreline setback) nor a value-row label", () => {
+    expect(labelToFieldId("Riveraine")).toBeNull(); // anti-over-mapping
+    expect(labelToFieldId("39 Générale")).toBeNull(); // value-row label, not a direction
+    expect(labelToFieldId("Générale")).toBeNull();
+  });
+});
+
+describe("parseTransposedColumnsGrille — baie-comeau USAGES+MARGE two-band merge", () => {
+  const zones = parseTransposedColumnsGrille(BAIECOMEAU_MARGES_LAYOUT, 1, OPTS2);
+
+  it("emits one zone per column ONCE — the empty usages band never shadows the norms", () => {
+    expect(zones.map((z) => z.zone_code)).toEqual(["1 CO", "8 CO", "11 V", "15 I"]);
+  });
+
+  it("binds the 'Avant/Arrière/Latérales' → 'Générale' value rows to the margins (0% → >0%)", () => {
+    const z = cByCode(zones, "1 CO");
+    expect(z.marges.avant_min?.value).toBe(12); // "Avant" → "39 Générale" 12.0
+    expect(z.marges.arriere_min?.value).toBe(10); // "Arrière" → "42 Générale" 10.0
+    expect(z.marges.laterale_min?.value).toBe(10); // "Latérales" → "45 Générale" 10.0-10.0
+    expect(z.marges.laterale_min?.raw).toBe("10.0-10.0"); // verbatim (both sides kept)
+    expect(z.densite?.value).toBe(0.1); // "indice maximal d'occupation au sol"
+  });
+
+  it("reads a distinct column independently (11 V — hauteur, latérale 6, blank densité)", () => {
+    const z = cByCode(zones, "11 V");
+    expect(z.marges.avant_min?.value).toBe(10);
+    expect(z.marges.laterale_min?.value).toBe(6); // "6.0-6.0"
+    expect(z.hauteur_max?.value).toBe(2); // "Hauteur en étages (maximum)"
+    expect(z.hauteur_max?.unit).toBe("etages");
+    expect(z.densite?.value).toBeNull(); // honest blank column (no shift-fill)
+  });
+
+  it("reads the last column (15 I — densité 0.25, hauteur 3 étages)", () => {
+    const z = cByCode(zones, "15 I");
+    expect(z.densite?.value).toBe(0.25);
+    expect(z.hauteur_max?.value).toBe(3);
+    expect(z.marges.avant_min?.value).toBe(12);
+  });
+
+  it("ANTI-INVENTION: the annex note 'N-2' is neither a zone NOR a mapped margin", () => {
+    expect(zones.some((z) => /N-?2/i.test(z.zone_code))).toBe(false);
+    // The "Riveraine → Générale" N-2 row maps to nothing → no margin borrows it.
+    for (const z of zones) {
+      for (const f of [z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min]) {
+        if (f?.raw) expect(f.raw).not.toMatch(/N-?2/i);
+      }
+    }
+  });
+
+  it("METRIC — every published value is verbatim in its raw cell (0 fausse valeur)", () => {
+    let published = 0;
+    for (const z of zones) {
+      const served = [
+        z.densite, z.hauteur_max, z.frontage_min, z.superficie_min,
+        z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min,
+      ].filter((f) => f && f.value !== null);
+      published += served.length;
+      for (const f of served) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
+    expect(published).toBeGreaterThan(0);
+  });
+});
