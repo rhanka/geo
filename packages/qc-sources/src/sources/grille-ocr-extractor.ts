@@ -1024,6 +1024,252 @@ export function parseNumberedGrilleNativePage(
   return [ZoneNorms.parse(zn)];
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+//  TRANSPOSED native-text "grille des spécifications" (MRC de La Matapédia /
+//  Mitis / Bas-Saint-Laurent family). The zone header is SPLIT across two
+//  stacked rows that align by column:
+//
+//      Numéro de zone   1   2   3  …  20  …
+//      Usage dominant   Cp  Hb  Hb …  Ha  …
+//
+//  and the REAL zone code is the PER-COLUMN pair number+usage ("20 Ha" →
+//  `canonZone` → "HA-20", which matches the SIG grille). The norm rows (Hauteur
+//  maximum (en étages), Coefficient d'emprise au sol maximum, Marge de recul
+//  avant/arrière/latérale) sit below, one VALUE per zone COLUMN.
+//
+//  WHY THE MARKDOWN OCR MAPPER FAILS. mistral-ocr renders the numeric row as a
+//  bare-number zone header (`looksLikeZoneCode` accepts a 0-letter code) and
+//  DROPS the parallel usage row, so the code is read as "20" → overlap=0 vs the
+//  SIG "20 Ha". The `pdftotext -layout` projection of these grilles is, by
+//  contrast, clean and column-aligned ($0, deterministic), so we read it here
+//  straight from the text layer — no LLM.
+//
+//  ANTI-INVENTION (identical spirit to every other path):
+//    • we pair ONLY when BOTH literal label rows ("Numéro de zone" AND "Usage
+//      dominant") are present and adjacent — no usage row ⇒ [] (no zone);
+//    • number↔usage and value↔zone are paired by COLUMN position (left-edge),
+//      NEVER by naive token index — the rows are RAGGED (some zones carry no
+//      dominant usage; some norm cells are blank), so index-pairing would
+//      silently mis-align. A number column with NO usage token aligned to it is
+//      DROPPED (never given a fabricated usage);
+//    • every value is the VERBATIM column token, gated by the frozen
+//      `buildVisionField` (parse → semantic unit → plausibility window).
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A whitespace token with its CHARACTER-column span (JS string index = display
+ *  column, since `pdftotext -enc UTF-8` emits precomposed accents = 1 char). */
+interface ColToken {
+  t: string;
+  start: number;
+  end: number;
+}
+
+/** Split a line into non-space tokens carrying their character-column span. */
+function tokensWithCols(line: string): ColToken[] {
+  const out: ColToken[] = [];
+  const re = /\S+/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(line)) !== null) {
+    out.push({ t: m[0], start: m.index, end: m.index + m[0].length });
+  }
+  return out;
+}
+
+const NUMERO_DE_ZONE_RE = /num[eé]ro\s+de\s+zone/i;
+const USAGE_DOMINANT_RE = /usage\s+dominant/i;
+
+/**
+ * Does this page/text carry the TRANSPOSED grille signature — BOTH the literal
+ * "Numéro de zone" and "Usage dominant" label rows? (The anti-invention anchor:
+ * we only ever pair a number to a usage when both literal rows exist.)
+ */
+export function looksLikeTransposedGrille(text: string): boolean {
+  return NUMERO_DE_ZONE_RE.test(text) && USAGE_DOMINANT_RE.test(text);
+}
+
+/** Zone-number anchors from a "Numéro de zone …" line: the bare-integer tokens
+ *  that sit AFTER the literal label (their column spans anchor every data row). */
+function extractZoneNumberAnchors(numLine: string): ColToken[] {
+  const m = numLine.match(NUMERO_DE_ZONE_RE);
+  if (!m) return [];
+  const labelEnd = (m.index ?? 0) + m[0].length;
+  return tokensWithCols(numLine).filter(
+    (tk) => tk.start >= labelEnd && /^\d{1,4}$/.test(tk.t),
+  );
+}
+
+/** Usage tokens from an "Usage dominant …" line: the short alpha codes (Cp, Hb,
+ *  R, Af, Ha, …) that sit AFTER the literal label. */
+function extractUsageTokens(usageLine: string): ColToken[] {
+  const m = usageLine.match(USAGE_DOMINANT_RE);
+  if (!m) return [];
+  const labelEnd = (m.index ?? 0) + m[0].length;
+  return tokensWithCols(usageLine).filter(
+    (tk) => tk.start >= labelEnd && /^[A-Za-zÀ-ÿ]{1,4}$/.test(tk.t),
+  );
+}
+
+/** Column tolerance for left-edge alignment: derived from the tightest gap
+ *  between successive zone anchors, clamped to a safe [3,8] window. Used only to
+ *  REJECT a token that lands far from EVERY anchor (a stray / footnote mark);
+ *  disambiguation between adjacent columns is by nearest-anchor. */
+function anchorColTolerance(anchors: ColToken[]): number {
+  if (anchors.length < 2) return 4;
+  const starts = anchors.map((a) => a.start).sort((x, y) => x - y);
+  let minGap = Infinity;
+  for (let i = 1; i < starts.length; i++) minGap = Math.min(minGap, starts[i]! - starts[i - 1]!);
+  if (!Number.isFinite(minGap)) return 4;
+  return Math.max(3, Math.min(minGap * 0.6, 8));
+}
+
+/** Index of the anchor whose left edge is nearest `start`, or -1 if the nearest
+ *  is beyond `tol` (a stray token, not a column value). */
+function nearestAnchor(anchors: ColToken[], start: number, tol: number): number {
+  let bi = -1;
+  let bd = Infinity;
+  for (let i = 0; i < anchors.length; i++) {
+    const d = Math.abs(start - anchors[i]!.start);
+    if (d < bd) {
+      bd = d;
+      bi = i;
+    }
+  }
+  return bd <= tol ? bi : -1;
+}
+
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the TRANSPOSED
+ * "grille des spécifications" family (MRC de La Matapédia et al.). Reads ONE
+ * page's `pdftotext -layout` text and returns one `ZoneNorms` per zone COLUMN
+ * whose number+usage pair is recoverable. Handles MULTIPLE stacked table blocks
+ * on the page (each anchored on its own "Numéro de zone" row).
+ *
+ * Returns [] for a page that lacks the transposed signature (no "Numéro de zone"
+ * anchored by an adjacent "Usage dominant" row) — anti-invention: no paired
+ * literal rows, no zone. The caller then falls back to OCR/vision.
+ */
+export function parseTransposedGrilleNativePage(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-transposee";
+  const lines = layoutText.split(/\r?\n/);
+  const out: ZoneNormsT[] = [];
+  const seen = new Set<string>();
+
+  // Every "Numéro de zone" line opens a block; the block runs to the next such
+  // line (or end of page). Successive feuillets (zones 1–30, 31–59, …) each get
+  // their own block.
+  const numIdxs = lines
+    .map((l, i) => (NUMERO_DE_ZONE_RE.test(l) ? i : -1))
+    .filter((i) => i >= 0);
+
+  for (let b = 0; b < numIdxs.length; b++) {
+    const numIdx = numIdxs[b]!;
+    const blockEnd = b + 1 < numIdxs.length ? numIdxs[b + 1]! : lines.length;
+    // The "Usage dominant" row must sit immediately below the number row (≤3
+    // lines). No usage row ⇒ refuse this block (anti-invention).
+    let usageIdx = -1;
+    for (let k = numIdx + 1; k <= Math.min(numIdx + 3, blockEnd - 1); k++) {
+      if (USAGE_DOMINANT_RE.test(lines[k]!)) {
+        usageIdx = k;
+        break;
+      }
+    }
+    if (usageIdx < 0) continue;
+
+    const anchors = extractZoneNumberAnchors(lines[numIdx]!);
+    const usages = extractUsageTokens(lines[usageIdx]!);
+    if (anchors.length < 2 || usages.length < 1) continue;
+    const tol = anchorColTolerance(anchors);
+
+    // Pair number↔usage by column (left-edge, nearest). Each anchor keeps its
+    // NEAREST usage within tol; a number with no usage column-aligned to it is
+    // left unpaired (dropped later — never given a fabricated usage).
+    const pairedUsage = new Map<number, ColToken>();
+    const pairedDist = new Map<number, number>();
+    for (const u of usages) {
+      const ai = nearestAnchor(anchors, u.start, tol);
+      if (ai < 0) continue;
+      const d = Math.abs(u.start - anchors[ai]!.start);
+      const prev = pairedDist.get(ai);
+      if (prev === undefined || d < prev) {
+        pairedUsage.set(ai, u);
+        pairedDist.set(ai, d);
+      }
+    }
+    if (pairedUsage.size === 0) continue;
+
+    // The value region starts at the leftmost anchor (a small left margin
+    // absorbs a decimal value that begins one char before its 1-digit header).
+    const firstStart = Math.min(...anchors.map((a) => a.start));
+    const valueRegionStart = firstStart - 6;
+
+    // Per-zone (anchor index) verbatim field cells; first-seen wins (a
+    // transposed grille has one row per norm, no min/max sub-rows).
+    const perZone = new Map<number, Partial<Record<FieldId, string>>>();
+
+    for (let r = usageIdx + 1; r < blockEnd; r++) {
+      const line = lines[r]!;
+      if (!line.trim()) continue;
+      const valToks = tokensWithCols(line).filter((tk) => tk.start >= valueRegionStart);
+      if (valToks.length === 0) continue;
+      const label = line.slice(0, Math.max(0, valueRegionStart));
+      const field = labelToFieldId(label);
+      if (!field) continue;
+      for (const v of valToks) {
+        const ai = nearestAnchor(anchors, v.start, tol);
+        if (ai < 0 || !pairedUsage.has(ai)) continue; // only paired zones
+        const fields = perZone.get(ai) ?? {};
+        if (fields[field] === undefined) fields[field] = v.t; // first-seen wins
+        perZone.set(ai, fields);
+      }
+    }
+
+    for (let ai = 0; ai < anchors.length; ai++) {
+      const u = pairedUsage.get(ai);
+      if (!u) continue;
+      const code = `${anchors[ai]!.t} ${u.t}`; // "20 Ha" → canonZone → HA-20
+      const key = code.toUpperCase().replace(/\s+/g, "");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const fields = perZone.get(ai) ?? {};
+      const provenance = (): FieldProvenanceT => ({
+        source_url: opts.source_url,
+        methode,
+        snapshot: opts.snapshot,
+        page: `PAGE ${page} ZONE ${code}`,
+      });
+      const field = (id: FieldId): NormFieldT => {
+        const spec = FIELD_SPECS.find((s) => s.id === id)!;
+        const raw = fields[id] ?? null;
+        return buildVisionField(spec, raw, raw, provenance());
+      };
+      const hauteurMetres = field("hauteur_metres");
+      const hauteurEtages = field("hauteur_etages");
+      const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+      const zn: ZoneNormsT = {
+        zone_code: code,
+        zone_page: `PAGE ${page} ZONE ${code}`,
+        usages: [],
+        densite: field("densite"),
+        hauteur_min: null,
+        hauteur_max: hauteurMax,
+        marges: {
+          avant_min: field("marge_avant_min"),
+          laterale_min: field("marge_laterale_min"),
+          arriere_min: field("marge_arriere_min"),
+        },
+        frontage_min: field("frontage_min"),
+        superficie_min: field("superficie_min"),
+      };
+      out.push(ZoneNorms.parse(zn));
+    }
+  }
+  return out;
+}
+
 /**
  * Map a whole OCR result (per page) back to ZoneNorms[], page numbers aligned.
  * `zoneCodes` (optional, aligned to `pages`) supplies a VERBATIM native-text zone

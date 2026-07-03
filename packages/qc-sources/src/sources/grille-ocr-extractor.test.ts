@@ -12,6 +12,8 @@ import {
   mapOcrResultToZones,
   mapZoneHeaderGrillePage,
   parseNumberedGrilleNativePage,
+  parseTransposedGrilleNativePage,
+  looksLikeTransposedGrille,
   parseZoneHeader,
   isNumberedGrilleSpec,
   zonePrefixFromRow,
@@ -819,5 +821,136 @@ describe("hardening — anti-invention preserved end-to-end", () => {
         expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
       }
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  TRANSPOSED native-text grille (MRC de La Matapédia / Mitis family).
+// ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * Place `tokens` at the given LEFT-edge character columns, reproducing the
+ * column-aligned `pdftotext -layout` projection of a transposed grille (each
+ * cell begins at its zone column; blanks are simply absent tokens). A cell may
+ * be "" to leave a genuinely blank column.
+ */
+function placeCols(positions: number[], tokens: string[]): string {
+  let s = "";
+  for (let i = 0; i < tokens.length; i++) {
+    if (!tokens[i]) continue;
+    const p = positions[i]!;
+    if (p > s.length) s += " ".repeat(p - s.length);
+    s += tokens[i];
+  }
+  return s;
+}
+
+// Four zone columns (numbers 1, 2, 3, 20; usages Cp, Hb, Cc, Ha → codes
+// "1 Cp"…"20 Ha"), laid out at left-edge columns 50/57/64/71 — the same ragged,
+// column-aligned shape the real Matapédia grilles emit. The row labels end well
+// before the value region (col 44). Zone "3" (col 64) carries a BLANK hauteur
+// cell (an honest empty column, not a shift-fill).
+const TZONE_COLS = [50, 57, 64, 71];
+const TRANSPOSED_LAYOUT = [
+  placeCols([0, ...TZONE_COLS], ["TABLEAU 5.1   Numéro de zone", "1", "2", "3", "20"]),
+  placeCols([0, ...TZONE_COLS], ["LA GRILLE     Usage dominant", "Cp", "Hb", "Cc", "Ha"]),
+  "                IMPLANTATION",
+  placeCols([4, ...TZONE_COLS], ["Hauteur maximum (en étages)", "2", "3", "", "2"]),
+  placeCols([4, ...TZONE_COLS], ["Coefficient d'emprise au sol maximum", "0.4", "0.4", "0.5", "0,25"]),
+  "                MARGES",
+  placeCols([4, ...TZONE_COLS], ["Marge de recul avant", "8", "8", "8", "9"]),
+  placeCols([4, ...TZONE_COLS], ["Marge de recul arrière", "6", "6", "5", "8"]),
+  placeCols([4, ...TZONE_COLS], ["Marge de recul latérale", "3", "3", "2", "3"]),
+  placeCols([4, ...TZONE_COLS], ["Largeur combinée des cours latérales", "7", "7", "5", "8"]),
+  "    USAGES SPÉCIFIQUEMENT PERMIS",
+  "Note 1 : usages 5512 (vente au détail de véhicules usagers)",
+].join("\n");
+
+function tByCode(zones: ZoneNormsT[], code: string): ZoneNormsT {
+  const z = zones.find((x) => x.zone_code === code);
+  if (!z) throw new Error(`no zone ${code} in [${zones.map((x) => x.zone_code).join(", ")}]`);
+  return z;
+}
+
+describe("looksLikeTransposedGrille — detection", () => {
+  it("fires only when BOTH literal label rows are present", () => {
+    expect(looksLikeTransposedGrille(TRANSPOSED_LAYOUT)).toBe(true);
+    expect(looksLikeTransposedGrille("Numéro de zone   1  2  3")).toBe(false); // no usage row
+    expect(looksLikeTransposedGrille("Usage dominant   Cp Hb")).toBe(false); // no number row
+    expect(looksLikeTransposedGrille(NICOLET_I01_132_LAYOUT)).toBe(false); // Nicolet single-zone
+    expect(looksLikeTransposedGrille(GRILLE_MD)).toBe(false); // horizontal markdown grid
+  });
+});
+
+describe("parseTransposedGrilleNativePage — column-aligned number+usage pairing", () => {
+  const zones = parseTransposedGrilleNativePage(TRANSPOSED_LAYOUT, 84, OPTS2);
+
+  it("pairs number+usage per column → the REAL code ('20 Ha', canon HA-20)", () => {
+    expect(zones.map((z) => z.zone_code).sort()).toEqual(["1 Cp", "2 Hb", "20 Ha", "3 Cc"]);
+    // canonZone(digit-first) collapses "20 Ha" ⇔ the SIG "HA-20".
+    const canon = (c: string): string =>
+      c.toUpperCase().replace(/\s+/g, "").replace(/^0*(\d+)-?([A-Z]+)$/, "$2-$1");
+    expect(zones.map((z) => canon(z.zone_code)).sort()).toContain("HA-20");
+  });
+
+  it("reads the transposed norm fields by COLUMN (hauteur, densité, marges)", () => {
+    const z20 = tByCode(zones, "20 Ha");
+    expect(z20.hauteur_max?.value).toBe(2); // "Hauteur maximum (en étages)"
+    expect(z20.densite?.value).toBe(0.25); // "0,25" FR comma
+    expect(z20.marges.avant_min?.value).toBe(9);
+    expect(z20.marges.arriere_min?.value).toBe(8);
+    expect(z20.marges.laterale_min?.value).toBe(3);
+    // "Largeur combinée des cours latérales" is NOT a frontage → never mapped.
+    expect(z20.frontage_min?.value).toBeNull();
+    expect(z20.superficie_min?.value).toBeNull();
+  });
+
+  it("honours a BLANK column cell as an honest null (no shift-fill)", () => {
+    const z3 = tByCode(zones, "3 Cc");
+    expect(z3.hauteur_max?.value).toBeNull(); // blank hauteur cell for zone 3
+    expect(z3.marges.avant_min?.value).toBe(8); // other cells still read
+    expect(z3.densite?.value).toBe(0.5);
+  });
+
+  it("every published value is VERBATIM in its raw cell (anti-invention)", () => {
+    for (const z of zones) {
+      for (const f of [z.densite, z.hauteur_max, z.marges.avant_min, z.marges.arriere_min, z.marges.laterale_min].filter(
+        (x) => x && x.value !== null,
+      )) {
+        const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+        expect(raw.includes(String(f!.value))).toBe(true);
+        expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+      }
+    }
+  });
+});
+
+describe("parseTransposedGrilleNativePage — anti-invention on ragged / absent rows", () => {
+  it("DROPS a number column that has no usage aligned to it (never fabricates)", () => {
+    // Remove zone 3's usage token → its number column is unpaired → not emitted.
+    const raggedUsage = placeCols([0, TZONE_COLS[0]!, TZONE_COLS[1]!, TZONE_COLS[3]!], [
+      "LA GRILLE     Usage dominant",
+      "Cp",
+      "Hb",
+      "Ha",
+    ]);
+    const layout = TRANSPOSED_LAYOUT.split("\n")
+      .map((l) => (/Usage dominant/.test(l) ? raggedUsage : l))
+      .join("\n");
+    const zones = parseTransposedGrilleNativePage(layout, 84, OPTS2);
+    expect(zones.map((z) => z.zone_code).sort()).toEqual(["1 Cp", "2 Hb", "20 Ha"]);
+    expect(zones.find((z) => z.zone_code.startsWith("3 "))).toBeUndefined();
+  });
+
+  it("REFUSES a block with no 'Usage dominant' row (no paired literals → [])", () => {
+    const noUsage = TRANSPOSED_LAYOUT.split("\n")
+      .filter((l) => !/Usage dominant/.test(l))
+      .join("\n");
+    expect(parseTransposedGrilleNativePage(noUsage, 84, OPTS2)).toEqual([]);
+  });
+
+  it("REFUSES text with no 'Numéro de zone' anchor row", () => {
+    expect(parseTransposedGrilleNativePage("just some prose\nUsage dominant Cp Hb", 1, OPTS2)).toEqual([]);
+    expect(parseTransposedGrilleNativePage(NICOLET_I01_132_LAYOUT, 1, OPTS2)).toEqual([]);
   });
 });
