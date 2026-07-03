@@ -112,14 +112,15 @@ async function reportCity(slug: string, s3: ReturnType<typeof s3Client>): Promis
   } catch (e) {
     console.log(`  (JSON.parse failed: ${(e as Error).message.slice(0, 120)} — regex fallback only)`);
   }
-  // Cross-check with the SAME regex the cross-validation uses (canonical set).
+  // Cross-check with the SAME extractor the cross-validation gate uses (curated
+  // whitelist + best-field selection, canonical set).
   const regexCanon = sigZoneCodesFromGeojson(geojsonStr);
 
   const sample = [...verbatim].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
   console.log(`SIG zones key: ${gridKeyResolved}`);
   console.log(`  features: ${featureCount} | with zone_code: ${withCode}`);
   console.log(`  DISTINCT zone_code (verbatim): ${verbatim.size}`);
-  console.log(`  DISTINCT zone_code (canonical): ${canonSet.size} | via crossval regex: ${regexCanon.size}`);
+  console.log(`  DISTINCT zone_code (canonical): ${canonSet.size} | via crossval extractor: ${regexCanon.size}`);
   console.log(`  sample (${Math.min(40, sample.length)} of ${sample.length}): ${sample.slice(0, 40).join(", ")}`);
 
   // Norms product side.

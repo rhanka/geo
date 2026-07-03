@@ -12,7 +12,20 @@ import {
   shouldRejectForZeroNormFields,
   looksLikeTableOfContents,
   canonZone,
+  sigZoneCodesFromGeojson,
 } from "./zonage-norms.js";
+
+/** Build a minimal FeatureCollection whose features carry the given properties. */
+function fc(propsList: Array<Record<string, unknown>>): string {
+  return JSON.stringify({
+    type: "FeatureCollection",
+    features: propsList.map((properties) => ({
+      type: "Feature",
+      geometry: null,
+      properties,
+    })),
+  });
+}
 
 describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
   it("reconciles every format of one letter+digit code to the SAME key (Matapédia/Mitis 'Ha' famille)", () => {
@@ -48,6 +61,68 @@ describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
   it("pure-numeric and pure-alpha codes pass through unchanged", () => {
     expect(canonZone("200")).toBe("200");
     expect(canonZone("HA")).toBe("HA");
+  });
+});
+
+describe("sigZoneCodesFromGeojson — widened, curated zone-code field set", () => {
+  it("reads a grille whose codes live under `Zonage` (the field the old regex missed)", () => {
+    const set = sigZoneCodesFromGeojson(
+      fc([{ Zonage: "H-4" }, { Zonage: "C-2" }, { Zonage: "I-3" }, { Zonage: "H-4" }]),
+    );
+    expect(set).toEqual(new Set(["H-4", "C-2", "I-3"]));
+  });
+
+  it("also reads the ZONAGE / CODE_ZONE / NO_ZONAGE variants", () => {
+    expect(sigZoneCodesFromGeojson(fc([{ ZONAGE: "RA-1" }, { ZONAGE: "RA-2" }, { ZONAGE: "P-1" }]))).toEqual(
+      new Set(["RA-1", "RA-2", "P-1"]),
+    );
+    expect(
+      sigZoneCodesFromGeojson(fc([{ CODE_ZONE: "H-10" }, { CODE_ZONE: "H-11" }, { CODE_ZONE: "H-12" }])),
+    ).toEqual(new Set(["H-10", "H-11", "H-12"]));
+    expect(
+      sigZoneCodesFromGeojson(fc([{ NO_ZONAGE: "M-1" }, { NO_ZONAGE: "M-2" }, { NO_ZONAGE: "M-3" }])),
+    ).toEqual(new Set(["M-1", "M-2", "M-3"]));
+  });
+
+  it("still reads the legacy zone_code / ZONE fields (no regression)", () => {
+    expect(sigZoneCodesFromGeojson(fc([{ zone_code: "A-1" }, { zone_code: "A-2" }, { zone_code: "A-3" }]))).toEqual(
+      new Set(["A-1", "A-2", "A-3"]),
+    );
+    expect(sigZoneCodesFromGeojson(fc([{ ZONE: "20 Ha" }, { ZONE: "21 Ha" }, { ZONE: "22 Ha" }]))).toEqual(
+      new Set(["HA-20", "HA-21", "HA-22"]),
+    );
+  });
+
+  it("ANTI-INVENTION: an AFFECTATION layer (no zone-code field) yields NO codes", () => {
+    // The exact shape of the repentigny/beaupre S3 slices: affectation names +
+    // usages + descriptions, but NOT a real zone-code field. Must return ∅ so the
+    // overlap gate is not fed fabricated 'codes' from an affectation column.
+    const set = sigZoneCodesFromGeojson(
+      fc([
+        { Affectation: "Périmètre d'urbanisation", Usages: "les industries légères…", Categorie: "Perimetres_urbains.shp" },
+        { Affectation: "Récréation intensive 1", Usages: "la récréation extensive…", Categorie: "Affectations_forestier.shp" },
+        { Affectation: "Conservation", Usages: "l'interprétation de la nature…", Vocation: "Pole" },
+      ]),
+    );
+    expect(set.size).toBe(0);
+  });
+
+  it("ANTI-INVENTION: picks the code-like field, never a description/GUID whitelisted neighbour", () => {
+    // `zone_id` holds GUIDs (long → not code-like); `Zonage` holds the real codes.
+    const set = sigZoneCodesFromGeojson(
+      fc([
+        { zone_id: "7c7bf375-e17b-4d6d-8a2d-460eb0abfeb8", Zonage: "H-101" },
+        { zone_id: "083a6b1c-6fc5-40c5-ae1e-c10a24c17b87", Zonage: "H-102" },
+        { zone_id: "af40a1db-530f-4709-a1a3-1af14188ccab", Zonage: "C-201" },
+      ]),
+    );
+    expect(set).toEqual(new Set(["H-101", "H-102", "C-201"]));
+  });
+
+  it("falls back to the streaming regex on malformed (non-parseable) geojson", () => {
+    // A truncated/streamed geojson body — still recovers the codes via regex.
+    const broken = '{"features":[{"properties":{"Zonage":"H-7"}},{"properties":{"Zonage":"H-8"}},{"prope';
+    expect(sigZoneCodesFromGeojson(broken)).toEqual(new Set(["H-7", "H-8"]));
   });
 });
 

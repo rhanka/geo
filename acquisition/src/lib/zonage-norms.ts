@@ -219,16 +219,155 @@ export function canonZone(code: string): string {
   return up.replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
 }
 
-/** Pull zone codes from a SIG grille geojson (zone_code / code_zone properties). */
-export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
+/**
+ * Curated whitelist of SIG property names that carry a real ZONE CODE.
+ *
+ * ANTI-INVENTION GUARANTEE — this list holds ONLY genuine zone-code fields. It
+ * deliberately EXCLUDES every affectation / usage / vocation / catégorie /
+ * description field (`Affectation`, `Usages`, `Vocation`, `Categorie`,
+ * `Description`, `milieu`, `usage`…). Matching those would let an MRC
+ * schéma-d'aménagement AFFECTATION layer — or a garbage OCR run — masquerade as a
+ * municipal grille and pass the overlap gate. The generic bare `CODE` is also
+ * excluded on purpose (too ambiguous: permit/affectation codes share the name).
+ *
+ * Mirrors the runtime join fallback list (`lot-zone-join-run.zoneCodeOf`) and the
+ * report list (`zone-codes-report.ZONE_CODE_KEYS`), plus the `Zonage`/`ZONAGE`
+ * municipal-grille variants the previous streaming regex silently MISSED — the
+ * cause of legitimate zoneheader extractions being false-rejected at overlap=0
+ * when their SIG grille stored codes under `Zonage` rather than `zone_code`.
+ */
+export const SIG_ZONE_CODE_FIELDS = [
+  "zone_code",
+  "code_zone",
+  "ZONE_CODE",
+  "CODE_ZONE",
+  "Code_Zone",
+  "Zonage",
+  "ZONAGE",
+  "zonage",
+  "NO_ZONAGE",
+  "no_zonage",
+  "no_zone",
+  "NO_ZONE",
+  "NOZONE",
+  "NOZONAGE",
+  "ZONE",
+  "Zone",
+  "zone",
+  "NUM_ZONE",
+  "num_zone",
+  "NumZone",
+  "zone_no",
+  "ZONE_NO",
+  "zone_num",
+  "ZONE_NUM",
+  "ZONE_ID",
+  "zone_id",
+  "Zonage_ID",
+] as const;
+
+/**
+ * Does a value LOOK like a real zone code? Used only to PICK the best whitelisted
+ * field when several are present — never to invent or filter published values.
+ * A zone code is a short token: letters+digits (`H-4`, `RA-1`), a bare number
+ * (`101`), a short letter code (`AGF`, `URB`), or the `"20 Ha"` digit-space-letter
+ * famille form. Prose (≥3 words / long) and GUIDs (a `zone_id` column) are
+ * rejected so they never win the field selection.
+ */
+function looksLikeZoneCode(value: string): boolean {
+  const s = value.trim();
+  if (s.length === 0 || s.length > 12) return false; // real codes are short; prose is long
+  if (s.split(/\s+/).length > 2) return false; // ≥3 whitespace tokens ⇒ prose, never a code
+  const compact = s.replace(/\s+/g, ""); // "20 Ha" (Matapédia famille) → "20Ha"
+  if (compact.length > 10) return false; // long alnum blob (a GUID / prose) ⇒ not a code
+  const hasDigit = /\d/.test(compact);
+  const hasLetter = /[A-Za-zÀ-ÿ]/.test(compact);
+  if (hasDigit && hasLetter) return true; // H-4, RA-1, "20 Ha", 1-HA
+  if (hasDigit && !hasLetter) return true; // 101, 200
+  if (hasLetter && compact.length <= 6) return true; // AGF, URB, CON-A short letter code
+  return false;
+}
+
+/**
+ * Structured extraction: JSON-parse the geojson, collect distinct values for each
+ * WHITELISTED field present in the features, then return the CANONICAL codes of
+ * the single field whose values most resemble real zone codes (≥3 credible codes,
+ * tie-broken by total distinct). Picking ONE field (never a union) is the
+ * anti-invention guard — a stray whitelisted GUID/index column can never pollute
+ * the SIG code set. Returns null when the input is not parseable geojson so the
+ * caller can fall back to the streaming regex.
+ */
+function zoneCodesByBestField(geojson: string): Set<string> | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(geojson);
+  } catch {
+    return null;
+  }
+  const features = (parsed as { features?: unknown })?.features;
+  if (!Array.isArray(features)) return null;
+  const byField = new Map<string, Set<string>>();
+  for (const f of features) {
+    const props = (f as { properties?: Record<string, unknown> | null })?.properties ?? {};
+    for (const name of SIG_ZONE_CODE_FIELDS) {
+      const v = props[name];
+      if (v === null || v === undefined) continue;
+      const s = String(v).trim();
+      if (!s) continue;
+      let vals = byField.get(name);
+      if (!vals) {
+        vals = new Set<string>();
+        byField.set(name, vals);
+      }
+      vals.add(s);
+    }
+  }
+  let best: { values: Set<string>; score: number } | null = null;
+  for (const values of byField.values()) {
+    let codeLike = 0;
+    for (const v of values) if (looksLikeZoneCode(v)) codeLike++;
+    if (codeLike < 1) continue; // must carry at least one real-looking code to qualify
+    // Score dominated by the count of credible codes (a column with ≥3 real codes
+    // always beats a sparse 1–2-value stray), tie-broken by total distinct. This
+    // "best single field" rule — not a union — is the anti-pollution guard, and it
+    // is never more permissive than the previous union-over-all-fields regex.
+    const score = codeLike * 1000 + values.size;
+    if (!best || score > best.score) best = { values, score };
+  }
+  if (!best) return new Set<string>();
+  const out = new Set<string>();
+  for (const v of best.values) out.add(canonZone(v));
+  return out;
+}
+
+/** Streaming-regex fallback over the SAME whitelist (malformed / non-standard JSON). */
+function zoneCodesByRegex(geojson: string): Set<string> {
   const set = new Set<string>();
-  const re = /"(?:zone_code|code_zone|ZONE|zone|no_zone|NOZONE)"\s*:\s*"([^"]+)"/g;
+  const names = SIG_ZONE_CODE_FIELDS.join("|");
+  const re = new RegExp(`"(?:${names})"\\s*:\\s*"([^"]+)"`, "g");
   let m: RegExpExecArray | null;
   while ((m = re.exec(geojson)) !== null) {
     const v = m[1]?.trim();
     if (v) set.add(canonZone(v));
   }
   return set;
+}
+
+/**
+ * Pull the distinct CANONICAL zone codes a SIG grille geojson declares.
+ *
+ * Reads the code from a CURATED whitelist of real zone-code property names
+ * (`SIG_ZONE_CODE_FIELDS`) — widened from the previous `zone_code|code_zone|
+ * ZONE|zone|no_zone|NOZONE` regex, which silently missed the very common
+ * `Zonage`/`ZONAGE` (and `CODE_ZONE`/`NO_ZONAGE`) municipal-grille field names and
+ * so returned an empty set, false-rejecting legitimate extractions at overlap=0.
+ * When several whitelisted fields coexist it keeps ONLY the one whose values most
+ * resemble zone codes (anti-invention: no union, no affectation/usage field).
+ */
+export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
+  const structured = zoneCodesByBestField(geojson);
+  if (structured !== null) return structured;
+  return zoneCodesByRegex(geojson);
 }
 
 /** Resolve the SIG grille key for a slug, tolerating BOTH layouts the corpus
