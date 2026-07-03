@@ -158,11 +158,45 @@ async function reportCity(slug: string, s3: ReturnType<typeof s3Client>): Promis
   return { slug, hasGrid: true, hasNorms: true, oldOverlap, newOverlap, normsCodes: normsVerbatim.size };
 }
 
+/** ANTI-INVENTION ground-truth: dump every verbatim SIG zone_code for a slug (no cap). */
+async function dumpFull(slug: string, s3: ReturnType<typeof s3Client>): Promise<void> {
+  const gridKeyResolved = await resolveGridKey(s3, slug);
+  if (!gridKeyResolved) {
+    console.log(`=== ${slug} === SIG zones layer ABSENT`);
+    return;
+  }
+  const fc = JSON.parse((await getBytes(s3, gridKeyResolved)).toString("utf8")) as FeatureCollection<
+    Geometry,
+    Record<string, unknown> | null
+  >;
+  const verbatim = new Set<string>();
+  for (const f of fc.features ?? []) {
+    const code = verbatimZoneCode((f as Feature<Geometry, Record<string, unknown> | null>).properties);
+    if (code) verbatim.add(code);
+  }
+  const codes = [...verbatim].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+  const prefixes = new Map<string, number>();
+  for (const c of codes) {
+    const p = (c.match(/^[A-Za-zÀ-ÿ]+/)?.[0] ?? "?").toUpperCase();
+    prefixes.set(p, (prefixes.get(p) ?? 0) + 1);
+  }
+  console.log(`=== ${slug} === key=${gridKeyResolved} | ${codes.length} distinct codes`);
+  console.log(
+    `PREFIXES: ${[...prefixes.entries()].sort((a, b) => b[1] - a[1]).map(([p, n]) => `${p}(${n})`).join(" ")}`,
+  );
+  console.log(`ALL CODES: ${codes.join(", ")}`);
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2).filter(Boolean);
   const all = argv.includes("--all");
+  const full = argv.includes("--full");
   const s3 = s3Client();
-  let slugs = argv.filter((a) => a !== "--all");
+  let slugs = argv.filter((a) => a !== "--all" && a !== "--full");
+  if (full) {
+    for (const slug of slugs) await dumpFull(slug, s3);
+    return;
+  }
   if (all) {
     // Every deposited norms grille — the exhaustive set of cities where a
     // lot->zone->norms join is even possible, so the canon-delta sweep is total.
