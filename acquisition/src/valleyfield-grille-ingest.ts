@@ -39,6 +39,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type {
+  FieldProvenanceT,
   NormFieldT,
   NormUnitT,
   ZoneNormsT,
@@ -92,11 +93,11 @@ function pageTexts(pdfPath: string): string[] {
 }
 
 // ── field builders (ANTI-INVENTION: verbatim raw, null beats a guess) ─────────
-function present(value: number, raw: string, unit: NormUnitT): NormFieldT {
-  return { value, raw, unit, confidence: 0.95 };
+function present(value: number, raw: string, unit: NormUnitT, prov: FieldProvenanceT): NormFieldT {
+  return { value, raw, unit, confidence: 0.95, _provenance: prov };
 }
-function absent(raw: string, unit: NormUnitT): NormFieldT {
-  return { value: null, raw, unit, confidence: 0, flag: "absent" };
+function absent(raw: string, unit: NormUnitT, prov: FieldProvenanceT): NormFieldT {
+  return { value: null, raw, unit, confidence: 0, flag: "absent", _provenance: prov };
 }
 
 /** Parse a French numeric token ("1,5", "70", "-", "s.o.") → number | null. */
@@ -153,6 +154,12 @@ function parsePage(text: string, sourceUrl: string, pageNo: number): ParsedZone 
   if (!codeM) return null;
   const zoneCode = `${codeM[1]}-${codeM[2]}`.toUpperCase();
   const lines = text.split(/\r?\n/);
+  const prov: FieldProvenanceT = {
+    source_url: sourceUrl,
+    methode: "native-text/valleyfield-annexe-grille",
+    snapshot: SNAPSHOT,
+    page: `p${pageNo} ZONE ${zoneCode}`,
+  };
 
   const pick = (labelRe: RegExp): { raw: string; min: number | null; max: number | null } | null => {
     for (const ln of lines) {
@@ -177,7 +184,7 @@ function parsePage(text: string, sourceUrl: string, pageNo: number): ParsedZone 
   ): NormFieldT | null => {
     if (!v) return null;
     const n = which === "min" ? v.min : v.max;
-    return n !== null ? present(n, v.raw, unit) : absent(v.raw, unit);
+    return n !== null ? present(n, v.raw, unit, prov) : absent(v.raw, unit, prov);
   };
 
   const zone: ZoneNormsT = {
