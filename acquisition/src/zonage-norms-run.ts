@@ -772,6 +772,10 @@ async function main(): Promise<void> {
             gridFound: crossval.gridFound,
             sigZoneCodes: crossval.sigZoneCodes,
             overlap: crossval.overlap,
+            // Diagnostic: a sample of the extracted codes (canonical) the SIG grille
+            // does NOT know — tells apart mis-routed OCR (garbage) from a real
+            // format mismatch the canon should reconcile.
+            extractedNotInSig: crossval.extractedNotInSig,
           },
           visionUsd,
         },
