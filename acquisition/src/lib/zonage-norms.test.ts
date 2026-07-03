@@ -62,6 +62,62 @@ describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
     expect(canonZone("200")).toBe("200");
     expect(canonZone("HA")).toBe("HA");
   });
+
+  describe("fix #2 — trailing presentational annotation (Longueuil STH/VLO/GP)", () => {
+    it("BRIDGE: a code and its arrondissement-annotated form collapse to ONE key", () => {
+      // Longueuil's SIG appends a redundant " (STH)"/" (VLO)"/" (GP)" arrondissement
+      // label to the grille's bare code; the numeric core already identifies the zone.
+      expect(canonZone("A12-024 (STH)")).toBe(canonZone("A12-024"));
+      expect(canonZone("H34-327 (VLO)")).toBe(canonZone("H34-327"));
+      expect(canonZone("C31-003 (GP)")).toBe(canonZone("C31-003"));
+      // Whitespace variants of the annotation still collapse.
+      expect(canonZone("A12-024(STH)")).toBe(canonZone("A12-024"));
+      expect(canonZone("A12-024  (STH) ")).toBe(canonZone("A12-024"));
+    });
+
+    it("ANTI-FUSION: the annotation strip NEVER touches the code core", () => {
+      // Same annotation, DIFFERENT core → still two distinct keys.
+      expect(canonZone("A12-024 (STH)")).not.toBe(canonZone("A12-025 (STH)"));
+      // Different arrondissement district prefix → distinct (12 vs 34).
+      expect(canonZone("A12-024 (STH)")).not.toBe(canonZone("A34-024 (VLO)"));
+      // The whole Longueuil famille stays fully distinct after stripping.
+      const set = new Set(
+        ["A12-024 (STH)", "A12-025 (STH)", "A34-024 (VLO)", "H34-327 (VLO)"].map(canonZone),
+      );
+      expect(set.size).toBe(4);
+    });
+
+    it("ANTI-FUSION: a DASH secteur suffix is NOT an annotation (mont-royal H-531-F ≠ H-531-G)", () => {
+      // mont-royal's SIG subdivides a base zone into dash-suffixed secteurs; these are
+      // distinct multi-segment codes, NOT a parenthetical presentation label.
+      expect(canonZone("H-531-F")).not.toBe(canonZone("H-531-G"));
+      expect(canonZone("H-531-F")).not.toBe(canonZone("H-531"));
+      expect(new Set(["H-531", "H-531-F", "H-531-G"].map(canonZone)).size).toBe(3);
+    });
+  });
+
+  describe("ANTI-INVENTION: genuinely different code schemes stay disjoint (never bridged)", () => {
+    it("a bare-number SIG code is NOT the letter-prefixed grille code (shefford R-1 ≠ 1)", () => {
+      // shefford's SIG is a sequential/bare-number layer (1..13); the grille uses
+      // AF-1/M-3/R-1 — stripping the usage letter would fuse AF-1, M-1, R-1 → forbidden.
+      expect(canonZone("R-1")).not.toBe(canonZone("1"));
+      expect(new Set(["AF-1", "M-1", "R-1", "1"].map(canonZone)).size).toBe(4);
+    });
+
+    it("a low grille number is NOT a three-digit secteur SIG number (deux-montagnes H1 ≠ H-100)", () => {
+      // deux-montagnes grille H1..H8 vs SIG H-100/H-108 (by-hundreds secteur numbering):
+      // a different by-law vintage, NOT a format variant. H-1 must never equal H-100.
+      expect(canonZone("H1")).not.toBe(canonZone("H-100"));
+      expect(canonZone("H06")).not.toBe(canonZone("H-600"));
+    });
+
+    it("a letter-first grille code is NOT the same-letter digit-first SIG code at another number (saint-cuthbert A-1 ≠ 22A)", () => {
+      // saint-cuthbert grille A-1..A-16 vs SIG 22A/23A (→ A-22/A-23). The digit⇄letter
+      // reorder is already applied, but the NUMBERS differ, so they stay distinct.
+      expect(canonZone("22A")).toBe("A-22");
+      expect(canonZone("A-1")).not.toBe(canonZone("22A"));
+    });
+  });
 });
 
 describe("sigZoneCodesFromGeojson — widened, curated zone-code field set", () => {
