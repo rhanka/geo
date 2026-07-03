@@ -103,6 +103,34 @@ describe("zones-wfs-run helpers", () => {
     expect(verdict.reason).toContain("séquentielles");
   });
 
+  it("accepts numeric-first QC codes (<n°zone>-<usage>) under a generic real zone field", () => {
+    // Format QC chiffre-d'abord (100-A, 101 C, 205-B) : la signature CODE_PATTERN_RE
+    // doit reconnaître le code même sous un champ réglementaire générique ("Zone",
+    // non explicite) qui exige codeLikeRatio ≥ 0.5. Régression : lettre-en-tête only.
+    const raw: GeoFeature[] = ["100-A", "101 C", "205-B"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+    expect(verdict.stats.distinct).toBe(3);
+  });
+
+  it("still rejects bare integers / addresses lacking a separator+letter signature", () => {
+    // Le séparateur OBLIGATOIRE de l'alternance chiffre-d'abord protège contre les
+    // entiers nus (id techniques) : "100"/"200"/"300" ne matchent pas CODE_PATTERN_RE.
+    const raw: GeoFeature[] = ["100", "200", "300"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.stats.codeLikeRatio).toBe(0);
+  });
+
   it("rejects generic Zone fields that contain usage labels instead of zone codes", () => {
     const raw: GeoFeature[] = ["Rurale", "Urbaine", "Industrielle"].map((label) => ({
       type: "Feature",
