@@ -97,12 +97,23 @@ export function normalizeZoneCode(value: unknown): string {
  * This mirrors `acquisition/src/zone-codes-report.ts` `canon()` exactly, so the
  * diagnostic's reported norms\u2229zones overlap equals the join's realized match.
  *
- * ANTI-INVENTION: it only drops leading zeros (never significant digits) and
- * only rewrites the letter\u2192number boundary, so it never merges distinct codes \u2014
- * `H-1` and `H-10` stay distinct, `C-408` and `C-40` stay distinct.
+ * It also drops a single TRAILING presentational parenthetical annotation before
+ * canonicalising \u2014 the redundant arrondissement/secteur label a SIG grille appends
+ * to an otherwise-identical code (Longueuil `A12-024 (STH)` \u2261 the grille's bare
+ * `A12-024`; STH/VLO/GP = the arrondissement, already encoded by the `12`/`34`
+ * district prefix). This is the LOCKSTEP partner of `canonZone`'s fix #2 in
+ * `acquisition/src/lib/zonage-norms.ts`, so the gate's overlap equals the realized
+ * lot\u22c8norms match on these codes.
+ *
+ * ANTI-INVENTION: it only drops leading zeros (never significant digits), rewrites
+ * the letter\u2192number boundary, and strips a trailing `(\u2026)` label \u2014 it never touches
+ * the code core, so it never merges distinct codes: `H-1` \u2260 `H-10`, `C-408` \u2260 `C-40`,
+ * `A12-024` \u2260 `A12-025 (STH)`, and a DASH secteur suffix (`H-531-F` \u2260 `H-531-G`) is
+ * left intact.
  */
 export function canonicalizeZoneCodeForJoin(value: unknown): string {
   return normalizeZoneCode(value)
+    .replace(/\s*\([^)]*\)\s*$/, "")
     .replace(/\s+/g, "")
     .replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
 }
