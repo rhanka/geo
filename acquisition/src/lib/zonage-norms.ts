@@ -267,37 +267,34 @@ export const SIG_ZONE_CODE_FIELDS = [
 ] as const;
 
 /**
- * Does a value LOOK like a real zone code? Used only to PICK the best whitelisted
- * field when several are present — never to invent or filter published values.
- * A zone code is a short token: letters+digits (`H-4`, `RA-1`), a bare number
- * (`101`), a short letter code (`AGF`, `URB`), or the `"20 Ha"` digit-space-letter
- * famille form. Prose (≥3 words / long) and GUIDs (a `zone_id` column) are
- * rejected so they never win the field selection.
+ * Is a value plausibly a zone code (vs a GUID / a prose description)? DELIBERATELY
+ * LENIENT — it must accept the full diversity of real codes (`H-4`, `RA-415-1`,
+ * `A12-024 (STH)` with a secteur annotation, `20 Ha`, `URB`) and reject ONLY the
+ * obvious non-codes so a whitelisted `zone_id` GUID column or a stray description
+ * column is not folded into the SIG code set. It is NEVER used to drop a value
+ * from a column that is otherwise a real code column.
  */
-function looksLikeZoneCode(value: string): boolean {
+function plausibleCode(value: string): boolean {
   const s = value.trim();
-  if (s.length === 0 || s.length > 12) return false; // real codes are short; prose is long
-  if (s.split(/\s+/).length > 2) return false; // ≥3 whitespace tokens ⇒ prose, never a code
-  const compact = s.replace(/\s+/g, ""); // "20 Ha" (Matapédia famille) → "20Ha"
-  if (compact.length > 10) return false; // long alnum blob (a GUID / prose) ⇒ not a code
-  const hasDigit = /\d/.test(compact);
-  const hasLetter = /[A-Za-zÀ-ÿ]/.test(compact);
-  if (hasDigit && hasLetter) return true; // H-4, RA-1, "20 Ha", 1-HA
-  if (hasDigit && !hasLetter) return true; // 101, 200
-  if (hasLetter && compact.length <= 6) return true; // AGF, URB, CON-A short letter code
-  return false;
+  if (s.length === 0 || s.length > 24) return false; // long string ⇒ description / GUID
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)) return false; // GUID
+  const core = s.replace(/\s*\([^)]*\)\s*$/, "").trim(); // drop a trailing "(STH)" annotation
+  if (core.split(/\s+/).length > 3) return false; // a phrase ⇒ prose, never a code
+  return /[A-Za-z0-9]/.test(core);
 }
 
 /**
- * Structured extraction: JSON-parse the geojson, collect distinct values for each
- * WHITELISTED field present in the features, then return the CANONICAL codes of
- * the single field whose values most resemble real zone codes (≥3 credible codes,
- * tie-broken by total distinct). Picking ONE field (never a union) is the
- * anti-invention guard — a stray whitelisted GUID/index column can never pollute
- * the SIG code set. Returns null when the input is not parseable geojson so the
- * caller can fall back to the streaming regex.
+ * Structured extraction: JSON-parse the geojson and UNION the canonical codes of
+ * every WHITELISTED field that is a genuine CODE COLUMN (majority of its distinct
+ * values are plausible codes). Unioning code columns — rather than picking one —
+ * never zeroes a real column (an annotated `A12-024 (STH)` grille reads fine) and
+ * never drops the real codes when a sequential-index column coexists, while the
+ * majority-code test keeps a GUID/description column out. The field-NAME whitelist
+ * (no affectation/usage/vocation field) remains the anti-invention guard. Returns
+ * null when the input is not parseable geojson so the caller can fall back to the
+ * streaming regex.
  */
-function zoneCodesByBestField(geojson: string): Set<string> | null {
+function zoneCodesByCodeColumns(geojson: string): Set<string> | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(geojson);
@@ -322,21 +319,15 @@ function zoneCodesByBestField(geojson: string): Set<string> | null {
       vals.add(s);
     }
   }
-  let best: { values: Set<string>; score: number } | null = null;
-  for (const values of byField.values()) {
-    let codeLike = 0;
-    for (const v of values) if (looksLikeZoneCode(v)) codeLike++;
-    if (codeLike < 1) continue; // must carry at least one real-looking code to qualify
-    // Score dominated by the count of credible codes (a column with ≥3 real codes
-    // always beats a sparse 1–2-value stray), tie-broken by total distinct. This
-    // "best single field" rule — not a union — is the anti-pollution guard, and it
-    // is never more permissive than the previous union-over-all-fields regex.
-    const score = codeLike * 1000 + values.size;
-    if (!best || score > best.score) best = { values, score };
-  }
-  if (!best) return new Set<string>();
   const out = new Set<string>();
-  for (const v of best.values) out.add(canonZone(v));
+  for (const values of byField.values()) {
+    let plausible = 0;
+    for (const v of values) if (plausibleCode(v)) plausible++;
+    // Only a CODE column contributes — a GUID/description column (majority not
+    // plausible) is skipped so it cannot pollute the SIG code set.
+    if (plausible * 2 < values.size) continue;
+    for (const v of values) out.add(canonZone(v));
+  }
   return out;
 }
 
@@ -361,11 +352,12 @@ function zoneCodesByRegex(geojson: string): Set<string> {
  * ZONE|zone|no_zone|NOZONE` regex, which silently missed the very common
  * `Zonage`/`ZONAGE` (and `CODE_ZONE`/`NO_ZONAGE`) municipal-grille field names and
  * so returned an empty set, false-rejecting legitimate extractions at overlap=0.
- * When several whitelisted fields coexist it keeps ONLY the one whose values most
- * resemble zone codes (anti-invention: no union, no affectation/usage field).
+ * Unions the whitelisted CODE columns (skipping a GUID/description column) — the
+ * field-NAME whitelist (no affectation/usage/vocation field) is the anti-invention
+ * guard, and a union of real zone-code columns cannot false-reject a legit grille.
  */
 export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
-  const structured = zoneCodesByBestField(geojson);
+  const structured = zoneCodesByCodeColumns(geojson);
   if (structured !== null) return structured;
   return zoneCodesByRegex(geojson);
 }
