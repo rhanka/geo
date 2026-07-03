@@ -107,8 +107,8 @@ describe("sigZoneCodesFromGeojson — widened, curated zone-code field set", () 
     expect(set.size).toBe(0);
   });
 
-  it("ANTI-INVENTION: picks the code-like field, never a description/GUID whitelisted neighbour", () => {
-    // `zone_id` holds GUIDs (long → not code-like); `Zonage` holds the real codes.
+  it("ANTI-INVENTION: unions the code column, never a whitelisted GUID/description neighbour", () => {
+    // `zone_id` holds GUIDs (a non-code column → skipped); `Zonage` holds real codes.
     const set = sigZoneCodesFromGeojson(
       fc([
         { zone_id: "7c7bf375-e17b-4d6d-8a2d-460eb0abfeb8", Zonage: "H-101" },
@@ -117,6 +117,37 @@ describe("sigZoneCodesFromGeojson — widened, curated zone-code field set", () 
       ]),
     );
     expect(set).toEqual(new Set(["H-101", "H-102", "C-201"]));
+  });
+
+  it("NO REGRESSION: reads annotated codes like longueuil's `A12-024 (STH)` (secteur suffix)", () => {
+    const set = sigZoneCodesFromGeojson(
+      fc([
+        { zone_code: "A12-024 (STH)" },
+        { zone_code: "A15-032 (STH)" },
+        { zone_code: "C31-003" },
+        { zone_code: "H-1-103" },
+      ]),
+    );
+    // Canonical set keeps every real code (the annotation/multi-segment forms survive).
+    expect(set.size).toBe(4);
+    expect(set.has(canonZone("A12-024 (STH)"))).toBe(true);
+    expect(set.has(canonZone("H-1-103"))).toBe(true);
+  });
+
+  it("does NOT drop the real code column when a sequential-index column coexists", () => {
+    // `NUM_ZONE` is a 1..N index; `Zonage` the real codes. Union keeps BOTH, so the
+    // real codes are always present for the overlap check (best-single-field could
+    // have mis-picked the fuller index column and false-rejected).
+    const set = sigZoneCodesFromGeojson(
+      fc([
+        { NUM_ZONE: "1", Zonage: "H-4" },
+        { NUM_ZONE: "2", Zonage: "C-2" },
+        { NUM_ZONE: "3", Zonage: "I-3" },
+      ]),
+    );
+    expect(set.has("H-4")).toBe(true);
+    expect(set.has("C-2")).toBe(true);
+    expect(set.has("I-3")).toBe(true);
   });
 
   it("falls back to the streaming regex on malformed (non-parseable) geojson", () => {
