@@ -169,6 +169,64 @@ describe("pv-gonet-run helpers", () => {
     });
   });
 
+  // Extension-less document HANDLERS: cpage `fichier.php?id=`, gestionweblex
+  // `document.ashx?documentid=`, ASP.NET `FileHandler.aspx?path=`, Joomla docman
+  // SEF `/…/file`. The recogniser was widened (parser `looksLikeDocumentHref` +
+  // gonet `looksLikeDocumentUrl`) so these reach the SAME PV keyword/date quality
+  // gate. Anti-invention is preserved: a handler link with no PV keyword AND no
+  // séance date is still rejected (real massueville `fichier.php?id=NNN` chrome).
+  describe("pvEntriesFromHtml – extension-less document handlers", () => {
+    it("keeps a cpage fichier.php?id= PV with a dated PV-keyword label", () => {
+      const html = `<a href="/include/fichier.php?id=412">Procès-verbal du 12 janvier 2026</a>`;
+      const entries = pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/");
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://ville.qc.ca/include/fichier.php?id=412",
+      ]);
+      expect(entries[0]?.publishedAt).toBe("2026-01-12");
+    });
+
+    it("keeps a gestionweblex document.ashx?documentid= PV (dated séance label)", () => {
+      const html = `<a href="/greffe/document.ashx?documentid=9b1f-77">Séance ordinaire du 3 février 2026</a>`;
+      const entries = pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/");
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://ville.qc.ca/greffe/document.ashx?documentid=9b1f-77",
+      ]);
+      expect(entries[0]?.publishedAt).toBe("2026-02-03");
+    });
+
+    it("keeps a Joomla docman SEF /…/file PV endpoint (no extension)", () => {
+      const html = `<a href="/documents/proces-verbaux/12-seance-du-3-mars-2026/file">Procès-verbal 3 mars 2026</a>`;
+      const entries = pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/");
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://ville.qc.ca/documents/proces-verbaux/12-seance-du-3-mars-2026/file",
+      ]);
+    });
+
+    it("keeps an ASP.NET FileHandler.aspx?path= PV (opaque path id, no extension)", () => {
+      const html = `<a href="/Handlers/FileHandler.aspx?path=8842">Procès-verbal de janvier 2026</a>`;
+      const entries = pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/");
+      expect(entries.map((e) => e.url)).toEqual([
+        "https://ville.qc.ca/Handlers/FileHandler.aspx?path=8842",
+      ]);
+    });
+
+    it("anti-invention: a fichier.php?id= handler with NO keyword and NO date is rejected even on a PV page (real massueville chrome)", () => {
+      // Verbatim massueville shape (2026-07): the conseil page is served at
+      // `?page=conseil` (pathname "/", NOT a /proces-verbaux/ path), an icon-only
+      // anchor, empty label, opaque numeric id — the surrounding text ("Congés
+      // fériés") is NOT the anchor. Recognised as a document handler, but rejected
+      // by the quality gate (no PV keyword in label OR url, no séance date, and the
+      // homepage is never a PV-context page). Never deposited.
+      const html = `<div class="bloc_archive_liste"><p>Conges feries - <a href="include/fichier.php?id=2116" target="_blank"><img src="images/pdf-icon.png" alt="pdf" /></a></p></div>`;
+      expect(pvEntriesFromHtml(html, "https://www.massueville.net/?page=conseil")).toEqual([]);
+    });
+
+    it("anti-invention: an ordre-du-jour handler link is dropped even with a date", () => {
+      const html = `<a href="/greffe/document.ashx?documentid=zz-9">Ordre du jour du 3 février 2026</a>`;
+      expect(pvEntriesFromHtml(html, "https://ville.qc.ca/conseil/proces-verbaux/")).toEqual([]);
+    });
+  });
+
   it("should follow nested municipal PV navigation pages when the first PV page is only a hub", async () => {
     const originalFetch = globalThis.fetch;
     const pages = new Map<string, string>([
