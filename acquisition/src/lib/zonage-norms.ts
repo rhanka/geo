@@ -28,6 +28,7 @@ import { join } from "node:path";
 
 import { ParquetSchema, ParquetWriter } from "@dsnp/parquetjs";
 import type { S3Client } from "@aws-sdk/client-s3";
+import { canonicalizeZoneCodeForJoin } from "@sentropic/geo";
 
 import type { ZoneNormsT } from "../../../packages/qc-sources/src/sources/grille-specifications-parser.js";
 
@@ -177,8 +178,12 @@ export interface CrossValResult {
   sigZoneCodes: number;
   /** Distinct zone codes the extraction produced. */
   extractedZoneCodes: number;
-  /** Codes present in BOTH (verbatim, after light normalisation). */
+  /** Codes present in BOTH — exact canonical match PLUS numeric-identifier bridge. */
   overlap: number;
+  /** Extracted codes confirmed by the SIG grille via the numeric-identifier bridge
+   *  ALONE (letter prefix differs, same unique zone NUMBER). Subset of `overlap`,
+   *  disjoint from the exact-canonical matches (which are `overlap − numericBridged`). */
+  numericBridged: number;
   /** overlap / extractedZoneCodes ∈ [0,1] — share of extracted codes the SIG confirms. */
   recoupExtracted: number;
   /** overlap / sigZoneCodes ∈ [0,1] — SIG coverage achieved. */
@@ -188,54 +193,33 @@ export interface CrossValResult {
 }
 
 /**
- * Light normalisation for zone-code comparison (uppercase, strip spaces, zero-pad).
+ * Canonical zone-code key used by the deposit OVERLAP GATE (cross-validation of the
+ * extracted grille codes against the SIG grille).
  *
- * Order-invariant reconciliation of the ONE ambiguous format families use — a
- * digit-first vs letter-first swap of a SINGLE "one letter-block + one digit-block"
- * code — so all of `HA-20`, `HA20`, `20HA`, `20-HA`, `"20 Ha"`, `HA-020` collapse to
- * the SAME canonical key `HA-20`. This is the Matapédia/Mitis famille case: the SIG
- * grille emits `"20 Ha"` while the extracted norms grille emits `"Ha-20"` — the same
- * zone, previously counted as overlap=0 (false negative).
- *
- * ANTI-FUSION GUARANTEE — the reorder fires ONLY when the entire code is, anchored
- * end-to-end, exactly one alpha run + one digit run (either order, at most one
- * separator). Two codes collapse together IFF they share the same letters AND the
- * same numeric value (leading zeros ignored). Consequences:
- *   • `H-1` ≠ `H-10`     — digit blocks differ (1 vs 10), never merged.
- *   • `A-1` ≡ `1-A` ≡ `A-01` — a real order/zero-pad swap of one code, merged (intended).
- *   • `H-1-2`, `RA-2-1`, `20-A-1` (multi-segment) — NOT matched by either anchored
- *     rule, so they fall through to the strict legacy leading-zero normalisation and
- *     are NEVER reordered. Distinct multi-segment codes can never be fused.
- *
- * TRAILING PRESENTATIONAL ANNOTATION (fix #2, strict superset like #1) — a SIG grille
- * sometimes appends a redundant arrondissement/secteur LABEL in parentheses to an
- * otherwise-identical code: Longueuil's SIG stores `A12-024 (STH)` / `H34-327 (VLO)`
- * (STH = Saint-Hubert, VLO = Vieux-Longueuil, GP = Greenfield Park) while its grille
- * emits the bare `A12-024`. The numeric core ALONE identifies the zone (the district
- * prefix `12`/`34` already encodes the arrondissement), so the ` (…)` tail is pure
- * presentation — the SAME zone written two ways, previously counted as overlap=0.
- * Stripping a single trailing parenthetical (mirrors `plausibleCode`'s existing
- * annotation strip) reconciles them.
- *   ANTI-FUSION: two codes collapse under this rule IFF they are byte-identical after
- *   removing a trailing `(…)`. It NEVER touches the code core, so `A12-024` and
- *   `A12-025 (STH)` stay distinct, and a DASH secteur suffix (mont-royal `H-531-F` vs
- *   `H-531-G`) is untouched — those remain two distinct multi-segment codes. Proven on
- *   Longueuil: 1927 distinct SIG codes → 1927 after the strip (zero collapse), while
- *   the extraction's overlap rose 0 → 665/666.
+ * SINGLE SOURCE OF TRUTH — this delegates verbatim to the runtime join lib's
+ * `canonicalizeZoneCodeForJoin` (`packages/geo/src/zonage/lotZoneJoin.ts`), so the
+ * overlap the gate REPORTS is, by construction, exactly the overlap the lot⋈norms
+ * JOIN REALIZES — the two can never drift. All the format folds (and their
+ * anti-fusion guarantees) are documented there; in brief:
+ *   • letter-first `HA-020`/`HA20`/`H 1` and digit-first `20HA`/`"20 Ha"` collapse
+ *     order-invariantly to one `HA-20`/`H-1` key (the Matapédia/Mitis famille);
+ *   • a trailing presentational `(…)` arrondissement label is dropped (Longueuil
+ *     `A12-024 (STH)` ≡ `A12-024`);
+ *   • two codes collapse IFF same letters AND same numeric value, so distinct codes
+ *     never fuse: `H-1` ≠ `H-10`, `20HA` ≠ `20HB`, `A12-024` ≠ `A12-025 (STH)`,
+ *     `H-531-F` ≠ `H-531-G`.
+ * The vintage/millésime reconciliation of a code whose NUMBER is preserved but whose
+ * LETTER prefix changed is deliberately NOT folded here (it would need the
+ * cross-corpus double-uniqueness guarantee); it lives in `reconcileZoneNumbers` /
+ * `overlapWithNumericBridge` below, which the gate composes on top of this canon.
  */
 export function canonZone(code: string): string {
-  // Drop a trailing presentational parenthetical annotation ("A12-024 (STH)" →
-  // "A12-024") BEFORE any other normalisation (see docstring, fix #2).
-  const core = code.replace(/\s*\([^)]*\)\s*$/, "");
-  const up = core.toUpperCase().replace(/\s+/g, "");
-  // letter-first single code: HA20 / HA-20 / HA-020  (0* consumes leading zeros)
-  const letterFirst = /^([A-Z]+)-?0*(\d+)$/.exec(up);
-  if (letterFirst) return `${letterFirst[1]}-${letterFirst[2]}`;
-  // digit-first single code: 20HA / 20-HA / 020-HA  → same canonical LETTERS-DIGITS
-  const digitFirst = /^0*(\d+)-?([A-Z]+)$/.exec(up);
-  if (digitFirst) return `${digitFirst[2]}-${digitFirst[1]}`;
-  // Anything else (multi-segment / unusual) — strict legacy normalisation, no reorder.
-  return up.replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
+  // SINGLE SOURCE OF TRUTH — delegate verbatim to the join lib's
+  // `canonicalizeZoneCodeForJoin` so the deposit OVERLAP GATE and the runtime
+  // lot⋈norms JOIN can NEVER drift apart (same folds, same anti-fusion, same
+  // unicode-dash/annotation handling). Any format-reconciliation change is made
+  // ONCE, in `canonicalizeZoneCodeForJoin`, and both sides inherit it in lockstep.
+  return canonicalizeZoneCodeForJoin(code);
 }
 
 /**
@@ -384,6 +368,138 @@ export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
   return zoneCodesByRegex(geojson);
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+//  2b. Numeric-identifier reconciliation (the millésime/vintage bridge).
+//
+//  MOTIVE — several munis have a fully-extracted, high-field grille whose codes
+//  and the SIG grille's codes are the SAME zoning at a DIFFERENT by-law vintage:
+//  the numeric zone identifier is identical, only the letter prefix changed
+//  (Mont-Tremblant SIG `CV-RF-106` ⇄ grille `RA-106` ⇄ a bare `106`; repentigny
+//  vintage prefixes). Exact-canonical overlap is 0 there — a FALSE reject.
+//
+//  A zone NUMBER identifies exactly one polygon-group per corpus. So when a
+//  number is UNIQUE on BOTH sides, its two spellings denote the same zone and we
+//  bridge them. When a number is NOT unique on a side (shefford `AF-1`/`M-1`/`R-1`
+//  all number 1), the number does NOT identify one zone → we REFUSE to bridge.
+//
+//  ⚠️ ANTI-FUSION — this operates on the *numeric identifier only*, never the
+//  letters, and NEVER collapses two distinct numbers:
+//    • different numbers never bridge:  `106` ≠ `1060`, `H-1` ≠ `H-10`.
+//    • a multi-number code (`A12-024`, two digit runs) is NEVER eligible — its
+//      zone identifier is ambiguous, so it falls to exact/annotation matching.
+//    • a number that is non-unique on either side is skipped (never guessed).
+//  It only ADDS confirmations the exact match missed; it can never merge two
+//  codes that the exact pass kept distinct.
+// ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * The numeric zone identifier of a code, or null when it has no ONE unambiguous
+ * number. Eligible iff the canonical code contains EXACTLY ONE contiguous digit
+ * run (any surrounding alpha/dash segments allowed): `RA-106`→"106",
+ * `CV-RF-106`→"106", `106`→"106", `H-1`→"1". Ineligible (→null): no digits
+ * (`URB`), or ≥2 digit runs (`A12-024`, `H-1-2`) whose zone number is ambiguous.
+ * Leading zeros are dropped so `H-01` and `H-1` share the identifier "1", while
+ * `H-1` ("1") and `H-10` ("10") stay distinct.
+ */
+export function zoneNumberKey(code: string): string | null {
+  const runs = canonZone(code).match(/\d+/g);
+  if (!runs || runs.length !== 1) return null;
+  return String(Number(runs[0]));
+}
+
+export interface NumericBridge {
+  /** Extracted (grille) canonical code that the SIG confirms via its number. */
+  extracted: string;
+  /** SIG canonical code carrying the same unique zone number. */
+  sig: string;
+  /** The shared zone number (leading zeros stripped). */
+  number: string;
+}
+
+/** number → the distinct canonical codes on one side that carry it. */
+function indexByNumber(codes: Iterable<string>): Map<string, Set<string>> {
+  const m = new Map<string, Set<string>>();
+  for (const c of codes) {
+    const n = zoneNumberKey(c);
+    if (n === null) continue;
+    let s = m.get(n);
+    if (!s) {
+      s = new Set<string>();
+      m.set(n, s);
+    }
+    s.add(c);
+  }
+  return m;
+}
+
+/**
+ * Bridge extracted↔SIG codes by UNIQUE numeric identifier (pure, unit-testable).
+ *
+ * Emits one bridge per zone number that is carried by EXACTLY ONE extracted code
+ * AND EXACTLY ONE SIG code, when those two codes are not already an exact match.
+ * The double-uniqueness is the anti-fusion guarantee: a number shared by ≥2 codes
+ * on either side is never bridged (we never pick a winner), and two different
+ * numbers can never be brought together.
+ */
+export function reconcileZoneNumbers(
+  extractedCanon: Iterable<string>,
+  sigCanon: Iterable<string>,
+): NumericBridge[] {
+  const sigSet = new Set(sigCanon);
+  const eIdx = indexByNumber(extractedCanon);
+  const sIdx = indexByNumber(sigSet);
+  const bridges: NumericBridge[] = [];
+  for (const [num, eCodes] of eIdx) {
+    if (eCodes.size !== 1) continue; // number not unique among extracted codes
+    const sCodes = sIdx.get(num);
+    if (!sCodes || sCodes.size !== 1) continue; // absent / not unique on SIG side
+    const e = [...eCodes][0]!;
+    const s = [...sCodes][0]!;
+    if (e === s || sigSet.has(e)) continue; // already an exact-canonical match
+    bridges.push({ extracted: e, sig: s, number: num });
+  }
+  return bridges;
+}
+
+export interface OverlapResult {
+  /** exact-canonical matches + numeric bridges. */
+  overlap: number;
+  /** exact-canonical matches only. */
+  exactOverlap: number;
+  /** numeric-identifier bridges only (disjoint from exact). */
+  numericBridged: number;
+  /** the numeric bridges (diagnostic). */
+  bridges: NumericBridge[];
+  /** extracted codes confirmed by NEITHER exact match NOR numeric bridge. */
+  notMatched: string[];
+}
+
+/**
+ * Combine exact-canonical overlap with the numeric-identifier bridge (pure).
+ * A bridged extracted code counts ONCE toward overlap and is disjoint from the
+ * exact matches (a bridge is only emitted for a code NOT in the SIG set).
+ */
+export function overlapWithNumericBridge(
+  extractedCanon: Set<string>,
+  sigCanon: Set<string>,
+): OverlapResult {
+  const bridges = reconcileZoneNumbers(extractedCanon, sigCanon);
+  const bridged = new Set(bridges.map((b) => b.extracted));
+  let exactOverlap = 0;
+  const notMatched: string[] = [];
+  for (const c of extractedCanon) {
+    if (sigCanon.has(c)) exactOverlap++;
+    else if (!bridged.has(c)) notMatched.push(c);
+  }
+  return {
+    overlap: exactOverlap + bridged.size,
+    exactOverlap,
+    numericBridged: bridged.size,
+    bridges,
+    notMatched,
+  };
+}
+
 /** Resolve the SIG grille key for a slug, tolerating BOTH layouts the corpus
  *  uses: the flat `qc-zonage-<slug>.geojson` and the subfolder
  *  `qc-zonage-<slug>/qc-zonage-<slug>.geojson` (mirrors coverage-reconcile). */
@@ -414,20 +530,16 @@ export async function crossValidateZoneCodes(
   } catch {
     gridFound = false;
   }
-  let overlap = 0;
-  const notInSig: string[] = [];
-  for (const c of extractedSet) {
-    if (sigSet.has(c)) overlap++;
-    else notInSig.push(c);
-  }
+  const { overlap, numericBridged, notMatched } = overlapWithNumericBridge(extractedSet, sigSet);
   return {
     gridFound,
     sigZoneCodes: sigSet.size,
     extractedZoneCodes: extractedSet.size,
     overlap,
+    numericBridged,
     recoupExtracted: extractedSet.size ? overlap / extractedSet.size : 0,
     recoupSig: sigSet.size ? overlap / sigSet.size : 0,
-    extractedNotInSig: notInSig.slice(0, 12),
+    extractedNotInSig: notMatched.slice(0, 12),
   };
 }
 
