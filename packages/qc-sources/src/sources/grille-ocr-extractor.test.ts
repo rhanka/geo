@@ -14,6 +14,9 @@ import {
   parseNumberedGrilleNativePage,
   parseNumeroDominanceGrillePage,
   parseNumeroDominanceHeader,
+  parseNormeGeneraleGrillePage,
+  parseZoneBannerCode,
+  looksLikeNormeGeneraleGrille,
   parseTransposedGrilleNativePage,
   looksLikeTransposedGrille,
   parseTransposedColumnsGrille,
@@ -1343,5 +1346,155 @@ describe("parseNumeroDominanceGrillePage — Béloeil / Saint-Félicien split-he
   it("returns [] on a page with no split header (anti-invention: no header, no zone)", () => {
     expect(parseNumeroDominanceGrillePage("just some prose with a 10 value", 1, OPTS2)).toEqual([]);
     expect(parseNumeroDominanceGrillePage(GRILLE_MD, 1, OPTS2)).toEqual([]);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  parseNormeGeneraleGrillePage — one-zone-per-page "GRILLE DES SPÉCIFICATIONS"
+//  with a "Norme générale" value column + a "Normes particulières" (override
+//  prose) column, and a "Zone <code>" banner whose code has NO dash (Kamouraska /
+//  Bas-Saint-Laurent family). Reproduced with `placeCols`: label col 0, générale
+//  value col 45, a particulières note at col 58 (BEFORE its own header col 70 — the
+//  real left-aligned overflow), the sub-header "Normes particulières" at col 70.
+//  Exercises: the no-dash banner (top + footer), the générale-column-only value
+//  (the particulières note is never absorbed), a glued unit ("8m") vs a spaced one
+//  ("10 m") vs an area ("65 m²"), and the anti-over-mapping of the BÂTIMENT
+//  dimensions (Largeur / Profondeur / Superficie au sol) + "Somme des marges".
+// ───────────────────────────────────────────────────────────────────────────
+
+const KAMOURASKA_NG = [
+  placeCols([0, 60], ["ANNEXE B - GRILLES DES SPÉCIFICATIONS", "Zone 5A"]),
+  "",
+  "USAGES AUTORISÉS",
+  "GROUPE D'USAGES / A - AGRICULTURE",
+  "A1   Agriculture sans élevage",
+  "",
+  "IMPLANTATION ET DIMENSIONS DU BÂTIMENT PRINCIPAL",
+  placeCols([0, 45, 70], ["Implantation", "Norme générale", "Normes particulières"]),
+  placeCols([0, 45, 58], ["Marge de recul avant minimale", "8m", "6 m pour les résidentiels"]),
+  placeCols([0, 45, 58], ["Marge de recul latérale minimale", "4m", "2 m pour les résidentiels"]),
+  placeCols([0, 45, 58], ["Marge de recul arrière minimale", "9m", "5 m pour les résidentiels"]),
+  placeCols([0, 45, 58], ["Somme des marges latérales", "6m", "Ne s'applique pas"]),
+  placeCols([0, 45, 70], ["Dimensions", "Norme générale", "Normes particulières"]),
+  placeCols([0, 45], ["Hauteur maximale", "10 m"]),
+  placeCols([0, 45], ["Largeur minimale", "9m"]),
+  placeCols([0, 45], ["Profondeur minimale", "6m"]),
+  placeCols([0, 45], ["Superficie minimale au sol", "65 m²"]),
+  placeCols([0, 45, 70], ["Densité d'occupation", "Norme générale", "Normes particulières"]),
+  placeCols([0, 45], ["Coefficient d'emprise au sol maximal", "0,3"]),
+  "",
+  placeCols([0, 60], ["RÈGLEMENT SUR LE ZONAGE NUMÉRO 2025-04 DE LA MUNICIPALITÉ DE KAMOURASKA", "Zone 5A"]),
+].join("\n");
+
+// A conservation zone whose norm cells are all BLANK (honest empty page).
+const KAMOURASKA_NG_EMPTY = [
+  placeCols([0, 60], ["ANNEXE B - GRILLES DES SPÉCIFICATIONS", "Zone 2PI"]),
+  "IMPLANTATION ET DIMENSIONS DU BÂTIMENT PRINCIPAL",
+  placeCols([0, 45, 70], ["Implantation", "Norme générale", "Normes particulières"]),
+  placeCols([0], ["Marge de recul avant minimale"]),
+  placeCols([0], ["Hauteur maximale"]),
+  placeCols([0, 60], ["RÈGLEMENT … DE KAMOURASKA", "Zone 2PI"]),
+].join("\n");
+
+// A TERRAIN-section variant: here "Largeur"/"Superficie" ARE lot dimensions.
+const NG_TERRAIN = [
+  placeCols([0, 60], ["GRILLE DES SPÉCIFICATIONS", "Zone 7R"]),
+  "DIMENSIONS DU TERRAIN",
+  placeCols([0, 45, 70], ["Lotissement", "Norme générale", "Normes particulières"]),
+  placeCols([0, 45], ["Largeur minimale", "18 m"]),
+  placeCols([0, 45], ["Superficie minimale", "560 m²"]),
+  placeCols([0, 60], ["RÈGLEMENT — Zone 7R", "Zone 7R"]),
+].join("\n");
+
+describe("parseZoneBannerCode — 'Zone <code>' banner (no dash)", () => {
+  it("reads the most-frequent digit+letter code (header + footer)", () => {
+    expect(parseZoneBannerCode(KAMOURASKA_NG)).toBe("5A");
+    expect(parseZoneBannerCode("   Zone 2PI\n\n… Zone 2PI")).toBe("2PI");
+    expect(parseZoneBannerCode("Zone 17P")).toBe("17P");
+  });
+  it("ignores a prose 'Zone agricole' band (no digit) — anti-invention", () => {
+    expect(parseZoneBannerCode("Zone agricole permanente")).toBeNull();
+    expect(parseZoneBannerCode("aucune zone ici")).toBeNull();
+  });
+});
+
+describe("looksLikeNormeGeneraleGrille — detection", () => {
+  it("fires only with a banner AND the générale/particulières sub-header", () => {
+    expect(looksLikeNormeGeneraleGrille(KAMOURASKA_NG)).toBe(true);
+    expect(looksLikeNormeGeneraleGrille(NG_TERRAIN)).toBe(true);
+    expect(looksLikeNormeGeneraleGrille("Zone 5A\nsome prose")).toBe(false); // no sub-header
+    expect(looksLikeNormeGeneraleGrille(GRILLE_MD)).toBe(false);
+    expect(looksLikeNormeGeneraleGrille(NICOLET_I01_132_LAYOUT)).toBe(false);
+  });
+});
+
+describe("parseNormeGeneraleGrillePage — Kamouraska 'Norme générale' one-zone grille", () => {
+  const zones = parseNormeGeneraleGrillePage(KAMOURASKA_NG, 5, OPTS2);
+  const z = zones[0]!;
+
+  it("emits exactly one zone with the verbatim no-dash banner code", () => {
+    expect(zones).toHaveLength(1);
+    expect(z.zone_code).toBe("5A");
+    expect(z.zone_page).toBe("PAGE 5 ZONE 5A");
+  });
+
+  it("reads the 'Norme générale' column, NEVER the 'Normes particulières' note", () => {
+    expect(z.marges.avant_min?.value).toBe(8); // générale 8m, NOT the note's "6 m"
+    expect(z.marges.avant_min?.unit).toBe("m");
+    expect(z.marges.laterale_min?.value).toBe(4);
+    expect(z.marges.arriere_min?.value).toBe(9);
+  });
+
+  it("handles glued ('8m'), spaced ('10 m') and area ('65 m²') value forms", () => {
+    expect(z.hauteur_max?.value).toBe(10);
+    expect(z.hauteur_max?.unit).toBe("m");
+    expect(z.densite?.value).toBe(0.3);
+  });
+
+  it("ANTI-OVER-MAPPING: BÂTIMENT dims + 'Somme' stay UNMAPPED (null)", () => {
+    // "Largeur minimale" (9m) and "Superficie minimale au sol" (65 m²) are BUILDING
+    // dimensions here → never folded into the LOT frontage / superficie.
+    expect(z.frontage_min?.value).toBeNull();
+    expect(z.superficie_min?.value).toBeNull();
+    // "Somme des marges latérales" (6m) is never a margin minimum.
+    expect(z.marges.laterale_min?.value).toBe(4); // 4, not the somme 6
+    expect(z.hauteur_min).toBeNull();
+  });
+
+  it("METRIC — every published value is verbatim in its raw cell (0 fausse valeur)", () => {
+    for (const f of [z.densite, z.hauteur_max, z.marges.avant_min, z.marges.laterale_min, z.marges.arriere_min].filter(
+      (x) => x && x.value !== null,
+    )) {
+      const raw = (f!.raw ?? "").replace(/\s/g, "").replace(/,/g, ".");
+      expect(raw.includes(String(f!.value))).toBe(true);
+      expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
+    }
+  });
+
+  it("stamps the native provenance methode", () => {
+    expect(z.marges.avant_min?._provenance.methode).toBe("native-text/grille-norme-generale");
+  });
+
+  it("an all-blank (conservation) zone emits the code with honest null norms", () => {
+    const e = parseNormeGeneraleGrillePage(KAMOURASKA_NG_EMPTY, 2, OPTS2);
+    expect(e).toHaveLength(1);
+    expect(e[0]!.zone_code).toBe("2PI");
+    expect(e[0]!.marges.avant_min?.value).toBeNull();
+    expect(e[0]!.hauteur_max?.value).toBeNull();
+  });
+
+  it("maps Largeur/Superficie to the LOT fields ONLY under a terrain section", () => {
+    const t = parseNormeGeneraleGrillePage(NG_TERRAIN, 1, OPTS2)[0]!;
+    expect(t.zone_code).toBe("7R");
+    expect(t.frontage_min?.value).toBe(18);
+    expect(t.superficie_min?.value).toBe(560);
+    expect(t.superficie_min?.unit).toBe("m2");
+  });
+
+  it("returns [] on a page with no 'Zone <code>' banner (anti-invention)", () => {
+    expect(parseNormeGeneraleGrillePage(GRILLE_MD, 1, OPTS2)).toEqual([]);
+    expect(parseNormeGeneraleGrillePage(NICOLET_I01_132_LAYOUT, 1, OPTS2)).toEqual([]);
+    const noBanner = KAMOURASKA_NG.replace(/Zone 5A/g, "Zone agricole");
+    expect(parseNormeGeneraleGrillePage(noBanner, 5, OPTS2)).toEqual([]);
   });
 });
