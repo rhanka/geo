@@ -405,7 +405,20 @@ function looksLikeDocumentUrl(url: string): boolean {
   return (
     /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
     /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
-    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url)
+    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url) ||
+    // Extension-less document handlers that stream a real PDF/DOC via a script,
+    // grounded on real QC municipal CMS (cpage `fichier.php?id=`, gestionweblex
+    // `document.ashx?documentid=`, ASP.NET `FileHandler.aspx?path=`, Joomla
+    // docman `task=document.download` / SEF `/…/file`). Recogniser widening only:
+    // the PV keyword/date gate below + live HEAD verify still decide the deposit,
+    // so a non-PV handler link is never fabricated. Kept in lock-step with
+    // `proces-verbaux-parser.ts`'s `looksLikeDocumentHref`.
+    /\/fichier(?:as)?\.php\b/i.test(url) ||
+    /\/(?:document|file)[a-z0-9_-]*\.ashx\b/i.test(url) ||
+    /\/filehandler\.(?:aspx|ashx)\b/i.test(url) ||
+    /[?&](?:documentid|iddocument|docid)=/i.test(url) ||
+    /[?&]task=document\.download\b/i.test(url) ||
+    /\/file(?:[?#]|$)/i.test(url)
   );
 }
 
