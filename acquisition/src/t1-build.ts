@@ -22,7 +22,7 @@
  *   tsx src/t1-build.ts --slug delson --pdf <url|path> [--dry-run]
  *                       [--out <dir>] [--cutoff-m 1500] [--min-codes 10]
  *                       [--max-residual-m 50] [--spatial-km 8]
- *                       [--labels text|gpt55] [--dict <codes.json>]
+ *                       [--labels text|gpt55|gpt54] [--dict <codes.json>]
  *                       [--page 1] [--ocr-dpi 200] [--label-region x0,y0,x1,y1]
  *                       [--allow-numeric-codes]
  *
@@ -32,9 +32,9 @@
  * is verbatim in the dict, the dict is not a trivial 1..N run, and the extracted
  * set matches the dict SET (see lib/numeric-codes.ts). Otherwise it ABORTS.
  *
- * --labels gpt55 is for a GEOREFERENCED *glyph* GeoPDF (labels drawn as vector
+ * --labels gpt55/gpt54 is for a GEOREFERENCED *glyph* GeoPDF (labels drawn as vector
  * outlines → pdftotext sees 0 words) in an environment WITHOUT tesseract: it
- * rasterizes the neatline, reads positioned labels with GPT-5.5 vision, and
+ * rasterizes the neatline, reads positioned labels with the selected GPT vision model, and
  * keeps ONLY codes that validate verbatim + unambiguously against --dict (the
  * municipality's by-law code list). If no real codes validate, it ABORTS.
  */
@@ -62,10 +62,13 @@ interface Args {
   maxResidualM: number;
   spatialKm: number;
   cadastre?: string;
-  /** "text" = pdftotext selectable labels; "gpt55" = GPT-5.5 positioned vision
-   * OCR for GLYPH GeoPDFs (labels drawn as outlines, no selectable text). */
-  labels: "text" | "gpt55";
+  /** "text" = pdftotext selectable labels; "gpt55"/"gpt54" = GPT positioned vision
+   * OCR for GLYPH GeoPDFs; "claude" = Claude (the operating agent) reads the
+   * rendered crop itself and injects positioned reads via --reads. */
+  labels: "text" | "gpt55" | "gpt54" | "claude";
   dict?: string;
+  /** Claude lane: JSON { labels:[{code,x,y}] } of the agent's positioned reads. */
+  reads?: string;
   page?: number;
   ocrDpi: number;
   labelRegion?: [number, number, number, number];
@@ -91,7 +94,9 @@ function parseArgs(argv: string[]): Args {
     throw new Error("required: --slug <slug> --pdf <url|path>");
   }
   const labels = String(a["labels"] ?? "text");
-  if (labels !== "text" && labels !== "gpt55") throw new Error("--labels must be text|gpt55");
+  if (labels !== "text" && labels !== "gpt55" && labels !== "gpt54" && labels !== "claude") {
+    throw new Error("--labels must be text|gpt55|gpt54|claude");
+  }
   let labelRegion: [number, number, number, number] | undefined;
   if (typeof a["label-region"] === "string") {
     const r = a["label-region"].split(",").map(Number);
@@ -109,6 +114,7 @@ function parseArgs(argv: string[]): Args {
     cadastre: a["cadastre"] ? String(a["cadastre"]) : undefined,
     labels,
     dict: a["dict"] ? String(a["dict"]) : undefined,
+    reads: a["reads"] ? String(a["reads"]) : undefined,
     page: a["page"] ? Number(a["page"]) : undefined,
     ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
     labelRegion,
@@ -136,6 +142,30 @@ async function resolvePdf(pdf: string): Promise<string> {
 function fail(msg: string): never {
   console.error(`\n[t1-build] ABORT (anti-invention): ${msg}`);
   process.exit(2);
+}
+
+function gptLabelConfig(labels: "gpt55" | "gpt54"): {
+  model: string;
+  effort: string;
+  display: string;
+  source: string;
+} {
+  if (labels === "gpt54") {
+    const model = process.env["GPT54_MODEL"] ?? "gpt-5.4";
+    return {
+      model,
+      effort: process.env["GPT54_EFFORT"] ?? "xhigh",
+      display: "GPT-5.4",
+      source: "geopdf-gpt54-vision",
+    };
+  }
+  const model = process.env["GPT55_MODEL"] ?? "gpt-5.5";
+  return {
+    model,
+    effort: process.env["GPT55_EFFORT"] ?? "xhigh",
+    display: "GPT-5.5",
+    source: "geopdf-gpt55-vision",
+  };
 }
 
 async function main(): Promise<void> {
@@ -166,7 +196,9 @@ async function main(): Promise<void> {
   // GLYPH GeoPDFs (labels drawn as outlines → pdftotext sees 0 words). The
   // vision reads are dict-validated (verbatim, unambiguous) against the by-law
   // code list — the same anti-invention guard as the T2 gpt55 path.
-  const source = args.labels === "gpt55" ? "geopdf-gpt55-vision" : "geopdf-esri";
+  const gptCfg = args.labels === "gpt55" || args.labels === "gpt54" ? gptLabelConfig(args.labels) : null;
+  const source =
+    args.labels === "claude" ? "geopdf-claude48-vision" : gptCfg ? gptCfg.source : "geopdf-esri";
   // Dict + numeric relaxation (default OFF; requires --dict). Hoisted so both the
   // text and gpt55 paths admit dict-backed pure-numeric codes when enabled.
   let dictCodes: string[] | undefined;
@@ -176,10 +208,12 @@ async function main(): Promise<void> {
   if (numericDict) console.error(`[t1-build] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
   let lab: ExtractLabelsResult;
   let gpt55Stats: Record<string, unknown> = {};
-  if (args.labels === "gpt55") {
-    if (!dictCodes) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
+  if (gptCfg) {
+    if (!dictCodes) fail(`--labels ${args.labels} requires --dict <authoritative-zone-codes.json>`);
     const dict = dictCodes;
-    console.error(`[t1-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
+    console.error(
+      `[t1-build] ${gptCfg.display} dictionary: ${dict.length} authoritative codes (${args.dict})`,
+    );
     const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
     // Default crop = the embedded neatline (geo.bbox is PDF user-space, y-up);
     // convert to a top-left region for the rasteriser, or take --label-region.
@@ -195,31 +229,97 @@ async function main(): Promise<void> {
       dpi: args.ocrDpi,
       page,
       region: args.labelRegion ?? neatlineRegion,
+      model: gptCfg.model,
+      effort: gptCfg.effort,
       ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
     });
     lab = gptLab;
+    const statsPrefix = args.labels;
     gpt55Stats = {
       dict_size: dict.length,
       ocr_engine: gptLab.ocr_engine,
-      gpt55_reads: gptLab.n_model_labels,
-      gpt55_validated: gptLab.n_validated,
-      gpt55_exact: gptLab.n_exact,
-      gpt55_canonical: gptLab.n_canonical,
-      gpt55_rejected: gptLab.n_rejected,
-      gpt55_distinct: gptLab.n_distinct,
-      gpt55_crop: gptLab.image_path,
-      gpt55_snap_rate_pct: gptLab.snap_rate_pct,
-      gpt55_latency_ms: gptLab.latency_ms,
-      gpt55_tokens_input: gptLab.usage.inputTokens,
-      gpt55_tokens_output: gptLab.usage.outputTokens,
-      gpt55_reject_samples: gptLab.reject_samples,
+      vision_model: gptCfg.model,
+      vision_effort: gptCfg.effort,
+      [`${statsPrefix}_reads`]: gptLab.n_model_labels,
+      [`${statsPrefix}_validated`]: gptLab.n_validated,
+      [`${statsPrefix}_exact`]: gptLab.n_exact,
+      [`${statsPrefix}_canonical`]: gptLab.n_canonical,
+      [`${statsPrefix}_rejected`]: gptLab.n_rejected,
+      [`${statsPrefix}_distinct`]: gptLab.n_distinct,
+      [`${statsPrefix}_crop`]: gptLab.image_path,
+      [`${statsPrefix}_snap_rate_pct`]: gptLab.snap_rate_pct,
+      [`${statsPrefix}_latency_ms`]: gptLab.latency_ms,
+      [`${statsPrefix}_tokens_input`]: gptLab.usage.inputTokens,
+      [`${statsPrefix}_tokens_output`]: gptLab.usage.outputTokens,
+      [`${statsPrefix}_tokens_reasoning`]: gptLab.usage.reasoningOutputTokens,
+      [`${statsPrefix}_reject_samples`]: gptLab.reject_samples,
     };
     console.error(
-      `[t1-build] GPT-5.5 labels: ${gptLab.n_model_labels} reads, ${gptLab.nCodeLike} code-like, ` +
+      `[t1-build] ${gptCfg.display} labels: ${gptLab.n_model_labels} reads, ${gptLab.nCodeLike} code-like, ` +
         `${gptLab.n_validated} validated (${gptLab.n_exact} exact + ${gptLab.n_canonical} canonical), ` +
         `${gptLab.n_rejected} rejected, ${gptLab.n_distinct} distinct codes`,
     );
-    console.error(`[t1-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
+    console.error(`[t1-build] ${gptCfg.display} rejects: ${gptLab.reject_samples.join(" | ")}`);
+  } else if (args.labels === "claude") {
+    // Claude-vision lane for GLYPH GeoPDFs: render the neatline crop, let the
+    // operating agent (Claude 4.8) read the codes, ingest its positioned reads
+    // and validate them verbatim against --dict (same guard as the gpt55 lane).
+    if (!dictCodes) fail("--labels claude requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
+    const [cnx0, cny0, cnx1, cny1] = geo.bbox;
+    const neatlineRegion: [number, number, number, number] = [
+      Math.min(cnx0, cnx1),
+      geo.pageH - Math.max(cny0, cny1),
+      Math.max(cnx0, cnx1),
+      geo.pageH - Math.min(cny0, cny1),
+    ];
+    const page = args.page ?? 1;
+    const region = args.labelRegion ?? neatlineRegion;
+    const { renderClaudeCrop, loadClaudeReads, extractLabelsClaude } = await import("./lib/t1-labels-claude.js");
+    const crop = renderClaudeCrop(pdfPath, geo, args.slug, { dpi: args.ocrDpi, page, region });
+    if (!args.reads) {
+      // RENDER-ONLY: no reads yet → emit the crop for the agent and STOP (never
+      // fabricate, never upload). The agent reads the glyphs off the crop then
+      // re-runs with --reads.
+      console.error(`[t1-build] claude render-only (no --reads): crop ready for agent vision.`);
+      console.error(`  crop=${crop.imagePath}`);
+      console.error(
+        `  region(pdf-pt,top-left)=[${region.map((n) => n.toFixed(1)).join(", ")}] dpi=${args.ocrDpi} page=${page}`,
+      );
+      console.error(`  dict=${dict.length} codes (${args.dict})`);
+      console.error(
+        `  NEXT: read the glyph zone codes off the crop, write { "labels":[{"code","x","y"}] } ` +
+          `(x,y normalized 0..1 within THIS crop, x→right, y→down), then re-run with --reads <that.json>.`,
+      );
+      process.exit(0);
+    }
+    const reads = loadClaudeReads(args.reads);
+    const claudeLab = extractLabelsClaude(reads, geo, dict, {
+      region,
+      imagePath: crop.imagePath,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
+    });
+    lab = claudeLab;
+    gpt55Stats = {
+      dict_size: dict.length,
+      ocr_engine: claudeLab.ocr_engine,
+      vision_model: "claude-4.8",
+      claude_reads: reads.length,
+      claude_validated: claudeLab.n_validated,
+      claude_exact: claudeLab.n_exact,
+      claude_canonical: claudeLab.n_canonical,
+      claude_rejected: claudeLab.n_rejected,
+      claude_distinct: claudeLab.n_distinct,
+      claude_crop: crop.imagePath,
+      claude_snap_rate_pct: claudeLab.snap_rate_pct,
+      claude_reject_samples: claudeLab.reject_samples,
+    };
+    console.error(
+      `[t1-build] Claude-4.8 labels: ${reads.length} reads, ${claudeLab.nCodeLike} code-like, ` +
+        `${claudeLab.n_validated} validated (${claudeLab.n_exact} exact + ${claudeLab.n_canonical} canonical), ` +
+        `${claudeLab.n_rejected} rejected, ${claudeLab.n_distinct} distinct codes`,
+    );
+    console.error(`[t1-build] Claude-4.8 rejects: ${claudeLab.reject_samples.join(" | ")}`);
   } else {
     lab = extractLabels(pdfPath, geo, {
       ...(args.page ? { page: args.page } : {}),
@@ -237,7 +337,7 @@ async function main(): Promise<void> {
     fail(
       `only ${distinct.size} distinct zone codes (< ${minCodes}); ` +
         (args.labels === "text"
-          ? "labels may be glyphs → retry with --labels gpt55 --dict <codes.json>"
+          ? "labels may be glyphs → retry with --labels gpt55 or --labels gpt54 --dict <codes.json>"
           : "vision OCR yielded too few real codes → ABORT (no fabrication)"),
     );
   }
