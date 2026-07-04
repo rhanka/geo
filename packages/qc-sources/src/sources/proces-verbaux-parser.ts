@@ -254,12 +254,32 @@ function effectiveBase(html: string, indexUrl: string): string {
 }
 
 /** True when the href points at a PV-style document (PDF, DOC, or a download
- * endpoint — incl. Concrete5's `/download_file/view/<id>/<pkg>`). */
+ * endpoint — incl. Concrete5's `/download_file/view/<id>/<pkg>`).
+ *
+ * Also recognises EXTENSION-LESS document HANDLERS — server scripts that stream
+ * a real PDF/DOC with no file extension in the URL. Grounded on real Québec
+ * municipal CMS families (2026-07):
+ *   - cpage       `…/include/fichier.php?id=NNN`   (massueville, saint-gérard-majella)
+ *   - gestionweblex `…/document.ashx?documentid=…`
+ *   - ASP.NET     `…/FileHandler.aspx?path=…`
+ *   - Joomla docman `…?task=document.download` / SEF `…/<id>-title/file`
+ * This is a RECOGNISER widening only: the downstream PV keyword/date quality
+ * gate (`pvEntriesFromItems`) and the live HEAD-verify still decide whether an
+ * entry is deposited, so a non-PV handler link (site chrome, avis public,
+ * calendrier) is never fabricated as a procès-verbal. Keep this predicate in
+ * lock-step with `pv-gonet-run.ts`'s `looksLikeDocumentUrl`. */
 function looksLikeDocumentHref(url: string): boolean {
   return (
     /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
     /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
-    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url)
+    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url) ||
+    // Extension-less document handlers (see doc comment).
+    /\/fichier(?:as)?\.php\b/i.test(url) ||
+    /\/(?:document|file)[a-z0-9_-]*\.ashx\b/i.test(url) ||
+    /\/filehandler\.(?:aspx|ashx)\b/i.test(url) ||
+    /[?&](?:documentid|iddocument|docid)=/i.test(url) ||
+    /[?&]task=document\.download\b/i.test(url) ||
+    /\/file(?:[?#]|$)/i.test(url)
   );
 }
 
