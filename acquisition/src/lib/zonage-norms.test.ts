@@ -7,13 +7,23 @@
  */
 import { describe, it, expect } from "vitest";
 
+import { canonicalizeZoneCodeForJoin } from "@sentropic/geo";
+
 import {
   shouldRejectForZeroOverlap,
   shouldRejectForZeroNormFields,
   looksLikeTableOfContents,
   canonZone,
   sigZoneCodesFromGeojson,
+  zoneNumberKey,
+  reconcileZoneNumbers,
+  overlapWithNumericBridge,
 } from "./zonage-norms.js";
+
+/** Canonicalize an array of raw codes into the SIG/extracted canonical Set. */
+function canonSet(codes: string[]): Set<string> {
+  return new Set(codes.map(canonZone));
+}
 
 /** Build a minimal FeatureCollection whose features carry the given properties. */
 function fc(propsList: Array<Record<string, unknown>>): string {
@@ -117,6 +127,132 @@ describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
       expect(canonZone("22A")).toBe("A-22");
       expect(canonZone("A-1")).not.toBe(canonZone("22A"));
     });
+  });
+});
+
+describe("LOCKSTEP: canonZone === canonicalizeZoneCodeForJoin (gate ⇔ join, single source)", () => {
+  // canonZone (deposit overlap gate) delegates to canonicalizeZoneCodeForJoin (runtime
+  // lot⋈norms join). This is the anti-drift guard: the gate's reported overlap must be
+  // byte-for-byte the overlap the join realizes. Any future divergence fails HERE.
+  it("agrees code-for-code across every format family (incl. unicode dashes)", () => {
+    const battery = [
+      "H-1", "H01", "H-01", "H 1", "H1", "H–01", "H‐1", // en/hyphen dashes
+      "HA-20", "HA20", "20HA", "20-HA", "20 Ha", "ha-020", "020-HA", "22A",
+      "H-10", "H-100", "H-1-2", "RA-2-1", "20-A-1",
+      "A12-024", "A12-024 (STH)", "H34-327 (VLO)", "H-531-F", "H-531-G",
+      "CV-RF-106", "RA-106", "106", "URB", "MIXTE CENTRE", "200",
+    ];
+    for (const c of battery) {
+      expect(canonZone(c)).toBe(canonicalizeZoneCodeForJoin(c));
+    }
+  });
+
+  it("a unicode-dash SIG code reconciles to the ASCII-dash grille code (no false overlap=0)", () => {
+    // Gate side previously left "H–1" (en-dash) un-normalised while the join folded it
+    // to "H-1"; now both delegate, so the gate overlap equals the realized join match.
+    expect(canonZone("H–1")).toBe(canonZone("H-1"));
+    expect(canonZone("H–1")).toBe(canonicalizeZoneCodeForJoin("H-1"));
+  });
+});
+
+describe("zoneNumberKey — the unambiguous single zone number", () => {
+  it("extracts the one number regardless of letter prefix / vintage spelling", () => {
+    // The Mont-Tremblant vintage family: same zone 106 written three ways.
+    expect(zoneNumberKey("RA-106")).toBe("106");
+    expect(zoneNumberKey("CV-RF-106")).toBe("106");
+    expect(zoneNumberKey("106")).toBe("106");
+    expect(zoneNumberKey("H-1")).toBe("1");
+  });
+
+  it("drops leading zeros so H-01 and H-1 share a number, H-1 and H-10 do not", () => {
+    expect(zoneNumberKey("H-01")).toBe("1");
+    expect(zoneNumberKey("H-1")).toBe("1");
+    expect(zoneNumberKey("H-10")).toBe("10");
+    expect(zoneNumberKey("H-1")).not.toBe(zoneNumberKey("H-10"));
+  });
+
+  it("returns null for a code with NO number or with ≥2 numbers (ambiguous identifier)", () => {
+    expect(zoneNumberKey("URB")).toBeNull();
+    expect(zoneNumberKey("HA")).toBeNull();
+    expect(zoneNumberKey("A12-024")).toBeNull(); // two digit runs → ambiguous
+    expect(zoneNumberKey("H-1-2")).toBeNull();
+  });
+});
+
+describe("reconcileZoneNumbers / overlapWithNumericBridge — the millésime bridge", () => {
+  it("BRIDGE: Mont-Tremblant — SIG secteur-composé CV-RF-106 ⇄ flat grille RA-106 (same n° 106)", () => {
+    const extracted = canonSet(["RA-106", "RA-107", "RA-108"]);
+    const sig = canonSet(["CV-RF-106", "CV-RF-107", "CV-RF-108"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.exactOverlap).toBe(0);
+    expect(res.numericBridged).toBe(3);
+    expect(res.overlap).toBe(3);
+    // The bridge maps the grille spelling to the SIG spelling of the SAME number.
+    const bridge = res.bridges.find((b) => b.number === "106");
+    expect(bridge).toEqual({ extracted: "RA-106", sig: "CV-RF-106", number: "106" });
+  });
+
+  it("BRIDGE: a bare-number SIG (repentigny-style vintage) meets a letter-prefixed grille", () => {
+    const extracted = canonSet(["RB-12", "RB-13"]);
+    const sig = canonSet(["12", "13"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.overlap).toBe(2);
+    expect(res.numericBridged).toBe(2);
+  });
+
+  it("adds to — never double-counts — the exact-canonical overlap", () => {
+    const extracted = canonSet(["H-1", "RA-106"]); // H-1 exact, RA-106 bridges to CV-106
+    const sig = canonSet(["H-1", "CV-106"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.exactOverlap).toBe(1);
+    expect(res.numericBridged).toBe(1);
+    expect(res.overlap).toBe(2);
+    expect(res.notMatched).toEqual([]);
+  });
+
+  it("ANTI-FUSION: different numbers never bridge (106 ≠ 1060, H-1 ≠ H-10)", () => {
+    expect(overlapWithNumericBridge(canonSet(["RA-106"]), canonSet(["CV-1060"])).overlap).toBe(0);
+    expect(overlapWithNumericBridge(canonSet(["H-1"]), canonSet(["X-10"])).overlap).toBe(0);
+  });
+
+  it("ANTI-FUSION: a number that is non-unique on the EXTRACTED side is never bridged (shefford AF-1/M-1/R-1)", () => {
+    // shefford grille AF-1/M-1/R-1 (all number 1) vs a bare-number SIG {1}. The
+    // number does not identify one zone on the grille side → refuse to guess.
+    const extracted = canonSet(["AF-1", "M-1", "R-1"]);
+    const sig = canonSet(["1", "2", "3"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.numericBridged).toBe(0);
+    expect(res.overlap).toBe(0);
+  });
+
+  it("ANTI-FUSION: a number that is non-unique on the SIG side is never bridged", () => {
+    // SIG has RA-106 AND RB-106 (two distinct zones share number 106) → ambiguous.
+    const extracted = canonSet(["X-106"]);
+    const sig = canonSet(["RA-106", "RB-106"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.numericBridged).toBe(0);
+    expect(res.overlap).toBe(0);
+  });
+
+  it("ANTI-FUSION: multi-number codes (A12-024) are ineligible — no numeric fusion", () => {
+    const extracted = canonSet(["A12-024"]);
+    const sig = canonSet(["B12-024"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.numericBridged).toBe(0);
+    expect(res.overlap).toBe(0);
+  });
+
+  it("ANTI-INVENTION: non-overlapping vintages do not bridge (deux-montagnes H1..H8 vs H-100/H-108)", () => {
+    const extracted = canonSet(["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8"]);
+    const sig = canonSet(["H-100", "H-108"]);
+    const res = overlapWithNumericBridge(extracted, sig);
+    expect(res.overlap).toBe(0);
+  });
+
+  it("reconcileZoneNumbers surfaces only the genuine cross-vintage pairs", () => {
+    const bridges = reconcileZoneNumbers(canonSet(["RA-106", "H-1"]), canonSet(["CV-106", "H-1"]));
+    // H-1 is an exact match (skipped); only 106 bridges.
+    expect(bridges).toEqual([{ extracted: "RA-106", sig: "CV-106", number: "106" }]);
   });
 });
 
