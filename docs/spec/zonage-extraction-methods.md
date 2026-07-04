@@ -8,7 +8,8 @@ plan (ZONES) est **détecté**, **routé**, **parsé** et **contrôlé**. Il est
 « méthodes » de deux documents :
 
 - l'éval **par modèle** (correctness × conso × coût) vit dans
-  [`../study/model-eval-vision-ocr.md`](../study/model-eval-vision-ocr.md) ;
+  [`../study/model-eval-vision-ocr.md`](../study/model-eval-vision-ocr.md) — **5 moteurs
+  benchés** (Claude 4.8 · GPT-5.5 · GPT-5.4 · Mistral OCR-nu/schéma/Pixtral · Gemini `agy`) ;
 - la vue **par source d'acquisition** (WFS/ArcGIS/obscura/PV) et les gates génériques
   vivent dans [`methodes-acquisition.md`](./methodes-acquisition.md) — non dupliqués ici.
 
