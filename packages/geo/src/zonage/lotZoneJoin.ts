@@ -89,35 +89,79 @@ export function normalizeZoneCode(value: unknown): string {
  * Canonical key used ONLY to join a zones layer against a norms grille.
  *
  * On top of `normalizeZoneCode` (case, unicode dashes, dash/space collapse) it
- * folds together the FORMAT variants of one letter+number code: it strips the
- * spaces and any leading zeros that sit right after the letter prefix and forces
- * a single canonical dash. So `H01`, `H-01`, `H 1`, `H1` all fold to `H-1` \u2014 the
- * same physical zone written differently by the SIG layer vs the norms table.
+ * folds together the FORMAT variants of one letter+number code so the SIG layer
+ * and the norms table meet on ONE key. This is the SINGLE SOURCE OF TRUTH for that
+ * canonicalisation: `acquisition/src/lib/zonage-norms.ts` `canonZone` (the deposit
+ * overlap gate) delegates to THIS function, so the gate's reported norms\u2229zones
+ * overlap is, by construction, exactly the join's realized match \u2014 no drift.
  *
- * This mirrors `acquisition/src/zone-codes-report.ts` `canon()` exactly, so the
- * diagnostic's reported norms\u2229zones overlap equals the join's realized match.
+ * Three folds, applied to the whole (spaceless, annotation-stripped) code:
+ *   1. letter-first single code \u2014 `H01`, `H-01`, `H 1`, `H1`, `HA-020` fold to
+ *      `H-1` / `HA-20` (leading zeros after the prefix drop, one canonical dash).
+ *   2. digit-first single code \u2014 `20HA`, `20-HA`, `020-HA`, `"20 Ha"` fold to the
+ *      SAME `HA-20` key (order-invariant: the Matap\u00e9dia/Mitis famille whose SIG
+ *      grille emits `"20 Ha"` while the norms grille emits `"Ha-20"`). Without this
+ *      reorder the join had to fall back to the uniqueness-gated numeric bridge and
+ *      MISSED a digit-first code whose number is non-unique \u2014 the gate/join gap this
+ *      closes.
+ *   3. a single TRAILING presentational parenthetical annotation is dropped first \u2014
+ *      the redundant arrondissement/secteur label a SIG grille appends to an
+ *      otherwise-identical code (Longueuil `A12-024 (STH)` \u2261 the bare `A12-024`;
+ *      STH/VLO/GP = the arrondissement, already encoded by the `12`/`34` district
+ *      prefix).
  *
- * It also drops a single TRAILING presentational parenthetical annotation before
- * canonicalising \u2014 the redundant arrondissement/secteur label a SIG grille appends
- * to an otherwise-identical code (Longueuil `A12-024 (STH)` \u2261 the grille's bare
- * `A12-024`; STH/VLO/GP = the arrondissement, already encoded by the `12`/`34`
- * district prefix). This is the LOCKSTEP partner of `canonZone`'s fix #2 in
- * `acquisition/src/lib/zonage-norms.ts`, so the gate's overlap equals the realized
- * lot\u22c8norms match on these codes.
- *
- * ANTI-INVENTION: it only drops leading zeros (never significant digits), rewrites
- * the letter\u2192number boundary, and strips a trailing `(\u2026)` label \u2014 it never touches
- * the code core, so it never merges distinct codes: `H-1` \u2260 `H-10`, `C-408` \u2260 `C-40`,
- * `A12-024` \u2260 `A12-025 (STH)`, and a DASH secteur suffix (`H-531-F` \u2260 `H-531-G`) is
- * left intact.
+ * ANTI-FUSION: each fold is ANCHORED to the WHOLE code (one alpha run + one digit
+ * run, either order) or only rewrites the leading letter\u2192digit boundary; it drops
+ * leading zeros but never significant digits, and never touches the code core. Two
+ * codes collapse IFF they share the same letters AND the same numeric value. So it
+ * NEVER merges distinct codes: `H-1` \u2260 `H-10`, `C-408` \u2260 `C-40`, `20HA` \u2260 `21HA`,
+ * `20HA` \u2260 `20HB`, `A12-024` \u2260 `A12-025 (STH)`, and a multi-segment / DASH secteur
+ * suffix (`H-531-F` \u2260 `H-531-G`, `20-A-1` untouched) is left intact.
  */
 export function canonicalizeZoneCodeForJoin(value: unknown): string {
-  return normalizeZoneCode(value)
+  const up = normalizeZoneCode(value)
     .replace(/\s*\([^)]*\)\s*$/, "")
-    .replace(/\s+/g, "")
-    .replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
+    .replace(/\s+/g, "");
+  // 1. letter-first single code: HA20 / HA-20 / HA-020 \u2192 HA-20 (0* eats leading zeros).
+  const letterFirst = /^([A-Z]+)-?0*(\d+)$/.exec(up);
+  if (letterFirst) return `${letterFirst[1]}-${letterFirst[2]}`;
+  // 2. digit-first single code: 20HA / 20-HA / 020-HA \u2192 the SAME canonical LETTERS-DIGITS.
+  const digitFirst = /^0*(\d+)-?([A-Z]+)$/.exec(up);
+  if (digitFirst) return `${digitFirst[2]}-${digitFirst[1]}`;
+  // 3. multi-segment / unusual \u2014 strict leading-zero boundary rewrite only, never reordered.
+  return up.replace(/^([A-Z]+)-?0*(\d)/, "$1-$2");
 }
 
+/**
+ * The numeric zone identifier of a code, or null when it has no ONE unambiguous
+ * number. A code is eligible for the numeric-vintage bridge iff its canonical form
+ * carries EXACTLY ONE contiguous digit run (surrounding alpha/dash segments are
+ * fine): `RA-106`→"106", `CV-RF-106`→"106", `106`→"106", `H-1`→"1". Ineligible
+ * (→null): no digits (`URB`) or ≥2 digit runs (`A12-024`) whose zone number is
+ * ambiguous. Leading zeros drop, so `H-1`("1") and `H-10`("10") stay distinct.
+ *
+ * LOCKSTEP with `acquisition/src/lib/zonage-norms.ts` `zoneNumberKey`, so the
+ * deposit gate's numeric-bridged overlap equals the realized lot⋈norms match.
+ */
+export function zoneNumberOf(value: unknown): string | null {
+  const runs = canonicalizeZoneCodeForJoin(value).match(/\d+/g);
+  if (!runs || runs.length !== 1) return null;
+  return String(Number(runs[0]));
+}
+
+/**
+ * Attach a norms record to each lot assignment.
+ *
+ * Primary match: exact canonical zone code (`canonicalizeZoneCodeForJoin`).
+ *
+ * NUMERIC-VINTAGE FALLBACK — when the SIG grille and the norms grille are the same
+ * zoning at a different by-law vintage (letters changed, zone NUMBER preserved:
+ * Mont-Tremblant lot `CV-RF-106` ⋈ norms `RA-106`), the exact match misses. We
+ * then bridge by the zone NUMBER, but ONLY when that number is UNIQUE among the
+ * distinct lot codes AND UNIQUE among the norms codes — the same double-uniqueness
+ * anti-fusion guarantee as the deposit gate. A number carried by ≥2 codes on either
+ * side (or a multi-number code) is never bridged, so distinct zones never fuse.
+ */
 export function enrichWithNorms(
   assignments: LotZoneAssignment[],
   normsByZoneCode: Map<string, NormsRecord>,
@@ -128,13 +172,56 @@ export function enrichWithNorms(
     if (normalized && !normalizedNorms.has(normalized)) normalizedNorms.set(normalized, norms);
   }
 
+  // Norms (grille) side: zone number → its unique canonical code (ambiguous numbers omitted).
+  const normsUniqueByNumber = uniqueByNumber(normalizedNorms.keys());
+  // SIG (lot) side: zone number → distinct canonical lot codes (for uniqueness).
+  const lotCodesByNumber = new Map<string, Set<string>>();
+  for (const assignment of assignments) {
+    if (assignment.zoneCode === null) continue;
+    const n = zoneNumberOf(assignment.zoneCode);
+    if (n === null) continue;
+    const canon = canonicalizeZoneCodeForJoin(assignment.zoneCode);
+    let set = lotCodesByNumber.get(n);
+    if (!set) {
+      set = new Set<string>();
+      lotCodesByNumber.set(n, set);
+    }
+    set.add(canon);
+  }
+
   return assignments.map((assignment) => {
-    const norms =
-      assignment.zoneCode === null
-        ? null
-        : normalizedNorms.get(canonicalizeZoneCodeForJoin(assignment.zoneCode)) ?? null;
+    if (assignment.zoneCode === null) return { ...assignment, norms: null };
+    const canon = canonicalizeZoneCodeForJoin(assignment.zoneCode);
+    let norms = normalizedNorms.get(canon) ?? null;
+    if (norms === null) {
+      const n = zoneNumberOf(assignment.zoneCode);
+      if (n !== null) {
+        const grilleCode = normsUniqueByNumber.get(n); // undefined ⇒ absent or ambiguous
+        const lotCodes = lotCodesByNumber.get(n);
+        // Bridge only when the number is unique on BOTH sides and points elsewhere.
+        if (grilleCode !== undefined && grilleCode !== canon && lotCodes && lotCodes.size === 1) {
+          norms = normalizedNorms.get(grilleCode) ?? null;
+        }
+      }
+    }
     return { ...assignment, norms };
   });
+}
+
+/** number → its single canonical code; a number carried by ≥2 distinct codes is
+ *  dropped (ambiguous, never bridged). */
+function uniqueByNumber(codes: Iterable<string>): Map<string, string> {
+  const seen = new Map<string, string>();
+  const ambiguous = new Set<string>();
+  for (const code of codes) {
+    const n = zoneNumberOf(code);
+    if (n === null) continue;
+    const existing = seen.get(n);
+    if (existing === undefined) seen.set(n, code);
+    else if (existing !== code) ambiguous.add(n);
+  }
+  for (const n of ambiguous) seen.delete(n);
+  return seen;
 }
 
 export function assignLotZones(
