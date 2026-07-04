@@ -40,6 +40,8 @@ gap au lieu d'etre extrapole.
 | `docs/spec/zonage-georeferencement-gcp.md` | Reference T1 GeoPDF+cadastre, T2 3-GCP et OCR-labels valides. A referencer, ne pas dupliquer. | `f5233cf` |
 | `docs/spec/contrat-jointure-immo-zones-lots.md` | Contrat `LOT -> ZONE -> NORMES`, null quand aucune grille fiable. | `c814793` |
 | `docs/spec/cadre-acquisition-on-demand.md` | Architecture d'acquisition a la demande, provenance et snapshot. | `d1df0fd` |
+| `docs/spec/zonage-extraction-methods.md` | Arbre de decision PAR CAS grille-type -> detection -> route -> parser -> gate (NORMES natif/OCR/vision + ZONES). A referencer pour le detail du routage normes. | `b926314` |
+| `docs/study/model-eval-vision-ocr.md` | Eval PAR MODELE (correctness x conso x cout) : Claude 4.8, Mistral-OCR-4 mesures ; GPT-5.5/5.4, Gemini, Pixtral en attente. | `b926314` |
 | `work/immo-audit/INVENTAIRE-scraping-qc.md` | Inventaire historique du scraping QC et limites des recherches keyword. | `23a0f78` |
 | `work/immo-audit/gisement-mrc.md` | Gisement MRC: recherche par collections bruyante, besoin de confirmation spatiale. | `8d4da10` |
 | `work/immo-audit/zonage-resolution.md` | Resolution des villes immo et cas d'homonymie. | `6085133` |
@@ -503,7 +505,9 @@ Les runs longs ne doivent pas dependre d'une session interactive unique.
 ## Gaps ouverts
 
 - GPT-5.5 OCR-vision: non benchmarke. Faire un benchmark symetrique sur les memes PDFs/pages que Claude-4.8,
-  Mistral-OCR-4-0 et Mistral chat-vision avant toute utilisation comme moteur de lecture de grilles.
+  Mistral-OCR-4-0 et Mistral chat-vision avant toute utilisation comme moteur de lecture de grilles. Suivi et
+  chiffres (Claude-4.8 et Mistral-OCR mesures; GPT-5.5/5.4, Gemini, Pixtral en attente) dans
+  `docs/study/model-eval-vision-ocr.md`.
 - GeoServer hors Geocentralis: les rapports montrent peu de nouveaux endpoints ouverts; ne pas promettre une couverture
   WFS generale sans `GetCapabilities` public et couche exploitable.
 - Sources PDF-only de petites municipalites: l'audit MRC indique qu'une part du gisement reste hors vecteur en ligne;
