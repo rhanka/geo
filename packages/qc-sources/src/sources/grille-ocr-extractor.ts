@@ -1844,6 +1844,255 @@ export function parseNumeroDominanceGrillePage(
   return [ZoneNorms.parse(zn)];
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+//  ONE-ZONE-per-page "GRILLE DES SPÉCIFICATIONS" whose norm VALUES sit in a
+//  "Norme générale" column, with an adjacent "Normes particulières" (override
+//  prose) column — the Kamouraska / Bas-Saint-Laurent family (Règlement 2025-04).
+//
+//  LAYOUT (per page, one zone):
+//    ANNEXE B - GRILLES DES SPÉCIFICATIONS                             Zone 5A
+//    …
+//    IMPLANTATION ET DIMENSIONS DU BÂTIMENT PRINCIPAL
+//    Implantation             Norme générale        Normes particulières
+//    Marge de recul avant minimale     8m       6 m pour les bâtiments résidentiels
+//    Marge de recul latérale minimale  4m       2 m …
+//    Somme des marges latérales        6m       …
+//    Dimensions               Norme générale        Normes particulières
+//    Hauteur maximale                 10 m
+//    Largeur minimale                  9m       ← BÂTIMENT width, NOT lot frontage
+//    Superficie minimale au sol       65 m²     ← BÂTIMENT footprint, NOT lot area
+//    Densité d'occupation     Norme générale        Normes particulières
+//    Coefficient d'emprise au sol maximal   0,3
+//
+//  WHY A DEDICATED $0 PATH. The zone is named ONLY in a "Zone <code>" banner
+//  (top-right + repeated in the footer) whose code is a SHORT alphanumeric with NO
+//  dash ("5A", "2PI", "17P"). Every existing native header reader requires a dash
+//  (parseZoneHeader, readZoneHeaderCode, parseNumeroDominanceHeader all miss it),
+//  so this whole family read 0 zones and fell to a paid OCR/vision pass. The
+//  `pdftotext -layout` projection is clean and column-aligned, so we read it here.
+//
+//  ANTI-INVENTION (identical spirit to every other path):
+//    • no "Zone <code>" banner ⇒ [] (no header, no zone);
+//    • the VALUE is the "Norme générale" COLUMN cell only — the leftmost numeric
+//      cluster after the label (a bare number + its adjacent unit token), so a
+//      "Normes particulières" override note to its right can NEVER be read as the
+//      value; every value is the VERBATIM cell, gated by buildVisionField;
+//    • "Largeur"/"Profondeur"/"Superficie" are BUILDING dimensions here (they sit
+//      under a BÂTIMENT section) → left UNMAPPED, never folded into the LOT
+//      frontage/superficie; they map ONLY under an explicit terrain/lotissement
+//      section. "Somme des marges" and a wall-width stay unmapped.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A "Zone <code>" banner: short alphanumeric with ≥1 DIGIT AND ≥1 LETTER, no dash
+ *  ("5A", "2PI", "17P"). The digit+letter rule drops a prose "Zone agricole" /
+ *  "Zone urbaine" band (no digit) — anti-invention. */
+const NG_BANNER_RE = /\bZones?\s+([A-Za-z0-9]{2,6})\b/gi;
+const NG_GEN_RE = /Norme\s+g[eé]n[eé]rale/i;
+const NG_PART_RE = /Normes?\s+particuli[eè]res?/i;
+/** A standalone unit token that may follow a bare number ("10" "m" → "10 m"). */
+const NG_UNIT_TOKEN = /^(m|m²|m2|m[eè]tres?|%|[ée]tages?)$/i;
+
+/**
+ * Read the page's zone code from its "Zone <code>" banner. The page's OWN zone
+ * appears in BOTH the top banner AND the footer, so the MOST-FREQUENT qualifying
+ * code is the zone (a body reference to another zone appears once). Returns the
+ * verbatim (upper-cased) code, or null when no digit+letter banner is present.
+ */
+export function parseZoneBannerCode(pageText: string): string | null {
+  const counts = new Map<string, number>();
+  const order: string[] = [];
+  for (const raw of pageText.split(/\r?\n/)) {
+    NG_BANNER_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = NG_BANNER_RE.exec(raw)) !== null) {
+      const code = m[1]!;
+      if (!/[0-9]/.test(code) || !/[A-Za-z]/.test(code)) continue;
+      const key = code.toUpperCase();
+      if (!counts.has(key)) order.push(key);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  if (order.length === 0) return null;
+  let best = order[0]!;
+  for (const k of order) if ((counts.get(k) ?? 0) > (counts.get(best) ?? 0)) best = k;
+  return best;
+}
+
+interface NGCols {
+  gen: number;
+  part: number;
+}
+/** Locate the value-column band from a sub-header line carrying BOTH "Norme
+ *  générale" and "Normes particulières"; returns their left-edge char columns. */
+function ngValueColumns(lines: string[]): NGCols | null {
+  for (const line of lines) {
+    const g = line.match(NG_GEN_RE);
+    const p = line.match(NG_PART_RE);
+    if (g && p && g.index !== undefined && p.index !== undefined && p.index > g.index) {
+      return { gen: g.index, part: p.index };
+    }
+  }
+  return null;
+}
+
+/** Does this page carry the "Norme générale" one-zone grille signature? (A zone
+ *  banner AND the two-column générale/particulières sub-header.) */
+export function looksLikeNormeGeneraleGrille(pageText: string): boolean {
+  return (
+    parseZoneBannerCode(pageText) !== null &&
+    ngValueColumns(pageText.split(/\r?\n/)) !== null
+  );
+}
+
+/**
+ * Map a Kamouraska-family norm label → FieldId. Marges / hauteur / densité are
+ * SECTION-INDEPENDENT (their labels are unambiguous). Building DIMENSIONS
+ * (largeur / profondeur / superficie) map ONLY under a terrain/lotissement
+ * section — under a BÂTIMENT section they are building dimensions and stay
+ * UNMAPPED (anti-over-mapping: a wrong fold is worse than a null).
+ */
+function normeGeneraleLabelToField(
+  label: string,
+  valueUnit: "m" | "m2" | "etages" | "pct" | null,
+  terrain: boolean,
+): FieldId | null {
+  const s = foldLabel(label);
+  if (/\bsomme\b/.test(s) || /combinee/.test(s)) return null;
+  if (/marge/.test(s) && /avant/.test(s) && !/max/.test(s)) return "marge_avant_min";
+  if (/marge/.test(s) && /arriere/.test(s) && !/max/.test(s)) return "marge_arriere_min";
+  if (/marge/.test(s) && /(laterale|lateral)/.test(s) && !/max/.test(s)) return "marge_laterale_min";
+  if (/hauteur/.test(s)) return valueUnit === "etages" ? "hauteur_etages" : "hauteur_metres";
+  if (/(coefficient|indice|rapport|pourcentage|%)/.test(s) && /(occupation|emprise|implantation)/.test(s))
+    return "densite";
+  if (/emprise\s+au\s+sol/.test(s)) return "densite";
+  if (terrain) {
+    if (/(largeur|facade|frontage|frontale)/.test(s) && !/mur/.test(s)) return "frontage_min";
+    if (/(superficie|aire)/.test(s)) return "superficie_min";
+  }
+  return null;
+}
+
+/** Guess the value cell's unit for hauteur métres-vs-étages disambiguation. */
+function ngCellUnit(raw: string): "m" | "m2" | "etages" | "pct" | null {
+  if (/m²|m2|carr/i.test(raw)) return "m2";
+  if (/[ée]tages?/i.test(raw)) return "etages";
+  if (/%/.test(raw)) return "pct";
+  if (/\d\s*m\b|\bm\b/i.test(raw)) return "m";
+  return null;
+}
+
+/**
+ * Extract the "Norme générale" COLUMN cell of one row: the LEFTMOST numeric token
+ * in the générale band (`[gen-4, part)`) plus a single adjacent unit token. Stops
+ * at the value — a "Normes particulières" note further right (which is left-aligned
+ * BEFORE its own header column) is never absorbed. Returns null when the générale
+ * cell is empty (its first band token is not numeric, or there is none).
+ */
+function ngGeneraleCell(line: string, cols: NGCols): string | null {
+  const labelEnd = Math.max(0, cols.gen - 4);
+  const band = tokensWithCols(line).filter((t) => t.start >= labelEnd && t.start < cols.part);
+  const fi = band.findIndex((t) => /^-?\d/.test(t.t));
+  if (fi < 0) return null;
+  let cell = band[fi]!.t;
+  // A pure number may carry its unit in the NEXT token ("10" "m" → "10 m").
+  if (/^-?\d+(?:[.,]\d+)?$/.test(cell)) {
+    const nxt = band[fi + 1];
+    if (nxt && NG_UNIT_TOKEN.test(nxt.t)) cell += ` ${nxt.t}`;
+  }
+  // Split a glued number+unit ("6m" → "6 m", "65m²" → "65 m²") so normalizeUnit
+  // (whose `\bm\b` needs a boundary) reads the unit rather than rejecting prose.
+  return cell.replace(/(\d)([A-Za-zÀ-ÿ²])/g, "$1 $2");
+}
+
+/** The row's LABEL: the tokens strictly LEFT of the générale band. */
+function ngRowLabel(line: string, cols: NGCols): string {
+  const labelEnd = Math.max(0, cols.gen - 4);
+  return tokensWithCols(line)
+    .filter((t) => t.start < labelEnd)
+    .map((t) => t.t)
+    .join(" ")
+    .trim();
+}
+
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the "Norme générale" one-zone
+ * grille (Kamouraska family). Reads ONE page's `pdftotext -layout` text →
+ * [ZoneNorms] (0 or 1). The zone is `opts.zoneCode` or the page's "Zone <code>"
+ * banner; with neither, [] (anti-invention). Each norm's value is the LEFTMOST
+ * "Norme générale" column cell, gated by the frozen per-cell guard.
+ */
+export function parseNormeGeneraleGrillePage(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-norme-generale";
+  const zoneCode = opts.zoneCode ?? parseZoneBannerCode(layoutText);
+  if (!zoneCode) return [];
+  const lines = layoutText.split(/\r?\n/);
+  const cols = ngValueColumns(lines);
+  if (!cols) return [];
+
+  const fields: Partial<Record<FieldId, string | null>> = {};
+  let terrain = false; // building dims stay unmapped unless a terrain section opens
+
+  const applySection = (text: string): void => {
+    const s = foldLabel(text);
+    if (/\bterrain\b|\blotissement\b/.test(s) && !/batiment/.test(s)) terrain = true;
+    else if (/\bbatiment\b/.test(s)) terrain = false;
+  };
+
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    // A sub-header line ("… Norme générale … Normes particulières") only carries a
+    // section word (Implantation / Dimensions / Densité) → set context, never a row.
+    if (NG_GEN_RE.test(line) && NG_PART_RE.test(line)) {
+      applySection(ngRowLabel(line, cols));
+      continue;
+    }
+    const cell = ngGeneraleCell(line, cols);
+    if (cell === null) {
+      applySection(line); // a bare title line (BÂTIMENT PRINCIPAL / TERRAIN) sets context
+      continue;
+    }
+    const label = ngRowLabel(line, cols);
+    const field = normeGeneraleLabelToField(label, ngCellUnit(cell), terrain);
+    if (!field) continue;
+    if (fields[field] === undefined) fields[field] = cell.length ? cell : null; // first-seen wins
+  }
+
+  const provenance = (): FieldProvenanceT => ({
+    source_url: opts.source_url,
+    methode,
+    snapshot: opts.snapshot,
+    page: `PAGE ${page} ZONE ${zoneCode}`,
+  });
+  const field = (id: FieldId): NormFieldT => {
+    const spec = FIELD_SPECS.find((s) => s.id === id)!;
+    const raw = fields[id] ?? null;
+    return buildVisionField(spec, raw, raw, provenance());
+  };
+  const hauteurMetres = field("hauteur_metres");
+  const hauteurEtages = field("hauteur_etages");
+  const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+  const zn: ZoneNormsT = {
+    zone_code: zoneCode,
+    zone_page: `PAGE ${page} ZONE ${zoneCode}`,
+    usages: [],
+    densite: field("densite"),
+    hauteur_min: null,
+    hauteur_max: hauteurMax,
+    marges: {
+      avant_min: field("marge_avant_min"),
+      laterale_min: field("marge_laterale_min"),
+      arriere_min: field("marge_arriere_min"),
+    },
+    frontage_min: field("frontage_min"),
+    superficie_min: field("superficie_min"),
+  };
+  return [ZoneNorms.parse(zn)];
+}
+
 /**
  * Map a whole OCR result (per page) back to ZoneNorms[], page numbers aligned.
  * `zoneCodes` (optional, aligned to `pages`) supplies a VERBATIM native-text zone
