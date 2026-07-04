@@ -38,7 +38,7 @@ export interface Gpt55Usage {
 }
 
 export interface Gpt55LabelResult extends ExtractLabelsResult {
-  ocr_engine: "gpt-5.5-vision";
+  ocr_engine: string;
   dict_size: number;
   image_path: string;
   n_model_labels: number;
@@ -53,6 +53,10 @@ export interface Gpt55LabelResult extends ExtractLabelsResult {
   rejectSamples: string[];
   usage: Gpt55Usage;
   latency_ms: number;
+}
+
+function ocrEngineForModel(model: string): string {
+  return `${model}-vision`;
 }
 
 interface RawModelLabel {
@@ -129,7 +133,7 @@ function parseUsage(stdout: string): Gpt55Usage {
   return usage;
 }
 
-function renderRegion(
+export function renderRegion(
   pdfPath: string,
   page: number,
   dpi: number,
@@ -330,13 +334,18 @@ export function validateGpt55LabelReads(
       continue;
     }
     const cleaned = String(read.text ?? "").replace(/[^A-Za-z0-9.\- ]/g, "").trim();
-    if (!looksLikeZoneCode(cleaned, { numericDict })) {
+    // The DICT is the anti-invention authority: a read whose canonical form is a
+    // verbatim dictionary code is a real zone code even when the generic
+    // ZONE_CODE_RE heuristic misses its shape (single-digit-prefix municipal codes
+    // like "4-V" / "1-AF", which the heuristic — tuned for lettered-prefix codes —
+    // would otherwise drop). Only a NON-dict read must additionally look code-like.
+    const candidates = byCanon.get(normalizeForSnap(cleaned)) ?? [];
+    if (candidates.length === 0 && !looksLikeZoneCode(cleaned, { numericDict })) {
       nRejected++;
       reject(rejects, "not-code-like");
       continue;
     }
     nCodeLike++;
-    const candidates = byCanon.get(normalizeForSnap(cleaned)) ?? [];
     if (candidates.length === 0) {
       nRejected++;
       reject(rejects, "not-in-dictionary");
@@ -405,6 +414,7 @@ export async function extractLabelsGpt55(
   const dict = [...validCodes];
   const imagePath = renderRegion(pdfPath, page, dpi, region, workDir);
   const { raw, usage, latencyMs } = await runGpt55(imagePath, slug, dict, opts);
+  const model = opts.model ?? process.env["GPT55_MODEL"] ?? "gpt-5.5";
   const validated = validateGpt55LabelReads(
     (raw.labels ?? []).map((l) => ({ text: l.code, x: l.x, y: l.y })),
     geo,
@@ -414,7 +424,7 @@ export async function extractLabelsGpt55(
   const snapRate = validated.nCodeLike > 0 ? (100 * validated.nValidated) / validated.nCodeLike : 0;
   return {
     ...validated,
-    ocr_engine: "gpt-5.5-vision",
+    ocr_engine: ocrEngineForModel(model),
     dict_size: dict.length,
     image_path: imagePath,
     n_model_labels: raw.labels?.length ?? 0,
