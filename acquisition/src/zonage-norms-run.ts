@@ -412,6 +412,43 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
       };
     }
   }
+  // ── ONE-ZONE-PER-PAGE "Numéro de zone:" / "Dominance:" split-header grille
+  //    (Béloeil / Saint-Félicien family) ────────────────────────────────────────
+  // The zone code is SPLIT across a "Numéro de zone: <N>" row and a "Dominance: <X>"
+  // row → "<Dominance>-<Numéro>". `readZoneHeaderCode` excludes the "Numéro de zone:"
+  // banner, so the label:value zoneheader bornage above misses these; they otherwise
+  // fall to the OCR branch (they carry a "grille des spécifications" title) and blow
+  // the page cap / cost. Route them to the SAME native-first zoneheader path (which
+  // now also runs parseNumeroDominanceGrillePage) — $0, no OCR key required. Robust
+  // discriminator: run the split-header mapper on a SAMPLE and route here iff it
+  // publishes real norm fields (self-consistent; a non-ND doc never trips it).
+  {
+    const ndPages = rawPages
+      .map((t, i) => ({ t, p: i + 1 }))
+      .filter((x) => parseNumeroDominanceHeader(x.t) !== null)
+      .map((x) => x.p);
+    if (ndPages.length >= MIN_DEPOSIT_ZONE_CODES) {
+      const sample = sampleAcross(ndPages, 8);
+      const mapped = sample.filter((p) => {
+        const zs = parseNumeroDominanceGrillePage(rawPages[p - 1] ?? "", p, {
+          source_url: sourceUrl,
+          snapshot,
+        });
+        return zs.length > 0 && publishedCount(zs[0]!) > 0;
+      }).length;
+      if (mapped >= Math.ceil(sample.length / 2)) {
+        return {
+          route: "zoneheader",
+          nativeGrillePages: grillePages,
+          nativeAcceptedRows: acceptedRows,
+          reason:
+            `one-zone-per-page "Numéro de zone:"/"Dominance:" split-header grille ` +
+            `(${ndPages.length} pages, ${mapped}/${sample.length} sample pages mapped norms) ` +
+            `→ native field-mapper ("<Dominance>-<Numéro>")`,
+        };
+      }
+    }
+  }
   // The "grille des spécifications" multi-zone format (zones in columns) is the
   // dominant rural/Portneuf layout; route it to the multi-zone vision extractor.
   const specPages = pages.filter((p) => /grille des sp.cifications/i.test(p)).length;
@@ -620,6 +657,20 @@ async function main(): Promise<void> {
       });
       if (zs.length > 0 && publishedCount(zs[0]!) > 0) {
         mergeZone(zs[0]!);
+        nativeZones++;
+        continue;
+      }
+      // "Numéro de zone:" / "Dominance:" split-header one-zone-per-page grille
+      // (Béloeil / Saint-Félicien family) — the label:value reader skips it (its
+      // header reader excludes the "Numéro de zone:" banner), so try the dedicated
+      // split-header parser here: still $0 native text, code = "<Dominance>-<Numéro>".
+      const nd = parseNumeroDominanceGrillePage(t, p, {
+        source_url: args.sourceUrl,
+        snapshot: args.snapshot,
+        methode: "native-text/grille-numero-dominance",
+      });
+      if (nd.length > 0 && publishedCount(nd[0]!) > 0) {
+        mergeZone(nd[0]!);
         nativeZones++;
         continue;
       }
