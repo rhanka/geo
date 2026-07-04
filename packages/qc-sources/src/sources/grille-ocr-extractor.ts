@@ -1587,6 +1587,263 @@ export function parseTransposedColumnsGrille(
   return out;
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+//  SINGLE-ZONE-per-page "grille des spécifications" whose header SPLITS the zone
+//  code into a "Numéro de zone: <N>" row and a "Dominance[ d'usage]: <X>" row
+//  (Béloeil / Saint-Félicien / Montérégie-Saguenay family). The REAL zone code is
+//  the PAIR dominance+number — the SIG grille codes them "<N> <Dominance>" ("317 R
+//  bd", "10 Co", "103 Pr") → `canonZone` → "RBD-317" / "CO-10" / "PR-103". We emit
+//  "<Dominance>-<Numéro>" ("R bd-317" → canon "RBD-317"), which canon-matches the
+//  SIG code exactly (or via the numeric bridge when only the letters differ).
+//
+//  WHY A DEDICATED $0 PATH. `readZoneHeaderCode` (the one-zone-per-page reader used
+//  by parseLabelValueGrillePage) EXPLICITLY EXCLUDES the "Numéro de zone:" banner
+//  (it is the transposed-family marker), and no other native parser reads a header
+//  split across a number row + a dominance row — so this whole family extracted 0
+//  zones and fell through to a paid, page-cap-blowing OCR pass. `pdftotext -layout`
+//  projects these grilles cleanly, so we read them here straight from the text
+//  layer — deterministic, no LLM, no cost.
+//
+//  TWO LAYOUT QUIRKS THIS HANDLES (why the terse column-aligned parsers failed):
+//    • ROTATED, MID-BLOCK section labels. The band titles ("Marges", "Bâtiment")
+//      are printed rotated and VERTICALLY CENTRED, so they land in the MIDDLE of
+//      their own block — AFTER the first "avant (m)" row, BETWEEN the two hauteur
+//      rows. A section-carry (title-then-rows) mis-orders and drops those norms, so
+//      we map every label SECTION-INDEPENDENTLY: a terse directional token
+//      ("avant"/"latérale"/"arrière") is unambiguously a margin here, "hauteur
+//      (étages)"/"hauteur (m)" are self-describing. A width/depth/area noun on the
+//      same label ("largeur du(des) mur(s) avant") is NOT a margin (excluded).
+//    • HAUTEUR/MARGE values CENTRED between a "min." row ABOVE and a "max." row
+//      BELOW the label. The bound row itself carries no left-label; we borrow the
+//      nearest adjacent PURE-label line (its own bound-less neighbour), so the
+//      "max." value binds to the "hauteur" label above/below it. PREFERRED_BOUND
+//      still keeps the max for hauteur, the min for every dimensional minimum.
+//
+//  ANTI-INVENTION (identical spirit to every other path):
+//    • no "Numéro de zone" number AND no "Dominance" token ⇒ [] (no header, no zone);
+//    • every value is the VERBATIM leftmost column token (the frozen "colonne de
+//      gauche" convention), gated by `buildVisionField`; a note/renvoi that lands
+//      beyond the value window, a non-numeric cell ("NR", "-"), a "somme"/"riveraine"
+//      /"sur rue"/dwelling-ratio label → null, never a fabrication.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A standalone "min."/"max." norm-bound token (word-anchored so "minimum"/"maximum"
+ *  prose never matches). */
+const ND_BOUND_TOKEN = /(?:^|\s)(min|max)\.?(?=\s|$)/i;
+/** The "Numéro de zone" label (accent-tolerant). */
+const ND_NUMERO_LABEL = /num[eé]ro\s+de\s+zone/i;
+/** The "Dominance" label (the optional "d'usage" tail is skipped by the token filter). */
+const ND_DOMINANCE_LABEL = /dominance/i;
+/** A zone NUMBER token ("317", "10", "11-1"). */
+const ND_NUMBER_TOKEN = /^\d{1,4}(?:-\d{1,3})?$/;
+/** A dominance CLASS token ("Co", "R", "bd", "Pr", "I", "dyn"): a short alpha run. */
+const ND_DOMINANCE_TOKEN = /^[A-Za-zÀ-ÿ]{1,4}$/;
+/** Chars after a bound WORD within which the leftmost value must sit (else the row is
+ *  empty and a far-right note number can never be mis-read as its value). */
+const ND_VALUE_WINDOW = 20;
+
+/**
+ * Read the VERBATIM "<Dominance>-<Numéro>" code from a "Numéro de zone:" /
+ * "Dominance:" split header. The number is read from the "Numéro de zone" row (right
+ * of the label, or — béloeil — stacked on the nearest non-blank line ABOVE, in the
+ * label's right region); the dominance is the short alpha class token(s) right of the
+ * "Dominance" label ("R bd" → two tokens, joined). Returns null when either is absent
+ * (anti-invention: no header, no code).
+ */
+export function parseNumeroDominanceHeader(pageText: string): string | null {
+  const lines = pageText.split(/\r?\n/);
+  const scan = Math.min(lines.length, 30);
+  let numero: string | null = null;
+  let dominance: string | null = null;
+  for (let i = 0; i < scan; i++) {
+    const line = lines[i]!;
+    if (numero === null) {
+      const m = line.match(ND_NUMERO_LABEL);
+      if (m) {
+        const labelStart = m.index ?? 0;
+        const labelEnd = labelStart + m[0].length;
+        const same = tokensWithCols(line).filter(
+          (tk) => tk.start >= labelEnd && ND_NUMBER_TOKEN.test(tk.t),
+        );
+        if (same.length) numero = same[same.length - 1]!.t;
+        else {
+          // Number stacked on the nearest non-blank line ABOVE, in the label's right
+          // region (béloeil prints the value one row up, right-aligned over the label).
+          for (let j = i - 1; j >= 0; j--) {
+            if (!lines[j]!.trim()) continue;
+            const up = tokensWithCols(lines[j]!).filter(
+              (tk) => tk.start >= labelStart && ND_NUMBER_TOKEN.test(tk.t),
+            );
+            if (up.length) numero = up[up.length - 1]!.t;
+            break; // first non-blank line above decides
+          }
+        }
+      }
+    }
+    if (dominance === null) {
+      const m = line.match(ND_DOMINANCE_LABEL);
+      if (m) {
+        const labelEnd = (m.index ?? 0) + m[0].length;
+        const toks = tokensWithCols(line).filter(
+          (tk) => tk.start >= labelEnd && ND_DOMINANCE_TOKEN.test(tk.t),
+        );
+        if (toks.length) dominance = toks.map((t) => t.t).join(" ");
+      }
+    }
+    if (numero && dominance) break;
+  }
+  if (!numero || !dominance) return null;
+  return `${dominance}-${numero}`;
+}
+
+/**
+ * Map a terse label of THIS family → FieldId, SECTION-INDEPENDENTLY (the section
+ * band titles are rotated and land mid-block, so they cannot be carried). Self-
+ * describing labels first (`labelToFieldId` nails "hauteur (étages)" / "hauteur (m)"
+ * / an explicit "emprise au sol"); then the terse directional margins, which are
+ * unambiguous here UNLESS the label also carries a width/depth/area noun
+ * ("largeur du(des) mur(s) avant" is a wall width, NOT the avant margin). Anti-over-
+ * mapping: "somme", "riveraine", "…sur rue", a dwelling ratio (log/bâtiment) and the
+ * C.O.S. plancher/terrain all stay UNMAPPED (a wrong fold is worse than a null).
+ */
+function numeroDominanceLabelToFieldId(label: string): FieldId | null {
+  const direct = labelToFieldId(label);
+  if (direct) return direct;
+  const s = foldLabel(label);
+  if (/\bsomme\b|riveraine|sur\s+rue/.test(s)) return null;
+  if (/espace\s+bati\s*\/\s*terrain|emprise.*sol|occupation.*sol/.test(s)) return "densite";
+  const dimNoun = /largeur|profondeur|superficie|mur|plancher|logement|densite|contingentement/.test(s);
+  if (!dimNoun) {
+    if (/\bavant\b/.test(s)) return "marge_avant_min";
+    if (/\barriere\b/.test(s)) return "marge_arriere_min";
+    if (/\blateral/.test(s)) return "marge_laterale_min";
+  }
+  if (/hauteur/.test(s) && /etage/.test(s)) return "hauteur_etages";
+  if (/hauteur/.test(s) && /\(m\)|metre/.test(s)) return "hauteur_metres";
+  return null;
+}
+
+/** Char index of the bound WORD in a line carrying a `ND_BOUND_TOKEN` (or -1). */
+function ndBoundIndex(line: string): number {
+  const m = line.match(ND_BOUND_TOKEN);
+  if (!m) return -1;
+  return (m.index ?? 0) + m[0].indexOf(m[1]!);
+}
+
+/**
+ * Resolve the FieldId a bound row publishes. The label is the text LEFT of the bound
+ * word (which excludes any far-right note). When that is blank — the CENTRED
+ * hauteur/marge case, where the label sits on a separate line above/below — borrow
+ * the nearest adjacent PURE-label line (a bound-less neighbour), its own left-of-bound
+ * text. Returns null when the row's own label maps to nothing (never borrows then).
+ */
+function ndFieldForBound(lines: string[], r: number, boundIdx: number): FieldId | null {
+  const sameLabel = lines[r]!.slice(0, boundIdx).trim();
+  const own = numeroDominanceLabelToFieldId(sameLabel);
+  if (own) return own;
+  if (sameLabel) return null; // a self-labelled row that maps to nothing → no borrow
+  for (const dir of [-1, 1] as const) {
+    for (let k = 1; k <= 2; k++) {
+      const j = r + dir * k;
+      if (j < 0 || j >= lines.length) break;
+      const cand = lines[j]!;
+      if (!cand.trim()) continue; // skip blank rows
+      if (ND_BOUND_TOKEN.test(cand)) break; // a neighbouring norm row → do not borrow
+      const candLabel = cand.slice(0, boundIdx).trim();
+      if (!candLabel) continue; // neighbour's left column is empty (a right-side note)
+      const f = numeroDominanceLabelToFieldId(candLabel);
+      if (f) return f;
+      break; // a non-mapping left label decides this direction
+    }
+  }
+  return null;
+}
+
+/** Leftmost VERBATIM value token after a bound word, within `ND_VALUE_WINDOW` chars
+ *  (a far-right note number can never be mistaken for a value). Null when none. */
+function ndLeftmostValue(line: string, boundIdx: number): string | null {
+  const boundEnd = boundIdx + line.slice(boundIdx).match(/^\S+/)![0].length;
+  for (const tk of tokensWithCols(line)) {
+    if (tk.start < boundEnd) continue;
+    if (tk.start - boundEnd > ND_VALUE_WINDOW) break;
+    if (/^(-|—|–|\d+(?:[.,]\d+)?)$/.test(tk.t)) {
+      return /^[-—–]$/.test(tk.t) ? null : tk.t;
+    }
+    break; // the first token in the window is not value-shaped → treat as empty
+  }
+  return null;
+}
+
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the "Numéro de zone:" /
+ * "Dominance:" split-header one-zone-per-page grille (Béloeil / Saint-Félicien
+ * family). Reads ONE page's `pdftotext -layout` text → [ZoneNorms] (0 or 1). The
+ * zone is `opts.zoneCode` or the page's own split header; with neither, [] (anti-
+ * invention). Each norm's value is the LEFTMOST value column of its bound row, run
+ * through the frozen per-cell guard.
+ */
+export function parseNumeroDominanceGrillePage(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-numero-dominance";
+  const zoneCode = opts.zoneCode ?? parseNumeroDominanceHeader(layoutText);
+  if (!zoneCode) return [];
+
+  const lines = layoutText.split(/\r?\n/);
+  const fields: Partial<Record<FieldId, string | null>> = {};
+  const ranks: Partial<Record<FieldId, number>> = {};
+
+  for (let r = 0; r < lines.length; r++) {
+    const boundIdx = ndBoundIndex(lines[r]!);
+    if (boundIdx < 0) continue;
+    const field = ndFieldForBound(lines, r, boundIdx);
+    if (!field) continue;
+    const val = ndLeftmostValue(lines[r]!, boundIdx);
+    const rank = boundRank(field, lines[r]!.slice(boundIdx).match(/^\S+/)![0]);
+    const prevRank = ranks[field];
+    if (prevRank === undefined) {
+      fields[field] = val;
+      ranks[field] = rank;
+    } else if (val !== null && (rank > prevRank || fields[field] == null)) {
+      fields[field] = val;
+      ranks[field] = rank;
+    }
+  }
+
+  const provenance = (): FieldProvenanceT => ({
+    source_url: opts.source_url,
+    methode,
+    snapshot: opts.snapshot,
+    page: `PAGE ${page} ZONE ${zoneCode}`,
+  });
+  const field = (id: FieldId): NormFieldT => {
+    const spec = FIELD_SPECS.find((s) => s.id === id)!;
+    const raw = fields[id] ?? null;
+    return buildVisionField(spec, raw, raw, provenance());
+  };
+  const hauteurMetres = field("hauteur_metres");
+  const hauteurEtages = field("hauteur_etages");
+  const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+  const zn: ZoneNormsT = {
+    zone_code: zoneCode,
+    zone_page: `PAGE ${page} ZONE ${zoneCode}`,
+    usages: [],
+    densite: field("densite"),
+    hauteur_min: null,
+    hauteur_max: hauteurMax,
+    marges: {
+      avant_min: field("marge_avant_min"),
+      laterale_min: field("marge_laterale_min"),
+      arriere_min: field("marge_arriere_min"),
+    },
+    frontage_min: field("frontage_min"),
+    superficie_min: field("superficie_min"),
+  };
+  return [ZoneNorms.parse(zn)];
+}
+
 /**
  * Map a whole OCR result (per page) back to ZoneNorms[], page numbers aligned.
  * `zoneCodes` (optional, aligned to `pages`) supplies a VERBATIM native-text zone
