@@ -61,6 +61,8 @@ import {
   parseZoneHeader,
   isNumberedGrilleSpec,
   parseNumberedGrilleNativePage,
+  parseNumeroDominanceHeader,
+  parseNumeroDominanceGrillePage,
 } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 import {
   locateZoneHeaderGrille,
@@ -764,6 +766,20 @@ async function main(): Promise<void> {
           source_url: args.sourceUrl,
           snapshot: args.snapshot,
           methode: "native-text/grille-spec",
+        });
+        if (zs.length > 0 && publishedCount(zs[0]!) > 0) {
+          mergeZone(zs[0]!);
+          nativeZones++;
+          continue;
+        }
+      }
+      // "Numéro de zone:" / "Dominance:" split-header one-zone-per-page grille
+      // (Béloeil / Saint-Félicien family) — native text, code = "<Dominance>-<Numéro>".
+      if (parseNumeroDominanceHeader(t)) {
+        const zs = parseNumeroDominanceGrillePage(t, p, {
+          source_url: args.sourceUrl,
+          snapshot: args.snapshot,
+          methode: "native-text/grille-numero-dominance",
         });
         if (zs.length > 0 && publishedCount(zs[0]!) > 0) {
           mergeZone(zs[0]!);
