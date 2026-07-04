@@ -155,6 +155,7 @@ case "$lead" in
   aws|rclone|mc|s3cmd)                          allow ;;   # S3 pipeline I/O
   mkdir|cp|mv|ln|touch|rmdir)                   allow ;;   # stage work dirs / place outputs
   make)                                          allow ;;
+  track)                                         allow ;;   # read-only track reporting CLI (skill track-operation)
   *) deny "leader '<$lead>' hors allowlist" ;;
 esac
 
