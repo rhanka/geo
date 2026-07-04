@@ -93,8 +93,14 @@ const REAL_ZONE_FIELD_RE = /^(zone_?code|zonage|zoning|zone|num_?zone|no_?zone|c
 const EXPLICIT_ZONE_FIELD_RE = /^(zone_?code|num_?zone|no_?zone|code_?zone|codezonage|no_?zonage|no_?zonage_?municipal|zonage_?id|zonagemunicipalid|regzone|etiquette_?\d*|[eé]tiquette_?\d*|identifiant)$/i;
 // Signature d'un VRAI code de zonage : soit préfixe lettre(s)+chiffre(s) (FA-2, C-15),
 // soit format QC chiffre-d'abord <n°zone>-<usage> (100-A, 101 C) — séparateur OBLIGATOIRE
-// dans l'alternance chiffre-d'abord pour ne PAS admettre entiers/adresses nus.
-const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d|^\d{1,4}[-_. ][A-Za-z]/;
+// dans l'alternance chiffre-d'abord pour ne PAS admettre entiers/adresses nus,
+// soit préfixe lettre(s) + séparateur + CHIFFRE ROMAIN (A-II, CAM-VII, VIL-XIII) —
+// grille de zonage à indices romains (ex. L'Ascension/Antoine-Labelle) : séparateur
+// ET ancrage de fin OBLIGATOIRES pour ne PAS admettre un mot nu (Habitation, Villa),
+// soit format Ville-de-Québec <n°zone><usage> COLLÉ sans séparateur (21703Mc, 53091Hb,
+// 22230Pa) — ancrage de fin + suffixe-lettres(1-3) OBLIGATOIRES pour n'admettre QUE des
+// codes se terminant par une classe d'usage, jamais un entier/adresse nu (21703 rejeté).
+const CODE_PATTERN_RE = /^[A-Za-z]{1,5}[-_. ]?\d|^\d{1,4}[-_. ][A-Za-z]|^[A-Za-z]{1,5}[-_. ][IVXLCDM]{1,6}$|^\d{2,5}[A-Za-z]{1,3}$/;
 
 // ── Utilitaires géo (alignés sur zones-obscura-run.ts) ────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
