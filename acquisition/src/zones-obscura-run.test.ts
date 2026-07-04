@@ -65,6 +65,14 @@ describe("zones-obscura --muni-field resolver (code MAMH ⊕ nom)", () => {
     expect(muniWhereClause("MUN", "Melbourne")).toBe("MUN='Melbourne'");
     expect(muniWhereClause("MUN", "L'Ange-Gardien")).toBe("MUN='L''Ange-Gardien'");
   });
+
+  it("quote un code numerique porte par un champ de type STRING (ex. Antoine-Labelle code)", () => {
+    // esriFieldTypeString portant '79088' : ArcGIS renvoie 400 sans quotes.
+    expect(muniWhereClause("code", "79088", true)).toBe("code='79088'");
+    expect(muniWhereClause("code", "79088.0", true)).toBe("code='79088'");
+    // fieldIsString=false (defaut) conserve le comportement champ numerique.
+    expect(muniWhereClause("code", "79088", false)).toBe("code=79088");
+  });
 });
 
 describe("zones-obscura --zone-field gate anti-invention (value-based)", () => {
@@ -77,6 +85,12 @@ describe("zones-obscura --zone-field gate anti-invention (value-based)", () => {
   it("accepte le champ Sect de VSF (R-4 / MIX-1 / P-2)", () => {
     const v = validateExplicitZoneField(feats("Sect", ["R-4", "R-2", "P-2", "MIX-1", "R-3"]), "Sect");
     expect(v.ok).toBe(true);
+  });
+
+  it("accepte le champ ID de Ville-de-Québec collé <n°zone><usage> (21703Mc / 53091Hb)", () => {
+    const v = validateExplicitZoneField(feats("ID", ["21703Mc", "53091Hb", "22230Pa", "22301Rb", "53089Ha"]), "ID");
+    expect(v.ok).toBe(true);
+    expect(v.stats.distinct).toBe(5);
   });
 
   it("rejette un champ AFFECTATION (TYPE_ZONE = usage en prose)", () => {

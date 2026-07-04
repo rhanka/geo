@@ -118,6 +118,34 @@ describe("zones-wfs-run helpers", () => {
     expect(verdict.stats.distinct).toBe(3);
   });
 
+  it("accepts roman-numeral zone codes (A-II, CAM-VII, VIL-XIII) under a generic real zone field", () => {
+    // Grille à indices romains (L'Ascension / MRC Antoine-Labelle) : préfixe usage +
+    // séparateur + chiffre romain. CODE_PATTERN_RE doit les reconnaître comme codes réels.
+    const raw: GeoFeature[] = ["A-II", "CAM-VII", "VIL-XIII", "CON-I", "REC-I"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+  });
+
+  it("accepts Ville-de-Québec collée <n°zone><usage> codes (21703Mc, 53091Hb) under a generic real zone field", () => {
+    // Convention Ville de Québec : n° de zone (4-5 chiffres) COLLÉ à une classe d'usage
+    // (1-3 lettres), sans séparateur — ex 21703Mc / 53091Hb / 22230Pa. CODE_PATTERN_RE
+    // doit les reconnaître (ancrage fin + suffixe-lettres), l'entier nu 21703 restant rejeté.
+    const raw: GeoFeature[] = ["21703Mc", "53091Hb", "22230Pa", "22301Rb", "22304Mb"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+    expect(verdict.stats.distinct).toBe(5);
+  });
+
   it("still rejects bare integers / addresses lacking a separator+letter signature", () => {
     // Le séparateur OBLIGATOIRE de l'alternance chiffre-d'abord protège contre les
     // entiers nus (id techniques) : "100"/"200"/"300" ne matchent pas CODE_PATTERN_RE.
