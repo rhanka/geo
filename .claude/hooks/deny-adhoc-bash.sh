@@ -156,6 +156,7 @@ case "$lead" in
   mkdir|cp|mv|ln|touch|rmdir)                   allow ;;   # stage work dirs / place outputs
   make)                                          allow ;;
   track)                                         allow ;;   # read-only track reporting CLI (skill track-operation)
+  agy|claude|codex|gemini|amp)                   allow ;;   # CLI modeles headless (bench multi-modele, mode print/exec)
   *) deny "leader '<$lead>' hors allowlist" ;;
 esac
 
