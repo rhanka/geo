@@ -252,6 +252,8 @@ async function main(): Promise<void> {
             break;
           }
           row.pagesFailed++;
+          const kind = e instanceof AgyCliError ? e.kind : "throw";
+          console.error(`  [${slug} p${truePage}] FAIL ${kind}: ${(e instanceof Error ? e.message : String(e)).slice(0, 160)}`);
         } finally {
           if (png) await rm(dirname(png), { recursive: true, force: true }).catch(() => undefined);
         }
