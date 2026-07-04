@@ -35,6 +35,7 @@ import {
   parseTransposedColumnsGrille,
   looksLikeTransposedColumnsGrille,
   parseNumberedGrilleNativePage,
+  parseNumeroDominanceGrillePage,
   parseZoneHeader,
   isNumberedGrilleSpec,
   columnsHeaderZones,
@@ -164,6 +165,20 @@ function extractNative(pdfPath: string): NativeExtraction {
   {
     const res = extractGrilleDocument(pages.join("\f"), meta);
     families.push({ family: "native-horizontal", zones: res.zones });
+  }
+
+  // F) "Numéro de zone:" / "Dominance:" split-header one-zone-per-page (Béloeil /
+  //    Saint-Félicien family).
+  {
+    const byZone = new Map<string, ZoneNormsT>();
+    for (let i = 0; i < pages.length; i++) {
+      for (const zn of parseNumeroDominanceGrillePage(pages[i] ?? "", i + 1, { ...meta, methode: "diag/nd" })) {
+        const key = canonZone(zn.zone_code);
+        const prev = byZone.get(key);
+        if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+      }
+    }
+    families.push({ family: "numero-dominance", zones: [...byZone.values()] });
   }
 
   // Pick the family with the most zones that publish ≥1 norm field.

@@ -12,6 +12,8 @@ import {
   mapOcrResultToZones,
   mapZoneHeaderGrillePage,
   parseNumberedGrilleNativePage,
+  parseNumeroDominanceGrillePage,
+  parseNumeroDominanceHeader,
   parseTransposedGrilleNativePage,
   looksLikeTransposedGrille,
   parseTransposedColumnsGrille,
@@ -1241,5 +1243,105 @@ describe("parseTransposedColumnsGrille — baie-comeau USAGES+MARGE two-band mer
       }
     }
     expect(published).toBeGreaterThan(0);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+//  parseNumeroDominanceGrillePage — "Numéro de zone:" / "Dominance:" split header
+//  (Béloeil / Saint-Félicien family). Column-aligned layout reproduced with
+//  `placeCols`: label col 4, bound col 40, value cols 47/52/57, far note col 75.
+//  Exercises: the split header, section-INDEPENDENT terse labels with the section
+//  bands ("Marges"/"Bâtiment") ROTATED mid-block, CENTRED hauteur (min. above /
+//  max. below the label), the value window (a far-right note number is NOT a value),
+//  and every anti-over-mapping exclusion.
+// ───────────────────────────────────────────────────────────────────────────
+
+const ND_LAYOUT = [
+  placeCols([0, 40, 70], ["VILLE DE TEST", "Numéro de zone:", "317"]),
+  placeCols([0, 40, 70], ["GRILLE DES SPÉCIFICATIONS", "Dominance:", "R bd"]),
+  "  USAGE PRINCIPAUX",
+  placeCols([4, 40, 47, 52, 57], ["avant (m) : générale", "min.", "6", "6", "6"]),
+  placeCols([4, 40], ["avant (m) : Réseau sup.", "min."]), // empty variant → keeps 6
+  "                 Marges", // ROTATED section title, lands mid-block (AFTER avant)
+  placeCols([4, 40, 47, 52, 57], ["latérale 1 (m)", "min.", "2", "0", "2"]),
+  placeCols([4, 40, 47, 52, 57], ["latérale 2 (m)", "min.", "4", "4", "4"]), // 2nd → keeps first (2)
+  placeCols([4, 40, 47], ["latérale sur rue (m)", "min.", "5"]), // "sur rue" → UNMAPPED
+  placeCols([4, 40, 47, 52, 57], ["arrière (m)", "min.", "8", "8", "8"]),
+  placeCols([4, 40], ["riveraine (voir note générale)", "min."]), // "riveraine" → UNMAPPED
+  placeCols([40, 75], ["min.", "7491 Camping"]), // hauteur étages MIN (empty; far note number)
+  placeCols([4], ["hauteur (étages)"]),
+  placeCols([40, 47, 52, 57, 75], ["max.", "2", "2", "2", "7491 Camping"]), // hauteur étages MAX → 2
+  placeCols([40], ["min."]), // hauteur m MIN (empty)
+  "                 Bâtiment", // ROTATED, BETWEEN the two hauteur rows
+  placeCols([4], ["hauteur (m)"]),
+  placeCols([40], ["max."]), // hauteur m MAX (empty)
+  placeCols([4, 40], ["largeur du(des) mur(s) avant (m)", "max."]), // wall WIDTH, not the avant margin
+  "                 Rapports",
+  placeCols([4, 40, 47], ["espace bâti/terrain (%)", "max.", "30"]), // densité (emprise) → 30
+  placeCols([4, 40, 47], ["logement / bâtiment", "max.", "1"]), // dwelling ratio → UNMAPPED
+].join("\n");
+
+describe("parseNumeroDominanceHeader — split number/dominance header", () => {
+  it("emits '<Dominance>-<Numéro>' from a same-line header (Saint-Félicien)", () => {
+    expect(parseNumeroDominanceHeader(ND_LAYOUT)).toBe("R bd-317");
+  });
+
+  it("reads a number STACKED on the line above the label (Béloeil)", () => {
+    const beloeil = [
+      "     Grille des spécifications",
+      placeCols([115], ["1001"]), // value stacked above, right of the label
+      placeCols([90], ["Numéro de zone :"]),
+      "",
+      placeCols([70, 92], ["Dominance d'usage :", "Co"]), // "d'usage" tail skipped
+    ].join("\n");
+    expect(parseNumeroDominanceHeader(beloeil)).toBe("Co-1001");
+  });
+
+  it("returns null with no number or no dominance (anti-invention)", () => {
+    expect(parseNumeroDominanceHeader("Numéro de zone: 12")).toBeNull(); // no dominance row
+    expect(parseNumeroDominanceHeader("Dominance: Co")).toBeNull(); // no number row
+    expect(parseNumeroDominanceHeader("just some prose")).toBeNull();
+  });
+});
+
+describe("parseNumeroDominanceGrillePage — Béloeil / Saint-Félicien split-header grille", () => {
+  const zones = parseNumeroDominanceGrillePage(ND_LAYOUT, 220, OPTS2);
+  const z = zones[0]!;
+
+  it("emits exactly one zone with the paired code 'R bd-317'", () => {
+    expect(zones).toHaveLength(1);
+    expect(z.zone_code).toBe("R bd-317"); // canonZone → "RBD-317", matches SIG "317 R bd"
+  });
+
+  it("maps terse directional margins despite the ROTATED mid-block section titles", () => {
+    expect(z.marges.avant_min?.value).toBe(6); // "générale" wins; empty "Réseau sup." never overwrites
+    expect(z.marges.laterale_min?.value).toBe(2); // leftmost value of "latérale 1"; "latérale 2" (4) never overrides
+    expect(z.marges.arriere_min?.value).toBe(8);
+  });
+
+  it("binds the CENTRED hauteur: the 'max.' value under the label above/below it", () => {
+    expect(z.hauteur_max?.value).toBe(2); // "hauteur (étages)" max row, borrowed across the blank label
+  });
+
+  it("maps 'espace bâti/terrain (%)' → densité (30)", () => {
+    expect(z.densite?.value).toBe(30);
+  });
+
+  it("does NOT read the far-right note number as a value (value window)", () => {
+    expect(z.hauteur_max?.value).toBe(2); // never 7491
+  });
+
+  it("anti-over-mapping: 'sur rue', 'riveraine', wall-width 'avant', dwelling ratio → null", () => {
+    // "latérale sur rue" (5) must NOT become the latérale margin (=2), and
+    // "largeur du(des) mur(s) avant" must NOT become the avant margin (=6) — both
+    // asserted via the exact margin values above. Unmapped fields stay null:
+    expect(z.frontage_min?.value).toBeNull();
+    expect(z.superficie_min?.value).toBeNull();
+    expect(z.hauteur_min).toBeNull();
+  });
+
+  it("returns [] on a page with no split header (anti-invention: no header, no zone)", () => {
+    expect(parseNumeroDominanceGrillePage("just some prose with a 10 value", 1, OPTS2)).toEqual([]);
+    expect(parseNumeroDominanceGrillePage(GRILLE_MD, 1, OPTS2)).toEqual([]);
   });
 });
