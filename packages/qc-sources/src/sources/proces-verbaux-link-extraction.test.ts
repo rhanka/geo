@@ -215,3 +215,30 @@ describe("parsePvIndex – shigawake extension-less /download/ PV endpoints", ()
     expect(detectIndexRenderMode(PV_SHIGAWAKE_DOWNLOAD_INDEX_HTML).requiresBrowser).toBe(false);
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Family 5 — extension-less document HANDLERS (cpage fichier.php?id=, gestionweblex
+// document.ashx?documentid=, ASP.NET FileHandler.aspx?path=, Joomla docman /…/file).
+// `looksLikeDocumentHref` recognises these so `parsePvIndex` keeps the item; the
+// downstream PV keyword/date gate still decides deposit (anti-invention).
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("parsePvIndex – extension-less document handlers", () => {
+  const BASE = "https://ville.qc.ca/conseil/proces-verbaux/";
+
+  it("extracts a cpage fichier.php?id= handler link as a document item", () => {
+    const html = `<a href="/include/fichier.php?id=412">Procès-verbal du 12 janvier 2026</a>`;
+    const [item] = parsePvIndex(html, BASE);
+    expect(item?.url).toBe("https://ville.qc.ca/include/fichier.php?id=412");
+    expect(item?.docType).toBe("proces-verbal");
+  });
+
+  it("extracts a document.ashx?documentid= handler and a docman /…/file endpoint", () => {
+    const html = `
+      <a href="/greffe/document.ashx?documentid=9b1f-77">Séance ordinaire du 3 février 2026</a>
+      <a href="/documents/proces-verbaux/12-seance-3-mars-2026/file">Procès-verbal 3 mars 2026</a>`;
+    const urls = parsePvIndex(html, BASE).map((i) => i.url);
+    expect(urls).toContain("https://ville.qc.ca/greffe/document.ashx?documentid=9b1f-77");
+    expect(urls).toContain("https://ville.qc.ca/documents/proces-verbaux/12-seance-3-mars-2026/file");
+  });
+});
