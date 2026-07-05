@@ -10,15 +10,17 @@ import { s3Client, BUCKET } from "./lib/s3.js";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
 // 30 focus immo : 7 déjà servies historiquement + 23 demandées (#74). sainte-catherine = acquisition à part.
-const FOCUS_SERVED_BASELINE = [
+export const FOCUS_SERVED_BASELINE = [
   "longueuil", "rosemere", "westmount", "hampstead", "cote-saint-luc", "dorval", "chambly",
 ];
-const FOCUS_REQUESTED_23 = [
+export const FOCUS_REQUESTED_23 = [
   "saint-lambert", "mont-royal", "montreal-ouest", "brossard", "sainte-catherine", "la-prairie",
   "delson", "candiac", "montreal-est", "lile-dorval", "saint-constant", "saint-bruno-de-montarville",
   "carignan", "dollard-des-ormeaux", "pointe-claire", "saint-philippe", "saint-mathieu",
   "chateauguay", "sainte-julie", "saint-basile-le-grand", "varennes", "kirkland", "boucherville",
 ];
+/** Les 30 villes focus démo immo (baseline 7 + lot-23 #74). */
+export const FOCUS_30_SLUGS: readonly string[] = [...FOCUS_SERVED_BASELINE, ...FOCUS_REQUESTED_23];
 
 async function servedSlugs(): Promise<Set<string>> {
   // Source de vérité = même prefix que coverage-reconcile : normalized/ca-qc-zonage/
@@ -50,4 +52,7 @@ async function main(): Promise<void> {
   console.log(`MANQUANTES : ${missing.sort().join(", ")}`);
 }
 
-main().catch((e) => { console.error(e instanceof Error ? e.message : String(e)); process.exit(1); });
+// Exécution directe seulement (l'import de FOCUS_30_SLUGS ne doit pas lancer le scan S3).
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((e) => { console.error(e instanceof Error ? e.message : String(e)); process.exit(1); });
+}
