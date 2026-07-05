@@ -37,6 +37,7 @@ geo PRODUIT pourtant déjà ce lien, hors API OGC : l'**index zéro-copie immo**
 | Zonage normalisé | `normalized/ca-qc-zonage/<grid_slug>.geojson` | Polygones, prop `zone_code` (ou `NO_ZONAGE`…) | ~214 grilles, **~15 munis avec `zone_code` exploitable** |
 | **Index immo (zéro-copie)** | `registry/index-immo/<slug>.parquet` | `feature_id`, `no_lot`, `code_zone`, `role_*` | **30 munis** (z∩m∩p) |
 | Rôle foncier | `registry/role-foncier/<slug>.parquet` | attrs bâtiment par `NO_LOT` | 1095 munis |
+| **Limites RTA/FSA** | `normalized/qc-admin-boundaries/qc-fsa.geojson` | Polygones RTA (3 car. du code postal), Recensement 2021 StatCan | **414 RTA (Québec)** |
 | PMTiles zones | `pmtiles/qc-zones.pmtiles` | couche province | — |
 | PMTiles lots | `pmtiles/qc-lots.pmtiles` | couche province | — |
 
@@ -126,3 +127,42 @@ Deux options, federation-first :
 L'option (A) est non implémentée ici car l'index immo province est en cours d'enrichissement
 séparé (ne pas écrire S3 cadastre/role/zonage pendant ce process). Ce document est le livrable
 de contrat ; l'exposition `code_zone` sur l'API OGC sera faite avec le rebuild du snapshot lots.
+
+---
+
+## 6. Champs additifs servis sur `qc-lots-<slug>/items` (MàJ 2026-07-05)
+
+L'option (A) a été RÉALISÉE : le produit enrichi `normalized/qc-lots/qc-lots-<slug>.geojson`
+(bâti par `acquisition/src/lots-enriched-run.ts`) est servi tel quel par l'API OGC pour les
+municipalités couvertes. Chaque feature lot porte, en plus de l'identité cadastrale
+(`NO_LOT`, `noLot`, `geoId`, `lot_id`…), ces champs additifs **rétro-compatibles** (valeur
+réelle ou `null`, jamais devinée) :
+
+| Champ | Type | Source | Sens |
+|---|---|---|---|
+| `zone_code` / `code_zone` | string\|null | grille zonage (point-in-polygon) | code de zone (alias identiques) |
+| `dominant_fraction`, `multi_zone`, `zone_codes`, `assignment_method` | | jointure zonage | méta-jointure lot↔zone |
+| *(normes aplaties)* `hauteur_max_value`, `densite_value`, `marge_avant_min_value`, … | | extraction normes | valeurs réglementaires par zone |
+| `surface_m2` | number\|null | géométrie (aire reprojetée MTM/UTM) | superficie réelle du lot (m²) |
+| `adresse` | string\|null | rôle foncier MAMH (jointure `NO_LOT`) | adresse civique verbatim |
+| **`code_postal`** | string\|null | **RTA/FSA StatCan 2021** (géocodage inverse du centroïde) | **3 premiers caractères du code postal** (ex. `J4P`) |
+| **`code_postal_precision`** | `"fsa3"`\|null | idem | drapeau de précision (honnêteté) |
+| `in_tod`, `tod_id`, `tod_nom`, … | | aires TOD PMAD | proximité transport structurant |
+
+### `code_postal` — précision RTA/FSA (limite ouverte honnête)
+
+- `code_postal` est la **RTA (Région de Tri d'Acheminement)** = **3 premiers caractères** du
+  code postal canadien, obtenue par **point-in-polygon du centroïde du lot** dans les limites
+  RTA du Recensement 2021 (Statistique Canada, licence ouverte). **Ce n'est PAS le code postal
+  complet à 6 caractères** — celui-ci est la propriété de Postes Canada et n'existe dans
+  **aucune source ouverte joignable en bulk** au Québec. La RTA est donc le plafond ouvert.
+- `code_postal_precision = "fsa3"` quand résolu ; `code_postal = null` (et precision `null`)
+  quand le centroïde ne tombe dans aucune RTA (anti-invention : jamais fabriqué).
+- Couverture observée : ~**99–100 %** des lots par muni (une RTA couvre tout territoire habité).
+- Le rôle foncier NE porte PAS le code postal de l'immeuble (seulement l'adresse postale du
+  propriétaire, hors-sujet) — d'où le géocodage inverse spatial.
+- Staging de la source : `acquisition/src/fsa-boundaries-prep.ts` →
+  `normalized/qc-admin-boundaries/qc-fsa.geojson` (+ `.stats.json`, provenance/licence).
+
+immo consomme `properties.code_postal` en passthrough (chaîne 3 car.) et peut afficher/agréger
+au niveau RTA ; ne PAS présenter la valeur comme un code postal complet.
