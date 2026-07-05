@@ -13,7 +13,7 @@
  *   - code non-commité dans acquisition/src + packages (à committer)
  */
 import { execSync } from "node:child_process";
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -45,6 +45,35 @@ console.log(f30.split("\n").filter((l) => /FOCUS-30 zonage servi|MANQUANTES/.tes
 section("FOCUS-30 PAR COUCHE");
 const f30all = sh("npx tsx src/focus30-allayers.ts", ACQ);
 console.log(f30all.split("\n").filter((l) => /TOTAUX|MANQUE/.test(l)).join("\n").trim() || "(focus30-allayers indisponible)");
+
+// 2c. ZONAGE QUALITÉ (servi ≠ bon) — lecture du cache qualité-aware (0 S3 dans le tick).
+//     Rafraîchir le cache : `npx tsx src/zonage-reacquire-audit.ts` (recalcule overlap+pont).
+section("ZONAGE QUALITÉ (servi ≠ bon)");
+{
+  const cache = join(ROOT, "work", "coverage", "zones-quality.json");
+  if (existsSync(cache)) {
+    try {
+      const q = JSON.parse(readFileSync(cache, "utf8"));
+      const age = Math.round((Date.now() - new Date(q.generatedAt).getTime()) / 3600000);
+      console.log(
+        `${q.zonesDone} servis — OK-joignable=${q.ok} | à-ré-acquérir(SIG)=${q.reacquire} ` +
+          `(affectation ${q.reacquireAffectation} / sans-codes ${q.reacquireSigNoCodes} / disjoint ${q.reacquireDisjoint}) | ` +
+          `normes-à-ré-extraire(SIG-ok)=${q.normesSuspect} | indéterminé=${q.indeterminate}` +
+          (q.needsManifestRefresh ? ` | +${q.needsManifestRefresh} manifeste-à-rafraîchir` : "") +
+          `  (cache ${age}h)`,
+      );
+      console.log(
+        `  focus-30 : ${q.focus30.zonesServed} servis — OK=${q.focus30.ok} | à-réacq=${q.focus30.reacquire} ` +
+          `| normes-suspect=${q.focus30.normesSuspect} | indét=${q.focus30.indeterminate}` +
+          (q.focus30.reacquireSlugs?.length ? ` [réacq: ${q.focus30.reacquireSlugs.join(", ")}]` : ""),
+      );
+    } catch {
+      console.log("(cache zones-quality.json illisible — relancer zonage-reacquire-audit.ts)");
+    }
+  } else {
+    console.log("(pas de cache — lancer `npx tsx src/zonage-reacquire-audit.ts` pour l'indicateur qualité)");
+  }
+}
 
 // 3. provenance normes
 section("PROVENANCE NORMES");
