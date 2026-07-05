@@ -24,9 +24,14 @@
  *                   VALIDATED by lot-number overlap (guards homonym collisions,
  *                   e.g. the two "Saint-Lambert"); a candidate that doesn't
  *                   overlap the cadastre is rejected → adresse null (never wrong).
- *   - code_postal : always null — the rôle does NOT carry the property's postal
- *                   code (only the owner's mailing CP, off-topic). A real CP would
- *                   need reverse geocoding (out of scope). Documented in stats.role.
+ *   - code_postal : RTA/FSA (3 premiers caractères du code postal, ex. "J4P"),
+ *                   par géocodage inverse du centroïde du lot dans les polygones
+ *                   RTA du Recensement 2021 (StatCan, stagés en S3 par
+ *                   fsa-boundaries-prep.ts). Le rôle ne porte PAS le CP de
+ *                   l'immeuble ; le CP complet (6 car.) est propriété de Postes
+ *                   Canada, sans source ouverte bulk — la RTA est le plafond
+ *                   ouvert honnête. `code_postal_precision`="fsa3" quand résolu,
+ *                   null sinon (jamais fabriqué). Voir stats.code_postal.
  * The rôle XML is fetched per muni; `--no-role` skips it (surface still computed).
  *
  * Anti-invention: only real joined values are written. A lot absent from a
@@ -61,6 +66,7 @@ import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
 import { norm as normCadastreSlug, ALIAS_SLUG_TO_CODE } from "./cadastre-clip-sda.js";
 import { computeLotAttrs } from "./lot-attrs-geom.js";
 import { fetchIndex, parseRole, type RoleAttrs } from "./role-foncier.js";
+import { FSA_KEY, loadFsaIndex, lookupFsa, type FsaIndex } from "./lib/fsa-geocode.js";
 import { BUCKET, exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
@@ -73,8 +79,8 @@ const SDA_BOUNDARIES_KEY = "normalized/qc-admin-boundaries/qc-municipalites.geoj
 const ROLE_MILLESIME = 2026;
 const ROLE_XML_URL = (code: string, m: number) =>
   `https://donneesouvertes.affmunqc.net/role/RL${code}_${m}.xml`;
-/** Note figée pour le CP : le rôle ne porte pas le code postal de l'immeuble. */
-const CODE_POSTAL_SOURCE = "absent-du-role (necessite geocodage inverse, hors-scope)";
+/** Source du code postal : géocodage inverse RTA/FSA (StatCan 2021), pas le rôle. */
+const CODE_POSTAL_SOURCE = "statcan-fsa-2021 (RTA/FSA 3 car., geocodage inverse centroide)";
 
 /** Default per-muni wall-clock budget (skip a muni if it would exceed it). */
 const DEFAULT_TIME_BOX_SEC = 1800;
@@ -115,6 +121,15 @@ interface EnrichStats {
   /** Surface (aire polygone reprojetée, m²) — nouveau champ additif. */
   num_with_surface: number;
   pct_with_surface: number;
+  /** Code postal partiel (RTA/FSA) par géocodage inverse du centroïde. */
+  code_postal: {
+    source: string;
+    precision: "fsa3";
+    fsa_index_loaded: boolean;
+    num_with_code_postal: number;
+    pct_with_code_postal: number;
+    note: string;
+  };
   /** Adresse civique (jointure rôle-foncier MAMH par n° de lot) + note CP. */
   role: {
     code_geo: string | null;
@@ -471,6 +486,7 @@ async function runCity(
   slug: string,
   args: Args,
   roleCtx: RoleContext | null,
+  fsaIndex: FsaIndex | null,
 ): Promise<EnrichStats> {
   const cadastreKey = await resolveCadastreKey(s3, slug);
   const sizeBytes = await objectSizeBytes(s3, cadastreKey);
@@ -520,6 +536,7 @@ async function runCity(
   let numInTod = 0;
   let numWithSurface = 0;
   let numWithAdresse = 0;
+  let numWithCodePostal = 0;
   const propertyKeys = new Set<string>();
   const examples: Array<Record<string, unknown>> = [];
 
@@ -535,14 +552,21 @@ async function runCity(
       const props = enrichProperties(feature.properties ?? null, lotId, zRow, tod);
 
       // ── new additive fields ──────────────────────────────────────────────
-      // surface_m2: real polygon area reprojected to a local metric CRS.
-      const surface = computeLotAttrs(feature).superficie_m2;
+      // surface_m2 + centroïde (une seule passe géométrique par lot).
+      const attrs = computeLotAttrs(feature);
+      const surface = attrs.superficie_m2;
       props["surface_m2"] = surface;
-      // adresse + code_postal: rôle-foncier join by lot number (spaces stripped).
+      // adresse: rôle-foncier join by lot number (spaces stripped).
       const noLotKey = noLotKeyOf(feature);
       const roleRow = roleResolution && noLotKey ? roleResolution.roleMap.get(noLotKey) : undefined;
       props["adresse"] = roleRow?.adresse ?? null;
-      props["code_postal"] = null; // absent du rôle (voir stats.role.code_postal_source)
+      // code_postal: RTA/FSA (3 car.) par géocodage inverse du centroïde du lot.
+      const codePostal =
+        fsaIndex && attrs.centroid_lon !== null && attrs.centroid_lat !== null
+          ? lookupFsa(fsaIndex, attrs.centroid_lon, attrs.centroid_lat)
+          : null;
+      props["code_postal"] = codePostal;
+      props["code_postal_precision"] = codePostal ? "fsa3" : null;
 
       numLots += 1;
       if (zRow) numJoinedZonage += 1;
@@ -552,6 +576,7 @@ async function runCity(
       if (props["in_tod"] === true) numInTod += 1;
       if (surface !== null) numWithSurface += 1;
       if (props["adresse"] !== null) numWithAdresse += 1;
+      if (codePostal !== null) numWithCodePostal += 1;
       for (const k of Object.keys(props)) propertyKeys.add(k);
 
       if (examples.length < 3 && props["zone_code"] !== null && zRow?.norms) {
@@ -571,6 +596,7 @@ async function runCity(
     const pctWithNorms = numLots ? round2((100 * numWithNorms) / numLots) : 0;
     const pctWithSurface = numLots ? round2((100 * numWithSurface) / numLots) : 0;
     const pctWithAdresse = numLots ? round2((100 * numWithAdresse) / numLots) : 0;
+    const pctWithCodePostal = numLots ? round2((100 * numWithCodePostal) / numLots) : 0;
     if (zonageKey && zonageJoinRate < 90) warnings.push(`zonage join rate ${zonageJoinRate}% < 90% (lot_id mismatch?)`);
     if (!zonageKey) warnings.push(`no zonage parquet — zone_code/norms all null`);
     if (pctWithSurface < 95) warnings.push(`surface_m2 present ${pctWithSurface}% < 95% (non-polygonal geoms?)`);
@@ -578,6 +604,19 @@ async function runCity(
     else if (roleResolution && pctWithAdresse < 50) {
       warnings.push(`adresse present ${pctWithAdresse}% < 50% (code=${roleResolution.codeGeo})`);
     }
+    if (!fsaIndex) warnings.push(`code_postal: no FSA index (${FSA_KEY} missing?) — code_postal all null`);
+    else if (pctWithCodePostal < 90) warnings.push(`code_postal (RTA) present ${pctWithCodePostal}% < 90%`);
+
+    const codePostalStats: EnrichStats["code_postal"] = {
+      source: CODE_POSTAL_SOURCE,
+      precision: "fsa3",
+      fsa_index_loaded: fsaIndex !== null,
+      num_with_code_postal: numWithCodePostal,
+      pct_with_code_postal: pctWithCodePostal,
+      note:
+        "RTA/FSA = 3 premiers caractères du code postal (ex. J4P) ; le CP complet (6 car.) " +
+        "est propriétaire (Postes Canada), sans source ouverte bulk. null si hors RTA.",
+    };
 
     const role: EnrichStats["role"] = {
       code_geo: roleResolution?.codeGeo ?? null,
@@ -604,6 +643,7 @@ async function runCity(
       num_in_tod: numInTod,
       num_with_surface: numWithSurface,
       pct_with_surface: pctWithSurface,
+      code_postal: codePostalStats,
       role,
       property_keys: [...propertyKeys].sort(),
       warnings,
@@ -637,6 +677,7 @@ function exampleOf(props: Record<string, unknown>): Record<string, unknown> {
     surface_m2: pick("surface_m2"),
     adresse: pick("adresse"),
     code_postal: pick("code_postal"),
+    code_postal_precision: pick("code_postal_precision"),
     hauteur_max_value: pick("hauteur_max_value"),
     densite_value: pick("densite_value"),
     marge_avant_min_value: pick("marge_avant_min_value"),
@@ -669,6 +710,7 @@ function printSummary(stats: EnrichStats): void {
       `zone_code=${stats.pct_with_zone_code}%`,
       `norms=${stats.pct_with_norms}%`,
       `surface=${stats.pct_with_surface}%`,
+      `code_postal=${stats.code_postal ? `${stats.code_postal.pct_with_code_postal}%(RTA)` : "n/a"}`,
       `adresse=${stats.role ? `${stats.role.pct_with_adresse}%(code=${stats.role.code_geo ?? "-"})` : "n/a"}`,
       `tod=${stats.tod_present ? `${stats.num_in_tod}/${stats.num_lots}` : "n/a"}`,
       v ? `deposit=${v.exists ? "Y" : "N"} bytes=${v.bytes}` : "",
@@ -718,6 +760,20 @@ async function main(): Promise<void> {
     console.log(`rôle index: ${names} municipality names -> code_geo (millésime ${ROLE_MILLESIME})`);
   }
 
+  // Charge l'index RTA/FSA ONCE (géocodage inverse code_postal). Absent -> null.
+  let fsaIndex: FsaIndex | null = null;
+  if (!args.verifyOnly) {
+    try {
+      fsaIndex = await loadFsaIndex(s3);
+      console.log(`FSA index: ${fsaIndex.count} RTA (code_postal fsa3) from ${FSA_KEY}`);
+    } catch (e) {
+      console.log(
+        `WARN FSA index load failed (${e instanceof Error ? e.message : String(e)}) — ` +
+          `code_postal restera null (lancer fsa-boundaries-prep.ts d'abord)`,
+      );
+    }
+  }
+
   const started = Date.now();
   const summaries: EnrichStats[] = [];
   const skipped: Array<{ slug: string; reason: string }> = [];
@@ -729,7 +785,7 @@ async function main(): Promise<void> {
       continue;
     }
     try {
-      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args, roleCtx);
+      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args, roleCtx, fsaIndex);
       summaries.push(stats);
       printSummary(stats);
     } catch (error) {
