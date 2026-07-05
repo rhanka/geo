@@ -190,9 +190,101 @@ export interface RoleAttrs {
   valeur_terrain: number | null;
   valeur_batiment: number | null;
   valeur_immeuble: number | null;
+  /** Adresse civique de l'unité (RL0101), assemblée verbatim depuis la source
+   *  (numéro civique + générique de voie décodé + nom de rue). `null` si absente. */
+  adresse: string | null;
+  /** Le rôle MAMH NE porte PAS le code postal de l'immeuble (seulement l'adresse
+   *  postale du propriétaire, hors-sujet) — toujours `null` ici. Un vrai CP
+   *  nécessite un géocodage inverse (hors périmètre). */
+  code_postal: string | null;
   _source: string;
   _source_code_geo: string;
   _source_millesime: string;
+}
+
+/**
+ * Codes génériques de voie MAMH (RL0101Ex) -> mot français. Un code inconnu est
+ * conservé BRUT (jamais inventé) — anti-invention. Liste des génériques courants
+ * observés dans les rôles (RU/AV/BO/…) ; l'ajout d'un code manquant ne fait que
+ * remplacer un code brut par son mot.
+ */
+const VOIE_GENERIC: Record<string, string> = {
+  RU: "rue",
+  AV: "avenue",
+  BO: "boulevard",
+  CH: "chemin",
+  MO: "montée",
+  RG: "rang",
+  RA: "rang",
+  PL: "place",
+  CR: "croissant",
+  TE: "terrasse",
+  IM: "impasse",
+  CO: "côte",
+  CA: "carré",
+  AL: "allée",
+  PR: "promenade",
+  RT: "route",
+  RL: "ruelle",
+  QU: "quai",
+  SE: "sentier",
+  VO: "voie",
+  CU: "cul-de-sac",
+  PA: "passage",
+  DE: "descente",
+  ES: "esplanade",
+};
+
+/** Nom de rue verbatim (la source est en MAJUSCULES) -> casse de titre lisible,
+ *  en respectant tirets/apostrophes. Ne change QUE la casse, jamais le contenu. */
+function formatStreetName(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/([a-zà-ÿ0-9])([a-zà-ÿ0-9]*)/gu, (_m, first: string, rest: string) => first.toUpperCase() + rest);
+}
+
+/**
+ * Assemble une adresse civique lisible depuis une occurrence RL0101x :
+ *   RL0101Ax(+Bx)  numéro civique (+ suffixe lettre)
+ *   RL0101Cx(+Dx)  borne supérieure d'une plage de numéros (ex. 259-263)
+ *   RL0101Ex       code générique de voie (décodé via VOIE_GENERIC)
+ *   RL0101Gx       nom spécifique de la voie
+ *   RL0101Hx       point cardinal (N/S/E/O)
+ *   RL0101Ix       numéro d'appartement/local -> ", app. X"
+ * Le lien/particule (RL0101Fx) est OMIS : domaine codé non vérifié → on ne
+ * fabrique pas de particule. `null` si rien d'exploitable.
+ */
+export function assembleAddress(occ: Record<string, unknown>): string | null {
+  const t = (k: string): string | null => {
+    const v = occ[k];
+    if (v === null || v === undefined) return null;
+    const s = String(v).trim();
+    return s === "" ? null : s;
+  };
+  const civicLow = t("RL0101Ax");
+  const civicLowLetter = t("RL0101Bx");
+  const civicUp = t("RL0101Cx");
+  const civicUpLetter = t("RL0101Dx");
+  const generic = t("RL0101Ex");
+  const name = t("RL0101Gx");
+  const cardinal = t("RL0101Hx");
+  const apt = t("RL0101Ix");
+  if (!name && !civicLow) return null;
+
+  let civic = "";
+  if (civicLow) {
+    civic = civicLow + (civicLowLetter ?? "");
+    if (civicUp) civic += "-" + civicUp + (civicUpLetter ?? "");
+  }
+  const genericWord = generic ? (VOIE_GENERIC[generic.toUpperCase()] ?? generic) : null;
+  const parts: string[] = [];
+  if (civic) parts.push(civic);
+  if (genericWord) parts.push(genericWord);
+  if (name) parts.push(formatStreetName(name));
+  if (cardinal) parts.push(cardinal.toUpperCase());
+  let out = parts.join(" ").trim();
+  if (apt) out += `, app. ${apt}`;
+  return out || null;
 }
 
 const xml = new XMLParser({
@@ -230,6 +322,16 @@ export function parseRole(xmlBytes: Buffer | string): Record<string, RoleAttrs> 
     }
     if (matricules.length === 0) continue;
 
+    // Adresse civique : première occurrence RL0101x de l'unité (cohérent avec le
+    // "first occurrence wins" appliqué aux attributs). Une unité peut porter
+    // plusieurs adresses ; le rôle ne les rattache pas lot-à-lot.
+    let adresse: string | null = null;
+    const rl0101 = unit["RL0101"] as Record<string, unknown> | undefined;
+    if (rl0101) {
+      const occ = asArray(rl0101["RL0101x"])[0] as Record<string, unknown> | undefined;
+      if (occ) adresse = assembleAddress(occ);
+    }
+
     const attrs: RoleAttrs = {
       usage_cubf: txt(unit["RL0105A"]),
       nb_etages_max: safeInt(unit["RL0306A"]),
@@ -243,6 +345,8 @@ export function parseRole(xmlBytes: Buffer | string): Record<string, RoleAttrs> 
       valeur_terrain: safeFloat(unit["RL0402A"]),
       valeur_batiment: safeFloat(unit["RL0403A"]),
       valeur_immeuble: safeFloat(unit["RL0404A"]),
+      adresse,
+      code_postal: null, // absent du rôle (voir doc du champ)
       _source: SOURCE_ID,
       _source_code_geo: codeGeo,
       _source_millesime: millesime,
