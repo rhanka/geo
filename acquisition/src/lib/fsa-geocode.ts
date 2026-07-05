@@ -29,6 +29,20 @@ export const FSA_KEY = "normalized/qc-admin-boundaries/qc-fsa.geojson";
 /** Taille de cellule (degrés) de la grille de pré-filtrage spatial. */
 const CELL = 0.25;
 
+/**
+ * Tolérance de raccrochage (km) pour un centroïde tombé HORS de toute RTA. Les
+ * limites RTA de StatCan sont simplifiées côté serveur (~11 m) et partitionnent
+ * le Québec ; un centroïde qui n'atterrit dans aucun polygone est presque
+ * toujours à quelques mètres d'une limite (éclat de simplification) ou sur un
+ * lot en bordure. On raccroche alors à la RTA la plus proche SI elle est à
+ * ≤ SNAP_TOL_KM ; au-delà, le point est réellement hors de la couverture RTA du
+ * Québec (eau, hors-province) → null (jamais fabriqué). 2 km couvre les éclats
+ * de simplification sans jamais attribuer une RTA à un point franchement hors zone.
+ */
+const SNAP_TOL_KM = 2;
+/** Degrés → km (approx. sphérique, latitude ~46-49° du Québec méridional). */
+const KM_PER_DEG = 111.32;
+
 type FsaGeom = Polygon | MultiPolygon;
 
 interface FsaEntry {
@@ -92,18 +106,95 @@ export async function loadFsaIndex(s3: S3Client, key: string = FSA_KEY): Promise
 }
 
 /**
- * RTA (3 caractères) contenant le point (lon,lat), ou `null` si aucune. Le
- * pré-filtre grille+bbox restreint les tests exacts à quelques candidats.
+ * RTA (3 caractères) contenant le point (lon,lat), ou `null` si aucune n'est
+ * atteignable. Deux passes :
+ *   1. point-in-polygon exact (pré-filtre grille+bbox → quelques candidats) ;
+ *   2. si le point tombe HORS de toute RTA, raccrochage à la RTA la plus proche
+ *      si elle est à ≤ SNAP_TOL_KM (éclat de simplification / lot en bordure) ;
+ *      sinon `null` (réellement hors couverture — jamais fabriqué).
  */
 export function lookupFsa(index: FsaIndex, lon: number, lat: number): string | null {
   if (!Number.isFinite(lon) || !Number.isFinite(lat)) return null;
-  const candidates = index.grid.get(cellKey(Math.floor(lon / CELL), Math.floor(lat / CELL)));
-  if (!candidates) return null;
-  for (const i of candidates) {
-    const e = index.entries[i]!;
-    const [minX, minY, maxX, maxY] = e.bbox;
-    if (lon < minX || lon > maxX || lat < minY || lat > maxY) continue;
-    if (booleanPointInPolygon([lon, lat], e.geom)) return e.code;
+  const own = index.grid.get(cellKey(Math.floor(lon / CELL), Math.floor(lat / CELL)));
+  if (own) {
+    for (const i of own) {
+      const e = index.entries[i]!;
+      const [minX, minY, maxX, maxY] = e.bbox;
+      if (lon < minX || lon > maxX || lat < minY || lat > maxY) continue;
+      if (booleanPointInPolygon([lon, lat], e.geom)) return e.code;
+    }
   }
-  return null;
+  return nearestFsaWithin(index, lon, lat, SNAP_TOL_KM);
+}
+
+/** Candidats du voisinage 3×3 cellules autour du point (pour un point hors
+ *  polygone, dont la cellule propre peut n'indexer aucune RTA). */
+function neighborhood(index: FsaIndex, lon: number, lat: number): number[] {
+  const cx = Math.floor(lon / CELL);
+  const cy = Math.floor(lat / CELL);
+  const seen = new Set<number>();
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      const arr = index.grid.get(cellKey(cx + dx, cy + dy));
+      if (arr) for (const i of arr) seen.add(i);
+    }
+  }
+  return [...seen];
+}
+
+/** Distance (km) point→segment dans un plan équirectangulaire local (x mis à
+ *  l'échelle par cos(lat)), suffisant à l'échelle du km. */
+function segDistKm(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len2 = dx * dx + dy * dy;
+  let t = len2 > 0 ? ((px - ax) * dx + (py - ay) * dy) / len2 : 0;
+  t = t < 0 ? 0 : t > 1 ? 1 : t;
+  const qx = ax + t * dx;
+  const qy = ay + t * dy;
+  return Math.hypot(px - qx, py - qy) * KM_PER_DEG;
+}
+
+/** Distance (km) point→frontière d'un (multi)polygone (0 si le point est sur le
+ *  bord ; le point est supposé extérieur ici). */
+function pointToPolygonKm(lon: number, lat: number, geom: FsaGeom, coslat: number): number {
+  const px = lon * coslat;
+  const py = lat;
+  let best = Infinity;
+  const scan = (ring: Position[]): void => {
+    for (let i = 0; i < ring.length - 1; i++) {
+      const a = ring[i]!;
+      const b = ring[i + 1]!;
+      const d = segDistKm(px, py, a[0]! * coslat, a[1]!, b[0]! * coslat, b[1]!);
+      if (d < best) best = d;
+    }
+  };
+  if (geom.type === "Polygon") for (const r of geom.coordinates) scan(r);
+  else for (const poly of geom.coordinates) for (const r of poly) scan(r);
+  return best;
+}
+
+/** Distance (km) point→rectangle bbox (0 si dedans) — pré-filtre bon marché. */
+function bboxDistKm(lon: number, lat: number, bbox: [number, number, number, number], coslat: number): number {
+  const [minX, minY, maxX, maxY] = bbox;
+  const ddx = lon < minX ? minX - lon : lon > maxX ? lon - maxX : 0;
+  const ddy = lat < minY ? minY - lat : lat > maxY ? lat - maxY : 0;
+  return Math.hypot(ddx * coslat, ddy) * KM_PER_DEG;
+}
+
+/** RTA la plus proche du point dans le voisinage, si ≤ tolKm ; sinon null. */
+function nearestFsaWithin(index: FsaIndex, lon: number, lat: number, tolKm: number): string | null {
+  const coslat = Math.cos((lat * Math.PI) / 180);
+  let bestCode: string | null = null;
+  let bestKm = Infinity;
+  for (const i of neighborhood(index, lon, lat)) {
+    const e = index.entries[i]!;
+    if (bboxDistKm(lon, lat, e.bbox, coslat) > Math.min(tolKm, bestKm)) continue;
+    const km = pointToPolygonKm(lon, lat, e.geom, coslat);
+    if (km < bestKm) {
+      bestKm = km;
+      bestCode = e.code;
+    }
+  }
+  return bestKm <= tolKm ? bestCode : null;
 }
