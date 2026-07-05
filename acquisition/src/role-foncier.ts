@@ -203,12 +203,20 @@ export interface RoleAttrs {
 }
 
 /**
- * Codes génériques de voie MAMH (RL0101Ex) -> mot français. Un code inconnu est
- * conservé BRUT (jamais inventé) — anti-invention. Liste des génériques courants
- * observés dans les rôles (RU/AV/BO/…) ; l'ajout d'un code manquant ne fait que
- * remplacer un code brut par son mot.
+ * Codes génériques de voie MAMH (RL0101Ex) -> mot français. Le domaine officiel
+ * du champ est « AA à ZZ » (Répertoire des données du rôle, format ouvert) : il
+ * n'y a PAS de nomenclature fermée publiée ; les codes sont conventionnels. Un
+ * code inconnu est donc conservé BRUT (jamais inventé) — anti-invention. Chaque
+ * entrée décode un code RÉELLEMENT observé dans les rôles ; l'ajout d'un code ne
+ * fait que remplacer un code brut par son mot.
+ *
+ * `AT`/`RO` ajoutés d'après les rôles réels 2026 (audit-lots-enriched --mode voie) :
+ * preuve non ambiguë par le numéro de voie — « AT 30 »/« AT 15 »/« AT ACIER » =
+ * autoroute (A-30/A-15/Autoroute de l'Acier), « RO 132 » = route 132. Les codes
+ * longue traîne ambigus (CT/CE/KR/PS) restent volontairement BRUTS (pas de décodage
+ * autoritaire possible → pas d'invention).
  */
-const VOIE_GENERIC: Record<string, string> = {
+export const VOIE_GENERIC: Record<string, string> = {
   RU: "rue",
   AV: "avenue",
   BO: "boulevard",
@@ -225,6 +233,8 @@ const VOIE_GENERIC: Record<string, string> = {
   AL: "allée",
   PR: "promenade",
   RT: "route",
+  RO: "route",
+  AT: "autoroute",
   RL: "ruelle",
   QU: "quai",
   SE: "sentier",
