@@ -15,16 +15,34 @@
  * lot identity keys keep working; zonage + norms + TOD are merged on top. The
  * flat immo alias `code_zone` is set alongside `zone_code` (same real value).
  *
+ * Three additive per-lot fields for immo (on top of zonage/norms/TOD):
+ *   - surface_m2  : real polygon area, reprojected to a local metric CRS
+ *                   (MTM/UTM via computeLotAttrs). Rounded to 0.01 m².
+ *   - adresse     : civic address from the MAMH rôle foncier (RL0101), joined by
+ *                   lot number (cadastre NO_LOT, spaces stripped, == rôle
+ *                   RL0103Ax). The muni's rôle code_geo is resolved by NAME then
+ *                   VALIDATED by lot-number overlap (guards homonym collisions,
+ *                   e.g. the two "Saint-Lambert"); a candidate that doesn't
+ *                   overlap the cadastre is rejected → adresse null (never wrong).
+ *   - code_postal : always null — the rôle does NOT carry the property's postal
+ *                   code (only the owner's mailing CP, off-topic). A real CP would
+ *                   need reverse geocoding (out of scope). Documented in stats.role.
+ * The rôle XML is fetched per muni; `--no-role` skips it (surface still computed).
+ *
  * Anti-invention: only real joined values are written. A lot absent from a
  * product, or whose product value is null, yields `null` (never a guess). When
  * a muni has no qc-lot-tod parquet at all, `in_tod` is `null` (unknown), not
- * `false`.
+ * `false`. surface_m2 is measured from the real geometry; adresse is verbatim
+ * from the rôle (only casing of the street name + the RL0101Ex generic code are
+ * normalized, with unknown codes preserved raw).
  *
  * SINGLE process by design (province cadastres are large — parallelism OOMs).
  * Output is streamed feature-by-feature to a temp file to bound peak memory.
  *
  * Pilot:
- *   tsx src/lots-enriched-run.ts --slugs salaberry-de-valleyfield,delson,sainte-catherine,saint-constant,candiac
+ *   tsx src/lots-enriched-run.ts --slugs saint-lambert,cowansville
+ * Whole served set (every muni that already has a qc-lots output):
+ *   tsx src/lots-enriched-run.ts --served
  * Whole province (single process, sharding optional):
  *   tsx src/lots-enriched-run.ts --all
  * Verify existing deposits:
@@ -40,13 +58,23 @@ import { HeadObjectCommand } from "@aws-sdk/client-s3";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 
 import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
-import { norm as normCadastreSlug } from "./cadastre-clip-sda.js";
+import { norm as normCadastreSlug, ALIAS_SLUG_TO_CODE } from "./cadastre-clip-sda.js";
+import { computeLotAttrs } from "./lot-attrs-geom.js";
+import { fetchIndex, parseRole, type RoleAttrs } from "./role-foncier.js";
 import { BUCKET, exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
 const ZONAGE_PREFIX = "normalized/qc-lot-zonage/";
 const TOD_PREFIX = "normalized/qc-lot-tod/";
 const OUT_PREFIX = "normalized/qc-lots/";
+const SDA_BOUNDARIES_KEY = "normalized/qc-admin-boundaries/qc-municipalites.geojson";
+
+/** Millésime du rôle foncier MAMH utilisé pour la jointure adresse. */
+const ROLE_MILLESIME = 2026;
+const ROLE_XML_URL = (code: string, m: number) =>
+  `https://donneesouvertes.affmunqc.net/role/RL${code}_${m}.xml`;
+/** Note figée pour le CP : le rôle ne porte pas le code postal de l'immeuble. */
+const CODE_POSTAL_SOURCE = "absent-du-role (necessite geocodage inverse, hors-scope)";
 
 /** Default per-muni wall-clock budget (skip a muni if it would exceed it). */
 const DEFAULT_TIME_BOX_SEC = 1800;
@@ -59,11 +87,15 @@ type GeoFc = FeatureCollection<Geometry, Record<string, unknown> | null>;
 interface Args {
   slugs: string[];
   all: boolean;
+  /** Enrich every muni that already has a served qc-lots output. */
+  served: boolean;
   noUpload: boolean;
   verifyOnly: boolean;
   timeBoxSec: number;
   maxMb: number;
   shard: { index: number; total: number } | null;
+  /** Skip the rôle-foncier address join (surface_m2 still computed). */
+  noRole: boolean;
 }
 
 interface EnrichStats {
@@ -80,6 +112,18 @@ interface EnrichStats {
   tod_present: boolean;
   num_joined_tod: number;
   num_in_tod: number;
+  /** Surface (aire polygone reprojetée, m²) — nouveau champ additif. */
+  num_with_surface: number;
+  pct_with_surface: number;
+  /** Adresse civique (jointure rôle-foncier MAMH par n° de lot) + note CP. */
+  role: {
+    code_geo: string | null;
+    lots_matched: number;
+    num_with_adresse: number;
+    pct_with_adresse: number;
+    code_postal_source: string;
+    note: string | null;
+  } | null;
   property_keys: string[];
   warnings: string[];
   examples: Array<Record<string, unknown>>;
@@ -89,18 +133,22 @@ interface EnrichStats {
 function parseArgs(argv: string[]): Args {
   const slugs: string[] = [];
   let all = false;
+  let served = false;
   let noUpload = false;
   let verifyOnly = false;
   let timeBoxSec = DEFAULT_TIME_BOX_SEC;
   let maxMb = DEFAULT_MAX_MB;
   let shard: { index: number; total: number } | null = null;
+  let noRole = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === "--all") all = true;
+    else if (arg === "--served") served = true;
     else if (arg === "--slug") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--no-upload") noUpload = true;
+    else if (arg === "--no-role") noRole = true;
     else if (arg === "--verify-only") verifyOnly = true;
     else if (arg === "--time-box") timeBoxSec = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_TIME_BOX_SEC);
     else if (arg === "--max-mb") maxMb = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_MAX_MB);
@@ -115,10 +163,10 @@ function parseArgs(argv: string[]): Args {
   }
 
   const uniqueSlugs = [...new Set(slugs)];
-  if (uniqueSlugs.length === 0 && !all) {
-    throw new Error("pass --all, --slug <slug>, or --slugs <a,b>");
+  if (uniqueSlugs.length === 0 && !all && !served) {
+    throw new Error("pass --all, --served, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, all, noUpload, verifyOnly, timeBoxSec, maxMb, shard };
+  return { slugs: uniqueSlugs, all, served, noUpload, verifyOnly, timeBoxSec, maxMb, shard, noRole };
 }
 
 function outKey(slug: string): string {
@@ -237,6 +285,139 @@ function numOrNull(v: unknown): number | null {
   return typeof v === "number" && Number.isFinite(v) ? v : null;
 }
 
+// ── rôle-foncier address join ───────────────────────────────────────────────
+// The cadastre ↔ rôle key is the renewed lot number: cadastre NO_LOT (thousands
+// separators stripped) == rôle RL0103Ax. We resolve a muni's rôle code_geo from
+// its name (rôle index ∪ SDA boundaries), but a name can collide (e.g. two
+// "Saint-Lambert"), so we VALIDATE each candidate by lot-number overlap with the
+// cadastre and keep the best — empirical, anti-invention (a wrong muni scores ~0).
+
+/** Cadastral lot number of a feature, spaces stripped (rôle join key). */
+function noLotKeyOf(feature: GeoFeature): string | null {
+  const p = feature.properties ?? {};
+  for (const key of ["NO_LOT", "noLot", "no_lot", "NOLOT", "lot_id", "LOT_ID"]) {
+    const v = p[key];
+    if (v !== null && v !== undefined && String(v).trim()) return String(v).replace(/ /g, "");
+  }
+  return null;
+}
+
+interface RoleContext {
+  /** norm(municipality name) -> set of candidate code_geo. */
+  byName: Map<string, Set<string>>;
+  /** code_geo -> parsed rôle (matricule/lot -> attrs), or null if 404/unavailable. */
+  cache: Map<string, Map<string, RoleAttrs> | null>;
+  millesime: number;
+}
+
+function addName(map: Map<string, Set<string>>, name: string, code: string): void {
+  const n = normCadastreSlug(name);
+  const c = String(code).trim();
+  if (!n || !c) return;
+  let set = map.get(n);
+  if (!set) map.set(n, (set = new Set()));
+  set.add(c);
+}
+
+/** Build the name->code_geo index once (rôle MAMH index ∪ SDA boundaries). */
+async function buildRoleContext(s3: S3Client, millesime: number): Promise<RoleContext> {
+  const byName = new Map<string, Set<string>>();
+  try {
+    const idx = await fetchIndex(millesime);
+    for (const e of Object.values(idx)) if (e.nom && e.code_geo) addName(byName, e.nom, e.code_geo);
+  } catch (e) {
+    console.log(`WARN rôle index fetch failed (${e instanceof Error ? e.message : String(e)})`);
+  }
+  try {
+    const g = (await getJson(s3, SDA_BOUNDARIES_KEY)) as {
+      features?: Array<{ properties?: Record<string, unknown> | null }>;
+    };
+    for (const f of g.features ?? []) {
+      const p = f.properties ?? {};
+      const code = String(p["MUS_CO_GEO"] ?? p["code"] ?? "").trim();
+      const nm = String(p["MUS_NM_MUN"] ?? p["name"] ?? "");
+      if (code && nm) addName(byName, nm, code);
+    }
+  } catch (e) {
+    console.log(`WARN SDA boundaries load failed (${e instanceof Error ? e.message : String(e)})`);
+  }
+  return { byName, cache: new Map(), millesime };
+}
+
+/** Candidate code_geos for a cadastre slug (exact norm + progressive --mrc strip + alias). */
+function gatherCandidateCodes(ctx: RoleContext, slug: string): string[] {
+  const out = new Set<string>();
+  const add = (key: string): void => {
+    const set = ctx.byName.get(normCadastreSlug(key));
+    if (set) for (const c of set) out.add(c);
+  };
+  const aliased = ALIAS_SLUG_TO_CODE[normCadastreSlug(slug)];
+  if (aliased) out.add(aliased);
+  add(slug);
+  const segs = slug.split(/-{2,}/); // "saint-lambert--abitibi-ouest" -> base
+  for (let i = segs.length; i > 0; i--) add(segs.slice(0, i).join("-"));
+  return [...out];
+}
+
+async function fetchRoleXml(code: string, millesime: number): Promise<Buffer | null> {
+  const res = await fetch(ROLE_XML_URL(code, millesime));
+  if (res.status === 403 || res.status === 404) return null;
+  if (!res.ok) throw new Error(`rôle HTTP ${res.status}`);
+  return Buffer.from(await res.arrayBuffer());
+}
+
+async function getRoleMap(ctx: RoleContext, code: string): Promise<Map<string, RoleAttrs> | null> {
+  if (ctx.cache.has(code)) return ctx.cache.get(code)!;
+  let parsed: Map<string, RoleAttrs> | null = null;
+  try {
+    const xml = await fetchRoleXml(code, ctx.millesime);
+    if (xml) {
+      const lookup = parseRole(xml);
+      parsed = new Map(Object.entries(lookup));
+    }
+  } catch (e) {
+    console.log(`WARN rôle fetch/parse code=${code} (${e instanceof Error ? e.message : String(e)})`);
+    parsed = null;
+  }
+  ctx.cache.set(code, parsed);
+  return parsed;
+}
+
+interface RoleResolution {
+  codeGeo: string;
+  lotsMatched: number;
+  roleMap: Map<string, RoleAttrs>;
+}
+
+/** Resolve the rôle for a muni by picking the candidate code_geo whose lot
+ *  numbers best overlap the cadastre. Returns null if no candidate clears the bar. */
+async function resolveRoleForSlug(
+  ctx: RoleContext,
+  slug: string,
+  cadastreNoLots: Set<string>,
+): Promise<{ resolution: RoleResolution | null; note: string | null }> {
+  const candidates = gatherCandidateCodes(ctx, slug);
+  if (candidates.length === 0) return { resolution: null, note: "no code_geo candidate for slug" };
+  // Enough overlap to trust the match (guards name collisions & wrong munis).
+  const minMatch = Math.max(30, Math.floor(0.03 * cadastreNoLots.size));
+  let best: RoleResolution | null = null;
+  for (const code of candidates.slice(0, 6)) {
+    const roleMap = await getRoleMap(ctx, code);
+    if (!roleMap) continue;
+    let matched = 0;
+    for (const key of roleMap.keys()) if (cadastreNoLots.has(key)) matched++;
+    if (!best || matched > best.lotsMatched) best = { codeGeo: code, lotsMatched: matched, roleMap };
+  }
+  if (!best) return { resolution: null, note: `no rôle available (candidates: ${candidates.join(",")})` };
+  if (best.lotsMatched < minMatch) {
+    return {
+      resolution: null,
+      note: `rôle overlap too low (best code=${best.codeGeo} matched=${best.lotsMatched} < ${minMatch})`,
+    };
+  }
+  return { resolution: best, note: null };
+}
+
 /** Merge cadastre props + zonage + norms + TOD into one flat property bag.
  *  Strictly additive; real values only (null when absent). */
 function enrichProperties(
@@ -285,7 +466,12 @@ function enrichProperties(
   return props;
 }
 
-async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichStats> {
+async function runCity(
+  s3: S3Client,
+  slug: string,
+  args: Args,
+  roleCtx: RoleContext | null,
+): Promise<EnrichStats> {
   const cadastreKey = await resolveCadastreKey(s3, slug);
   const sizeBytes = await objectSizeBytes(s3, cadastreKey);
   const sizeMb = sizeBytes / 1e6;
@@ -299,6 +485,23 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichSt
   const [zonage, tod] = await Promise.all([loadZonage(s3, zonageKey), loadTod(s3, todKey)]);
   const cadastre = (await getJson(s3, cadastreKey)) as GeoFc;
   const features = cadastre.features ?? [];
+
+  // ── rôle-foncier address resolution (collision-safe by lot overlap) ─────────
+  let roleResolution: RoleResolution | null = null;
+  let roleNote: string | null = null;
+  if (roleCtx) {
+    const cadastreNoLots = new Set<string>();
+    for (const f of features) {
+      if (!f || !f.geometry) continue;
+      const k = noLotKeyOf(f);
+      if (k) cadastreNoLots.add(k);
+    }
+    const r = await resolveRoleForSlug(roleCtx, slug, cadastreNoLots);
+    roleResolution = r.resolution;
+    roleNote = r.note;
+  } else {
+    roleNote = "rôle join disabled (--no-role)";
+  }
 
   // Stream the FeatureCollection to a temp file, one feature at a time.
   const dir = await mkdtemp(join(tmpdir(), `qc-lots-${slug}-`));
@@ -315,6 +518,8 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichSt
   let numWithNorms = 0;
   let numJoinedTod = 0;
   let numInTod = 0;
+  let numWithSurface = 0;
+  let numWithAdresse = 0;
   const propertyKeys = new Set<string>();
   const examples: Array<Record<string, unknown>> = [];
 
@@ -329,12 +534,24 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichSt
       const zRow = zonage.get(lotId);
       const props = enrichProperties(feature.properties ?? null, lotId, zRow, tod);
 
+      // ── new additive fields ──────────────────────────────────────────────
+      // surface_m2: real polygon area reprojected to a local metric CRS.
+      const surface = computeLotAttrs(feature).superficie_m2;
+      props["surface_m2"] = surface;
+      // adresse + code_postal: rôle-foncier join by lot number (spaces stripped).
+      const noLotKey = noLotKeyOf(feature);
+      const roleRow = roleResolution && noLotKey ? roleResolution.roleMap.get(noLotKey) : undefined;
+      props["adresse"] = roleRow?.adresse ?? null;
+      props["code_postal"] = null; // absent du rôle (voir stats.role.code_postal_source)
+
       numLots += 1;
       if (zRow) numJoinedZonage += 1;
       if (props["zone_code"] !== null && props["zone_code"] !== undefined) numWithZoneCode += 1;
       if (zRow?.norms) numWithNorms += 1;
       if (tod && tod.has(lotId)) numJoinedTod += 1;
       if (props["in_tod"] === true) numInTod += 1;
+      if (surface !== null) numWithSurface += 1;
+      if (props["adresse"] !== null) numWithAdresse += 1;
       for (const k of Object.keys(props)) propertyKeys.add(k);
 
       if (examples.length < 3 && props["zone_code"] !== null && zRow?.norms) {
@@ -352,8 +569,24 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichSt
     const zonageJoinRate = numLots ? round2((100 * numJoinedZonage) / numLots) : 0;
     const pctWithZoneCode = numLots ? round2((100 * numWithZoneCode) / numLots) : 0;
     const pctWithNorms = numLots ? round2((100 * numWithNorms) / numLots) : 0;
+    const pctWithSurface = numLots ? round2((100 * numWithSurface) / numLots) : 0;
+    const pctWithAdresse = numLots ? round2((100 * numWithAdresse) / numLots) : 0;
     if (zonageKey && zonageJoinRate < 90) warnings.push(`zonage join rate ${zonageJoinRate}% < 90% (lot_id mismatch?)`);
     if (!zonageKey) warnings.push(`no zonage parquet — zone_code/norms all null`);
+    if (pctWithSurface < 95) warnings.push(`surface_m2 present ${pctWithSurface}% < 95% (non-polygonal geoms?)`);
+    if (roleCtx && !roleResolution) warnings.push(`adresse: ${roleNote ?? "no rôle match"} — adresse all null`);
+    else if (roleResolution && pctWithAdresse < 50) {
+      warnings.push(`adresse present ${pctWithAdresse}% < 50% (code=${roleResolution.codeGeo})`);
+    }
+
+    const role: EnrichStats["role"] = {
+      code_geo: roleResolution?.codeGeo ?? null,
+      lots_matched: roleResolution?.lotsMatched ?? 0,
+      num_with_adresse: numWithAdresse,
+      pct_with_adresse: pctWithAdresse,
+      code_postal_source: CODE_POSTAL_SOURCE,
+      note: roleNote,
+    };
 
     const stats: EnrichStats = {
       slug,
@@ -369,6 +602,9 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<EnrichSt
       tod_present: tod !== null,
       num_joined_tod: numJoinedTod,
       num_in_tod: numInTod,
+      num_with_surface: numWithSurface,
+      pct_with_surface: pctWithSurface,
+      role,
       property_keys: [...propertyKeys].sort(),
       warnings,
       examples,
@@ -398,6 +634,9 @@ function exampleOf(props: Record<string, unknown>): Record<string, unknown> {
     zone_code: pick("zone_code"),
     dominant_fraction: pick("dominant_fraction"),
     multi_zone: pick("multi_zone"),
+    surface_m2: pick("surface_m2"),
+    adresse: pick("adresse"),
+    code_postal: pick("code_postal"),
     hauteur_max_value: pick("hauteur_max_value"),
     densite_value: pick("densite_value"),
     marge_avant_min_value: pick("marge_avant_min_value"),
@@ -429,6 +668,8 @@ function printSummary(stats: EnrichStats): void {
       `lots=${stats.num_lots}`,
       `zone_code=${stats.pct_with_zone_code}%`,
       `norms=${stats.pct_with_norms}%`,
+      `surface=${stats.pct_with_surface}%`,
+      `adresse=${stats.role ? `${stats.role.pct_with_adresse}%(code=${stats.role.code_geo ?? "-"})` : "n/a"}`,
       `tod=${stats.tod_present ? `${stats.num_in_tod}/${stats.num_lots}` : "n/a"}`,
       v ? `deposit=${v.exists ? "Y" : "N"} bytes=${v.bytes}` : "",
     ]
@@ -445,16 +686,36 @@ async function enumerateCadastreSlugs(s3: S3Client): Promise<string[]> {
   return (await listSlugs(s3, CAD_PREFIX, ".geojson", true)).sort();
 }
 
+/** Slugs that already have a served qc-lots output (the set immo consumes). */
+async function enumerateServedSlugs(s3: S3Client): Promise<string[]> {
+  return (await listSlugs(s3, OUT_PREFIX, ".geojson", true))
+    .filter((s) => s.startsWith("qc-lots-"))
+    .map((s) => s.replace(/^qc-lots-/, ""))
+    .sort();
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const s3 = s3Client();
-  const allSlugs = args.all ? await enumerateCadastreSlugs(s3) : args.slugs;
+  const allSlugs = args.all
+    ? await enumerateCadastreSlugs(s3)
+    : args.served
+      ? await enumerateServedSlugs(s3)
+      : args.slugs;
   const slugs = args.shard ? allSlugs.filter((_, i) => i % args.shard!.total === args.shard!.index) : allSlugs;
-  if (args.all) {
+  if (args.all || args.served) {
     console.log(
-      `ALL cadastre slugs: ${allSlugs.length}` +
+      `${args.served ? "SERVED" : "ALL"} slugs: ${allSlugs.length}` +
         (args.shard ? ` | shard ${args.shard.index}/${args.shard.total} -> ${slugs.length}` : ""),
     );
+  }
+
+  // Build the rôle name->code_geo index ONCE (skipped for verify-only/--no-role).
+  let roleCtx: RoleContext | null = null;
+  if (!args.verifyOnly && !args.noRole) {
+    roleCtx = await buildRoleContext(s3, ROLE_MILLESIME);
+    const names = roleCtx.byName.size;
+    console.log(`rôle index: ${names} municipality names -> code_geo (millésime ${ROLE_MILLESIME})`);
   }
 
   const started = Date.now();
@@ -468,7 +729,7 @@ async function main(): Promise<void> {
       continue;
     }
     try {
-      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args);
+      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args, roleCtx);
       summaries.push(stats);
       printSummary(stats);
     } catch (error) {
@@ -479,7 +740,7 @@ async function main(): Promise<void> {
   }
   const failed = summaries.filter((s) => !s.verified_deposit?.exists);
   console.log(`DONE ok=${summaries.length} skipped=${skipped.length} failed_deposit=${failed.length}`);
-  if (!args.all && failed.length > 0) {
+  if (!args.all && !args.served && failed.length > 0) {
     throw new Error(`deposit verification failed for ${failed.map((s) => s.slug).join(", ")}`);
   }
 }
