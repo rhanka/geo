@@ -498,11 +498,19 @@ export function resolveMuniValueToSlug(
   const stripped = toSlug(stripAdminPrefix(t));
   return stripped || null;
 }
-/** Clause WHERE ArcGIS pour un discriminant muni : numérique non-quoté, nom quoté. */
-export function muniWhereClause(field: string, rawValue: string): string {
-  return isNumericMuniValue(rawValue)
-    ? `${field}=${normMuniCode(rawValue)}`
-    : `${field}='${rawValue.replace(/'/g, "''")}'`;
+/**
+ * Clause WHERE ArcGIS pour un discriminant muni. Un code numérique se compare
+ * NON-QUOTÉ sur un champ numérique (ex. CODE_MUN entier de Témis), mais un champ
+ * de type STRING portant ce même code numérique (ex. Antoine-Labelle `code`='79088',
+ * esriFieldTypeString) EXIGE des quotes — sinon ArcGIS renvoie HTTP 400 et 0 feature.
+ * `fieldIsString` (issu du type esri du champ) force donc le quotage même pour un
+ * code numérique. Un nom est toujours quoté.
+ */
+export function muniWhereClause(field: string, rawValue: string, fieldIsString = false): string {
+  const numeric = isNumericMuniValue(rawValue);
+  if (numeric && !fieldIsString) return `${field}=${normMuniCode(rawValue)}`;
+  const v = numeric ? normMuniCode(rawValue) : rawValue;
+  return `${field}='${v.replace(/'/g, "''")}'`;
 }
 /**
  * GATE anti-invention pour un --zone-field EXPLICITE (bypass de l'auto-picker).
@@ -527,7 +535,7 @@ export function validateExplicitZoneField(
   return { ok: true, reason: "ok", stats };
 }
 
-interface LayerProbe { layerUrl: string; zoneField: string; muniField: string | null; geometryType: string; extent: ExtentInfo | null; count: number }
+interface LayerProbe { layerUrl: string; zoneField: string; muniField: string | null; muniFieldType: string | null; geometryType: string; extent: ExtentInfo | null; count: number }
 interface ExtentInfo { xmin: number; ymin: number; xmax: number; ymax: number; wkid: number }
 
 /** Match a field name on a layer (exact first, then case-insensitive). null if absent. */
@@ -569,10 +577,11 @@ async function probeServiceForZonage(serviceUrl: string, override?: { zoneField?
     if (!zoneField) continue;
     // Muni discriminant: explicit override OR auto-picker (null if absent).
     const muniField = override?.muniField ? resolveFieldName(li.fields, override.muniField) : pickMuniField(li.fields);
+    const muniFieldType = muniField ? (li.fields.find((f) => f.name === muniField)?.type ?? null) : null;
     const cnt = await fetchJson<{ count?: number }>(`${layerUrl}/query?where=1%3D1&returnCountOnly=true&f=json`);
     const ext = li.extent;
     const extent: ExtentInfo | null = ext ? { xmin: ext.xmin, ymin: ext.ymin, xmax: ext.xmax, ymax: ext.ymax, wkid: ext.spatialReference?.latestWkid ?? ext.spatialReference?.wkid ?? 4326 } : null;
-    return { layerUrl, zoneField, muniField, geometryType: li.geometryType ?? "", extent, count: cnt?.count ?? 0 };
+    return { layerUrl, zoneField, muniField, muniFieldType, geometryType: li.geometryType ?? "", extent, count: cnt?.count ?? 0 };
   }
   return null;
 }
@@ -689,7 +698,11 @@ function pickGonetZoneField(fields: FieldInfo[]): string | null {
     !/^shape|shape_|^objectid|^producteur$|^matricule$|^nommuni$|^nom_?mrc$/i.test(f.name));
   for (const f of usable) if (ZONE_CODE_FIELD_CODELIKE.some((p) => p.test(f.name))) return f.name; // prefer a code field over a usage label
   for (const f of usable) if (ZONE_CODE_FIELD_PATTERNS.some((p) => p.test(f.name))) return f.name; // zonage/no_zone/…
-  for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zone/i.test(f.name)) return f.name; // ex. `Code`
+  // `Numéro_de_Zonage` (GOnet6 layer #144) : "Zonage" ne CONTIENT pas la sous-chaîne
+  // "zone" (z-o-n-a-g-e), donc /zone/i échouait et le picker retombait sur le premier
+  // champ usable (souvent vide, ex. `Numéro_de_réglement`) → faux "null>50%". On
+  // reconnaît explicitement "zonage" en sous-chaîne (le VRAI champ code-zone GOnet).
+  for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zonage|zone/i.test(f.name)) return f.name; // ex. `Code`, `Numéro_de_Zonage`
   return usable[0]?.name ?? null; // layer already confirmed "Zonage municipal"
 }
 
@@ -905,6 +918,13 @@ async function processGonetZonage(
     if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
     const norm = normalize(raw, best.zoneField, layerUrl, "obscura-gonet-vector");
 
+    // Anti-invention (mission gate) : le champ zone auto-pické GOnet doit porter de
+    // VRAIS codes — ≥3 distincts, ≥50% code-like (incl. QC chiffre-d'abord "25-H"),
+    // non-null ≥50%, ni affectation ni id séquentiel. Rejette un label mal-pické
+    // (ex. `Affectations`="PU-H") ou un champ technique. Value-based, comme --service.
+    const verdict = validateExplicitZoneField(raw, best.zoneField);
+    if (!verdict.ok) return { ...base, status: "no-zonage-layer", detail: `gonet couche ${best.name} champ '${best.zoneField}': ${verdict.reason} — rejet anti-invention` };
+
     // Spatial gate (projection-free): the WGS84 features' bbox centre must sit near
     // the registry centroid — catches a wrong-muni MapServer or off-QC data.
     let distanceKm: number | undefined;
@@ -1079,7 +1099,7 @@ async function depositFromServices(
         isAggregate = true;
         const matched = distinct.get(slug);
         if (!matched) continue; // muni not present in this MRC layer → skip
-        where = muniWhereClause(probe.muniField, matched);
+        where = muniWhereClause(probe.muniField, matched, /string/i.test(probe.muniFieldType ?? ""));
       } else if (distinct.size === 1 && !distinct.has(slug)) {
         continue; // mono-muni layer for a DIFFERENT muni → skip
       }
