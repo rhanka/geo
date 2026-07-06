@@ -30,7 +30,12 @@ import { ParquetSchema, ParquetWriter } from "@dsnp/parquetjs";
 import type { S3Client } from "@aws-sdk/client-s3";
 import { canonicalizeZoneCodeForJoin } from "@sentropic/geo";
 
-import type { ZoneNormsT } from "../../../packages/qc-sources/src/sources/grille-specifications-parser.js";
+import {
+  ZoneNorms,
+  type ZoneNormsT,
+  type NormFieldT,
+  type FieldProvenanceT,
+} from "../../../packages/qc-sources/src/sources/grille-specifications-parser.js";
 
 import { BUCKET, exists, getBytes, putBytes } from "./s3.js";
 
@@ -541,6 +546,160 @@ export async function crossValidateZoneCodes(
     recoupSig: sigSet.size ? overlap / sigSet.size : 0,
     extractedNotInSig: notMatched.slice(0, 12),
   };
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+//  2c. Category → individual PREFIX-STRICT expansion (gated, non-ambiguous).
+//
+//  MOTIVE — a category-organised MRC grille (the span-header ALPHA-ONLY family:
+//  degelis, saint-louis-du-ha-ha) documents its norms per USAGE CATEGORY
+//  (`EAF`, `M`, `RU`), while the SIG/lot layer stores the INDIVIDUAL zone codes
+//  (`EAF-15`, `M-1`). The overlap gate therefore sees the category codes match
+//  NO SIG individual code → overlap=0 → REJECT, even though the norms are real.
+//  This expansion propagates each category's VERBATIM norms onto the individual
+//  SIG codes it covers, so every deposited code JOINS a lot and the gate passes.
+//
+//  ⚠️ STRICT, NON-AMBIGUOUS, NEVER-FABRICATING. A category C covers a SIG code X
+//  iff C is EXACTLY the leading alpha family of canon(X) (so `EAF` covers
+//  `EAF-15`/`EAF15` but NOT `EAFX-1`, and `M` covers `M-1` but NOT `MD-1`). When
+//  C is not the exact family but IS a strict alpha-prefix of it (`M` vs family
+//  `MD`, `EA` vs `EAF`), attribution is AMBIGUOUS across families → the SIG code
+//  is SKIPPED (never guessed). No value is ever invented: a propagated field is
+//  the category field verbatim, its provenance tagged `+category-expanded`.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Provenance marker stamped on every field a category expansion propagated. */
+export const CATEGORY_EXPANDED_TAG = "category-expanded";
+
+/** Leading maximal A–Z run of a canonical code ("EAF-15"→"EAF", "104"→""). */
+function alphaFamily(canon: string): string {
+  const m = /^[A-Z]+/.exec(canon);
+  return m ? m[0] : "";
+}
+
+/** Tag one field's provenance as category-expanded (verbatim value/raw/unit kept). */
+function tagExpandedField(f: NormFieldT | null, page: string): NormFieldT | null {
+  if (f === null) return null;
+  const provenance: FieldProvenanceT = {
+    ...f._provenance,
+    methode: f._provenance.methode.includes(CATEGORY_EXPANDED_TAG)
+      ? f._provenance.methode
+      : `${f._provenance.methode}+${CATEGORY_EXPANDED_TAG}`,
+    page,
+  };
+  return { ...f, _provenance: provenance };
+}
+
+/** Relabel a category ZoneNorms onto an individual SIG code (norms copied verbatim). */
+function relabelToSigCode(cat: ZoneNormsT, sigCanon: string): ZoneNormsT {
+  const page = `${sigCanon} (${CATEGORY_EXPANDED_TAG} from ${cat.zone_code})`;
+  return ZoneNorms.parse({
+    zone_code: sigCanon,
+    zone_page: page,
+    usages: [...cat.usages],
+    densite: tagExpandedField(cat.densite, page),
+    hauteur_min: tagExpandedField(cat.hauteur_min, page),
+    hauteur_max: tagExpandedField(cat.hauteur_max, page),
+    marges: {
+      avant_min: tagExpandedField(cat.marges.avant_min, page),
+      laterale_min: tagExpandedField(cat.marges.laterale_min, page),
+      arriere_min: tagExpandedField(cat.marges.arriere_min, page),
+    },
+    frontage_min: tagExpandedField(cat.frontage_min, page),
+    superficie_min: tagExpandedField(cat.superficie_min, page),
+  });
+}
+
+export interface CategoryExpansion {
+  /** Individual-code ZoneNorms emitted (one per unambiguously-covered SIG code). */
+  expanded: ZoneNormsT[];
+  /** SIG codes SKIPPED because a category is only a strict (non-exact) prefix of
+   *  their family — ambiguous across families, never guessed. */
+  skippedAmbiguous: string[];
+  /** Canonical category families that covered ≥1 SIG code. */
+  matchedCategories: string[];
+  /** Canonical category families that covered NO SIG code (their norms dropped). */
+  unmatchedCategories: string[];
+}
+
+/**
+ * Expand category-level ZoneNorms onto the individual SIG codes each category
+ * UNAMBIGUOUSLY covers (pure, unit-testable).
+ *
+ * Rule (per SIG code X, on canonical forms):
+ *   • family = leading alpha run of canon(X); X must carry a dash+digit tail (a
+ *     bare alpha code is itself a category, not an individual).
+ *   • EXACT match — a grille category equals `family` → propagate its norms to X.
+ *   • else if any grille category is a STRICT alpha-prefix of `family` (`M`⊏`MD`,
+ *     `EA`⊏`EAF`) → AMBIGUOUS across families → skip X (never guessed).
+ *   • else (no category is even a prefix) → X's family is undocumented → ignored.
+ * A category is the EXACT family of at most one X-family, so an exact match is
+ * unique; the strict-prefix case is the sole ambiguity and is always skipped. No
+ * value is fabricated — a propagated field is the category field verbatim.
+ */
+export function expandCategoryZonesToSig(
+  categoryZones: ReadonlyArray<ZoneNormsT>,
+  sigCanonCodes: Iterable<string>,
+): CategoryExpansion {
+  // Index the alpha-ONLY category codes by canonical family (dedupe, first wins).
+  // A dash+digit code is an INDIVIDUAL, never a category → excluded from the index.
+  const byFamily = new Map<string, ZoneNormsT>();
+  const families: string[] = [];
+  for (const z of categoryZones) {
+    const canon = canonZone(z.zone_code);
+    if (!/^[A-Z]+$/.test(canon)) continue;
+    if (!byFamily.has(canon)) {
+      byFamily.set(canon, z);
+      families.push(canon);
+    }
+  }
+
+  const matched = new Set<string>();
+  const expanded: ZoneNormsT[] = [];
+  const skippedAmbiguous: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of sigCanonCodes) {
+    const canon = canonZone(raw);
+    if (seen.has(canon)) continue;
+    seen.add(canon);
+    const family = alphaFamily(canon);
+    if (!family) continue; // no alpha family → cannot be a category individual
+    if (canon.length === family.length) {
+      // Bare alpha SIG code: a DIRECT category match (not an expansion) if the
+      // grille documents that exact category — deposit it verbatim (no tag).
+      const direct = byFamily.get(canon);
+      if (direct) {
+        expanded.push(direct);
+        matched.add(canon);
+      }
+      continue;
+    }
+    const exact = byFamily.get(family);
+    if (exact) {
+      expanded.push(relabelToSigCode(exact, canon));
+      matched.add(family);
+      continue;
+    }
+    // No category is the EXACT family. Is any a STRICT alpha-prefix of it? Then
+    // attribution is ambiguous across families (M⊏MD, R⊏RA) → skip, never guess.
+    if (families.some((c) => family.startsWith(c))) skippedAmbiguous.push(canon);
+    // else: undocumented family → silently ignored.
+  }
+
+  return {
+    expanded,
+    skippedAmbiguous,
+    matchedCategories: [...matched],
+    unmatchedCategories: families.filter((c) => !matched.has(c)),
+  };
+}
+
+/** Load the CANONICAL zone codes the muni's SIG grille declares (empty when none). */
+export async function loadSigCanonCodes(s3: S3Client, slug: string): Promise<Set<string>> {
+  const k = await resolveGridKey(s3, slug);
+  if (!k) return new Set<string>();
+  const geojson = (await getBytes(s3, k)).toString("utf8");
+  return sigZoneCodesFromGeojson(geojson);
 }
 
 /**
