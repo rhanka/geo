@@ -18,7 +18,13 @@ import {
   zoneNumberKey,
   reconcileZoneNumbers,
   overlapWithNumericBridge,
+  expandCategoryZonesToSig,
+  CATEGORY_EXPANDED_TAG,
 } from "./zonage-norms.js";
+import type {
+  ZoneNormsT,
+  NormFieldT,
+} from "../../../packages/qc-sources/src/sources/grille-specifications-parser.js";
 
 /** Canonicalize an array of raw codes into the SIG/extracted canonical Set. */
 function canonSet(codes: string[]): Set<string> {
@@ -408,5 +414,132 @@ describe("looksLikeTableOfContents", () => {
 
   it("grille page with numeric value columns → kept (false)", () => {
     expect(looksLikeTableOfContents(grillePage)).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  expandCategoryZonesToSig — category→individual PREFIX-STRICT expansion.
+//
+//  A category-organised MRC grille (degelis/saint-louis-du-ha-ha) documents norms
+//  per USAGE CATEGORY (EAF/M/RU); the SIG stores INDIVIDUAL codes (EAF-15/M-1).
+//  Each category's norms propagate onto the individual SIG codes it UNAMBIGUOUSLY
+//  covers — never onto a code where a different (longer) family is the real owner,
+//  never fabricating a value.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Build a NormField with the given value (unit m, high confidence, span provenance). */
+function nf(value: number | null): NormFieldT {
+  return {
+    value,
+    raw: value === null ? "" : String(value),
+    unit: value === null ? null : "m",
+    confidence: value === null ? 0 : 0.9,
+    _provenance: {
+      source_url: "https://ex/grille.pdf",
+      methode: "native-text/spanheader",
+      snapshot: "2026-07-06",
+      page: `PAGE ZONE`,
+    },
+  };
+}
+
+/** Build a category ZoneNorms (defaults: hauteur_max=6, avant_min=9, rest null). */
+function catZone(code: string, over: Partial<ZoneNormsT> = {}): ZoneNormsT {
+  return {
+    zone_code: code,
+    zone_page: `PAGE ZONE ${code}`,
+    usages: [],
+    densite: null,
+    hauteur_min: null,
+    hauteur_max: nf(6),
+    marges: { avant_min: nf(9), laterale_min: null, arriere_min: null },
+    frontage_min: null,
+    superficie_min: null,
+    ...over,
+  };
+}
+
+describe("expandCategoryZonesToSig — exact-family propagation", () => {
+  it("propagates a category's norms onto every individual SIG code of that family", () => {
+    const res = expandCategoryZonesToSig([catZone("EAF")], ["EAF-15", "EAF-16", "EAF-17"]);
+    expect(res.expanded.map((z) => z.zone_code).sort()).toEqual(["EAF-15", "EAF-16", "EAF-17"]);
+    // Each expanded code carries the category's VERBATIM value (never fabricated).
+    for (const z of res.expanded) expect(z.hauteur_max?.value).toBe(6);
+    expect(res.matchedCategories).toEqual(["EAF"]);
+    expect(res.skippedAmbiguous).toEqual([]);
+    expect(res.unmatchedCategories).toEqual([]);
+  });
+
+  it("covers a dash-less individual code (EAF15) via canonicalisation", () => {
+    const res = expandCategoryZonesToSig([catZone("EAF")], ["EAF15"]);
+    expect(res.expanded.map((z) => z.zone_code)).toEqual(["EAF-15"]);
+  });
+
+  it("stamps the category-expanded provenance tag on every propagated field", () => {
+    const res = expandCategoryZonesToSig([catZone("M")], ["M-1"]);
+    const z = res.expanded[0]!;
+    expect(z.hauteur_max?._provenance.methode).toContain(CATEGORY_EXPANDED_TAG);
+    expect(z.marges.avant_min?._provenance.methode).toContain(CATEGORY_EXPANDED_TAG);
+  });
+
+  it("preserves a null field as null (never invents a value for the individual code)", () => {
+    const res = expandCategoryZonesToSig([catZone("M", { superficie_min: null })], ["M-1"]);
+    expect(res.expanded[0]!.superficie_min).toBeNull();
+  });
+
+  it("dedupes SIG codes that canonicalise to the same key", () => {
+    const res = expandCategoryZonesToSig([catZone("EAF")], ["EAF-15", "EAF15", "eaf-15"]);
+    expect(res.expanded).toHaveLength(1);
+  });
+});
+
+describe("expandCategoryZonesToSig — non-ambiguity discipline (M vs MD/ME)", () => {
+  it("routes each code to its EXACT family when both M and MD are documented", () => {
+    const zones = [catZone("M", { hauteur_max: nf(6) }), catZone("MD", { hauteur_max: nf(9) })];
+    const res = expandCategoryZonesToSig(zones, ["M-1", "MD-1"]);
+    const byCode = new Map(res.expanded.map((z) => [z.zone_code, z]));
+    expect(byCode.get("M-1")!.hauteur_max?.value).toBe(6); // M-1 → M (not MD)
+    expect(byCode.get("MD-1")!.hauteur_max?.value).toBe(9); // MD-1 → MD (not M)
+    expect(res.skippedAmbiguous).toEqual([]);
+  });
+
+  it("SKIPS MD-1 when only M is documented (M is a strict prefix of family MD → ambiguous)", () => {
+    const res = expandCategoryZonesToSig([catZone("M")], ["M-1", "MD-1"]);
+    expect(res.expanded.map((z) => z.zone_code)).toEqual(["M-1"]);
+    expect(res.skippedAmbiguous).toEqual(["MD-1"]);
+  });
+
+  it("SKIPS a code whose family has ≥2 documented strict prefixes (M and MD both ⊏ MDE)", () => {
+    const res = expandCategoryZonesToSig([catZone("M"), catZone("MD")], ["MDE-1"]);
+    expect(res.expanded).toEqual([]);
+    expect(res.skippedAmbiguous).toEqual(["MDE-1"]);
+  });
+
+  it("IGNORES (not ambiguous) a SIG family no category is even a prefix of", () => {
+    const res = expandCategoryZonesToSig([catZone("EAF")], ["XYZ-1"]);
+    expect(res.expanded).toEqual([]);
+    expect(res.skippedAmbiguous).toEqual([]);
+    expect(res.unmatchedCategories).toEqual(["EAF"]);
+  });
+
+  it("real degelis famille: R covers R-*, REC covers REC-*, RA-* is skipped (R⊏RA)", () => {
+    const zones = [catZone("R"), catZone("REC"), catZone("EAF"), catZone("EF")];
+    const res = expandCategoryZonesToSig(zones, ["R-3", "REC-1", "EAF-2", "RA-5"]);
+    expect(res.expanded.map((z) => z.zone_code).sort()).toEqual(["EAF-2", "R-3", "REC-1"]);
+    expect(res.skippedAmbiguous).toEqual(["RA-5"]); // RA undocumented, R is a prefix → never guessed
+    expect(res.unmatchedCategories).toEqual(["EF"]); // EF matched no SIG code
+  });
+
+  it("a bare alpha SIG code that equals a category is a DIRECT (untagged) match", () => {
+    const res = expandCategoryZonesToSig([catZone("M")], ["M"]);
+    expect(res.expanded.map((z) => z.zone_code)).toEqual(["M"]);
+    // Direct match keeps the original (no category-expanded tag added).
+    expect(res.expanded[0]!.hauteur_max?._provenance.methode).not.toContain(CATEGORY_EXPANDED_TAG);
+  });
+
+  it("excludes a dash+digit 'category' input (it is an individual, never a category)", () => {
+    // A stray individual-shaped row must not act as a category prefix source.
+    const res = expandCategoryZonesToSig([catZone("M-1")], ["M-2"]);
+    expect(res.expanded).toEqual([]);
   });
 });
