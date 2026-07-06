@@ -15,11 +15,11 @@
  *   - realization d'une feuille : to-research→`to-do` ; planned→`in-progress` ; done→`done`
  *   - transition légale to-do→done = 2 events (in-progress puis done) ; in-progress→done = 1.
  *
- * COUCHES ATOMIQUES (zones, normes) : 1 feuille / (ville × couche). On peut donc
+ * COUCHES ATOMIQUES (zones, normes, pv) : 1 feuille / (ville × couche). On peut donc
  * synchroniser À L'ATOME : chaque ville `done` dans la matrice dont la feuille n'est
  * pas `done` reçoit ses realize. → report fidèle au nombre de villes.
  *
- * COUCHES AGRÉGÉES (cadastre, role-foncier, pv, pmtiles) : les feuilles sont des
+ * COUCHES AGRÉGÉES (cadastre, role-foncier, pmtiles) : les feuilles sont des
  * AGRÉGATS (1 feuille par voie×status portant « N ville(s) » dans le titre). On ne
  * peut PAS mapper un agrégat à des villes précises. Règle prudente : si la couche
  * est ENTIÈREMENT `done` dans la matrice (done == total), on bascule ses feuilles
@@ -43,7 +43,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 
 import { MATRIX_PATH } from "./coverage-matrix.js";
-import { COVERAGE_LAYERS } from "./coverage-tracks.js";
+import { COVERAGE_LAYERS, findTrack, type CoverageLayer } from "./coverage-tracks.js";
 import { DEFAULT_ATOMIC_LAYERS } from "./coverage-to-track.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -60,6 +60,15 @@ interface TrackItem {
   readonly bucket: string;
   readonly realization: Realization;
   readonly acceptance: string;
+}
+
+interface CreatedItem {
+  readonly id: string;
+  readonly title: string;
+  readonly kind?: string;
+  readonly role?: string;
+  readonly parentId?: string;
+  readonly workspace?: string;
 }
 
 /** Une feuille `track` décodée depuis son titre. */
@@ -79,7 +88,18 @@ interface ParsedLeaf {
 interface RealizeEvent {
   readonly v: 1;
   readonly kind: "item.realize";
-  readonly payload: { readonly itemId: string; readonly to: "in-progress" | "done" };
+  readonly payload: { readonly itemId: string; readonly to: "in-progress" | "done" | "cancelled" };
+}
+
+interface ItemCreateEvent {
+  readonly v: 1;
+  readonly kind: "item.create";
+  readonly payload: {
+    readonly kind: "chore";
+    readonly title: string;
+    readonly workspace: string;
+    readonly parentId: string;
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -123,31 +143,53 @@ function parseLeaf(item: TrackItem): ParsedLeaf | null {
 
 interface Cell {
   readonly status?: string;
+  readonly doneTrack?: string;
+  readonly candidateTracks?: readonly string[];
 }
 interface RawMatrix {
   readonly cities: Record<string, Record<string, Cell>>;
 }
 
+interface MatrixCell {
+  readonly slug: string;
+  readonly layer: string;
+  readonly status: string;
+  readonly voie?: string;
+}
+
 interface MatrixView {
   /** `${slug}::${layer}` → status. */
   readonly cellStatus: Map<string, string>;
+  /** Cellules atomiques candidates, avec voie d'attache si elle est déterminable. */
+  readonly cells: MatrixCell[];
   /** layer → { done, total, planned, toResearch }. */
   readonly layerCounts: Map<string, { done: number; total: number; planned: number; toResearch: number }>;
   /** toutes les couches présentes dans la matrice (dans l'ordre de découverte). */
   readonly layers: string[];
 }
 
+function voieForMatrixCell(layer: string, cell: Cell): string | undefined {
+  if (cell.status === "done" && cell.doneTrack !== undefined) {
+    const l = COVERAGE_LAYERS.includes(layer as CoverageLayer) ? (layer as CoverageLayer) : undefined;
+    if (l !== undefined && findTrack(l, cell.doneTrack) !== undefined) return cell.doneTrack;
+  }
+  return cell.candidateTracks?.[0];
+}
+
 function loadMatrixView(path: string): MatrixView {
   const raw = JSON.parse(readFileSync(path, "utf8")) as RawMatrix;
   const cellStatus = new Map<string, string>();
+  const cells: MatrixCell[] = [];
   const layerCounts = new Map<string, { done: number; total: number; planned: number; toResearch: number }>();
   const layerOrder: string[] = [];
   for (const slug of Object.keys(raw.cities)) {
     const city = raw.cities[slug]!;
     for (const layer of Object.keys(city)) {
-      const status = city[layer]?.status;
+      const cell = city[layer];
+      const status = cell?.status;
       if (status === undefined) continue;
       cellStatus.set(`${slug}::${layer}`, status);
+      cells.push({ slug, layer, status, voie: voieForMatrixCell(layer, cell!) });
       let lc = layerCounts.get(layer);
       if (lc === undefined) {
         lc = { done: 0, total: 0, planned: 0, toResearch: 0 };
@@ -160,7 +202,8 @@ function loadMatrixView(path: string): MatrixView {
       else if (status === "to-research") lc.toResearch += 1;
     }
   }
-  return { cellStatus, layerCounts, layers: layerOrder };
+  cells.sort((a, b) => a.slug.localeCompare(b.slug) || a.layer.localeCompare(b.layer));
+  return { cellStatus, cells, layerCounts, layers: layerOrder };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -184,8 +227,74 @@ function loadTrackItems(trackBin: string, cwd: string): TrackItem[] {
   return JSON.parse(readFileSync(tmp, "utf8")) as TrackItem[];
 }
 
-/** to-do → [in-progress, done] ; in-progress → [done] ; done/cancelled/rejected → []. */
-function realizeTransitions(itemId: string, from: Realization): RealizeEvent[] {
+function readCreatedItems(cwd: string): CreatedItem[] {
+  const path = join(cwd, ".track", "events.jsonl");
+  const out: CreatedItem[] = [];
+  const seen = new Set<string>();
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    if (line.length === 0) continue;
+    const e = JSON.parse(line) as {
+      type?: string;
+      aggregateId?: string;
+      payload?: {
+        kind?: string;
+        role?: string;
+        title?: string;
+        parentId?: string;
+        workspace?: string;
+      };
+    };
+    if (e.type !== "item.created" || e.aggregateId === undefined || e.payload?.title === undefined) continue;
+    if (seen.has(e.aggregateId)) continue;
+    seen.add(e.aggregateId);
+    out.push({
+      id: e.aggregateId,
+      title: e.payload.title,
+      kind: e.payload.kind,
+      role: e.payload.role,
+      parentId: e.payload.parentId,
+      workspace: e.payload.workspace,
+    });
+  }
+  return out;
+}
+
+function voieIdsFromCreatedItems(items: readonly CreatedItem[]): Map<string, string> {
+  const map = new Map<string, string>();
+  const re = /^(.+?) · voie:(.+?) — /u;
+  for (const item of items) {
+    const m = re.exec(item.title);
+    if (!m) continue;
+    map.set(`${m[1]!}::${m[2]!}`, item.id);
+  }
+  return map;
+}
+
+function coverageLayer(layer: string): CoverageLayer | undefined {
+  return COVERAGE_LAYERS.includes(layer as CoverageLayer) ? (layer as CoverageLayer) : undefined;
+}
+
+function atomicLeafTitle(layer: string, voie: string, slug: string, status: string): string {
+  const l = coverageLayer(layer);
+  const label = l ? (findTrack(l, voie)?.label ?? voie) : voie;
+  return `${layer}/${voie} · ${slug} [${status}] — ${label}`;
+}
+
+/** Transitionne vers la cible demandée sans jamais revenir en arrière. */
+function realizeTransitionsTo(
+  itemId: string,
+  from: Realization,
+  to: "in-progress" | "done" | "cancelled",
+): RealizeEvent[] {
+  if (from === "cancelled" || from === "rejected") return [];
+  if (to === "cancelled") {
+    if (from === "cancelled") return [];
+    return [{ v: 1, kind: "item.realize", payload: { itemId, to: "cancelled" } }];
+  }
+  if (to === "in-progress") {
+    if (from === "to-do") return [{ v: 1, kind: "item.realize", payload: { itemId, to: "in-progress" } }];
+    return [];
+  }
   if (from === "to-do") {
     return [
       { v: 1, kind: "item.realize", payload: { itemId, to: "in-progress" } },
@@ -198,14 +307,27 @@ function realizeTransitions(itemId: string, from: Realization): RealizeEvent[] {
   return []; // déjà done, ou cancelled/rejected → on ne touche pas
 }
 
+function targetForMatrixStatus(status: string): "in-progress" | "done" | undefined {
+  if (status === "done") return "done";
+  if (status === "planned") return "in-progress";
+  return undefined;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Plan de synchro
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface SyncPlan {
+  readonly createEvents: ItemCreateEvent[];
   readonly events: RealizeEvent[];
+  /** layer → nombre de feuilles atomiques à créer. */
+  readonly createsByLayer: Map<string, number>;
   /** layer → nombre de feuilles basculées à done. */
   readonly flippedByLayer: Map<string, number>;
+  /** layer → nombre de feuilles basculées à in-progress. */
+  readonly startedByLayer: Map<string, number>;
+  /** Anciens agrégats PV annulés pour sortir du dénominateur actif. */
+  readonly cancelledAggregates: ParsedLeaf[];
   /** anomalies « track dit done mais matrice ne dit pas done » (anti-invention, sens inverse). */
   readonly trackDoneMatrixNot: ParsedLeaf[];
   /** feuilles atomiques dont le slug/layer est absent de la matrice. */
@@ -215,19 +337,27 @@ interface SyncPlan {
   readonly workspace: string;
 }
 
-function buildPlan(items: TrackItem[], mv: MatrixView): SyncPlan {
+function buildPlan(items: TrackItem[], createdItems: CreatedItem[], mv: MatrixView): SyncPlan {
+  const createEvents: ItemCreateEvent[] = [];
   const events: RealizeEvent[] = [];
+  const createsByLayer = new Map<string, number>();
   const flippedByLayer = new Map<string, number>();
+  const startedByLayer = new Map<string, number>();
+  const cancelledAggregates: ParsedLeaf[] = [];
   const trackDoneMatrixNot: ParsedLeaf[] = [];
   const unmatchedAtomic: ParsedLeaf[] = [];
   const aggBlocked: { layer: string; done: number; total: number; leaves: ParsedLeaf[] }[] = [];
 
-  const atomicLayers = DEFAULT_ATOMIC_LAYERS; // {zones, normes}
-  const bump = (layer: string) => flippedByLayer.set(layer, (flippedByLayer.get(layer) ?? 0) + 1);
+  const atomicLayers = DEFAULT_ATOMIC_LAYERS; // {zones, normes, pv}
+  const existingAtomic = new Set<string>();
+  const voieIdOf = voieIdsFromCreatedItems(createdItems);
+  const bumpCreate = (layer: string) => createsByLayer.set(layer, (createsByLayer.get(layer) ?? 0) + 1);
+  const bumpDone = (layer: string) => flippedByLayer.set(layer, (flippedByLayer.get(layer) ?? 0) + 1);
+  const bumpStarted = (layer: string) => startedByLayer.set(layer, (startedByLayer.get(layer) ?? 0) + 1);
 
   // Regroupe les feuilles agrégat par couche pour décider globalement.
   const aggLeavesByLayer = new Map<string, ParsedLeaf[]>();
-  let workspace = "";
+  let workspace = createdItems.find((it) => it.workspace)?.workspace ?? "";
 
   for (const item of items) {
     const leaf = parseLeaf(item);
@@ -236,22 +366,36 @@ function buildPlan(items: TrackItem[], mv: MatrixView): SyncPlan {
     // (pas celui d'items d'autres WP, ex. geo-lib, qui vivent dans un autre ws).
     if (workspace === "" && item.workspace) workspace = item.workspace;
 
-    // ── Feuille ATOMIQUE (slug défini) : zones/normes → sync à l'atome.
+    // ── Feuille ATOMIQUE (slug défini) : zones/normes/pv → sync à l'atome.
     if (leaf.slug !== undefined) {
+      existingAtomic.add(`${leaf.slug}::${leaf.layer}`);
       const status = mv.cellStatus.get(`${leaf.slug}::${leaf.layer}`);
       if (status === undefined) {
         unmatchedAtomic.push(leaf);
         continue;
       }
-      if (status === "done") {
-        if (leaf.realization !== "done") {
-          events.push(...realizeTransitions(leaf.id, leaf.realization));
-          bump(leaf.layer);
-        }
+      const target = targetForMatrixStatus(status);
+      if (target === "done") {
+        const before = events.length;
+        events.push(...realizeTransitionsTo(leaf.id, leaf.realization, "done"));
+        if (events.length > before) bumpDone(leaf.layer);
+      } else if (target === "in-progress") {
+        const before = events.length;
+        events.push(...realizeTransitionsTo(leaf.id, leaf.realization, "in-progress"));
+        if (events.length > before) bumpStarted(leaf.layer);
       } else {
         // matrice PAS done : anti-invention. Si track dit done → anomalie (on ne dé-fait pas).
         if (leaf.realization === "done") trackDoneMatrixNot.push(leaf);
       }
+      continue;
+    }
+
+    // ── Migration PV : les anciens agrégats doivent sortir du rollup actif,
+    //    sinon le WP deviendrait 1032/1109 au lieu de 1032/1106.
+    if (leaf.layer === "pv" && leaf.aggN !== undefined) {
+      const before = events.length;
+      events.push(...realizeTransitionsTo(leaf.id, leaf.realization, "cancelled"));
+      if (events.length > before) cancelledAggregates.push(leaf);
       continue;
     }
 
@@ -274,8 +418,9 @@ function buildPlan(items: TrackItem[], mv: MatrixView): SyncPlan {
     if (fullyDone) {
       for (const leaf of leaves) {
         if (leaf.realization !== "done") {
-          events.push(...realizeTransitions(leaf.id, leaf.realization));
-          bump(layer);
+          const before = events.length;
+          events.push(...realizeTransitionsTo(leaf.id, leaf.realization, "done"));
+          if (events.length > before) bumpDone(layer);
         }
       }
     } else {
@@ -283,7 +428,45 @@ function buildPlan(items: TrackItem[], mv: MatrixView): SyncPlan {
     }
   }
 
-  return { events, flippedByLayer, trackDoneMatrixNot, unmatchedAtomic, aggBlocked, workspace };
+  // ── Migration PV : crée les feuilles manquantes à l'atome, sous la voie exacte de la matrice.
+  if (atomicLayers.has("pv")) {
+    if (workspace === "") {
+      throw new Error("workspace introuvable dans les items track");
+    }
+    for (const cell of mv.cells) {
+      if (cell.layer !== "pv") continue;
+      if (existingAtomic.has(`${cell.slug}::${cell.layer}`)) continue;
+      if (cell.voie === undefined) continue;
+      const parentId = voieIdOf.get(`${cell.layer}::${cell.voie}`);
+      if (parentId === undefined) {
+        throw new Error(`pv/${cell.slug}: voie "${cell.voie}" sans id de workpackage`);
+      }
+      createEvents.push({
+        v: 1,
+        kind: "item.create",
+        payload: {
+          kind: "chore",
+          title: atomicLeafTitle(cell.layer, cell.voie, cell.slug, cell.status),
+          workspace,
+          parentId,
+        },
+      });
+      bumpCreate(cell.layer);
+    }
+  }
+
+  return {
+    createEvents,
+    events,
+    createsByLayer,
+    flippedByLayer,
+    startedByLayer,
+    cancelledAggregates,
+    trackDoneMatrixNot,
+    unmatchedAtomic,
+    aggBlocked,
+    workspace,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -304,14 +487,35 @@ function printMatrixCounts(mv: MatrixView): void {
 
 function printPlan(plan: SyncPlan): void {
   // eslint-disable-next-line no-console
-  console.log("\n── Plan de synchro (feuilles à basculer → done) ──");
-  const layers = [...COVERAGE_LAYERS, ...[...plan.flippedByLayer.keys()].filter((l) => !COVERAGE_LAYERS.includes(l as never))];
+  console.log("\n── Plan de synchro (créations + transitions) ──");
+  const layers = [
+    ...COVERAGE_LAYERS,
+    ...[...new Set([
+      ...plan.createsByLayer.keys(),
+      ...plan.flippedByLayer.keys(),
+      ...plan.startedByLayer.keys(),
+    ])].filter((l) => !COVERAGE_LAYERS.includes(l as never)),
+  ];
   for (const layer of layers) {
-    const n = plan.flippedByLayer.get(layer);
-    if (n) console.log(`  ${layer.padEnd(14)} +${n} feuille(s) → done`);
+    const create = plan.createsByLayer.get(layer) ?? 0;
+    const started = plan.startedByLayer.get(layer) ?? 0;
+    const done = plan.flippedByLayer.get(layer) ?? 0;
+    if (create || started || done) {
+      console.log(
+        `  ${layer.padEnd(14)} create=${create}\tin-progress=${started}\tdone=${done}`,
+      );
+    }
   }
   // eslint-disable-next-line no-console
-  console.log(`  TOTAL events item.realize = ${plan.events.length}`);
+  console.log(`  TOTAL item.create = ${plan.createEvents.length}`);
+  // eslint-disable-next-line no-console
+  console.log(`  TOTAL item.realize = ${plan.events.length}`);
+
+  if (plan.cancelledAggregates.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`\n── AGRÉGATS PV à annuler (sortie du dénominateur actif) : ${plan.cancelledAggregates.length} ──`);
+    for (const l of plan.cancelledAggregates) console.log(`      · [${l.realization}] ${l.title}`);
+  }
 
   if (plan.aggBlocked.length > 0) {
     // eslint-disable-next-line no-console
@@ -345,6 +549,22 @@ function arg(argv: readonly string[], name: string): string | undefined {
   return i >= 0 ? argv[i + 1] : undefined;
 }
 
+function ingestEvents(
+  trackBin: string,
+  cwd: string,
+  workspace: string,
+  file: string,
+  events: readonly (ItemCreateEvent | RealizeEvent)[],
+): number {
+  writeFileSync(file, events.map((e) => JSON.stringify(e)).join("\n") + "\n", "utf8");
+  const out = execFileSync(trackBin, ["ingest", file, "--workspace", workspace], {
+    cwd,
+    encoding: "utf8",
+    maxBuffer: 512 * 1024 * 1024,
+  });
+  return out.split("\n").map((l) => l.trim()).filter((l) => l.length > 0).length;
+}
+
 function main(argv: readonly string[]): number {
   const apply = argv.includes("--apply");
   const trackBin = arg(argv, "--track-bin") ?? "track";
@@ -354,11 +574,12 @@ function main(argv: readonly string[]): number {
   const mv = loadMatrixView(MATRIX_PATH);
   printMatrixCounts(mv);
 
-  const items = loadTrackItems(trackBin, cwd);
+  let items = loadTrackItems(trackBin, cwd);
+  let createdItems = readCreatedItems(cwd);
   // eslint-disable-next-line no-console
   console.log(`\n── Items track chargés : ${items.length} ──`);
 
-  const plan = buildPlan(items, mv);
+  let plan = buildPlan(items, createdItems, mv);
   printPlan(plan);
 
   if (!apply) {
@@ -367,26 +588,34 @@ function main(argv: readonly string[]): number {
     return 0;
   }
 
-  if (plan.events.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log("\n[apply] rien à faire (0 event).");
-    return 0;
-  }
   if (plan.workspace === "") throw new Error("workspace introuvable dans les items track");
 
   mkdirSync(outDir, { recursive: true });
+  if (plan.createEvents.length > 0) {
+    const createFile = join(outDir, "sync-creates.jsonl");
+    // eslint-disable-next-line no-console
+    console.log(`\n[apply] ${plan.createEvents.length} créations → ${createFile} ; ingest via \`track ingest\`…`);
+    const n = ingestEvents(trackBin, cwd, plan.workspace, createFile, plan.createEvents);
+    // eslint-disable-next-line no-console
+    console.log(`[apply] créations track ingest OK (${n} lignes en retour). Rechargement du store…`);
+    items = loadTrackItems(trackBin, cwd);
+    createdItems = readCreatedItems(cwd);
+    plan = buildPlan(items, createdItems, mv);
+    printPlan(plan);
+  }
+
+  if (plan.events.length === 0) {
+    // eslint-disable-next-line no-console
+    console.log("\n[apply] aucune transition à appliquer.");
+    return 0;
+  }
+
   const file = join(outDir, "sync-realizes.jsonl");
-  writeFileSync(file, plan.events.map((e) => JSON.stringify(e)).join("\n") + "\n", "utf8");
   // eslint-disable-next-line no-console
-  console.log(`\n[apply] ${plan.events.length} events → ${file} ; ingest via \`track ingest\`…`);
-  const out = execFileSync(trackBin, ["ingest", file, "--workspace", plan.workspace], {
-    cwd,
-    encoding: "utf8",
-    maxBuffer: 512 * 1024 * 1024,
-  });
-  const lines = out.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+  console.log(`\n[apply] ${plan.events.length} transitions → ${file} ; ingest via \`track ingest\`…`);
+  const n = ingestEvents(trackBin, cwd, plan.workspace, file, plan.events);
   // eslint-disable-next-line no-console
-  console.log(`[apply] track ingest OK (${lines.length} lignes en retour).`);
+  console.log(`[apply] transitions track ingest OK (${n} lignes en retour).`);
   return 0;
 }
 
