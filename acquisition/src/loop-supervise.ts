@@ -75,12 +75,38 @@ section("ZONAGE QUALITÉ (servi ≠ bon)");
   }
 }
 
-// 3. provenance normes
+// 3. IMMO LOTS
+section("IMMO LOTS");
+{
+  const cache = join(ROOT, "work", "coverage", "immo-lots.json");
+  if (existsSync(cache)) {
+    try {
+      const q = JSON.parse(readFileSync(cache, "utf8"));
+      const age = Math.round((Date.now() - new Date(q.generatedAt).getTime()) / 3600000);
+      const byKey = new Map((q.fields ?? []).map((f: any) => [f.key, f]));
+      const f = (key: string): string => {
+        const x = byKey.get(key) as any;
+        return x ? `${key}=${x.pct}% (${x.numWith}/${x.denom})` : `${key}=n/a`;
+      };
+      console.log(
+        `${q.servedMunis} munis servis /${q.totalMunis} — ` +
+          [f("surface_m2"), f("adresse"), f("code_postal"), f("folded-normes"), f("in_tod")].join(" | ") +
+          ` | TOD true=${q.numInTod}/${q.todLots} lots | ${q.missingStats} sans-stats (cache ${age}h)`,
+      );
+    } catch {
+      console.log("(cache immo-lots.json illisible — relancer immo-lots-audit.ts)");
+    }
+  } else {
+    console.log("(pas de cache — lancer `npx tsx src/immo-lots-audit.ts` pour l'indicateur)");
+  }
+}
+
+// 4. provenance normes
 section("PROVENANCE NORMES");
 const ls = sh("npx tsx src/loop-status.ts", ACQ);
 console.log(ls.split("\n").find((l) => l.startsWith("provenance:"))?.trim() ?? "(n/a)");
 
-// 4. rapports de délégation livrés (récents d'abord)
+// 5. rapports de délégation livrés (récents d'abord)
 section("RAPPORTS LIVRÉS (work/delegation-mass)");
 if (existsSync(DM)) {
   const mds = readdirSync(DM)
@@ -91,12 +117,12 @@ if (existsSync(DM)) {
   for (const { f } of mds) console.log("  " + f);
 }
 
-// 5. drumbeat vivant ?
+// 6. drumbeat vivant ?
 section("DRUMBEAT");
 const pb = sh("pgrep -fc drumbeat.sh");
 console.log(parseInt(pb.trim() || "0", 10) > 0 ? "vivant" : "MORT (relancer: setsid bash work/delegation-mass/drumbeat.sh &)");
 
-// 6. code non-commité (à committer)
+// 7. code non-commité (à committer)
 section("CODE NON-COMMITÉ (acquisition/src, packages)");
 const st = sh("git status --short -- acquisition/src packages");
 console.log(st.trim() || "  (rien)");
