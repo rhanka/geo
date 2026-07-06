@@ -26,7 +26,14 @@
  *       --source-url https://… [--reglement 123] \
  *       [--route auto|native|ocr|multizone|vision|gpt55|gpt54] \
  *       [--max-vision-pages N] [--budget-usd 15] [--auto-grid-page] \
- *       [--dry-run] [--force]
+ *       [--expand-categories] [--dry-run] [--force]
+ *
+ * `--expand-categories` (ADDITIVE, off by default): for a category-organised MRC
+ * grille whose codes are USAGE CATEGORIES (`EAF`, `M`, `RU`) while the SIG stores
+ * INDIVIDUAL codes (`EAF-15`, `M-1`), propagate each category's norms onto the
+ * individual SIG codes it UNAMBIGUOUSLY covers (prefix-strict, non-ambiguous).
+ * Without it these grilles are correctly rejected at overlap=0; with it every
+ * deposited code joins a lot. Never fabricates a value (verbatim norm copy).
  *
  * `--auto-grid-page` (ADDITIVE, off by default): pre-scan the PDF text to locate
  * the deep ANNEXE "grille des usages et normes" of a codified by-law and restrict
@@ -93,6 +100,9 @@ import {
   shouldRejectForZeroOverlap,
   shouldRejectForZeroNormFields,
   looksLikeTableOfContents,
+  expandCategoryZonesToSig,
+  loadSigCanonCodes,
+  type CategoryExpansion,
 } from "./lib/zonage-norms.js";
 
 // Mistral medium pricing (per 1M tokens), used only for cost reporting.
@@ -125,6 +135,8 @@ interface Args {
   noManifest: boolean;
   /** Pre-scan the PDF text for the deep grille annex and bound the OCR window to it (overrides the page cap). */
   autoGridPage: boolean;
+  /** Expand category-organised norms (EAF/M/RU) onto the individual SIG codes they cover (prefix-strict). */
+  expandCategories: boolean;
   snapshot: string;
   dpi?: number;
   /** 1-based inclusive page range to read (vision/multizone). Default: all. */
@@ -156,6 +168,7 @@ function parseArgs(argv: string[]): Args {
     force: has("force"),
     noManifest: has("no-manifest"),
     autoGridPage: has("auto-grid-page"),
+    expandCategories: has("expand-categories"),
     snapshot: get("snapshot") ?? new Date().toISOString().slice(0, 10),
     ...(get("dpi") ? { dpi: Number(get("dpi")) } : {}),
     ...(get("first-page") ? { firstPage: Number(get("first-page")) } : {}),
@@ -1131,6 +1144,35 @@ async function main(): Promise<void> {
     console.error("[route] none — nothing extractable; not depositing.");
   }
 
+  // ── CATEGORY EXPANSION (additive, gated on --expand-categories) ──────────────
+  // A category-organised MRC grille (span-header ALPHA-ONLY codes EAF/M/RU)
+  // documents its norms per CATEGORY, while the SIG stores INDIVIDUAL codes
+  // (EAF-15/M-1). Propagate each category norm onto the individual SIG codes it
+  // UNAMBIGUOUSLY covers (prefix-strict, non-ambiguous), turning the overlap=0
+  // REJECT (category codes ∌ SIG individual codes) into a real deposit whose
+  // every code JOINS a lot. Off by default; never fabricates a value. Applied
+  // AFTER extraction so it composes with whatever route produced the category
+  // rows (auto → span-header variant for these grilles).
+  let categoryExpansion: CategoryExpansion | undefined;
+  if (args.expandCategories && zones.length > 0) {
+    const sigCanon = await loadSigCanonCodes(s3, args.slug);
+    const exp = expandCategoryZonesToSig(zones, sigCanon);
+    console.error(
+      `[expand] categories=${zones.length} sigCodes=${sigCanon.size} → expanded=${exp.expanded.length} ` +
+        `matchedCats=${exp.matchedCategories.length} unmatchedCats=${exp.unmatchedCategories.length} ` +
+        `skippedAmbiguous=${exp.skippedAmbiguous.length}`,
+    );
+    if (exp.expanded.length >= MIN_DEPOSIT_ZONE_CODES) {
+      zones = exp.expanded;
+      methode = methode ? `${methode}+${"category-expanded"}` : "category-expanded";
+      categoryExpansion = exp;
+    } else {
+      console.error(
+        `[expand] expansion yielded ${exp.expanded.length} (<${MIN_DEPOSIT_ZONE_CODES}) — keeping original category codes`,
+      );
+    }
+  }
+
   if (zones.length === 0) {
     console.log(
       JSON.stringify(
@@ -1170,6 +1212,16 @@ async function main(): Promise<void> {
           crossval,
           visionUsd,
           ...(codexUsage ? { codexUsage } : {}),
+          ...(categoryExpansion
+            ? {
+                categoryExpansion: {
+                  expandedCodes: categoryExpansion.expanded.length,
+                  matchedCategories: categoryExpansion.matchedCategories.length,
+                  unmatchedCategories: categoryExpansion.unmatchedCategories,
+                  skippedAmbiguous: categoryExpansion.skippedAmbiguous,
+                },
+              }
+            : {}),
           sampleZones: zones.slice(0, 3),
         },
         null,
@@ -1326,6 +1378,16 @@ async function main(): Promise<void> {
         },
         visionUsd,
         ...(codexUsage ? { codexUsage } : {}),
+        ...(categoryExpansion
+          ? {
+              categoryExpansion: {
+                expandedCodes: categoryExpansion.expanded.length,
+                matchedCategories: categoryExpansion.matchedCategories.length,
+                unmatchedCategories: categoryExpansion.unmatchedCategories.length,
+                skippedAmbiguous: categoryExpansion.skippedAmbiguous.length,
+              },
+            }
+          : {}),
       },
       null,
       2,
