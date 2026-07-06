@@ -45,6 +45,12 @@ import { tmpdir } from "node:os";
 import { MATRIX_PATH } from "./coverage-matrix.js";
 import { COVERAGE_LAYERS, findTrack, type CoverageLayer } from "./coverage-tracks.js";
 import { DEFAULT_ATOMIC_LAYERS } from "./coverage-to-track.js";
+import {
+  applyImmoLotsTrack,
+  immoFieldTrackTotals,
+  loadImmoLotsSummaryFromCache,
+  type ImmoLotsSummary,
+} from "./immo-lots-track.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -288,7 +294,6 @@ function realizeTransitionsTo(
 ): RealizeEvent[] {
   if (from === "cancelled" || from === "rejected") return [];
   if (to === "cancelled") {
-    if (from === "cancelled") return [];
     return [{ v: 1, kind: "item.realize", payload: { itemId, to: "cancelled" } }];
   }
   if (to === "in-progress") {
@@ -565,11 +570,27 @@ function ingestEvents(
   return out.split("\n").map((l) => l.trim()).filter((l) => l.length > 0).length;
 }
 
+function applyImmoLotsFromCache(trackBin: string, cwd: string, outDir: string, summary: ImmoLotsSummary): void {
+  const result = applyImmoLotsTrack({ summary, trackBin, cwd, outDir });
+  // eslint-disable-next-line no-console
+  console.log(
+    `\n[apply] immo-lots track OK: fieldWpsCreated=${result.fieldWpsCreated} ` +
+      `leavesCreated=${result.leavesCreated} realizeEvents=${result.realizeEvents} ` +
+      `coarseLeavesCancelled=${result.coarseLeavesCancelled}`,
+  );
+  for (const total of result.totals) {
+    // eslint-disable-next-line no-console
+    console.log(`  ${total.wpTitle.padEnd(25)} done=${total.done}/${total.total}\tremaining=${total.remaining.length}`);
+  }
+}
+
 function main(argv: readonly string[]): number {
   const apply = argv.includes("--apply");
   const trackBin = arg(argv, "--track-bin") ?? "track";
   const cwd = arg(argv, "--cwd") ?? "/home/antoinefa/src/geo";
   const outDir = arg(argv, "--out") ?? "/home/antoinefa/src/geo/work/coverage/track-events";
+  const immoSummary = apply ? loadImmoLotsSummaryFromCache() : undefined;
+  if (immoSummary !== undefined) immoFieldTrackTotals(immoSummary);
 
   const mv = loadMatrixView(MATRIX_PATH);
   printMatrixCounts(mv);
@@ -587,6 +608,7 @@ function main(argv: readonly string[]): number {
     console.log("\n[dry-run] aucun écrit dans .track. Relancer avec --apply pour appliquer via `track ingest`.");
     return 0;
   }
+  if (immoSummary === undefined) throw new Error("immo-lots summary was not loaded for apply mode");
 
   if (plan.workspace === "") throw new Error("workspace introuvable dans les items track");
 
@@ -607,6 +629,7 @@ function main(argv: readonly string[]): number {
   if (plan.events.length === 0) {
     // eslint-disable-next-line no-console
     console.log("\n[apply] aucune transition à appliquer.");
+    applyImmoLotsFromCache(trackBin, cwd, outDir, immoSummary);
     return 0;
   }
 
@@ -616,6 +639,7 @@ function main(argv: readonly string[]): number {
   const n = ingestEvents(trackBin, cwd, plan.workspace, file, plan.events);
   // eslint-disable-next-line no-console
   console.log(`[apply] transitions track ingest OK (${n} lignes en retour).`);
+  applyImmoLotsFromCache(trackBin, cwd, outDir, immoSummary);
   return 0;
 }
 
