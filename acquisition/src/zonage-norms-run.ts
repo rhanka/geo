@@ -73,6 +73,7 @@ import {
   readZoneHeaderCode,
 } from "../../packages/qc-sources/src/sources/grille-zoneheader-locator.js";
 import { parseLabelValueGrillePage } from "../../packages/qc-sources/src/sources/grille-zoneheader-parser.js";
+import { parseSpanHeaderGrillePage } from "../../packages/qc-sources/src/sources/grille-spanheader-parser.js";
 import {
   extractZoneHeaderPageFromPdf,
   MistralVisionZoneHeader,
@@ -508,6 +509,42 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
       }
     }
   }
+  // ── SPAN-HEADER ALPHA-ONLY grille (VARIANT fallback — saint-louis-du-ha-ha /
+  //    MRC-Témiscouata family) ───────────────────────────────────────────────────
+  // A one-page-per-zone-family grille whose codes are ALPHA-ONLY (no dash+digit, so
+  // `readZoneHeaderCode` misses them) and whose norms sit in a SPAN header
+  // ("Zones EA/A") over N un-headed value columns. Reached ONLY here — after the
+  // native / label:value-zoneheader / Numéro-Dominance detectors have all declined —
+  // so it never steals a page a frozen reader can handle. Self-consistent: route to
+  // the zoneheader handler (which runs the span-header variant as a per-page fallback)
+  // iff the span parser actually maps norms on a spread SAMPLE. A non-span doc never
+  // trips it (no alpha "Zone(s) <codes>" banner → 0 codes → 0 mapped).
+  {
+    const spanPages = rawPages
+      .map((t, i) => ({ t, p: i + 1 }))
+      .filter((x) => parseSpanHeaderGrillePage(x.t, x.p, { source_url: sourceUrl, snapshot }).length > 0)
+      .map((x) => x.p);
+    if (spanPages.length >= MIN_DEPOSIT_ZONE_CODES) {
+      const sample = sampleAcross(spanPages, 8);
+      const mapped = sample.filter((p) => {
+        const zs = parseSpanHeaderGrillePage(rawPages[p - 1] ?? "", p, {
+          source_url: sourceUrl,
+          snapshot,
+        });
+        return zs.some((z) => publishedCount(z) > 0);
+      }).length;
+      if (mapped >= Math.ceil(sample.length / 2)) {
+        return {
+          route: "zoneheader",
+          nativeGrillePages: grillePages,
+          nativeAcceptedRows: acceptedRows,
+          reason:
+            `span-header alpha-only grille (${spanPages.length} pages, ` +
+            `${mapped}/${sample.length} sample pages mapped norms) → native span-header variant`,
+        };
+      }
+    }
+  }
   // The "grille des spécifications" multi-zone format (zones in columns) is the
   // dominant rural/Portneuf layout; route it to the multi-zone vision extractor.
   const specPages = pages.filter((p) => /grille des sp.cifications/i.test(p)).length;
@@ -732,6 +769,21 @@ async function main(): Promise<void> {
       if (nd.length > 0 && publishedCount(nd[0]!) > 0) {
         mergeZone(nd[0]!);
         nativeZones++;
+        continue;
+      }
+      // SPAN-HEADER ALPHA-ONLY grille (VARIANT fallback) — the frozen readers above
+      // both declined (no dash+digit header code / no Numéro-Dominance split), so try
+      // the span-header variant: a "Zones EA/A" banner over N un-headed value columns,
+      // emitting one zone per VERBATIM alpha code with unambiguous column→code mapping.
+      // Gated to fire ONLY here (standard returned 0) and ONLY when it maps ≥1 field.
+      const sp = parseSpanHeaderGrillePage(t, p, {
+        source_url: args.sourceUrl,
+        snapshot: args.snapshot,
+        methode: "native-text/spanheader",
+      });
+      if (sp.length > 0 && sp.some((z) => publishedCount(z) > 0)) {
+        for (const z of sp) mergeZone(z);
+        nativeZones += sp.length;
         continue;
       }
       // A header code but no native norm values → likely an image scan → vision fallback.
