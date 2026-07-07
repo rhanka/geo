@@ -25,10 +25,11 @@
  *   - CACHE stable `work/coverage/immo-lots.json` (indicateur lu par loop-supervise —
  *     PAS de S3 dans le tick) ;
  *   - rapport JSON complet (--report <path>), avec le détail par muni ;
- *   - CAPITALISATION TRACK (--apply-track) : un workpackage RACINE par champ
- *     `immo-lots <field>` avec UN item chore par muni dans le périmètre du champ.
- *     Le rollup track porte donc le vrai N-done/N-total ; les munis sous le seuil
- *     restent visibles comme feuilles à faire. Les titres ne matchent PAS le parseur
+ *   - CAPITALISATION TRACK (--apply-track) : un workpackage racine
+ *     `immo-lots-enrichment`, un sous-WP par champ `immo-lots <field>`, puis UN
+ *     item chore par muni dans le périmètre du champ. Le rollup track porte donc
+ *     le vrai N-done/N-total ; les munis sous 100% restent visibles comme feuilles
+ *     à faire. Les titres ne matchent PAS le parseur
  *     de `sync-track-from-coverage` (pas de `couche/voie · slug [status] —`), donc la
  *     synchro couverture atomique ne les touche pas.
  *
@@ -341,7 +342,8 @@ async function main(): Promise<void> {
   if (applyTrackFlag) {
     const result = applyImmoLotsTrack({ summary, trackBin, cwd: ROOT });
     console.error(
-      `[track] immo-lots appliqué : fieldWpsCreated=${result.fieldWpsCreated} ` +
+      `[track] immo-lots appliqué : rootWpCreated=${result.rootWpCreated} ` +
+        `fieldWpsCreated=${result.fieldWpsCreated} ` +
         `leavesCreated=${result.leavesCreated} realizeEvents=${result.realizeEvents} ` +
         `coarseLeavesCancelled=${result.coarseLeavesCancelled}`,
     );
