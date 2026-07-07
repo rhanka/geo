@@ -32,13 +32,13 @@ const PREFIX = "normalized/ca-qc-zonage/";
 const UA = "sentropic-geo/0.1";
 
 interface MuniEntry { slug: string; name: string; lat: number; lon: number }
-interface Args { slug: string; layer: string; zoneField: string; km: number; dryRun: boolean }
+interface Args { slug: string; layer: string; zoneField: string; zonePrefixField?: string; km: number; dryRun: boolean }
 
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
-  const slug = get("slug"); const layer = get("layer"); const zoneField = get("zone-field");
-  if (!slug || !layer || !zoneField) { console.error("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--km 6] [--dry-run]"); process.exit(2); }
-  return { slug, layer, zoneField, km: Number(get("km") ?? 6), dryRun: argv.includes("--dry-run") };
+  const slug = get("slug"); const layer = get("layer"); const zoneField = get("zone-field"); const zonePrefixField = get("zone-prefix-field");
+  if (!slug || !layer || !zoneField) { console.error("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--zone-prefix-field <field>] [--km 6] [--dry-run]"); process.exit(2); }
+  return { slug, layer, zoneField, zonePrefixField, km: Number(get("km") ?? 6), dryRun: argv.includes("--dry-run") };
 }
 
 async function jget(u: string, ms = 20000): Promise<any> {
@@ -57,10 +57,11 @@ function* positions(c: any): Generator<[number, number]> {
   for (const x of c) yield* positions(x);
 }
 
-async function fetchAll(layer: string, field: string): Promise<any[]> {
+async function fetchAll(layer: string, fields: string[]): Promise<any[]> {
   const feats: any[] = []; let offset = 0; const batch = 1000;
+  const outFields = [...new Set(fields)].join(",");
   for (;;) {
-    const u = `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(field)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${batch}&f=geojson`;
+    const u = `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${batch}&f=geojson`;
     const d = await jget(u); const fs = d?.features ?? [];
     if (fs.length === 0) break;
     feats.push(...fs); offset += fs.length;
@@ -69,19 +70,29 @@ async function fetchAll(layer: string, field: string): Promise<any[]> {
   return feats;
 }
 
+function zoneCode(props: Record<string, unknown> | undefined, zoneField: string, zonePrefixField?: string): string | null {
+  const raw = props?.[zoneField];
+  if (raw == null || raw === "") return null;
+  const code = String(raw).trim();
+  if (!code) return null;
+  const prefixRaw = zonePrefixField ? props?.[zonePrefixField] : null;
+  const prefix = prefixRaw == null ? "" : String(prefixRaw).trim();
+  return prefix ? `${prefix}-${code}` : code;
+}
+
 async function main(): Promise<void> {
   const a = parseArgs(process.argv.slice(2));
   const reg = JSON.parse(readFileSync(REG, "utf8")) as MuniEntry[];
   const muni = reg.find((m) => m.slug === a.slug);
   if (!muni) { console.error(`[serve] slug "${a.slug}" absent du registre — abandon`); process.exit(1); }
 
-  console.error(`[serve] ${a.slug} <= ${a.layer} (champ=${a.zoneField})`);
-  const feats = await fetchAll(a.layer, a.zoneField);
+  console.error(`[serve] ${a.slug} <= ${a.layer} (champ=${a.zoneField}${a.zonePrefixField ? `, prefix=${a.zonePrefixField}` : ""})`);
+  const feats = await fetchAll(a.layer, [a.zoneField, ...(a.zonePrefixField ? [a.zonePrefixField] : [])]);
   if (feats.length === 0) { console.error(`[serve] 0 feature téléchargée — abandon`); process.exit(1); }
 
   // anti-invention: distinct codes, lettres présentes, pas un id séquentiel.
-  const raw = feats.map((f) => f.properties?.[a.zoneField]).filter((v) => v != null && v !== "");
-  const codes = raw.map((v) => String(v).trim());
+  const codes = feats.map((f) => zoneCode(f.properties, a.zoneField, a.zonePrefixField)).filter((v): v is string => v != null && v !== "");
+  const raw = codes;
   const distinct = new Set(codes);
   const withLetter = codes.filter((s) => /[A-Za-z]/.test(s)).length;
   const pureInt = codes.filter((s) => /^\d+$/.test(s)).length;
@@ -112,7 +123,7 @@ async function main(): Promise<void> {
     features: feats.map((f) => ({
       type: "Feature",
       geometry: f.geometry,
-      properties: { zone_code: String(f.properties?.[a.zoneField]).trim() || null, kind: null, affectation: null, num_zone: null, source: a.layer, confidence: "arcgis-zone-vector" },
+      properties: { zone_code: zoneCode(f.properties, a.zoneField, a.zonePrefixField), kind: null, affectation: null, num_zone: null, source: a.layer, confidence: "arcgis-zone-vector" },
     })),
   };
   const key = `${PREFIX}qc-zonage-${a.slug}.geojson`;
