@@ -574,7 +574,8 @@ function applyImmoLotsFromCache(trackBin: string, cwd: string, outDir: string, s
   const result = applyImmoLotsTrack({ summary, trackBin, cwd, outDir });
   // eslint-disable-next-line no-console
   console.log(
-    `\n[apply] immo-lots track OK: fieldWpsCreated=${result.fieldWpsCreated} ` +
+    `\n[apply] immo-lots track OK: rootWpCreated=${result.rootWpCreated} ` +
+      `fieldWpsCreated=${result.fieldWpsCreated} ` +
       `leavesCreated=${result.leavesCreated} realizeEvents=${result.realizeEvents} ` +
       `coarseLeavesCancelled=${result.coarseLeavesCancelled}`,
   );
