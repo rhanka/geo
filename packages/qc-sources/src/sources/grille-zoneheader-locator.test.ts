@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import {
   readZoneHeaderCode,
+  readNumeroZoneHeaderCode,
   normalizeHeaderCode,
   isZoneHeaderGrillePage,
   locateZoneHeaderGrille,
@@ -59,6 +60,22 @@ Grille des spécifications
            superficie (m2)                      min.  1600    1600  1600  1600
 `;
 
+/** deux-montagnes: standalone "Numéro de zone" banner, code on next line. */
+const NUMERO_ZONE_ONLY_PAGE = `
+ANNEXE B - GRILLES DES USAGES ET NORMES
+
+                                                    Numéro de zone
+Grilles des usages et normes                           H-100
+
+Lotissement
+Frontage (m)                     min.      12,2           9,15
+Superficie minimum (m²)                    370            270
+Implantation
+Marge avant (m)                   min.         6              6
+Bâtiment
+Hauteur (étages)                 max.          2              2
+`;
+
 /** A prose règlement page (no per-page header code). */
 const PROSE_PAGE = `
 ARTICLE 252  La marge avant minimale de la zone H-3 demeure inchangée; la
@@ -98,6 +115,17 @@ describe("readZoneHeaderCode", () => {
 
   it("never rewrites a serif 'I' prefix to a '1' (verbatim, anti-invention)", () => {
     expect(readZoneHeaderCode("GRILLE DES SPÉCIFICATIONS   ZONE: I01-132\n  norme")).toBe("I01-132");
+  });
+});
+
+describe("readNumeroZoneHeaderCode", () => {
+  it("reads a standalone 'Numéro de zone' banner code from the next line", () => {
+    expect(readNumeroZoneHeaderCode(NUMERO_ZONE_ONLY_PAGE)).toBe("H-100");
+  });
+
+  it("keeps readZoneHeaderCode's transposed-family exclusion intact", () => {
+    expect(readZoneHeaderCode(NUMERO_ZONE_ONLY_PAGE)).toBeNull();
+    expect(readNumeroZoneHeaderCode(TRANSPOSED_PAGE)).toBeNull();
   });
 });
 
