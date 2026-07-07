@@ -153,6 +153,17 @@ async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS):
   } catch { return null; } finally { clearTimeout(t); }
 }
 
+async function loadAvailableSigaleCodes(mrc: string): Promise<Set<string>> {
+  const folder = await fetchJson<{ services?: Array<{ name?: string; type?: string }> }>(`${ALTUS_BASE}/MRC${mrc}?f=json`);
+  const codes = new Set<string>();
+  for (const svc of folder?.services ?? []) {
+    if (!svc.name || !/MapServer/i.test(svc.type ?? "")) continue;
+    const match = svc.name.match(new RegExp(`^MRC${mrc}/(\\d{5})_Publique$`, "i"));
+    if (match?.[1]) codes.add(match[1]);
+  }
+  return codes;
+}
+
 // ── Crosswalk slug → code MAMH (répertoire committé, jamais deviné) ───────────
 function loadMamhCodes(): Map<string, string> {
   const out = new Map<string, string>();
@@ -333,13 +344,25 @@ async function main(): Promise<void> {
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
   const mamhBySlug = loadMamhCodes();
+  const slugByMamh = new Map([...mamhBySlug.entries()].map(([slug, code]) => [code, slug]));
 
-  // Lot de munis : --slugs explicite, sinon toutes les munis de la MRC (registre).
+  // Lot de munis : --slugs explicite, sinon les services `<code>_Publique`
+  // réellement publiés par le dossier MRC###. Pour les MRC historiques déjà
+  // nommées, on garde le registre comme fallback si le catalogue est indisponible.
   let slugs = args.slugs;
   if (slugs.length === 0) {
+    const availableCodes = await loadAvailableSigaleCodes(args.mrc);
+    const catalogSlugs = [...availableCodes].map((code) => slugByMamh.get(code)).filter((s): s is string => !!s).sort();
     const mrcName = MRC_DEFAULT_NAME[args.mrc];
-    if (!mrcName) { console.error(`[sigale] MRC ${args.mrc} sans lot par défaut — préciser --slugs`); process.exit(2); }
-    slugs = munis.filter((m) => m.mrc === mrcName).map((m) => m.slug);
+    if (mrcName) {
+      const registrySlugs = munis.filter((m) => m.mrc === mrcName).map((m) => m.slug);
+      slugs = availableCodes.size > 0 ? registrySlugs.filter((slug) => availableCodes.has(mamhBySlug.get(slug) ?? "")) : registrySlugs;
+    } else if (catalogSlugs.length > 0) {
+      slugs = catalogSlugs;
+    } else {
+      console.error(`[sigale] MRC ${args.mrc} sans lot par défaut ni services <code>_Publique — préciser --slugs`);
+      process.exit(2);
+    }
   }
   const s3 = s3Client(); // requis même en probe (check wasServed / dépôt éventuel)
   console.error(`[sigale] MRC=${args.mrc} munis=${slugs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto→Zonage"}`);
