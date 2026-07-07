@@ -4,6 +4,7 @@ import {
   isNumericMuniValue,
   muniWhereClause,
   normMuniCode,
+  resolveMuniValueToTargetSlug,
   resolveMuniValueToSlug,
   validateExplicitZoneField,
 } from "./zones-obscura-run.js";
@@ -17,6 +18,7 @@ const CODE_TO_SLUG = new Map<string, string>([
 const SLUG_SET = new Set<string>([
   "degelis", "saint-athanase", "temiscouata-sur-le-lac",
   "melbourne", "cleveland", "saint-francois-xavier-de-brompton",
+  "saint-sebastien--le-granit",
 ]);
 
 const feats = (field: string, values: Array<string | number | null>): Array<{ properties: Record<string, unknown> }> =>
@@ -57,6 +59,12 @@ describe("zones-obscura --muni-field resolver (code MAMH ⊕ nom)", () => {
     expect(resolveMuniValueToSlug("Canton de Shefford", CODE_TO_SLUG, slugs)).toBe("canton-de-shefford");
     // 'Ville de Shefford' → 'ville-de-shefford' absent → repli strip-prefixe → 'shefford'
     expect(resolveMuniValueToSlug("Ville de Shefford", CODE_TO_SLUG, slugs)).toBe("shefford");
+  });
+
+  it("resout un nom court vers le slug cible desambiguise par MRC", () => {
+    const target = { slug: "saint-sebastien--le-granit", name: "Saint-Sébastien", mrc: "Le Granit", lat: 45.78, lon: -70.98 };
+    expect(resolveMuniValueToSlug("Saint-Sébastien", CODE_TO_SLUG, SLUG_SET)).toBeNull();
+    expect(resolveMuniValueToTargetSlug("Saint-Sébastien", target, CODE_TO_SLUG, SLUG_SET)).toBe("saint-sebastien--le-granit");
   });
 
   it("construit une clause WHERE numerique non-quotee, nom quotee (anti-injection)", () => {
