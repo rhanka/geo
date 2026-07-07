@@ -76,9 +76,24 @@ function canonUnit(raw: string | undefined | null): CanonUnit {
 
 /** A unit spelled inside the label parens: "(m)", "(m²)", "(mètre)", "(%)", "(étage)". */
 const PAREN_UNIT = /\((\s*(?:m²|m2|m(?:è|e)tres?|m|%|(?:é|e)tages?)\s*)\)/i;
-/** A trailing "<number> <unit-word>" (durham) or a bare trailing number. */
+/**
+ * A trailing "<number> <unit-word>" (durham) or a bare trailing number.
+ *
+ * NUMBER: a FR thousands-grouped run ("7 500", "12 000" — regular/thin/non-breaking
+ * space every 3 digits) OR a plain integer/decimal. The grouped alt is FIRST so
+ * "7 500 m²" captures 7500, not the last "500" group (a truncation that silently
+ * publishes a WRONG superficie). Grouping requires exact \d{3} runs, so multi-column
+ * "45 45" (2-digit) never mis-merges. The captured spaces are stripped before the
+ * value guard.
+ *
+ * UNIT: the spelled-out "mètres carrés"/"mètres", "m²"/"m2", "%", "étages", "log/ha",
+ * and — added last (lowest priority, after m²/m2/mètres so those still win) — a BARE
+ * "m" (beaupré/weblex grilles abbreviate metres as "9m"/"10 m"; `canonUnit` already
+ * folds a bare "m" → metres, so the value was recoverable but the capture regex
+ * dropped it → 100% null marges/hauteur).
+ */
 const TRAILING_VALUE =
-  /(\d+(?:[.,]\d+)?)\s*(m(?:è|e)tres?\s+carr\S*|m(?:è|e)tres?|m²|m2|%|(?:é|e)tages?|log\s*\/\s*ha)?\.?\s*$/i;
+  /(\d{1,3}(?:[   ]\d{3})+(?:[.,]\d+)?|\d+(?:[.,]\d+)?)\s*(m(?:è|e)tres?\s+carr\S*|m(?:è|e)tres?|m²|m2|%|(?:é|e)tages?|log\s*\/\s*ha|m)?\.?\s*$/i;
 /** The leftmost value cell in a values region: a number OR an "absent" marker. */
 const LEFT_VALUE = /(-|—|–|\d+(?:[.,]\d+)?)/;
 
@@ -105,8 +120,10 @@ export function extractNormValue(line: string): ExtractedValue | null {
     const v = region.match(LEFT_VALUE);
     if (!v) return null;
     const unit = canonUnit(paren[1]);
+    const bound = region.match(/^\s*(min(?:\.|imum)?|max(?:\.|imum)?)/i)?.[1];
+    const labelWithBound = bound ? `${label} ${bound}` : label;
     const raw = /^[-—–]$/.test(v[1]!) ? v[1]! : `${v[1]}${unit && unit !== "LOGHA" ? ` ${unit}` : ""}`;
-    return { label, raw, unit };
+    return { label: labelWithBound, raw, unit };
   }
   const m = line.match(TRAILING_VALUE);
   if (!m || m[1] === undefined) return null;
@@ -115,7 +132,10 @@ export function extractNormValue(line: string): ExtractedValue | null {
   const label = line.slice(0, m.index).trim();
   if (!label) return null; // a lone number with no label is not a norm row
   const unit = canonUnit(m[2]);
-  const raw = `${m[1]}${unit && unit !== "LOGHA" ? ` ${unit}` : ""}`;
+  // Strip FR thousands-separator whitespace from the captured number ("7 500" →
+  // "7500") so the value guard parses the real magnitude, not the last group.
+  const num = m[1].replace(/\s/g, "");
+  const raw = `${num}${unit && unit !== "LOGHA" ? ` ${unit}` : ""}`;
   return { label, raw, unit };
 }
 
@@ -175,7 +195,18 @@ function sectionedField(label: string, section: Section, unit: CanonUnit): Field
 export function resolveField(label: string, section: Section, unit: CanonUnit): FieldId | null {
   if (unit === "LOGHA") return null;
   const direct = labelToFieldId(label);
-  if (direct) return direct;
+  if (direct) {
+    // The captured VALUE's unit is authoritative for the hauteur métres/étages split.
+    // A combined cap "Hauteur maximale  3 étages et 11 m" leaves "…3 étages et" in the
+    // label, so `labelToFieldId` keys on "étages" → hauteur_etages; but the value we
+    // captured is the metric bound ("11 m"). Publishing it as hauteur_etages makes the
+    // étages spec reject "11 m" as unite-incoherente and null a REAL height. Flip to the
+    // field the value's unit actually carries (and symmetrically for a metres-label with
+    // an étages value).
+    if (direct === "hauteur_etages" && unit === "m") return "hauteur_metres";
+    if (direct === "hauteur_metres" && unit === "etages") return "hauteur_etages";
+    return direct;
+  }
   const sectioned = sectionedField(label, section, unit);
   if (sectioned) return sectioned;
   const s = fold(label);
