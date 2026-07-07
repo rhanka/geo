@@ -77,6 +77,7 @@ import {
 } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 import {
   locateZoneHeaderGrille,
+  readNumeroZoneHeaderCode,
   readZoneHeaderCode,
 } from "../../packages/qc-sources/src/sources/grille-zoneheader-locator.js";
 import { parseLabelValueGrillePage } from "../../packages/qc-sources/src/sources/grille-zoneheader-parser.js";
@@ -522,6 +523,44 @@ function decideRoute(layoutText: string, sourceUrl: string, snapshot: string): R
       }
     }
   }
+  // ── ONE-ZONE-PER-PAGE standalone "Numéro de zone" grille (Deux-Montagnes
+  //    family) ────────────────────────────────────────────────────────────────
+  // The code is under a standalone "Numéro de zone" banner, usually on the next
+  // line. The generic zoneheader reader intentionally excludes that banner because
+  // another family uses "Numéro de zone: MS-324" for transposed multi-zone pages.
+  // Route here only after the narrow reader finds enough pages AND the native
+  // label:value mapper publishes real norm fields on a spread sample.
+  {
+    const nzPages = rawPages
+      .map((t, i) => ({ t, p: i + 1, code: readNumeroZoneHeaderCode(t) }))
+      .filter((x) => x.code !== null)
+      .map((x) => x.p);
+    if (nzPages.length >= MIN_DEPOSIT_ZONE_CODES) {
+      const sample = sampleAcross(nzPages, 8);
+      const mapped = sample.filter((p) => {
+        const t = rawPages[p - 1] ?? "";
+        const code = readNumeroZoneHeaderCode(t);
+        if (!code) return false;
+        const zs = parseLabelValueGrillePage(t, p, {
+          source_url: sourceUrl,
+          snapshot,
+          methode: "native-text/zoneheader-numero-zone",
+          zoneCode: code,
+        });
+        return zs.length > 0 && publishedCount(zs[0]!) > 0;
+      }).length;
+      if (mapped >= Math.ceil(sample.length / 2)) {
+        return {
+          route: "zoneheader",
+          nativeGrillePages: grillePages,
+          nativeAcceptedRows: acceptedRows,
+          reason:
+            `standalone "Numéro de zone" one-zone grille (${nzPages.length} pages, ` +
+            `${mapped}/${sample.length} sample pages mapped norms) → native field-mapper`,
+        };
+      }
+    }
+  }
   // ── SPAN-HEADER ALPHA-ONLY grille (VARIANT fallback — saint-louis-du-ha-ha /
   //    MRC-Témiscouata family) ───────────────────────────────────────────────────
   // A one-page-per-zone-family grille whose codes are ALPHA-ONLY (no dash+digit, so
@@ -784,6 +823,23 @@ async function main(): Promise<void> {
         nativeZones++;
         continue;
       }
+      // Standalone "Numéro de zone" one-zone page (Deux-Montagnes family). The
+      // code is read verbatim from the native header and only unlocks the existing
+      // label:value field mapper; no code or norm value is synthesised.
+      const nzCode = readNumeroZoneHeaderCode(t);
+      if (nzCode) {
+        const nz = parseLabelValueGrillePage(t, p, {
+          source_url: args.sourceUrl,
+          snapshot: args.snapshot,
+          methode: "native-text/zoneheader-numero-zone",
+          zoneCode: nzCode,
+        });
+        if (nz.length > 0 && publishedCount(nz[0]!) > 0) {
+          mergeZone(nz[0]!);
+          nativeZones++;
+          continue;
+        }
+      }
       // SPAN-HEADER ALPHA-ONLY grille (VARIANT fallback) — the frozen readers above
       // both declined (no dash+digit header code / no Numéro-Dominance split), so try
       // the span-header variant: a "Zones EA/A" banner over N un-headed value columns,
@@ -800,7 +856,7 @@ async function main(): Promise<void> {
         continue;
       }
       // A header code but no native norm values → likely an image scan → vision fallback.
-      if (readZoneHeaderCode(t)) scanPages.push(p);
+      if (readZoneHeaderCode(t) || readNumeroZoneHeaderCode(t)) scanPages.push(p);
     }
     // ── PER-PAGE CHAT-VISION fallback (only for the true-scan pages) ──────────────
     // Bounded by maxVisionPages (count) AND budget — native above is unbounded/$0.
@@ -818,7 +874,10 @@ async function main(): Promise<void> {
         }
         visionPagesAttempted++;
         try {
-          const expectedZone = readZoneHeaderCode(pageTexts[p - 1] ?? "") ?? undefined;
+          const expectedZone =
+            readZoneHeaderCode(pageTexts[p - 1] ?? "") ??
+            readNumeroZoneHeaderCode(pageTexts[p - 1] ?? "") ??
+            undefined;
           const zn = await extractZoneHeaderPageFromPdf(args.pdf, p, {
             source_url: args.sourceUrl,
             snapshot: args.snapshot,
@@ -1081,9 +1140,9 @@ async function main(): Promise<void> {
     // (not merely whether pages were queued for it): native-only ($0), OCR-only, or
     // a genuine hybrid. Per-field provenance already records the exact per-value method.
     methode = !ranOcr
-      ? "native-text/grille-spec"
+      ? "native-text/grille-native-first"
       : nativeZones > 0
-        ? `native-text/grille-spec+${ocr.methode}`
+        ? `native-text/grille-native-first+${ocr.methode}`
         : ocr.methode;
     console.error(
       `[ocr] zones=${zones.length} nativeZones=${nativeZones} attempted=${visionPagesAttempted} failed=${visionPagesFailed} estUsd=$${visionUsd.toFixed(4)}`,
