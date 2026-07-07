@@ -9,6 +9,10 @@
  *   tsx src/lot-zone-join-run.ts --pilot
  * Verify existing deposits:
  *   tsx src/lot-zone-join-run.ts --pilot --verify-only
+ *
+ * `--simplify-zones-m N` simplifies and explodes zone geometries in memory only
+ * before intersection. It leaves the served zones GeoJSON unchanged, and is useful
+ * for very detailed official layers whose raw rings make Turf clipping impractical.
  */
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -56,6 +60,7 @@ interface Args {
   verifyOnly: boolean;
   all: boolean;
   shard: { index: number; total: number } | null;
+  simplifyZonesM: number;
 }
 
 interface RecalageStats {
@@ -121,6 +126,7 @@ function parseArgs(argv: string[]): Args {
   let verifyOnly = false;
   let all = false;
   let shard: { index: number; total: number } | null = null;
+  let simplifyZonesM = 0;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -130,6 +136,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--no-upload") noUpload = true;
     else if (arg === "--verify-only") verifyOnly = true;
+    else if (arg === "--simplify-zones-m") simplifyZonesM = Math.max(0, Number(argv[++i] ?? "0") || 0);
     else if (arg === "--shard") {
       const spec = String(argv[++i] ?? "");
       const [idx, total] = spec.split("/").map((v) => parseInt(v, 10));
@@ -145,7 +152,7 @@ function parseArgs(argv: string[]): Args {
   if (uniqueSlugs.length === 0 && !all) {
     throw new Error("pass --all, --pilot, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, noUpload, verifyOnly, all, shard };
+  return { slugs: uniqueSlugs, noUpload, verifyOnly, all, shard, simplifyZonesM };
 }
 
 function outParquetKey(slug: string): string {
@@ -258,6 +265,76 @@ function projectFeatures(features: PolygonalFeature[], crs: LotZoneStats["metric
     ...feature,
     geometry: projectGeom(feature.geometry),
   }));
+}
+
+function simplifyFeatures(features: PolygonalFeature[], tolerance: number): PolygonalFeature[] {
+  if (!(tolerance > 0)) return features;
+  const out: PolygonalFeature[] = [];
+  for (const feature of features) {
+    if (feature.geometry.type === "Polygon") {
+      out.push({
+        ...feature,
+        geometry: { type: "Polygon", coordinates: simplifyPolygon(feature.geometry.coordinates, tolerance) },
+      });
+    } else {
+      for (const poly of feature.geometry.coordinates) {
+        out.push({
+          ...feature,
+          geometry: { type: "Polygon", coordinates: simplifyPolygon(poly, tolerance) },
+        });
+      }
+    }
+  }
+  return out;
+}
+
+function simplifyPolygon(poly: Position[][], tolerance: number): Position[][] {
+  return poly.map((ring) => simplifyRing(ring, tolerance));
+}
+
+function simplifyRing(ring: Position[], tolerance: number): Position[] {
+  if (ring.length <= 4) return ring;
+  const closed = samePoint(ring[0]!, ring[ring.length - 1]!);
+  const open = closed ? ring.slice(0, -1) : ring.slice();
+  if (open.length <= 3) return ring;
+  const simplified = rdp(open, tolerance);
+  if (simplified.length < 3) return ring;
+  const out = closed ? [...simplified, simplified[0]!] : simplified;
+  return out.length >= 4 ? out : ring;
+}
+
+function rdp(points: Position[], tolerance: number): Position[] {
+  if (points.length <= 2) return points;
+  let maxDist = -1;
+  let split = -1;
+  const first = points[0]!;
+  const last = points[points.length - 1]!;
+  for (let i = 1; i < points.length - 1; i++) {
+    const d = perpendicularDistance(points[i]!, first, last);
+    if (d > maxDist) {
+      maxDist = d;
+      split = i;
+    }
+  }
+  if (maxDist <= tolerance || split < 0) return [first, last];
+  const left = rdp(points.slice(0, split + 1), tolerance);
+  const right = rdp(points.slice(split), tolerance);
+  return [...left.slice(0, -1), ...right];
+}
+
+function perpendicularDistance(point: Position, start: Position, end: Position): number {
+  const x = point[0]!, y = point[1]!;
+  const x1 = start[0]!, y1 = start[1]!;
+  const x2 = end[0]!, y2 = end[1]!;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  if (dx === 0 && dy === 0) return Math.hypot(x - x1, y - y1);
+  const t = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(x - (x1 + t * dx), y - (y1 + t * dy));
+}
+
+function samePoint(a: Position, b: Position): boolean {
+  return a[0] === b[0] && a[1] === b[1];
 }
 
 function bboxOfFeatures(features: PolygonalFeature[]): [number, number, number, number] {
@@ -432,25 +509,38 @@ async function verifyDeposit(s3: S3Client, slug: string): Promise<LotZoneStats["
   };
 }
 
-async function runCity(s3: S3Client, slug: string, noUpload: boolean): Promise<LotZoneStats> {
+async function runCity(s3: S3Client, slug: string, noUpload: boolean, simplifyZonesM: number): Promise<LotZoneStats> {
+  if (simplifyZonesM > 0) console.error(`[lot-zone-join] ${slug}: resolving input keys`);
   const cadastreKey = await resolveCadastreKey(s3, slug);
   const zonesKey = await resolveZonesKey(s3, slug);
   const normsKey = await resolveNormsKey(s3, slug);
   const recalageStatsKey = await resolveRecalageStatsKey(s3, slug);
 
+  if (simplifyZonesM > 0) console.error(`[lot-zone-join] ${slug}: reading cadastre and zones`);
   const cadastre = (await getJson(s3, cadastreKey)) as GeoFc;
   const zones = (await getJson(s3, zonesKey)) as GeoFc;
   const lots = polygonalFeatures(cadastre, `${slug} cadastre`);
   const zoneFeatures = polygonalFeatures(zones, `${slug} zones`).filter((feature) => zoneCodeOf(feature));
   if (zoneFeatures.length === 0) throw new Error(`${slug} zones have no usable zone_code`);
 
+  if (simplifyZonesM > 0) {
+    console.error(`[lot-zone-join] ${slug}: projecting ${lots.length} lot(s), ${zoneFeatures.length} zone feature(s)`);
+  }
   const metricCrs = localMetricContext([...lots, ...zoneFeatures]);
   const projectedLots = projectFeatures(lots, metricCrs);
-  const projectedZones = projectFeatures(zoneFeatures, metricCrs);
+  let projectedZones = projectFeatures(zoneFeatures, metricCrs);
+  if (simplifyZonesM > 0) {
+    console.error(
+      `[lot-zone-join] ${slug}: simplifying ${projectedZones.length} zone feature(s) at ${simplifyZonesM}m`,
+    );
+    projectedZones = simplifyFeatures(projectedZones, simplifyZonesM);
+    console.error(`[lot-zone-join] ${slug}: assigning ${projectedLots.length} lot(s)`);
+  }
   const { byCode: normsByCode } = await loadNorms(s3, normsKey);
   const recalage = await loadRecalageStats(s3, recalageStatsKey);
 
   const assignments = assignLotZones(projectedLots, projectedZones, zoneCodeOf, { lotIdOf });
+  if (simplifyZonesM > 0) console.error(`[lot-zone-join] ${slug}: writing outputs`);
   const enriched = enrichWithNorms(assignments, normsByCode);
   const stats = buildStats(
     slug,
@@ -556,7 +646,7 @@ async function main(): Promise<void> {
   const skipped: Array<{ slug: string; reason: string }> = [];
   for (const slug of slugs) {
     try {
-      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args.noUpload);
+      const stats = args.verifyOnly ? await verifyOnly(s3, slug) : await runCity(s3, slug, args.noUpload, args.simplifyZonesM);
       summaries.push(stats);
       printSummary(stats);
     } catch (error) {
