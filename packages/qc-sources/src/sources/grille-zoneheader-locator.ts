@@ -57,6 +57,10 @@ const ZONE_NOCOLON_EOL = new RegExp(`\\bZONE\\b\\s+(${CODE_BODY})\\s*$`, "i");
 const ZONE_COLON_EOL = /\bZONE\b\s*[:°]\s*$/i;
 /** A leading code at the START of a trimmed token (used for the next-line lookahead). */
 const CODE_AT_START = new RegExp(`^(${CODE_BODY})`);
+/** A whole-line code token (used for "Numéro de zone" one-zone pages). */
+const CODE_WHOLE_LINE = new RegExp(`^(${CODE_BODY})$`, "i");
+/** A code token embedded in a header line, bounded away from letters/digits. */
+const CODE_IN_TEXT = new RegExp(`(^|[^A-Za-z0-9])(${CODE_BODY})(?=$|[^A-Za-z0-9])`, "gi");
 /**
  * Gabarit B — an ISOLATED corner code as the FIRST non-blank line (the whole trimmed
  * line is just the token), with NO "ZONE" word: "                M-1" → "M-1". The
@@ -66,6 +70,7 @@ const ISOLATED_CODE_LINE = /^([A-Za-z]{1,3}[ \t]*[-–—][ \t]*\d{1,3}(?:[ \t]*
 /** The TRANSPOSED-grille family header ("Numéro de zone: MS-324") — NOT a one-zone
  *  banner (it names a zone FAMILY whose members are columns). Excluded from gabarit A. */
 const NUMERO_DE_ZONE = /num[ée]ro\s+de\s+zone/i;
+const NUMERO_DE_ZONE_CAPTURE = /num[ée]ro\s+de\s+zone\b(.*)$/i;
 
 /**
  * Normalise a captured code: long dashes → "-", drop inner spaces, uppercase.
@@ -127,6 +132,44 @@ export function readZoneHeaderCode(pageText: string): string | null {
     if (!t) continue;
     const b = t.match(ISOLATED_CODE_LINE);
     return b?.[1] ? normalizeHeaderCode(b[1]) : null; // first non-blank line only
+  }
+  return null;
+}
+
+/**
+ * Read the VERBATIM code from a standalone "Numéro de zone" banner whose code is
+ * on the following line or, less commonly, as the only token after the banner.
+ *
+ * This is narrower than `readZoneHeaderCode` on purpose: the known transposed
+ * family uses "Numéro de zone: MS-324" on one line to name a column-family, not a
+ * one-zone page. A colon form is therefore rejected here too; callers still need
+ * to prove the page maps real label:value norm rows before depositing anything.
+ */
+export function readNumeroZoneHeaderCode(pageText: string): string | null {
+  const lines = pageText.split(/\r?\n/);
+  const scan = Math.min(lines.length, HEADER_SCAN_LINES);
+  const accept = (raw: string): string | null => {
+    const t = raw.trim();
+    const whole = t.match(CODE_WHOLE_LINE)?.[1];
+    const embedded = whole ? [whole] : [...t.matchAll(CODE_IN_TEXT)].map((m) => m[2]).filter(Boolean);
+    if (embedded.length !== 1 || !embedded[0]) return null;
+    const code = normalizeHeaderCode(embedded[0]);
+    if (!/[A-ZÉÈ]/i.test(code) || !/\d/.test(code)) return null;
+    return code;
+  };
+
+  for (let i = 0; i < scan; i++) {
+    const line = lines[i]!;
+    const banner = line.match(NUMERO_DE_ZONE_CAPTURE);
+    if (!banner) continue;
+    const tail = banner[1]?.trim() ?? "";
+    if (/^[:°]/.test(tail)) return null;
+    if (tail) return accept(tail);
+    for (let j = i + 1; j < Math.min(lines.length, i + 5); j++) {
+      const t = lines[j]!.trim();
+      if (!t) continue;
+      return accept(t);
+    }
   }
   return null;
 }
