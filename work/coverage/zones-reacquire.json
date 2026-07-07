@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-07T03:24:29.432Z",
-  "zonesDone": 761,
-  "withNormsGrille": 427,
-  "ok": 311,
+  "generatedAt": "2026-07-07T14:25:19.989Z",
+  "zonesDone": 762,
+  "withNormsGrille": 429,
+  "ok": 313,
   "reacquire": 6,
   "reacquireAffectation": 1,
-  "reacquireSigNoCodes": 0,
-  "reacquireDisjoint": 5,
+  "reacquireSigNoCodes": 1,
+  "reacquireDisjoint": 4,
   "normesSuspect": 20,
-  "indeterminate": 424,
-  "needsManifestRefresh": 0,
+  "indeterminate": 423,
+  "needsManifestRefresh": 1,
   "focus30": {
     "zonesServed": 30,
     "ok": 22,
@@ -28,18 +28,19 @@
     "charlemagne",
     "deux-montagnes",
     "dollard-des-ormeaux",
-    "mont-tremblant",
     "saint-bruno-de-montarville",
+    "saint-ferreol-les-neiges",
     "saint-gabriel-de-brandon"
   ],
   "reacquireAffectationSlugs": [
     "charlemagne"
   ],
-  "reacquireSigNoCodesSlugs": [],
+  "reacquireSigNoCodesSlugs": [
+    "saint-ferreol-les-neiges"
+  ],
   "reacquireDisjointSlugs": [
     "deux-montagnes",
     "dollard-des-ormeaux",
-    "mont-tremblant",
     "saint-bruno-de-montarville",
     "saint-gabriel-de-brandon"
   ],
@@ -65,7 +66,9 @@
     "sainte-eulalie",
     "stoneham-et-tewkesbury"
   ],
-  "needsManifestRefreshSlugs": [],
+  "needsManifestRefreshSlugs": [
+    "saint-sebastien--le-granit"
+  ],
   "thresholds": {
     "HEALTHY_SIG_MIN": 12,
     "HEALTHY_EXT_MIN": 8,
@@ -159,44 +162,31 @@
       ]
     },
     {
-      "slug": "mont-tremblant",
+      "slug": "saint-ferreol-les-neiges",
       "inFocus30": false,
       "klass": "REACQUIRE",
-      "sub": "disjoint",
-      "sigCodes": 1169,
-      "extractedCodes": 54,
-      "sigNumeric": 1169,
-      "extNumeric": 54,
-      "sigDigitFrac": 1,
+      "sub": "sig-no-codes",
+      "sigCodes": 0,
+      "extractedCodes": 162,
+      "sigNumeric": 0,
+      "extNumeric": 162,
+      "sigDigitFrac": 0,
       "granularityFrac": 0,
-      "fieldPct": 46.3,
-      "sigSample": [
-        "CO-939",
-        "CO-940",
-        "CO-943",
-        "CO-941",
-        "CO-950",
-        "CO-942",
-        "CO-944",
-        "CO-949",
-        "CO-945",
-        "CO-948",
-        "CO-946",
-        "CO-955"
-      ],
+      "fieldPct": 65.4,
+      "sigSample": [],
       "extSample": [
-        "RA-100",
-        "TM-103",
-        "TM-105",
-        "TM-104-1",
-        "RA-106",
-        "RA-107",
-        "RA-108",
-        "RA-109",
-        "RA-112",
-        "RA-113",
-        "RA-114",
-        "VA-116"
+        "REC-3-001",
+        "REC-2-002",
+        "REC-3-003",
+        "REC-2-004",
+        "FR-5",
+        "AF-6",
+        "AF-7",
+        "AF-8",
+        "FR-9",
+        "FR-10",
+        "VP-11",
+        "V-12"
       ]
     },
     {
@@ -426,47 +416,6 @@
       ]
     },
     {
-      "slug": "mont-tremblant",
-      "inFocus30": false,
-      "klass": "REACQUIRE",
-      "sub": "disjoint",
-      "sigCodes": 1169,
-      "extractedCodes": 54,
-      "sigNumeric": 1169,
-      "extNumeric": 54,
-      "sigDigitFrac": 1,
-      "granularityFrac": 0,
-      "fieldPct": 46.3,
-      "sigSample": [
-        "CO-939",
-        "CO-940",
-        "CO-943",
-        "CO-941",
-        "CO-950",
-        "CO-942",
-        "CO-944",
-        "CO-949",
-        "CO-945",
-        "CO-948",
-        "CO-946",
-        "CO-955"
-      ],
-      "extSample": [
-        "RA-100",
-        "TM-103",
-        "TM-105",
-        "TM-104-1",
-        "RA-106",
-        "RA-107",
-        "RA-108",
-        "RA-109",
-        "RA-112",
-        "RA-113",
-        "RA-114",
-        "VA-116"
-      ]
-    },
-    {
       "slug": "saint-bruno-de-montarville",
       "inFocus30": true,
       "klass": "REACQUIRE",
@@ -505,6 +454,34 @@
         "HA-104F",
         "ZONEHA-105",
         "HA-105F"
+      ]
+    },
+    {
+      "slug": "saint-ferreol-les-neiges",
+      "inFocus30": false,
+      "klass": "REACQUIRE",
+      "sub": "sig-no-codes",
+      "sigCodes": 0,
+      "extractedCodes": 162,
+      "sigNumeric": 0,
+      "extNumeric": 162,
+      "sigDigitFrac": 0,
+      "granularityFrac": 0,
+      "fieldPct": 65.4,
+      "sigSample": [],
+      "extSample": [
+        "REC-3-001",
+        "REC-2-002",
+        "REC-3-003",
+        "REC-2-004",
+        "FR-5",
+        "AF-6",
+        "AF-7",
+        "AF-8",
+        "FR-9",
+        "FR-10",
+        "VP-11",
+        "V-12"
       ]
     },
     {
