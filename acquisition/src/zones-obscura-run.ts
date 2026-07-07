@@ -489,7 +489,8 @@ export function isNumericMuniValue(raw: string): boolean {
  *   - NUMÉRIQUE → crosswalk MAMH (codeToSlug) ; jamais deviné, null si absent.
  *   - NOM → slug du NOM COMPLET s'il existe au registre (distingue "Canton de X"
  *     de "Ville de X", qui s'effondreraient tous deux en "x" après strip-préfixe),
- *     sinon slug du nom sans préfixe administratif.
+ *     sinon slug du nom sans préfixe administratif seulement s'il existe au
+ *     registre; sans match registre, null.
  */
 export function resolveMuniValueToSlug(
   raw: string, codeToSlug: Map<string, string>, slugSet: Set<string>,
@@ -500,7 +501,24 @@ export function resolveMuniValueToSlug(
   const full = toSlug(t);
   if (slugSet.has(full)) return full;
   const stripped = toSlug(stripAdminPrefix(t));
-  return stripped || null;
+  return slugSet.has(stripped) ? stripped : null;
+}
+/**
+ * Variante cible-aware pour les agrégats où le backend sert seulement le nom
+ * municipal court, alors que le registre local désambiguïse le slug par MRC
+ * (`saint-sebastien--le-granit`, etc.). Le fallback ne s'applique que si la
+ * valeur brute égale le nom officiel de la cible après normalisation; le gate
+ * spatial valide ensuite que les features retournées sont bien sur la cible.
+ */
+export function resolveMuniValueToTargetSlug(
+  raw: string, target: MuniEntry | undefined, codeToSlug: Map<string, string>, slugSet: Set<string>,
+): string | null {
+  const resolved = resolveMuniValueToSlug(raw, codeToSlug, slugSet);
+  if (resolved) return resolved;
+  if (!target) return null;
+  const rawName = toSlug(stripAdminPrefix(raw));
+  const targetName = toSlug(stripAdminPrefix(target.name));
+  return rawName && rawName === targetName ? target.slug : null;
 }
 /**
  * Clause WHERE ArcGIS pour un discriminant muni. Un code numérique se compare
@@ -1094,7 +1112,7 @@ async function depositFromServices(
         // Override → registry-aware resolver (numeric MAMH code OR name, keeps
         // "Canton de X" ≠ "Ville de X"). Auto → historic strip-prefix (unchanged).
         const canon = args.muniField
-          ? resolveMuniValueToSlug(String(v), MUNI_CODE_TO_SLUG, MUNI_SLUG_SET)
+          ? resolveMuniValueToTargetSlug(String(v), muni, MUNI_CODE_TO_SLUG, MUNI_SLUG_SET)
           : toSlug(stripAdminPrefix(String(v)));
         if (canon) distinct.set(canon, String(v));
       }
