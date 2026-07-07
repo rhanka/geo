@@ -368,19 +368,26 @@ async function main(): Promise<void> {
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
   const mamhBySlug = loadMamhCodes();
+  const slugByMamh = new Map([...mamhBySlug.entries()].map(([slug, code]) => [code, slug]));
+  const layers = await loadZonageLayers(node);
 
   // Lot de munis : --slugs explicite, sinon toutes les munis du registre dont le
-  // code MAMH porte le préfixe MRC (ex. "85" = Témiscamingue). Jamais hors-registre.
+  // code MAMH porte le préfixe MRC (ex. "85" = Témiscamingue). En mode
+  // --geoserver sans MRC connue, dérive les slugs depuis les workspaces WFS
+  // `M<code>_...` publiés par le node. Jamais hors-registre.
   let slugs = args.slugs;
   if (slugs.length === 0) {
-    if (!mrc) { console.error(`[geocentriq] --geoserver sans --slugs : préciser --slugs`); process.exit(2); }
-    slugs = munis
-      .map((m) => m.slug)
-      .filter((s) => (mamhBySlug.get(s) ?? "").startsWith(mrc.mamhPrefix))
-      .sort();
+    if (mrc) {
+      slugs = munis
+        .map((m) => m.slug)
+        .filter((s) => (mamhBySlug.get(s) ?? "").startsWith(mrc.mamhPrefix))
+        .sort();
+    } else {
+      slugs = [...layers.keys()].map((code) => slugByMamh.get(code)).filter((s): s is string => !!s).sort();
+      if (slugs.length === 0) { console.error(`[geocentriq] --geoserver sans MRC connue: aucun workspace M<code>_... relié au registre — préciser --slugs`); process.exit(2); }
+    }
   }
 
-  const layers = await loadZonageLayers(node);
   const s3 = s3Client(); // requis même en probe (check wasServed / dépôt éventuel)
   console.error(`[geocentriq] mrc=${args.mrc} node=${node} zonageLayers=${layers.size} munis=${slugs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto→zone"}`);
 
