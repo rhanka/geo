@@ -33,6 +33,21 @@ describe("extractNormValue", () => {
     expect(extractNormValue("Marge arrière minimale   7,5 mètres")?.raw).toBe("7,5 m");
   });
 
+  it("reads a BARE 'm' abbreviation (beaupré/weblex '10 m' / '9m')", () => {
+    expect(extractNormValue("Marge de recul avant minimale        10 m")).toEqual({
+      label: "Marge de recul avant minimale",
+      raw: "10 m",
+      unit: "m",
+    });
+    expect(extractNormValue("Marge de recul arrière minimale     9m")?.raw).toBe("9 m");
+  });
+
+  it("captures a FR thousands-space number in full ('7 500' → 7500, not 500)", () => {
+    const r = extractNormValue("Superficie minimum du lot            7 500 m²");
+    expect(r?.raw).toBe("7500 m2");
+    expect(r?.unit).toBe("m2");
+  });
+
   it("reads unit-in-paren + takes the LEFTMOST value column (lachute/blainville)", () => {
     expect(extractNormValue("Frontage minimum                 (m)        45       45       45")).toEqual({
       label: "Frontage minimum",
@@ -40,6 +55,14 @@ describe("extractNormValue", () => {
       unit: "m",
     });
     expect(extractNormValue("Superficie minimum   (m2)   3000   3000   3000")?.raw).toBe("3000 m2");
+  });
+
+  it("keeps min/max qualifiers that sit after a paren unit", () => {
+    expect(extractNormValue("Hauteur (étages)                 max.          2              2")).toEqual({
+      label: "Hauteur max.",
+      raw: "2 etages",
+      unit: "etages",
+    });
   });
 
   it("flags a dwelling density 'log / ha' as LOGHA (≠ emprise-au-sol %)", () => {
@@ -71,6 +94,12 @@ describe("resolveField", () => {
   it("maps a bare 'Hauteur maximale' by its VALUE unit (mètres → hauteur_metres)", () => {
     expect(resolveField("Hauteur maximale", "other", "m")).toBe("hauteur_metres");
     expect(resolveField("Hauteur maximale", "other", "etages")).toBe("hauteur_etages");
+  });
+
+  it("lets the VALUE unit override an étages-labelled combined cap ('3 étages et 11 m')", () => {
+    // The metric bound was captured ("11 m"), so publish hauteur_metres — NOT the
+    // étages spec that would reject "11 m" as unite-incoherente.
+    expect(resolveField("Hauteur maximale 3 étages et", "batiment", "m")).toBe("hauteur_metres");
   });
 
   it("maps terse marges only under the MARGES section (lachute/blainville)", () => {
