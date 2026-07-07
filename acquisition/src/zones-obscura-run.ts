@@ -57,6 +57,7 @@ import { zoneCodeStats, type ZoneCodeStats } from "./zones-wfs-run.js";
 // ── Constantes ────────────────────────────────────────────────────────────────
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MUNIS_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
+const COVERAGE_MATRIX_PATH = resolve(HERE, "../../work/coverage/coverage-matrix.json");
 // Répertoire MAMH: slug → mamhCode (code géographique officiel). Crosswalk
 // AUTORITATIF pour les agrégats discriminés par un code muni numérique
 // (ex. Zonage_MRC_Témiscouata_vue.CODE_MUN). Jamais deviné : source MAMH.
@@ -144,7 +145,7 @@ interface SlugResult {
 
 // ── Args ──────────────────────────────────────────────────────────────────────
 interface GonetSeed { slug: string; code: string }
-interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; gonetSeeds: GonetSeed[]; zoneField?: string; muniField?: string; outFile?: string }
+interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; gonetSeeds: GonetSeed[]; gonetMrcs: string[]; zoneField?: string; muniField?: string; outFile?: string }
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string) => argv.includes(`--${k}`);
@@ -171,6 +172,9 @@ function parseArgs(argv: string[]): Args {
     // GoNet-seeded mode (discover-once-deposit-many): skip the site crawl and go
     // straight to the GOnet6 viewer for a known municode. Format: slug=municode.
     gonetSeeds: csv("gonet").map((pair) => { const [slug, code] = pair.split("="); return { slug: (slug ?? "").trim(), code: (code ?? "").trim() }; }).filter((s) => s.slug && /^\d{4,5}$/.test(s.code)),
+    // GoNet MRC mode: derive slug=municode seeds from the committed MAMH directory
+    // and the read-only coverage matrix. Only zones!=done slugs are targeted.
+    gonetMrcs: csv("gonet-mrc"),
     ...(get("out") ? { outFile: get("out") } : {}),
   };
 }
@@ -1108,14 +1112,11 @@ async function depositFromServices(
     const outFields = probe.muniField ? `${probe.zoneField},${probe.muniField}` : probe.zoneField;
     const raw = await fetchFeatures(probe.layerUrl, outFields, where);
     if (raw.length === 0) continue;
-    // Anti-invention (override --zone-field): the field is operator-chosen, so we
-    // validate its VALUES are real zone codes — not an affectation label (TYPE_ZONE),
-    // a bare category prefix (ZONE_=R/C/I/P), nor a technical/sequential id — before
-    // any deposit. Auto-picked fields keep the lighter null-ratio gate below.
-    if (args.zoneField) {
-      const verdict = validateExplicitZoneField(raw, probe.zoneField);
-      if (!verdict.ok) { base.detail = `couche ${probe.layerUrl} champ '${probe.zoneField}': ${verdict.reason} — rejet`; continue; }
-    }
+    // Anti-invention: validate the VALUES are real zone codes, even when the field
+    // was auto-picked. This rejects affectation labels, letter-only categories,
+    // numeric-only zone ids, and technical/sequential ids before any deposit.
+    const verdict = validateExplicitZoneField(raw, probe.zoneField);
+    if (!verdict.ok) { base.detail = `couche ${probe.layerUrl} champ '${probe.zoneField}': ${verdict.reason} — rejet anti-invention`; continue; }
     const norm = normalize(raw, probe.zoneField, probe.layerUrl);
 
     // Spatial gate on the RETURNED WGS84 features (outSR=4326) — projection-free
@@ -1195,14 +1196,34 @@ function loadMuniCrosswalk(munis: MuniEntry[]): void {
   console.error(`[obscura] crosswalk MAMH: ${codeToSlug.size} codes → slug | registre: ${slugSet.size} slugs`);
 }
 
+function gonetSeedsFromMrcs(munis: MuniEntry[], mrcs: string[]): GonetSeed[] {
+  if (mrcs.length === 0) return [];
+  const wanted = new Set(mrcs.map((m) => m.trim()).filter(Boolean));
+  const matrix = JSON.parse(readFileSync(COVERAGE_MATRIX_PATH, "utf8")) as {
+    cities?: Record<string, Record<string, { status?: string }>>;
+  };
+  const codeBySlug = new Map([...MUNI_CODE_TO_SLUG.entries()].map(([code, slug]) => [slug, code]));
+  const seeds: GonetSeed[] = [];
+  for (const muni of munis) {
+    if (!muni.mrc || !wanted.has(muni.mrc)) continue;
+    const zonesStatus = matrix.cities?.[muni.slug]?.["zones"]?.status ?? "";
+    if (zonesStatus === "done") continue;
+    const code = codeBySlug.get(muni.slug);
+    if (code && /^\d{4,5}$/.test(code)) seeds.push({ slug: muni.slug, code });
+  }
+  return seeds;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS] [--service URL --zone-field F --muni-field F]  |  --gonet slug=municode,..."); process.exit(2); }
 
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
   loadMuniCrosswalk(munis);
+  const mrcSeeds = gonetSeedsFromMrcs(munis, args.gonetMrcs);
+  args.gonetSeeds.push(...mrcSeeds.filter((seed) => !args.gonetSeeds.some((s) => s.slug === seed.slug)));
+  if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS] [--service URL --zone-field F --muni-field F]  |  --gonet slug=municode,... | --gonet-mrc \"MRC name\""); process.exit(2); }
   const s3 = args.deposit ? s3Client() : null;
   const seeded = args.services.length > 0 || args.orgs.length > 0;
 
@@ -1212,7 +1233,7 @@ async function main(): Promise<void> {
   const needsChrome = args.gonetSeeds.length > 0 || !seeded;
   const chrome = needsChrome ? resolveChrome() : null;
   if (needsChrome && !chrome) { console.error("[obscura] AUCUN binaire Chromium — abandon"); process.exit(1); }
-  console.error(`[obscura] chromium=${chrome ?? "n/a (mode --service HTTP)"} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto"} muniField=${args.muniField ?? "auto"}`);
+  console.error(`[obscura] chromium=${chrome ?? "n/a (mode --service HTTP)"} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} gonetMrcs=${args.gonetMrcs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto"} muniField=${args.muniField ?? "auto"}`);
 
   const results: SlugResult[] = [];
   // GoNet-seeded mode: needs Chromium (the GOnet6 zonage MapServer is reachable
