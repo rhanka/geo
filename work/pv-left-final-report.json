@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-07-07T20:23:11+00:00",
+  "objective": "PV residue final: strict council-minutes live URL deposits from non-exhausted iVisit/WordPress/Drive/Wix/server-rendered tracks",
+  "deposits": [
+    {
+      "slug": "saint-clement",
+      "status": "deposited",
+      "s3": "registry/qc-pv/saint-clement/index.json",
+      "pvIndexUrl": "https://www.st-clement.ca/proc%C3%A8s-verbaux",
+      "track": "Wix live page + Google Drive PDF anchors",
+      "entries": 5,
+      "liveEvidence": {
+        "pageContains": "live Wix HTML contains drive.google.com/file/d/... links with labels PV- Mai/Avril/Mars/Février/Janvier 2026",
+        "headLive": "pv-dom-deposit HEAD/GET live gate kept 5/5, dropped 0"
+      }
+    },
+    {
+      "slug": "saint-robert",
+      "status": "deposited",
+      "s3": "registry/qc-pv/saint-robert/index.json",
+      "pvIndexUrl": "https://www.saintrobert.qc.ca/?page=cons-proc",
+      "track": "server-rendered council PV page with include/fichier.php PDF handlers",
+      "entries": 25,
+      "liveEvidence": {
+        "pageContains": "live page title/section Procès-verbaux, official-note text, labels PV - 4 MAI 2026 through recent archived PV options",
+        "headLive": "pv-dom-deposit HEAD/GET live gate kept 25/25, dropped 0; sampled handlers return application/pdf"
+      }
+    }
+  ],
+  "strictGate": {
+    "accepted": "PV de séance conseil only; no notices/regulations/ODJ-only manifests; every URL live-gated before deposit",
+    "rejectedExamples": [
+      {
+        "slug": "sainte-sophie-de-levrard",
+        "reason": "homepage PDFs sampled were journal/regulation/policy, not council PV"
+      }
+    ]
+  },
+  "coverageAfterReconcile": "SCOREBOARD /1106 : pv=1050 (+0) | normes=556 (+0) | zones=766 (+0) | cadastre=1106 (+0) | role-foncier=1106 (+0) | tod=39 (+0)"
+}
