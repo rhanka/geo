@@ -3,7 +3,8 @@
  *
  * Input is the S3-derived `work/coverage/immo-lots.json` cache written by
  * `immo-lots-audit.ts`. This script refuses caches without per-muni rows: aggregate
- * field totals are not enough to create honest municipality leaves.
+ * field totals are not enough to create honest municipality leaves. Fields are
+ * nested under `immo-lots-enrichment` so the report shows them as track sub-WPs.
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -15,6 +16,7 @@ export const ROOT = resolve(HERE, "..", "..");
 export const IMMO_LOTS_CACHE = join(ROOT, "work", "coverage", "immo-lots.json");
 export const TRACK_EVENTS_DIR = join(ROOT, "work", "coverage", "track-events");
 export const WORKSPACE = "ws:5ce6fe34225640473edb8b90faa6935c9a961036c94d4915a4ff9368e947e068";
+const ROOT_WP_TITLE = "immo-lots-enrichment";
 
 type Realization = "to-do" | "in-progress" | "done" | "cancelled" | "rejected";
 type FieldScope = "all" | "tod";
@@ -35,6 +37,7 @@ interface WorkpackageCreateEvent {
     readonly title: string;
     readonly workspace: string;
     readonly role: "workpackage";
+    readonly parentId?: string;
   };
 }
 
@@ -116,15 +119,15 @@ const FIELD_TRACKS: readonly FieldTrack[] = [
     key: "adresse",
     wpTitle: "immo-lots adresse",
     scope: "all",
-    thresholdPct: 95,
-    leafSuffix: "adresse coverage >=95% of served lots",
+    thresholdPct: 100,
+    leafSuffix: "adresse present on 100% of served lots",
   },
   {
     key: "code_postal",
     wpTitle: "immo-lots code_postal",
     scope: "all",
-    thresholdPct: 95,
-    leafSuffix: "code_postal coverage >=95% of served lots",
+    thresholdPct: 100,
+    leafSuffix: "code_postal present on 100% of served lots",
   },
   {
     key: "in_tod",
@@ -158,6 +161,7 @@ export interface ImmoFieldTrackTotal {
 }
 
 export interface ImmoTrackApplyResult {
+  readonly rootWpCreated: number;
   readonly fieldWpsCreated: number;
   readonly leavesCreated: number;
   readonly realizeEvents: number;
@@ -301,7 +305,7 @@ function realizeToDone(itemId: string, from: Realization): RealizeEvent[] {
 }
 
 function cancelActive(itemId: string, from: Realization): RealizeEvent[] {
-  if (from === "cancelled" || from === "rejected") return [];
+  if (from === "done" || from === "cancelled" || from === "rejected") return [];
   return [{ v: 1, kind: "item.realize", payload: { itemId, to: "cancelled" } }];
 }
 
@@ -324,12 +328,33 @@ export function applyImmoLotsTrack(opts: {
   const totals = immoFieldTrackTotals(opts.summary);
 
   let items = readCreatedItems(cwd);
+  let rootWpCreated = 0;
+  if (!items.some((it) => it.role === "workpackage" && it.title === ROOT_WP_TITLE)) {
+    const file = join(outDir, "immo-lots-root-wp.jsonl");
+    writeFileSync(
+      file,
+      jsonl([
+        {
+          v: 1,
+          kind: "item.create",
+          payload: { kind: "feature", title: ROOT_WP_TITLE, workspace: WORKSPACE, role: "workpackage" },
+        },
+      ]),
+      "utf8",
+    );
+    trackIngest(trackBin, file, cwd);
+    rootWpCreated = 1;
+    items = readCreatedItems(cwd);
+  }
+  const rootWp = items.find((it) => it.role === "workpackage" && it.title === ROOT_WP_TITLE);
+  if (!rootWp) throw new Error(`immo-lots root WP missing after ingest: ${ROOT_WP_TITLE}`);
+
   const existingWpTitles = new Set(items.filter((it) => it.role === "workpackage").map((it) => it.title));
   const wpCreates: WorkpackageCreateEvent[] = FIELD_TRACKS.filter((field) => !existingWpTitles.has(field.wpTitle)).map(
     (field) => ({
       v: 1,
       kind: "item.create",
-      payload: { kind: "feature", title: field.wpTitle, workspace: WORKSPACE, role: "workpackage" },
+      payload: { kind: "feature", title: field.wpTitle, workspace: WORKSPACE, role: "workpackage", parentId: rootWp.id },
     }),
   );
   if (wpCreates.length > 0) {
@@ -379,12 +404,13 @@ export function applyImmoLotsTrack(opts: {
   }
 
   return {
+    rootWpCreated,
     fieldWpsCreated: wpCreates.length,
     leavesCreated: leafCreates.length,
     realizeEvents: realizeEvents.length,
     coarseLeavesCancelled: coarseLeaves.filter((it) => {
       const r = realizationById.get(it.id) ?? "to-do";
-      return r !== "cancelled" && r !== "rejected";
+      return r !== "done" && r !== "cancelled" && r !== "rejected";
     }).length,
     totals,
   };
@@ -415,7 +441,8 @@ function main(argv: readonly string[]): number {
   const result = applyImmoLotsTrack({ summary, trackBin, cwd, outDir });
   // eslint-disable-next-line no-console
   console.log(
-    `[track] immo-lots applied: fieldWpsCreated=${result.fieldWpsCreated} leavesCreated=${result.leavesCreated} ` +
+    `[track] immo-lots applied: rootWpCreated=${result.rootWpCreated} ` +
+      `fieldWpsCreated=${result.fieldWpsCreated} leavesCreated=${result.leavesCreated} ` +
       `realizeEvents=${result.realizeEvents} coarseLeavesCancelled=${result.coarseLeavesCancelled}`,
   );
   return 0;
