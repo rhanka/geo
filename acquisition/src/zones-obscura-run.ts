@@ -573,18 +573,23 @@ async function probeServiceForZonage(serviceUrl: string, override?: { zoneField?
   const base = serviceUrl.replace(/\/\d+$/, "");
   const directLayer = /\/\d+$/.test(serviceUrl) ? serviceUrl : null;
   const layerUrls: string[] = [];
+  const addLayerUrl = (url: string): void => { if (!layerUrls.includes(url)) layerUrls.push(url); };
   if (directLayer) layerUrls.push(directLayer);
   else {
-    const info = await fetchJson<{ layers?: Array<{ id: number; name: string; geometryType?: string }> }>(`${base}?f=json`);
+    const info = await fetchJson<{ layers?: GoNetLayer[] }>(`${base}?f=json`);
     const layers = info?.layers ?? [];
-    if (layers.length === 0) layerUrls.push(`${base}/0`);
+    if (layers.length === 0) addLayerUrl(`${base}/0`);
     else {
+      // Public GoNet MapServers can expose "Zonage municipal" as a GROUP layer
+      // with polygon children named generically. Reuse the GoNet selector so
+      // --service can bypass the viewer/proxy when the direct endpoint is live.
+      for (const l of gonetZonageCandidates(layers).slice(0, 12)) addLayerUrl(`${base}/${l.id}`);
       // Prefer a layer whose name screams zonage; else any polygon layer.
       const ranked = [...layers].sort((a, b) => Number(ZONAGE_TITLE_PATTERNS.some((p) => p.test(b.name))) - Number(ZONAGE_TITLE_PATTERNS.some((p) => p.test(a.name))));
       for (const l of ranked.slice(0, 6)) {
         if (AFFECTATION_TITLE_PATTERNS.some((p) => p.test(l.name)) && !ZONAGE_TITLE_PATTERNS.some((p) => p.test(l.name))) continue;
         if (l.geometryType && !/Polygon/i.test(l.geometryType)) continue;
-        layerUrls.push(`${base}/${l.id}`);
+        addLayerUrl(`${base}/${l.id}`);
       }
     }
   }
