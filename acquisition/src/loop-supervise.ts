@@ -119,8 +119,23 @@ if (existsSync(DM)) {
 
 // 6. drumbeat vivant ?
 section("DRUMBEAT");
-const pb = sh("pgrep -fc drumbeat.sh");
-console.log(parseInt(pb.trim() || "0", 10) > 0 ? "vivant" : "MORT (relancer: setsid bash work/delegation-mass/drumbeat.sh &)");
+// Politique worker: pas de sondage process dans cette supervision. On expose
+// l'état à partir du heartbeat durable écrit par drumbeat.sh, si présent.
+{
+  const heartbeat = join(DM, "drumbeat.heartbeat.json");
+  if (existsSync(heartbeat)) {
+    try {
+      const h = JSON.parse(readFileSync(heartbeat, "utf8"));
+      const at = String(h.at ?? h.timestamp ?? h.updatedAt ?? "");
+      const ageMin = at ? Math.round((Date.now() - new Date(at).getTime()) / 60000) : NaN;
+      console.log(Number.isFinite(ageMin) ? `heartbeat ${ageMin}min (${at})` : `heartbeat présent (${heartbeat})`);
+    } catch {
+      console.log("heartbeat présent mais illisible");
+    }
+  } else {
+    console.log("heartbeat absent (état process non sondé par politique)");
+  }
+}
 
 // 7. code non-commité (à committer)
 section("CODE NON-COMMITÉ (acquisition/src, packages)");
