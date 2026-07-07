@@ -21,10 +21,12 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 const TIMEOUT = 12_000;
 
-type Platform = "jmap" | "igo" | "goazimut" | "arcgis" | "wfs" | "carto" | "azimut" | "none";
+type Platform = "sigale" | "geocentriq" | "jmap" | "igo" | "goazimut" | "arcgis" | "wfs" | "carto" | "azimut" | "none";
 
 // Marqueurs par plateforme (URL ou texte). Ordre = priorité de classement.
 const MARKERS: Array<{ p: Platform; re: RegExp }> = [
+  { p: "sigale", re: /sigale\.ca|gis\.altusquebec\.com|ProxyArcGIS\.ashx/i },
+  { p: "geocentriq", re: /geocentriq\.com|gs\d{3}\.geocentriq\.com/i },
   { p: "jmap", re: /jmap|k2geospatial|kheops|carte_publique/i },
   { p: "goazimut", re: /goazimut|gonet|gis\d{2,3}-\d{2}/i },
   { p: "igo", re: /carte-igo|infra-geo|geoegl|igo2|geoportail/i },
