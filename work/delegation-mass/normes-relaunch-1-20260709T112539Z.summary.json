@@ -1,0 +1,108 @@
+{
+  "task": "NORMES shard 1/4 relance 20260709T112539Z",
+  "generatedAt": "2026-07-09T11:40:36-04:00",
+  "mode": {
+    "nodeTsOnly": true,
+    "noSharedManifestRace": true,
+    "normsNoManifest": true,
+    "antiInvention": "strict: no fabricated source/pdf/code; numeric zone codes kept verbatim and validated by existing SIG numeric bridge"
+  },
+  "initialShardState": {
+    "slugs": 80,
+    "alreadyDeposited": ["hatley"],
+    "freeBeforeRun": 79,
+    "sigCandidates": 47,
+    "localPdfCount": 21,
+    "localPdfNonDepositedCount": 20
+  },
+  "discovery": [
+    {
+      "file": "work/delegation-mass/normes-relaunch-1-20260709T112539Z.discovery-a.json",
+      "requestedSlugs": [
+        "albanel",
+        "auclair",
+        "authier",
+        "baie-des-sables",
+        "beaumont",
+        "bedford--brome-missisquoi--2",
+        "caplan",
+        "chute-aux-outardes"
+      ],
+      "crawlerRegistryMatched": ["baie-des-sables"],
+      "confirmedGrillePdfs": 0
+    },
+    {
+      "file": "work/delegation-mass/normes-relaunch-1-20260709T112539Z.discovery-b.json",
+      "requestedSlugs": ["frontenac", "lislet", "lorrainville"],
+      "confirmedGrillePdfs": 0
+    }
+  ],
+  "extractions": [
+    {
+      "slug": "champlain",
+      "sourceUrl": "https://www.municipalite.champlain.qc.ca/file-18340",
+      "attempts": [
+        {
+          "route": "ocr",
+          "window": "1..20",
+          "result": "no-deposit",
+          "reason": "0 zones extracted",
+          "pagesBilled": 20,
+          "usd": 0.02
+        },
+        {
+          "route": "zoneheader",
+          "window": "135..198",
+          "result": "dry-run-pass",
+          "zones": 62,
+          "uniqueZoneCodes": 62,
+          "sigZoneCodes": 65,
+          "overlap": 60,
+          "numericBridged": 60,
+          "recoupExtracted": 0.967741935483871,
+          "recoupSig": 0.9230769230769231,
+          "visionUsd": 0
+        },
+        {
+          "route": "zoneheader",
+          "window": "135..198",
+          "result": "deposited",
+          "key": "registry/qc-zonage-norms/qc-zonage-norms-champlain.parquet",
+          "rows": 62,
+          "uniqueZoneCodes": 62,
+          "publishedFieldPct": 56.5,
+          "sigZoneCodes": 65,
+          "overlap": 60,
+          "recoupExtracted": 0.967741935483871,
+          "recoupSig": 0.9230769230769231,
+          "visionUsd": 0
+        }
+      ]
+    }
+  ],
+  "rejectedLocalDryRuns": [
+    { "slug": "bearn", "route": "zoneheader", "result": "0 zones extracted" },
+    { "slug": "bristol", "route": "zoneheader", "result": "0 zones extracted" },
+    { "slug": "east-broughton", "route": "zoneheader", "result": "0 zones extracted" },
+    { "slug": "ivry-sur-le-lac", "route": "zoneheader", "result": "0 zones extracted" },
+    { "slug": "la-macaza", "route": "zoneheader", "result": "0 zones extracted" }
+  ],
+  "codeDelta": [
+    "packages/qc-sources/src/sources/grille-zoneheader-locator.ts",
+    "packages/qc-sources/src/sources/grille-zoneheader-locator.test.ts"
+  ],
+  "validation": {
+    "s3StatusCheck": "DEPOSITED sig=yes champlain",
+    "targetedVitest": "packages/qc-sources: npx vitest run src/sources/grille-zoneheader-locator.test.ts -> 19 passed",
+    "packageTypecheck": {
+      "command": "npm run typecheck",
+      "status": "failed",
+      "reason": "pre-existing nullability errors in test files unrelated to the changed locator",
+      "files": [
+        "src/sources/grille-spanheader-parser.test.ts",
+        "src/sources/grille-vision-zoneheader.test.ts",
+        "src/sources/grille-zoneheader-parser.test.ts"
+      ]
+    }
+  }
+}
