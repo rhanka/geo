@@ -36,6 +36,20 @@ case "$cmd" in
   inventory)
     exec bash "$HERE/geo-inventory.sh" ;;
 
+  peek)
+    # Ground-truth per worker: tmux alive? did the job EXIT? last non-empty log line.
+    glob="${1:-*}"
+    printf '%-26s | %-6s | %-8s | %s\n' "SESSION" "TMUX" "STATE" "LAST LOG LINE"
+    for f in "$LOGDIR"/$glob.log; do
+      [ -f "$f" ] || continue
+      s="$(basename "$f" .log)"
+      tmux has-session -t "$s" 2>/dev/null && alive="up" || alive="down"
+      exitln="$(grep -m1 'EXIT:' "$f" 2>/dev/null || true)"
+      if [ -n "$exitln" ]; then state="$exitln"; else state="running"; fi
+      last="$(grep -v '^[[:space:]]*$' "$f" 2>/dev/null | tail -n 1)"
+      printf '%-26s | %-6s | %-8s | %s\n' "$s" "$alive" "${state:0:8}" "${last:0:80}"
+    done ;;
+
   stop)
     glob="${1:-}"; [ -n "$glob" ] || { echo "stop needs <tmux-name-glob>"; exit 2; }
     n=0
@@ -54,7 +68,9 @@ case "$cmd" in
     [ -f "$prompt" ] || { echo "prompt file not found: $prompt"; exit 2; }
     log="$LOGDIR/$session.log"
     case "$engine" in
-      claude) runner="claude -p --model $model --dangerously-skip-permissions" ;;
+      # Unset ANTHROPIC_API_KEY so the worker uses the claude.ai subscription OAuth
+      # (the API-key org is 429/usage-limited); falls back to the working login.
+      claude) runner="env -u ANTHROPIC_API_KEY claude -p --model $model --dangerously-skip-permissions" ;;
       codex)  runner="codex exec" ;;
       *) echo "unknown engine: $engine (claude|codex)"; exit 2 ;;
     esac
