@@ -93,10 +93,11 @@ case "$cmd" in
     # the auth (claude → subscription login, codex → its creds), so the engine is
     # just a parameter. The prompt file is injected into the session's tmux pane.
     engine="${1:-}"; session="${2:-}"; prompt="${3:-}"; shift 3 2>/dev/null || true
-    shard=""
+    shard=""; model=""
     while [ "$#" -gt 0 ]; do
       case "$1" in
         --shard) shard="${2:-}"; shift 2 ;;
+        --model) model="${2:-}"; shift 2 ;;
         *) shift ;;
       esac
     done
@@ -116,6 +117,12 @@ case "$cmd" in
     done
     [ -n "$pane" ] || { echo "no pane for $remote (h2a run did not create a session)"; exit 1; }
     sleep 6
+    # optional model switch before the task (e.g. --model claude-opus-4-8 for archi/meta)
+    if [ -n "$model" ]; then
+      tmux send-keys -t "$pane" -l "/model $model"
+      tmux send-keys -t "$pane" Enter
+      sleep 3
+    fi
     body="$(cat "$prompt")"
     if [ -n "$shard" ]; then
       rem="${shard%%/*}"; tot="${shard##*/}"
