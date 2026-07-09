@@ -1,0 +1,50 @@
+{
+  "runId": "normes-relaunch-2-20260709T030635Z",
+  "mode": "parquet-only",
+  "env": {
+    "NORMS_NO_MANIFEST": "1",
+    "NORMS_BUDGET_USD": "1"
+  },
+  "successes": [
+    {
+      "slug": "ogden",
+      "route": "gpt55",
+      "pages": "78..78",
+      "deposited": true,
+      "uniqueZoneCodes": 4,
+      "publishedFieldPct": 62.5,
+      "gridFound": false,
+      "overlap": 0,
+      "sourceUrl": "non-disponible"
+    }
+  ],
+  "nonDeposits": [
+    {
+      "slug": "lambton",
+      "routes": ["ocr", "gpt55"],
+      "reason": "0 zones extracted after corrected windows"
+    },
+    {
+      "slug": "notre-dame-des-prairies",
+      "routes": ["ocr", "gpt55"],
+      "reason": "0 zones extracted"
+    },
+    {
+      "slug": "princeville",
+      "routes": ["ocr", "gpt55"],
+      "reason": "initial OCR anti-invention overlap=0, corrected OCR/gpt55 0 zones"
+    },
+    {
+      "slug": "lassomption",
+      "routes": ["vision"],
+      "reason": "0 zones extracted; window points to movement-terrain annexes"
+    }
+  ],
+  "postCheck": {
+    "ogden": {
+      "deposited": true,
+      "sigGrid": false
+    },
+    "scoreboard": "SCOREBOARD /1106 : pv=1050 (+0) | normes=558 (+2) | zones=767 (+1) | cadastre=1106 (+0) | role-foncier=1106 (+0) | tod=39 (+0)"
+  }
+}
