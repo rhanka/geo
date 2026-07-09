@@ -1,0 +1,184 @@
+{
+  "timestamp": "20260709T171930Z",
+  "branch": "feat/cadre-acquisition",
+  "lane": {
+    "name": "B",
+    "selector": "coverage-matrix PV residual sorted by slug, pv.status != done, index % 2 == 1",
+    "residualBefore": 56,
+    "laneTotal": 28,
+    "configured": [
+      "charette",
+      "waltham"
+    ],
+    "toResearch": [
+      "belleterre",
+      "bonsecours",
+      "caniapiscau",
+      "cote-nord-du-golfe-du-saint-laurent",
+      "eeyou-istchee-james-bay",
+      "gros-mecatina",
+      "la-visitation-de-lile-dupas",
+      "lile-dorval",
+      "moffet",
+      "montreal",
+      "notre-dame-du-nord",
+      "rapides-des-joachims",
+      "riviere-eternite",
+      "saint-andre-du-lac-saint-jean",
+      "saint-benoit-du-lac",
+      "saint-dominique-du-rosaire",
+      "saint-elphege",
+      "saint-guy",
+      "saint-lambert--abitibi-ouest",
+      "saint-mathieu-de-rioux",
+      "saint-octave-de-metis",
+      "saint-pierre-de-la-riviere-du-sud",
+      "saint-thuribe",
+      "sainte-marguerite-marie",
+      "sainte-sophie-de-levrard",
+      "tres-saint-sacrement"
+    ]
+  },
+  "counts": {
+    "before": {
+      "done": 1050,
+      "total": 1106,
+      "nonDone": 56
+    },
+    "newDeposits": 1,
+    "afterDerivedFromValidatedDeposits": {
+      "done": 1051,
+      "total": 1106,
+      "nonDone": 55
+    },
+    "coverageMatrixReconciled": false,
+    "coverageMatrixNote": "coverage-reconcile.ts was not run because work/coverage/coverage-matrix.json was already dirty before this pass."
+  },
+  "deposit": {
+    "slug": "waltham",
+    "s3Key": "registry/qc-pv/waltham/index.json",
+    "count": 8,
+    "runner": "pv-livehost-run.ts",
+    "discoveryTrack": "livehost-http-crawl",
+    "pvIndexUrl": "https://pontiacouest.ca/events/reunion-du-conseil-municipal-de-waltham-5/",
+    "verifiedSample": {
+      "checked": 6,
+      "live": 6
+    },
+    "firstEntry": {
+      "url": "https://pontiacouest.ca/wp-content/uploads/2026/06/Minutes-Waltham-May-2026-Francais.pdf",
+      "title": "Minutes-Waltham-May-2026-Francais.pdf",
+      "contentType": "application/pdf"
+    },
+    "lastEntry": {
+      "url": "https://pontiacouest.ca/wp-content/uploads/2026/01/Minutes-Waltham-March-2026-anglais.pdf",
+      "title": "Minutes-Waltham-March-2026-anglais.pdf",
+      "contentType": "application/pdf"
+    }
+  },
+  "runs": [
+    {
+      "runner": "pv-index-run.ts",
+      "scope": [
+        "charette",
+        "waltham"
+      ],
+      "mode": "configured",
+      "force": false,
+      "result": {
+        "withPv": 0,
+        "deposited": 0,
+        "totalPv": 0
+      }
+    },
+    {
+      "runner": "pv-gonet-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.gonet.json",
+      "mode": "static",
+      "force": false,
+      "bounds": {
+        "cityTimeoutMs": 25000,
+        "timeoutMs": 8000,
+        "maxPvCandidates": 40,
+        "verifyHead": 3
+      },
+      "result": {
+        "deposited": 0,
+        "stats": {
+          "no-website": 6,
+          "error": 9,
+          "not-found": 11
+        }
+      }
+    },
+    {
+      "runner": "pv-livehost-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.livehost.json",
+      "mode": "livehost",
+      "force": false,
+      "result": {
+        "deposited": 1,
+        "noPv": 21,
+        "totalPv": 8
+      }
+    },
+    {
+      "runner": "pv-vplus-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.vplus.json",
+      "mode": "vplus-api",
+      "force": false,
+      "result": {
+        "deposited": 0,
+        "skipExisting": 1,
+        "notVplus": 20,
+        "noPv": 1
+      }
+    },
+    {
+      "runner": "pv-obscura-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.obscura.json",
+      "mode": "headless-render",
+      "force": false,
+      "bounds": {
+        "navMs": 6000,
+        "maxFollow": 4,
+        "maxPathProbes": 6
+      },
+      "result": {
+        "deposited": 0,
+        "noPvRendered": 9
+      }
+    },
+    {
+      "runner": "pv-wp-media-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.wpmedia.json",
+      "mode": "wordpress-media",
+      "force": false,
+      "result": {
+        "deposited": 0,
+        "noWpMedia": 8,
+        "noPv": 1
+      }
+    },
+    {
+      "runner": "pv-aoca-run.ts",
+      "report": "work/delegation-mass/pv-longshot-B-20260709T171930Z.aoca.json",
+      "mode": "aoca",
+      "force": false,
+      "result": {
+        "deposited": 0,
+        "noPv": 1
+      }
+    }
+  ],
+  "antiInvention": {
+    "forceUsed": false,
+    "manualRecenseurUsed": false,
+    "officialSourceOnly": true,
+    "notes": [
+      "No URLs were invented. Deposits came only from repo runners parsing live official pages/API output.",
+      "No deposit was made for zero-PV, no-website, not-vplus, no-wp-media, or no-pv-rendered outcomes.",
+      ".track and .claude were not touched by this pass."
+    ]
+  }
+}
