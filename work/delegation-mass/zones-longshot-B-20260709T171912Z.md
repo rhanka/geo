@@ -12,14 +12,16 @@ and coverage-matrix index `% 2 == 1`.
 - Lane-B with MAMH code for vector probes: 170.
 - Lane-B with official-page crawler config: 74.
 - Matrix `zones.status=done` before local work: 769.
+- Matrix `zones.status=done` after local work: 770.
 - S3 `normalized/ca-qc-zonage` before: 729.
 - S3 `normalized/ca-qc-zonage` after: 730.
 - Own successful zone deposits: 0.
 - Own net delta: 0.
 
-The S3 total increased by 1 during this run, but not from this lane: both attempted
-slugs (`rougemont`, `acton-vale`) remained absent in the final S3 check, and every
-lane command either used `--no-deposit` or aborted/withheld before upload.
+The matrix and S3 totals each showed +1 by the end of this run, but not from this
+lane: both attempted slugs (`rougemont`, `acton-vale`) remained absent in the final
+S3 check, and every lane command either used `--no-deposit` or aborted/withheld
+before upload.
 
 ## Probes
 
