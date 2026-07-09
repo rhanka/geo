@@ -1,0 +1,118 @@
+{
+  "run": "zones-longshot-B-20260709T171912Z",
+  "branch": "feat/cadre-acquisition",
+  "lane": {
+    "name": "B",
+    "constraint": "zones.status != done, candidateTracks contains pdf-georef-t1/pdf-vectorize-t2/pdf-raster-t3/pdf-scan-t4/pdf-discovery-required, index % 2 == 1",
+    "eligibleCandidates": 173,
+    "eligibleWithMamhCode": 170,
+    "eligibleWithPvCrawler": 74
+  },
+  "counts": {
+    "matrixZonesDoneBefore": 769,
+    "s3ZonesBefore": 729,
+    "s3ZonesAfter": 730,
+    "ownZoneDeposits": 0,
+    "ownDelta": 0,
+    "note": "S3 total increased by 1 during the run, but rougemont and acton-vale remained absent and every command in this lane either ran probe/no-deposit or aborted/withheld before upload."
+  },
+  "successes": [],
+  "followupRuns": {
+    "lotZoneJoin": [],
+    "lotsEnriched": [],
+    "reason": "No slug passed the zone acquisition gates in this lane."
+  },
+  "probes": [
+    {
+      "family": "geocentralis-wfs",
+      "artifact": "work/delegation-mass/zones-longshot-B-20260709T171912Z.wfs-probe.json",
+      "inputCount": 170,
+      "byStatus": {
+        "no-features": 170
+      },
+      "deposited": 0
+    },
+    {
+      "family": "geocentriq",
+      "artifact": "work/delegation-mass/zones-longshot-B-20260709T171912Z.geocentriq-probe.json",
+      "inputCount": 1,
+      "byStatus": {
+        "zone-invalid": 1
+      },
+      "deposited": 0,
+      "reject": "kipawa layer values were usage/class values such as F/Ra/Rv, not zone codes."
+    },
+    {
+      "family": "official-pdf-discovery",
+      "artifact": null,
+      "status": "interrupted after useful window; no deposits",
+      "observedCandidates": [
+        {
+          "slug": "rougemont",
+          "source": "https://rougemont.ca/wp-content/uploads/2026/05/Zonage_urbain_concordance_2018-242.pdf",
+          "markers": ["/Measure", "/GPTS", "/LPTS", "/Viewport", "/GCS", "GEOGCS", "/Bounds"],
+          "verdict": "candidate only; final T1 spatial gate rejected"
+        },
+        {
+          "slug": "acton-vale",
+          "source": "https://ville.actonvale.qc.ca/wp-content/uploads/2026/02/Plan-de-zonage-1-de-2-Acton-Vale-02-2026.pdf",
+          "markers": ["/Measure", "/GPTS", "/LPTS", "/Viewport", "/GCS", "GEOGCS", "PROJCS", "/Bounds"],
+          "verdict": "candidate only; final multisheet auto-GCP gates withheld"
+        },
+        {
+          "slug": "acton-vale",
+          "source": "https://ville.actonvale.qc.ca/wp-content/uploads/2026/02/Plan-de-zonage-2-de-2-Acton-Vale-02-2026.pdf",
+          "markers": ["/Measure", "/GPTS", "/LPTS", "/Viewport", "/GCS", "GEOGCS", "PROJCS", "/Bounds"],
+          "verdict": "candidate only; final multisheet auto-GCP gates withheld"
+        }
+      ]
+    }
+  ],
+  "rejections": [
+    {
+      "slug": "rougemont",
+      "method": "t1-build text + authoritative numeric dictionary",
+      "dict": "work/zonage-dicts/rougemont.codes.json",
+      "source": "https://rougemont.ca/wp-content/uploads/2026/05/Zonage_urbain_concordance_2018-242.pdf",
+      "result": "ABORT",
+      "reason": "T1 labels were 4540.8 km from cadastre centroid under the embedded transform; spatial gate rejected georef mismatch.",
+      "upload": false
+    },
+    {
+      "slug": "acton-vale",
+      "method": "t2-build-multisheet text + authoritative numeric dictionary",
+      "dict": "work/zonage-dicts/acton-vale.codes.json",
+      "sources": [
+        "work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-1.pdf",
+        "work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-2.pdf"
+      ],
+      "artifact": "work/delegation-mass/zones-longshot-B-20260709T171912Z/acton-vale-t2ms-text/qc-zonage-acton-vale.stats.json",
+      "result": "WITHHELD",
+      "reason": "No sheet cleared per-sheet auto-GCP gates: sheet 1 unresolved 180-degree orientation ambiguity; sheet 2 residual/holdout candidates failed orientation/isotropy.",
+      "upload": false
+    }
+  ],
+  "commandsRun": [
+    "git status --short --branch",
+    "sed -n '1,260p' acquisition/src/coverage-reconcile.ts",
+    "sed -n '1,620p' docs/spec/zonage-georeferencement-gcp.md",
+    "sed -n '1,260p' work/delegation-mass/zones-recalage-1-20260709T114400Z.md",
+    "sed -n '1,260p' work/delegation-mass/zones-recalage-2-2026-07-09T11:41:27Z.md",
+    "node -e '<compute lane-B candidates and MAMH pairs>'",
+    "npx tsx acquisition/src/zones-s3-check.ts",
+    "npx tsx acquisition/src/zones-wfs-run.ts --pairs-file /tmp/geo-zones-laneB-pairs.txt --no-deposit --conc 8 --out work/delegation-mass/zones-longshot-B-20260709T171912Z.wfs-probe.json",
+    "npx tsx acquisition/src/zones-geocentriq-run.ts --mrc temiscamingue --slugs kipawa --no-deposit --out work/delegation-mass/zones-longshot-B-20260709T171912Z.geocentriq-probe.json",
+    "npx tsx acquisition/src/zones-gdal-discover.ts --slugs <74 lane-B PV-configured slugs> --2hop --max-eval 3 --delay-ms 700 --timeout-ms 15000 --out work/delegation-mass/zones-longshot-B-20260709T171912Z.gdal-discover.json",
+    "npx tsx acquisition/src/dump-norms-dict.ts rougemont --out work/zonage-dicts/rougemont.codes.json",
+    "npx tsx acquisition/src/t1-build.ts --slug rougemont --pdf https://rougemont.ca/wp-content/uploads/2026/05/Zonage_urbain_concordance_2018-242.pdf --dict work/zonage-dicts/rougemont.codes.json --allow-numeric-codes --min-codes 10 --spatial-km 8 --out work/delegation-mass/zones-longshot-B-20260709T171912Z/rougemont-t1",
+    "curl -L -A Mozilla/5.0 -o work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-1.pdf https://ville.actonvale.qc.ca/wp-content/uploads/2026/02/Plan-de-zonage-1-de-2-Acton-Vale-02-2026.pdf",
+    "curl -L -A Mozilla/5.0 -o work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-2.pdf https://ville.actonvale.qc.ca/wp-content/uploads/2026/02/Plan-de-zonage-2-de-2-Acton-Vale-02-2026.pdf",
+    "npx tsx acquisition/src/dump-norms-dict.ts acton-vale --out work/zonage-dicts/acton-vale.codes.json",
+    "pdfinfo work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-1.pdf",
+    "pdfinfo work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-2.pdf",
+    "pdftotext work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-1.pdf -",
+    "pdftotext work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-2.pdf -",
+    "npx tsx acquisition/src/t2-build-multisheet.ts --slug acton-vale --sheets work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-1.pdf,work/zonage-plans/longshot-B-20260709T171912Z/acton-vale-plan-2.pdf --labels text --dict work/zonage-dicts/acton-vale.codes.json --allow-numeric-codes --min-codes 3 --max-residual-m 30 --min-cadastre-pct 50 --out work/delegation-mass/zones-longshot-B-20260709T171912Z/acton-vale-t2ms-text",
+    "npx tsx acquisition/src/zones-s3-check.ts rougemont acton-vale"
+  ]
+}
