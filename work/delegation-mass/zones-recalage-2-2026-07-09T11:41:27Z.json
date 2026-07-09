@@ -1,0 +1,83 @@
+{
+  "iso": "2026-07-09T11:41:27Z",
+  "shard": "2/4",
+  "method": "T1 GeoPDF embedded georef with GPT-5.5 dict-validated labels",
+  "no_agol_owner_harvest": true,
+  "candidates": [
+    "sainte-anne-de-sabrevois",
+    "saint-cesaire",
+    "saint-lazare",
+    "saint-placide",
+    "saint-paul-dabbotsford",
+    "noyan",
+    "notre-dame-de-stanbridge",
+    "saint-hippolyte",
+    "pointe-fortune",
+    "tres-saint-redempteur",
+    "stanbridge-east",
+    "massueville"
+  ],
+  "success": {
+    "slug": "saint-hippolyte",
+    "s3_key": "normalized/ca-qc-zonage/qc-zonage-saint-hippolyte.geojson",
+    "source_pdf": "https://saint-hippolyte.ca/wp-content/uploads/2026/05/Reglement-de-zonage-no-1171-19-Annexe1_Plan-de-zonage.pdf",
+    "dict_pdf": "https://saint-hippolyte.ca/wp-content/uploads/2026/05/Reglement-de-zonage-Annexe-2-grilles-des-specifications-COD-ADM.pdf",
+    "dict_path": "work/zonage-dicts/saint-hippolyte.codes.json",
+    "stats_path": "work/delegation-mass/recalage-2/saint-hippolyte-t1-gpt55/qc-zonage-saint-hippolyte.stats.json",
+    "georef_residual_m": 0,
+    "dict_size": 113,
+    "gpt55_reads": 144,
+    "gpt55_validated": 140,
+    "gpt55_rejected": 4,
+    "gpt55_distinct": 112,
+    "gpt55_snap_rate_pct": 97.9,
+    "n_served_features": 93,
+    "n_label_codes": 112,
+    "label_spatial_km_from_cadastre": 4.341,
+    "labels_inside_cadastre_bbox": "136/140",
+    "lot_to_zone_pct": 51.4,
+    "pct_area_covered": 44.08,
+    "n_lots_assigned": 5061,
+    "n_lots_total": 9846,
+    "s3_check": "PRESENT"
+  },
+  "rejections": [
+    {
+      "slug": "saint-hippolyte",
+      "step": "T1 text labels",
+      "reason": "0 words, 0 code-like, 0 distinct codes; glyph plan retried with GPT-5.5 and official dict"
+    },
+    {
+      "slug": "saint-cesaire",
+      "step": "triage",
+      "reason": "official plans found, but visible and regulatory codes are mostly numeric 101..542; skipped for this strict lettered-code shard to avoid anti-74 risk"
+    }
+  ],
+  "post_deposit": {
+    "lot_zone_join": {
+      "command": "npx tsx acquisition/src/lot-zone-join-run.ts --slugs saint-hippolyte --simplify-zones-m 1",
+      "rows": 9846,
+      "assigned_pct": 51.69,
+      "multi_pct": 0.01,
+      "norm_match_pct": 17.49,
+      "verified_parquet": true,
+      "verified_stats": true,
+      "warnings": [
+        "zone_code norm match rate 17.49% < 95%",
+        "assigned lots 51.69% < 70%"
+      ]
+    },
+    "lots_enriched": {
+      "command": "npx tsx acquisition/src/lots-enriched-run.ts --slugs saint-hippolyte",
+      "rows": 9846,
+      "zone_code_pct": 51.69,
+      "norms_pct": 9.04,
+      "surface_pct": 100,
+      "code_postal_pct": 100,
+      "address_pct": 98.14,
+      "deposit": true
+    },
+    "coverage_reconcile": "SCOREBOARD /1106 : pv=1050 (+0) | normes=560 (+1) | zones=769 (+1) | cadastre=1106 (+0) | role-foncier=1106 (+0) | tod=39 (+0)"
+  },
+  "commit_note": "Do not commit bulky local GeoJSON/PDF cache; commit report, dict, and compact stats only."
+}
