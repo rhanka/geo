@@ -29,6 +29,9 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+import { s3Client } from "./lib/s3.js";
+import { computeGap } from "./qc-lots-gap.js";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
 const JOIN = join(HERE, "lot-zone-join-run.ts");
@@ -46,6 +49,10 @@ interface Args {
   workers: number;
   enrichNoRole: boolean;
   enrichNoFsa: boolean;
+  /** When >0 and no --plan given: build the plan live from the S3 gap (top-N slugs). */
+  gapLimit: number;
+  /** Batch size when planning from the gap (default 4). */
+  gapBatch: number;
 }
 
 interface MuniStat {
@@ -88,6 +95,8 @@ function parseArgs(argv: string[]): Args {
   let workers = 1;
   let enrichNoRole = false;
   let enrichNoFsa = false;
+  let gapLimit = 0;
+  let gapBatch = 4;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
     if (a === "--plan") planPath = String(argv[++i] ?? "");
@@ -99,9 +108,15 @@ function parseArgs(argv: string[]): Args {
       workers = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || 1);
     else if (a === "--enrich-no-role") enrichNoRole = true;
     else if (a === "--enrich-no-fsa") enrichNoFsa = true;
+    else if (a === "--gap-limit")
+      gapLimit = Math.max(0, parseInt(String(argv[++i] ?? ""), 10) || 0);
+    else if (a === "--gap-batch")
+      gapBatch = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || 4);
     else throw new Error(`unknown argument: ${a}`);
   }
-  if (!planPath || !progressPath) throw new Error("need --plan and --progress");
+  if (!progressPath) throw new Error("need --progress");
+  if (!planPath && gapLimit <= 0)
+    throw new Error("need --plan <file> OR --gap-limit <N> (build plan from S3 gap)");
   return {
     planPath,
     progressPath,
@@ -110,7 +125,24 @@ function parseArgs(argv: string[]): Args {
     workers,
     enrichNoRole,
     enrichNoFsa,
+    gapLimit,
+    gapBatch,
   };
+}
+
+/** Build a batch plan live from the S3 gap: top-N producible slugs, chunked. */
+async function planFromGap(gapLimit: number, gapBatch: number): Promise<Plan> {
+  const gap = await computeGap(s3Client());
+  const slugs = gap.rows.map((r) => r.slug).slice(0, gapLimit);
+  const batches: string[][] = [];
+  for (let i = 0; i < slugs.length; i += gapBatch) {
+    batches.push(slugs.slice(i, i + gapBatch));
+  }
+  process.stdout.write(
+    `[backfill] plan-from-gap: gap=${gap.rows.length} chosen=${slugs.length} ` +
+      `batches=${batches.length} (batch=${gapBatch})\n`,
+  );
+  return { batches };
 }
 
 function normalizeBatch(b: string | string[]): string {
@@ -285,7 +317,9 @@ async function runBatch(
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const plan = JSON.parse(readFileSync(args.planPath, "utf8")) as Plan;
+  const plan: Plan = args.planPath
+    ? (JSON.parse(readFileSync(args.planPath, "utf8")) as Plan)
+    : await planFromGap(args.gapLimit, args.gapBatch);
   const batches = plan.batches.map(normalizeBatch).filter(Boolean);
   const prog = loadProgress(args.progressPath, batches.length);
   const done = new Set<number>(prog.batches_done_ids);
