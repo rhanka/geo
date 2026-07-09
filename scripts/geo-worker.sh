@@ -37,47 +37,84 @@ case "$cmd" in
     exec bash "$HERE/geo-inventory.sh" ;;
 
   peek)
-    # Ground-truth per worker: tmux alive? did the job EXIT? last non-empty log line.
+    # Ground-truth per worker. h2a agents ("remote-<name>") show work in the tmux
+    # pane; bg jobs ("<name>") write to worker-logs/<name>.log. Report both.
     glob="${1:-*}"
-    printf '%-26s | %-6s | %-8s | %s\n' "SESSION" "TMUX" "STATE" "LAST LOG LINE"
-    for f in "$LOGDIR"/$glob.log; do
-      [ -f "$f" ] || continue
-      s="$(basename "$f" .log)"
-      tmux has-session -t "$s" 2>/dev/null && alive="up" || alive="down"
-      exitln="$(grep -m1 'EXIT:' "$f" 2>/dev/null || true)"
-      if [ -n "$exitln" ]; then state="$exitln"; else state="running"; fi
-      last="$(grep -v '^[[:space:]]*$' "$f" 2>/dev/null | tail -n 1)"
-      printf '%-26s | %-6s | %-8s | %s\n' "$s" "$alive" "${state:0:8}" "${last:0:80}"
-    done ;;
+    printf '%-30s | %-4s | %s\n' "SESSION" "UP" "LAST LINE"
+    while IFS= read -r name; do
+      case "$name" in
+        $glob | remote-$glob) : ;;
+        *) continue ;;
+      esac
+      case "$name" in
+        remote-*)
+          # h2a agent: work is in the tmux pane, not a log file.
+          last="$(tmux capture-pane -t "$name" -p 2>/dev/null | grep -v '^[[:space:]]*$' | tail -n 1)" ;;
+        *)
+          f="$LOGDIR/$name.log"
+          if [ -f "$f" ]; then
+            last="$(grep -v '^[[:space:]]*$' "$f" 2>/dev/null | tail -n 1)"
+          else
+            last="$(tmux capture-pane -t "$name" -p 2>/dev/null | grep -v '^[[:space:]]*$' | tail -n 1)"
+          fi ;;
+      esac
+      printf '%-30s | %-4s | %s\n' "$name" "up" "${last:0:88}"
+    done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+    echo "(sessions not listed = down/exited)" ;;
+
+  tail)
+    session="${1:-}"; n="${2:-40}"
+    [ -n "$session" ] || { echo "tail needs <session> [n]"; exit 2; }
+    case "$session" in
+      remote-*) tmux capture-pane -t "$session" -p -S -"$n" 2>/dev/null ;;
+      *)
+        if tmux has-session -t "remote-$session" 2>/dev/null; then
+          tmux capture-pane -t "remote-$session" -p -S -"$n" 2>/dev/null
+        else
+          tail -n "$n" "$LOGDIR/$session.log" 2>/dev/null || echo "(no pane/log for $session)"
+        fi ;;
+    esac ;;
 
   stop)
     glob="${1:-}"; [ -n "$glob" ] || { echo "stop needs <tmux-name-glob>"; exit 2; }
     n=0
-    while IFS= read -r line; do
-      name="${line%%:*}"
+    while IFS= read -r name; do
       case "$name" in
-        $glob)
+        $glob | remote-$glob)
+          base="${name#remote-}"
+          h2a stop "$base" >/dev/null 2>&1 || true
           tmux kill-session -t "$name" 2>/dev/null && { echo "killed $name"; n=$((n+1)); } ;;
       esac
-    done < <(tmux list-sessions 2>/dev/null)
+    done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
     echo "stopped $n session(s) matching: $glob" ;;
 
   agent)
-    engine="${1:-}"; session="${2:-}"; prompt="${3:-}"; model="${4:-claude-sonnet-4-6}"
-    [ -n "$engine" ] && [ -n "$session" ] && [ -n "$prompt" ] || { echo "agent needs <engine> <session> <prompt-file> [model]"; exit 2; }
+    # Delegate to a REAL agent session via `h2a run <engine>` (NO gateway). h2a owns
+    # the auth (claude → subscription login, codex → its creds), so the engine is
+    # just a parameter. The prompt file is injected into the session's tmux pane.
+    engine="${1:-}"; session="${2:-}"; prompt="${3:-}"
+    [ -n "$engine" ] && [ -n "$session" ] && [ -n "$prompt" ] || { echo "agent needs <engine> <session> <prompt-file>"; exit 2; }
     [ -f "$prompt" ] || { echo "prompt file not found: $prompt"; exit 2; }
-    log="$LOGDIR/$session.log"
-    case "$engine" in
-      # Unset ANTHROPIC_API_KEY so the worker uses the claude.ai subscription OAuth
-      # (the API-key org is 429/usage-limited); falls back to the working login.
-      claude) runner="env -u ANTHROPIC_API_KEY claude -p --model $model --dangerously-skip-permissions" ;;
-      codex)  runner="codex exec" ;;
-      *) echo "unknown engine: $engine (claude|codex)"; exit 2 ;;
-    esac
-    tmux kill-session -t "$session" 2>/dev/null || true
-    tmux new-session -d -s "$session" \
-      "cd '$REPO'; $runner < '$prompt' > '$log' 2>&1; echo \"EXIT:\$? \$(date -u +%FT%TZ)\" >> '$log'; sleep 3600"
-    echo "launched agent session=$session engine=$engine model=$model prompt=$prompt log=$log" ;;
+    remote="remote-$session"
+    h2a stop "$session" >/dev/null 2>&1 || true
+    tmux kill-session -t "$remote" 2>/dev/null || true
+    h2a run "$engine" "$REPO" --name "$session" --no-attach --no-gw >/dev/null 2>&1 || {
+      echo "h2a run failed for engine=$engine session=$session"; exit 1; }
+    # wait for the session pane, let the CLI boot its input, then inject the prompt.
+    pane=""
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      pane="$(tmux list-panes -t "$remote" -F '#{pane_id}' 2>/dev/null | head -1)"
+      [ -n "$pane" ] && break
+      sleep 1
+    done
+    [ -n "$pane" ] || { echo "no pane for $remote (h2a run did not create a session)"; exit 1; }
+    sleep 6
+    tmux set-buffer -- "$(cat "$prompt")"
+    tmux paste-buffer -t "$pane" -p
+    tmux send-keys -t "$pane" Enter
+    sleep 1
+    tmux send-keys -t "$pane" Enter
+    echo "launched agent session=$session (tmux $remote pane $pane) engine=$engine prompt=$prompt" ;;
 
   bg)
     session="${1:-}"; shift || true
