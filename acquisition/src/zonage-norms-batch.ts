@@ -52,6 +52,10 @@ interface Muni {
   last?: number;
   reglement?: string;
   sourceUrl?: string;
+  /** Pre-scan the PDF text for the deep grille annex and bound the OCR window to it
+   *  (overrides the page cap). For codified by-laws whose grille sits deep in a
+   *  200+ page PDF (the runner's `--auto-grid-page` flag). */
+  autoGrid?: boolean;
 }
 
 function loadMunis(path: string): Muni[] {
@@ -102,8 +106,12 @@ async function main(): Promise<void> {
   // Strong idempotence: which slugs are already deposited in S3?
   const s3 = s3Client();
   const deposited = await listSlugs(s3, "registry/qc-zonage-norms/", ".parquet");
-  const isDeposited = (slug: string): boolean =>
-    deposited.some((k) => k === slug || k.includes(slug));
+  const depositedSlugs = new Set(
+    deposited.map((rest) =>
+      rest.startsWith("qc-zonage-norms-") ? rest.slice("qc-zonage-norms-".length) : rest,
+    ),
+  );
+  const isDeposited = (slug: string): boolean => depositedSlugs.has(slug);
 
   let ok = 0;
   let fail = 0;
@@ -141,6 +149,11 @@ async function main(): Promise<void> {
     if (m.reglement) args.push("--reglement", String(m.reglement));
     if (m.first) args.push("--first-page", String(m.first));
     if (m.last) args.push("--last-page", String(m.last));
+    if (m.autoGrid) args.push("--auto-grid-page");
+    // Parquet-only deposit (no shared-manifest write) — set NORMS_NO_MANIFEST=1 so a
+    // concurrent discovery/residue lane never races the stock manifest writer;
+    // reconcile afterwards with zonage-norms-manifest-merge.ts (parquet = truth).
+    if (process.env["NORMS_NO_MANIFEST"]) args.push("--no-manifest");
 
     const res = spawnSync(TSX, args, {
       cwd: ACQ,
