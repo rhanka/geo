@@ -1,0 +1,106 @@
+{
+  "slug": "lantier",
+  "method": "auto-seed-cadastre-bbox-rotations",
+  "fit": "affine",
+  "pass": false,
+  "reason": "no (extent × rotation) seed cleared the residual+holdout gate",
+  "cadastre_features": 1941,
+  "cadastre_bbox_wgs84": [
+    -74.30244303363081,
+    46.11545427163594,
+    -74.19981897904172,
+    46.216748258270435
+  ],
+  "svg_points": 22,
+  "extents": {
+    "density": null,
+    "density+10%": null,
+    "density+20%": null,
+    "percentile": null,
+    "full": {
+      "fx0": 0.2143534750469653,
+      "fy0": 0.5319265913798585,
+      "fx1": 0.7200187470029643,
+      "fy1": 0.982230240416973
+    }
+  },
+  "attempts": [
+    {
+      "extent": "full",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.2143534750469653,
+        "fy0": 0.5319265913798585,
+        "fx1": 0.7200187470029643,
+        "fy1": 0.982230240416973
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 12
+    },
+    {
+      "extent": "full",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.2143534750469653,
+        "fy0": 0.5319265913798585,
+        "fx1": 0.7200187470029643,
+        "fy1": 0.982230240416973
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 16
+    },
+    {
+      "extent": "full",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.2143534750469653,
+        "fy0": 0.5319265913798585,
+        "fx1": 0.7200187470029643,
+        "fy1": 0.982230240416973
+      },
+      "pass": false,
+      "reason": "only 0 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 0,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 12
+    },
+    {
+      "extent": "full",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.2143534750469653,
+        "fy0": 0.5319265913798585,
+        "fx1": 0.7200187470029643,
+        "fy1": 0.982230240416973
+      },
+      "pass": false,
+      "reason": "only 1 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 1,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 14
+    }
+  ],
+  "residual_max_m": null,
+  "holdout_max_m": null,
+  "selected_gcps": null,
+  "max_candidate_distance_m": 450,
+  "max_residual_gate_m": 30
+}
