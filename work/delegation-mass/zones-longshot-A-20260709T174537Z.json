@@ -1,0 +1,173 @@
+{
+  "run": "zones-longshot-A-20260709T174537Z",
+  "repo": "/home/antoinefa/src/geo",
+  "branch": "feat/cadre-acquisition",
+  "lane": {
+    "name": "A",
+    "selector": "zones.status != done, candidateTracks includes pdf-georef-t1/pdf-vectorize-t2/pdf-raster-t3/pdf-scan-t4, index % 2 == 0",
+    "anti_invention": "No fabricated zone codes or geometries; only official PDFs and existing gated builders used."
+  },
+  "coverage": {
+    "initial_reconcile": "SCOREBOARD /1106 : pv=1050 (+0) | normes=560 (+0) | zones=769 (+0) | cadastre=1106 (+0) | role-foncier=1106 (+0) | tod=39 (+0)",
+    "final_reconcile": "SCOREBOARD /1106 : pv=1051 (+0) | normes=561 (+0) | zones=770 (+0) | cadastre=1106 (+0) | role-foncier=1106 (+0) | tod=39 (+0)",
+    "lane_a_zone_delta": 1,
+    "note": "Lane A deposited only saint-damien zones. The pv/normes before/after movement came from S3 reconciliation outside this zones deposit."
+  },
+  "successes": [
+    {
+      "slug": "saint-damien",
+      "index": 302,
+      "source_pdf": "https://www.st-damien.com/uploads/8/0/4/0/80408348/753_-_zonage_-_final_-_conformit%C3%A9_mrc__plan_de_zonage_.pdf",
+      "method": "T2 auto-GCP, affine, moderate-anisotropy lot-coverage arbitration",
+      "s3_zones_key": "normalized/ca-qc-zonage/qc-zonage-saint-damien.geojson",
+      "gates": {
+        "independent_gcps": 47,
+        "bbox_derived_gcps": 0,
+        "gcp_residual_max_m": 25.9,
+        "gcp_residual_rms_m": 7.083,
+        "holdout_max_m": 27.768,
+        "aniso_arbitration": "SERVE: density/rot0 serving coverage 90.48% >= 85%, 97 codes, residual 25.9m / holdout 27.768m",
+        "label_spatial_km_from_cadastre": 3.004,
+        "labels_inside_cadastre_bbox": "93/98"
+      },
+      "build_stats": {
+        "n_label_codes": 97,
+        "n_labels_in_frame": 98,
+        "n_distinct_codes": 97,
+        "n_served_features": 61,
+        "n_lots_total": 3236,
+        "n_lots_assigned": 2928,
+        "lot_to_zone_pct": 90.48,
+        "pct_area_covered": 84.16,
+        "prefixes": ["ID", "RF", "C", "VR", "AV", "VD", "R", "AD", "RFOR", "VC", "CONS"]
+      },
+      "downstream": {
+        "lot_zone_join": {
+          "status": "OK",
+          "lots": 3236,
+          "assigned_pct": 90.51,
+          "multi_pct": 0,
+          "norm_match_pct": 0,
+          "verified_parquet": true,
+          "verified_stats": true,
+          "rows": 3236,
+          "warning": "zone_code norm match rate 0% < 95%"
+        },
+        "lots_enriched": {
+          "status": "OK",
+          "lots": 3236,
+          "zone_code_pct": 90.51,
+          "norms_pct": 0,
+          "surface_pct": 100,
+          "code_postal_pct": 100,
+          "adresse_pct": 98.86,
+          "role_code": "62075",
+          "deposit": true
+        }
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "slug": "saint-zotique",
+      "source_pdf": "https://st-zotique.com/wp-content/uploads/REG-529-ANNEXE-1-ZONAGE-529-31.pdf",
+      "reason": "T1 no embedded /VP /Measure /GEO. T2 found residual candidates but lot-assignment had 0 labels/codes and 0% serving coverage; orientation/aniso arbitration skipped."
+    },
+    {
+      "slug": "sainte-marcelline-de-kildare",
+      "source_pdf": "https://ste-marcelline.com/storage/app/media/Urbanisme/r%C3%A8glement/Plan_Zonage_mars_2000.pdf",
+      "reason": "T1 failed: PDF parser reported invalid Pages/catalog data and no T1 georef; no deposit."
+    },
+    {
+      "slug": "saint-telesphore",
+      "source_pdf": "https://saint-telesphore.com/wp-content/uploads/2022/03/Carte-zonage-Annexe-1-Plan-30-06-09.pdf",
+      "reason": "T1 no embedded /VP /Measure /GEO; not deposited."
+    },
+    {
+      "slug": "roxton-falls",
+      "source_pdf": "https://roxtonfalls.ca/wp-content/uploads/2022/11/Plan-zonage-Roxton-Falls-01-2019.pdf",
+      "reason": "T1 georef existed, but extracted code-like labels were amendment dates (sept.2005, jan.2007, etc.), not real regulatory zone codes; rejected manually despite mechanical dry-run pass."
+    },
+    {
+      "slug": "bolton-ouest",
+      "source_pdf": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251205121040-264-2008-annexe-b-2014-11-06.pdf",
+      "reason": "T1 no embedded /VP /Measure /GEO; not deposited."
+    },
+    {
+      "slug": "lac-superieur",
+      "source_pdf": "https://muni.lacsuperieur.qc.ca/wp-content/uploads/2023/10/2015-560-Plan-de-zonage-Annexe-A-m.a.j.-25-11-22.pdf",
+      "reason": "T1 no embedded georef. T2 affine had residual candidates but failed orientation/isotropy with anisotropy mostly above safe arbitration band; similarity fallback cleared no residual/holdout seed."
+    },
+    {
+      "slug": "stanstead--memphremagog--2",
+      "source_pdf": "https://stanstead.ca/wp-content/uploads/2022/06/2012-URB-02-Plan-de-zonage-a-jour-au-8-mai-2014.pdf.pdf",
+      "reason": "T1 no embedded georef. T2 affine failed with extreme anisotropy outside safe band; similarity fallback produced no surviving independent parcel/linework matches."
+    },
+    {
+      "slug": "mayo",
+      "source_pdf": "https://mayo.ca/wp-content/uploads/2024/07/Plan-zonage-Octobre-2015.pdf",
+      "reason": "T1 no embedded /VP /Measure /GEO; not deposited."
+    },
+    {
+      "slug": "peribonka",
+      "source_pdf": "https://peribonka.ca/app/uploads/2024/01/Carte-Plan-de-zonage.pdf",
+      "reason": "T1 GeoPDF georef passed (NAD_1983_MTM_8, residual 0.17m) but text extraction found 0 code-like labels. It requires a real authoritative dict for the glyph/vision path; none was present locally."
+    },
+    {
+      "slug": "sainte-monique--lac-saint-jean-est",
+      "source_pdf": "https://ville.ste-monique.qc.ca/media/cms/doccenters_mod/8/plan_zonage_numerise.pdf",
+      "reason": "T1 no embedded georef. T2 failed immediately with svg_points=0, so auto-GCP had no vector linework."
+    },
+    {
+      "slug": "petit-saguenay",
+      "source_pdf": "https://petit-saguenay.com/wp-content/uploads/2021/05/Carte-de-zonage-du-secteur-urbain-de-Petit-Saguenay.pdf",
+      "reason": "T1 no embedded georef. T2 SVG extraction hit ERR_STRING_TOO_LONG; no gated GCP file and no deposit."
+    }
+  ],
+  "already_served_s3_candidates": {
+    "result": "none from initial reconcile",
+    "evidence": "Initial coverage-reconcile returned zones=769 (+0)."
+  },
+  "commands_run": [
+    "sed -n '1,240p' acquisition/src/coverage-reconcile.ts",
+    "sed -n '1,620p' docs/spec/zonage-georeferencement-gcp.md",
+    "rg --files work/delegation-mass -g 'zones-recalage-*20260709*.md'",
+    "sed -n '1,260p' work/delegation-mass/zones-recalage-1-20260709T114400Z.md",
+    "sed -n '1,320p' work/delegation-mass/zones-recalage-2-2026-07-09T11:41:27Z.md",
+    "npx tsx src/coverage-reconcile.ts",
+    "jq lane-A filters on work/coverage/coverage-matrix.json",
+    "node /tmp/zones-longshot-A-scan.mjs /tmp/zones-longshot-A-discovery.json (terminated after useful candidates; exit 130)",
+    "npx tsx src/t1-build.ts --slug saint-zotique --pdf https://st-zotique.com/wp-content/uploads/REG-529-ANNEXE-1-ZONAGE-529-31.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/saint-zotique-plan.pdf https://st-zotique.com/wp-content/uploads/REG-529-ANNEXE-1-ZONAGE-529-31.pdf",
+    "npx tsx src/t2-autogcp.ts --slug saint-zotique --auto-seed --pdf /tmp/saint-zotique-plan.pdf --out-gcp /tmp/saint-zotique.longshotA.gcp.json --report /tmp/saint-zotique.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t1-build.ts --slug sainte-marcelline-de-kildare --pdf https://ste-marcelline.com/storage/app/media/Urbanisme/r%C3%A8glement/Plan_Zonage_mars_2000.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug saint-telesphore --pdf https://saint-telesphore.com/wp-content/uploads/2022/03/Carte-zonage-Annexe-1-Plan-30-06-09.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug roxton-falls --pdf https://roxtonfalls.ca/wp-content/uploads/2022/11/Plan-zonage-Roxton-Falls-01-2019.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug saint-damien --pdf https://www.st-damien.com/uploads/8/0/4/0/80408348/753_-_zonage_-_final_-_conformit%C3%A9_mrc__plan_de_zonage_.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/saint-damien-plan.pdf https://www.st-damien.com/uploads/8/0/4/0/80408348/753_-_zonage_-_final_-_conformit%C3%A9_mrc__plan_de_zonage_.pdf",
+    "npx tsx src/t2-autogcp.ts --slug saint-damien --auto-seed --pdf /tmp/saint-damien-plan.pdf --out-gcp /tmp/saint-damien.longshotA.gcp.json --report /tmp/saint-damien.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t2-build.ts --slug saint-damien --gcp /tmp/saint-damien.longshotA.gcp.json --pdf /tmp/saint-damien-plan.pdf --require-independent-gcps --max-residual-m 30 --source t2-auto-seed-aniso-lot-arbitrate --confidence contour-auto-gcp --dry-run",
+    "npx tsx src/t2-build.ts --slug saint-damien --gcp /tmp/saint-damien.longshotA.gcp.json --pdf /tmp/saint-damien-plan.pdf --require-independent-gcps --max-residual-m 30 --source t2-auto-seed-aniso-lot-arbitrate --confidence contour-auto-gcp",
+    "npx tsx src/lot-zone-join-run.ts --slugs saint-damien",
+    "npx tsx src/lots-enriched-run.ts --slugs saint-damien",
+    "npx tsx src/coverage-reconcile.ts",
+    "npx tsx src/t1-build.ts --slug bolton-ouest --pdf https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251205121040-264-2008-annexe-b-2014-11-06.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug lac-superieur --pdf https://muni.lacsuperieur.qc.ca/wp-content/uploads/2023/10/2015-560-Plan-de-zonage-Annexe-A-m.a.j.-25-11-22.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/lac-superieur-plan.pdf https://muni.lacsuperieur.qc.ca/wp-content/uploads/2023/10/2015-560-Plan-de-zonage-Annexe-A-m.a.j.-25-11-22.pdf",
+    "npx tsx src/t2-autogcp.ts --slug lac-superieur --auto-seed --pdf /tmp/lac-superieur-plan.pdf --out-gcp /tmp/lac-superieur.longshotA.gcp.json --report /tmp/lac-superieur.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t2-autogcp.ts --slug lac-superieur --auto-seed --pdf /tmp/lac-superieur-plan.pdf --out-gcp /tmp/lac-superieur.longshotA.similarity.gcp.json --report /tmp/lac-superieur.longshotA.similarity.autogcp.report.json --max-residual-m 30 --min-gcps 12 --fit similarity --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t1-build.ts --slug stanstead--memphremagog--2 --pdf https://stanstead.ca/wp-content/uploads/2022/06/2012-URB-02-Plan-de-zonage-a-jour-au-8-mai-2014.pdf.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/stanstead-memphremagog-2-plan.pdf https://stanstead.ca/wp-content/uploads/2022/06/2012-URB-02-Plan-de-zonage-a-jour-au-8-mai-2014.pdf.pdf",
+    "npx tsx src/t2-autogcp.ts --slug stanstead--memphremagog--2 --auto-seed --pdf /tmp/stanstead-memphremagog-2-plan.pdf --out-gcp /tmp/stanstead-memphremagog-2.longshotA.gcp.json --report /tmp/stanstead-memphremagog-2.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t2-autogcp.ts --slug stanstead--memphremagog--2 --auto-seed --pdf /tmp/stanstead-memphremagog-2-plan.pdf --out-gcp /tmp/stanstead-memphremagog-2.longshotA.similarity.gcp.json --report /tmp/stanstead-memphremagog-2.longshotA.similarity.autogcp.report.json --max-residual-m 30 --min-gcps 12 --fit similarity --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t1-build.ts --slug mayo --pdf https://mayo.ca/wp-content/uploads/2024/07/Plan-zonage-Octobre-2015.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug peribonka --pdf https://peribonka.ca/app/uploads/2024/01/Carte-Plan-de-zonage.pdf --dry-run",
+    "npx tsx src/t1-build.ts --slug sainte-monique--lac-saint-jean-est --pdf https://ville.ste-monique.qc.ca/media/cms/doccenters_mod/8/plan_zonage_numerise.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/sainte-monique-lsje-plan.pdf https://ville.ste-monique.qc.ca/media/cms/doccenters_mod/8/plan_zonage_numerise.pdf",
+    "npx tsx src/t2-autogcp.ts --slug sainte-monique--lac-saint-jean-est --auto-seed --pdf /tmp/sainte-monique-lsje-plan.pdf --out-gcp /tmp/sainte-monique-lsje.longshotA.gcp.json --report /tmp/sainte-monique-lsje.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/t1-build.ts --slug petit-saguenay --pdf https://petit-saguenay.com/wp-content/uploads/2021/05/Carte-de-zonage-du-secteur-urbain-de-Petit-Saguenay.pdf --dry-run",
+    "curl -L -A Mozilla/5.0 -o /tmp/petit-saguenay-plan.pdf https://petit-saguenay.com/wp-content/uploads/2021/05/Carte-de-zonage-du-secteur-urbain-de-Petit-Saguenay.pdf",
+    "npx tsx src/t2-autogcp.ts --slug petit-saguenay --auto-seed --pdf /tmp/petit-saguenay-plan.pdf --out-gcp /tmp/petit-saguenay.longshotA.gcp.json --report /tmp/petit-saguenay.longshotA.autogcp.report.json --max-residual-m 30 --min-gcps 12 --rotation-disambig lots --aniso-lot-arbitrate",
+    "npx tsx src/coverage-reconcile.ts"
+  ]
+}
