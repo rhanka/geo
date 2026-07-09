@@ -92,8 +92,15 @@ case "$cmd" in
     # Delegate to a REAL agent session via `h2a run <engine>` (NO gateway). h2a owns
     # the auth (claude → subscription login, codex → its creds), so the engine is
     # just a parameter. The prompt file is injected into the session's tmux pane.
-    engine="${1:-}"; session="${2:-}"; prompt="${3:-}"
-    [ -n "$engine" ] && [ -n "$session" ] && [ -n "$prompt" ] || { echo "agent needs <engine> <session> <prompt-file>"; exit 2; }
+    engine="${1:-}"; session="${2:-}"; prompt="${3:-}"; shift 3 2>/dev/null || true
+    shard=""
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        --shard) shard="${2:-}"; shift 2 ;;
+        *) shift ;;
+      esac
+    done
+    [ -n "$engine" ] && [ -n "$session" ] && [ -n "$prompt" ] || { echo "agent needs <engine> <session> <prompt-file> [--shard i/n]"; exit 2; }
     [ -f "$prompt" ] || { echo "prompt file not found: $prompt"; exit 2; }
     remote="remote-$session"
     h2a stop "$session" >/dev/null 2>&1 || true
@@ -109,12 +116,18 @@ case "$cmd" in
     done
     [ -n "$pane" ] || { echo "no pane for $remote (h2a run did not create a session)"; exit 1; }
     sleep 6
-    tmux set-buffer -- "$(cat "$prompt")"
+    body="$(cat "$prompt")"
+    if [ -n "$shard" ]; then
+      rem="${shard%%/*}"; tot="${shard##*/}"
+      body="SHARD $shard : traite UNIQUEMENT les slugs dont (index dans la liste triée) % $tot == $rem. Ignore les autres (un autre agent les prend). Ne bloque pas >6 min/slug.
+$body"
+    fi
+    tmux set-buffer -- "$body"
     tmux paste-buffer -t "$pane" -p
     tmux send-keys -t "$pane" Enter
     sleep 1
     tmux send-keys -t "$pane" Enter
-    echo "launched agent session=$session (tmux $remote pane $pane) engine=$engine prompt=$prompt" ;;
+    echo "launched agent session=$session (tmux $remote pane $pane) engine=$engine shard=${shard:-none} prompt=$prompt" ;;
 
   bg)
     session="${1:-}"; shift || true
