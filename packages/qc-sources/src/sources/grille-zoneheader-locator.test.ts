@@ -40,6 +40,19 @@ const LACHUTE_PAGE = (zone: string): string => `
                      Avant minimum                    (m)        15       15       15
 `;
 
+/** champlain: numeric-only "ZONE : 101" header; prefix stays for SIG numeric bridge. */
+const CHAMPLAIN_PAGE = (zone: string): string => `
+GRILLE DE SPÉCIFICATIONS                         ZONE : ${zone}                    RÉSIDENTIELLE
+
+        Usages autorisés                                      Normes relatives au bâtiment principal
+Habitation                                                      Marge avant minimale                      6m
+Habitation unifamiliale                                         Marge arrière minimale                    6m
+Habitation bifamiliale                                          Marge latérale minimale                   2m
+Maison mobile                                                   Superficie minimale                      65 m2
+                                                                Largeur minimale de la façade             6m
+                                                                Hauteur maximale                          8m
+`;
+
 /** blainville: an ISOLATED corner code "M-1", numbered "Normes prescrites" matrix. */
 const BLAINVILLE_PAGE = (zone: string): string => `
                                                                             ${zone}
@@ -96,6 +109,10 @@ describe("readZoneHeaderCode", () => {
     expect(readZoneHeaderCode(LACHUTE_PAGE("Ha-102"))).toBe("HA-102");
   });
 
+  it("reads champlain 'ZONE : 101' as a verbatim numeric code", () => {
+    expect(readZoneHeaderCode(CHAMPLAIN_PAGE("101"))).toBe("101");
+  });
+
   it("reads blainville's ISOLATED corner code (no 'ZONE' word)", () => {
     expect(readZoneHeaderCode(BLAINVILLE_PAGE("M-1"))).toBe("M-1");
     expect(readZoneHeaderCode(BLAINVILLE_PAGE("H-103"))).toBe("H-103");
@@ -146,6 +163,9 @@ describe("isZoneHeaderGrillePage", () => {
   });
   it("accepts a lachute unit-in-paren page", () => {
     expect(isZoneHeaderGrillePage(LACHUTE_PAGE("Ha-102"))).toBe(true);
+  });
+  it("accepts a champlain numeric-code label:value page", () => {
+    expect(isZoneHeaderGrillePage(CHAMPLAIN_PAGE("101"))).toBe(true);
   });
   it("rejects a prose page (no header code)", () => {
     expect(isZoneHeaderGrillePage(PROSE_PAGE)).toBe(false);
