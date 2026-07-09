@@ -48,6 +48,9 @@ const CODE_BODY = "[A-Za-zÉÈ]{0,4}\\d{0,4}[ \\t]*[-–—][ \\t]*[A-Za-z0-9]{1
 /** "ZONE : <code>" — COLON present, code on the SAME line (lachute "ZONE: Ha-102"). The
  *  colon is a strong header signal, so the code may sit anywhere after it. */
 const ZONE_COLON_INLINE = new RegExp(`\\bZONE\\b\\s*[:°]\\s*(${CODE_BODY})`, "i");
+/** "ZONE : 101" numeric-only page headers. Keep the bare number verbatim; any
+ * SIG prefix/suffix reconciliation must come from the numeric bridge, never here. */
+const ZONE_COLON_NUMERIC_INLINE = /\bZONE\b\s*[:°]\s*(\d{1,4})(?=$|[^0-9])/i;
 /** "ZONE <code>" — NO colon, code at END of line (la-durantaye "… ZONE 1- HA", saint-
  *  augustin "ZONE ID-1"). Anchoring to the line END is what keeps a PROSE "…de la zone
  *  H-3 demeure inchangée" (code followed by more words) from matching. */
@@ -111,6 +114,8 @@ export function readZoneHeaderCode(pageText: string): string | null {
     // A2a — "ZONE : <code>" on one line (colon is a strong header signal).
     const colonInline = line.match(ZONE_COLON_INLINE);
     if (colonInline?.[1]) return normalizeHeaderCode(colonInline[1]);
+    const colonNumeric = line.match(ZONE_COLON_NUMERIC_INLINE);
+    if (colonNumeric?.[1]) return colonNumeric[1];
     // A2b — "ZONE <code>" (no colon) at the END of the line (never mid-prose).
     const eol = line.match(ZONE_NOCOLON_EOL);
     if (eol?.[1]) return normalizeHeaderCode(eol[1]);
