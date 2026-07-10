@@ -14,6 +14,7 @@ import {
   shouldRejectForZeroNormFields,
   looksLikeTableOfContents,
   canonZone,
+  canonZoneCodeServe,
   sigZoneCodesFromGeojson,
   zoneNumberKey,
   reconcileZoneNumbers,
@@ -109,6 +110,59 @@ describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
       expect(canonZone("H-531-F")).not.toBe(canonZone("H-531-G"));
       expect(canonZone("H-531-F")).not.toBe(canonZone("H-531"));
       expect(new Set(["H-531", "H-531-F", "H-531-G"].map(canonZone)).size).toBe(3);
+    });
+  });
+
+  describe("canonZoneCodeServe — ONE served LETTER-NUMBER surface form (immo exact join)", () => {
+    it("reorders digit-first served codes to LETTER-NUMBER (champlain/plaisance)", () => {
+      expect(canonZoneCodeServe("103-R")).toBe("R-103"); // champlain zonage → grille R-103
+      expect(canonZoneCodeServe("102-ZR")).toBe("ZR-102");
+      expect(canonZoneCodeServe("101-R")).toBe("R-101");
+      expect(canonZoneCodeServe("1M")).toBe("M-1"); // plaisance zonage (no separator)
+      expect(canonZoneCodeServe("1-M")).toBe("M-1"); // plaisance grille (dash) → same key
+      expect(canonZoneCodeServe("1 M")).toBe("M-1"); // space separator
+    });
+
+    it("collapses a letter-first SPACE separator to a single dash (saint-frederic/rosemere)", () => {
+      expect(canonZoneCodeServe("A 10")).toBe("A-10"); // saint-frederic grille
+      expect(canonZoneCodeServe("P 38")).toBe("P-38"); // rosemere zonage
+      expect(canonZoneCodeServe("CO 22")).toBe("CO-22");
+      expect(canonZoneCodeServe("A 10-2")).toBe("A-10-2"); // tail kept verbatim
+    });
+
+    it("leaves an already LETTER-NUMBER served code VERBATIM (never re-cases/re-numbers/re-bounds)", () => {
+      for (const code of ["R-103", "ZR-102", "HDB-924", "IDC-32-2", "C88b", "H-531-F", "CONSV1-814", "RA-100"]) {
+        expect(canonZoneCodeServe(code)).toBe(code);
+      }
+    });
+
+    it("preserves letterless numeric and pure-alpha codes unchanged", () => {
+      expect(canonZoneCodeServe("74")).toBe("74");
+      expect(canonZoneCodeServe("100")).toBe("100");
+      expect(canonZoneCodeServe("URB")).toBe("URB");
+    });
+
+    it("does NOT strip significant digits — a code is reordered, never renumbered", () => {
+      expect(canonZoneCodeServe("020-R")).toBe("R-020"); // leading zero kept (unlike canonZone)
+      expect(canonZone("020-R")).toBe("R-20"); // contrast: the JOIN key strips it
+    });
+
+    it("is idempotent: f(f(x)) === f(x)", () => {
+      for (const code of ["103-R", "1M", "1-M", "A 10", "P 38", "R-103", "URB", "74", "IDC-32-2"]) {
+        expect(canonZoneCodeServe(canonZoneCodeServe(code))).toBe(canonZoneCodeServe(code));
+      }
+    });
+
+    it("NEVER blanks a real value (null/undefined/blank round-trip to \"\")", () => {
+      expect(canonZoneCodeServe(null)).toBe("");
+      expect(canonZoneCodeServe(undefined)).toBe("");
+      expect(canonZoneCodeServe("   ")).toBe("");
+    });
+
+    it("ORDER agrees with canonZone: canonZone(serve(x)) === canonZone(x) (serve form still folds)", () => {
+      for (const code of ["103-R", "102-ZR", "1M", "1-M", "A 10", "P 38", "R-103", "020-HA", "IDC-32-2", "74"]) {
+        expect(canonZone(canonZoneCodeServe(code))).toBe(canonZone(code));
+      }
     });
   });
 
@@ -356,16 +410,20 @@ describe("sigZoneCodesFromGeojson — widened, curated zone-code field set", () 
 });
 
 describe("shouldRejectForZeroOverlap", () => {
-  it("A — gridFound:true, overlap:0 → REJECTED (kirkland mis-routed OCR)", () => {
-    expect(shouldRejectForZeroOverlap({ gridFound: true, overlap: 0 })).toBe(true);
+  it("A — gridFound:true + reference codes + overlap:0 → REJECTED (kirkland mis-routed OCR)", () => {
+    expect(shouldRejectForZeroOverlap({ gridFound: true, sigZoneCodes: 120, overlap: 0 })).toBe(true);
   });
 
   it("B — gridFound:true, overlap:5 → accepted (codes match the grille)", () => {
-    expect(shouldRejectForZeroOverlap({ gridFound: true, overlap: 5 })).toBe(false);
+    expect(shouldRejectForZeroOverlap({ gridFound: true, sigZoneCodes: 120, overlap: 5 })).toBe(false);
   });
 
   it("C — gridFound:false → accepted (no grille to cross-validate; count gate alone)", () => {
-    expect(shouldRejectForZeroOverlap({ gridFound: false, overlap: 0 })).toBe(false);
+    expect(shouldRejectForZeroOverlap({ gridFound: false, sigZoneCodes: 0, overlap: 0 })).toBe(false);
+  });
+
+  it("D — grid object found but no readable SIG codes → accepted (overlap is non-informative)", () => {
+    expect(shouldRejectForZeroOverlap({ gridFound: true, sigZoneCodes: 0, overlap: 0 })).toBe(false);
   });
 });
 
