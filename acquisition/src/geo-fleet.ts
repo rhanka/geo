@@ -28,7 +28,7 @@ const WORKER = resolve(REPO, 'scripts', 'geo-worker.sh');
 const CONFIG = resolve(REPO, 'acquisition', 'config', 'fleet.json');
 
 type Lane = { name: string; engine?: string; prompt: string; shards: number; note?: string };
-type Singleton = { name: string; prompt: string; model?: string };
+type Singleton = { name: string; engine?: string; prompt: string; model?: string };
 type Backfill = { session: string; match: string; cmd: string[] };
 type Config = {
   engine: string;
@@ -76,7 +76,7 @@ function expand(cfg: Config): Agent[] {
       out.push({ name: `${lane.name}-${k}`, engine: lane.engine, prompt: lane.prompt, shard: `${k - 1}/${lane.shards}` });
     }
   }
-  for (const s of cfg.singletons) out.push({ name: s.name, prompt: s.prompt, model: s.model });
+  for (const s of cfg.singletons) out.push({ name: s.name, engine: s.engine, prompt: s.prompt, model: s.model });
   return out;
 }
 
