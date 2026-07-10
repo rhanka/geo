@@ -34,17 +34,20 @@ FLEET=(
 # NOTE: geo-harness-analysis retiré du registre — livrable one-shot TERMINÉ
 # (HARNESS-GAP-ANALYSIS.md + envelope h2a livrés). Ne pas auto-relancer.
 
-# an agent is "dead" if its remote-<name> tmux is absent, OR its pane last line is
-# a bare shell prompt (dropped out of the CLI), OR shows a hard usage-limit exit.
+# an agent is ALIVE only while it is actively working: the h2a/claude CLI shows
+# "esc to interrupt" in its status bar throughout processing. Anything else — no
+# session, idle at the "❯" prompt, spend/usage-limit banner, finished+context-full
+# ("new task?") — means it has stopped grinding and must be relaunched.
+# (Prior version only inspected the LAST non-empty line, which is always the status
+#  bar "⏸ manual mode…" and hid the idle/spend-limit state → agents sat dead-but-
+#  counted-alive. Inspect the WHOLE pane for the working marker instead.)
 agent_dead() {
-  local name="$1" remote="remote-$1" last
-  tmux has-session -t "$remote" 2>/dev/null || return 0
-  last="$(tmux capture-pane -t "$remote" -p 2>/dev/null | grep -v '^[[:space:]]*$' | tail -n 1)"
-  case "$last" in
-    *'$') return 0 ;;                            # shell prompt (ends with $)
-    *'usage limit'*|*'429'*) return 0 ;;         # hit a limit
-    *'new task?'*|*'/clear to save'*) return 0 ;; # FINISHED + context-full → relaunch fresh
-    *) return 1 ;;
+  local name="$1" remote="remote-$1" pane
+  tmux has-session -t "$remote" 2>/dev/null || return 0   # no session → dead
+  pane="$(tmux capture-pane -t "$remote" -p 2>/dev/null)"
+  case "$pane" in
+    *'esc to interrupt'*) return 1 ;;   # actively working → alive
+    *) return 0 ;;                      # idle / limit / finished → relaunch
   esac
 }
 
