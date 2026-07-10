@@ -16,10 +16,10 @@ P="work/delegation-mass/agent-prompts"
 
 # ── fleet registry: name | prompt | shard | model  (shard/model empty = none) ──
 FLEET=(
-  "geo-zn-recal-1|$P/zones-recalage-1.txt||"
-  "geo-zn-recal-2|$P/zones-recalage-2.txt||"
-  "geo-zn-recal-3|$P/zones-recalage-3.txt||"
-  "geo-zn-recal-4|$P/zones-recalage-4.txt||"
+  "geo-zn-recal-1|$P/zones-recalage-base.txt|0/4|"
+  "geo-zn-recal-2|$P/zones-recalage-base.txt|1/4|"
+  "geo-zn-recal-3|$P/zones-recalage-base.txt|2/4|"
+  "geo-zn-recal-4|$P/zones-recalage-base.txt|3/4|"
   "geo-pv-a|$P/pv-base.txt|0/4|"
   "geo-pv-b|$P/pv-base.txt|1/4|"
   "geo-pv-c|$P/pv-base.txt|2/4|"
