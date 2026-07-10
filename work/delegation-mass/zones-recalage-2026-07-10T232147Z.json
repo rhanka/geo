@@ -1,0 +1,112 @@
+{
+  "timestamp_utc": "2026-07-10T232147Z",
+  "shard": {
+    "mod": 2,
+    "rem": 1,
+    "rule": "sorted slug index % 2 == 1"
+  },
+  "mode": "official municipal PDFs or local official caches; no AGOL owner harvest",
+  "reused_existing_report": {
+    "path": "work/delegation-mass/zones-recalage-2026-07-10T224039Z.md",
+    "slugs": [
+      "aguanish",
+      "alma",
+      "ange-gardien",
+      "austin",
+      "baie-johan-beetz",
+      "begin",
+      "blanc-sablon",
+      "boileau",
+      "bois-franc",
+      "bonne-esperance",
+      "bowman",
+      "brome"
+    ]
+  },
+  "deposits": [
+    {
+      "slug": "herouxville",
+      "source_url": "https://www.municipalite.herouxville.qc.ca/gestion-municipale/urbanisme-et-permis/",
+      "pdf": "work/zones-recalage/shard1of2/herouxville-zonage-village.pdf",
+      "gcp": "work/gcp/herouxville-village.shard1of2.autogcp.json",
+      "report": "work/gcp/herouxville-village.shard1of2.autogcp.report.json",
+      "method": "T2 auto-GCP + aniso lot arbitration + labels text",
+      "gcp_count": 8,
+      "residual_max_m": 7.339,
+      "holdout_max_m": 9.622,
+      "distinct_codes": 40,
+      "served_features": 31,
+      "lots_assigned": 1352,
+      "lots_total": 1385,
+      "lot_to_zone_pct": 97.62,
+      "area_covered_pct": 98.02,
+      "spatial_km": 0.33,
+      "s3_key": "normalized/ca-qc-zonage/qc-zonage-herouxville.geojson",
+      "downstream": {
+        "lot_zone_join": {
+          "ok": true,
+          "assigned_pct": 97.98,
+          "norm_match_pct": 82.83
+        },
+        "lots_enriched": {
+          "ok": true,
+          "zone_code_pct": 97.98,
+          "norms_pct": 81.16,
+          "surface_pct": 100,
+          "code_postal_pct": 100
+        }
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "eastman",
+      "pdfs": [
+        "work/pdf-cache/eastman.pdf",
+        "work/pdf-cache/eastman-ensemble.pdf"
+      ],
+      "t1": "no /VP /Measure /GEO on both PDFs",
+      "t2": "eastman-ensemble auto-GCP hit timeout 360s with no report"
+    },
+    {
+      "slug": "dolbeau-mistassini",
+      "pdf": "work/zones-recalage/shard1of2/dolbeau-mistassini-regl-1870-22.pdf",
+      "t1": "no /VP /Measure /GEO",
+      "t2_report": "work/gcp/dolbeau-mistassini-regl-1870-22.shard1of2.autogcp.report.json",
+      "reason": "svg_points=0; no seed"
+    },
+    {
+      "slug": "egan-sud",
+      "pdf": "work/zones-recalage/shard1of2/egan-sud-reglement-zonage.pdf",
+      "t1": "no /VP /Measure /GEO",
+      "t2_report": "work/gcp/egan-sud.shard1of2.autogcp.report.json",
+      "reason": "svg_points=0; no seed"
+    },
+    {
+      "slug": "gracefield",
+      "pdf": "work/pdf-cache/gracefield-zonage-reglement.pdf",
+      "t1": "no /VP /Measure /GEO",
+      "t2_report": "work/gcp/gracefield-zonage-reglement.shard1of2.autogcp.report.json",
+      "reason": "svg_points=0; no seed"
+    },
+    {
+      "slug": "hampden",
+      "pdfs": [
+        "work/zones-recalage/shard5/hampden-1.pdf",
+        "work/zones-recalage/shard5/hampden-2.pdf"
+      ],
+      "t1": "no /VP /Measure /GEO on both PDFs",
+      "t2_reports": [
+        "work/gcp/hampden-1.shard1of2.autogcp.report.json",
+        "work/gcp/hampden-2.shard1of2.autogcp.report.json"
+      ],
+      "reason": "svg_points=0; no seed"
+    },
+    {
+      "slug": "herouxville",
+      "pdf": "work/zones-recalage/shard1of2/herouxville-zonage-globale.pdf",
+      "t2_report": "work/gcp/herouxville-globale.shard1of2.autogcp.report.json",
+      "reason": "global map rejected: residual/holdout candidates failed anisotropy gate; village sheet served instead"
+    }
+  ]
+}
