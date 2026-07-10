@@ -1,0 +1,94 @@
+{
+  "shard": "1/2",
+  "rule": "sorted index % 2 == 1",
+  "generatedAt": "2026-07-10T17:49:06.685Z",
+  "deposited": [
+    "entrelacs"
+  ],
+  "rows": [
+    {
+      "slug": "alma",
+      "status": "echec",
+      "method": "T1 puis T2",
+      "proof": "T1 sans /VP /Measure /GEO; T2 auto-GCP stop ERR_STRING_TOO_LONG pendant extractSvgVectorPoints."
+    },
+    {
+      "slug": "austin",
+      "status": "echec",
+      "method": "T1 Claude glyph",
+      "proof": "GeoPDF residual 0.16 m; 125/125 lectures Claude dict-validees; blocage cadastre S3 NoSuchKey normalized/qc-cadastre-lots/austin.geojson."
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "status": "echec",
+      "method": "T2 auto-GCP",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "begin",
+      "status": "echec",
+      "method": "T2 auto-GCP",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "boileau",
+      "status": "echec",
+      "method": "T2 auto-GCP",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "bois-franc",
+      "status": "echec",
+      "method": "T2 auto-GCP",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "cacouna",
+      "status": "echec",
+      "method": "T1",
+      "proof": "work/pdf-cache/cacouna.pdf est ASCII text, pas un PDF exploitable; T1 refuse le georef."
+    },
+    {
+      "slug": "cap-chat",
+      "status": "echec",
+      "method": "T1 GeoPDF glyph",
+      "proof": "Deux GeoPDF passent georef (residual 2.96 m et 1.09 m) mais pdftotext donne 0 code; crop rendue sans codes lisibles, aucune lecture positionnee disponible."
+    },
+    {
+      "slug": "east-farnham",
+      "status": "echec",
+      "method": "T2 auto-GCP",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "entrelacs",
+      "status": "depot",
+      "method": "T2 auto-GCP + text",
+      "proof": "GCP 11 independants, residual max 0.986 m, holdout 1.245 m, 43 codes, 34 features, lots 85.45%; lot-zone join et lots-enriched OK."
+    },
+    {
+      "slug": "gaspe",
+      "status": "echec",
+      "method": "T1 puis rapports T2",
+      "proof": "13 seed(s) cleared the residual+holdout gate but none cleared the orientation/isotropy gate (anisotropy/mirror/north-up)"
+    },
+    {
+      "slug": "massueville",
+      "status": "echec",
+      "method": "T1 puis T2",
+      "proof": "no (extent × rotation) seed cleared the residual+holdout gate"
+    },
+    {
+      "slug": "ange-gardien",
+      "status": "echec",
+      "method": "T2 retry disambig",
+      "proof": "best candidate full/rot0° serving coverage 42.89% < floor 85% — anisotropy NOT confirmed real (labels do not land on lots) → SKIP"
+    },
+    {
+      "slug": "saints-martyrs-canadiens",
+      "status": "echec",
+      "method": "T2 retry aniso",
+      "proof": "best candidate density+10%/rot0° serving coverage 1.22% < floor 85% — anisotropy NOT confirmed real (labels do not land on lots) → SKIP"
+    }
+  ]
+}
