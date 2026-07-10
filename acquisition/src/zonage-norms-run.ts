@@ -35,6 +35,15 @@
  * Without it these grilles are correctly rejected at overlap=0; with it every
  * deposited code joins a lot. Never fabricates a value (verbatim norm copy).
  *
+ * `--sig-recode` (ADDITIVE, off by default): for a grille that labels each zone by
+ * its BARE NUMBER only (champlain "GRILLE … ZONE : 101" → `101`) while the SIG
+ * serves the same number enriched with a category letter (`R-101`), recode each
+ * PURELY-NUMERIC grille code to the unique SIG code carrying that number (frozen
+ * `reconcileZoneNumbers` double-uniqueness bridge). SAFE-BY-CONSTRUCTION: a code
+ * with NO prefix cannot be a by-law vintage mismatch, so ONLY bare-number codes are
+ * recoded; a prefixed grille code (mont-tremblant `RA-106` ⇄ SIG `CV-RF-106`, a real
+ * vintage difference) is left untouched. Norm values are never altered.
+ *
  * `--auto-grid-page` (ADDITIVE, off by default): pre-scan the PDF text to locate
  * the deep ANNEXE "grille des usages et normes" of a codified by-law and restrict
  * the OCR window to it, overriding the ~80-page cap (e.g. dudswell grille p.223–
@@ -104,6 +113,8 @@ import {
   looksLikeTableOfContents,
   expandCategoryZonesToSig,
   loadSigCanonCodes,
+  reconcileZoneNumbers,
+  canonZone,
   type CategoryExpansion,
 } from "./lib/zonage-norms.js";
 
@@ -139,6 +150,8 @@ interface Args {
   autoGridPage: boolean;
   /** Expand category-organised norms (EAF/M/RU) onto the individual SIG codes they cover (prefix-strict). */
   expandCategories: boolean;
+  /** Recode a PURELY-NUMERIC grille zone_code to the unique SIG code sharing that number (champlain family). */
+  sigRecode: boolean;
   snapshot: string;
   dpi?: number;
   /** 1-based inclusive page range to read (vision/multizone). Default: all. */
@@ -171,6 +184,7 @@ function parseArgs(argv: string[]): Args {
     noManifest: has("no-manifest"),
     autoGridPage: has("auto-grid-page"),
     expandCategories: has("expand-categories"),
+    sigRecode: has("sig-recode"),
     snapshot: get("snapshot") ?? new Date().toISOString().slice(0, 10),
     ...(get("dpi") ? { dpi: Number(get("dpi")) } : {}),
     ...(get("first-page") ? { firstPage: Number(get("first-page")) } : {}),
@@ -1237,6 +1251,46 @@ async function main(): Promise<void> {
     }
   }
 
+  // ── SIG NUMERIC RECODE (additive, gated on --sig-recode) ─────────────────────
+  // A "grille des spécifications" that labels each zone by its BARE NUMBER only
+  // (champlain: "GRILLE … ZONE : 101 RÉSIDENTIELLE" → zone_code "101"), while the
+  // muni SIG serves the SAME zone number enriched with its dominant-category letter
+  // ("R-101"). Exact-canonical overlap is then 0 (label convention, NOT a by-law
+  // vintage) so the lot⋈norms join yields nothing even though the grille is at the
+  // RIGHT millésime. Recode each PURELY-NUMERIC grille code to the unique SIG code
+  // carrying that number (frozen `reconcileZoneNumbers` double-uniqueness bridge).
+  //
+  // SAFE-BY-CONSTRUCTION: only a code with NO letter prefix is recoded. A bare
+  // number has no prefix that could have drifted, so it can NEVER be a vintage
+  // mismatch — it is unambiguously the SIG number with the category letter stripped.
+  // A PREFIXED grille code (mont-tremblant `RA-106` ⇄ SIG `CV-RF-106`) is a real
+  // vintage difference and is DELIBERATELY LEFT UNTOUCHED (recoding it would attach
+  // the wrong-vintage norms). Norm VALUES are never altered — only the code label
+  // is set to the SIG's verbatim code. Off by default; anti-invention preserved.
+  let sigRecoded = 0;
+  if (args.sigRecode && zones.length > 0) {
+    const sigCanon = await loadSigCanonCodes(s3, args.slug);
+    const extractedCanon = zones.map((z) => canonZone(z.zone_code));
+    const bridges = reconcileZoneNumbers(extractedCanon, sigCanon);
+    // Map a canonical bare-numeric extracted code → its unique SIG code.
+    const recode = new Map<string, string>();
+    for (const b of bridges) {
+      if (/^\d+$/.test(b.extracted)) recode.set(b.extracted, b.sig);
+    }
+    for (const z of zones) {
+      const target = recode.get(canonZone(z.zone_code));
+      if (target && target !== z.zone_code) {
+        z.zone_code = target;
+        sigRecoded++;
+      }
+    }
+    console.error(
+      `[sig-recode] sigCodes=${sigCanon.size} bridges=${bridges.length} ` +
+        `numeric-recoded=${sigRecoded}/${zones.length} (bare-number grille codes → SIG codes)`,
+    );
+    if (sigRecoded > 0) methode = methode ? `${methode}+sig-recode` : "sig-recode";
+  }
+
   if (zones.length === 0) {
     console.log(
       JSON.stringify(
@@ -1441,6 +1495,7 @@ async function main(): Promise<void> {
           recoupSig: crossval.recoupSig,
         },
         visionUsd,
+        ...(sigRecoded > 0 ? { sigRecoded } : {}),
         ...(codexUsage ? { codexUsage } : {}),
         ...(categoryExpansion
           ? {
