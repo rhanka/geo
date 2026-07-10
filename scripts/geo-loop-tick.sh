@@ -40,8 +40,9 @@ agent_dead() {
   tmux has-session -t "$remote" 2>/dev/null || return 0
   last="$(tmux capture-pane -t "$remote" -p 2>/dev/null | grep -v '^[[:space:]]*$' | tail -n 1)"
   case "$last" in
-    *'$') return 0 ;;                       # shell prompt (ends with $)
-    *'usage limit'*|*'429'*) return 0 ;;    # hit a limit
+    *'$') return 0 ;;                            # shell prompt (ends with $)
+    *'usage limit'*|*'429'*) return 0 ;;         # hit a limit
+    *'new task?'*|*'/clear to save'*) return 0 ;; # FINISHED + context-full → relaunch fresh
     *) return 1 ;;
   esac
 }
