@@ -3,12 +3,12 @@
   "engine": "claude",
   "lanes": [
     { "name": "geo-zn-recal", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 6, "note": "zones ~314 restants — Codex quotas reset; glyph/vision Claude reste exclu de cette lane" },
-    { "name": "geo-nm",       "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 8, "note": "normes ~530 restants — le goulot (découverte de sources)" },
-    { "name": "geo-pv",       "prompt": "work/delegation-mass/agent-prompts/pv-base.txt",             "shards": 2, "note": "pv ~49 restants — presque fini" }
+    { "name": "geo-nm",       "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 8, "note": "normes ~530 restants — le goulot (découverte de sources), pilotage Codex; extraction reste Mistral" },
+    { "name": "geo-pv",       "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/pv-base.txt",             "shards": 2, "note": "pv ~49 restants — Codex suffit" }
   ],
   "singletons": [
-    { "name": "geo-port-npm",   "prompt": "work/delegation-mass/agent-prompts/port-to-npm.txt", "model": "claude-opus-4-8" },
-    { "name": "geo-immo-clean", "prompt": "work/delegation-mass/agent-prompts/immo-clean.txt" }
+    { "name": "geo-port-npm",   "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/port-to-npm.txt" },
+    { "name": "geo-immo-clean", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/immo-clean.txt" }
   ],
   "backfill": {
     "session": "geo-immo-gap-loop",
