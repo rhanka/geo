@@ -159,6 +159,31 @@ function loadDict(path: string): { codes: string[]; kindByPrefix?: Record<string
   return { codes: codes.map(String), kindByPrefix };
 }
 
+function filterTextLabelsByDict(
+  lab: ExtractLabelsResult,
+  dictCodes: string[],
+): { labels: ExtractLabelsResult; stats: Record<string, unknown> } {
+  const dict = new Set(dictCodes);
+  const kept = lab.codePoints.filter((c) => dict.has(c.code));
+  const rejected = lab.codePoints.filter((c) => !dict.has(c.code));
+  return {
+    labels: {
+      ...lab,
+      codePoints: kept,
+      nCodeLike: kept.length,
+      nInsideFrame: kept.length,
+      rejectedOutsideFrame: lab.rejectedOutsideFrame + rejected.length,
+    },
+    stats: {
+      dict_size: dict.size,
+      text_dict_filter_input: lab.codePoints.length,
+      text_dict_filter_kept: kept.length,
+      text_dict_filter_rejected: rejected.length,
+      text_dict_filter_reject_samples: [...new Set(rejected.map((c) => c.code))].slice(0, 12),
+    },
+  };
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const t0 = Date.now();
@@ -337,6 +362,18 @@ async function main(): Promise<void> {
       excludeRegions: gcpFile.excludeRegions,
       ...(numericDict ? { numericDict } : {}),
     });
+    if (dictCodes) {
+      const filtered = filterTextLabelsByDict(lab, dictCodes);
+      lab = filtered.labels;
+      gpt55Stats = { ...gpt55Stats, ...filtered.stats };
+      console.error(
+        `[t2-build] text dict filter: kept ${filtered.stats.text_dict_filter_kept}/` +
+          `${filtered.stats.text_dict_filter_input} in-frame labels; ` +
+          `rejected ${filtered.stats.text_dict_filter_rejected}`,
+      );
+      const samples = filtered.stats.text_dict_filter_reject_samples as string[];
+      if (samples.length > 0) console.error(`[t2-build] text dict rejects: ${samples.join(" | ")}`);
+    }
   }
   const distinct = new Set(lab.codePoints.map((c) => c.code));
   const minCodes = Math.max(3, args.minCodes);
