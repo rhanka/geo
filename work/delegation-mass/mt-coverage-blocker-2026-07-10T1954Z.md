@@ -23,6 +23,14 @@ normes ni géoréférencement**.
 **On NE PEUT PAS** donner à un lot rural un « **RA-1xx + norme** » : RA-1xx est le résidentiel
 central 2008 (= plan3 géographiquement), pas le code en vigueur d'un lot rural.
 
+> **MISE À JOUR (2026-07-10, source vérifiée — voir §6.1).** Le blocage géoréférencement est
+> **LEVÉ** : MT expose son zonage **EN VIGUEUR** comme couche **vecteur ArcGIS** publique
+> (`Ancien_zonage/FeatureServer/1`, 628 polygones MT, champ `Zone`=code, geoJSON, WGS84 —
+> vérifié en direct). Plus besoin de géoréférencer les rasters ni de GCP manuel. Restent :
+> (a) **extraire la grille de normes** actuelle (Annexe A PDFs, série par série, « compilé au
+> 102-73 ») et (b) la **décision millésime/remplacement** (immo/principal) — servir la couche
+> en vigueur CHANGE les codes du centre (RA-1xx 2008 → in-force RA-4xx/etc.) et rend plan3 obsolète.
+
 ---
 
 ## 2. Split de millésime (le crux)
@@ -52,13 +60,11 @@ ruraux (AG/CF/RE/V/VR/TO/TV).
 
 ## 3. Blocages précis (3)
 
-1. **Géoréférencement manquant des cartes actuelles.** `annexe-b-ensemble-territoire.pdf` et
-   `annexe-b-centre-ville.pdf` : l'auto-seed `t2-autogcp` **échoue sur le RÉSIDU** (dry-runs
-   `work/zones-recalage/mont-tremblant-t2-ensemble-dry` et `-centre-dry` = `WITHHELD`, « no
-   (extent×rotation) seed cleared residual+holdout gate »). Ce n'est **pas** une simple ambiguïté
-   d'orientation (résoluble par `--rotation-disambig lots` comme plan3) : le fit affine aux coins
-   cadastre est mauvais → il faut des **GCP MANUELS** (t2-georef-ui), **non disponible en
-   autonome**. Relâcher `--max-residual-m` = laisser passer un mauvais fit = mislabeling (interdit).
+1. ~~**Géoréférencement manquant des cartes actuelles.**~~ **SUPERSEDED (§6.1)** — inutile de
+   géoréférencer les rasters : une **couche vecteur ArcGIS en vigueur** existe (`Ancien_zonage`).
+   *(Historique : l'auto-seed `t2-autogcp` échouait sur le RÉSIDU sur `annexe-b-ensemble` /
+   `-centre-ville` — dry-runs `WITHHELD` — ce qui aurait imposé des GCP manuels ; désormais sans
+   objet grâce à la source vecteur, source préférée du gate QA « ArcGIS > GeoPDF ».)*
 2. **Ambiguïté de millésime — décision NON-agent.** Servir le millésime actuel (RA-4xx, tout le
    territoire) donnerait à chaque lot son **vrai code en vigueur** mais : (a) **0 % de fold norme**
    (pas de grille RA-4xx), et (b) **conflit de millésime** avec le plan3 servi (le centre aurait
@@ -106,17 +112,54 @@ existants sans fabriquer (interdit). Nécessite le jeu **actuel** géoréférenc
 
 ---
 
+## 6.1 Source EN VIGUEUR vérifiée (ArcGIS vecteur) — lève le blocage géoréf
+
+MT exploite sa **propre org ArcGIS Online publique** (`services6.arcgis.com/GnhEJPl3z9NGOl6b`,
+owner `Mont_Tremblant`). Endpoints **vérifiés en direct (WebFetch, 2026-07-10)** :
+
+- **Zonage municipal EN VIGUEUR (à utiliser)** — `Ancien_zonage/FeatureServer/1`
+  (nom « Ancien zonage » = par opposition à la *refonte* proposée ; le champ `Grille` pointe
+  `...REGLEMENTATION EN VIGUEUR\ZONAGE\Grilles - excell compilé au 102-73\400\RA-415-1.xlsx` →
+  c'est bien le règlement **en vigueur**, compilé à l'amendement **102-73**).
+  - `esriGeometryPolygon`, **628 features**, tous `Municipalité=Mont-Tremblant`, `geoJSON` supporté,
+    maxRecordCount 2000. Champs : `OBJECTID, Zone, Affectation, Superficie_km2, Municipalité, Grille, Shape__Area, Shape__Length`.
+  - **`Zone` = zone_code** (échantillon vérifié : `RA-415-1, CA-304, CL-320-2, CV-322, CA-464,
+    RA-407, RM-406, RF-330, RA-331, RF-334, RF-336, PI-448`). ~**478 codes distincts**, préfixes
+    AF/AG/CA/CF/CL/CO/CV/EX/FA/IN/PI/RA/RC/RE/RF/RM/RT/TF/TM/TO/TV/V/VA/VF/VR.
+  - **Requête GeoJSON prête** (couche → features WGS84) :
+    `https://services6.arcgis.com/GnhEJPl3z9NGOl6b/arcgis/rest/services/Ancien_zonage/FeatureServer/1/query?where=1=1&outFields=*&outSR=4326&f=geojson`
+  - SR natif MTM (~WKID 32188) → passer `outSR=4326`. **Track = `agol-account`** (déjà dans les
+    candidateTracks zones du matrix), donc pipeline standard, **sans georef**.
+- **NE PAS confondre** (aussi vérifiés) : `Au_Zonage_Village/FeatureServer/4` = **refonte/PROJET**
+  (codes `VA-RF-311`, `VA-RTF-303`… — pas en vigueur) ; `Zonage_region/FeatureServer/5` = **affectation
+  MRC** (`CODE_AFFEC`, `CO-939`…) — rejetée par le gate.
+
+**Grille des usages et normes (en vigueur)** — publiée en **PDF Annexe A** par série de zones sur
+`vdmt.ca` (page : `https://vdmt.ca/citoyens/urbanisme/reglements-durbanisme`) :
+- Index/liste des grilles : `https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-liste-grille.pdf`
+- Séries : `.../reglement-2008-102-annexe-a-zone-100.pdf` … `-zone-1000.pdf` (100,200,…,1000).
+- Pas de REST/JSON de normes → **extraction PDF-tableau requise** (tracks `pdf-vision`/`pdf-native`).
+
+**Caveats à réconcilier avant tout join** (source de vérité = la couche vecteur, PAS mes lectures
+raster basse-résolution) : la couche est « compilé 102-73 » (plus **récente** que les rasters
+« 102-60 ») ; certains codes que j'avais lus sur les rasters ne matchent pas la couche
+(`RA-404/405` absents → la couche a `RA-403/407/408` ; pas de préfixe `LT-` ; `IE-` ≈ `IN-` ;
+numéros très hauts type `VR-1521` au-delà du max ~1045 de la couche = probables mélectures). Tirer
+le set distinct (`.../FeatureServer/1/query?where=1=1&outFields=Zone&returnDistinctValues=true&f=json`)
+et le réconcilier avant de faire confiance à un join 1:1.
+
 ## 6. Ce qu'il faut pour débloquer (pour immo/principal — hors autonome)
 
-1. **Trancher le millésime** : garder 2008-102/RA-1xx servi (folde une norme, mais périmé +
-   central) **ou** basculer sur 102-60/RA-4xx (en vigueur + tout le territoire, mais 0 norme tant
-   que la grille RA-4xx n'est pas acquise).
-2. **Acquérir la grille de normes RA-4xx** (grille des usages et normes du règlement en vigueur —
-   PDF/tableur ville de Mont-Tremblant ou plateforme légale ; tracks `gestionweblex`/`pdf-vision`).
-3. **Géoréférencer les cartes actuelles** : soit une **source vecteur/service** (ArcGIS/JMap/Azimut/
-   WFS de zonage municipal — pas l'affectation), soit **GCP manuels** sur `annexe-b-ensemble` /
-   `annexe-b-centre-ville` via `t2-georef-ui` (humain).
-   - Priorité source (mémoire QA gate) : **ArcGIS > GOnet/WFS > T1 GeoPDF > 3-GCP**.
+1. **Trancher le millésime (DÉCISION immo/principal)** : garder 2008-102/RA-1xx plan3 servi (folde
+   une norme, validé immo, mais périmé + central) **ou** basculer sur la couche **en vigueur**
+   (§6.1, tout le territoire, codes RA-4xx/etc.) — ce qui **change les codes du centre** et rend
+   plan3 obsolète, et impose l'étape 2 pour garder le fold norme.
+2. **Ingérer le zonage en vigueur** : couche vecteur ArcGIS `Ancien_zonage/FeatureServer/1` (§6.1),
+   track **`agol-account`**, **sans georef** → tout le territoire, geometry réelle, `Zone`=code.
+3. **Acquérir la grille de normes en vigueur** : extraire les **Annexe A PDFs** par série (§6.1,
+   `pdf-vision`/`pdf-native`) → grille RA-4xx/etc. pour que les codes foldent une norme.
+   - Priorité source (mémoire QA gate) : **ArcGIS > GOnet/WFS > T1 GeoPDF > 3-GCP** → la voie ArcGIS
+     est la meilleure et est **disponible**.
 
 ---
 
@@ -151,9 +194,9 @@ PING-IMMO slug=mont-tremblant action=blocage-consigné
   zones_servies=19/54 (plan3 central, 2008-102/RA-1xx, real_zoning=true, overlap_strict=100%)
   lots_zone_code_pct≈27%(central) lots_norme_pct=inchangé
   lot_4650233=rural/8e-Rang HORS plan3 → code en vigueur rural (AG/CF/RE/V/VR-4xx), PAS RA-1xx, pas de norme
-  blocage=split-millésime[2008-102/RA-1xx servi+grille  vs  102-60/RA-4xx cartes actuelles sans grille]
-          + cartes-actuelles-non-géoréf(GCP manuel requis, auto-seed échoue résidu)
-          + grille-RA-4xx-absente
-  décision_requise=immo/principal (millésime + acquisition) ; serve plan3 INCHANGÉ (rien cassé)
+  blocage=split-millésime[2008-102/RA-1xx servi+grille(plan3,validé)  vs  en-vigueur/RA-4xx tout-le-territoire]
+  source_en_vigueur=TROUVÉE+vérifiée: ArcGIS Ancien_zonage/FeatureServer/1 (628 feats MT, Zone=code, geoJSON, compilé 102-73) → georef PLUS requis
+  reste=extraction grille normes Annexe-A PDFs (vdmt.ca) + DÉCISION millésime/remplacement
+  décision_requise=immo/principal (garder plan3 RA-1xx  vs  basculer couche en-vigueur RA-4xx) ; serve plan3 INCHANGÉ (rien cassé)
   real_zoning=true
 ```
