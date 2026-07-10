@@ -21,7 +21,10 @@
  * {densite, hauteur_min, hauteur_max, frontage_min, superficie_min,
  *  marge_avant_min, marge_laterale_min, marge_arriere_min} the _value/_raw/_unit/
  * _confidence quad, plus _source_url/_reglement/_methode/_snapshot). `zone_code`
- * is kept and an immo alias `code_zone` (same real value) is added.
+ * is normalised to the ONE canonical LETTER-NUMBER SERVE form (`canonZoneCodeServe`:
+ * `103-R`→`R-103`, `1-M`→`M-1`, `A 10`→`A-10`; a no-op on an already-canonical code)
+ * so it equals the SIG zonage's served join key, and an immo alias `code_zone`
+ * (same value) is added.
  *
  * GEOMETRY (best-effort, immo-approved): each zone's polygon is joined from the
  * muni's SIG grille `normalized/ca-qc-zonage/qc-zonage-<slug>.geojson` on the
@@ -33,7 +36,8 @@
  * unblock serving; re-run without it later to enrich the geometry.
  *
  * ANTI-INVENTION: every value is a verbatim passthrough of the deposited parquet
- * and the deposited SIG polygon. Nothing is fabricated; an absent cell is `null`.
+ * and the deposited SIG polygon (the only transform is reordering the `zone_code`
+ * SURFACE form — never renumbering it). Nothing is fabricated; an absent cell is `null`.
  *
  * SINGLE process by design (geometry join parses one SIG grille per muni).
  *
@@ -57,6 +61,7 @@ import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
 import {
   ZONAGE_NORMS_PREFIX,
   canonZone,
+  canonZoneCodeServe,
   normsKey,
   resolveGridKey,
   SIG_ZONE_CODE_FIELDS,
@@ -313,7 +318,21 @@ function normProperties(row: Record<string, unknown>): Record<string, unknown> {
 async function runCity(s3: S3Client, slug: string, args: Args): Promise<PublishStats> {
   const pKey = normsKey(slug);
   if (!(await exists(s3, pKey))) throw new Error(`no norms parquet: ${pKey}`);
-  const rows = dedupeByZone(await readParquetRowsFromBuffer(await getBytes(s3, pKey)));
+  const parquetRows = await readParquetRowsFromBuffer(await getBytes(s3, pKey));
+  // Serve the zone_code in the ONE canonical LETTER-NUMBER surface form
+  // (`canonZoneCodeServe`) so the SERVED grille and the SERVED SIG zonage carry
+  // byte-identical join keys — that is what immo's EXACT passthrough join needs to
+  // fold this norm onto the lot (`103-R`/`1-M`/`A 10` → `R-103`/`M-1`/`A-10`). It is
+  // idempotent and a NO-OP on an already-canonical code, so a muni whose parquet is
+  // already LETTER-NUMBER (champlain `R-103`, coaticook `HDB-924`) is unchanged; and
+  // its ORDER agrees with `canonZone`, so the geometry join below still matches. The
+  // dedupe then keys on the canonical form so two surface variants of ONE code merge
+  // (keeping the more-published row) rather than emitting a duplicate feature.
+  for (const row of parquetRows) {
+    const zc = row["zone_code"];
+    if (zc !== null && zc !== undefined && String(zc).trim()) row["zone_code"] = canonZoneCodeServe(String(zc));
+  }
+  const rows = dedupeByZone(parquetRows);
   if (rows.length === 0) throw new Error(`parquet has 0 zone_code rows`);
 
   // ── geometry index (best-effort) ────────────────────────────────────────────
