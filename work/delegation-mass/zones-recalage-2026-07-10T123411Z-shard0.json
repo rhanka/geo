@@ -1,0 +1,150 @@
+{
+  "timestamp": "2026-07-10T123411Z",
+  "shard": {
+    "rem": 0,
+    "mod": 6,
+    "selector": "sorted index % 6 == 0"
+  },
+  "policy": {
+    "anti_invention": true,
+    "pdf_only": true,
+    "agol_owner_harvest": false,
+    "node_ts_only": true
+  },
+  "deposits": [
+    {
+      "slug": "abercorn",
+      "lane": "T2",
+      "source_pdf": "work/pdf-cache/abercorn.pdf",
+      "gcp_report": "work/gcp/abercorn.autogcp.aniso.report.json",
+      "gcp_count": 32,
+      "residual_max_m": 10.487,
+      "holdout_max_m": 12.791,
+      "label_mode": "text",
+      "distinct_codes": 117,
+      "lots_total": 455,
+      "lots_assigned_pct": 100,
+      "s3": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-abercorn.geojson",
+      "inline": {
+        "lot_zone_join": "ok",
+        "lots_enriched": "ok"
+      }
+    },
+    {
+      "slug": "frampton",
+      "lane": "T1-multisheet-claude",
+      "source_pdfs": [
+        "work/pdf-cache/frampton-rural.pdf",
+        "work/pdf-cache/frampton-urbain.pdf"
+      ],
+      "georef_residual_m": [2.235, 0],
+      "label_mode": "claude reads, dict gated",
+      "distinct_codes": 67,
+      "code_points": 77,
+      "lots_total": 1545,
+      "lots_assigned_pct": 88.67,
+      "s3": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-frampton.geojson",
+      "inline": {
+        "lot_zone_join": "ok",
+        "lots_enriched": "ok"
+      }
+    },
+    {
+      "slug": "les-escoumins",
+      "lane": "T1-multisheet-claude",
+      "source_pdfs": [
+        "https://www.escoumins.ca/wp-content/uploads/2024/11/Plan1_zonage_ensemble_territoire_avril2023.pdf",
+        "https://www.escoumins.ca/wp-content/uploads/2024/11/Plan2_zonage_agglomeration_20231204.pdf"
+      ],
+      "dict_sources": [
+        "https://www.escoumins.ca/wp-content/uploads/2024/11/Grilles-territoire_14-11-2023.pdf",
+        "https://www.escoumins.ca/wp-content/uploads/2024/11/Grilles-perimetre-urbain_14-11-2023.pdf"
+      ],
+      "georef_residual_m": [0.122, 0.199],
+      "label_mode": "text-derived positioned reads via claude ingest, dict gated",
+      "dict_codes": 111,
+      "distinct_codes": 102,
+      "code_points": 107,
+      "spatial_km": 3.611,
+      "lots_total": 165,
+      "lots_assigned_pct": 69.09,
+      "surface_covered_pct": 83.81,
+      "s3": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-les-escoumins.geojson",
+      "inline": {
+        "lot_zone_join": "ok",
+        "lots_enriched": "ok after sequential retry"
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "alleyn-et-cawood",
+      "reason": "scan/no vector points; T1 no georef; T2 autogcp pass=false no seed residual+holdout, svg_points=0",
+      "evidence": "work/gcp/alleyn-et-cawood.autogcp.report.json"
+    },
+    {
+      "slug": "aumond",
+      "reason": "official source found is zoning amendment/regulation PDF, no cartographic zoning plan; T1 no georef"
+    },
+    {
+      "slug": "chartierville",
+      "reason": "official source found is amendment PDF, no cartographic zoning plan; T1 no georef"
+    },
+    {
+      "slug": "chertsey",
+      "reason": "local PDF no T1 georef; existing autogcp report svg_points=0 and no seed residual+holdout"
+    },
+    {
+      "slug": "cote-nord-du-golfe-du-saint-laurent",
+      "reason": "official website DNS resolution failed; no PDF recovered"
+    },
+    {
+      "slug": "desbiens",
+      "reason": "local PDF is scanned 188-page regulation, no T1 georef and no standalone plan found"
+    },
+    {
+      "slug": "hebertville",
+      "reason": "local PDF is regulation text, no T1 georef and no cartographic plan found"
+    },
+    {
+      "slug": "kipawa",
+      "reason": "official map page exposes Google maps only, no zoning PDF"
+    },
+    {
+      "slug": "la-morandiere-rochebaucourt",
+      "reason": "official site exposes web GIS portal only, no zoning PDF"
+    },
+    {
+      "slug": "lac-sainte-marie",
+      "reason": "official source is grids/norms PDF, no cartographic zoning plan; T1 no georef"
+    },
+    {
+      "slug": "montpellier",
+      "reason": "T1 no georef; T2 rural failed orientation/isotropy despite residual seeds; T2 villageois no residual+holdout seed",
+      "evidence": [
+        "work/gcp/montpellier-rural.autogcp.report.json",
+        "work/gcp/montpellier-villageois.autogcp.report.json"
+      ]
+    },
+    {
+      "slug": "longue-pointe-de-mingan",
+      "reason": "official pages inspected but no directly accessible zoning PDF found within bounded pass"
+    }
+  ],
+  "artifacts": [
+    "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.md",
+    "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.json",
+    "work/zonage-dicts/frampton.codes.json",
+    "work/zonage-recalage/frampton-rural.reads.json",
+    "work/zonage-recalage/frampton-urbain.reads.json",
+    "work/gcp/abercorn.gcp.json",
+    "work/gcp/abercorn.autogcp.aniso.report.json",
+    "work/gcp/alleyn-et-cawood.autogcp.report.json",
+    "work/zonage-dicts/les-escoumins.codes.json",
+    "work/zonage-recalage/les-escoumins-extract-reads.mjs",
+    "work/zonage-recalage/les-escoumins-plan1.reads.json",
+    "work/zonage-recalage/les-escoumins-plan2.reads.json",
+    "work/gcp/montpellier-rural.autogcp.report.json",
+    "work/gcp/montpellier-villageois.autogcp.report.json"
+  ]
+}
