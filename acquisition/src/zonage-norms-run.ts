@@ -88,6 +88,7 @@ import {
 } from "../../packages/qc-sources/src/sources/grille-vision-zoneheader.js";
 
 import { s3Client } from "./lib/s3.js";
+import { ensureOcrKeyLoaded } from "./lib/ocr-env.js";
 import { resolveOcrCall } from "./lib/ocr.js";
 import {
   extractGrilleGpt55FromPdf,
@@ -713,6 +714,10 @@ function costTrackedZoneHeaderVision(): {
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  // Bootstrap the Mistral/OCR key from sentropic/.env (or geo/.env) when the shell
+  // does not export it — a dispatched-agent shell never inherits the fleet env.
+  const keyFrom = ensureOcrKeyLoaded();
+  if (keyFrom) console.error(`[ocr-env] loaded OCR key from ${keyFrom}`);
   const s3 = s3Client();
 
   // eslint-disable-next-line no-console
