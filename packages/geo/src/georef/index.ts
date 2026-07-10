@@ -72,6 +72,26 @@ export {
   type AffineGateResult,
 } from "./gate.js";
 
+// Pure vector/cadastre auto-GCP discovery: parse SVG vector linework already
+// rendered by the app layer, match it to in-memory WGS84 cadastre, and emit
+// independently-derived GCPs without PDF/OCR/filesystem/network concerns.
+export {
+  buildGcpFileFromMatches,
+  deriveAutoSeedGcpsFromVectors,
+  deriveAutonomousGcpsFromVectors,
+  parseSvgVectorPoints,
+  type AutoGcpFitMode,
+  type AutoGcpMatch,
+  type AutoGcpVectorOptions,
+  type AutoGcpVectorReport,
+  type AutoSeedAttempt,
+  type AutoSeedOrientationCandidate,
+  type AutoSeedVectorOptions,
+  type AutoSeedVectorReport,
+  type ParseSvgVectorPointOptions,
+  type Pt,
+} from "./autogcp.js";
+
 // Orientation-ambiguity + moderate-stretch decisions from cadastre lot-coverage
 // evidence: serve a rotation / confirm an anisotropic fit ONLY when the data is
 // decisive (never invent an orientation).
