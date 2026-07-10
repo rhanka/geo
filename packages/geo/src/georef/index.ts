@@ -7,6 +7,9 @@
  *   - {@link buildGeoRefFromGcps}: rebuild a {@link GeoRef} from ≥3 Ground Control
  *     Points, plus the independence/collinearity gates used to reject bbox-corner
  *     "controls";
+ *   - {@link deriveAutonomousGcpsFromPoints}: match already-extracted page
+ *     vector points to WGS84 cadastre vertices, then residual/holdout-gate the
+ *     independent controls;
  *   - {@link extractGeoRef}: pull a T1 GeoPDF's EMBEDDED registration (the
  *     `/VP /Measure /GEO /GPTS` viewport) straight from the PDF buffer and fit
  *     page→WGS84 via proj4 — pure-Node, no GDAL.
@@ -41,6 +44,20 @@ export {
   type IndependentGcpCheck,
   type NeatlineFrac,
 } from "./gcp.js";
+
+// Autonomous T2 cadastre/linework matching core: in-memory points + cadastre in,
+// independent GCPs out. PDF rendering, OCR, S3 and CRS reprojection stay outside.
+export {
+  buildGcpFileFromAutoMatches,
+  deriveAutonomousGcpsFromPoints,
+  extractSvgVectorPointsFromString,
+  matchPagePointsToCadastre,
+  type AutoGcpCoreOptions,
+  type AutoGcpCoreReport,
+  type AutoGcpMatch,
+  type FitMode,
+  type PagePoint,
+} from "./autogcp.js";
 
 // Affine/similarity decomposition + orientation/isotropy/mirror gate: refuse to
 // serve a residual-clean but geometrically-wrong (stretched/mirrored/flipped) fit.
