@@ -54,3 +54,18 @@ export {
   type AffineGateOptions,
   type AffineGateResult,
 } from "./gate.js";
+
+// Orientation-ambiguity + moderate-stretch decisions from cadastre lot-coverage
+// evidence: serve a rotation / confirm an anisotropic fit ONLY when the data is
+// decisive (never invent an orientation).
+export {
+  DEFAULT_ANISO_ARBITRATION,
+  DEFAULT_ROTATION_DECISION,
+  decideAnisoArbitration,
+  decideRotation,
+  type AnisoArbitrationDecision,
+  type AnisoArbitrationOptions,
+  type MeasuredRotation,
+  type RotationDecision,
+  type RotationDecisionOptions,
+} from "./rotation-disambig.js";
