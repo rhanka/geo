@@ -69,3 +69,15 @@ export {
   type RotationDecision,
   type RotationDecisionOptions,
 } from "./rotation-disambig.js";
+
+// Pure raster primitives for cadastre↔plan image registration: PGM decode, edge
+// mask, Harris corner detection, edge-patch overlap score.
+export {
+  detectRasterCorners,
+  edgeMaskFromGray,
+  parsePgm,
+  patchEdgeScore,
+  type EdgeImage,
+  type GrayImage,
+  type RasterCorner,
+} from "./raster.js";
