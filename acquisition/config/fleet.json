@@ -2,7 +2,7 @@
   "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts.",
   "engine": "claude",
   "lanes": [
-    { "name": "geo-zn-recal", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 6, "note": "zones ~314 restants" },
+    { "name": "geo-zn-recal", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 6, "note": "zones ~314 restants — Codex quotas reset; glyph/vision Claude reste exclu de cette lane" },
     { "name": "geo-nm",       "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 8, "note": "normes ~530 restants — le goulot (découverte de sources)" },
     { "name": "geo-pv",       "prompt": "work/delegation-mass/agent-prompts/pv-base.txt",             "shards": 2, "note": "pv ~49 restants — presque fini" }
   ],
