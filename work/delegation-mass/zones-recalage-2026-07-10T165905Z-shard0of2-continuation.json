@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-07-10T165905Z",
+  "shard": {
+    "rem": 0,
+    "mod": 2
+  },
+  "deposits": [
+    {
+      "slug": "les-bergeronnes",
+      "collection": "qc-zonage-les-bergeronnes",
+      "method": "t1-geopdf",
+      "officialPage": "https://www.bergeronnes.com/urbanisme",
+      "pdf": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+      "crs": "NAD_1983_MTM_7",
+      "gcpResidualMaxM": 0.978,
+      "spatialKm": 4.792,
+      "distinctCodes": 47,
+      "servedFeatures": 23,
+      "lotsAssignedPct": 70.88,
+      "areaCoveredPct": 50.53,
+      "inline": {
+        "lotZoneJoin": "OK lots=577 assigned=70.88%",
+        "lotsEnriched": "OK zone_code=70.88% normes=35.01% deposit=Y"
+      },
+      "alternateSheetDryRun": {
+        "pdf": "work/pdf-cache/les-bergeronnes-plan2.pdf",
+        "gcpResidualMaxM": 0.474,
+        "distinctCodes": 34,
+        "lotsAssignedPct": 32.06
+      }
+    },
+    {
+      "slug": "lac-sainte-marie",
+      "collection": "qc-zonage-lac-sainte-marie",
+      "method": "t1-geopdf",
+      "officialPage": "https://www.lac-sainte-marie.com/le-conseil/les-reglements",
+      "pdf": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+      "crs": "NAD_1983_MTM_9",
+      "gcpResidualMaxM": 0.188,
+      "spatialKm": 1.352,
+      "distinctCodes": 127,
+      "servedFeatures": 86,
+      "lotsAssignedPct": 99.6,
+      "areaCoveredPct": 98.89,
+      "inline": {
+        "lotZoneJoin": "OK lots=2995 assigned=99.60%",
+        "lotsEnriched": "OK zone_code=99.60% normes=12.79% deposit=Y"
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "la-bostonnais",
+      "reason": "official GeoPDF zoning plan exists but text labels are glyphs and no validated municipal zone-code dictionary was available",
+      "evidence": [
+        "work/pdf-cache/la-bostonnais-zonage-rural.pdf",
+        "work/pdf-cache/la-bostonnais-zonage-urbain.pdf",
+        "work/zones-recalage/shard0of2/la-bostonnais-cartes.html"
+      ]
+    },
+    {
+      "slug": "la-martre",
+      "reason": "no municipal website URL in local MAMH directory",
+      "evidence": "packages/qc-sources/src/geo/qc-municipal-directory.json"
+    },
+    {
+      "slug": "la-morandiere-rochebaucourt",
+      "reason": "official pages captured but no zoning map PDF link found",
+      "evidence": "work/zones-recalage/shard0of2/la-morandiere-cartes.html"
+    },
+    {
+      "slug": "la-patrie",
+      "reason": "official regulation page captured; no zoning map PDF link found",
+      "evidence": "work/zones-recalage/shard0of2/la-patrie-reglement-193-26.html"
+    },
+    {
+      "slug": "labelle",
+      "reason": "local plan file is HTML 404; zoning regulation PDF has no embedded georef and no cartographic plan page localized",
+      "evidence": "work/zonage-plans/labelle-reglement.pdf"
+    },
+    {
+      "slug": "lac-des-aigles",
+      "reason": "autogcp orientation ambiguity; only 4 independent matches after pruning",
+      "evidence": "work/gcp/lac-des-aigles.autogcp.shard4.report.json"
+    },
+    {
+      "slug": "lac-edouard",
+      "reason": "autogcp reports have svg_points=0 and no residual+holdout seed",
+      "evidence": "work/gcp/lac-edouard-main.autogcp.shard4.report.json"
+    },
+    {
+      "slug": "lac-poulin",
+      "reason": "official bylaw has no embedded georef; plan annex page 88 is raster/non-vector and t2 autogcp has svg_points=0",
+      "evidence": "work/gcp/lac-poulin.autogcp.report.json"
+    },
+    {
+      "slug": "lamarche",
+      "reason": "official hosts produced certificate failure, timeout, or empty HTTP response; no official PDF recovered",
+      "evidence": "work/zones-recalage/shard0of2/lamarche-home-http.html"
+    },
+    {
+      "slug": "lantier",
+      "reason": "autogcp reports have only 22 SVG points and too few independent matches",
+      "evidence": "work/gcp/lantier.autogcp.shard4.report.json"
+    }
+  ],
+  "notes": [
+    "No AGOL owner harvest was attempted.",
+    "work/zonage-dicts/la-bostonnais.codes.json was not committed because it came from legal-reference text, not a validated municipal zone-code dictionary."
+  ]
+}
