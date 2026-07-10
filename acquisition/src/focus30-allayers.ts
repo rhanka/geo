@@ -8,17 +8,13 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { FOCUS_30_SLUGS } from "./focus30-status.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const MATRIX = join(ROOT, "work", "coverage", "coverage-matrix.json");
 
-const FOCUS = [
-  "longueuil", "rosemere", "westmount", "hampstead", "cote-saint-luc", "dorval", "chambly",
-  "saint-lambert", "mont-royal", "montreal-ouest", "brossard", "sainte-catherine", "la-prairie",
-  "delson", "candiac", "montreal-est", "lile-dorval", "saint-constant", "saint-bruno-de-montarville",
-  "carignan", "dollard-des-ormeaux", "pointe-claire", "saint-philippe", "saint-mathieu",
-  "chateauguay", "sainte-julie", "saint-basile-le-grand", "varennes", "kirkland", "boucherville",
-];
+// Source UNIQUE = focus30-status.ts (autorité immo). Plus de liste curée dupliquée ici.
+const FOCUS = [...FOCUS_30_SLUGS];
 
 const LAYERS = ["zones", "normes", "pv"] as const;
 
@@ -38,9 +34,9 @@ function main(): void {
     });
     rows.push(`  ${s.padEnd(30)} z:${cells[0]} n:${cells[1]} p:${cells[2]}`);
   }
-  console.log("FOCUS-30 par couche (z=zones n=normes p=pv) :");
+  console.log("FOCUS-IMMO par couche (z=zones n=normes p=pv) :");
   console.log(rows.join("\n"));
-  console.log(`\nTOTAUX /30 : zones=${tally.zones} · normes=${tally.normes} · pv=${tally.pv}`);
+  console.log(`\nTOTAUX /${FOCUS.length} : zones=${tally.zones} · normes=${tally.normes} · pv=${tally.pv}`);
   for (const l of LAYERS) {
     if (missing[l].length) console.log(`MANQUE ${l} (${missing[l].length}): ${missing[l].join(", ")}`);
   }
