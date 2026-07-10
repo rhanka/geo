@@ -1,0 +1,20 @@
+{
+  "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts.",
+  "engine": "claude",
+  "lanes": [
+    { "name": "geo-zn-recal", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 6, "note": "zones ~314 restants" },
+    { "name": "geo-nm",       "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 8, "note": "normes ~530 restants — le goulot (découverte de sources)" },
+    { "name": "geo-pv",       "prompt": "work/delegation-mass/agent-prompts/pv-base.txt",             "shards": 2, "note": "pv ~49 restants — presque fini" }
+  ],
+  "singletons": [
+    { "name": "geo-port-npm",   "prompt": "work/delegation-mass/agent-prompts/port-to-npm.txt", "model": "claude-opus-4-8" },
+    { "name": "geo-immo-clean", "prompt": "work/delegation-mass/agent-prompts/immo-clean.txt" }
+  ],
+  "backfill": {
+    "session": "geo-immo-gap-loop",
+    "match": "qc-lots-backfill.ts",
+    "cmd": ["npx", "tsx", "acquisition/src/qc-lots-backfill.ts", "--gap-limit", "300", "--gap-batch", "4", "--workers", "4", "--enrich-no-role", "--progress", "work/coverage/qc-lots-loop-progress.json", "--log", "work/coverage/qc-lots-loop.log"]
+  },
+  "h2aLoop": "loop-mre4avom",
+  "timeline": "work/coverage/fleet-timeline.jsonl"
+}
