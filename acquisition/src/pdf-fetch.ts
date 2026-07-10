@@ -36,7 +36,11 @@ function fetchInsecure(url: string, redirects = 0): Promise<Buffer> {
     if (redirects > 5) return reject(new Error('too many redirects'));
     const req = httpsGet(
       url,
-      { insecureHTTPParser: true, headers: { 'User-Agent': UA, Accept: 'application/pdf,*/*' } },
+      {
+        insecureHTTPParser: true,
+        rejectUnauthorized: false, // muni sites often ship an incomplete cert chain
+        headers: { 'User-Agent': UA, Accept: 'application/pdf,*/*' },
+      },
       (res) => {
         const status = res.statusCode ?? 0;
         if (status >= 300 && status < 400 && res.headers.location) {
