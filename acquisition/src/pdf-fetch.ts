@@ -14,11 +14,49 @@
  * a plan.
  */
 import { existsSync, mkdirSync, statSync, writeFileSync } from 'node:fs';
+import { get as httpsGet } from 'node:https';
 import { dirname, resolve } from 'node:path';
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 && i + 1 < process.argv.length ? process.argv[i + 1] : undefined;
+}
+
+const UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36';
+
+/**
+ * Fallback download for servers that emit malformed HTTP headers (e.g. the Vplus
+ * CMS used by many QC municipalities sends an oversized CSP header without a
+ * proper CRLF, which node/undici's strict parser rejects with HTTPParserError).
+ * Uses node:https with insecureHTTPParser and follows redirects manually.
+ */
+function fetchInsecure(url: string, redirects = 0): Promise<Buffer> {
+  return new Promise((resolvePromise, reject) => {
+    if (redirects > 5) return reject(new Error('too many redirects'));
+    const req = httpsGet(
+      url,
+      { insecureHTTPParser: true, headers: { 'User-Agent': UA, Accept: 'application/pdf,*/*' } },
+      (res) => {
+        const status = res.statusCode ?? 0;
+        if (status >= 300 && status < 400 && res.headers.location) {
+          res.resume();
+          const next = new URL(res.headers.location, url).toString();
+          fetchInsecure(next, redirects + 1).then(resolvePromise, reject);
+          return;
+        }
+        if (status !== 200) {
+          res.resume();
+          return reject(new Error(`HTTP ${status}`));
+        }
+        const chunks: Buffer[] = [];
+        res.on('data', (c) => chunks.push(c as Buffer));
+        res.on('end', () => resolvePromise(Buffer.concat(chunks)));
+        res.on('error', reject);
+      },
+    );
+    req.on('error', reject);
+  });
 }
 
 async function main(): Promise<void> {
@@ -40,22 +78,25 @@ async function main(): Promise<void> {
 
   mkdirSync(dirname(outPath), { recursive: true });
   console.error(`[pdf-fetch] GET ${url}`);
-  const res = await fetch(url, {
-    redirect: 'follow',
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36',
-      Accept: 'application/pdf,*/*',
-    },
-  });
-  if (!res.ok) {
-    console.error(`[pdf-fetch] HTTP ${res.status} ${res.statusText}`);
-    process.exit(2);
+  let buf: Buffer;
+  try {
+    const res = await fetch(url, {
+      redirect: 'follow',
+      headers: { 'User-Agent': UA, Accept: 'application/pdf,*/*' },
+    });
+    if (!res.ok) {
+      console.error(`[pdf-fetch] HTTP ${res.status} ${res.statusText}`);
+      process.exit(2);
+    }
+    buf = Buffer.from(await res.arrayBuffer());
+  } catch (e) {
+    // Retry with the lenient parser for malformed-header servers (Vplus CMS etc.).
+    console.error(`[pdf-fetch] fetch() failed (${String((e as Error).message).slice(0, 60)}); retry insecureHTTPParser`);
+    buf = await fetchInsecure(url);
   }
-  const buf = Buffer.from(await res.arrayBuffer());
   const head = buf.subarray(0, 5).toString('latin1');
   if (!head.startsWith('%PDF')) {
-    console.error(`[pdf-fetch] NOT a PDF (magic="${head.replace(/[^\x20-\x7e]/g, '.')}", ${buf.length} bytes, ct=${res.headers.get('content-type')})`);
+    console.error(`[pdf-fetch] NOT a PDF (magic="${head.replace(/[^\x20-\x7e]/g, '.')}", ${buf.length} bytes)`);
     process.exit(2);
   }
   writeFileSync(outPath, buf);
