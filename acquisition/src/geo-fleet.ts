@@ -18,7 +18,7 @@
  * Idempotent: a live agent (CLI shows "esc to interrupt") is left alone; anything else
  * (no session, idle at the ❯ prompt, spend-limit banner, finished+context-full) is relaunched.
  */
-import { execFileSync, execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -152,7 +152,7 @@ function ensureBackfill(bf?: Backfill) {
   if (!bf) return 'no-backfill';
   let running = false;
   try {
-    execSync(`pgrep -f ${JSON.stringify(bf.match)}`, { stdio: ['ignore', 'ignore', 'ignore'] });
+    execFileSync('pgrep', ['-f', bf.match], { stdio: ['ignore', 'ignore', 'ignore'], timeout: 15_000 });
     running = true;
   } catch {
     running = false;
