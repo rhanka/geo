@@ -30,6 +30,7 @@ FLEET=(
   "geo-nm-d|$P/normes-mistral-base.txt|3/4|"
   "geo-port-npm|$P/port-to-npm.txt||claude-opus-4-8"
   "geo-harness-analysis|$P/harness-analysis.txt||claude-opus-4-8"
+  "geo-immo-clean|$P/immo-clean.txt||"
 )
 
 # an agent is "dead" if its remote-<name> tmux is absent, OR its pane last line is
