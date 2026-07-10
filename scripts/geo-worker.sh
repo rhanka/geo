@@ -62,6 +62,21 @@ case "$cmd" in
     done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
     echo "(sessions not listed = down/exited)" ;;
 
+  msg)
+    # Send a follow-up instruction into a live agent's tmux pane.
+    session="${1:-}"; shift || true
+    text="$*"
+    [ -n "$session" ] && [ -n "$text" ] || { echo "msg needs <session> <text...>"; exit 2; }
+    case "$session" in remote-*) remote="$session" ;; *) remote="remote-$session" ;; esac
+    pane="$(tmux list-panes -t "$remote" -F '#{pane_id}' 2>/dev/null | head -1)"
+    [ -n "$pane" ] || { echo "no pane for $remote"; exit 1; }
+    tmux set-buffer -- "$text"
+    tmux paste-buffer -t "$pane" -p
+    tmux send-keys -t "$pane" Enter
+    sleep 1
+    tmux send-keys -t "$pane" Enter
+    echo "sent to $remote ($pane)" ;;
+
   tail)
     session="${1:-}"; n="${2:-40}"
     [ -n "$session" ] || { echo "tail needs <session> [n]"; exit 2; }
