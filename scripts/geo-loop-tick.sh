@@ -61,12 +61,17 @@ for row in "${FLEET[@]}"; do
   fi
 done
 
-# deterministic immo backfill: keep one running against the live gap.
-if ! tmux has-session -t geo-immo-gap-loop 2>/dev/null; then
-  echo "RELAUNCH geo-immo-gap-loop (deterministic backfill --gap-limit 300)"
+# deterministic immo backfill: keep it GRINDING the live gap. Check the PROCESS
+# (the bg tmux lingers with sleep after a pass finishes), not just the session,
+# so a finished pass is re-kicked while producible gap remains. Idempotent.
+if ! pgrep -f 'qc-lots-backfill.ts' >/dev/null 2>&1; then
+  echo "RELAUNCH geo-immo-gap-loop (backfill process not running — grind the gap)"
+  tmux kill-session -t geo-immo-gap-loop 2>/dev/null || true
   bash "$W" bg geo-immo-gap-loop -- npx tsx acquisition/src/qc-lots-backfill.ts \
     --gap-limit 300 --gap-batch 4 --workers 4 --enrich-no-role \
     --progress work/coverage/qc-lots-loop-progress.json --log work/coverage/qc-lots-loop.log >/dev/null 2>&1 || true
+else
+  echo "ALIVE    geo-immo-gap-loop (backfill process running)"
 fi
 
 echo "--- reconcile ---"
