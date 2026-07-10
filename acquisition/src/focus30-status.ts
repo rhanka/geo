@@ -13,20 +13,26 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 // L'ancienne liste curée geo (banlieues MTL: longueuil/westmount/brossard/…) est SUPPRIMÉE — désalignée de la
 // perception immo (recouvrement quasi nul). Ici = les villes qu'immo priorise (cohérence zone↔grille cassée),
 // par tier. Full 30/31 en attente de la liste complète d'immo (demandée sur le thread focus30).
-export const FOCUS_IMMO_P0 = ["mont-tremblant"]; // P0 millésime disjoint (626 codes SIG vs 54 grille, 8% communs)
-export const FOCUS_IMMO_P1 = [ // grille servie mais 0% mappé (millésime/couplage)
-  "saint-mathieu-de-beloeil", "rosemere", "plaisance",
-  "hemmingford--les-jardins-de-napierville--2", "saint-charles-borromee", "sutton",
+// LISTE COMPLÈTE des 30 (immo, 2026-07-10, mesure zone↔grille sur l'OGC servi), par état.
+export const FOCUS_IMMO_OK_LAYER = [ // couche zone↔grille OK ; reste = re-fold + parse au niveau lot
+  "saint-amable", "saint-raymond", "mont-saint-hilaire", "saint-stanislas-de-kostka",
+  "cowansville", "chelsea", "la-sarre", "saint-gilbert", "neuville",
 ];
-export const FOCUS_IMMO_P2 = [ // grille absente (zone servie sans normes)
-  "saint-frederic", "champlain", "coaticook", "petite-riviere-saint-francois", "notre-dame-de-lourdes--lerable",
+export const FOCUS_IMMO_WINS = [ // corrigées cette session (canon + serving + vision), servies OK
+  "mont-tremblant", "saint-frederic", "champlain", "rosemere", "plaisance", "coaticook",
 ];
-export const FOCUS_IMMO_P3 = ["alma", "saint-boniface"]; // zonage absent
-// Partiels à remonter (nommés par immo au fil de l'eau, 2026-07-10 — mesure OGC servie).
-export const FOCUS_IMMO_PARTIALS = ["sainte-catherine", "rimouski", "saint-come-liniere", "stratford", "preissac"];
-/** Villes focus AUTORITAIRE immo (P0-P3 + partiels nommés). Remplacer par la liste totale 30/31 dès qu'immo l'envoie. */
+export const FOCUS_IMMO_WRONG_SOURCE = [ // 0% malgré grille : mauvaise source / millésime disjoint (swap couche)
+  "saint-mathieu-de-beloeil", "hemmingford--les-jardins-de-napierville--2", "saint-charles-borromee", "sutton",
+];
+export const FOCUS_IMMO_PARTIAL = [ // couverture partielle à remonter
+  "sainte-catherine", "rimouski", "saint-come-liniere", "levis", "saint-raphael", "sainte-cecile-de-milton", "preissac",
+];
+export const FOCUS_IMMO_GRILLE_ABSENTE = ["petite-riviere-saint-francois", "notre-dame-de-lourdes--lerable"];
+export const FOCUS_IMMO_ZONAGE_ABSENT = ["alma", "saint-boniface"];
+/** Les 30 villes focus AUTORITAIRE immo (liste complète, alignée à l'identique sur son snapshot). */
 export const FOCUS_30_SLUGS: readonly string[] = [
-  ...FOCUS_IMMO_P0, ...FOCUS_IMMO_P1, ...FOCUS_IMMO_P2, ...FOCUS_IMMO_P3, ...FOCUS_IMMO_PARTIALS,
+  ...FOCUS_IMMO_OK_LAYER, ...FOCUS_IMMO_WINS, ...FOCUS_IMMO_WRONG_SOURCE,
+  ...FOCUS_IMMO_PARTIAL, ...FOCUS_IMMO_GRILLE_ABSENTE, ...FOCUS_IMMO_ZONAGE_ABSENT,
 ];
 
 async function servedSlugs(): Promise<Set<string>> {
@@ -53,7 +59,7 @@ async function main(): Promise<void> {
   const served = all.filter((s) => have.has(s));
   const missing = all.filter((s) => !have.has(s));
   console.log(`FOCUS-IMMO zonage servi : ${served.length}/${all.length}`);
-  console.log(`  P0=${FOCUS_IMMO_P0.length} P1=${FOCUS_IMMO_P1.length} P2=${FOCUS_IMMO_P2.length} P3=${FOCUS_IMMO_P3.length} (autorité immo)`);
+  console.log(`  ok-layer=${FOCUS_IMMO_OK_LAYER.length} wins=${FOCUS_IMMO_WINS.length} wrong-source=${FOCUS_IMMO_WRONG_SOURCE.length} partial=${FOCUS_IMMO_PARTIAL.length} grille-absente=${FOCUS_IMMO_GRILLE_ABSENTE.length} zonage-absent=${FOCUS_IMMO_ZONAGE_ABSENT.length} (total ${FOCUS_30_SLUGS.length}, autorité immo)`);
   console.log(`SERVIES : ${served.sort().join(", ")}`);
   console.log(`MANQUANTES : ${missing.sort().join(", ")}`);
 }
