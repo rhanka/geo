@@ -22,9 +22,11 @@ export const FOCUS_IMMO_P2 = [ // grille absente (zone servie sans normes)
   "saint-frederic", "champlain", "coaticook", "petite-riviere-saint-francois", "notre-dame-de-lourdes--lerable",
 ];
 export const FOCUS_IMMO_P3 = ["alma", "saint-boniface"]; // zonage absent
-/** Villes focus AUTORITAIRE immo (P0-P3 nommées). Complète à 30/31 dès la liste totale d'immo. */
+// Partiels à remonter (nommés par immo au fil de l'eau, 2026-07-10 — mesure OGC servie).
+export const FOCUS_IMMO_PARTIALS = ["sainte-catherine", "rimouski", "saint-come-liniere", "stratford", "preissac"];
+/** Villes focus AUTORITAIRE immo (P0-P3 + partiels nommés). Remplacer par la liste totale 30/31 dès qu'immo l'envoie. */
 export const FOCUS_30_SLUGS: readonly string[] = [
-  ...FOCUS_IMMO_P0, ...FOCUS_IMMO_P1, ...FOCUS_IMMO_P2, ...FOCUS_IMMO_P3,
+  ...FOCUS_IMMO_P0, ...FOCUS_IMMO_P1, ...FOCUS_IMMO_P2, ...FOCUS_IMMO_P3, ...FOCUS_IMMO_PARTIALS,
 ];
 
 async function servedSlugs(): Promise<Set<string>> {
