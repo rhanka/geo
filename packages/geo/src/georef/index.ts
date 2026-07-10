@@ -33,3 +33,16 @@ export {
   type IndependentGcpCheck,
   type NeatlineFrac,
 } from "./gcp.js";
+
+// Affine/similarity decomposition + orientation/isotropy/mirror gate: refuse to
+// serve a residual-clean but geometrically-wrong (stretched/mirrored/flipped) fit.
+export {
+  DEFAULT_AFFINE_GATE,
+  DEFAULT_ANISO_ARBITRATE_MAX_ANISOTROPY,
+  decomposeGcpAffine,
+  decomposeGcpSimilarity,
+  evaluateAffineGate,
+  type AffineDecomposition,
+  type AffineGateOptions,
+  type AffineGateResult,
+} from "./gate.js";
