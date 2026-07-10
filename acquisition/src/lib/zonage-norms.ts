@@ -27,7 +27,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { ParquetSchema, ParquetWriter } from "@dsnp/parquetjs";
-import type { S3Client } from "@aws-sdk/client-s3";
+import { HeadObjectCommand, type S3Client } from "@aws-sdk/client-s3";
 import { canonicalizeZoneCodeForJoin } from "@sentropic/geo";
 
 import {
@@ -228,6 +228,60 @@ export function canonZone(code: string): string {
 }
 
 /**
+ * SERVED display form of a zone code — the ONE canonical ORDER (LETTER-NUMBER,
+ * e.g. `R-103`, `ZR-102`, `M-1`, `A-10`) that BOTH served OGC collections
+ * (`qc-zonage-<slug>` AND `qc-zonage-norms-<slug>`) must carry so immo's EXACT
+ * (passthrough) zone_code join folds the norm onto the lot.
+ *
+ * MOTIVE — the SIG zonage layer and the norms grille frequently serve the SAME
+ * code in DIFFERENT surface forms: digit-first `103-R` vs letter-first `R-103`
+ * (champlain), `1M` vs `1-M` (plaisance), letter-SPACE `A 10` vs letter-DASH
+ * `A-10` (saint-frederic). The lot⋈norms JOIN reconciles these through the
+ * order-INVARIANT `canonZone`, so it matched INTERNALLY — but immo joins the two
+ * SERVED strings EXACTLY, so a surface mismatch scored 0% and the norm NEVER
+ * folded. This returns ONE deterministic LETTER-NUMBER surface form so the served
+ * exact match equals the join's realized match.
+ *
+ * SCOPE — deliberately MINIMAL and NON-DESTRUCTIVE (unlike `canonZone`, which for
+ * JOIN keying also strips leading zeros and rewrites multi-segment boundaries):
+ *   • digit-first single code → reordered LETTER-NUMBER (`103-R`→`R-103`, `1M`→`M-1`,
+ *     `1-M`→`M-1`) — the digits are kept VERBATIM (a code is reordered, never
+ *     renumbered: `020-R`→`R-020`, not `R-20`);
+ *   • letter-first SPACE code → single dash (`A 10`→`A-10`, `P 38`→`P-38`,
+ *     `CO 22`→`CO-22`), order already correct;
+ *   • everything ELSE is returned VERBATIM (only unicode dashes normalised): an
+ *     already letter-first code (`R-103`, `HDB-924`, `IDC-32-2`, `C88b`), a
+ *     letterless numeric code (`74`), a purely alphabetic code (`URB`) — never
+ *     reordered, never zero-stripped, never re-cased, never given a new boundary.
+ *
+ * GUARANTEES — idempotent (`f(f(x)) === f(x)`), deterministic, and it NEVER blanks
+ * a real value (null/blank → `""`). Its ORDER agrees with `canonZone`
+ * (`canonZone(canonZoneCodeServe(x)) === canonZone(x)`), so a geojson rewritten to
+ * this form still folds through the join unchanged — the serve form and the join
+ * key cannot disagree on which zone a code is.
+ */
+export function canonZoneCodeServe(code: string | null | undefined): string {
+  if (code === null || code === undefined) return "";
+  const s = String(code).trim();
+  if (!s) return "";
+  // Normalise unicode dashes so the surface separator is uniform ASCII
+  // (same range as `normalizeZoneCode`).
+  const t = s.replace(/[‐-―−]/g, "-");
+  // Digit-first single code (one digit run, then one letter run, optional single
+  // separator): 103-R → R-103, 1M → M-1, "1 M" → M-1. Digits kept verbatim.
+  const digitFirst = /^(\d+)[-\s]?([A-Za-z]+)$/.exec(t);
+  if (digitFirst) return `${digitFirst[2]}-${digitFirst[1]}`;
+  // Letter-first with a SPACE separator: A 10 → A-10, CO 22 → CO-22. Order already
+  // LETTER-NUMBER; only the space collapses to the canonical single dash. The tail
+  // after the space is kept verbatim (`A 10-2` → `A-10-2`).
+  const letterSpace = /^([A-Za-z]+)\s+(\d.*)$/.exec(t);
+  if (letterSpace) return `${letterSpace[1]}-${letterSpace[2]}`;
+  // Already letter-first (with/without dash), multi-segment, letterless, or alpha —
+  // return VERBATIM (unicode-dash-normalised). Idempotent; never invents a boundary.
+  return t;
+}
+
+/**
  * Curated whitelist of SIG property names that carry a real ZONE CODE.
  *
  * ANTI-INVENTION GUARANTEE — this list holds ONLY genuine zone-code fields. It
@@ -305,7 +359,7 @@ function plausibleCode(value: string): boolean {
  * null when the input is not parseable geojson so the caller can fall back to the
  * streaming regex.
  */
-function zoneCodesByCodeColumns(geojson: string): Set<string> | null {
+function zoneCodesByCodeColumns(geojson: string, canon: (v: string) => string): Set<string> | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(geojson);
@@ -337,20 +391,26 @@ function zoneCodesByCodeColumns(geojson: string): Set<string> | null {
     // Only a CODE column contributes — a GUID/description column (majority not
     // plausible) is skipped so it cannot pollute the SIG code set.
     if (plausible * 2 < values.size) continue;
-    for (const v of values) out.add(canonZone(v));
+    for (const v of values) {
+      const c = canon(v);
+      if (c) out.add(c);
+    }
   }
   return out;
 }
 
 /** Streaming-regex fallback over the SAME whitelist (malformed / non-standard JSON). */
-function zoneCodesByRegex(geojson: string): Set<string> {
+function zoneCodesByRegex(geojson: string, canon: (v: string) => string): Set<string> {
   const set = new Set<string>();
   const names = SIG_ZONE_CODE_FIELDS.join("|");
   const re = new RegExp(`"(?:${names})"\\s*:\\s*"([^"]+)"`, "g");
   let m: RegExpExecArray | null;
   while ((m = re.exec(geojson)) !== null) {
     const v = m[1]?.trim();
-    if (v) set.add(canonZone(v));
+    if (v) {
+      const c = canon(v);
+      if (c) set.add(c);
+    }
   }
   return set;
 }
@@ -368,9 +428,26 @@ function zoneCodesByRegex(geojson: string): Set<string> {
  * guard, and a union of real zone-code columns cannot false-reject a legit grille.
  */
 export function sigZoneCodesFromGeojson(geojson: string): Set<string> {
-  const structured = zoneCodesByCodeColumns(geojson);
+  const structured = zoneCodesByCodeColumns(geojson, canonZone);
   if (structured !== null) return structured;
-  return zoneCodesByRegex(geojson);
+  return zoneCodesByRegex(geojson, canonZone);
+}
+
+/**
+ * RAW served surface forms of the zone codes a geojson declares — the EXACT
+ * strings a passthrough OGC consumer (immo) joins on, with NO order/separator
+ * reconciliation (only trim). Same whitelisted CODE columns as
+ * `sigZoneCodesFromGeojson`, so a raw-vs-canonical overlap comparison is
+ * apples-to-apples: the ONLY difference between the two sets is the canonical
+ * fold. The order-aware gate uses this to detect a served/fold ORDER-MISMATCH
+ * (canonical overlap high but the served strings never match exactly) that the
+ * canonical overlap alone would MASK.
+ */
+export function sigZoneCodesFromGeojsonRaw(geojson: string): Set<string> {
+  const identity = (v: string): string => v.trim();
+  const structured = zoneCodesByCodeColumns(geojson, identity);
+  if (structured !== null) return structured;
+  return zoneCodesByRegex(geojson, identity);
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -510,10 +587,27 @@ export function overlapWithNumericBridge(
  *  `qc-zonage-<slug>/qc-zonage-<slug>.geojson` (mirrors coverage-reconcile). */
 export async function resolveGridKey(s3: S3Client, slug: string): Promise<string | null> {
   const flat = gridKey(slug);
-  if (await exists(s3, flat)) return flat;
+  if (await headExistsStrict(s3, flat)) return flat;
   const sub = `${ZONAGE_GRIDS_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
-  if (await exists(s3, sub)) return sub;
+  if (await headExistsStrict(s3, sub)) return sub;
   return null;
+}
+
+async function headExistsStrict(s3: S3Client, key: string): Promise<boolean> {
+  try {
+    await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }));
+    return true;
+  } catch (e) {
+    const err = e as {
+      name?: string;
+      Code?: string;
+      code?: string;
+      $metadata?: { httpStatusCode?: number };
+    };
+    const status = err.$metadata?.httpStatusCode;
+    if (status === 404 || err.name === "NotFound" || err.Code === "NoSuchKey") return false;
+    throw e;
+  }
 }
 
 /** Cross-validate the extracted zone codes against the muni's SIG grille. */
@@ -532,8 +626,15 @@ export async function crossValidateZoneCodes(
       const geojson = (await getBytes(s3, k)).toString("utf8");
       sigSet = sigZoneCodesFromGeojson(geojson);
     }
-  } catch {
-    gridFound = false;
+  } catch (e) {
+    if (process.env["ZONAGE_NORMS_DEBUG_CROSSVAL"]) {
+      console.error(
+        `[crossval] SIG grid read failed for ${slug}: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+    throw e;
   }
   const { overlap, numericBridged, notMatched } = overlapWithNumericBridge(extractedSet, sigSet);
   return {
@@ -716,9 +817,12 @@ export async function loadSigCanonCodes(s3: S3Client, slug: string): Promise<Set
  * guard and the legitimate "no grille on S3" path is untouched.
  */
 export function shouldRejectForZeroOverlap(
-  crossval: Pick<CrossValResult, "gridFound" | "overlap">,
+  crossval: Pick<CrossValResult, "gridFound" | "sigZoneCodes" | "overlap">,
 ): boolean {
-  return crossval.gridFound === true && crossval.overlap === 0;
+  // A grid object can exist but expose no usable zone-code field (sigZoneCodes=0).
+  // With no reference codes, overlap=0 is non-informative; keep the count/norm-field
+  // gates as the guard instead of false-rejecting a native-readable grille.
+  return crossval.gridFound === true && crossval.sigZoneCodes > 0 && crossval.overlap === 0;
 }
 
 /**
