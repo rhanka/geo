@@ -1,0 +1,101 @@
+{
+  "timestamp": "2026-07-10T122659Z",
+  "shard": {
+    "rem": 1,
+    "mod": 6
+  },
+  "deposits": [
+    {
+      "slug": "barkmere",
+      "sourceUrl": "https://barkmere.ca/wp-content/uploads/2020/08/Annexe_1_Plan_de_zonage.pdf",
+      "method": "t2-autogcp-aniso",
+      "s3Key": "normalized/ca-qc-zonage/qc-zonage-barkmere.geojson",
+      "gcpResidualMaxM": 13.444,
+      "gcpResidualRmsM": 5.435,
+      "holdoutMaxM": 13.649,
+      "gcpCount": 36,
+      "labelCodes": 27,
+      "servedFeatures": 23,
+      "lotsAssigned": 549,
+      "lotsTotal": 549,
+      "lotToZonePct": 100,
+      "spatialKm": 0.68,
+      "downstream": {
+        "lotZoneJoin": {
+          "ok": true,
+          "rows": 549,
+          "assignedPct": 100,
+          "normMatchPct": 11.11
+        },
+        "lotsEnriched": {
+          "ok": true,
+          "deposit": true,
+          "zoneCodePct": 100,
+          "surfacePct": 100,
+          "codePostalPct": 100,
+          "adressePct": 99.82
+        }
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "alma",
+      "reason": "T1 no embedded georef; T2 SVG extraction failed with ERR_STRING_TOO_LONG on giant AutoCAD PDF"
+    },
+    {
+      "slug": "austin",
+      "reason": "T1 georef and 125 Claude/dict labels OK, but cadastre S3 key missing"
+    },
+    {
+      "slug": "blanc-sablon",
+      "reason": "official-site scan found no exploitable zoning plan PDF"
+    },
+    {
+      "slug": "brome",
+      "reason": "official-site scan found no exploitable zoning plan PDF"
+    },
+    {
+      "slug": "cacouna",
+      "reason": "local PDF cache invalid; official pages returned no exploitable PDF hit"
+    },
+    {
+      "slug": "cap-chat",
+      "reason": "official map has embedded georef but no positioned zone-code labels; crop is coastal/imagery constraints, not servable zoning"
+    },
+    {
+      "slug": "clarendon",
+      "reason": "official-site scan found no exploitable zoning plan PDF"
+    },
+    {
+      "slug": "dolbeau-mistassini",
+      "reason": "official hits are non-zoning plans or forms; prior candidate is non-georeferenced plan d'urbanisme"
+    },
+    {
+      "slug": "eastman",
+      "reason": "T1 no embedded georef; T2 autogcp interrupted after per-slug budget with no report"
+    },
+    {
+      "slug": "gaspe",
+      "reason": "T1 no embedded georef; T2 residual/holdout candidates rejected by orientation/isotropy gate"
+    },
+    {
+      "slug": "gracefield",
+      "reason": "official scan found zoning bylaw text PDFs, not a georeferenceable zoning plan"
+    }
+  ],
+  "nextSelection": [
+    "grande-vallee",
+    "hebertville-station",
+    "kazabazua",
+    "lac-bouchette",
+    "lac-sergent",
+    "laforce",
+    "lascension-de-notre-seigneur",
+    "laurierville",
+    "lebel-sur-quevillon",
+    "lisle-verte",
+    "longue-rive",
+    "massueville"
+  ]
+}
