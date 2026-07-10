@@ -29,9 +29,10 @@ FLEET=(
   "geo-nm-c|$P/normes-mistral-base.txt|2/4|"
   "geo-nm-d|$P/normes-mistral-base.txt|3/4|"
   "geo-port-npm|$P/port-to-npm.txt||claude-opus-4-8"
-  "geo-harness-analysis|$P/harness-analysis.txt||claude-opus-4-8"
   "geo-immo-clean|$P/immo-clean.txt||"
 )
+# NOTE: geo-harness-analysis retiré du registre — livrable one-shot TERMINÉ
+# (HARNESS-GAP-ANALYSIS.md + envelope h2a livrés). Ne pas auto-relancer.
 
 # an agent is "dead" if its remote-<name> tmux is absent, OR its pane last line is
 # a bare shell prompt (dropped out of the CLI), OR shows a hard usage-limit exit.
