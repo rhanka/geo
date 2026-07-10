@@ -69,3 +69,15 @@ export {
   type RotationDecision,
   type RotationDecisionOptions,
 } from "./rotation-disambig.js";
+
+// T2 raster-registration image helpers: pure in-memory compute only. Rendering
+// and cadastre matching stay in the acquisition runner layer.
+export {
+  detectRasterCorners,
+  edgeMaskFromGray,
+  parsePgm,
+  patchEdgeScore,
+  type EdgeImage,
+  type GrayImage,
+  type RasterCorner,
+} from "./raster.js";
