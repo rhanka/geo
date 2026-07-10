@@ -27,7 +27,7 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const WORKER = resolve(REPO, 'scripts', 'geo-worker.sh');
 const CONFIG = resolve(REPO, 'acquisition', 'config', 'fleet.json');
 
-type Lane = { name: string; prompt: string; shards: number; note?: string };
+type Lane = { name: string; engine?: string; prompt: string; shards: number; note?: string };
 type Singleton = { name: string; prompt: string; model?: string };
 type Backfill = { session: string; match: string; cmd: string[] };
 type Config = {
@@ -38,7 +38,7 @@ type Config = {
   h2aLoop?: string;
   timeline: string;
 };
-type Agent = { name: string; prompt: string; shard?: string; model?: string };
+type Agent = { name: string; engine?: string; prompt: string; shard?: string; model?: string };
 type Scoreboard = { pv?: number; normes?: number; zones?: number; cadastre?: number; role?: number; tod?: number; immo?: number };
 
 const iso = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
@@ -73,7 +73,7 @@ function expand(cfg: Config): Agent[] {
   const out: Agent[] = [];
   for (const lane of cfg.lanes) {
     for (let k = 1; k <= lane.shards; k++) {
-      out.push({ name: `${lane.name}-${k}`, prompt: lane.prompt, shard: `${k - 1}/${lane.shards}` });
+      out.push({ name: `${lane.name}-${k}`, engine: lane.engine, prompt: lane.prompt, shard: `${k - 1}/${lane.shards}` });
     }
   }
   for (const s of cfg.singletons) out.push({ name: s.name, prompt: s.prompt, model: s.model });
@@ -200,7 +200,7 @@ function tick(cfg: Config) {
     } else {
       dead.push(a.name);
       console.log(`RELAUNCH ${a.name} shard=${a.shard ?? 'none'} model=${a.model ?? 'default'}`);
-      if (launch(cfg.engine, a)) relaunched++;
+      if (launch(a.engine ?? cfg.engine, a)) relaunched++;
     }
   }
   const bf = ensureBackfill(cfg.backfill);
@@ -265,7 +265,7 @@ function main() {
       const agents = expand(cfg);
       for (const a of agents) {
         console.log(`LAUNCH ${a.name}`);
-        launch(cfg.engine, a);
+        launch(a.engine ?? cfg.engine, a);
       }
       return;
     }
