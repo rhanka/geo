@@ -53,8 +53,10 @@ interface Args {
   gcp: string;
   pdf?: string;
   page?: number;
-  labels: "text" | "ocr" | "gpt55";
+  labels: "text" | "ocr" | "gpt55" | "claude";
   dict?: string;
+  /** Claude lane: JSON { labels:[{code,x,y}] } of the agent's positioned reads. */
+  reads?: string;
   ocrReviewed: boolean;
   dryRun: boolean;
   out?: string;
@@ -88,7 +90,8 @@ function parseArgs(argv: string[]): Args {
   }
   if (!a["slug"] || !a["gcp"]) throw new Error("required: --slug <slug> --gcp <file.gcp.json>");
   const labels = String(a["labels"] ?? "text");
-  if (labels !== "text" && labels !== "ocr" && labels !== "gpt55") throw new Error("--labels must be text|ocr|gpt55");
+  if (labels !== "text" && labels !== "ocr" && labels !== "gpt55" && labels !== "claude")
+    throw new Error("--labels must be text|ocr|gpt55|claude");
   let labelRegion: [number, number, number, number] | undefined;
   if (typeof a["label-region"] === "string") {
     const r = a["label-region"].split(",").map(Number);
@@ -101,6 +104,7 @@ function parseArgs(argv: string[]): Args {
     page: a["page"] ? Number(a["page"]) : undefined,
     labels,
     dict: a["dict"] ? String(a["dict"]) : undefined,
+    reads: a["reads"] ? String(a["reads"]) : undefined,
     ocrReviewed: Boolean(a["ocr-reviewed"]),
     dryRun: Boolean(a["dry-run"]),
     out: a["out"] ? String(a["out"]) : undefined,
@@ -263,6 +267,70 @@ async function main(): Promise<void> {
         `${gptLab.n_rejected} rejected, ${gptLab.n_distinct} distinct codes`,
     );
     console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
+  } else if (args.labels === "claude") {
+    // Claude-vision lane for GLYPH T2 plans (no embedded georef, GCP-calibrated):
+    // render the neatline crop, let the operating agent (Claude 4.8) read the
+    // positioned codes, ingest its reads and validate them verbatim against
+    // --dict (same guard as the gpt55 lane; the GCP georef then places them).
+    if (!dictCodes) fail("--labels claude requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
+    const neatlineRegion: [number, number, number, number] | undefined = gcpFile.neatline
+      ? [
+          gcpFile.neatline.fx0 * pageW,
+          gcpFile.neatline.fy0 * pageH,
+          gcpFile.neatline.fx1 * pageW,
+          gcpFile.neatline.fy1 * pageH,
+        ]
+      : undefined;
+    const region = args.labelRegion ?? neatlineRegion;
+    const { renderClaudeCrop, loadClaudeReads, extractLabelsClaude } = await import("./lib/t1-labels-claude.js");
+    const crop = renderClaudeCrop(pdfPath, geo, args.slug, {
+      dpi: args.ocrDpi,
+      page,
+      ...(region ? { region } : {}),
+    });
+    if (!args.reads) {
+      // RENDER-ONLY: no reads yet → emit the crop for the agent and STOP (never
+      // fabricate, never upload). The agent reads the glyphs then re-runs --reads.
+      console.error(`[t2-build] claude render-only (no --reads): crop ready for agent vision.`);
+      console.error(`  crop=${crop.imagePath}`);
+      console.error(
+        `  region(pdf-pt,top-left)=[${(region ?? []).map((n) => n.toFixed(1)).join(", ")}] dpi=${args.ocrDpi} page=${page}`,
+      );
+      console.error(`  dict=${dict.length} codes (${args.dict})`);
+      console.error(
+        `  NEXT: read the glyph zone codes off the crop, write { "labels":[{"code","x","y"}] } ` +
+          `(x,y normalized 0..1 within THIS crop, x→right, y→down), then re-run with --reads <that.json>.`,
+      );
+      process.exit(0);
+    }
+    const reads = loadClaudeReads(args.reads);
+    const claudeLab = extractLabelsClaude(reads, geo, dict, {
+      ...(region ? { region } : {}),
+      imagePath: crop.imagePath,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
+    });
+    lab = claudeLab;
+    gpt55Stats = {
+      dict_size: dict.length,
+      ocr_engine: claudeLab.ocr_engine,
+      vision_model: "claude-4.8",
+      claude_reads: reads.length,
+      claude_validated: claudeLab.n_validated,
+      claude_exact: claudeLab.n_exact,
+      claude_canonical: claudeLab.n_canonical,
+      claude_rejected: claudeLab.n_rejected,
+      claude_distinct: claudeLab.n_distinct,
+      claude_crop: crop.imagePath,
+      claude_snap_rate_pct: claudeLab.snap_rate_pct,
+      claude_reject_samples: claudeLab.reject_samples,
+    };
+    console.error(
+      `[t2-build] Claude-4.8 labels: ${reads.length} reads, ${claudeLab.nCodeLike} code-like, ` +
+        `${claudeLab.n_validated} validated (${claudeLab.n_exact} exact + ${claudeLab.n_canonical} canonical), ` +
+        `${claudeLab.n_rejected} rejected, ${claudeLab.n_distinct} distinct codes`,
+    );
+    console.error(`[t2-build] Claude-4.8 rejects: ${claudeLab.reject_samples.join(" | ")}`);
   } else {
     lab = extractLabels(pdfPath, geo, {
       page,
