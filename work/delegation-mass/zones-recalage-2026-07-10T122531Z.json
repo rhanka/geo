@@ -1,0 +1,88 @@
+{
+  "run": "zones-recalage-2026-07-10T122531Z",
+  "shard": "3/6",
+  "selector": "eligible zones.status != done, sorted alpha, index % 6 == 3",
+  "mission": "PDF georeferenced municipal zoning recalage; no AGOL owner harvest",
+  "bilan": {
+    "depose": 2,
+    "rejets_ou_echecs": 7
+  },
+  "deposits": [
+    {
+      "slug": "saint-liboire",
+      "method": "T1 embedded GeoPDF multisheet + Claude glyph reads",
+      "pdfs": [
+        "work/pdf-cache/saint-liboire.pdf",
+        "work/pdf-cache/saint-liboire-f2.pdf"
+      ],
+      "crs": "NAD_1983_CSRS_MTM_8",
+      "georef_residual_m": 0,
+      "label_mode": "claude-multisheet",
+      "reads": 66,
+      "validated": 66,
+      "distinct_codes": 65,
+      "served_features": 64,
+      "lots_assigned_pct": 99.68,
+      "spatial_km": 0.569,
+      "lot_zone_join": "OK lots=1864 assigned=99.68% rows=1864",
+      "lots_enriched": "OK lots=1864 zone_code=99.68% adresse=93.03% deposit=Y",
+      "s3": "normalized/ca-qc-zonage/qc-zonage-saint-liboire.geojson"
+    },
+    {
+      "slug": "barkmere",
+      "method": "T2 autonomous GCP file + text labels",
+      "pdf": "work/pdf-cache/barkmere-plan-zonage.pdf",
+      "gcp": "work/gcp/barkmere.shard1.autogcp.json",
+      "independent_gcps": 36,
+      "bbox_derived_gcps": 0,
+      "gcp_residual_max_m": 13.444,
+      "gcp_residual_rms_m": 5.435,
+      "label_mode": "text",
+      "distinct_codes": 27,
+      "served_features": 23,
+      "lots_assigned_pct": 100,
+      "spatial_km": 0.68,
+      "lot_zone_join": "OK lots=549 assigned=100% rows=549",
+      "lots_enriched": "OK lots=549 zone_code=100% adresse=99.82% deposit=Y",
+      "s3": "normalized/ca-qc-zonage/qc-zonage-barkmere.geojson"
+    }
+  ],
+  "failures": [
+    {
+      "slug": "frampton",
+      "evidence": "T1 rural georef present, residual 2.23 m, but text labels produced 0 code-like; no authoritative local dict/reads found",
+      "verdict": "glyph dict missing, no deposit"
+    },
+    {
+      "slug": "saint-michel-des-saints",
+      "evidence": "T1 no embedded georef; existing T2 report rejects anisotropy/iso-gate; retry stopped before 6 min without report",
+      "verdict": "no deposit"
+    },
+    {
+      "slug": "saint-zotique",
+      "evidence": "existing T2 report rejects orientation ambiguity/anisotropy; retry stopped before 6 min without report",
+      "verdict": "no deposit"
+    },
+    {
+      "slug": "yamachiche",
+      "evidence": "T1 absent; T2 rural produced 20 residual/holdout passes but anisotropy 1.52-1.68, no affine gate pass",
+      "verdict": "no deposit"
+    },
+    {
+      "slug": "massueville",
+      "evidence": "T1 absent; T2 report no seed cleared, svg_points=0",
+      "verdict": "no deposit"
+    },
+    {
+      "slug": "chertsey",
+      "evidence": "T1 absent; existing T2 report no seed cleared, svg_points=0",
+      "verdict": "no deposit"
+    },
+    {
+      "slug": "upton",
+      "evidence": "T1 absent; existing T2 report no seed cleared, svg_points=0",
+      "verdict": "no deposit"
+    }
+  ],
+  "anti_invention": "Only verbatim zoning labels with real cadastre geometry were served. Gate failures were not forced."
+}
