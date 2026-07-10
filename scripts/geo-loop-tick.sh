@@ -70,6 +70,12 @@ if ! tmux has-session -t geo-immo-gap-loop 2>/dev/null; then
 fi
 
 echo "--- reconcile ---"
-npx tsx acquisition/src/coverage-reconcile.ts 2>&1 | grep -E 'SCOREBOARD' || echo "(reconcile: no scoreboard line)"
+board="$(npx tsx acquisition/src/coverage-reconcile.ts 2>&1 | grep -E 'SCOREBOARD' | tail -1)"
+echo "${board:-(reconcile: no scoreboard line)}"
 npx tsx acquisition/src/sync-track-from-coverage.ts --apply >/dev/null 2>&1 || true
-echo "=== tick done (relaunched=$relaunched) ==="
+
+# Engage the h2a objective loop so it is visibly driven (tick + progress note).
+LOOP_ID="${GEO_LOOP_ID:-loop-mre4avom}"
+h2a loop tick "$LOOP_ID" >/dev/null 2>&1 || true
+h2a loop report "$LOOP_ID" --note "tick $(date -u +%FT%TZ): relaunched=$relaunched | ${board:-no-scoreboard}" >/dev/null 2>&1 || true
+echo "=== tick done (relaunched=$relaunched, h2a loop $LOOP_ID ticked) ==="
