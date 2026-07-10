@@ -1,0 +1,162 @@
+{
+  "report": "zones-recalage-2026-07-10T0817-shard4",
+  "shard": {
+    "mod": 6,
+    "remainder": 4
+  },
+  "processed": 12,
+  "deposited": 1,
+  "failed": 11,
+  "slugs": [
+    {
+      "slug": "belcourt",
+      "index": 46,
+      "status": "failed",
+      "sources": [
+        "http://munbelcourt.ca/documents/medias/BELCOURT_PLAN-ZONAGE-RURAL_2016.pdf",
+        "http://munbelcourt.ca/documents/medias/BELCOURT_zonage_urbain_adopté_2013.pdf"
+      ],
+      "evidence": [
+        "work/gcp/belcourt-rural.autogcp.shard4.report.json",
+        "work/gcp/belcourt-urbain.autogcp.shard4.report.json"
+      ],
+      "reason": "No embedded georef; T2 rural rejected by orientation/isotropy ambiguity, T2 urban had only 3 independent matches."
+    },
+    {
+      "slug": "bethanie",
+      "index": 52,
+      "status": "failed",
+      "sources": [
+        "https://municipalitedebethanie.ca/wp-content/uploads/2023/10/Reglement-Zonage-Bethanie.pdf"
+      ],
+      "evidence": [],
+      "reason": "Official regulation PDF found, but no georeferenceable zoning plan PDF exposed; T1 has no embedded georef."
+    },
+    {
+      "slug": "bonaventure",
+      "index": 64,
+      "status": "failed",
+      "sources": [
+        "https://villebonaventure.ca/wp-content/uploads/2021/07/PZ_PLAN-complet_REG2006-543_REG2021-745_Mai.2021.pdf"
+      ],
+      "evidence": [],
+      "reason": "Embedded GeoPDF detected, but strict spatial gate failed on all tested page scopes: 8.14 km to 8.88 km above the 8 km threshold."
+    },
+    {
+      "slug": "charette",
+      "index": 100,
+      "status": "failed",
+      "sources": [
+        "https://www.municipalite-charette.ca"
+      ],
+      "evidence": [
+        "work/zonage-plans/charette-home.html",
+        "work/zonage-plans/charette-urbanisme.html",
+        "work/zonage-plans/charette-documentation.html"
+      ],
+      "reason": "No official zoning plan PDF found in the consulted official pages."
+    },
+    {
+      "slug": "fassett",
+      "index": 172,
+      "status": "failed",
+      "sources": [
+        "http://www.village-fassett.com/wp-content/uploads/Carte-urbanisme-_Zonage-2023.pdf"
+      ],
+      "evidence": [
+        "work/gcp/fassett.autogcp.shard4.report.json"
+      ],
+      "reason": "No embedded georef and no exploitable SVG/vector points for T2; raster/scan needs seed GCP."
+    },
+    {
+      "slug": "grand-remous",
+      "index": 196,
+      "status": "failed",
+      "sources": [
+        "https://www.grandremous.ca",
+        "https://grandremous.ca"
+      ],
+      "evidence": [
+        "work/zonage-plans/grand-remous-home.html",
+        "work/zonage-plans/grand-remous-home-alt.html",
+        "work/zonage-plans/grand-remous-urbanisme.html",
+        "work/zonage-plans/grand-remous-reglements.html"
+      ],
+      "reason": "Official pages fetched as static shells without zoning PDF links or exploitable zoning text."
+    },
+    {
+      "slug": "la-martre",
+      "index": 250,
+      "status": "failed",
+      "sources": [],
+      "evidence": [],
+      "reason": "No municipal website in local MAMH directory; direct domain attempts failed DNS; no official PDF plan found."
+    },
+    {
+      "slug": "lac-des-aigles",
+      "index": 274,
+      "status": "failed",
+      "sources": [
+        "https://www.lacdesaigles.ca/images/stories/Urbanisme/13060_ZONAGE_TOUT.pdf"
+      ],
+      "evidence": [
+        "work/gcp/lac-des-aigles.autogcp.shard4.report.json",
+        "work/gcp/lac-des-aigles.autogcp.sim.shard4.report.json"
+      ],
+      "reason": "No embedded georef; T2 affine found strong candidates but rejected orientation ambiguity, and similarity seed did not pass."
+    },
+    {
+      "slug": "lac-edouard",
+      "index": 280,
+      "status": "failed",
+      "sources": [
+        "https://www.lacedouard.ca/file-12435",
+        "https://www.lacedouard.ca/file-12436"
+      ],
+      "evidence": [
+        "work/gcp/lac-edouard-main.autogcp.shard4.report.json",
+        "work/gcp/lac-edouard-plan1.autogcp.shard4.report.json"
+      ],
+      "reason": "No embedded georef and no exploitable SVG/vector points on either plan; raster/scan needs seed GCP."
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "index": 292,
+      "status": "deposited",
+      "sources": [
+        "https://lac-tremblant-nord.qc.ca/wp-content/uploads/2026/04/ZONAGE_LAC_TREMB_NORD_2026_03.pdf"
+      ],
+      "deposit": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-lac-tremblant-nord.geojson",
+      "evidence": [
+        "work/zonage-recalage/lac-tremblant-nord-t1-deposit/summary.json"
+      ],
+      "reason": "T1 embedded GeoPDF served 27 features; 336/336 lots assigned and inline immo enrichment completed."
+    },
+    {
+      "slug": "lantier",
+      "index": 304,
+      "status": "failed",
+      "sources": [
+        "work/zonage-plans/lantier-plan.pdf",
+        "work/zonage-plans/lantier-reglement.pdf"
+      ],
+      "evidence": [
+        "work/gcp/lantier.autogcp.shard4.report.json",
+        "work/gcp/lantier.autogcp.sim.shard4.report.json"
+      ],
+      "reason": "No embedded georef; T2 affine and similarity both reached only 5 independent matches after pruning."
+    },
+    {
+      "slug": "lingwick",
+      "index": 340,
+      "status": "failed",
+      "sources": [
+        "https://www.lingwick.ca/_files/ugd/d481fd_af3d20b415374fcf85b250b795f87b90.pdf"
+      ],
+      "evidence": [
+        "work/gcp/lingwick.autogcp.shard4.report.json"
+      ],
+      "reason": "No embedded georef; T2 candidates existed but code/label coverage was zero and orientation arbitration was ambiguous."
+    }
+  ]
+}
