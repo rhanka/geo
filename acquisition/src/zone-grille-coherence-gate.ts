@@ -23,7 +23,18 @@ import {
   overlapWithNumericBridge,
   resolveGridKey,
   sigZoneCodesFromGeojson,
+  sigZoneCodesFromGeojsonRaw,
 } from "./lib/zonage-norms.js";
+
+/** S3 prefix / key of the SERVED norms grille geojson (immo's second collection). */
+const SERVED_NORMS_PREFIX = "normalized/qc-zonage-norms/";
+function servedGrilleKey(slug: string): string {
+  return `${SERVED_NORMS_PREFIX}qc-zonage-norms-${slug}.geojson`;
+}
+/** Canonical-vs-raw gap (in overlap fraction) above which a served/fold ORDER
+ *  mismatch is flagged: the two layers reconcile canonically but the served
+ *  strings never match exactly, so a passthrough OGC consumer cannot fold. */
+const ORDER_MISMATCH_MARGIN = 0.2;
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -36,6 +47,7 @@ const AFFECTATION_MIN_FRAC = 0.5;
 
 export type CoherenceFlag =
   | "ok"
+  | "order-mismatch"
   | "millesime-mismatch"
   | "ancien-zonage"
   | "affectation"
@@ -58,6 +70,18 @@ export interface CoherenceAnalysis {
   communs: string[];
   recouvrement: number;
   recouvrement_strict: number;
+  /**
+   * RAW served overlap — |served zonage strings ∩ served grille strings| /
+   * |served zonage strings|, with NO order/separator reconciliation. This is what
+   * a passthrough OGC consumer (immo) realizes when it joins the two SERVED
+   * collections on zone_code EXACTLY. When it is far below `recouvrement_strict`,
+   * the two served layers describe the SAME zoning but in DIFFERENT surface forms
+   * (`103-R` vs `R-103`) so the norm never folds — the `order-mismatch` flag.
+   */
+  recouvrement_raw: number;
+  communs_raw: string[];
+  order_mismatch: boolean;
+  served_grille_present: boolean;
   communs_bridged: string[];
   recouvrement_bridged: number;
   numeric_bridged: number;
@@ -70,6 +94,7 @@ export interface CoherenceRow extends CoherenceAnalysis, Provenance {
   slug: string;
   zone_key: string | null;
   grille_key: string | null;
+  served_grille_key: string | null;
   zone_features: number;
   threshold: number;
 }
@@ -79,11 +104,13 @@ export interface GateReport {
   threshold: number;
   decision_overlap: "strict-exact";
   bridge_overlap: "diagnostic-only";
+  raw_overlap: "served-exact-diagnostic";
   slugs: string[];
   summary: {
     total: number;
     ok: number;
     incoherentes: number;
+    order_mismatch: number;
     ancien_zonage: number;
     millesime_mismatch: number;
     affectation: number;
@@ -100,6 +127,7 @@ interface Matrix {
 interface ZoneRead {
   key: string | null;
   codes: Set<string>;
+  rawCodes: Set<string>;
   provenance: Provenance;
   propertyKeys: Set<string>;
   featureCount: number;
@@ -108,6 +136,14 @@ interface ZoneRead {
 interface GridRead {
   key: string | null;
   codes: Set<string>;
+}
+
+/** RAW served surface forms of the norms grille immo actually consumes (the
+ *  `normalized/qc-zonage-norms/` geojson), distinct from the deposited parquet. */
+interface ServedGrilleRead {
+  key: string | null;
+  present: boolean;
+  rawCodes: Set<string>;
 }
 
 function arg(argv: string[], key: string): string | undefined {
@@ -272,6 +308,7 @@ async function readZone(s3: S3Client, slug: string): Promise<ZoneRead> {
     return {
       key: null,
       codes: new Set<string>(),
+      rawCodes: new Set<string>(),
       provenance: emptyProvenance(),
       propertyKeys: new Set<string>(),
       featureCount: 0,
@@ -280,6 +317,7 @@ async function readZone(s3: S3Client, slug: string): Promise<ZoneRead> {
 
   const body = (await getBytes(s3, key)).toString("utf8");
   const codes = sigZoneCodesFromGeojson(body);
+  const rawCodes = sigZoneCodesFromGeojsonRaw(body);
   const propertyKeys = new Set<string>();
   let provenance = emptyProvenance();
   let featureCount = 0;
@@ -309,7 +347,7 @@ async function readZone(s3: S3Client, slug: string): Promise<ZoneRead> {
 
   const sidecar = await readSidecarProvenance(s3, slug, key);
   provenance = mergeProvenance(provenance, sidecar);
-  return { key, codes, provenance, propertyKeys, featureCount };
+  return { key, codes, rawCodes, provenance, propertyKeys, featureCount };
 }
 
 async function readGrid(s3: S3Client, slug: string): Promise<GridRead> {
@@ -323,6 +361,22 @@ async function readGrid(s3: S3Client, slug: string): Promise<GridRead> {
     if (code !== null && code !== undefined && String(code).trim()) codes.add(canonZone(String(code)));
   }
   return { key, codes };
+}
+
+/**
+ * Read the RAW served surface forms of the norms grille immo actually joins on
+ * (the `normalized/qc-zonage-norms/` geojson, NOT the deposited parquet). Absent
+ * geojson ⇒ `present:false` (the grille is deposited but not served as an OGC
+ * collection — a serving gap, not an order mismatch). Used ONLY for the raw
+ * overlap diagnostic + the `order-mismatch` flag; the strict decision still uses
+ * the parquet (`readGrid`), so this read never changes an existing verdict.
+ */
+async function readServedGrille(s3: S3Client, slug: string): Promise<ServedGrilleRead> {
+  const key = servedGrilleKey(slug);
+  const buf = await getOrNull(s3, key);
+  if (!buf) return { key: null, present: false, rawCodes: new Set<string>() };
+  const rawCodes = sigZoneCodesFromGeojsonRaw(buf.toString("utf8"));
+  return { key, present: true, rawCodes };
 }
 
 function oldZoning(provenance: Provenance): boolean {
@@ -358,15 +412,40 @@ function affectationReasons(zoneCodes: Set<string>, propertyKeys: Set<string>): 
 }
 
 function primaryFlag(flags: CoherenceFlag[]): CoherenceFlag {
-  for (const f of ["zonage-absent", "grille-absente", "ancien-zonage", "affectation", "millesime-mismatch"] as const) {
+  for (const f of [
+    "zonage-absent",
+    "grille-absente",
+    "ancien-zonage",
+    "affectation",
+    "order-mismatch",
+    "millesime-mismatch",
+  ] as const) {
     if (flags.includes(f)) return f;
   }
   return "ok";
 }
 
+/** Exact-string overlap of two served-code sets (no reconciliation): the fraction
+ *  of `a` strings that appear VERBATIM in `b` — what a passthrough OGC join realizes. */
+function rawTrimSet(values: Iterable<string>): Set<string> {
+  const out = new Set<string>();
+  for (const raw of values) {
+    const v = raw.trim();
+    if (v) out.add(v);
+  }
+  return out;
+}
+
 export function analyzeZoneGridCoherence(input: {
   zoneCodes: Iterable<string>;
   gridCodes: Iterable<string>;
+  /** RAW served zonage strings (no fold). Defaults to the canonical set ⇒ raw
+   *  overlap == strict overlap ⇒ order-mismatch never fires (back-compat). */
+  zoneCodesRaw?: Iterable<string>;
+  /** RAW served grille strings (from the served geojson). Absent ⇒ not served. */
+  gridCodesRaw?: Iterable<string>;
+  /** Is the norms grille actually served as an OGC geojson (vs deposit-only)? */
+  servedGrillePresent?: boolean;
   provenance?: Partial<Provenance>;
   propertyKeys?: Iterable<string>;
   threshold?: number;
@@ -381,6 +460,16 @@ export function analyzeZoneGridCoherence(input: {
   const bridgedZoneCodes = new Set<string>(exactCommon);
   for (const b of bridge.bridges) bridgedZoneCodes.add(b.sig);
 
+  // RAW served overlap — the EXACT-string match a passthrough OGC consumer (immo)
+  // realizes across the two served collections. When `*Raw` inputs are omitted we
+  // fall back to the canonical sets so raw == strict (no false order-mismatch).
+  const rawZone = input.zoneCodesRaw ? rawTrimSet(input.zoneCodesRaw) : new Set(zone);
+  const rawGrid = input.gridCodesRaw ? rawTrimSet(input.gridCodesRaw) : new Set(grid);
+  const rawCommon = new Set<string>();
+  for (const c of rawZone) if (rawGrid.has(c)) rawCommon.add(c);
+  const rawRecouvrement = rawZone.size ? rawCommon.size / rawZone.size : 0;
+  const servedGrillePresent = input.servedGrillePresent ?? input.gridCodesRaw !== undefined;
+
   const provenance: Provenance = {
     source_url: input.provenance?.source_url ?? null,
     owner: input.provenance?.owner ?? null,
@@ -393,12 +482,26 @@ export function analyzeZoneGridCoherence(input: {
 
   const strictRecouvrement = zone.size ? exactCommon.size / zone.size : 0;
   const bridgedRecouvrement = zone.size ? bridgedZoneCodes.size / zone.size : 0;
+
+  // ORDER-MISMATCH — the two served layers ARE the same zoning (they reconcile
+  // canonically, strict ≥ threshold) but their SERVED strings never match exactly
+  // (raw ≪ strict), so immo's exact zone_code join folds nothing. This is the
+  // served/fold problem the canonical overlap alone MASKS. Requires the grille to
+  // actually be served (an absent served grille is a serving gap, not a mismatch).
+  const orderMismatch =
+    servedGrillePresent &&
+    zone.size > 0 &&
+    grid.size > 0 &&
+    strictRecouvrement >= threshold &&
+    strictRecouvrement - rawRecouvrement >= ORDER_MISMATCH_MARGIN;
+
   const flags: CoherenceFlag[] = [];
   if (zone.size === 0) flags.push("zonage-absent");
   if (grid.size === 0) flags.push("grille-absente");
   if (zone.size > 0 && grid.size > 0) {
     if (ancien) flags.push("ancien-zonage");
     if (affectReasons.length > 0) flags.push("affectation");
+    if (orderMismatch) flags.push("order-mismatch");
     if (strictRecouvrement < threshold) flags.push("millesime-mismatch");
   }
   if (flags.length === 0) flags.push("ok");
@@ -413,6 +516,10 @@ export function analyzeZoneGridCoherence(input: {
     communs: sorted(exactCommon),
     recouvrement: round6(strictRecouvrement),
     recouvrement_strict: round6(strictRecouvrement),
+    recouvrement_raw: round6(rawRecouvrement),
+    communs_raw: sorted(rawCommon),
+    order_mismatch: orderMismatch,
+    served_grille_present: servedGrillePresent,
     communs_bridged: sorted(bridgedZoneCodes),
     recouvrement_bridged: round6(bridgedRecouvrement),
     numeric_bridged: bridge.numericBridged,
@@ -423,16 +530,24 @@ export function analyzeZoneGridCoherence(input: {
 }
 
 async function analyzeSlug(s3: S3Client, slug: string, threshold: number): Promise<CoherenceRow> {
-  const [zone, grid] = await Promise.all([readZone(s3, slug), readGrid(s3, slug)]);
+  const [zone, grid, servedGrille] = await Promise.all([
+    readZone(s3, slug),
+    readGrid(s3, slug),
+    readServedGrille(s3, slug),
+  ]);
   const analysis = analyzeZoneGridCoherence({
     zoneCodes: zone.codes,
     gridCodes: grid.codes,
+    zoneCodesRaw: zone.rawCodes,
+    gridCodesRaw: servedGrille.present ? servedGrille.rawCodes : undefined,
+    servedGrillePresent: servedGrille.present,
     provenance: zone.provenance,
     propertyKeys: zone.propertyKeys,
     threshold,
   });
   return {
     slug,
+    served_grille_key: servedGrille.key,
     zone_key: zone.key,
     grille_key: grid.key,
     zone_features: zone.featureCount,
@@ -483,11 +598,13 @@ export function buildGateReport(rows: CoherenceRow[], threshold: number): GateRe
     threshold,
     decision_overlap: "strict-exact",
     bridge_overlap: "diagnostic-only",
+    raw_overlap: "served-exact-diagnostic",
     slugs: rows.map((r) => r.slug),
     summary: {
       total: rows.length,
       ok: has("ok"),
       incoherentes: rows.filter((r) => !r.real_zoning).length,
+      order_mismatch: has("order-mismatch"),
       ancien_zonage: has("ancien-zonage"),
       millesime_mismatch: has("millesime-mismatch"),
       affectation: has("affectation"),
@@ -517,6 +634,7 @@ export function printGateReport(report: GateReport): void {
   const rows = Object.values(report.rows).sort((a, b) => a.slug.localeCompare(b.slug));
   const incoherent = rows.filter((r) => !r.real_zoning && !r.flags.includes("zonage-absent") && !r.flags.includes("grille-absente"));
   const ancien = rows.filter((r) => r.flags.includes("ancien-zonage"));
+  const orderMismatch = rows.filter((r) => r.flags.includes("order-mismatch"));
 
   console.log("SERVIES MAIS INCOHÉRENTES");
   if (incoherent.length === 0) console.log("(aucune)");
@@ -526,10 +644,20 @@ export function printGateReport(report: GateReport): void {
         row.slug +
         " strict=" +
         pct(row.recouvrement_strict) +
+        " raw=" +
+        pct(row.recouvrement_raw) +
         " bridged=" +
         pct(row.recouvrement_bridged) +
         " flags=" +
         row.flags.join(","),
+    );
+  }
+
+  console.log("SERVI≠FOLD (ORDER-MISMATCH: canonique≫raw, immo ne folde pas)");
+  if (orderMismatch.length === 0) console.log("(aucune)");
+  for (const row of orderMismatch) {
+    console.log(
+      "- " + row.slug + " strict=" + pct(row.recouvrement_strict) + " raw=" + pct(row.recouvrement_raw),
     );
   }
 
