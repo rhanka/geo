@@ -423,6 +423,39 @@ describe("assignLotZones", () => {
     expect(assignment?.dominantFraction).toBeCloseTo(1, 6);
   });
 
+  it("rejects every geographic target CRS before computing planar areas", () => {
+    const lots = [rect("lot-geographic", -73.001, 45.001, -73, 45.002)];
+    const zones = [zone("H-1", -73.002, 45, -72.999, 45.003)];
+
+    for (const targetCrs of ["EPSG:4269", "+proj=longlat +ellps=GRS80 +no_defs"]) {
+      expect(() =>
+        assignLotZones(lots, zones, (z) => String(z.properties?.["zone_code"]), { targetCrs }),
+      ).toThrow(/targetCrs must be metric/);
+    }
+  });
+
+  it("accepts a projected source CRS definition that contains towgs84", () => {
+    const [assignment] = assignLotZones(
+      [rect("lot-utm", 609000, 5039000, 609100, 5039100)],
+      [zone("H-1", 608900, 5038900, 609200, 5039200)],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "+proj=utm +zone=18 +ellps=GRS80 +towgs84=0,0,0 +units=m +no_defs" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: "H-1", dominantFraction: 1 });
+  });
+
+  it("uses deterministic code-point order to break equal-area ties", () => {
+    const [assignment] = assignLotZones(
+      [rect("lot-tie", 0, 0, 20, 10)],
+      [zone("Z", 0, 0, 10, 10), zone("é", 10, 0, 20, 10)],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: "Z", zoneCodes: ["Z", "é"], multiZone: true });
+  });
+
   it("uses normalized zone codes to enrich assignments with norms", () => {
     const enriched = enrichWithNorms(
       [
