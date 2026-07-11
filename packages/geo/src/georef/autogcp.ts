@@ -270,6 +270,12 @@ function inNeatline(p: PagePoint, neatline: NeatlineFrac | undefined, pageW: num
   return p.x >= x0 - padX && p.x <= x1 + padX && p.y >= y0 - padY && p.y <= y1 + padY;
 }
 
+/**
+ * Extract linework from the direct `<path>` elements emitted by
+ * `pdftocairo -svg` (double-quoted presentation attributes and an optional
+ * path-level `matrix(...)` transform). This deliberately is not a general SVG
+ * parser: callers using another renderer must normalize its output first.
+ */
 export function extractSvgVectorPointsFromString(
   svg: string,
   pageW: number,

@@ -1,6 +1,7 @@
 import type {
   Feature,
   FeatureCollection,
+  GeoJsonProperties,
   Geometry,
   MultiPolygon,
   Point,
@@ -13,7 +14,7 @@ import intersect from "@turf/intersect";
 import proj4 from "proj4";
 
 export type PolygonalGeometry = Polygon | MultiPolygon;
-export type PolygonalFeature<P extends Record<string, unknown> = Record<string, unknown>> = Feature<
+export type PolygonalFeature<P extends GeoJsonProperties = GeoJsonProperties> = Feature<
   PolygonalGeometry,
   P
 >;
@@ -166,13 +167,23 @@ export function enrichWithNorms(
   normsByZoneCode: Map<string, NormsRecord>,
 ): LotZoneNormAssignment[] {
   const normalizedNorms = new Map<string, NormsRecord>();
+  const ambiguousNormCodes = new Set<string>();
+  const allCanonicalNormCodes = new Set<string>();
   for (const [code, norms] of normsByZoneCode) {
     const normalized = canonicalizeZoneCodeForJoin(code);
-    if (normalized && !normalizedNorms.has(normalized)) normalizedNorms.set(normalized, norms);
+    if (!normalized) continue;
+    allCanonicalNormCodes.add(normalized);
+    if (ambiguousNormCodes.has(normalized)) continue;
+    if (normalizedNorms.has(normalized)) {
+      normalizedNorms.delete(normalized);
+      ambiguousNormCodes.add(normalized);
+    } else {
+      normalizedNorms.set(normalized, norms);
+    }
   }
 
   // Norms (grille) side: zone number → its unique canonical code (ambiguous numbers omitted).
-  const normsUniqueByNumber = uniqueByNumber(normalizedNorms.keys());
+  const normsUniqueByNumber = uniqueByNumber(allCanonicalNormCodes);
   // SIG (lot) side: zone number → distinct canonical lot codes (for uniqueness).
   const lotCodesByNumber = new Map<string, Set<string>>();
   for (const assignment of assignments) {
@@ -191,6 +202,7 @@ export function enrichWithNorms(
   return assignments.map((assignment) => {
     if (assignment.zoneCode === null) return { ...assignment, norms: null };
     const canon = canonicalizeZoneCodeForJoin(assignment.zoneCode);
+    if (ambiguousNormCodes.has(canon)) return { ...assignment, norms: null };
     let norms = normalizedNorms.get(canon) ?? null;
     if (norms === null) {
       const n = zoneNumberOf(assignment.zoneCode);
@@ -236,7 +248,18 @@ export function assignLotZones(
   assertUnitInterval("nearTieThreshold", nearTieThreshold);
   if (!(sliverAreaEps >= 0)) throw new Error("sliverAreaEps must be >= 0");
 
+  // An invalid polygon cannot be proven irrelevant to another geometry. Fail
+  // the whole batch closed for an invalid zone instead of assigning from a
+  // partial set or letting it re-enter through the centroid fallback. Invalid
+  // lots are isolated by assignOneLot and cannot affect another lot's proof.
+  if (zones.some((zone) => !isValidPolygonalGeometry(zone.geometry))) {
+    return lots.map((lot, index) => unassigned(opts.lotIdOf?.(lot, index) ?? defaultLotId(lot, index)));
+  }
+
   const prepared = prepareInputs(lots, zones, opts);
+  if (prepared.zones === null || prepared.zones.some((zone) => !isValidPolygonalGeometry(zone.geometry))) {
+    return lots.map((lot, index) => unassigned(opts.lotIdOf?.(lot, index) ?? defaultLotId(lot, index)));
+  }
   const indexedZones = buildZoneIndex(prepared.zones, zoneCodeOf);
   const tree = new GridSpatialIndex(indexedZones);
 
@@ -247,9 +270,13 @@ export function assignLotZones(
     ...(opts.lotIdOf ? { lotIdOf: opts.lotIdOf } : {}),
   };
 
-  return prepared.lots.map((lot, lotIndex) =>
-    assignOneLot(lot, lotIndex, tree, indexedZones, assignmentOptions),
-  );
+  return prepared.lots.map((lot, lotIndex) => {
+    if (lot === null) {
+      const original = lots[lotIndex]!;
+      return unassigned(opts.lotIdOf?.(original, lotIndex) ?? defaultLotId(original, lotIndex));
+    }
+    return assignOneLot(lot, lotIndex, tree, indexedZones, assignmentOptions);
+  });
 }
 
 function assignOneLot(
@@ -262,6 +289,7 @@ function assignOneLot(
   },
 ): LotZoneAssignment {
   const lotId = opts.lotIdOf?.(lot, lotIndex) ?? defaultLotId(lot, lotIndex);
+  if (!isValidPolygonalGeometry(lot.geometry)) return unassigned(lotId);
   const lotForIntersection = lot;
   const lotArea = planarArea(lot.geometry);
   const lotBox = bboxOf(lotForIntersection.geometry);
@@ -333,6 +361,9 @@ function buildZoneIndex(
     const normalizedCode = normalizeZoneCode(rawCode);
     if (!rawCode || !normalizedCode) continue;
     const [minX, minY, maxX, maxY] = bboxOf(zone.geometry);
+    if (![minX, minY, maxX, maxY].every(Number.isFinite)) {
+      throw new Error("zone geometry has non-finite coordinates");
+    }
     out.push({
       minX,
       minY,
@@ -352,15 +383,16 @@ function prepareInputs(
   lots: PolygonalFeature[],
   zones: PolygonalFeature[],
   opts: LotZoneJoinOptions,
-): { lots: PolygonalFeature[]; zones: PolygonalFeature[] } {
+): { lots: Array<PolygonalFeature | null>; zones: PolygonalFeature[] | null } {
   if (opts.targetCrs) {
     if (isGeographicCrs(opts.targetCrs)) {
       throw new Error(`targetCrs must be metric, got ${opts.targetCrs}`);
     }
     const source = opts.sourceCrs ?? WGS84;
+    const preparedZones = zones.map((zone) => tryReprojectFeature(zone, source, opts.targetCrs!));
     return {
-      lots: lots.map((lot) => reprojectFeature(lot, source, opts.targetCrs!)),
-      zones: zones.map((zone) => reprojectFeature(zone, source, opts.targetCrs!)),
+      lots: lots.map((lot) => tryReprojectFeature(lot, source, opts.targetCrs!)),
+      zones: preparedZones.every((zone): zone is PolygonalFeature => zone !== null) ? preparedZones : null,
     };
   }
 
@@ -369,7 +401,24 @@ function prepareInputs(
       "assignLotZones requires metric coordinates for area; reproject before calling or pass targetCrs",
     );
   }
-  return { lots, zones };
+  return {
+    lots: lots.map((lot) => (isValidPolygonalGeometry(lot.geometry) ? lot : null)),
+    zones,
+  };
+}
+
+function tryReprojectFeature(
+  feature: PolygonalFeature,
+  sourceCrs: string,
+  targetCrs: string,
+): PolygonalFeature | null {
+  if (!isValidPolygonalGeometry(feature.geometry)) return null;
+  try {
+    const projected = reprojectFeature(feature, sourceCrs, targetCrs);
+    return isValidPolygonalGeometry(projected.geometry) ? projected : null;
+  } catch {
+    return null;
+  }
 }
 
 function intersectionArea(a: PolygonalFeature, b: PolygonalFeature): number {
@@ -428,6 +477,164 @@ function planarArea(geometry: PolygonalGeometry): number {
   };
   if (geometry.type === "Polygon") return polyArea(geometry.coordinates);
   return geometry.coordinates.reduce((sum, poly) => sum + polyArea(poly), 0);
+}
+
+function isValidPolygonalGeometry(geometry: PolygonalGeometry): boolean {
+  const validPosition = (position: Position): boolean =>
+    position.length >= 2 && Number.isFinite(position[0]) && Number.isFinite(position[1]);
+  const validRing = (ring: Position[]): boolean => {
+    if (ring.length < 4 || !ring.every(validPosition)) return false;
+    const first = ring[0]!;
+    const last = ring[ring.length - 1]!;
+    return first[0] === last[0] && first[1] === last[1] && ringIsSimple(ring);
+  };
+  const validPolygon = (polygon: Position[][]): boolean =>
+    polygon.length > 0 && polygon.every(validRing) && polygonTopologyIsValid(polygon);
+  return geometry.type === "Polygon"
+    ? validPolygon(geometry.coordinates)
+    :
+        geometry.coordinates.length > 0 &&
+        geometry.coordinates.every(validPolygon) &&
+        multiPolygonTopologyIsValid(geometry.coordinates);
+}
+
+function polygonTopologyIsValid(polygon: Position[][]): boolean {
+  const shell = polygon[0]!;
+  for (let i = 1; i < polygon.length; i++) {
+    const hole = polygon[i]!;
+    if (ringsIntersect(shell, hole) || !pointInRingStrict(hole[0]!, shell)) return false;
+    for (let j = 1; j < i; j++) {
+      const otherHole = polygon[j]!;
+      if (
+        ringsIntersect(hole, otherHole) ||
+        pointInRingStrict(hole[0]!, otherHole) ||
+        pointInRingStrict(otherHole[0]!, hole)
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function multiPolygonTopologyIsValid(polygons: Position[][][]): boolean {
+  for (let i = 0; i < polygons.length; i++) {
+    for (let j = i + 1; j < polygons.length; j++) {
+      const a = polygons[i]!;
+      const b = polygons[j]!;
+      if (a.some((ringA) => b.some((ringB) => ringsHaveInvalidMultiPolygonContact(ringA, ringB)))) {
+        return false;
+      }
+      if (
+        a[0]!.some((point) => pointInPolygonStrict(point, b)) ||
+        b[0]!.some((point) => pointInPolygonStrict(point, a))
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function ringsHaveInvalidMultiPolygonContact(a: Position[], b: Position[]): boolean {
+  for (let i = 0; i < a.length - 1; i++) {
+    for (let j = 0; j < b.length - 1; j++) {
+      if (segmentsCrossOrOverlap(a[i]!, a[i + 1]!, b[j]!, b[j + 1]!)) return true;
+    }
+  }
+  return false;
+}
+
+function segmentsCrossOrOverlap(a: Position, b: Position, c: Position, d: Position): boolean {
+  const abC = cross2d(a, b, c);
+  const abD = cross2d(a, b, d);
+  const cdA = cross2d(c, d, a);
+  const cdB = cross2d(c, d, b);
+  if (((abC > 0 && abD < 0) || (abC < 0 && abD > 0)) && ((cdA > 0 && cdB < 0) || (cdA < 0 && cdB > 0))) {
+    return true;
+  }
+  if (abC !== 0 || abD !== 0 || cdA !== 0 || cdB !== 0) return false;
+
+  const axis = Math.abs(b[0]! - a[0]!) >= Math.abs(b[1]! - a[1]!) ? 0 : 1;
+  const overlapStart = Math.max(Math.min(a[axis]!, b[axis]!), Math.min(c[axis]!, d[axis]!));
+  const overlapEnd = Math.min(Math.max(a[axis]!, b[axis]!), Math.max(c[axis]!, d[axis]!));
+  return overlapEnd > overlapStart;
+}
+
+function pointInPolygonStrict(point: Position, polygon: Position[][]): boolean {
+  if (!pointInRingStrict(point, polygon[0]!)) return false;
+  return polygon.slice(1).every((hole) => !pointInRingStrict(point, hole));
+}
+
+function pointInRingStrict(point: Position, ring: Position[]): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 2; i < ring.length - 1; j = i++) {
+    const a = ring[j]!;
+    const b = ring[i]!;
+    if (cross2d(a, b, point) === 0 && pointOnSegment(point, a, b)) return false;
+    const crossesRay = (a[1]! > point[1]!) !== (b[1]! > point[1]!);
+    if (crossesRay) {
+      const x = ((b[0]! - a[0]!) * (point[1]! - a[1]!)) / (b[1]! - a[1]!) + a[0]!;
+      if (point[0]! < x) inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function ringsIntersect(a: Position[], b: Position[]): boolean {
+  for (let i = 0; i < a.length - 1; i++) {
+    for (let j = 0; j < b.length - 1; j++) {
+      if (segmentsIntersect(a[i]!, a[i + 1]!, b[j]!, b[j + 1]!)) return true;
+    }
+  }
+  return false;
+}
+
+function ringIsSimple(ring: Position[]): boolean {
+  const segmentCount = ring.length - 1;
+  for (let i = 0; i < segmentCount; i++) {
+    const a = ring[i]!;
+    const b = ring[i + 1]!;
+    if (samePosition2d(a, b)) return false;
+    for (let j = i + 1; j < segmentCount; j++) {
+      if (j === i + 1 || (i === 0 && j === segmentCount - 1)) continue;
+      if (segmentsIntersect(a, b, ring[j]!, ring[j + 1]!)) return false;
+    }
+  }
+  return true;
+}
+
+function segmentsIntersect(a: Position, b: Position, c: Position, d: Position): boolean {
+  const abC = cross2d(a, b, c);
+  const abD = cross2d(a, b, d);
+  const cdA = cross2d(c, d, a);
+  const cdB = cross2d(c, d, b);
+  if (((abC > 0 && abD < 0) || (abC < 0 && abD > 0)) && ((cdA > 0 && cdB < 0) || (cdA < 0 && cdB > 0))) {
+    return true;
+  }
+  return (
+    (abC === 0 && pointOnSegment(c, a, b)) ||
+    (abD === 0 && pointOnSegment(d, a, b)) ||
+    (cdA === 0 && pointOnSegment(a, c, d)) ||
+    (cdB === 0 && pointOnSegment(b, c, d))
+  );
+}
+
+function cross2d(a: Position, b: Position, c: Position): number {
+  return (b[0]! - a[0]!) * (c[1]! - a[1]!) - (b[1]! - a[1]!) * (c[0]! - a[0]!);
+}
+
+function pointOnSegment(point: Position, start: Position, end: Position): boolean {
+  return (
+    point[0]! >= Math.min(start[0]!, end[0]!) &&
+    point[0]! <= Math.max(start[0]!, end[0]!) &&
+    point[1]! >= Math.min(start[1]!, end[1]!) &&
+    point[1]! <= Math.max(start[1]!, end[1]!)
+  );
+}
+
+function samePosition2d(a: Position, b: Position): boolean {
+  return a[0] === b[0] && a[1] === b[1];
 }
 
 function ringArea(ring: Position[]): number {
@@ -610,7 +817,7 @@ function pointFeature(coordinates: Position): Feature<Point> {
   };
 }
 
-function reprojectFeature<P extends Record<string, unknown>>(
+function reprojectFeature<P extends GeoJsonProperties>(
   feature: PolygonalFeature<P>,
   sourceCrs: string,
   targetCrs: string,
