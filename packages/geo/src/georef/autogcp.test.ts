@@ -214,6 +214,30 @@ describe("georef/autogcp - in-memory cadastre matching", () => {
     }
   });
 
+  it("rejects collinear similarity controls that the public affine cannot consume", () => {
+    const collinearPoints = [pointAt(0.2, 0.5), pointAt(0.5, 0.5), pointAt(0.8, 0.5)];
+    for (const affineGate of [undefined, false] as const) {
+      const report = deriveAutonomousGcpsFromPoints({
+        slug: "collinear",
+        pageW: PAGE_W,
+        pageH: PAGE_H,
+        seed: seed(),
+        cadastre: cadastreFor(collinearPoints),
+        pagePoints: collinearPoints,
+        fit: "similarity",
+        minGcps: 3,
+        maxGcps: 3,
+        maxCandidateDistanceM: 2,
+        maxResidualM: 1,
+        ...(affineGate === false ? { affineGate } : {}),
+      });
+
+      expect(report.pass).toBe(false);
+      expect(report.reason).toMatch(/degenerate/);
+      expect(report.gcp_file).toBeUndefined();
+    }
+  });
+
   it("uses each cadastre vertex for at most one independent page match", () => {
     const [lon, lat] = truthTopLeft(PAGE_W / 2, PAGE_H / 2);
     const cadastre = cadastreFor([pointAt(0.5, 0.5)]);

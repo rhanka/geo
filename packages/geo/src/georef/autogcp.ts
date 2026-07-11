@@ -13,7 +13,13 @@
 import type { FeatureCollection, Geometry, Position } from "@sentropic/geo-core";
 
 import { fitAffine, type GeoRef } from "./affine.js";
-import { buildGeoRefFromGcpsCrs, type Gcp, type GcpFile, type NeatlineFrac } from "./gcp.js";
+import {
+  buildGeoRefFromGcps,
+  buildGeoRefFromGcpsCrs,
+  type Gcp,
+  type GcpFile,
+  type NeatlineFrac,
+} from "./gcp.js";
 import {
   decomposeGcpAffine,
   decomposeGcpSimilarity,
@@ -692,11 +698,42 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
   let affineGateReasons: string[] = [];
   let pass = false;
   let reason: string | undefined;
+  let candidate: GcpFile | undefined;
+  let reusableByPublicAffine = true;
+  if (selected.length >= minGcps) {
+    const validationCandidate = buildGcpFileFromAutoMatches({
+      slug: opts.slug,
+      pdf: opts.seed.pdf,
+      pageW: opts.pageW,
+      pageH: opts.pageH,
+      matches: selected,
+      ...(opts.seed.page !== undefined ? { page: opts.seed.page } : {}),
+      ...(opts.seed.neatline ? { neatline: opts.seed.neatline } : {}),
+    });
+    try {
+      buildGeoRefFromGcps(validationCandidate.gcps, opts.pageW, opts.pageH, validationCandidate.neatline);
+    } catch {
+      reusableByPublicAffine = false;
+      affineGatePass = false;
+      affineGateReasons = ["derived GCP geometry is degenerate for the public affine"];
+    }
+  }
   if (selected.length < minGcps) {
     reason = "only " + selected.length + " independent parcel/linework matches after residual pruning (< " + minGcps + ")";
+  } else if (!reusableByPublicAffine) {
+    reason = "derived GCP geometry is degenerate for the public affine";
   } else {
     const res = fitResiduals(selected, opts.pageW, opts.pageH, fit);
     selected = selected.map((m, i) => ({ ...m, residualM: res.residuals[i]! }));
+    candidate = buildGcpFileFromAutoMatches({
+      slug: opts.slug,
+      pdf: opts.seed.pdf,
+      pageW: opts.pageW,
+      pageH: opts.pageH,
+      matches: selected,
+      ...(opts.seed.page !== undefined ? { page: opts.seed.page } : {}),
+      ...(opts.seed.neatline ? { neatline: opts.seed.neatline } : {}),
+    });
     residualMax = Number(res.max.toFixed(3));
     residualRms = Number(res.rms.toFixed(3));
     const h = holdoutStats(selected, opts.pageW, opts.pageH, fit);
@@ -710,15 +747,6 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
     }
 
     if (pass && opts.affineGate !== false) {
-      const candidate = buildGcpFileFromAutoMatches({
-        slug: opts.slug,
-        pdf: opts.seed.pdf,
-        pageW: opts.pageW,
-        pageH: opts.pageH,
-        matches: selected,
-        ...(opts.seed.page !== undefined ? { page: opts.seed.page } : {}),
-        ...(opts.seed.neatline ? { neatline: opts.seed.neatline } : {}),
-      });
       const decomposition = fit === "similarity"
         ? decomposeGcpSimilarity(candidate.gcps, opts.pageW, opts.pageH)
         : decomposeGcpAffine(candidate.gcps, opts.pageW, opts.pageH);
@@ -754,18 +782,6 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
     affine_gate_reasons: affineGateReasons,
     max_candidate_distance_m: maxCandidateDistanceM,
     max_residual_gate_m: maxResidualM,
-    ...(pass
-      ? {
-          gcp_file: buildGcpFileFromAutoMatches({
-            slug: opts.slug,
-            pdf: opts.seed.pdf,
-            pageW: opts.pageW,
-            pageH: opts.pageH,
-            matches: selected,
-            ...(opts.seed.page !== undefined ? { page: opts.seed.page } : {}),
-            ...(opts.seed.neatline ? { neatline: opts.seed.neatline } : {}),
-          }),
-        }
-      : {}),
+    ...(pass && candidate ? { gcp_file: candidate } : {}),
   };
 }
