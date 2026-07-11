@@ -344,6 +344,35 @@ export interface ExtractLabelsResult {
   rejectedOutsideFrame: number;
 }
 
+/**
+ * Restrict positioned text labels to an authoritative municipal code list.
+ * The returned spelling is the dictionary's canonical spelling, while every
+ * retained position still comes from a verbatim PDF label.
+ */
+export function filterExtractedLabelsByDict(
+  labels: ExtractLabelsResult,
+  dictCodes: string[],
+): ExtractLabelsResult & { dictRejected: number } {
+  const canonical = new Map(
+    dictCodes.map((code) => [normalizeZoneCodeText(code).toUpperCase(), normalizeZoneCodeText(code)]),
+  );
+  const codePoints = labels.codePoints.flatMap((point) => {
+    const code = canonical.get(normalizeZoneCodeText(point.code).toUpperCase());
+    if (!code) return [];
+    const { prefix } = splitCode(code);
+    return [{ ...point, code, prefix, kind: kindForPrefix(prefix) }];
+  });
+  const dictRejected = labels.codePoints.length - codePoints.length;
+  return {
+    ...labels,
+    codePoints,
+    nCodeLike: codePoints.length,
+    nInsideFrame: codePoints.length,
+    rejectedOutsideFrame: labels.rejectedOutsideFrame + dictRejected,
+    dictRejected,
+  };
+}
+
 function inExcludedRegion(px: number, pyTop: number, geo: GeoRef, regions: LabelRegionFrac[] | undefined): boolean {
   if (!regions?.length) return false;
   return regions.some((r) => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { GeoRef } from "./t1-georef.js";
-import { extractLabelsFromWords, type RawLabel } from "./t1-labels.js";
+import { extractLabelsFromWords, filterExtractedLabelsByDict, type RawLabel } from "./t1-labels.js";
 
 const PAGE_W = 1000;
 const PAGE_H = 1000;
@@ -127,5 +127,24 @@ describe("t1-labels zone-code parser", () => {
     );
 
     expect(got).toEqual(["H-101"]);
+  });
+
+  it("keeps only dictionary-attested text labels and restores canonical spelling", () => {
+    const extracted = extractLabelsFromWords(
+      [
+        word("rv-269", 100, 100, 150, 116, 1, 1),
+        word("NAD83", 200, 100, 250, 116, 2, 2),
+        word("Id1", 300, 100, 330, 116, 3, 3),
+      ],
+      PAGE_W,
+      PAGE_H,
+      geo(),
+    );
+
+    const filtered = filterExtractedLabelsByDict(extracted, ["RV-269", "AF-35"]);
+
+    expect(filtered.codePoints.map((point) => point.code)).toEqual(["RV-269"]);
+    expect(filtered.dictRejected).toBe(2);
+    expect(filtered.nCodeLike).toBe(1);
   });
 });

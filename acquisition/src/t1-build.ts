@@ -46,7 +46,7 @@ import { join } from "node:path";
 import type { FeatureCollection } from "geojson";
 
 import { extractGeoRef } from "./lib/t1-georef.js";
-import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
+import { extractLabels, filterExtractedLabelsByDict, type ExtractLabelsResult } from "./lib/t1-labels.js";
 import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from "./lib/numeric-codes.js";
 import { buildZones, projConstants } from "./lib/t1-zones.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
@@ -325,6 +325,14 @@ async function main(): Promise<void> {
       ...(args.page ? { page: args.page } : {}),
       ...(numericDict ? { numericDict } : {}),
     });
+    if (dictCodes) {
+      const filtered = filterExtractedLabelsByDict(lab, dictCodes);
+      lab = filtered;
+      console.error(
+        `[t1-build] text dictionary: kept ${lab.codePoints.length}, rejected ${filtered.dictRejected} ` +
+          `against ${dictCodes.length} authoritative codes`,
+      );
+    }
   }
   const distinct = new Set(lab.codePoints.map((c) => c.code));
   const minCodes = Math.max(3, args.minCodes);
