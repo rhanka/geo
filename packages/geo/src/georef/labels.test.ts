@@ -1,6 +1,7 @@
-/** Ported verbatim from acquisition/src/lib/t1-labels.test.ts (imports only adapted). */
+/** Source golden tests from acquisition/src/lib/t1-labels.test.ts, plus public-contract regressions. */
 import { describe, expect, it } from "vitest";
 
+import * as publicGeoref from "./index.js";
 import type { GeoRef } from "./affine.js";
 import { extractLabelsFromWords, filterExtractedLabelsByDict, type RawLabel } from "./labels.js";
 
@@ -49,6 +50,10 @@ function codes(words: RawLabel[], opts: Parameters<typeof extractLabelsFromWords
 }
 
 describe("t1-labels zone-code parser", () => {
+  it("does not expose mutable stopwords through the public georef barrel", () => {
+    expect("STOPWORDS" in publicGeoref).toBe(false);
+  });
+
   it("preserves Carignan compound codes split across stacked PDF words", () => {
     const got = codes([
       word("MN2-", 100, 100, 130, 116, 1, 1),
@@ -159,5 +164,7 @@ describe("t1-labels zone-code parser", () => {
     expect(filtered.codePoints.map((point) => point.code)).toEqual(["RV-269"]);
     expect(filtered.dictRejected).toBe(2);
     expect(filtered.nCodeLike).toBe(1);
+    expect(filtered.nInsideFrame).toBe(1);
+    expect(filtered.rejectedOutsideFrame).toBe(2);
   });
 });
