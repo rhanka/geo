@@ -34,7 +34,7 @@ import {
 
 import { readParquetRows, readParquetRowsFromBuffer } from "./lib/parquet-read.js";
 import { norm as normCadastreSlug } from "./cadastre-clip-sda.js";
-import { BUCKET, exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
+import { BUCKET, exists, getBytes, getGeoJsonFeatureCollection, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 import { projConstants } from "./lib/t1-zones.js";
 
 const PILOT_SLUGS = ["windsor", "arundel", "coteau-du-lac", "hudson", "granby"] as const;
@@ -43,6 +43,13 @@ const CAD_PREFIX = "normalized/qc-cadastre-lots/";
 const ZONES_PREFIX = "normalized/ca-qc-zonage/";
 const NORMS_PREFIX = "registry/qc-zonage-norms/";
 const OUT_PREFIX = "normalized/qc-lot-zonage/";
+
+const CADASTRE_SLUG_ALIASES: Record<string, string[]> = {
+  "l-epiphanie": ["lepiphanie"],
+  "l-assomption": ["lassomption"],
+  "l-ange-gardien": ["lange-gardien--la-cote-de-beaupre"],
+  "sainte-christine-d-auvergne": ["sainte-christine-dauvergne"],
+};
 
 const LOT_ZONE_SCHEMA = new ParquetSchema({
   lot_id: { type: "UTF8", compression: "SNAPPY" },
@@ -171,18 +178,24 @@ async function resolveFirstExisting(s3: S3Client, keys: string[]): Promise<strin
 }
 
 async function resolveCadastreKey(s3: S3Client, slug: string): Promise<string> {
+  const candidates = [slug, ...(CADASTRE_SLUG_ALIASES[slug] ?? [])];
+  for (const candidate of candidates) {
+    const key = `${CAD_PREFIX}${candidate}.geojson`;
+    if (await exists(s3, key)) return key;
+  }
   const key = `${CAD_PREFIX}${slug}.geojson`;
-  if (await exists(s3, key)) return key;
   const slugs = await listSlugs(s3, CAD_PREFIX, ".geojson", true);
-  const normalizedTarget = normCadastreSlug(slug);
-  const normalizedMatches = slugs.filter((candidate) => normCadastreSlug(candidate) === normalizedTarget);
+  const normalizedTargets = new Set(candidates.map((candidate) => normCadastreSlug(candidate)));
+  const normalizedMatches = slugs.filter((candidate) => normalizedTargets.has(normCadastreSlug(candidate)));
   if (normalizedMatches.length === 1) return `${CAD_PREFIX}${normalizedMatches[0]}.geojson`;
-  const containsMatches = slugs.filter((candidate) => normCadastreSlug(candidate).includes(normalizedTarget));
+  const containsMatches = slugs.filter((candidate) =>
+    [...normalizedTargets].some((target) => normCadastreSlug(candidate).includes(target)),
+  );
   if (containsMatches.length === 1) return `${CAD_PREFIX}${containsMatches[0]}.geojson`;
-  const candidates = containsMatches.length > 0 ? containsMatches : normalizedMatches;
+  const ambiguousCandidates = containsMatches.length > 0 ? containsMatches : normalizedMatches;
   throw new Error(
     `cadastre not found for ${slug}: ${key}` +
-      (candidates.length > 0 ? `; ambiguous candidates: ${candidates.slice(0, 12).join(", ")}` : ""),
+      (ambiguousCandidates.length > 0 ? `; ambiguous candidates: ${ambiguousCandidates.slice(0, 12).join(", ")}` : ""),
   );
 }
 
@@ -517,8 +530,8 @@ async function runCity(s3: S3Client, slug: string, noUpload: boolean, simplifyZo
   const recalageStatsKey = await resolveRecalageStatsKey(s3, slug);
 
   if (simplifyZonesM > 0) console.error(`[lot-zone-join] ${slug}: reading cadastre and zones`);
-  const cadastre = (await getJson(s3, cadastreKey)) as GeoFc;
-  const zones = (await getJson(s3, zonesKey)) as GeoFc;
+  const cadastre = (await getGeoJsonFeatureCollection<GeoFeature>(s3, cadastreKey)) as GeoFc;
+  const zones = (await getGeoJsonFeatureCollection<GeoFeature>(s3, zonesKey)) as GeoFc;
   const lots = polygonalFeatures(cadastre, `${slug} cadastre`);
   const zoneFeatures = polygonalFeatures(zones, `${slug} zones`).filter((feature) => zoneCodeOf(feature));
   if (zoneFeatures.length === 0) throw new Error(`${slug} zones have no usable zone_code`);
