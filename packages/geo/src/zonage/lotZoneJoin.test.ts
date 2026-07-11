@@ -373,6 +373,29 @@ describe("assignLotZones", () => {
     expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
   });
 
+  it("refuses a non-adjacent vertex lying inside another ring segment", () => {
+    const selfTouching = rect("lot-self-touching", 0, 0, 4, 3);
+    selfTouching.geometry.coordinates = [[
+      [2, 2],
+      [0, 3],
+      [0, 1],
+      [0, 2],
+      [3, 0],
+      [4, 0],
+      [2, 1],
+      [2, 2],
+    ]];
+
+    const [assignment] = assignLotZones(
+      [selfTouching],
+      [zone("H-1", -1, -1, 5, 4)],
+      (feature) => String(feature.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
   it("refuses a polygon whose hole crosses its exterior ring", () => {
     const invalidZone: Feature<Polygon, Props> = {
       type: "Feature",
@@ -665,6 +688,24 @@ describe("assignLotZones", () => {
     );
 
     expect(assignment).toMatchObject({ zoneCode: "H-1", dominantFraction: 1 });
+  });
+
+  it("validates a detailed simple zone without quadratic segment scans", () => {
+    const vertexCount = 30_000;
+    const ring: Polygon["coordinates"][number] = Array.from({ length: vertexCount }, (_, index) => {
+      const angle = (2 * Math.PI * index) / vertexCount;
+      return [1_000 * Math.cos(angle), 1_000 * Math.sin(angle)];
+    });
+    ring.push(ring[0]!);
+    const detailedZone: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: { type: "Polygon", coordinates: [ring] },
+    };
+
+    expect(
+      assignLotZones([], [detailedZone], (feature) => String(feature.properties?.["zone_code"])),
+    ).toEqual([]);
   });
 
   it("uses deterministic code-point order to break equal-area ties", () => {
