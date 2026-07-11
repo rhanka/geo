@@ -1,8 +1,8 @@
 # Registre de provenance — normes 2-moteurs (keep-best)
 
-_Généré 2026-06-29T18:58:41.122Z — 321 villes._
+_Généré 2026-07-04T21:41:54.708Z — 323 villes._
 
-**Gagnants:** OCR-4.0 = 39 · Claude-4.8 = 4 · existant gardé = 229 · erreur (source PDF injoignable) = 49 · déposés = 43
+**Gagnants:** OCR-4.0 = 38 · Claude-4.8 = 5 · existant gardé = 231 · déposés (apply) = 43
 
 Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. Anti-invention: garde `buildVisionField` partagée (verbatim ou null) → invention_ok partout.
 
@@ -50,6 +50,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | cookshire-eaton | — | 175 | 161 | 0 | kept-existing | 662/391/0 | 0 |  | claude rate-limit (sauté); recall régresserait 175->161 |
 | coteau-du-lac | — | 124 | 15 | 0 | kept-existing | 525/4/0 | 0 |  | claude rate-limit (sauté); recall régresserait 124->15 |
 | daveluyville | — | 55 | 0 | 0 | kept-existing | 177/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
+| degelis | — | 0 | 0 | 0 | kept-existing | 0/0/4 | 0 |  | moins de 3 zones extraites |
 | deleage | — | 3 | 7 | 0 | kept-existing | 1/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 1->0 |
 | delson | — | 102 | 0 | 0 | kept-existing | 426/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | deschaillons-sur-saint-laurent | — | 33 | 0 | 0 | kept-existing | 79/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
@@ -193,7 +194,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | saint-eustache | — | 28 | 37 | 3 | kept-existing | 2/0/13 | 0 |  | payload régresserait 2->0 |
 | saint-fabien-de-panet | — | 13 | 0 | 0 | kept-existing | 3/0/3 | 0 |  | recall régresserait 13->0 |
 | saint-felix-de-valois | — | 40 | 0 | 0 | kept-existing | 203/0/0 | 0 |  | moins de 3 zones extraites |
-| saint-francois-xavier-de-brompton | — | 5 | 226 | 6 | ocr-4.0 | 0/0/0 | 0 | ✓ | recall 5->226, publié 0->0 |
+| saint-francois-xavier-de-brompton | — | 226 | 0 | 19 | kept-existing | 0/0/95 | 19 |  | recall régresserait 226->19 |
 | saint-gabriel-de-brandon | — | 21 | 0 | 0 | kept-existing | 40/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | saint-gabriel-de-valcartier | — | 2 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | saint-georges | — | 13 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | recall régresserait 13->0 |
@@ -316,6 +317,7 @@ Recall = recoupement SIG si grille SIG dispo, sinon nb de zone_codes distincts. 
 | val-joli | — | 2 | 0 | 0 | kept-existing | 0/0/0 | 0 |  | moins de 3 zones extraites |
 | val-morin | — | 2 | 0 | 0 | kept-existing | 84/0/0 | 0 |  | claude rate-limit (sauté); moins de 3 zones extraites |
 | val-racine | — | 4 | 35 | 35 | claude-4.8 | 0/20/59 | 0 | ✓ | recall 4->35, publié 0->59 |
+| valcourt | — | 0 | 0 | 48 | claude-4.8 | 0/0/192 | 0 | ✓ | recall 0->48, publié 0->192 |
 | valcourt--le-val-saint-francois | — | 15 | 162 | 0 | kept-existing | 9/0/0 | 0 |  | claude rate-limit (sauté); payload régresserait 9->0 |
 | varennes | — | 26 | 24 | 0 | kept-existing | 81/2/0 | 0 |  | claude rate-limit (sauté); recall régresserait 26->24 |
 | vaudreuil-dorion | — | 270 | 0 | 0 | error | 1121/0/0 | 0 |  | fetch failed |
