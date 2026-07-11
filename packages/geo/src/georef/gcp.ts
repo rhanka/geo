@@ -191,6 +191,30 @@ export function buildGeoRefFromGcps(
   const mPerDegLat = M_PER_DEG_LAT;
   const mPerDegLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
 
+  // Residuals alone cannot detect a collapsed target: three page-spread GCPs
+  // mapped to one ground line fit with a zero residual but produce a
+  // non-invertible georef. Reject a non-finite or relatively near-singular
+  // page→ground Jacobian independently of the higher-level orientation gate.
+  const j00 = cLon[0] * mPerDegLon;
+  const j01 = cLon[1] * mPerDegLon;
+  const j10 = cLat[0] * mPerDegLat;
+  const j11 = cLat[1] * mPerDegLat;
+  const frobeniusSq = j00 * j00 + j01 * j01 + j10 * j10 + j11 * j11;
+  const determinant = j00 * j11 - j01 * j10;
+  const discriminant = Math.max(0, frobeniusSq * frobeniusSq - 4 * determinant * determinant);
+  const maxSingular = Math.sqrt((frobeniusSq + Math.sqrt(discriminant)) / 2);
+  const minSingular = Math.abs(determinant) / maxSingular;
+  if (
+    !Number.isFinite(frobeniusSq) ||
+    !Number.isFinite(determinant) ||
+    !Number.isFinite(maxSingular) ||
+    !Number.isFinite(minSingular) ||
+    maxSingular <= 0 ||
+    minSingular / maxSingular < 1e-8
+  ) {
+    throw new Error("GCP ground transform is non-finite or (near-)singular");
+  }
+
   const pageToLonLat = (x: number, y: number): [number, number] => [
     cLon[0] * x + cLon[1] * y + cLon[2],
     cLat[0] * x + cLat[1] * y + cLat[2],
