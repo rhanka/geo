@@ -8,7 +8,6 @@ import type {
   Position,
 } from "geojson";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import buffer from "@turf/buffer";
 import { featureCollection } from "@turf/helpers";
 import intersect from "@turf/intersect";
 import proj4 from "proj4";
@@ -263,32 +262,12 @@ function assignOneLot(
   },
 ): LotZoneAssignment {
   const lotId = opts.lotIdOf?.(lot, lotIndex) ?? defaultLotId(lot, lotIndex);
-  let lotForIntersection = lot;
-  let lotArea = planarArea(lot.geometry);
-  if (!(lotArea > 0)) {
-    lotForIntersection = repairFeature(lot);
-    lotArea = planarArea(lotForIntersection.geometry);
-  }
-  if (!(lotArea > 0)) {
-    return unassigned(lotId);
-  }
-
+  const lotForIntersection = lot;
+  const lotArea = planarArea(lot.geometry);
   const lotBox = bboxOf(lotForIntersection.geometry);
   const candidates = tree.search(toSearchBox(lotBox));
-
-  // Fast path: when the lot's bbox touches exactly one zone and every lot vertex
-  // lies inside that zone, the lot is fully contained (no other zone can overlap
-  // it — it was the only candidate), so skip the expensive polygon clip.
-  if (candidates.length === 1 && allVerticesInside(lotForIntersection.geometry, candidates[0]!.geometry)) {
-    const only = candidates[0]!;
-    return {
-      lotId,
-      zoneCode: only.rawCode,
-      dominantFraction: 1,
-      multiZone: false,
-      zoneCodes: [only.rawCode],
-      method: "area-majority",
-    };
+  if (!(lotArea > 0)) {
+    return unassigned(lotId);
   }
 
   const areas = new Map<string, AreaByZone>();
@@ -299,12 +278,8 @@ function assignOneLot(
     try {
       overlapArea = intersectionArea(lotForIntersection, zone.feature);
     } catch {
-      try {
-        overlapArea = intersectionArea(repairFeature(lotForIntersection), repairFeature(zone.feature));
-      } catch {
-        exactFailed = true;
-        continue;
-      }
+      exactFailed = true;
+      continue;
     }
     if (overlapArea < opts.sliverAreaEps) continue;
     const prev = areas.get(zone.normalizedCode);
@@ -318,8 +293,10 @@ function assignOneLot(
     }
   }
 
+  if (exactFailed) {
+    return centroidFallback(lotId, lotForIntersection.geometry, candidates.length ? candidates : allZones);
+  }
   if (areas.size === 0) {
-    if (exactFailed) return centroidFallback(lotId, lotForIntersection.geometry, candidates.length ? candidates : allZones);
     return unassigned(lotId);
   }
 
@@ -397,30 +374,6 @@ function intersectionArea(a: PolygonalFeature, b: PolygonalFeature): number {
   const fc: FeatureCollection<PolygonalGeometry> = featureCollection([a, b]);
   const hit = intersect(fc);
   return hit ? planarArea(hit.geometry) : 0;
-}
-
-function repairFeature<P extends Record<string, unknown>>(feature: PolygonalFeature<P>): PolygonalFeature<P> {
-  return { ...feature, geometry: repairGeometry(feature.geometry) };
-}
-
-function repairGeometry(geometry: PolygonalGeometry): PolygonalGeometry {
-  try {
-    const repaired = buffer(
-      {
-        type: "Feature",
-        properties: {},
-        geometry,
-      },
-      0,
-      { units: "meters" },
-    );
-    if (repaired?.geometry?.type === "Polygon" || repaired?.geometry?.type === "MultiPolygon") {
-      return repaired.geometry;
-    }
-  } catch {
-    return geometry;
-  }
-  return geometry;
 }
 
 function centroidFallback(
@@ -617,7 +570,7 @@ function representativePointForPoly(poly: Position[][]): { point: Position; widt
       for (let i = 0; i < ring.length - 1; i++) {
         const y1 = ring[i]![1]!;
         const y2 = ring[i + 1]![1]!;
-        if (y1 <= scanY === y2 <= scanY) continue;
+        if ((y1 <= scanY) === (y2 <= scanY)) continue;
         const x1 = ring[i]![0]!;
         const x2 = ring[i + 1]![0]!;
         const t = (scanY - y1) / (y2 - y1);
@@ -653,20 +606,6 @@ function pointFeature(coordinates: Position): Feature<Point> {
     properties: {},
     geometry: { type: "Point", coordinates },
   };
-}
-
-function allVerticesInside(lot: PolygonalGeometry, zone: PolygonalGeometry): boolean {
-  const rings = lot.type === "Polygon" ? lot.coordinates : lot.coordinates.flat();
-  for (const ring of rings) {
-    for (const pos of ring) {
-      try {
-        if (!booleanPointInPolygon(pointFeature(pos), zone)) return false;
-      } catch {
-        return false;
-      }
-    }
-  }
-  return true;
 }
 
 function reprojectFeature<P extends Record<string, unknown>>(
@@ -739,4 +678,5 @@ function clampInt(value: number, min: number, max: number): number {
 
 export const __test = {
   planarArea,
+  representativePoint,
 };
