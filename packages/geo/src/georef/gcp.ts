@@ -165,12 +165,22 @@ export function buildGeoRefFromGcps(
   const lons = gcps.map((g) => g.lon);
   const lats = gcps.map((g) => g.lat);
 
-  // Guard against a collinear GCP layout (zero-area triangle → singular fit).
-  const area2 = Math.abs(
-    (userPts[1]![0] - userPts[0]![0]) * (userPts[2]![1] - userPts[0]![1]) -
-      (userPts[2]![0] - userPts[0]![0]) * (userPts[1]![1] - userPts[0]![1]),
-  );
-  if (area2 < 1e-6 * pageW * pageH) {
+  // Guard against a collinear GCP layout (zero-area triangles → singular fit).
+  // Callers may provide more than three controls in any order, so inspect the
+  // whole set instead of assuming the first triplet spans the page.
+  let maxArea2 = 0;
+  for (let i = 0; i < userPts.length; i++) {
+    for (let j = i + 1; j < userPts.length; j++) {
+      for (let k = j + 1; k < userPts.length; k++) {
+        const a = userPts[i]!;
+        const b = userPts[j]!;
+        const c = userPts[k]!;
+        const area2 = Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]));
+        if (area2 > maxArea2) maxArea2 = area2;
+      }
+    }
+  }
+  if (maxArea2 < 1e-6 * pageW * pageH) {
     throw new Error("GCPs are (near-)collinear — spread them across the plan (avoid a line)");
   }
 
@@ -250,10 +260,11 @@ export function buildGeoRefFromGcpsCrs(
   crs: string | undefined,
   neatline?: NeatlineFrac,
 ): BuildGeoRefResult {
-  if (!crs || /4326|wgs ?84|crs84/i.test(crs)) {
+  const normalizedCrs = crs?.trim();
+  if (!normalizedCrs) {
     return buildGeoRefFromGcps(gcps, pageW, pageH, neatline);
   }
-  const toWgs84 = proj4(crs, "WGS84");
+  const toWgs84 = proj4(normalizedCrs, "WGS84");
   const wgs84Gcps = gcps.map((gcp) => {
     const [lon, lat] = toWgs84.forward([gcp.lon, gcp.lat]) as [number, number];
     return { ...gcp, lon, lat };
