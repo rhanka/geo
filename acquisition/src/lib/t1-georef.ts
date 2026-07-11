@@ -352,6 +352,94 @@ interface GeoMeasure {
   gpts: number[];
   wkt: string;
   nearBBox: number[];
+  /** Byte offset of this measure's /GPTS in `hay` (for viewport association). */
+  gptsIndex: number;
+}
+
+interface ViewportGeoRef {
+  bbox: number[];
+  bounds: number[];
+  gpts: number[];
+  wkt: string;
+}
+
+/**
+ * Per-viewport GEO registration: each `/VP[…]` array element is a viewport dict
+ * carrying its own `/BBox` (page neatline) AND its `/Measure` — inline, or as an
+ * indirect `N 0 R` reference we resolve. Reading the GEO measure that BELONGS to
+ * each viewport (rather than globally scanning `/GPTS` and guessing by geographic
+ * span) is what disambiguates a plan that carries a REGIONAL LOCATOR INSET (a tiny
+ * page rectangle whose GPTS cover a WIDE area) from the MAIN municipal map (a large
+ * page rectangle over a small area). The widest-GPTS heuristic wrongly picks the
+ * inset's registration and stretches the whole map off its true position.
+ */
+function viewportGeoRefs(hay: string): ViewportGeoRef[] {
+  const out: ViewportGeoRef[] = [];
+  const re = /\/VP\s*\[/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(hay)) !== null) {
+    const arrStart = m.index + m[0].length - 1; // at '['
+    let depth = 0;
+    let j = arrStart;
+    for (; j < hay.length && j < arrStart + 40000; j++) {
+      const ch = hay[j];
+      if (ch === "[") depth++;
+      else if (ch === "]") {
+        depth--;
+        if (depth === 0) {
+          j++;
+          break;
+        }
+      }
+    }
+    // Walk the array body and split into top-level << … >> viewport dicts.
+    let k = arrStart + 1;
+    while (k < j) {
+      const ds = hay.indexOf("<<", k);
+      if (ds < 0 || ds >= j) break;
+      let dd = 0;
+      let e = ds;
+      for (; e < j; e++) {
+        if (hay[e] === "<" && hay[e + 1] === "<") {
+          dd++;
+          e++;
+        } else if (hay[e] === ">" && hay[e + 1] === ">") {
+          dd--;
+          e++;
+          if (dd === 0) {
+            e++;
+            break;
+          }
+        }
+      }
+      const body = hay.slice(ds, e);
+      k = e;
+      const bm = body.match(/\/BBox\s*\[([^\]]+)\]/);
+      const bbox = bm ? numArray(bm[1]!) : [];
+      if (bbox.length < 4) continue;
+      // The GEO measure: inline in the viewport dict, or an indirect object.
+      let mBody = /\/Subtype\s*\/GEO/.test(body) ? body : "";
+      if (!mBody) {
+        const ref = body.match(/\/Measure\s+(\d+)\s+0\s+R/);
+        if (ref) mBody = resolveObj(hay, Number(ref[1]));
+      }
+      if (!/\/Subtype\s*\/GEO/.test(mBody)) continue;
+      const gpts = numArray((mBody.match(/\/GPTS\s*\[([^\]]+)\]/) || [, ""])[1] ?? "");
+      const bounds = numArray((mBody.match(/\/Bounds\s*\[([^\]]+)\]/) || [, ""])[1] ?? "");
+      if (gpts.length < 8 || bounds.length < 8) continue;
+      let wkt = (mBody.match(/\/WKT\s*\(([^)]*PROJCS[^)]*)\)/) || [, ""])[1] ?? "";
+      if (!/PROJCS/.test(wkt)) {
+        const gcs = mBody.match(/\/GCS\s+(\d+)\s+0\s+R/);
+        if (gcs) {
+          const g = resolveObj(hay, Number(gcs[1]));
+          const wm = g.match(/\/WKT\s*\(([\s\S]*?)\)\s*>>/);
+          if (wm && /PROJCS/.test(wm[1]!)) wkt = wm[1]!;
+        }
+      }
+      out.push({ bbox, bounds, gpts, wkt });
+    }
+  }
+  return out;
 }
 
 /** Enumerate every GEO Measure, anchored on its /GPTS array. */
@@ -360,6 +448,7 @@ function geoMeasures(hay: string): GeoMeasure[] {
   const re = /\/GPTS\s*\[([^\]]+)\]/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(hay)) !== null) {
+    const gptsIndex = m.index;
     const gpts = numArray(m[1]!);
     if (gpts.length < 8) continue;
     const before = hay.slice(Math.max(0, m.index - 6000), m.index);
@@ -391,7 +480,7 @@ function geoMeasures(hay: string): GeoMeasure[] {
       const bx = [...region.matchAll(/\/BBox\s*\[([^\]]+)\]/g)];
       if (bx.length) nearBBox = numArray(bx[bx.length - 1]![1]!);
     }
-    out.push({ bounds, gpts, wkt, nearBBox });
+    out.push({ bounds, gpts, wkt, nearBBox, gptsIndex });
   }
   return out;
 }
@@ -430,27 +519,44 @@ export function extractGeoRef(pdf: Buffer, pdfPath?: string): GeoRef | null {
   // rectilinear scale measures (CAD scale bar, no geo anchor) yields none → null.
   const gms = geoMeasures(hay);
   if (gms.length === 0) return null;
-  gms.sort((a, b) => geoSpan(b.gpts) - geoSpan(a.gpts)); // widest = municipal frame
-  const gm = gms[0]!;
 
-  // Neatline BBox: a viewport BBox (/VP arrays) or the measure-adjacent BBox,
-  // restricted to within the page (rejects the XObject /Form BBox), largest first.
-  const cands = [...bboxesInVPArrays(hay)];
-  if (gm.nearBBox.length >= 4) cands.push(gm.nearBBox);
   const lim = 1.05;
-  const valid = cands.filter((b) => {
-    if (!pageW || !pageH) return b.length >= 4;
+  const inPage = (b: number[]): boolean => {
+    if (b.length < 4) return false;
+    if (!pageW || !pageH) return true;
     const maxX = Math.max(Math.abs(b[0]!), Math.abs(b[2]!));
     const maxY = Math.max(Math.abs(b[1]!), Math.abs(b[3]!));
     const area = Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
     return maxX <= pageW * lim && maxY <= pageH * lim && area > 0.05 * pageW * pageH;
-  });
-  if (valid.length === 0) return null;
-  valid.sort(
-    (a, b) =>
-      Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!)) - Math.abs((a[2]! - a[0]!) * (a[3]! - a[1]!)),
-  );
-  const bboxArr = valid[0]!;
+  };
+  const bboxArea = (b: number[]): number => Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
+
+  // Preferred: the GEO measure that BELONGS to the largest-page-area viewport (the
+  // MAIN municipal map), read per-viewport so a REGIONAL LOCATOR INSET (tiny page
+  // rectangle, WIDE geographic span) can never hijack the registration.
+  let gm: { bounds: number[]; gpts: number[]; wkt: string; nearBBox: number[] } | undefined;
+  let bboxArr: number[] | undefined;
+  const vgeo = viewportGeoRefs(hay).filter((v) => inPage(v.bbox) && /PROJCS/.test(v.wkt));
+  if (vgeo.length > 0) {
+    vgeo.sort((a, b) => bboxArea(b.bbox) - bboxArea(a.bbox));
+    const v = vgeo[0]!;
+    gm = { bounds: v.bounds, gpts: v.gpts, wkt: v.wkt, nearBBox: [] };
+    bboxArr = v.bbox;
+  }
+
+  // Fallback (no per-viewport GEO registration parsed): the old heuristic — widest
+  // GPTS as the municipal frame, largest in-page /VP BBox.
+  if (!gm || !bboxArr) {
+    const sorted = geoMeasures(hay).sort((a, b) => geoSpan(b.gpts) - geoSpan(a.gpts));
+    if (sorted.length === 0) return null;
+    gm = sorted[0]!;
+    const cands = [...bboxesInVPArrays(hay)];
+    if (gm.nearBBox.length >= 4) cands.push(gm.nearBBox);
+    const valid = cands.filter(inPage);
+    if (valid.length === 0) return null;
+    valid.sort((a, b) => bboxArea(b) - bboxArea(a));
+    bboxArr = valid[0]!;
+  }
   const bounds = gm.bounds;
   const gpts = gm.gpts;
   const wkt = gm.wkt;
