@@ -294,7 +294,9 @@ function assignOneLot(
   }
 
   if (exactFailed) {
-    return centroidFallback(lotId, lotForIntersection.geometry, candidates.length ? candidates : allZones);
+    return areas.size === 0
+      ? centroidFallback(lotId, lotForIntersection.geometry, candidates.length ? candidates : allZones)
+      : unassigned(lotId);
   }
   if (areas.size === 0) {
     return unassigned(lotId);

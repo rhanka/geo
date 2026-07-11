@@ -47,7 +47,7 @@ export {
 } from "./gcp.js";
 
 // Autonomous T2 cadastre/linework matching core: in-memory points + cadastre in,
-// independent GCPs out. PDF rendering, OCR, S3 and CRS reprojection stay outside.
+// independent GCPs out. PDF rendering, OCR, S3 and file I/O stay outside.
 export {
   buildGcpFileFromAutoMatches,
   deriveAutonomousGcpsFromPoints,
