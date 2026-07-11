@@ -103,10 +103,10 @@ export function normalizeZoneCode(value: unknown): string {
  *      reorder the join had to fall back to the uniqueness-gated numeric bridge and
  *      MISSED a digit-first code whose number is non-unique \u2014 the gate/join gap this
  *      closes.
- *   3. a single TRAILING presentational parenthetical annotation is dropped first \u2014
+ *   3. a single KNOWN trailing presentational parenthetical annotation is dropped first \u2014
  *      the redundant arrondissement/secteur label a SIG grille appends to an
  *      otherwise-identical code (Longueuil `A12-024 (STH)` \u2261 the bare `A12-024`;
- *      STH/VLO/GP = the arrondissement, already encoded by the `12`/`34` district
+ *      STH/VLO/GP/GPK = the arrondissement, already encoded by the `12`/`34` district
  *      prefix).
  *
  * ANTI-FUSION: each fold is ANCHORED to the WHOLE code (one alpha run + one digit
@@ -119,7 +119,7 @@ export function normalizeZoneCode(value: unknown): string {
  */
 export function canonicalizeZoneCodeForJoin(value: unknown): string {
   const up = normalizeZoneCode(value)
-    .replace(/\s*\([^)]*\)\s*$/, "")
+    .replace(/\s*\((?:STH|VLO|GP|GPK)\)\s*$/, "")
     .replace(/\s+/g, "");
   // 1. letter-first single code: HA20 / HA-20 / HA-020 \u2192 HA-20 (0* eats leading zeros).
   const letterFirst = /^([A-Z]+)-?0*(\d+)$/.exec(up);
@@ -362,7 +362,7 @@ function prepareInputs(
     };
   }
 
-  if (looksGeographic(lots) || looksGeographic(zones) || isGeographicCrs(opts.sourceCrs)) {
+  if (isGeographicCrs(opts.sourceCrs) || (!opts.sourceCrs && (looksGeographic(lots) || looksGeographic(zones)))) {
     throw new Error(
       "assignLotZones requires metric coordinates for area; reproject before calling or pass targetCrs",
     );

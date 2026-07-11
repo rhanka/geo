@@ -3,8 +3,8 @@
  * and an already-loaded WGS84 cadastre FeatureCollection.
  *
  * This is the compute core of the acquisition T2 autogcp path. The library
- * surface deliberately does not render PDFs, read files, OCR ticks, fetch S3, or
- * reproject non-WGS84 seeds. Callers provide page vector points and cadastre
+ * surface deliberately does not render PDFs, read files, OCR ticks, or fetch S3.
+ * Callers provide page vector points and cadastre
  * geometry in memory; this module matches candidate parcel vertices, prunes by
  * residuals and holdout, then emits independent GCPs.
  *
@@ -13,7 +13,13 @@
 import type { FeatureCollection, Geometry, Position } from "@sentropic/geo-core";
 
 import { fitAffine, type GeoRef } from "./affine.js";
-import { buildGeoRefFromGcps, type Gcp, type GcpFile, type NeatlineFrac } from "./gcp.js";
+import { buildGeoRefFromGcpsCrs, type Gcp, type GcpFile, type NeatlineFrac } from "./gcp.js";
+import {
+  decomposeGcpAffine,
+  decomposeGcpSimilarity,
+  evaluateAffineGate,
+  type AffineGateOptions,
+} from "./gate.js";
 
 const M_PER_DEG_LAT = 111320;
 
@@ -45,6 +51,8 @@ export interface AutoGcpCoreOptions {
   minGcps?: number;
   maxGcps?: number;
   fit?: FitMode;
+  /** Safe by default; false is reserved for callers performing their own geometry arbitration. */
+  affineGate?: AffineGateOptions | false;
 }
 
 export interface AutoGcpCoreReport {
@@ -60,6 +68,8 @@ export interface AutoGcpCoreReport {
   residual_rms_m: number | null;
   holdout_max_m: number | null;
   holdout_rms_m: number | null;
+  affine_gate_pass: boolean | null;
+  affine_gate_reasons: string[];
   max_candidate_distance_m: number;
   max_residual_gate_m: number;
   gcp_file?: GcpFile;
@@ -576,17 +586,8 @@ function holdoutStats(matches: AutoGcpMatch[], pageW: number, pageH: number, fit
   return { max, rms: Math.sqrt(sumSq / holdout.length) };
 }
 
-function isWgs84Crs(crs: string | undefined): boolean {
-  if (!crs) return true;
-  const c = crs.trim().toLowerCase().replace(/\s+/g, "");
-  return c === "epsg:4326" || c === "4326" || c === "wgs84" || c === "crs84" || c === "ogc:crs84";
-}
-
 function seedGeoRef(seed: GcpFile, pageW: number, pageH: number): GeoRef {
-  if (!isWgs84Crs(seed.crs)) {
-    throw new Error("autogcp core expects WGS84 seed GCPs; CRS reprojection stays in the acquisition layer");
-  }
-  return buildGeoRefFromGcps(seed.gcps, pageW, pageH, seed.neatline).geo;
+  return buildGeoRefFromGcpsCrs(seed.gcps, pageW, pageH, seed.crs, seed.neatline).geo;
 }
 
 export function matchPagePointsToCadastre(opts: {
@@ -687,6 +688,8 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
   let residualRms: number | null = null;
   let holdoutMax: number | null = null;
   let holdoutRms: number | null = null;
+  let affineGatePass: boolean | null = null;
+  let affineGateReasons: string[] = [];
   let pass = false;
   let reason: string | undefined;
   if (selected.length < minGcps) {
@@ -700,7 +703,38 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
     holdoutMax = h ? Number(h.max.toFixed(3)) : null;
     holdoutRms = h ? Number(h.rms.toFixed(3)) : null;
     pass = res.max <= maxResidualM && (!h || h.max <= maxResidualM);
-    if (!pass) reason = "matched parcel/linework residual " + res.max.toFixed(2) + "m > " + maxResidualM + "m";
+    if (!pass) {
+      reason = h && h.max > maxResidualM
+        ? "matched parcel/linework holdout " + h.max.toFixed(2) + "m > " + maxResidualM + "m"
+        : "matched parcel/linework residual " + res.max.toFixed(2) + "m > " + maxResidualM + "m";
+    }
+
+    if (pass && opts.affineGate !== false) {
+      const candidate = buildGcpFileFromAutoMatches({
+        slug: opts.slug,
+        pdf: opts.seed.pdf,
+        pageW: opts.pageW,
+        pageH: opts.pageH,
+        matches: selected,
+        ...(opts.seed.page !== undefined ? { page: opts.seed.page } : {}),
+        ...(opts.seed.neatline ? { neatline: opts.seed.neatline } : {}),
+      });
+      const decomposition = fit === "similarity"
+        ? decomposeGcpSimilarity(candidate.gcps, opts.pageW, opts.pageH)
+        : decomposeGcpAffine(candidate.gcps, opts.pageW, opts.pageH);
+      if (!decomposition) {
+        affineGatePass = false;
+        affineGateReasons = ["derived GCP geometry is degenerate"];
+      } else {
+        const gate = evaluateAffineGate(decomposition, opts.affineGate);
+        affineGatePass = gate.pass;
+        affineGateReasons = gate.reasons;
+      }
+      if (!affineGatePass) {
+        pass = false;
+        reason = "affine geometry gate failed: " + affineGateReasons.join("; ");
+      }
+    }
   }
 
   return {
@@ -716,6 +750,8 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
     residual_rms_m: residualRms,
     holdout_max_m: holdoutMax,
     holdout_rms_m: holdoutRms,
+    affine_gate_pass: affineGatePass,
+    affine_gate_reasons: affineGateReasons,
     max_candidate_distance_m: maxCandidateDistanceM,
     max_residual_gate_m: maxResidualM,
     ...(pass
