@@ -119,6 +119,16 @@ describe("georef/gcp — 3-GCP affine calibration", () => {
     expect(result.maxResidualM).toBeLessThan(0.01);
   });
 
+  it("rejects a page-spread affine whose ground transform is singular", () => {
+    const groundCollinear: Gcp[] = [
+      { fx: 0.1, fy: 0.1, lon: -73.2, lat: 45, independent: true },
+      { fx: 0.9, fy: 0.1, lon: -73.1, lat: 45, independent: true },
+      { fx: 0.5, fy: 0.9, lon: -73, lat: 45, independent: true },
+    ];
+
+    expect(() => buildGeoRefFromGcps(groundCollinear, PAGE_W, PAGE_H)).toThrow(/ground transform.*singular/);
+  });
+
   it("reprojects a projected CRS definition that contains a towgs84 parameter", () => {
     const crs = "+proj=utm +zone=18 +ellps=GRS80 +towgs84=0,0,0 +units=m +no_defs";
     const wgs84Gcps = [

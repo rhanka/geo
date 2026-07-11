@@ -1,4 +1,4 @@
-import type { Feature, Polygon } from "geojson";
+import type { Feature, MultiPolygon, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -148,6 +148,19 @@ describe("zoneNumberOf", () => {
 });
 
 describe("enrichWithNorms — numeric-vintage bridge", () => {
+  it("fails closed on conflicting norms that collapse to one canonical code regardless of order", () => {
+    const assignment = [lotAssignment("lot-collision", "H-1")];
+    const entries: Array<[string, Record<string, unknown>]> = [
+      ["H01", { hauteur_max_value: 10 }],
+      ["H-1", { hauteur_max_value: 99 }],
+      ["RA-1", { hauteur_max_value: 77 }],
+    ];
+
+    expect(enrichWithNorms(assignment, new Map(entries))[0]?.norms).toBeNull();
+    expect(enrichWithNorms(assignment, new Map(entries.toReversed()))[0]?.norms).toBeNull();
+    expect(enrichWithNorms([lotAssignment("lot-vintage", "X-1")], new Map(entries))[0]?.norms).toBeNull();
+  });
+
   it("BRIDGE: a lot in SIG zone CV-RF-106 gets the grille RA-106 norms (same n° 106)", () => {
     const enriched = enrichWithNorms(
       [lotAssignment("lot-mt", "CV-RF-106")],
@@ -230,6 +243,15 @@ describe("enrichWithNorms — numeric-vintage bridge", () => {
 });
 
 describe("assignLotZones", () => {
+  it("accepts standard GeoJSON features with null properties", () => {
+    const lot: Feature<Polygon> = { ...rect("unused", 0, 0, 10, 10), properties: null };
+    const zonedArea: Feature<Polygon> = { ...zone("unused", -5, -5, 15, 15), properties: null };
+
+    const [assignment] = assignLotZones([lot], [zonedArea], () => "H-1", { sourceCrs: "EPSG:3857" });
+
+    expect(assignment).toMatchObject({ lotId: "0", zoneCode: "H-1", dominantFraction: 1 });
+  });
+
   it("finds an interior representative point for centroid fallback", () => {
     expect(__test.representativePoint(rect("lot-scanline", 1000, 1000, 1100, 1100).geometry)).toEqual([
       1050,
@@ -259,6 +281,206 @@ describe("assignLotZones", () => {
       [bowTie],
       [zone("H-1", 900, 900, 1200, 1200)],
       (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses to assign a polygon whose exterior ring is not closed", () => {
+    const unclosed = rect("lot-unclosed", 1000, 1000, 1100, 1100);
+    unclosed.geometry.coordinates[0]!.pop();
+
+    const [assignment] = assignLotZones(
+      [unclosed],
+      [zone("H-1", 900, 900, 1200, 1200)],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("isolates an invalid lot without unassigning valid lots in the same batch", () => {
+    const invalidLot = rect("lot-invalid", 2000, 2000, 2100, 2100);
+    invalidLot.geometry.coordinates[0]!.pop();
+
+    const assignments = assignLotZones(
+      [rect("lot-valid", 1000, 1000, 1100, 1100), invalidLot],
+      [zone("H-1", 900, 900, 1200, 1200)],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignments[0]).toMatchObject({ lotId: "lot-valid", zoneCode: "H-1", method: "area-majority" });
+    expect(assignments[1]).toMatchObject({ lotId: "lot-invalid", zoneCode: null, method: "unassigned" });
+  });
+
+  it("isolates a non-finite lot when the valid batch members need reprojection", () => {
+    const invalidLot = rect("lot-non-finite", -73.2, 45.4, -73.19, 45.41);
+    invalidLot.geometry.coordinates[0]![1]![0] = Number.NaN;
+
+    const assignments = assignLotZones(
+      [rect("lot-valid-projected", -73.1, 45.5, -73.09, 45.51), invalidLot],
+      [zone("H-1", -73.2, 45.4, -73, 45.6)],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:4326", targetCrs: "EPSG:3857" },
+    );
+
+    expect(assignments[0]).toMatchObject({ lotId: "lot-valid-projected", zoneCode: "H-1" });
+    expect(assignments[1]).toMatchObject({ lotId: "lot-non-finite", zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses an invalid zone before it can re-enter through centroid fallback", () => {
+    const invalidZone = zone("H-1", 900, 900, 1200, 1200);
+    invalidZone.geometry.coordinates[0]!.pop();
+
+    const [assignment] = assignLotZones(
+      [rect("lot-invalid-zone", 1000, 1000, 1100, 1100)],
+      [invalidZone],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses a zone containing a non-finite position", () => {
+    const invalidZone = zone("H-1", 900, 900, 1200, 1200);
+    invalidZone.geometry.coordinates[0]![1]![0] = Number.NaN;
+
+    const [assignment] = assignLotZones(
+      [rect("lot-nan-zone", 1000, 1000, 1100, 1100)],
+      [invalidZone],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses a closed but self-intersecting polygon with non-zero algebraic area", () => {
+    const selfIntersecting = rect("lot-self-intersecting", 1000, 1000, 1100, 1100);
+    selfIntersecting.geometry.coordinates = [[
+      [1000, 1000],
+      [1100, 1100],
+      [1000, 1100],
+      [1080, 1000],
+      [1000, 1000],
+    ]];
+
+    const [assignment] = assignLotZones(
+      [selfIntersecting],
+      [zone("H-1", 900, 900, 1200, 1200)],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses a polygon whose hole crosses its exterior ring", () => {
+    const invalidZone: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
+          [[8, 2], [12, 2], [12, 8], [8, 8], [8, 2]],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-hole-crossing", 1, 1, 4, 9)],
+      [invalidZone],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses a polygon whose holes overlap", () => {
+    const invalidZone: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [[0, 0], [20, 0], [20, 20], [0, 20], [0, 0]],
+          [[2, 2], [10, 2], [10, 10], [2, 10], [2, 2]],
+          [[8, 8], [16, 8], [16, 16], [8, 16], [8, 8]],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-overlapping-holes", 1, 1, 19, 19)],
+      [invalidZone],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("refuses overlapping members of a MultiPolygon", () => {
+    const invalidZone: Feature<MultiPolygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: [
+          [[[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]],
+          [[[5, 5], [15, 5], [15, 15], [5, 15], [5, 5]]],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-overlapping-members", 1, 1, 14, 14)],
+      [invalidZone],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
+  it("accepts MultiPolygon members whose boundaries touch at one point", () => {
+    const pointTouchingZone: Feature<MultiPolygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: [
+          [[[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]],
+          [[[10, 10], [20, 10], [20, 20], [10, 20], [10, 10]]],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-point-touch", 1, 1, 9, 9)],
+      [pointTouchingZone],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: "H-1", method: "area-majority" });
+  });
+
+  it("revalidates geometry after reprojection", () => {
+    const invalidAfterProjection: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "H-1" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[[0, 0], [10, 0], [10, 100], [0, 10], [0, 0]]],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-projection-domain", 1, 1, 2, 2)],
+      [invalidAfterProjection],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:4326", targetCrs: "EPSG:3857" },
     );
 
     expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
