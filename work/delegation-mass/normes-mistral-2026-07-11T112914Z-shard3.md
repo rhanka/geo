@@ -6,7 +6,7 @@
 - Le shard initial a été conservé malgré les dépôts concurrents afin d'éviter que le retrait de villes de la matrice ne décale les indices et ne crée des chevauchements entre lanes.
 - Extraction exclusivement Mistral: `mistral-ocr-4-0` et `ocr/mistral-schema` (`document_annotation`). Aucun appel GPT/Codex.
 - Tous les dépôts sont parquet-only, puis réconciliés par `zonage-norms-manifest-merge.ts --apply`.
-- Budget observé: environ 1,027 USD au total, toujours inférieur à 1 USD par ville.
+- Budget observé: environ 1,044 USD au total, toujours inférieur à 1 USD par ville.
 
 ## Dépôts nets
 
@@ -44,6 +44,8 @@ Manifeste: 616 entrées avant fusion, 618 après; `saint-gervais` et `saint-thom
 | `parisville` | p.193–194: seulement la page de garde de l'annexe; 0 zone |
 | `saint-andre-de-restigouche` | le PDF local est l'annexe de Saint-Alexis; 6 faux codes/libellés, overlap 0/33 |
 | `saint-charles-de-bellechasse` | OCR simple rejeté (0 % champs puis `MIN`/`MAX`); schema ciblé a ensuite passé tous les gates |
+| `saint-cyrille-de-lessard` | règlement officiel confirmé; annexe B p.159–160 traitée par schema: 0 zone |
+| `saint-edouard-de-fabre` | tableaux textuels p.56–66 traités par OCR Mistral: 0 zone |
 | `saint-remi-de-tingwick` | vraie grille: 38 zones et 54,9 % de champs, mais overlap 0/26 SIG |
 | `sainte-anne-de-sorel` | p.295–296: pages de garde d'annexe; 0 zone |
 
@@ -58,14 +60,15 @@ Manifeste: 616 entrées avant fusion, 618 après; `saint-gervais` et `saint-thom
 - `schefferville/grille.pdf`: document sans grille de zonage; les autres PDF sont des grilles tarifaires/pompiers.
 - `notre-dame-des-pins/grille.pdf`: plan d'urbanisme et grille d'affectation du sol.
 - nouveau PDF officiel de `saint-lazare`: règlement modificatif 1173 seulement, trois grilles modifiées mais non reproduites intégralement.
+- `riviere-bleue`: le PDF officiel 2026-487.1 est classifié `plan-image`, une seule page, sans grille de normes.
 
 ## Découverte
 
 - Le crawler PV n'a confirmé aucun PDF pour Aston-Jonction et ignore la majorité des petites municipalités, ce qui confirme qu'il ne peut pas être utilisé seul.
 - Découverte par portails MRC/municipaux et recherche web officielle effectuée par lots: Témiscamingue, Abitibi-Ouest, Avignon/Bonaventure, Matapédia/La Mitis, Bellechasse, Etchemins, Témiscouata, Nicolet-Yamaska et Maria-Chapdelaine.
-- Sources HTTP 200 + PDF confirmées et classifiées pour Dupuy, Laverlochère-Angliers, Notre-Dame-des-Pins, Saint-Édouard-de-Fabre, Saint-Gervais, Saint-Thomas-Didyme et Saint-Lazare. Les faux documents/pages de garde ont été conservés comme preuve, jamais déposés.
+- Sources HTTP 200 + PDF confirmées et classifiées pour Dupuy, Laverlochère-Angliers, Notre-Dame-des-Pins, Rivière-Bleue, Saint-Cyrille-de-Lessard, Saint-Édouard-de-Fabre, Saint-Gervais, Saint-Thomas-Didyme et Saint-Lazare. Les faux documents/pages de garde ont été conservés comme preuve, jamais déposés.
 - Les URL menant explicitement à un projet de règlement, un amendement seul, une carte de zonage ou une autre municipalité ont été rejetées.
 
 ## Conclusion
 
-Trois produits normes Mistral ont passé les gates stricts et alimentent maintenant les lots enrichis. Les autres sources examinées ont été arrêtées sur preuve vérifiable (`0 zone`, moins de 3 codes, overlap SIG nul, `publishedFieldPct=0`, annexe absente ou mauvais document), sans invention ni assouplissement du contrat.
+Trois produits normes Mistral ont passé les gates stricts et alimentent maintenant les lots enrichis. Les 74 slugs du shard initial ont reçu soit un dépôt, soit une preuve de non-productibilité ou d'échec de gate dans cette passe. Les sources rejetées ont été arrêtées sur preuve vérifiable (`0 zone`, moins de 3 codes, overlap SIG nul, `publishedFieldPct=0`, annexe absente ou mauvais document), sans invention ni assouplissement du contrat.
