@@ -46,6 +46,7 @@
  *   tsx src/publish-norms-grilles.ts --all            # every deposited grille
  *   tsx src/publish-norms-grilles.ts --all --no-geom  # fast, geometry:null
  *   tsx src/publish-norms-grilles.ts --slugs delson --verify-only
+ *   tsx src/publish-norms-grilles.ts --slug alma --align-sig-code  # echo SIG's served key
  */
 import { createWriteStream } from "node:fs";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
@@ -96,6 +97,14 @@ interface Args {
   timeBoxSec: number;
   limit: number;
   shard: { index: number; total: number } | null;
+  /** Serve each geometry-matched grille row under the SIG zonage's OWN served
+   *  zone_code string (the real value on the served SIG feature) instead of the
+   *  parquet's `canonZoneCodeServe` form. Guarantees the two served collections
+   *  carry BYTE-IDENTICAL join keys even when they diverge in a way the serve
+   *  canon keeps distinct (dash-vs-nodash: SIG `Ca13` vs grille `Ca-13`) — the
+   *  residual `order-mismatch` immo cannot fold. Rows with no SIG match keep the
+   *  canon form. Opt-in; never fabricates (the SIG code is real data). */
+  alignSigCode: boolean;
 }
 
 interface PublishStats {
@@ -125,6 +134,7 @@ function parseArgs(argv: string[]): Args {
   let timeBoxSec = 0; // 0 = unlimited (whole batch in one process)
   let limit = 0; // 0 = no limit
   let shard: { index: number; total: number } | null = null;
+  let alignSigCode = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -137,6 +147,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--max-grid-mb") maxGridMb = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_MAX_GRID_MB);
     else if (arg === "--time-box") timeBoxSec = Math.max(0, parseInt(String(argv[++i] ?? ""), 10) || 0);
     else if (arg === "--limit") limit = Math.max(0, parseInt(String(argv[++i] ?? ""), 10) || 0);
+    else if (arg === "--align-sig-code") alignSigCode = true;
     else if (arg === "--shard") {
       const spec = String(argv[++i] ?? "");
       const [idx, total] = spec.split("/").map((v) => parseInt(v, 10));
@@ -151,7 +162,7 @@ function parseArgs(argv: string[]): Args {
   if (uniqueSlugs.length === 0 && !all) {
     throw new Error("pass --all, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, all, noUpload, verifyOnly, noGeom, maxGridMb, timeBoxSec, limit, shard };
+  return { slugs: uniqueSlugs, all, noUpload, verifyOnly, noGeom, maxGridMb, timeBoxSec, limit, shard, alignSigCode };
 }
 
 function outKey(slug: string): string {
@@ -200,6 +211,9 @@ function polygonsOf(geom: Geometry | null | undefined): Polygon["coordinates"][]
 interface GeomIndex {
   /** canonical zone_code -> merged zone geometry (MultiPolygon) or null. */
   byCanon: Map<string, Geometry>;
+  /** canonical zone_code -> the SIG zonage's OWN served code string (first seen).
+   *  Used by --align-sig-code to serve the grille under the SIG's exact key. */
+  byCanonToSigRaw: Map<string, string>;
   sigCodes: number;
 }
 
@@ -241,6 +255,7 @@ function buildGeomIndex(geojson: string): GeomIndex {
   // 2. Accumulate polygons per canonical code, then merge into one MultiPolygon.
   const polysByCanon = new Map<string, Polygon["coordinates"][]>();
   const rawCodes = new Set<string>();
+  const byCanonToSigRaw = new Map<string, string>();
   for (const f of features) {
     const polys = polygonsOf(f.geometry);
     if (polys.length === 0) continue;
@@ -249,8 +264,13 @@ function buildGeomIndex(geojson: string): GeomIndex {
     for (const name of codeCols) {
       const v = props[name];
       if (v === null || v === undefined || !String(v).trim()) continue;
-      rawCodes.add(String(v).trim());
-      canons.add(canonZone(String(v)));
+      const raw = String(v).trim();
+      rawCodes.add(raw);
+      const canon = canonZone(raw);
+      canons.add(canon);
+      // First served SIG string wins for a given canon (deterministic in feature
+      // order) — the exact key the grille must echo so immo's passthrough folds.
+      if (!byCanonToSigRaw.has(canon)) byCanonToSigRaw.set(canon, raw);
     }
     for (const canon of canons) {
       let arr = polysByCanon.get(canon);
@@ -265,7 +285,7 @@ function buildGeomIndex(geojson: string): GeomIndex {
   // Distinct canonical SIG codes actually observed on real code columns.
   const sigCanon = new Set<string>();
   for (const r of rawCodes) sigCanon.add(canonZone(r));
-  return { byCanon, sigCodes: sigCanon.size };
+  return { byCanon, byCanonToSigRaw, sigCodes: sigCanon.size };
 }
 
 /** Lenient "is this plausibly a zone code" test (local copy of the deposit lib's,
@@ -307,11 +327,14 @@ function dedupeByZone(rows: Record<string, unknown>[]): Record<string, unknown>[
 
 /** Build the served properties bag: every parquet column (undefined→null) + the
  *  immo `code_zone` alias. Verbatim passthrough — no fabrication. */
-function normProperties(row: Record<string, unknown>): Record<string, unknown> {
+function normProperties(row: Record<string, unknown>, servedZoneCode?: string): Record<string, unknown> {
   const props: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(row)) props[k] = v === undefined ? null : v;
-  props["zone_code"] = row["zone_code"] ?? null;
-  props["code_zone"] = row["zone_code"] ?? null; // immo contract alias (same real value)
+  // `servedZoneCode` (when given) is the exact key the feature is served under —
+  // keep zone_code/code_zone in lockstep with the feature id so immo joins on it.
+  const zc = servedZoneCode ?? (row["zone_code"] ?? null);
+  props["zone_code"] = zc;
+  props["code_zone"] = zc; // immo contract alias (same real value)
   return props;
 }
 
@@ -336,7 +359,7 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<PublishS
   if (rows.length === 0) throw new Error(`parquet has 0 zone_code rows`);
 
   // ── geometry index (best-effort) ────────────────────────────────────────────
-  let geom: GeomIndex = { byCanon: new Map(), sigCodes: 0 };
+  let geom: GeomIndex = { byCanon: new Map(), byCanonToSigRaw: new Map(), sigCodes: 0 };
   let gridKeyResolved: string | null = null;
   let geomSkippedReason: string | null = null;
   if (args.noGeom) {
@@ -371,11 +394,16 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<PublishS
     let first = true;
     for (const row of rows) {
       const zoneCode = String(row["zone_code"]);
-      const g = geom.byCanon.get(canonZone(zoneCode)) ?? null;
+      const canonKey = canonZone(zoneCode);
+      const g = geom.byCanon.get(canonKey) ?? null;
       if (g) numWithGeometry++;
       if (publishedCountRow(row) > 0) numWithNorms++;
-      const props = normProperties(row);
-      const feature: Feature = { type: "Feature", id: zoneCode, geometry: g, properties: props };
+      // --align-sig-code: echo the SIG zonage's OWN served string for this canon
+      // so the two served collections carry byte-identical keys (immo folds). Only
+      // when the SIG actually serves this code; otherwise keep the canon serve form.
+      const servedCode = args.alignSigCode ? (geom.byCanonToSigRaw.get(canonKey) ?? zoneCode) : zoneCode;
+      const props = normProperties(row, servedCode);
+      const feature: Feature = { type: "Feature", id: servedCode, geometry: g, properties: props };
       await write((first ? "" : ",") + JSON.stringify(feature));
       first = false;
       if (!example && publishedCountRow(row) > 0) {
