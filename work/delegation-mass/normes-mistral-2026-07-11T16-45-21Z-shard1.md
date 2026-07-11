@@ -53,6 +53,7 @@ Tous ces rejets ont laissé le parquet absent ou inchangé. Aucun gate n'a été
 - Réemploi local prioritaire: tous les `work/zonage-plans/<slug>*` et `work/zonage-norms/<slug>/grille.pdf` du shard ont été inventoriés.
 - Crawler registry, lot 1: 0/3 PDF confirmé (`courcelles-saint-evariste`, `grand-saint-esprit`, `denholm`).
 - Crawler registry, lot 2: 0/2 PDF confirmé (`lefebvre`, `montmagny`).
+- Crawl direct des six résidus hors registry du lot 2: aucun PDF grille; quatre domaines accessibles (`lile-dorval`, `nedelec`, `normetal`, `palmarolle`) et deux injoignables dans la fenêtre bornée (`maria`, `namur`).
 - Crawler registry résiduel: 0/11 PDF confirmé.
 - Crawl direct des domaines officiels MAMH du lot 1: source Denholm retrouvée et identité SHA-256 confirmée; aucun autre PDF grille.
 - Crawl direct des 25 domaines officiels absents de la registry: un règlement de base plausible, `saint-joseph-des-erables`, confirmé HTTP 200 puis rejeté par les gates Mistral. Roxton-Falls et Saint-Pacôme ne publiaient que des amendements/plans dans les pages découvertes.
