@@ -2,6 +2,7 @@ import type { Feature, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
 import {
+  __test,
   assignLotZones,
   canonicalizeZoneCodeForJoin,
   enrichWithNorms,
@@ -221,6 +222,40 @@ describe("enrichWithNorms — numeric-vintage bridge", () => {
 });
 
 describe("assignLotZones", () => {
+  it("finds an interior representative point for centroid fallback", () => {
+    expect(__test.representativePoint(rect("lot-scanline", 1000, 1000, 1100, 1100).geometry)).toEqual([
+      1050,
+      1050,
+    ]);
+  });
+
+  it("refuses to assign a zero-area invalid geometry", () => {
+    const bowTie: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { lot_id: "lot-bow-tie" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [1000, 1000],
+            [1100, 1100],
+            [1000, 1100],
+            [1100, 1000],
+            [1000, 1000],
+          ],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [bowTie],
+      [zone("H-1", 900, 900, 1200, 1200)],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: null, method: "unassigned" });
+  });
+
   it("assigns a lot fully covered by one zone with dominant fraction 1.0", () => {
     const [assignment] = assignLotZones(
       [rect("lot-1", 1000, 1000, 1100, 1100)],
@@ -236,6 +271,37 @@ describe("assignLotZones", () => {
       method: "area-majority",
     });
     expect(assignment?.dominantFraction).toBeCloseTo(1, 6);
+  });
+
+  it("computes the real overlap when a concave zone contains every lot vertex", () => {
+    const concaveZone: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "U-1" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [1000, 1000],
+            [1060, 1000],
+            [1060, 1060],
+            [1050, 1060],
+            [1050, 1010],
+            [1010, 1010],
+            [1010, 1060],
+            [1000, 1060],
+            [1000, 1000],
+          ],
+        ],
+      },
+    };
+
+    const [assignment] = assignLotZones(
+      [rect("lot-concave", 1000, 1000, 1060, 1060)],
+      [concaveZone],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment?.dominantFraction).toBeCloseTo(1600 / 3600, 6);
   });
 
   it("flags a 50/50 straddling lot as multi-zone", () => {

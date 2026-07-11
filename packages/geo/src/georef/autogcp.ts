@@ -603,15 +603,17 @@ export function matchPagePointsToCadastre(opts: {
     : opts.pagePoints;
   const { vertices, lat0 } = cadastreVertices(opts.cadastre);
   const grid = new VertexGrid(vertices, Math.max(20, opts.maxCandidateDistanceM * 2));
-  const matches: AutoGcpMatch[] = [];
+  const bestMatchByVertex = new Map<CadVertex, AutoGcpMatch>();
   for (const p of pagePoints) {
     const [lon, lat] = opts.seedGeo.topLeftToLonLat(p.x, p.y);
     const [xm, ym] = project(lon, lat, lat0);
     const near = grid.nearest(xm, ym, opts.maxCandidateDistanceM);
     if (!near) continue;
-    matches.push({ pageX: p.x, pageY: p.y, lon: near.v.lon, lat: near.v.lat, distM: near.d });
+    const match = { pageX: p.x, pageY: p.y, lon: near.v.lon, lat: near.v.lat, distM: near.d };
+    const previous = bestMatchByVertex.get(near.v);
+    if (!previous || match.distM < previous.distM) bestMatchByVertex.set(near.v, match);
   }
-  return { matches, cadastreVertices: vertices.length };
+  return { matches: [...bestMatchByVertex.values()], cadastreVertices: vertices.length };
 }
 
 export function buildGcpFileFromAutoMatches(opts: {
@@ -656,6 +658,9 @@ export function deriveAutonomousGcpsFromPoints(opts: AutoGcpCoreOptions): AutoGc
   const minGcps = opts.minGcps ?? 12;
   const maxGcps = opts.maxGcps ?? 48;
   const fit = opts.fit ?? "affine";
+  if (!Number.isInteger(minGcps) || minGcps < 3) {
+    throw new Error("minGcps must be an integer of at least 3 for a reusable GCP affine");
+  }
   const seedGeo = seedGeoRef(opts.seed, opts.pageW, opts.pageH);
 
   const pagePoints = opts.pagePoints.filter((p) => inNeatline(p, opts.seed.neatline, opts.pageW, opts.pageH));

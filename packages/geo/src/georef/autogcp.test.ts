@@ -1,7 +1,12 @@
 import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
 import { describe, expect, it } from "vitest";
 
-import { deriveAutonomousGcpsFromPoints, extractSvgVectorPointsFromString, type PagePoint } from "./autogcp.js";
+import {
+  deriveAutonomousGcpsFromPoints,
+  extractSvgVectorPointsFromString,
+  matchPagePointsToCadastre,
+  type PagePoint,
+} from "./autogcp.js";
 import type { Gcp, GcpFile } from "./gcp.js";
 
 const PAGE_W = 1000;
@@ -133,5 +138,39 @@ describe("georef/autogcp - in-memory cadastre matching", () => {
         pagePoints: points,
       }),
     ).toThrow(/WGS84 seed/);
+  });
+
+  it("rejects a GCP count that cannot feed the public affine", () => {
+    for (const minGcps of [2, 2.5, Number.NaN]) {
+      expect(() =>
+        deriveAutonomousGcpsFromPoints({
+          slug: "synthetic",
+          pageW: PAGE_W,
+          pageH: PAGE_H,
+          seed: seed(),
+          cadastre: cadastreFor(points),
+          pagePoints: points,
+          fit: "similarity",
+          minGcps,
+          maxGcps: 3,
+        }),
+      ).toThrow(/integer of at least 3/);
+    }
+  });
+
+  it("uses each cadastre vertex for at most one independent page match", () => {
+    const [lon, lat] = truthTopLeft(PAGE_W / 2, PAGE_H / 2);
+    const cadastre = cadastreFor([pointAt(0.5, 0.5)]);
+
+    const result = matchPagePointsToCadastre({
+      pagePoints: [pointAt(0.2, 0.2), pointAt(0.8, 0.8)],
+      pageW: PAGE_W,
+      pageH: PAGE_H,
+      seedGeo: { topLeftToLonLat: () => [lon, lat] },
+      cadastre,
+      maxCandidateDistanceM: 0.01,
+    });
+
+    expect(result.matches).toHaveLength(1);
   });
 });
