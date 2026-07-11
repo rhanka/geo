@@ -285,7 +285,12 @@ export function buildGeoRefFromGcpsCrs(
   neatline?: NeatlineFrac,
 ): BuildGeoRefResult {
   const normalizedCrs = crs?.trim();
-  if (!normalizedCrs) {
+  if (
+    !normalizedCrs ||
+    /^(?:(?:EPSG:)?4326|WGS ?84|(?:OGC:)?CRS84|urn:ogc:def:crs:(?:EPSG:[^:]*:4326|OGC:[^:]+:CRS84))$/i.test(
+      normalizedCrs,
+    )
+  ) {
     return buildGeoRefFromGcps(gcps, pageW, pageH, neatline);
   }
   const toWgs84 = proj4(normalizedCrs, "WGS84");

@@ -151,6 +151,30 @@ describe("georef/gcp — 3-GCP affine calibration", () => {
     expect(actualLat).toBeCloseTo(wgs84Gcps[0]!.lat, 7);
   });
 
+  it("accepts the CRS84 aliases used by acquisition GCP files", () => {
+    const gcps = [
+      gcpAt(0.1, 0.12, "top-left"),
+      gcpAt(0.88, 0.15, "top-right"),
+      gcpAt(0.45, 0.9, "bottom"),
+    ];
+
+    for (const crs of [
+      "CRS84",
+      "OGC:CRS84",
+      "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "urn:ogc:def:crs:EPSG::4326",
+    ]) {
+      const result = buildGeoRefFromGcpsCrs(gcps, PAGE_W, PAGE_H, crs);
+      const [actualLon, actualLat] = result.geo.topLeftToLonLat(
+        gcps[0]!.fx * PAGE_W,
+        gcps[0]!.fy * PAGE_H,
+      );
+
+      expect(actualLon).toBeCloseTo(gcps[0]!.lon, 7);
+      expect(actualLat).toBeCloseTo(gcps[0]!.lat, 7);
+    }
+  });
+
   it("classifies bbox-corner controls as non-independent for real-GCP serving", () => {
     const bboxGcps = [
       { ...gcpAt(0.1, 0.1, "map bbox northwest -> cadastre bbox northwest") },

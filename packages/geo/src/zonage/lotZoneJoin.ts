@@ -12,6 +12,7 @@ import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { featureCollection } from "@turf/helpers";
 import intersect from "@turf/intersect";
 import proj4 from "proj4";
+import * as sweeplineIntersections from "sweepline-intersections";
 
 export type PolygonalGeometry = Polygon | MultiPolygon;
 export type PolygonalFeature<P extends GeoJsonProperties = GeoJsonProperties> = Feature<
@@ -62,6 +63,12 @@ interface BBoxItem {
   minY: number;
   maxX: number;
   maxY: number;
+}
+
+interface IndexedSegment extends BBoxItem {
+  index: number;
+  start: Position;
+  end: Position;
 }
 
 interface AreaByZone {
@@ -257,7 +264,10 @@ export function assignLotZones(
   }
 
   const prepared = prepareInputs(lots, zones, opts);
-  if (prepared.zones === null || prepared.zones.some((zone) => !isValidPolygonalGeometry(zone.geometry))) {
+  if (
+    prepared.zones === null ||
+    (prepared.zones !== zones && prepared.zones.some((zone) => !isValidPolygonalGeometry(zone.geometry)))
+  ) {
     return lots.map((lot, index) => unassigned(opts.lotIdOf?.(lot, index) ?? defaultLotId(lot, index)));
   }
   const indexedZones = buildZoneIndex(prepared.zones, zoneCodeOf);
@@ -522,6 +532,7 @@ function multiPolygonTopologyIsValid(polygons: Position[][][]): boolean {
     for (let j = i + 1; j < polygons.length; j++) {
       const a = polygons[i]!;
       const b = polygons[j]!;
+      if (!boxesOverlap(bboxOfPolygon(a), bboxOfPolygon(b))) continue;
       if (a.some((ringA) => b.some((ringB) => ringsHaveInvalidMultiPolygonContact(ringA, ringB)))) {
         return false;
       }
@@ -537,6 +548,7 @@ function multiPolygonTopologyIsValid(polygons: Position[][][]): boolean {
 }
 
 function ringsHaveInvalidMultiPolygonContact(a: Position[], b: Position[]): boolean {
+  if (!boxesOverlap(bboxOfRing(a), bboxOfRing(b))) return false;
   for (let i = 0; i < a.length - 1; i++) {
     for (let j = 0; j < b.length - 1; j++) {
       if (segmentsCrossOrOverlap(a[i]!, a[i + 1]!, b[j]!, b[j + 1]!)) return true;
@@ -582,6 +594,7 @@ function pointInRingStrict(point: Position, ring: Position[]): boolean {
 }
 
 function ringsIntersect(a: Position[], b: Position[]): boolean {
+  if (!boxesOverlap(bboxOfRing(a), bboxOfRing(b))) return false;
   for (let i = 0; i < a.length - 1; i++) {
     for (let j = 0; j < b.length - 1; j++) {
       if (segmentsIntersect(a[i]!, a[i + 1]!, b[j]!, b[j + 1]!)) return true;
@@ -591,17 +604,93 @@ function ringsIntersect(a: Position[], b: Position[]): boolean {
 }
 
 function ringIsSimple(ring: Position[]): boolean {
+  const seen = new Set<string>();
+  for (let i = 0; i < ring.length - 1; i++) {
+    const point = ring[i]!;
+    if (samePosition2d(point, ring[i + 1]!)) return false;
+    const key = String(point[0]) + "\u0000" + String(point[1]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+  }
+  const feature: Feature<Polygon> = {
+    type: "Feature",
+    properties: {},
+    geometry: { type: "Polygon", coordinates: [ring] },
+  };
+  const findIntersections = sweeplineIntersections.default as unknown as (
+    input: Feature<Polygon>,
+    ignoreSelfIntersections: boolean,
+  ) => Position[];
+  return findIntersections(feature, false).length === 0 && !hasNonAdjacentVertexOnSegment(ring);
+}
+
+function hasNonAdjacentVertexOnSegment(ring: Position[]): boolean {
   const segmentCount = ring.length - 1;
-  for (let i = 0; i < segmentCount; i++) {
-    const a = ring[i]!;
-    const b = ring[i + 1]!;
-    if (samePosition2d(a, b)) return false;
-    for (let j = i + 1; j < segmentCount; j++) {
-      if (j === i + 1 || (i === 0 && j === segmentCount - 1)) continue;
-      if (segmentsIntersect(a, b, ring[j]!, ring[j + 1]!)) return false;
+  const segments: IndexedSegment[] = [];
+  for (let index = 0; index < segmentCount; index++) {
+    const start = ring[index]!;
+    const end = ring[index + 1]!;
+    segments.push({
+      index,
+      start,
+      end,
+      minX: Math.min(start[0]!, end[0]!),
+      minY: Math.min(start[1]!, end[1]!),
+      maxX: Math.max(start[0]!, end[0]!),
+      maxY: Math.max(start[1]!, end[1]!),
+    });
+  }
+  const index = new GridSpatialIndex(segments);
+  for (let vertexIndex = 0; vertexIndex < segmentCount; vertexIndex++) {
+    const point = ring[vertexIndex]!;
+    const previousSegment = (vertexIndex + segmentCount - 1) % segmentCount;
+    const candidates = index.search({
+      minX: point[0]!,
+      minY: point[1]!,
+      maxX: point[0]!,
+      maxY: point[1]!,
+    });
+    for (const segment of candidates) {
+      if (segment.index === vertexIndex || segment.index === previousSegment) continue;
+      if (cross2d(segment.start, segment.end, point) === 0 && pointOnSegment(point, segment.start, segment.end)) {
+        return true;
+      }
     }
   }
-  return true;
+  return false;
+}
+
+function bboxOfRing(ring: Position[]): [number, number, number, number] {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const point of ring) {
+    minX = Math.min(minX, point[0]!);
+    minY = Math.min(minY, point[1]!);
+    maxX = Math.max(maxX, point[0]!);
+    maxY = Math.max(maxY, point[1]!);
+  }
+  return [minX, minY, maxX, maxY];
+}
+
+function bboxOfPolygon(polygon: Position[][]): [number, number, number, number] {
+  return polygon.reduce(
+    (box, ring) => {
+      const [minX, minY, maxX, maxY] = bboxOfRing(ring);
+      return [
+        Math.min(box[0], minX),
+        Math.min(box[1], minY),
+        Math.max(box[2], maxX),
+        Math.max(box[3], maxY),
+      ];
+    },
+    [Infinity, Infinity, -Infinity, -Infinity],
+  );
+}
+
+function boxesOverlap(a: [number, number, number, number], b: [number, number, number, number]): boolean {
+  return a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1];
 }
 
 function segmentsIntersect(a: Position, b: Position, c: Position, d: Position): boolean {
