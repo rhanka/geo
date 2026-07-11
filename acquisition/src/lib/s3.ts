@@ -100,6 +100,98 @@ export async function getJson<T = unknown>(
   return JSON.parse((await getBytes(s3, key, bucket)).toString("utf8")) as T;
 }
 
+export interface ParsedFeatureCollection<TFeature = unknown> {
+  type: "FeatureCollection";
+  features: TFeature[];
+  crs?: unknown;
+}
+
+const FEATURES_TOKEN = Buffer.from('"features"');
+
+function isJsonWhitespace(byte: number): boolean {
+  return byte === 0x20 || byte === 0x0a || byte === 0x0d || byte === 0x09;
+}
+
+function findFeaturesArrayStart(buf: Buffer, key: string): number {
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < buf.length; i++) {
+    const byte = buf[i]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (byte === 0x5c) escaped = true;
+      else if (byte === 0x22) inString = false;
+      continue;
+    }
+
+    if (byte !== 0x22) continue;
+    if (buf.subarray(i, i + FEATURES_TOKEN.length).equals(FEATURES_TOKEN)) {
+      let j = i + FEATURES_TOKEN.length;
+      while (j < buf.length && isJsonWhitespace(buf[j]!)) j++;
+      if (buf[j] !== 0x3a) continue;
+      j++;
+      while (j < buf.length && isJsonWhitespace(buf[j]!)) j++;
+      if (buf[j] === 0x5b) return j + 1;
+    }
+    inString = true;
+  }
+  throw new Error(`GeoJSON features array not found: ${key}`);
+}
+
+/** Parse a GeoJSON FeatureCollection without converting the whole object to one
+ * UTF-8 string. This avoids V8's max-string ceiling on very large cadastres. */
+export function parseFeatureCollectionBuffer<TFeature = unknown>(
+  buf: Buffer,
+  key = "GeoJSON object",
+): ParsedFeatureCollection<TFeature> {
+  const features: TFeature[] = [];
+  const start = findFeaturesArrayStart(buf, key);
+  let inString = false;
+  let escaped = false;
+  let depth = 0;
+  let featureStart = -1;
+
+  for (let i = start; i < buf.length; i++) {
+    const byte = buf[i]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (byte === 0x5c) escaped = true;
+      else if (byte === 0x22) inString = false;
+      continue;
+    }
+
+    if (byte === 0x22) {
+      inString = true;
+      continue;
+    }
+    if (depth === 0) {
+      if (byte === 0x5d) return { type: "FeatureCollection", features };
+      if (byte === 0x7b) {
+        featureStart = i;
+        depth = 1;
+      }
+      continue;
+    }
+    if (byte === 0x7b) depth++;
+    else if (byte === 0x7d) {
+      depth--;
+      if (depth === 0) {
+        features.push(JSON.parse(buf.subarray(featureStart, i + 1).toString("utf8")) as TFeature);
+        featureStart = -1;
+      }
+    }
+  }
+  throw new Error(`GeoJSON features array did not terminate: ${key}`);
+}
+
+export async function getGeoJsonFeatureCollection<TFeature = unknown>(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<ParsedFeatureCollection<TFeature>> {
+  return parseFeatureCollectionBuffer<TFeature>(await getBytes(s3, key, bucket), key);
+}
+
 /** HEAD probe — true iff the key exists (mirrors boto3 head_object/try). */
 export async function exists(
   s3: S3Client,

@@ -441,7 +441,15 @@ export async function runClaudeCli(
         }
         if (msg["type"] === "rate_limit_event") {
           const info = (msg["rate_limit_info"] ?? {}) as Record<string, unknown>;
-          if (info["status"] && info["status"] !== "allowed") rateLimited = true;
+          // Only a GENUINE rejection aborts. The CLI emits status "allowed"
+          // (headroom), "allowed_warning" (approaching the window — request STILL
+          // SERVED) and "rejected" (overage refused, no result). Treating a
+          // warning as a stop discarded valid, already-served output (observed:
+          // status "allowed_warning", is_error:false, a full JSON result present).
+          const status = typeof info["status"] === "string" ? (info["status"] as string) : "";
+          if (status && status !== "allowed" && status !== "allowed_warning") {
+            rateLimited = true;
+          }
         }
         if (msg["type"] === "result") {
           resultText = typeof msg["result"] === "string" ? (msg["result"] as string) : null;
