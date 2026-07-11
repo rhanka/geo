@@ -1,13 +1,13 @@
 /**
  * Sélection déterministe des slugs candidats au recalage PDF→zones pour un shard.
  *
- * Critères (cf. mission RECALAGE PDF ZONES, shard k/4) :
+ * Critères (cf. mission RECALAGE PDF ZONES, shard k/n) :
  *  - zones.status != "done"
- *  - index (position dans Object.keys(cities)) % 4 == shard
+ *  - index (position dans Object.keys(cities)) % mod == shard   (mod défaut 4)
  *  - priorité aux buckets PDF : candidateTracks ∋ {pdf-georef-t1, pdf-vectorize-t2,
  *    pdf-raster-t3, pdf-scan-t4, pdf-discovery-required}
  *
- * Usage : npx tsx acquisition/src/zones-recalage-shard-select.ts --shard 1 [--limit 12]
+ * Usage : npx tsx acquisition/src/zones-recalage-shard-select.ts --shard 2 --mod 6 [--limit 12]
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -26,6 +26,7 @@ function arg(name: string, def?: string): string | undefined {
 }
 
 const shard = Number(arg("shard", "1"));
+const mod = Number(arg("mod", "4"));
 const limit = Number(arg("limit", "12"));
 const matrixPath = resolve("work/coverage/coverage-matrix.json");
 const matrix = JSON.parse(readFileSync(matrixPath, "utf8"));
@@ -44,7 +45,7 @@ type Row = {
 
 const rows: Row[] = [];
 slugs.forEach((slug, index) => {
-  if (index % 4 !== shard) return;
+  if (index % mod !== shard) return;
   const z = cities[slug]?.zones ?? {};
   if (z.status === "done") return;
   const tracks: string[] = Array.isArray(z.candidateTracks) ? z.candidateTracks : [];
@@ -69,6 +70,7 @@ console.log(
   JSON.stringify(
     {
       shard,
+      mod,
       limit,
       totalNonDoneInShard: rows.length,
       pdfBucketCount: rows.filter((r) => r.isPdf).length,

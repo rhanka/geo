@@ -65,7 +65,7 @@ export function gridKey(slug: string): string {
 //     (DOUBLE); then _source_url, _reglement, _methode, _snapshot.
 // ───────────────────────────────────────────────────────────────────────────
 
-const NORM_FIELDS = [
+export const NORM_FIELDS = [
   "densite",
   "hauteur_min",
   "hauteur_max",
