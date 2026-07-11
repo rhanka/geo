@@ -86,6 +86,18 @@ describe("georef/autogcp - SVG vector points", () => {
       { x: 70, y: 50 },
     ]);
   });
+
+  it("parses the direct path and matrix form emitted by pdftocairo -svg", () => {
+    const svg =
+      '<svg width="120pt" height="100pt"><defs></defs>' +
+      '<path fill="none" stroke-width="0.06" stroke="rgb(59.799194%, 59.799194%, 59.799194%)" ' +
+      'd="M 0 0 L 10 -20" transform="matrix(1, 0, 0, -1, 50, 60)"/></svg>';
+
+    expect(extractSvgVectorPointsFromString(svg, 120, 100)).toEqual([
+      { x: 50, y: 60 },
+      { x: 60, y: 80 },
+    ]);
+  });
 });
 
 describe("georef/autogcp - in-memory cadastre matching", () => {
