@@ -1,4 +1,5 @@
 import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
+import proj4 from "proj4";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -127,17 +128,72 @@ describe("georef/autogcp - in-memory cadastre matching", () => {
     expect(report.gcp_file?.gcps.every((g) => g.source === "cadastre-parcel-corner-match" && g.independent)).toBe(true);
   });
 
-  it("keeps CRS reprojection out of the public compute core", () => {
-    expect(() =>
-      deriveAutonomousGcpsFromPoints({
-        slug: "synthetic",
-        pageW: PAGE_W,
-        pageH: PAGE_H,
-        seed: seed("EPSG:32198"),
-        cadastre: cadastreFor(points),
-        pagePoints: points,
+  it("reprojects a projected seed in memory", () => {
+    const wgs84Seed = seed();
+    const projectedSeed: GcpFile = {
+      ...wgs84Seed,
+      crs: "EPSG:3857",
+      gcps: wgs84Seed.gcps.map((gcp) => {
+        const [lon, lat] = proj4("WGS84", "EPSG:3857", [gcp.lon, gcp.lat]);
+        return { ...gcp, lon, lat };
       }),
-    ).toThrow(/WGS84 seed/);
+    };
+    const report = deriveAutonomousGcpsFromPoints({
+      slug: "synthetic",
+      pageW: PAGE_W,
+      pageH: PAGE_H,
+      seed: projectedSeed,
+      cadastre: cadastreFor(points),
+      pagePoints: points,
+      minGcps: 8,
+      maxGcps: 12,
+      maxCandidateDistanceM: 2,
+      maxResidualM: 1,
+    });
+
+    expect(report.pass).toBe(true);
+    expect(report.affine_gate_pass).toBe(true);
+  });
+
+  it("rejects a residual-clean mirrored match at the geometry gate", () => {
+    const mirrorTruth = (x: number, yTopDown: number): [number, number] => {
+      const y = PAGE_H - yTopDown;
+      return [-1.6e-5 * x + 2.5e-6 * y - 73.5, -1.0e-6 * x + 1.2e-5 * y + 45.385];
+    };
+    const mirrorGcp = (fx: number, fy: number, note: string): Gcp => {
+      const [lon, lat] = mirrorTruth(fx * PAGE_W, fy * PAGE_H);
+      return { fx, fy, lon, lat, note };
+    };
+    const mirrorSeed: GcpFile = {
+      slug: "mirror",
+      pdf: "mirror.pdf",
+      gcps: [mirrorGcp(0.1, 0.12, "top-left"), mirrorGcp(0.88, 0.15, "top-right"), mirrorGcp(0.45, 0.9, "bottom")],
+    };
+    const mirrorCadastre: FeatureCollection<Geometry | null> = {
+      type: "FeatureCollection",
+      features: points.map((point, index) => {
+        const [lon, lat] = mirrorTruth(point.x, point.y);
+        return lotAt(lon, lat, index);
+      }),
+    };
+    const report = deriveAutonomousGcpsFromPoints({
+      slug: "mirror",
+      pageW: PAGE_W,
+      pageH: PAGE_H,
+      seed: mirrorSeed,
+      cadastre: mirrorCadastre,
+      pagePoints: points,
+      minGcps: 8,
+      maxGcps: 12,
+      maxCandidateDistanceM: 2,
+      maxResidualM: 1,
+    });
+
+    expect(report.residual_max_m).toBe(0);
+    expect(report.affine_gate_pass).toBe(false);
+    expect(report.affine_gate_reasons.join(" ")).toMatch(/mirror\/reflection/);
+    expect(report.pass).toBe(false);
+    expect(report.gcp_file).toBeUndefined();
   });
 
   it("rejects a GCP count that cannot feed the public affine", () => {

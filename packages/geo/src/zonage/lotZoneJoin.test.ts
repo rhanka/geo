@@ -92,6 +92,14 @@ describe("canonicalizeZoneCodeForJoin", () => {
     expect(canonicalizeZoneCodeForJoin("A12-024 (STH)")).toBe(canonicalizeZoneCodeForJoin("A12-024"));
     expect(canonicalizeZoneCodeForJoin("H34-327 (VLO)")).toBe(canonicalizeZoneCodeForJoin("H34-327"));
     expect(canonicalizeZoneCodeForJoin("C31-003 (GP)")).toBe(canonicalizeZoneCodeForJoin("C31-003"));
+    expect(canonicalizeZoneCodeForJoin("C31-003 (GPK)")).toBe(canonicalizeZoneCodeForJoin("C31-003"));
+  });
+
+  it("does not strip an unproven parenthetical that may distinguish zones", () => {
+    expect(canonicalizeZoneCodeForJoin("H-1 (A)")).not.toBe(canonicalizeZoneCodeForJoin("H-1 (B)"));
+    expect(canonicalizeZoneCodeForJoin("H-1 (RESIDENTIEL)")).not.toBe(
+      canonicalizeZoneCodeForJoin("H-1 (COMMERCIAL)"),
+    );
   });
 
   it("ANTI-FUSION: the annotation strip never touches the core, dash secteurs stay distinct", () => {
@@ -354,6 +362,17 @@ describe("assignLotZones", () => {
         (z) => String(z.properties?.["zone_code"]),
       ),
     ).toThrow(/metric coordinates/);
+  });
+
+  it("trusts an explicit metric source CRS even when local coordinates are near the origin", () => {
+    const [assignment] = assignLotZones(
+      [rect("lot-local", 0, 0, 10, 10)],
+      [zone("H-1", -5, -5, 15, 15)],
+      (z) => String(z.properties?.["zone_code"]),
+      { sourceCrs: "EPSG:3857" },
+    );
+
+    expect(assignment).toMatchObject({ zoneCode: "H-1", dominantFraction: 1 });
   });
 
   it("reprojects WGS84 coordinates when targetCrs is supplied", () => {
