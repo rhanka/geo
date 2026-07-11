@@ -101,7 +101,10 @@ async function runSlug(slug: string, args: Args): Promise<void> {
       before.flags.join(","),
   );
 
-  runStep("lot-zone-join " + slug, ["src/lot-zone-join-run.ts", "--slugs", slug]);
+  // --simplify-zones-m: raw rings of detailed official layers (ex. Mont-Tremblant
+  // 628 rural zones) make Turf clipping impractical (silent, ~1h). 8m simplification
+  // makes the join tractable (<4min) with no material loss for lot assignment.
+  runStep("lot-zone-join " + slug, ["src/lot-zone-join-run.ts", "--slugs", slug, "--simplify-zones-m", "8"]);
   runStep("lots-enriched " + slug, ["src/lots-enriched-run.ts", "--slugs", slug, ...args.lotsExtra]);
   if (!args.noReconcile) runStep("coverage-reconcile " + slug, ["src/coverage-reconcile.ts"]);
 
