@@ -1182,35 +1182,61 @@ async function main(): Promise<void> {
         (args.dpi ? ` dpi=${args.dpi}` : ""),
     );
     const byZone = new Map<string, ZoneNormsT>();
-    for (let page = first; page <= last; page++) {
-      if (tracker.usd() >= args.budgetUsd) {
-        console.error(`[budget] reached $${tracker.usd().toFixed(2)} — stopping at page ${page}`);
-        break;
+    const mergePageZones = (pageZones: ZoneNormsT[], page: number): void => {
+      // A multi-zone grille often spans a USAGES feuillet + a NORMES feuillet for
+      // the same zone family; the norms (this product's payload) come from the
+      // NORMES feuillet. Merge by zone_code, preferring the row that carries more
+      // published norm values (anti-invention: never overwrite a value with null).
+      for (const zn of pageZones) {
+        const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
+        const prev = byZone.get(key);
+        if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
       }
-      visionPagesAttempted++;
-      try {
-        const pageZones = await extractMultiZonePageFromPdf(args.pdf, page, {
-          source_url: args.sourceUrl,
-          snapshot: args.snapshot,
-          ...(args.dpi ? { dpi: args.dpi } : {}),
-          vision: tracker.call,
-        });
-        // A multi-zone grille often spans a USAGES feuillet + a NORMES feuillet for
-        // the same zone family; the norms (this product's payload) come from the
-        // NORMES feuillet. Merge by zone_code, preferring the row that carries more
-        // published norm values (anti-invention: never overwrite a value with null).
-        for (const zn of pageZones) {
-          const key = zn.zone_code.toUpperCase().replace(/\s+/g, "");
-          const prev = byZone.get(key);
-          if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+      console.error(`[multizone] page ${page}: ${pageZones.length} zones`);
+    };
+    // BOUNDED-CONCURRENCY page pool: the per-page Mistral-vision read is I/O-bound,
+    // so a wide sheet-set (alma: 126 grille pages) that would take ~90 min sequential
+    // finishes in a fraction with N pages in flight. Order-independent — the deposit
+    // is a merge-by-zone_code (above), and the budget/gate semantics are preserved:
+    // once cumulative cost crosses --budget-usd NO new page is dispatched (in-flight
+    // pages still complete). Concurrency via MULTIZONE_CONCURRENCY (default 8). The
+    // shared counters/map are mutated only between awaits, so the single-threaded
+    // event loop keeps them race-free.
+    const conc = Math.max(1, Math.floor(Number(process.env["MULTIZONE_CONCURRENCY"] ?? "8")));
+    const pageQueue: number[] = [];
+    for (let page = first; page <= last; page++) pageQueue.push(page);
+    let qi = 0;
+    let budgetStopped = false;
+    const worker = async (): Promise<void> => {
+      for (;;) {
+        if (budgetStopped) return;
+        if (tracker.usd() >= args.budgetUsd) {
+          if (!budgetStopped) {
+            budgetStopped = true;
+            console.error(`[budget] reached $${tracker.usd().toFixed(2)} — no new page dispatched`);
+          }
+          return;
         }
-        console.error(`[multizone] page ${page}: ${pageZones.length} zones`);
-      } catch (e) {
-        visionPagesFailed++;
-        const msg = e instanceof Error ? e.message : String(e);
-        console.error(`[multizone] page ${page} skipped: ${msg.slice(0, 120)}`);
+        const myIdx = qi++;
+        if (myIdx >= pageQueue.length) return;
+        const page = pageQueue[myIdx]!;
+        visionPagesAttempted++;
+        try {
+          const pageZones = await extractMultiZonePageFromPdf(args.pdf, page, {
+            source_url: args.sourceUrl,
+            snapshot: args.snapshot,
+            ...(args.dpi ? { dpi: args.dpi } : {}),
+            vision: tracker.call,
+          });
+          mergePageZones(pageZones, page);
+        } catch (e) {
+          visionPagesFailed++;
+          const msg = e instanceof Error ? e.message : String(e);
+          console.error(`[multizone] page ${page} skipped: ${msg.slice(0, 120)}`);
+        }
       }
-    }
+    };
+    await Promise.all(Array.from({ length: Math.min(conc, pageQueue.length || 1) }, () => worker()));
     zones = [...byZone.values()];
     visionUsd = tracker.usd();
     visionCalls = tracker.calls();

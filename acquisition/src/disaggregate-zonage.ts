@@ -57,6 +57,13 @@ const MUNI_REGISTRY = resolve(
   REPO,
   "packages/qc-sources/src/geo/municipalities.qc.json",
 );
+// Répertoire MAMH: slug → mamhCode (code géographique officiel). Sert de
+// crosswalk AUTORITATIF pour les couches discriminées par code muni numérique
+// (co_mun / MUS_CO_GEO). Jamais un mapping deviné: source MAMH.
+const MUNI_DIRECTORY = resolve(
+  REPO,
+  "packages/qc-sources/src/geo/qc-municipal-directory.json",
+);
 const PREFIX = "normalized/ca-qc-zonage/";
 
 // ---------------------------------------------------------------------------
@@ -201,7 +208,26 @@ const MUNI_ATTR_CANDIDATES = [
   "nom_ville",
   "mun_id",
   "MUS_NM_MUN",
+];
+
+/**
+ * Candidats d'attribut CODE-MUNI NUMÉRIQUE (code géographique MAMH, "co_mun").
+ * Mappés via le répertoire MAMH (qc-municipal-directory.json), PAS deviné.
+ * Le gate spatial (bbox vs centroïde registre) valide chaque mapping.
+ */
+const MUNI_CODE_CANDIDATES = [
+  "co_mun",
+  "CO_MUN",
   "MUS_CO_GEO",
+  "mus_co_geo",
+  "code_mun",
+  "CODE_MUN",
+  "MUN_CODE",
+  "no_muni",
+  "NO_MUNI",
+  "NoMun",
+  "MUNCODE",
+  "GEO_CODE",
 ];
 
 /**
@@ -271,6 +297,48 @@ function pickMuniAttr(
     }
   }
   return best;
+}
+
+/**
+ * Choisit l'attribut CODE-MUNI: pour chaque candidat présent, compte combien de
+ * codes distincts mappent un slug via le crosswalk MAMH (codeToSlug). Retient le
+ * meilleur (≥minMunis). null si aucun. Le code est trim + retire un éventuel
+ * suffixe décimal ArcGIS (ex "76020.0" → "76020").
+ */
+function normCode(v: unknown): string {
+  return String(v).trim().replace(/\.0+$/, "");
+}
+function pickMuniCodeAttr(
+  feats: GeoFeature[],
+  codeToSlug: Map<string, string>,
+  minMunis: number,
+): MuniAttrPick | null {
+  const keys = allPropKeys(feats);
+  let best: MuniAttrPick | null = null;
+  for (const cand of MUNI_CODE_CANDIDATES) {
+    if (!keys.has(cand)) continue;
+    const slugs = new Set<string>();
+    for (const f of feats) {
+      const v = f.properties?.[cand];
+      if (v === null || v === undefined || v === "") continue;
+      const s = codeToSlug.get(normCode(v));
+      if (s) slugs.add(s);
+    }
+    if (slugs.size >= minMunis && (!best || slugs.size > best.slugs)) {
+      best = { attr: cand, slugs: slugs.size };
+    }
+  }
+  return best;
+}
+
+/** Résout le slug canonique d'une valeur brute d'attribut muni selon le kind. */
+function resolveSlug(
+  raw: string,
+  kind: "name" | "code",
+  codeToSlug: Map<string, string>,
+): string | null {
+  if (kind === "code") return codeToSlug.get(normCode(raw)) ?? null;
+  return toSlug(stripAdminPrefix(raw));
 }
 
 /**
@@ -352,6 +420,7 @@ interface AggResult {
   dir: string;
   totalFeatures: number;
   muniAttr: string | null;
+  muniAttrKind: "name" | "code" | null;
   zoneAttr: string | null;
   skip?: string; // raison de skip global
   munisProduced: PerMuniResult[]; // tous les groupes (mappés ou non)
@@ -363,6 +432,7 @@ async function disaggregate(
   dir: string,
   byName: Map<string, MuniEntry>,
   bySlug: Map<string, MuniEntry>,
+  codeToSlug: Map<string, string>,
   spatialKm: number,
   minMunis: number,
 ): Promise<AggResult> {
@@ -373,17 +443,26 @@ async function disaggregate(
     dir,
     totalFeatures: feats.length,
     muniAttr: null,
+    muniAttrKind: null,
     zoneAttr: null,
     munisProduced: [],
     mappedOk: [],
   };
 
-  const muniPick = pickMuniAttr(feats, byName, minMunis);
+  // Discriminant muni: par NOM (byName) ou par CODE géographique MAMH
+  // (codeToSlug). On retient celui qui mappe le plus de munis distincts.
+  const namePick = pickMuniAttr(feats, byName, minMunis);
+  const codePick = pickMuniCodeAttr(feats, codeToSlug, minMunis);
+  const useCode =
+    codePick && (!namePick || codePick.slugs > namePick.slugs);
+  const muniPick = useCode ? codePick : namePick;
   if (!muniPick) {
-    res.skip = `aucun attribut muni fiable (≥${minMunis} slugs canoniques) — non désagrégeable`;
+    res.skip = `aucun attribut muni fiable (≥${minMunis} slugs canoniques nom OU code MAMH) — non désagrégeable`;
     return res;
   }
+  const kind: "name" | "code" = useCode ? "code" : "name";
   res.muniAttr = muniPick.attr;
+  res.muniAttrKind = kind;
   const zoneAttr = pickZoneAttr(feats);
   res.zoneAttr = zoneAttr;
 
@@ -400,10 +479,10 @@ async function disaggregate(
 
   // Pour chaque groupe: mappe au slug, vérifie spatial, comptes.
   for (const [raw, gfeats] of groups) {
-    const slug = toSlug(stripAdminPrefix(raw));
-    const entry = bySlug.get(slug);
+    const slug = resolveSlug(raw, kind, codeToSlug);
+    const entry = slug ? bySlug.get(slug) : undefined;
     const per: PerMuniResult = {
-      slug,
+      slug: slug ?? "",
       muniName: raw,
       features: gfeats.length,
       zoneCodes: 0,
@@ -411,8 +490,8 @@ async function disaggregate(
       spatialOk: false,
       distKm: null,
     };
-    if (!entry) {
-      per.reason = `slug "${slug}" non mappé au registre — skip (jamais deviné)`;
+    if (!slug || !entry) {
+      per.reason = `${kind === "code" ? `code "${raw}"` : `slug "${slug}"`} non mappé au registre — skip (jamais deviné)`;
       res.munisProduced.push(per);
       continue;
     }
@@ -571,6 +650,25 @@ async function main(): Promise<void> {
     bySlug.set(toSlug(e.name), e); // alias par nom normalisé
   }
 
+  // Crosswalk MAMH: code géographique → slug canonique (autoritatif). Ne retient
+  // que les codes dont le slug existe dans le registre (donc lat/lon dispo pour
+  // le gate spatial). Jamais deviné: source = répertoire MAMH du repo.
+  const codeToSlug = new Map<string, string>();
+  try {
+    const dirJson = JSON.parse(readFileSync(MUNI_DIRECTORY, "utf8")) as {
+      entries?: Record<string, { slug?: string; mamhCode?: string }>;
+    };
+    for (const e of Object.values(dirJson.entries ?? {})) {
+      const slug = e.slug ? toSlug(e.slug) : null;
+      if (e.mamhCode && slug && bySlug.has(slug)) {
+        codeToSlug.set(String(e.mamhCode).trim(), slug);
+      }
+    }
+  } catch (err) {
+    console.error(`[disagg] AVERTISSEMENT: répertoire MAMH illisible (${(err as Error).message}) — désagrégation par code muni désactivée`);
+  }
+  console.error(`[disagg] crosswalk MAMH: ${codeToSlug.size} codes → slug`);
+
   const dirs = await listAggregateDirs(s3);
   console.error(`[disagg] ${dirs.length} dir(s) candidat(s) "ca-qc-zonage-…-arcgis"`);
 
@@ -603,7 +701,7 @@ async function main(): Promise<void> {
   for (const dir of targets) {
     let res: AggResult;
     try {
-      res = await disaggregate(s3, dir, byName, bySlug, args.spatialKm, args.minMunis);
+      res = await disaggregate(s3, dir, byName, bySlug, codeToSlug, args.spatialKm, args.minMunis);
     } catch (e) {
       console.error(`[disagg] ERREUR lecture ${dir}: ${(e as Error).message}`);
       totalAggSkipped++;
@@ -623,7 +721,7 @@ async function main(): Promise<void> {
     totalSpatialOk += res.mappedOk.length;
 
     console.error(
-      `\n[disagg] ${dir} (${res.totalFeatures} feats) muniAttr=${res.muniAttr} zoneAttr=${res.zoneAttr}`,
+      `\n[disagg] ${dir} (${res.totalFeatures} feats) muniAttr=${res.muniAttr}[${res.muniAttrKind}] zoneAttr=${res.zoneAttr}`,
     );
     console.error(
       `         groupes=${res.munisProduced.length} mappés+spatialOK=${res.mappedOk.length}`,
@@ -649,13 +747,14 @@ async function main(): Promise<void> {
     }
 
     // Re-groupe les features pour l'écriture (on a besoin des features, pas que des comptes).
-    if (!res.muniAttr) continue;
+    if (!res.muniAttr || !res.muniAttrKind) continue;
     const gj = JSON.parse((await getBytes(s3, geojsonKey(dir))).toString("utf8")) as GeoJSON;
     const groups = new Map<string, GeoFeature[]>();
     for (const f of gj.features ?? []) {
       const v = f.properties?.[res.muniAttr];
       if (v === null || v === undefined || v === "") continue;
-      const slug = toSlug(stripAdminPrefix(String(v)));
+      const slug = resolveSlug(String(v), res.muniAttrKind, codeToSlug);
+      if (!slug) continue;
       let g = groups.get(slug);
       if (!g) groups.set(slug, (g = []));
       g.push(f);

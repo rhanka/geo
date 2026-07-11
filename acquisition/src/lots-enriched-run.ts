@@ -52,6 +52,11 @@
  *   tsx src/lots-enriched-run.ts --all
  * Verify existing deposits:
  *   tsx src/lots-enriched-run.ts --slugs delson --verify-only
+ *
+ * Fast/materialization mode:
+ *   --no-role --no-fsa keeps adresse/code_postal null and avoids the expensive
+ *   remote rôle XML/FSA polygon joins. This is useful for qc-lots backfill where
+ *   the anti-invention contract is more important than waiting for optional joins.
  */
 import { createWriteStream } from "node:fs";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
@@ -67,13 +72,20 @@ import { norm as normCadastreSlug, ALIAS_SLUG_TO_CODE } from "./cadastre-clip-sd
 import { computeLotAttrs } from "./lot-attrs-geom.js";
 import { fetchIndex, parseRole, type RoleAttrs } from "./role-foncier.js";
 import { FSA_KEY, loadFsaIndex, lookupFsa, type FsaIndex } from "./lib/fsa-geocode.js";
-import { BUCKET, exists, getBytes, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
+import { BUCKET, exists, getBytes, getGeoJsonFeatureCollection, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
 const ZONAGE_PREFIX = "normalized/qc-lot-zonage/";
 const TOD_PREFIX = "normalized/qc-lot-tod/";
 const OUT_PREFIX = "normalized/qc-lots/";
 const SDA_BOUNDARIES_KEY = "normalized/qc-admin-boundaries/qc-municipalites.geojson";
+
+const CADASTRE_SLUG_ALIASES: Record<string, string[]> = {
+  "l-epiphanie": ["lepiphanie"],
+  "l-assomption": ["lassomption"],
+  "l-ange-gardien": ["lange-gardien--la-cote-de-beaupre"],
+  "sainte-christine-d-auvergne": ["sainte-christine-dauvergne"],
+};
 
 /** Millésime du rôle foncier MAMH utilisé pour la jointure adresse. */
 const ROLE_MILLESIME = 2026;
@@ -102,6 +114,8 @@ interface Args {
   shard: { index: number; total: number } | null;
   /** Skip the rôle-foncier address join (surface_m2 still computed). */
   noRole: boolean;
+  /** Skip the RTA/FSA reverse-geocode join (code_postal stays null). */
+  noFsa: boolean;
 }
 
 interface EnrichStats {
@@ -155,6 +169,7 @@ function parseArgs(argv: string[]): Args {
   let maxMb = DEFAULT_MAX_MB;
   let shard: { index: number; total: number } | null = null;
   let noRole = false;
+  let noFsa = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -164,6 +179,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (arg === "--no-upload") noUpload = true;
     else if (arg === "--no-role") noRole = true;
+    else if (arg === "--no-fsa") noFsa = true;
     else if (arg === "--verify-only") verifyOnly = true;
     else if (arg === "--time-box") timeBoxSec = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_TIME_BOX_SEC);
     else if (arg === "--max-mb") maxMb = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_MAX_MB);
@@ -181,7 +197,7 @@ function parseArgs(argv: string[]): Args {
   if (uniqueSlugs.length === 0 && !all && !served) {
     throw new Error("pass --all, --served, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, all, served, noUpload, verifyOnly, timeBoxSec, maxMb, shard, noRole };
+  return { slugs: uniqueSlugs, all, served, noUpload, verifyOnly, timeBoxSec, maxMb, shard, noRole, noFsa };
 }
 
 function outKey(slug: string): string {
@@ -204,18 +220,24 @@ function lotIdOf(feature: GeoFeature, index: number): string {
 }
 
 async function resolveCadastreKey(s3: S3Client, slug: string): Promise<string> {
+  const candidates = [slug, ...(CADASTRE_SLUG_ALIASES[slug] ?? [])];
+  for (const candidate of candidates) {
+    const key = `${CAD_PREFIX}${candidate}.geojson`;
+    if (await exists(s3, key)) return key;
+  }
   const key = `${CAD_PREFIX}${slug}.geojson`;
-  if (await exists(s3, key)) return key;
   const slugs = await listSlugs(s3, CAD_PREFIX, ".geojson", true);
-  const normalizedTarget = normCadastreSlug(slug);
-  const normalizedMatches = slugs.filter((c) => normCadastreSlug(c) === normalizedTarget);
+  const normalizedTargets = new Set(candidates.map((candidate) => normCadastreSlug(candidate)));
+  const normalizedMatches = slugs.filter((c) => normalizedTargets.has(normCadastreSlug(c)));
   if (normalizedMatches.length === 1) return `${CAD_PREFIX}${normalizedMatches[0]}.geojson`;
-  const containsMatches = slugs.filter((c) => normCadastreSlug(c).includes(normalizedTarget));
+  const containsMatches = slugs.filter((c) =>
+    [...normalizedTargets].some((target) => normCadastreSlug(c).includes(target)),
+  );
   if (containsMatches.length === 1) return `${CAD_PREFIX}${containsMatches[0]}.geojson`;
-  const candidates = containsMatches.length > 0 ? containsMatches : normalizedMatches;
+  const ambiguousCandidates = containsMatches.length > 0 ? containsMatches : normalizedMatches;
   throw new Error(
     `cadastre not found for ${slug}: ${key}` +
-      (candidates.length > 0 ? `; ambiguous candidates: ${candidates.slice(0, 12).join(", ")}` : ""),
+      (ambiguousCandidates.length > 0 ? `; ambiguous candidates: ${ambiguousCandidates.slice(0, 12).join(", ")}` : ""),
   );
 }
 
@@ -499,7 +521,7 @@ async function runCity(
   const todKey = (await exists(s3, `${TOD_PREFIX}${slug}.parquet`)) ? `${TOD_PREFIX}${slug}.parquet` : null;
 
   const [zonage, tod] = await Promise.all([loadZonage(s3, zonageKey), loadTod(s3, todKey)]);
-  const cadastre = (await getJson(s3, cadastreKey)) as GeoFc;
+  const cadastre = (await getGeoJsonFeatureCollection<GeoFeature>(s3, cadastreKey)) as GeoFc;
   const features = cadastre.features ?? [];
 
   // ── rôle-foncier address resolution (collision-safe by lot overlap) ─────────
@@ -604,7 +626,8 @@ async function runCity(
     else if (roleResolution && pctWithAdresse < 50) {
       warnings.push(`adresse present ${pctWithAdresse}% < 50% (code=${roleResolution.codeGeo})`);
     }
-    if (!fsaIndex) warnings.push(`code_postal: no FSA index (${FSA_KEY} missing?) — code_postal all null`);
+    if (args.noFsa) warnings.push(`code_postal: disabled (--no-fsa) — code_postal all null`);
+    else if (!fsaIndex) warnings.push(`code_postal: no FSA index (${FSA_KEY} missing?) — code_postal all null`);
     else if (pctWithCodePostal < 90) warnings.push(`code_postal (RTA) present ${pctWithCodePostal}% < 90%`);
 
     const codePostalStats: EnrichStats["code_postal"] = {
@@ -762,7 +785,7 @@ async function main(): Promise<void> {
 
   // Charge l'index RTA/FSA ONCE (géocodage inverse code_postal). Absent -> null.
   let fsaIndex: FsaIndex | null = null;
-  if (!args.verifyOnly) {
+  if (!args.verifyOnly && !args.noFsa) {
     try {
       fsaIndex = await loadFsaIndex(s3);
       console.log(`FSA index: ${fsaIndex.count} RTA (code_postal fsa3) from ${FSA_KEY}`);
@@ -772,6 +795,8 @@ async function main(): Promise<void> {
           `code_postal restera null (lancer fsa-boundaries-prep.ts d'abord)`,
       );
     }
+  } else if (!args.verifyOnly) {
+    console.log("FSA index: skipped (--no-fsa); code_postal restera null");
   }
 
   const started = Date.now();

@@ -525,10 +525,10 @@ async function main(): Promise<void> {
       // ── Cross-validate each engine ──
       const ocrCross: CrossValResult = ocrZones.length
         ? await crossValidateZoneCodes(s3, slug, ocrZones)
-        : { gridFound: gridFoundBase, sigZoneCodes: sigZoneCodesBase, extractedZoneCodes: 0, overlap: 0, recoupExtracted: 0, recoupSig: 0, extractedNotInSig: [] };
+        : { gridFound: gridFoundBase, sigZoneCodes: sigZoneCodesBase, extractedZoneCodes: 0, overlap: 0, numericBridged: 0, recoupExtracted: 0, recoupSig: 0, extractedNotInSig: [] };
       const claudeCross: CrossValResult = claudeZones.length
         ? await crossValidateZoneCodes(s3, slug, claudeZones)
-        : { gridFound: gridFoundBase, sigZoneCodes: sigZoneCodesBase, extractedZoneCodes: 0, overlap: 0, recoupExtracted: 0, recoupSig: 0, extractedNotInSig: [] };
+        : { gridFound: gridFoundBase, sigZoneCodes: sigZoneCodesBase, extractedZoneCodes: 0, overlap: 0, numericBridged: 0, recoupExtracted: 0, recoupSig: 0, extractedNotInSig: [] };
       const gridFound = ocrCross.gridFound || claudeCross.gridFound || gridFoundBase;
 
       row.engineA_ocr_recall = gridFound ? ocrCross.overlap : ocrCross.extractedZoneCodes;
