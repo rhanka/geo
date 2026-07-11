@@ -302,7 +302,7 @@ function assignOneLot(
     return unassigned(lotId);
   }
 
-  const ranked = [...areas.values()].sort((a, b) => b.area - a.area || a.rawCode.localeCompare(b.rawCode));
+  const ranked = [...areas.values()].sort((a, b) => b.area - a.area || compareCodePoint(a.rawCode, b.rawCode));
   const top = ranked[0]!;
   const second = ranked[1];
   const dominantFraction = clamp01(top.area / lotArea);
@@ -397,7 +397,7 @@ function centroidFallback(
     }
   }
   if (hits.length === 0) return unassigned(lotId);
-  hits.sort((a, b) => a.rawCode.localeCompare(b.rawCode));
+  hits.sort((a, b) => compareCodePoint(a.rawCode, b.rawCode));
   return {
     lotId,
     zoneCode: hits[0]!.rawCode,
@@ -650,7 +650,12 @@ function looksGeographic(features: PolygonalFeature[]): boolean {
 
 function isGeographicCrs(crs: string | undefined): boolean {
   if (!crs) return false;
-  return /4326|CRS84|WGS\s*84/i.test(crs);
+  const projection = new proj4.Proj(crs) as ReturnType<typeof proj4.Proj> & { projName?: string };
+  return projection.projName === "longlat";
+}
+
+function compareCodePoint(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 function defaultLotId(lot: PolygonalFeature, index: number): string {
