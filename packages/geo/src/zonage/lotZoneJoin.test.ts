@@ -325,6 +325,42 @@ describe("assignLotZones", () => {
     expect(assignment?.zoneCodes.sort()).toEqual(["C-2", "H-1"]);
   });
 
+  it("fails closed when one candidate intersection is invalid after exact overlaps", () => {
+    const invalidZone: Feature<Polygon, Props> = {
+      type: "Feature",
+      properties: { zone_code: "INVALID" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [1000, 1000],
+            [null as unknown as number, 1100],
+            [1100, 1100],
+            [1000, 1000],
+          ],
+        ],
+      },
+    };
+    const [assignment] = assignLotZones(
+      [rect("lot-partial-failure", 1000, 1000, 1100, 1100)],
+      [
+        zone("A", 1000, 1000, 1060, 1100),
+        zone("B", 1060, 1000, 1100, 1100),
+        invalidZone,
+      ],
+      (z) => String(z.properties?.["zone_code"]),
+    );
+
+    expect(assignment).toEqual({
+      lotId: "lot-partial-failure",
+      zoneCode: null,
+      dominantFraction: 0,
+      multiZone: false,
+      zoneCodes: [],
+      method: "unassigned",
+    });
+  });
+
   it("returns null zone_code when a lot has no overlap", () => {
     const [assignment] = assignLotZones(
       [rect("lot-3", 1000, 1000, 1100, 1100)],
