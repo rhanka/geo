@@ -68,8 +68,11 @@ export function splitCode(code: string): { prefix: string } {
 
 export interface RawLabel {
   text: string;
+  /** Horizontal centre in pdftotext page units, with a top-left origin. */
   pageX: number;
+  /** Vertical centre in pdftotext page units, with a top-left origin. */
   pageY: number;
+  /** Optional pdftotext bbox edges, in the same page units as pageX/pageY. */
   xMin?: number;
   yMin?: number;
   xMax?: number;
@@ -80,14 +83,20 @@ export interface RawLabel {
 }
 
 export interface LabelRegionFrac {
+  /** Fraction of page width, 0 = left. */
   fx0: number;
+  /** Fraction of page height, 0 = top. */
   fy0: number;
+  /** Fraction of page width, 1 = right. */
   fx1: number;
+  /** Fraction of page height, 1 = bottom. */
   fy1: number;
 }
 
 export interface LabelComputeOptions {
+  /** Page-fraction regions to mask before emitting labels, for example title boxes. */
   excludeRegions?: LabelRegionFrac[];
+  /** Accept pure-numeric codes only when they occur in this authoritative dictionary. */
   numericDict?: Set<string>;
 }
 
@@ -286,6 +295,13 @@ function inExcludedRegion(px: number, pyTop: number, geo: GeoRef, regions: Label
   });
 }
 
+/**
+ * Convert positioned pdftotext words into georeferenced zone-code points.
+ *
+ * textPageW/textPageH and every RawLabel coordinate must share pdftotext's
+ * top-left-origin page units. They are scaled to the GeoRef MediaBox before
+ * the bottom-up page-to-ground transform is evaluated.
+ */
 export function extractLabelsFromWords(
   words: RawLabel[],
   textPageW: number,
