@@ -548,6 +548,8 @@ async function currentBaseline(
     sigZoneCodes: base.crossval?.sigZoneCodes ?? 0,
     extractedZoneCodes: base.unique_zone_codes,
     overlap: base.crossval?.overlap ?? 0,
+    // Not persisted in the manifest crossval; only `.overlap` is read downstream.
+    numericBridged: 0,
     recoupExtracted: base.crossval?.recoupExtracted ?? 0,
     recoupSig: base.crossval?.recoupSig ?? 0,
     extractedNotInSig: [],

@@ -42,6 +42,17 @@ const MATRIX = join(ROOT, "work", "coverage", "coverage-matrix.json");
 export const DEFAULT_REPORT = join(ROOT, "work", "coverage", "zone-grille-coherence.json");
 const DEFAULT_THRESHOLD = 0.5;
 const OLD_ZONING_RE = /ancien|former|abrog/i;
+/**
+ * Slugs where immo TERRAIN-verified that an "ancien"-NAMED source layer actually
+ * serves the IN-FORCE zoning (the layer name is a misnomer, not a staleness
+ * signal). The `OLD_ZONING_RE` name heuristic is a proxy for "superseded layer";
+ * for these slugs the proxy is wrong and is overridden by the domain authority.
+ *   - mont-tremblant: ArcGIS `Ancien_zonage/FeatureServer/1` carries the categories
+ *     200..1000 of the IN-FORCE règlement 2008-102 (full territory, ~626 zones).
+ *     Proof (immo, vdmt.ca): lot 4 650 233 = VF-604-2 (catégorie 600). The RA-1xx
+ *     "plan 3" layer it replaces was the CENTRAL sector only (~19 zones).
+ */
+const IMMO_VERIFIED_IN_FORCE = new Set<string>(["mont-tremblant"]);
 const AFFECTATION_MAX_CODES = 12;
 const AFFECTATION_MIN_FRAC = 0.5;
 
@@ -379,7 +390,11 @@ async function readServedGrille(s3: S3Client, slug: string): Promise<ServedGrill
   return { key, present: true, rawCodes };
 }
 
-function oldZoning(provenance: Provenance): boolean {
+function oldZoning(provenance: Provenance, slug?: string): boolean {
+  // Immo terrain override: an "ancien"-named layer verified to serve in-force
+  // zoning is NOT stale (see IMMO_VERIFIED_IN_FORCE). Never fabricates coverage —
+  // the strict-overlap/millesime gate below still governs real_zoning.
+  if (slug && IMMO_VERIFIED_IN_FORCE.has(slug)) return false;
   const hay = [provenance.source_url, provenance.owner, provenance.layer, provenance.title]
     .filter((v): v is string => !!v)
     .join(" ");
@@ -449,6 +464,8 @@ export function analyzeZoneGridCoherence(input: {
   provenance?: Partial<Provenance>;
   propertyKeys?: Iterable<string>;
   threshold?: number;
+  /** Muni slug — enables the immo terrain in-force override in `oldZoning`. */
+  slug?: string;
 }): CoherenceAnalysis {
   const threshold = input.threshold ?? DEFAULT_THRESHOLD;
   const zone = canonicalSet(input.zoneCodes);
@@ -477,7 +494,7 @@ export function analyzeZoneGridCoherence(input: {
     title: input.provenance?.title ?? null,
   };
   const propKeys = new Set(input.propertyKeys ?? []);
-  const ancien = oldZoning(provenance);
+  const ancien = oldZoning(provenance, input.slug);
   const affectReasons = affectationReasons(zone, propKeys);
 
   const strictRecouvrement = zone.size ? exactCommon.size / zone.size : 0;
@@ -544,6 +561,7 @@ async function analyzeSlug(s3: S3Client, slug: string, threshold: number): Promi
     provenance: zone.provenance,
     propertyKeys: zone.propertyKeys,
     threshold,
+    slug,
   });
   return {
     slug,
