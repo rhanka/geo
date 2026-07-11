@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-07-11T03:55:00Z",
+  "shard": { "rem": 0, "mod": 2, "rule": "sorted city index % 2 == 0" },
+  "initialNonDone": 153,
+  "priorEvidence": {
+    "report": "work/delegation-mass/zones-recalage-2026-07-10T232036Z-shard0of2.json",
+    "gateFailures": 67,
+    "documentedBlockers": 4,
+    "unresolvedTakenHere": 82
+  },
+  "counts": {
+    "deposits": 2,
+    "newGateOrSemanticFailures": 10,
+    "providerBlocked": 1,
+    "boundedOfficialDiscoveryNoBasePlan": 69
+  },
+  "deposits": [
+    {
+      "slug": "saint-epiphane",
+      "method": "t1-geopdf-text",
+      "sourceUrl": "https://saint-epiphane.ca/documents/pdf/2023/zonage_2500_st-epi_aout2023.pdf",
+      "residualM": 0.025,
+      "spatialKm": 2.149,
+      "distinctCodes": 21,
+      "servedFeatures": 21,
+      "lotsAssigned": 456,
+      "lotsTotal": 1066,
+      "lotsAssignedPct": 42.78,
+      "inline": { "lotZoneJoin": "verified", "lotsEnriched": "deposited" }
+    },
+    {
+      "slug": "saint-hubert-de-riviere-du-loup",
+      "method": "t2-autogcp-text",
+      "sourceUrl": "http://www.municipalite.saint-hubert-de-riviere-du-loup.qc.ca/documents/urbanisme/zonage_st-hubert_pu_2500.pdf",
+      "gcp": "work/gcp/saint-hubert-de-riviere-du-loup-pu.autogcp.json",
+      "gcpReport": "work/gcp/saint-hubert-de-riviere-du-loup-pu.autogcp.report.json",
+      "independentGcps": 15,
+      "residualM": 9.644,
+      "holdoutM": 10.553,
+      "spatialKm": 0.655,
+      "rotationMarginPct": 15.18,
+      "distinctCodes": 45,
+      "servedFeatures": 39,
+      "lotsAssigned": 1625,
+      "lotsTotal": 1706,
+      "lotsAssignedPct": 95.25,
+      "inline": { "lotZoneJoin": "verified", "lotsEnriched": "deposited" }
+    }
+  ],
+  "newFailures": [
+    { "slug": "aumond", "reason": "official PDFs are scanned modifying bylaws; no embedded georef or zoning base map" },
+    { "slug": "bouchette", "reason": "three official bylaw parts are scans; no embedded georef and no real T3 seed" },
+    { "slug": "notre-dame-des-sept-douleurs", "reason": "vector plan has 7571 SVG points but no seed clears residual+holdout; 2023 annex svg_points=0", "evidence": ["work/gcp/notre-dame-des-sept-douleurs-plan.autogcp.report.json", "work/gcp/notre-dame-des-sept-douleurs-annexe-a.autogcp.report.json"] },
+    { "slug": "saint-alexandre", "reason": "general plan has 11 residual+holdout seeds but none clears orientation/isotropy; urban sheet svg_points=0", "evidence": ["work/gcp/saint-alexandre-plan-general.autogcp.report.json", "work/gcp/saint-alexandre-plan-pu.autogcp.report.json"] },
+    { "slug": "saint-ferdinand", "reason": "geometry passes on two sheets but labels include hundreds of sequential parcel pseudo-codes such as 734-P and 672-P; rejected without authoritative dict", "evidence": ["work/gcp/saint-ferdinand-z1.autogcp.report.json", "work/gcp/saint-ferdinand-z2.autogcp.report.json"] },
+    { "slug": "saint-francois-xavier-de-viger", "reason": "four residual+holdout seeds, none clears orientation/isotropy", "evidence": "work/gcp/saint-francois-xavier-de-viger.autogcp.report.json" },
+    { "slug": "saint-louis-de-gonzague--beauharnois-salaberry", "reason": "both official zoning plans are raster; svg_points=0" },
+    { "slug": "saint-sebastien--le-haut-richelieu", "reason": "both official zoning plans are raster; svg_points=0" },
+    { "slug": "saint-valerien-de-milton", "reason": "official annex A is raster; svg_points=0", "evidence": "work/gcp/saint-valerien-de-milton.autogcp.report.json" },
+    { "slug": "sainte-brigide-diberville", "reason": "residual+holdout seeds found but none clears orientation/isotropy", "evidence": ["work/gcp/sainte-brigide-plan-complet.autogcp.report.json", "work/gcp/sainte-brigide-plan-urbain.autogcp.report.json"] }
+  ],
+  "providerBlocked": [
+    {
+      "slug": "sainte-henedine",
+      "reason": "two valid glyph GeoPDFs rendered and claude-sonnet-4-6 invoked with plan-derived dict; subscription returned session limit reset 01:10 America/Toronto",
+      "dict": "work/zonage-norms/sainte-henedine-plan-codes.json",
+      "fallbackUsed": false
+    }
+  ],
+  "boundedOfficialDiscoveryNoBasePlan": [
+    "colombier", "cote-nord-du-golfe-du-saint-laurent", "eeyou-istchee-james-bay", "grand-remous", "henryville", "kipawa", "la-martre", "la-morandiere-rochebaucourt", "la-patrie", "lamarche", "longue-pointe-de-mingan", "lyster", "malartic", "mansfield-et-pontefract", "marsoui", "mont-saint-pierre", "notre-dame-de-la-salette", "notre-dame-de-lorette", "notre-dame-des-anges", "rapides-des-joachims", "riviere-a-claude", "riviere-saint-jean", "saint-adalbert", "saint-andre-du-lac-saint-jean", "saint-augustin--le-golfe-du-saint-laurent", "saint-barnabe", "saint-benoit-du-lac", "saint-bernard", "saint-bruno", "saint-etienne-de-beauharnois", "saint-eugene-dargentenay", "saint-francois-de-lile-dorleans", "saint-fulgence", "saint-gerard-majella", "saint-guy", "saint-honore-de-shenley", "saint-isidore--la-nouvelle-beauce", "saint-jean-de-cherbourg", "saint-leon-le-grand--maskinonge", "saint-leonard-de-portneuf", "saint-ludger-de-milot", "saint-mathieu-de-rioux", "saint-maxime-du-mont-louis", "saint-modeste", "saint-norbert", "saint-paul-de-la-croix", "saint-robert", "saint-roch-de-lachigan", "saint-roch-de-richelieu", "saint-roch-ouest", "saint-simon-les-mines", "sainte-angele-de-premont", "sainte-felicite--lislet", "sainte-jeanne-darc--la-mitis", "sainte-marie", "sainte-marthe", "sainte-monique--lac-saint-jean-est", "sainte-sabine--brome-missisquoi", "sainte-ursule", "saints-anges", "senneterre--la-vallee-de-lor--2", "sheenboro", "stanbridge-station", "stukely-sud", "tadoussac", "tourville", "vallee-jonction", "villeroy", "weedon"
+  ]
+}
