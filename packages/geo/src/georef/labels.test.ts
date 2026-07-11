@@ -99,6 +99,19 @@ describe("t1-labels zone-code parser", () => {
     expect(got).toEqual(["H-101"]);
   });
 
+  it("scales top-left text coordinates into bottom-left GeoRef page units", () => {
+    const result = extractLabelsFromWords(
+      [word("H-101", 100, 190, 140, 210, 1, 1)],
+      500,
+      250,
+      geo(),
+    );
+
+    expect(result.codePoints).toEqual([
+      expect.objectContaining({ code: "H-101", lon: 240, lat: 200 }),
+    ]);
+  });
+
   it("admits dict-backed pure-numeric labels under the numeric relaxation", () => {
     const numericDict = new Set(["100", "515", "300"]);
     const got = codes(
