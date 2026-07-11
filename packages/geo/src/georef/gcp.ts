@@ -26,9 +26,11 @@
  * the embedded one.
  *
  * Ported (pure compute, zero I/O) from the acquisition recalage pipeline
- * (`acquisition/src/lib/t2-georef.ts`). The proj4-backed CRS-reprojection
- * convenience (`buildGeoRefFromGcpsCrs`) stays in the acquisition app layer.
+ * (`acquisition/src/lib/t2-georef.ts`), including its proj4-backed convenience
+ * for GCPs expressed in a projected CRS.
  */
+import proj4 from "proj4";
+
 import { fitAffine, type GeoRef } from "./affine.js";
 
 /** One ground control point: a page fraction ↔ a real-world [lon,lat]. */
@@ -234,4 +236,27 @@ export function buildGeoRefFromGcps(
   };
 
   return { geo, residualsM, maxResidualM: maxRes, rmsResidualM: rms };
+}
+
+/**
+ * Convert GCP coordinates from any proj4-supported CRS to WGS84 in memory,
+ * then fit the same public affine. Callers must provide a proj4 definition when
+ * their proj4 runtime does not already know a bare EPSG identifier.
+ */
+export function buildGeoRefFromGcpsCrs(
+  gcps: Gcp[],
+  pageW: number,
+  pageH: number,
+  crs: string | undefined,
+  neatline?: NeatlineFrac,
+): BuildGeoRefResult {
+  if (!crs || /4326|wgs ?84|crs84/i.test(crs)) {
+    return buildGeoRefFromGcps(gcps, pageW, pageH, neatline);
+  }
+  const toWgs84 = proj4(crs, "WGS84");
+  const wgs84Gcps = gcps.map((gcp) => {
+    const [lon, lat] = toWgs84.forward([gcp.lon, gcp.lat]) as [number, number];
+    return { ...gcp, lon, lat };
+  });
+  return buildGeoRefFromGcps(wgs84Gcps, pageW, pageH, neatline);
 }

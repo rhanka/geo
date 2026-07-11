@@ -17,8 +17,8 @@
  * Network-free and GDAL-free. `extractGeoRef` uses `proj4` (a runtime dep) and,
  * only when handed a file path, an OPTIONAL `pdfinfo` page-size probe — consistent
  * with the package's existing subprocess surface (e.g. the GDAL adapter). The
- * pdftocairo/pdftoppm/tesseract raster runners and the proj4-CRS GCP reprojection
- * stay in the acquisition app layer that consumes this surface.
+ * pdftocairo/pdftoppm/tesseract raster runners stay in the acquisition app layer;
+ * proj4-backed GCP reprojection remains pure and is exposed here.
  */
 
 export const VERSION = "0.1.0";
@@ -36,6 +36,7 @@ export { extractGeoRef, inflatePdfText, type InflateOptions } from "./geopdf.js"
 export {
   assertIndependentGcps,
   buildGeoRefFromGcps,
+  buildGeoRefFromGcpsCrs,
   checkIndependentGcps,
   gcpLooksBboxDerived,
   type BuildGeoRefResult,
