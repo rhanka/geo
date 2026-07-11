@@ -7,9 +7,6 @@
  *   - {@link buildGeoRefFromGcps}: rebuild a {@link GeoRef} from ≥3 Ground Control
  *     Points, plus the independence/collinearity gates used to reject bbox-corner
  *     "controls";
- *   - {@link deriveAutonomousGcpsFromPoints}: match already-extracted page
- *     vector points to WGS84 cadastre vertices, then residual/holdout-gate the
- *     independent controls;
  *   - {@link extractGeoRef}: pull a T1 GeoPDF's EMBEDDED registration (the
  *     `/VP /Measure /GEO /GPTS` viewport) straight from the PDF buffer and fit
  *     page→WGS84 via proj4 — pure-Node, no GDAL.
@@ -17,8 +14,8 @@
  * Network-free and GDAL-free. `extractGeoRef` uses `proj4` (a runtime dep) and,
  * only when handed a file path, an OPTIONAL `pdfinfo` page-size probe — consistent
  * with the package's existing subprocess surface (e.g. the GDAL adapter). The
- * pdftocairo/pdftoppm/tesseract raster runners stay in the acquisition app layer;
- * proj4-backed GCP reprojection remains pure and is exposed here.
+ * pdftocairo/pdftoppm/tesseract raster runners and the proj4-CRS GCP reprojection
+ * stay in the acquisition app layer that consumes this surface.
  */
 
 export const VERSION = "0.1.0";
@@ -36,7 +33,6 @@ export { extractGeoRef, inflatePdfText, type InflateOptions } from "./geopdf.js"
 export {
   assertIndependentGcps,
   buildGeoRefFromGcps,
-  buildGeoRefFromGcpsCrs,
   checkIndependentGcps,
   gcpLooksBboxDerived,
   type BuildGeoRefResult,
@@ -46,19 +42,24 @@ export {
   type NeatlineFrac,
 } from "./gcp.js";
 
-// Autonomous T2 cadastre/linework matching core: in-memory points + cadastre in,
-// independent GCPs out. PDF rendering, OCR, S3 and file I/O stay outside.
+// T1 positioned-text label compute. pdftotext and file access stay in acquisition.
 export {
-  buildGcpFileFromAutoMatches,
-  deriveAutonomousGcpsFromPoints,
-  extractSvgVectorPointsFromString,
-  matchPagePointsToCadastre,
-  type AutoGcpCoreOptions,
-  type AutoGcpCoreReport,
-  type AutoGcpMatch,
-  type FitMode,
-  type PagePoint,
-} from "./autogcp.js";
+  STOPWORDS,
+  ZONE_CODE_RE,
+  extractLabelsFromWords,
+  filterExtractedLabelsByDict,
+  kindForPrefix,
+  looksLikeZoneCode,
+  normalizeZoneCodeText,
+  splitCode,
+  zoneLabelCandidatesFromWords,
+  type CodePoint,
+  type ExtractLabelsResult,
+  type LabelComputeOptions,
+  type LabelRegionFrac,
+  type RawLabel,
+  type ZoneCodeOptions,
+} from "./labels.js";
 
 // Affine/similarity decomposition + orientation/isotropy/mirror gate: refuse to
 // serve a residual-clean but geometrically-wrong (stretched/mirrored/flipped) fit.
