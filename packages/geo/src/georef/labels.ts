@@ -277,6 +277,9 @@ export function filterExtractedLabelsByDict(
   return {
     ...labels,
     codePoints,
+    // Preserve the acquisition T1/T2 post-filter counter contract: these
+    // counters describe the labels still eligible for serving, while
+    // dictRejected records the non-spatial rejection cause separately.
     nCodeLike: codePoints.length,
     nInsideFrame: codePoints.length,
     rejectedOutsideFrame: labels.rejectedOutsideFrame + dictRejected,
