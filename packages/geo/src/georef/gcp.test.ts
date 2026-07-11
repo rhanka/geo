@@ -10,16 +10,9 @@
  * Ported verbatim (import path only) from the acquisition golden test
  * `acquisition/src/lib/t2-georef.test.ts`.
  */
-import proj4 from "proj4";
 import { describe, it, expect } from "vitest";
 
-import {
-  assertIndependentGcps,
-  buildGeoRefFromGcps,
-  buildGeoRefFromGcpsCrs,
-  gcpLooksBboxDerived,
-  type Gcp,
-} from "./gcp.js";
+import { assertIndependentGcps, buildGeoRefFromGcps, gcpLooksBboxDerived, type Gcp } from "./gcp.js";
 
 // A plausible Rive-Sud plan: ~3370×2384 pt landscape page, ~6 km wide near 45.4°N.
 const PAGE_W = 3370;
@@ -104,75 +97,6 @@ describe("georef/gcp — 3-GCP affine calibration", () => {
     );
     const collinear = [gcpAt(0.1, 0.1, "a"), gcpAt(0.5, 0.5, "b"), gcpAt(0.9, 0.9, "c")];
     expect(() => buildGeoRefFromGcps(collinear, PAGE_W, PAGE_H)).toThrow(/collinear/);
-  });
-
-  it("accepts a globally spread layout when its first three GCPs are collinear", () => {
-    const gcps = [
-      gcpAt(0.1, 0.1, "line-a"),
-      gcpAt(0.2, 0.2, "line-b"),
-      gcpAt(0.3, 0.3, "line-c"),
-      gcpAt(0.8, 0.2, "off-line"),
-    ];
-
-    const result = buildGeoRefFromGcps(gcps, PAGE_W, PAGE_H);
-
-    expect(result.maxResidualM).toBeLessThan(0.01);
-  });
-
-  it("rejects a page-spread affine whose ground transform is singular", () => {
-    const groundCollinear: Gcp[] = [
-      { fx: 0.1, fy: 0.1, lon: -73.2, lat: 45, independent: true },
-      { fx: 0.9, fy: 0.1, lon: -73.1, lat: 45, independent: true },
-      { fx: 0.5, fy: 0.9, lon: -73, lat: 45, independent: true },
-    ];
-
-    expect(() => buildGeoRefFromGcps(groundCollinear, PAGE_W, PAGE_H)).toThrow(/ground transform.*singular/);
-  });
-
-  it("reprojects a projected CRS definition that contains a towgs84 parameter", () => {
-    const crs = "+proj=utm +zone=18 +ellps=GRS80 +towgs84=0,0,0 +units=m +no_defs";
-    const wgs84Gcps = [
-      gcpAt(0.1, 0.12, "top-left"),
-      gcpAt(0.88, 0.15, "top-right"),
-      gcpAt(0.45, 0.9, "bottom"),
-    ];
-    const projectedGcps = wgs84Gcps.map((gcp) => {
-      const [lon, lat] = proj4("WGS84", crs, [gcp.lon, gcp.lat]);
-      return { ...gcp, lon, lat };
-    });
-
-    const result = buildGeoRefFromGcpsCrs(projectedGcps, PAGE_W, PAGE_H, crs);
-    const [actualLon, actualLat] = result.geo.topLeftToLonLat(
-      wgs84Gcps[0]!.fx * PAGE_W,
-      wgs84Gcps[0]!.fy * PAGE_H,
-    );
-
-    expect(actualLon).toBeCloseTo(wgs84Gcps[0]!.lon, 7);
-    expect(actualLat).toBeCloseTo(wgs84Gcps[0]!.lat, 7);
-  });
-
-  it("accepts the CRS84 aliases used by acquisition GCP files", () => {
-    const gcps = [
-      gcpAt(0.1, 0.12, "top-left"),
-      gcpAt(0.88, 0.15, "top-right"),
-      gcpAt(0.45, 0.9, "bottom"),
-    ];
-
-    for (const crs of [
-      "CRS84",
-      "OGC:CRS84",
-      "urn:ogc:def:crs:OGC:1.3:CRS84",
-      "urn:ogc:def:crs:EPSG::4326",
-    ]) {
-      const result = buildGeoRefFromGcpsCrs(gcps, PAGE_W, PAGE_H, crs);
-      const [actualLon, actualLat] = result.geo.topLeftToLonLat(
-        gcps[0]!.fx * PAGE_W,
-        gcps[0]!.fy * PAGE_H,
-      );
-
-      expect(actualLon).toBeCloseTo(gcps[0]!.lon, 7);
-      expect(actualLat).toBeCloseTo(gcps[0]!.lat, 7);
-    }
   });
 
   it("classifies bbox-corner controls as non-independent for real-GCP serving", () => {

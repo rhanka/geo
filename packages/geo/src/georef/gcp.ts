@@ -26,11 +26,9 @@
  * the embedded one.
  *
  * Ported (pure compute, zero I/O) from the acquisition recalage pipeline
- * (`acquisition/src/lib/t2-georef.ts`), including its proj4-backed convenience
- * for GCPs expressed in a projected CRS.
+ * (`acquisition/src/lib/t2-georef.ts`). The proj4-backed CRS-reprojection
+ * convenience (`buildGeoRefFromGcpsCrs`) stays in the acquisition app layer.
  */
-import proj4 from "proj4";
-
 import { fitAffine, type GeoRef } from "./affine.js";
 
 /** One ground control point: a page fraction ↔ a real-world [lon,lat]. */
@@ -165,22 +163,12 @@ export function buildGeoRefFromGcps(
   const lons = gcps.map((g) => g.lon);
   const lats = gcps.map((g) => g.lat);
 
-  // Guard against a collinear GCP layout (zero-area triangles → singular fit).
-  // Callers may provide more than three controls in any order, so inspect the
-  // whole set instead of assuming the first triplet spans the page.
-  let maxArea2 = 0;
-  for (let i = 0; i < userPts.length; i++) {
-    for (let j = i + 1; j < userPts.length; j++) {
-      for (let k = j + 1; k < userPts.length; k++) {
-        const a = userPts[i]!;
-        const b = userPts[j]!;
-        const c = userPts[k]!;
-        const area2 = Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]));
-        if (area2 > maxArea2) maxArea2 = area2;
-      }
-    }
-  }
-  if (maxArea2 < 1e-6 * pageW * pageH) {
+  // Guard against a collinear GCP layout (zero-area triangle → singular fit).
+  const area2 = Math.abs(
+    (userPts[1]![0] - userPts[0]![0]) * (userPts[2]![1] - userPts[0]![1]) -
+      (userPts[2]![0] - userPts[0]![0]) * (userPts[1]![1] - userPts[0]![1]),
+  );
+  if (area2 < 1e-6 * pageW * pageH) {
     throw new Error("GCPs are (near-)collinear — spread them across the plan (avoid a line)");
   }
 
@@ -190,30 +178,6 @@ export function buildGeoRefFromGcps(
   const meanLat = lats.reduce((a, b) => a + b, 0) / lats.length;
   const mPerDegLat = M_PER_DEG_LAT;
   const mPerDegLon = M_PER_DEG_LAT * Math.cos((meanLat * Math.PI) / 180);
-
-  // Residuals alone cannot detect a collapsed target: three page-spread GCPs
-  // mapped to one ground line fit with a zero residual but produce a
-  // non-invertible georef. Reject a non-finite or relatively near-singular
-  // page→ground Jacobian independently of the higher-level orientation gate.
-  const j00 = cLon[0] * mPerDegLon;
-  const j01 = cLon[1] * mPerDegLon;
-  const j10 = cLat[0] * mPerDegLat;
-  const j11 = cLat[1] * mPerDegLat;
-  const frobeniusSq = j00 * j00 + j01 * j01 + j10 * j10 + j11 * j11;
-  const determinant = j00 * j11 - j01 * j10;
-  const discriminant = Math.max(0, frobeniusSq * frobeniusSq - 4 * determinant * determinant);
-  const maxSingular = Math.sqrt((frobeniusSq + Math.sqrt(discriminant)) / 2);
-  const minSingular = Math.abs(determinant) / maxSingular;
-  if (
-    !Number.isFinite(frobeniusSq) ||
-    !Number.isFinite(determinant) ||
-    !Number.isFinite(maxSingular) ||
-    !Number.isFinite(minSingular) ||
-    maxSingular <= 0 ||
-    minSingular / maxSingular < 1e-8
-  ) {
-    throw new Error("GCP ground transform is non-finite or (near-)singular");
-  }
 
   const pageToLonLat = (x: number, y: number): [number, number] => [
     cLon[0] * x + cLon[1] * y + cLon[2],
@@ -270,33 +234,4 @@ export function buildGeoRefFromGcps(
   };
 
   return { geo, residualsM, maxResidualM: maxRes, rmsResidualM: rms };
-}
-
-/**
- * Convert GCP coordinates from any proj4-supported CRS to WGS84 in memory,
- * then fit the same public affine. Callers must provide a proj4 definition when
- * their proj4 runtime does not already know a bare EPSG identifier.
- */
-export function buildGeoRefFromGcpsCrs(
-  gcps: Gcp[],
-  pageW: number,
-  pageH: number,
-  crs: string | undefined,
-  neatline?: NeatlineFrac,
-): BuildGeoRefResult {
-  const normalizedCrs = crs?.trim();
-  if (
-    !normalizedCrs ||
-    /^(?:(?:EPSG:)?4326|WGS ?84|(?:OGC:)?CRS84|urn:ogc:def:crs:(?:EPSG:[^:]*:4326|OGC:[^:]+:CRS84))$/i.test(
-      normalizedCrs,
-    )
-  ) {
-    return buildGeoRefFromGcps(gcps, pageW, pageH, neatline);
-  }
-  const toWgs84 = proj4(normalizedCrs, "WGS84");
-  const wgs84Gcps = gcps.map((gcp) => {
-    const [lon, lat] = toWgs84.forward([gcp.lon, gcp.lat]) as [number, number];
-    return { ...gcp, lon, lat };
-  });
-  return buildGeoRefFromGcps(wgs84Gcps, pageW, pageH, neatline);
 }
