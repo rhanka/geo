@@ -1,0 +1,1038 @@
+{
+  "generatedAt": "2026-07-12T23:33:50.641Z",
+  "shard": {
+    "mod": 2,
+    "rem": 1,
+    "rule": "(sorted slug index % 2) == 1"
+  },
+  "selection": {
+    "nonDoneAtConsolidation": 135,
+    "rows": 135,
+    "uncoveredFallbacks": 0
+  },
+  "deposits": [
+    {
+      "slug": "sainte-elisabeth",
+      "status": "depot",
+      "method": "T2 GCP indépendants + labels texte",
+      "source": "work/zonage-plans/sainte-elisabeth-plan.pdf",
+      "proof": "34 GCP indépendants; résidu max 12,977 m / RMS 5,906 m; 177 codes réels verbatim; 131 features; 1092/1119 lots (97,59%); centroïde 1,503 km; dépôt S3 qc-zonage-sainte-elisabeth puis lot-zone-join-run et lots-enriched-run OK (1119 lots, zone_code 97,59%, surface 100%, adresse 98,57%, FSA 100%)",
+      "index": 949
+    }
+  ],
+  "rows": [
+    {
+      "slug": "aguanish",
+      "status": "echec",
+      "method": "official-site-bounded-discovery",
+      "proof": "discovery-current-20260712.json: no zoning-plan PDF link; cached official pages expose governance/privacy PDFs and a matrix-graphique link only",
+      "index": 3
+    },
+    {
+      "slug": "ange-gardien",
+      "status": "echec",
+      "method": "T1-then-T2-auto-seed",
+      "proof": "T1 dry-run ABORT: embedded-georef corner residual 996.21 m > 50 m. T2 auto-seed ABORT: orientation ambiguity, plausible north-up fits disagree by 180.0 degrees; no GCP file and no deposit.",
+      "index": 11
+    },
+    {
+      "slug": "austin",
+      "status": "echec",
+      "method": "T1 GeoPDF Claude dict-validé + inventaire S3",
+      "proof": "géoréf NAD83 MTM8, résidu 0,16 m; 125/125 lectures Claude exactes contre 125 codes officiels; ABORT sur cadastre canonique absent: NoSuchKey normalized/qc-cadastre-lots/austin.geojson; inventaire S3 normalized/ vérifié: seules les 2 clés qc-zonage-norms-austin existent, aucune clé cadastre austin",
+      "index": 19
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "status": "echec",
+      "method": "official-site-discovery-plus-existing-T2",
+      "proof": "Official bounded discovery found no standalone zoning-plan PDF; cached by-law references plan 6-0431-Z but do not publish the map. Existing T2 report: svg_points=0, no residual/holdout winner.",
+      "index": 27
+    },
+    {
+      "slug": "begin",
+      "status": "echec",
+      "method": "official-regulation-T1/T2",
+      "proof": "Both official PDFs are regulation text, not a recalable map: no embedded georef and existing T2 report has svg_points=0; no GCP or deposit.",
+      "index": 45
+    },
+    {
+      "slug": "blanc-sablon",
+      "status": "echec",
+      "method": "official-site-bounded-discovery",
+      "proof": "discovery-current-20260712.json: no zoning-plan PDF link; cached official pages expose general municipal/contractual documents only.",
+      "index": 55
+    },
+    {
+      "slug": "boileau",
+      "status": "echec",
+      "method": "official-site-discovery-plus-existing-T2",
+      "proof": "No standalone official zoning-plan PDF found in bounded discovery; existing cached input/T2 report has svg_points=0 and no residual/holdout winner.",
+      "index": 57
+    },
+    {
+      "slug": "bois-franc",
+      "status": "echec",
+      "method": "official-site-discovery-plus-existing-T2",
+      "proof": "Official page exposes zoning by-law, grid and annexes but no standalone zoning plan; existing T2 report has svg_points=2, below a valid seed, so no deposit.",
+      "index": 59
+    },
+    {
+      "slug": "bonne-esperance",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "aucun site officiel ni plan PDF local trouvé dans le répertoire municipal; pas de source à servir sans invention",
+      "index": 65
+    },
+    {
+      "slug": "bowman",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "published candidate is a flat non-georeferenced PDF/PScript5 map; no official zoning-plan link recovered; T1/T2 cannot pass",
+      "index": 69
+    },
+    {
+      "slug": "brome",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "page officielle récupérée, aucun plan de zonage PDF; les PDF présents sont des règlements non cartographiques",
+      "index": 73
+    },
+    {
+      "slug": "bryson",
+      "status": "echec",
+      "method": "directory-and-local-evidence",
+      "proof": "No official website is present in the municipal directory; no official zoning PDF or valid GCP evidence.",
+      "index": 77
+    },
+    {
+      "slug": "cacouna",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Cached PDF is ASCII error page `error code: 525`; cached official pages had no zoning/plan PDF link.",
+      "index": 79
+    },
+    {
+      "slug": "campbells-bay",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Official EN/FR regulation pages expose fiscal, ethics, septic, fire-station, health-alert, or general bylaw PDFs only.",
+      "index": 81
+    },
+    {
+      "slug": "caniapiscau",
+      "status": "echec",
+      "method": "official-source-check",
+      "proof": "municipal directory has no official website and no verifiable official zoning PDF",
+      "index": 83
+    },
+    {
+      "slug": "cap-chat",
+      "status": "echec",
+      "method": "T1 GeoPDF glyphes + classification officielle",
+      "proof": "les deux cartes officielles sont géoréférencées (résidus 2,96 m et 1,09 m) mais pdftotext donne 0 code; leurs titres/légendes sont explicitement « Zones de contraintes relatives à l'érosion côtière », pas un zonage municipal → ABORT sans servir",
+      "index": 85
+    },
+    {
+      "slug": "cayamant",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Official regulations page lists municipal bylaws, including CCU/demolition, but no zoning plan or zoning regulation PDF.",
+      "index": 93
+    },
+    {
+      "slug": "chapais",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed page 1",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO; T2 pass=false, svg_points=0, aucun GCP retenu, résidu/holdout non calculables",
+      "index": 99
+    },
+    {
+      "slug": "chichester",
+      "status": "echec",
+      "method": "sondage officiel borné déjà consigné",
+      "proof": "aucun lien PDF de plan de zonage municipal dans les pages officielles contrôlées",
+      "index": 111
+    },
+    {
+      "slug": "clarendon",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "prior official-site scan found no plan/zoning PDF; current verification HTTP 406",
+      "index": 115
+    },
+    {
+      "slug": "deleage",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Official zoning PDF is text bylaw only and not GeoPDF; official zoning map is JPG with no coordinate grid or verified seed GCP, so no controls were invented.",
+      "index": 135
+    },
+    {
+      "slug": "dolbeau-mistassini",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed page 1",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO; T2 pass=false, svg_points=0, aucun GCP retenu, résidu/holdout non calculables",
+      "index": 145
+    },
+    {
+      "slug": "east-farnham",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "T2 report: 85 SVG points, 8 attempts, at most 5 independent matches after pruning (<6); no residual+holdout winner.",
+      "index": 161
+    },
+    {
+      "slug": "eastman",
+      "status": "echec",
+      "method": "T1 then T2 auto-GCP",
+      "proof": "T1 aborted: no /VP /Measure /GEO georeferencing. T2 auto-GCP command was bounded with timeout 330s and exited 124 without producing work/gcp/eastman.autogcp.shard1of2.report.json.",
+      "index": 163
+    },
+    {
+      "slug": "egan-sud",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed page 1",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO; T2 pass=false, svg_points=0, aucun GCP retenu, résidu/holdout non calculables",
+      "index": 165
+    },
+    {
+      "slug": "ferland-et-boilleau",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official host did not resolve for tested urbanisme pages",
+      "index": 173
+    },
+    {
+      "slug": "gaspe",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed + arbitrages",
+      "proof": "T1 sans /VP /Measure /GEO; T2: seeds résidu/holdout mais iso-gate; arbitrage anisotropie meilleur serving 56,13% < 85%, donc SKIP",
+      "index": 187
+    },
+    {
+      "slug": "gracefield",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "The cached input is the zoning regulation rather than a usable vector plan; T2 report has svg_points=0 and attempts=0.",
+      "index": 193
+    },
+    {
+      "slug": "grande-vallee",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "TLS hostname mismatch on official host for tested urbanisme pages; no TLS bypass used",
+      "index": 199
+    },
+    {
+      "slug": "gros-mecatina",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official page read but no exploitable zoning plan PDF link",
+      "index": 203
+    },
+    {
+      "slug": "hampden",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Both official sheets were tested; each T2 report has cadastre_features=338, svg_points=0, attempts=0.",
+      "index": 209
+    },
+    {
+      "slug": "hebertville-station",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "MAMH has no website; local PDF is for Hebertville and is a regulation, not a plan",
+      "index": 217
+    },
+    {
+      "slug": "hope-town",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official host did not resolve for tested urbanisme pages",
+      "index": 225
+    },
+    {
+      "slug": "kazabazua",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "20 puis 16 seeds résidu+holdout acceptés, mais aucun ne passe l'iso-gate orientation/isotropie; la reprise lot/aniso n'a produit ni GCP ni rapport",
+      "index": 235
+    },
+    {
+      "slug": "la-dore",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official documentation page read; no separate recalable zoning plan PDF found in visible links",
+      "index": 245
+    },
+    {
+      "slug": "la-tuque",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official pages expose document categories but no directly visible recalable zoning plan PDF in links read",
+      "index": 263
+    },
+    {
+      "slug": "labrecque",
+      "status": "echec",
+      "method": "T3 raster-register officiel, gate holdout",
+      "proof": "Deux plans officiels raster. À 72 DPI: territoire 6 GCP survivants (<8), urbain 5 (<8). À 144 DPI: territoire 9 GCP, résidu 27,063 m mais holdout 78,684 m > 30; urbain 5 GCP <8. Gate T3 ABORT, aucun dépôt.",
+      "index": 267
+    },
+    {
+      "slug": "lac-aux-sables",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Official zonage annex has no embedded georef and T2 vector auto-GCP has svg_points=0",
+      "index": 269
+    },
+    {
+      "slug": "lac-bouchette",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official host timed out on bounded https and http homepage fetches",
+      "index": 271
+    },
+    {
+      "slug": "lac-sergent",
+      "status": "echec",
+      "method": "T2 auto-seed + lot-assignment",
+      "proof": "2 rotations passent le résidu mais tight=0% et serving=0% pour les deux; marge 0 pt < 15 pt; anisotropie serving 0% < 85% → SKIP",
+      "index": 289
+    },
+    {
+      "slug": "laforce",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "MAMH directory has no website and no local official zoning plan PDF found",
+      "index": 295
+    },
+    {
+      "slug": "lanse-saint-jean",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "svg_points=326, aucun seed (extent × rotation) ne passe le résidu+holdout",
+      "index": 303
+    },
+    {
+      "slug": "larouche",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "official pages expose zoning regulation and forms; local PDF is regulation text, not recalable plan; T1 no embedded georef",
+      "index": 305
+    },
+    {
+      "slug": "lascension-de-notre-seigneur",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "bounded https and http fetches produced empty files; no zoning plan PDF recovered",
+      "index": 307
+    },
+    {
+      "slug": "laurierville",
+      "index": 313,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.laurierville.net",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "lebel-sur-quevillon",
+      "index": 319,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.lsq.quebec",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "les-cedres",
+      "index": 327,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ville.lescedres.qc.ca",
+      "proof": "19 pages candidates contrôlées (4 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "les-mechins",
+      "index": 333,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.lesmechins.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "lisle-aux-allumettes",
+      "index": 341,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.isle-aux-allumettes.com",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "lisle-verte",
+      "index": 343,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.municipalite.lisle-verte.qc.ca",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "litchfield",
+      "index": 345,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.litchfield-qc.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "lochaber-partie-ouest",
+      "status": "echec",
+      "method": "T1 GeoPDF glyphes",
+      "proof": "GeoPDF officiel résidu 0,16 m mais 0 code sélectionnable; aucun dictionnaire réglementaire autoritaire trouvé pour ouvrir la voie Claude dict-validée → ABORT",
+      "index": 347
+    },
+    {
+      "slug": "longue-rive",
+      "index": 349,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.longuerive.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "massueville",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Cached input is a 110-page zoning regulation, not the plan; T2 report has svg_points=0, attempts=0 and no seed at 30 m.",
+      "index": 373
+    },
+    {
+      "slug": "matane",
+      "status": "echec",
+      "method": "T1 puis T2 auto-GCP page 2",
+      "proof": "T1 sans géoréf embarqué; T2: 13 fits passent résidu/holdout (jusqu'à 45 GCP, résidu min 10,358 m), mais rotation ambiguë; couverture tight 0%, serving max 1,89%, aniso serving 0,26% < 85%, seulement 2 codes → SKIP",
+      "index": 375
+    },
+    {
+      "slug": "mayo",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed affine/similarity",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO. Le PDF officiel ne fournit que 16 points SVG exploitables; T2 affine et similarity n’obtiennent aucun seed résidu+holdout. Aucun dépôt.",
+      "index": 377
+    },
+    {
+      "slug": "messines",
+      "index": 381,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.messines.ca",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "montcerf-lytton",
+      "index": 399,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.montcerf-lytton.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "newport",
+      "index": 417,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.municipalitenewport.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "notre-dame-de-ham",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "T1 no embedded georef; existing T2 report no seed cleared residual/holdout",
+      "index": 425
+    },
+    {
+      "slug": "notre-dame-de-montauban",
+      "index": 433,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.notredamedemontauban.com",
+      "proof": "19 pages candidates contrôlées (5 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "ogden",
+      "status": "echec",
+      "method": "T1 GeoPDF Claude dict-validé",
+      "proof": "géoréf résiduel 0,18 m et 48/48 lectures validées, mais gate spatial échoue: centroïde labels à 17,01 km du cadastre (>8 km) → ABORT sans dépôt",
+      "index": 453
+    },
+    {
+      "slug": "otter-lake",
+      "index": 457,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.otterlakequebec.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "petit-saguenay",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "T1 no embedded georef; T2 SVG extraction failed with ERR_STRING_TOO_LONG",
+      "index": 467
+    },
+    {
+      "slug": "petite-vallee",
+      "index": 469,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "proof": "0 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "port-cartier",
+      "index": 487,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.villeport-cartier.com",
+      "proof": "19 pages candidates contrôlées (7 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "portage-du-fort",
+      "index": 489,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.portage-du-fort.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "portneuf-sur-mer",
+      "index": 491,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.portneuf-sur-mer.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "riviere-heva",
+      "index": 519,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.riviere-heva.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "roberval",
+      "index": 523,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.roberval.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sacre-coeur",
+      "status": "echec",
+      "method": "classification T1/T2",
+      "proof": "deux plans officiels vector-glyph (512/457 chemins), zéro code texte; registre de normes absent, donc aucun dictionnaire autoritaire pour la voie Claude dict-validée; aucun dépôt",
+      "index": 531
+    },
+    {
+      "slug": "saguenay",
+      "index": 533,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://ville.saguenay.ca",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-adelme",
+      "index": 535,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://municipalites-du-quebec.com/st-adelme/description.php",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-alexis-des-monts",
+      "index": 551,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saint-alexis-des-monts.ca",
+      "proof": "19 pages candidates contrôlées (8 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-alphonse-rodriguez",
+      "index": 555,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.munsar.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-ambroise",
+      "status": "echec",
+      "method": "classification T3",
+      "proof": "deux plans officiels raster-scan (une grande image chacun, 0 chemin vectoriel); t2-raster-register exige un seed GCP grossier local absent; aucun recalage démontrable sans fabriquer de contrôles",
+      "index": 557
+    },
+    {
+      "slug": "saint-arsene",
+      "index": 573,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.municipalite.saint-arsene.qc.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-aubert",
+      "index": 575,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://saint-aubert.net",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-augustin--maria-chapdelaine",
+      "index": 577,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.staugustinlacstjean.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-boniface",
+      "index": 593,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.municipalitesaint-boniface.ca",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-casimir",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Cached official document is a 345-page zoning regulation; no autonomous zoning-plan PDF is available for T1/T2.",
+      "index": 601
+    },
+    {
+      "slug": "saint-charles-de-bourget",
+      "index": 607,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.stcharlesdebourget.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-clement",
+      "index": 613,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-clement.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-cyprien--riviere-du-loup",
+      "index": 623,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintcyprien.ca",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-damase-de-lislet",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "T1 no embedded georef on both plans; existing T2 reports rejected",
+      "index": 629
+    },
+    {
+      "slug": "saint-edouard-de-maskinonge",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Cached PDF is a five-page road atlas, not zoning; T2 report has svg_points=0, attempts=0.",
+      "index": 647
+    },
+    {
+      "slug": "saint-eugene-de-guigues",
+      "index": 663,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-eugene-de-guigues.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-felix-dotis",
+      "status": "echec",
+      "method": "sondage officiel",
+      "proof": "liens trouvés: cahier des spécifications, règlement texte et deux extraits d'amendement AVANT/APRÈS; aucun plan de zonage municipal complet téléchargeable dans le scan borné",
+      "index": 673
+    },
+    {
+      "slug": "saint-francois-de-sales",
+      "index": 681,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://stfrancoisdesales.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-jean-port-joli",
+      "index": 735,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintjeanportjoli.com",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-jerome",
+      "status": "echec",
+      "method": "audit résidu PDF",
+      "proof": "aucun plan PDF officiel présent dans le cache ou les rapports de recalage; seuls des artefacts ArcGIS historiques existent et l'AGOL owner harvest est explicitement hors mission",
+      "index": 737
+    },
+    {
+      "slug": "saint-lambert-de-lauzon",
+      "index": 755,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.mun-sldl.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-leandre",
+      "index": 759,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-leandre.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-nazaire",
+      "index": 809,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ville.saint-nazaire.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-norbert-darthabaska",
+      "index": 815,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saint-norbert-darthabaska.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-onesime-dixworth",
+      "index": 819,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "proof": "0 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "index": 827,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintpauldabbotsford.qc.ca",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "index": 829,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ileauxnoix.com",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-paulin",
+      "index": 831,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-paulin.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-philibert",
+      "index": 833,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-philibert.qc.ca",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-pierre-baptiste",
+      "index": 839,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintpierrebaptiste.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-placide",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Four-page scanned official input has no selectable zoning labels/vector parcel linework; T2 report has svg_points=0, attempts=0.",
+      "index": 845
+    },
+    {
+      "slug": "saint-prime",
+      "index": 847,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saint-prime.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-roch-de-mekinac",
+      "index": 859,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.strochdemekinac.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-roch-des-aulnaies",
+      "index": 861,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintrochdesaulnaies.ca",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-samuel",
+      "status": "echec",
+      "method": "sondage officiel",
+      "proof": "liens officiels trouvés uniquement vers règlement de zonage et projets de règlement; aucun plan/cartographie de zonage autonome",
+      "index": 865
+    },
+    {
+      "slug": "saint-severe",
+      "index": 869,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-severe.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-severin--mekinac",
+      "index": 871,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.st-severin.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-sixte",
+      "status": "echec",
+      "method": "T2 auto-GCP + arbitrage aniso",
+      "proof": "7 seeds passent résidu/holdout mais aucun l'iso-gate; meilleure couverture serving 70,04% < seuil 85% → SKIP",
+      "index": 877
+    },
+    {
+      "slug": "saint-stanislas--maria-chapdelaine",
+      "status": "echec",
+      "method": "classification T3",
+      "proof": "deux plans officiels raster purs: 0 texte, 0 chemin vectoriel, une image chacun; aucun seed GCP local fiable pour T3",
+      "index": 879
+    },
+    {
+      "slug": "saint-valentin",
+      "index": 897,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.municipalite.saint-valentin.qc.ca",
+      "proof": "19 pages candidates contrôlées (18 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saint-zenon",
+      "index": 907,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saint-zenon.com",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-agathe-des-monts",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "autogcp: aucun seed n'a passe residu+holdout",
+      "index": 913
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "status": "echec",
+      "method": "sondage officiel",
+      "proof": "résultats officiels = règlement PIIA et document composite annexes/plans; aucun lien qualifié explicitement comme plan de zonage municipal autonome",
+      "index": 915
+    },
+    {
+      "slug": "sainte-beatrix",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "plan MapInfo PDF Printer = raster imprime, 0 point vectoriel -> autogcp sans seed (T3 raster requis)",
+      "index": 931
+    },
+    {
+      "slug": "sainte-christine",
+      "status": "echec",
+      "method": "T1 texte + contrôle dictionnaire",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO; plan vector-glyph sans codes sélectionnables; dictionnaire officiel présent mais limité à 201..205, soit 0 code lettré, donc échec du gate explicite ≥3 codes lettrés",
+      "index": 941
+    },
+    {
+      "slug": "sainte-elisabeth",
+      "status": "depot",
+      "method": "T2 GCP indépendants + labels texte",
+      "source": "work/zonage-plans/sainte-elisabeth-plan.pdf",
+      "proof": "34 GCP indépendants; résidu max 12,977 m / RMS 5,906 m; 177 codes réels verbatim; 131 features; 1092/1119 lots (97,59%); centroïde 1,503 km; dépôt S3 qc-zonage-sainte-elisabeth puis lot-zone-join-run et lots-enriched-run OK (1119 lots, zone_code 97,59%, surface 100%, adresse 98,57%, FSA 100%)",
+      "index": 949
+    },
+    {
+      "slug": "sainte-emelie-de-lenergie",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Official MapInfo plan yields no selectable code text and T2 report has svg_points=0, attempts=0; raster registration has no honest local seed.",
+      "index": 951
+    },
+    {
+      "slug": "sainte-hedwidge",
+      "index": 965,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ste-hedwidge.qc.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-helene-de-chester",
+      "index": 967,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.sainte-helene-de-chester.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-jeanne-darc--maria-chapdelaine",
+      "index": 973,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.stejeannedarc.qc.ca",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "status": "echec",
+      "method": "preuve rapport antérieur",
+      "proof": "Two official plan pages were tested: 7 and 13 seeds respectively passed residual+holdout (best residuals 4.521-5.481 m), but none passed orientation/isotropy; no safe rotation winner.",
+      "index": 977
+    },
+    {
+      "slug": "sainte-madeleine-de-la-riviere-madeleine",
+      "index": 983,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.stemadeleine.ca",
+      "proof": "19 pages candidates contrôlées (3 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-marguerite",
+      "index": 985,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.sainte-marguerite.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "status": "echec",
+      "method": "classification T3",
+      "proof": "annexe B officielle = raster pur, 0 texte et 0 chemin vectoriel; T3 non ouvrable sans seed GCP grossier local réel",
+      "index": 991
+    },
+    {
+      "slug": "sainte-perpetue--lislet",
+      "index": 999,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.sainteperpetue.com",
+      "proof": "19 pages candidates contrôlées (19 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-rita",
+      "index": 1003,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ste-rita.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-rose-du-nord",
+      "index": 1005,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.ste-rosedunord.qc.ca",
+      "proof": "19 pages candidates contrôlées (8 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-sophie-dhalifax",
+      "index": 1011,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.saintesophiedhalifax.com",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "sainte-therese-de-la-gatineau",
+      "index": 1015,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.sainte-therese-de-la-gatineau.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "saints-martyrs-canadiens",
+      "status": "echec",
+      "method": "T2 retry aniso",
+      "proof": "best candidate density+10%/rot0° serving coverage 1.22% < floor 85% — anisotropy NOT confirmed real (labels do not land on lots) → SKIP",
+      "index": 1019
+    },
+    {
+      "slug": "shawville",
+      "index": 1031,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.town.shawville.qc.ca",
+      "proof": "19 pages candidates contrôlées (2 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "thorne",
+      "index": 1055,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "source": "https://www.thornequebec.ca",
+      "proof": "19 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    },
+    {
+      "slug": "upton",
+      "status": "echec",
+      "method": "T1 puis T2 auto-seed frais",
+      "source": "https://www.upton.ca/wp-content/uploads/2026/07/Plan-de-zonage.pdf",
+      "proof": "T1 ABORT: aucun /VP /Measure /GEO exploitable. T2: 2635 points SVG et 9 seeds passent résidu+holdout, mais tous échouent l'iso-gate (anisotropie 1,804–3,088 et/ou orientation non north-up); aucun GCP servi ni dépôt.",
+      "index": 1067
+    },
+    {
+      "slug": "waltham",
+      "index": 1091,
+      "status": "echec",
+      "method": "sondage borné du site officiel MAMH",
+      "proof": "0 pages candidates contrôlées (0 HTTP 2xx); aucun lien PDF de plan/carte de zonage extrait verbatim"
+    }
+  ],
+  "verification": {
+    "selector": "137/137 slugs non-done impairs couverts; 1 dépôt net de cette passe; 0 hors shard",
+    "loopSuperviseScoreboardZones": 822,
+    "loopSuperviseQualityServed": 821,
+    "austinRetry": "résidu 0,16 m; 125/125 lectures Claude validées; NoSuchKey normalized/qc-cadastre-lots/austin.geojson; s3-keys-list normalized/ austin = 2 clés de normes, 0 cadastre"
+  }
+}
