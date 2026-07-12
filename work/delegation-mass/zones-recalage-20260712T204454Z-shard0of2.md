@@ -45,4 +45,4 @@ Les autres résidus courants du shard restent couverts par les preuves antérieu
 
 ## Commit ciblé
 
-Les artefacts de dépôt et ce rapport sont prêts pour un commit ciblé; les modifications préexistantes de `.claude`, `.track`, `work/coverage` et des autres agents sont laissées intactes.
+Commit ciblé créé et poussé: `74d2349` (`feat(zones): deposit Forestville PDF recalage`) vers `origin/feat/cadre-acquisition`. Les modifications préexistantes de `.claude`, `.track`, `work/coverage` et des autres agents sont restées intactes.
