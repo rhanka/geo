@@ -71,3 +71,5 @@ Le dernier `loop-supervise.ts` observé après les dépôts indiquait `normes=66
 ## Git
 
 Commit limité au présent rapport; aucun `git add .`. Les PDF et manifestes de travail restent des artefacts non suivis/concurrents et ne sont pas inclus dans ce commit.
+
+Note de traçabilité: un seed historique multi-entrées a brièvement téléchargé deux PDF hors shard (`bonsecours`, `dupuy`) avant filtrage. Aucun appel Mistral, dépôt ou post-traitement n’a été effectué pour ces deux slugs.
