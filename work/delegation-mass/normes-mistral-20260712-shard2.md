@@ -48,3 +48,12 @@ Les rejets restent parquet-free et ne modifient pas le manifeste partagé. Les m
 ## État final
 
 Après la dernière supervision et le merge, le sélecteur shard 2/4 a listé 46 slugs encore `zones=done & normes!=done`; ils restent à reprendre par une prochaine passe avec nouvelles sources officielles/MRC. Les dépôts de cette passe sont les dix lignes ci-dessus. Les modifications préexistantes et concurrentes dans `.claude`, `.track`, `acquisition/src`, `packages` et `work/` ont été laissées intactes.
+
+## Addendum — passe Mistral du 2026-07-12
+
+- Le recalcul courant a observé 40 candidats au départ, puis 39 et 38 après changements concurrents. La garde est restée `index % 4 == 2`; aucun slug hors shard n’a été déposé.
+- Extraction additionnelle : Mistral `document_annotation` sur l’annexe « Grilles des spécifications par zones » de Saint-Ferdinand, pages 310–425, 116 pages / 15 chunks / `$0,348`.
+- Saint-Ferdinand passe les gates : 103 codes, `overlap=42`, `publishedFieldPct=42,5 %`. Parquet : `registry/qc-zonage-norms/qc-zonage-norms-saint-ferdinand.parquet`.
+- Manifest fusionné avec `zonage-norms-manifest-merge.ts --apply`. `lot-zone-join-run.ts` : 2 078 lots, 100 % assignés, 15,26 % match normes. `lots-enriched-run.ts` : dépôt réussi, `zone_code=100 %`, `norms=15,26 %`.
+- Preuves supplémentaires : Saint-Augustin (56 codes, overlap 0), Saint-Pamphile (8 codes, 62,5 % champs, overlap 0), Saint-Paul-de-Montminy (3 codes, overlap 0), Saint-Venant (10 codes, 60 % champs, overlap 0), Saint-Antonin (2 codes, overlap 0) ; tous rejetés par les gates stricts. Saint-Célestin, Saint-René, Sainte-Brigitte, Saint-Émile, Sainte-Anne, Saint-Pierre et Sainte-Hélène n’ont produit aucun produit publiable.
+- Les sources officielles supplémentaires confirmées mais non déposées étaient des plans, amendements ou règlements sans feuillet grille exploitable. Aucun GPT-5.5/codex n’a été utilisé.
