@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-07-12T03:36:08Z",
+  "shard": {"mod": 2, "rem": 1, "label": "1/2"},
+  "selector": {
+    "command": "npx tsx acquisition/src/zones-recalage-shardN-select.ts --mod 2 --rem 1 --limit 12",
+    "totalNonDoneInShard": 139,
+    "pdfBucketCount": 132,
+    "firstLot": ["aguanish", "ange-gardien", "austin", "baie-johan-beetz", "begin", "blanc-sablon", "boileau", "bois-franc", "bonne-esperance", "bowman", "brome", "bryson"]
+  },
+  "deposits": [
+    {
+      "index": 711,
+      "slug": "saint-honore",
+      "method": "t1-geopdf-multisheet-claude48-vision",
+      "source_pdfs": [
+        "https://www.ville.sthonore.qc.ca/wp-content/uploads/2020/11/C-787-1_zonage_Territoire_Aout-2019_Rev_Mars-2020.pdf",
+        "https://www.ville.sthonore.qc.ca/wp-content/uploads/2020/11/C-787-2-Zonage-Urbain-Aout-2019.pdf"
+      ],
+      "s3_zone_key": "normalized/ca-qc-zonage/qc-zonage-saint-honore.geojson",
+      "gates": {
+        "georef_residual_m": [0.066, 0.121],
+        "distinct_codes": 109,
+        "validated_reads": 111,
+        "spatial_km": 0.974,
+        "features": 87,
+        "lots_total": 3569,
+        "lots_assigned": 3321,
+        "lot_coverage_pct": 93.05,
+        "pure_numeric_codes": 0,
+        "banned_affectation_tokens": 0
+      },
+      "inline": {
+        "lot_zone_join": "verified: 3569 rows, 95.26% assigned",
+        "lots_enriched": "verified: 3569 lots, zone_code 95.26%, surface 100%, code_postal 100%, adresse 89.91%"
+      }
+    }
+  ],
+  "evidence_reused": {
+    "report": "work/delegation-mass/zones-recalage-20260712T025725Z-shard1of2.md",
+    "covered_non_done_slugs": 139,
+    "superseded_slugs": ["saint-honore"]
+  },
+  "no_agol_owner_harvest": true,
+  "node_ts_only": true,
+  "no_secrets_or_track_touched": true
+}
