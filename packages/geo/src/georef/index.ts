@@ -106,3 +106,15 @@ export {
   type RotationDecision,
   type RotationDecisionOptions,
 } from "./rotation-disambig.js";
+
+// Pure PGM/gray-image edge, corner, and patch evidence. PDF rendering and
+// cadastre registration orchestration stay in the acquisition app layer.
+export {
+  detectRasterCorners,
+  edgeMaskFromGray,
+  parsePgm,
+  patchEdgeScore,
+  type EdgeImage,
+  type GrayImage,
+  type RasterCorner,
+} from "./raster.js";
