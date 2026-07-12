@@ -38,4 +38,4 @@ Les autres cibles de la sélection (notamment `clerval`, `franquelin`, `gallicha
 
 ## État final
 
-Un seul dépôt net dans cette passe: `sainte-barbe`. Les gates ont empêché les autres dépôts. Le manifeste a été réconcilié et les lots de Sainte-Barbe ont été enrichis. Aucun commit/push n’est effectué dans ce passage car le worktree contient des modifications concurrentes nombreuses, dont `coverage-matrix.json`, `.claude` et `.track`; le dépôt Parquet est déjà publié côté registre.
+Un seul dépôt net dans cette passe: `sainte-barbe`. Les gates ont empêché les autres dépôts. Le manifeste a été réconcilié et les lots de Sainte-Barbe ont été enrichis. Un commit ciblé a été créé puis poussé (`1de8bce`, `origin/feat/cadre-acquisition`) uniquement pour ce rapport et les quatre seeds; les modifications concurrentes, dont `coverage-matrix.json`, `.claude` et `.track`, restent intactes. Le dépôt Parquet est publié côté registre.
