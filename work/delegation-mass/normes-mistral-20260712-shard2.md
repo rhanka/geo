@@ -22,10 +22,11 @@
 | saint-francois-dassise | `mistral-schema` pages 165–182 | 45 | 62,5% | 45 / 45 (100%) | $0,054 |
 | saint-just-de-bretenieres | `mistral-schema` pages 1–12 | 12 | 62,5% | 39 / 6 | $0,036 |
 | sainte-famille-de-lile-dorleans | `mistral-schema` pages 1–16 | 64 | 50,0% | 67 / 64 (95,5% SIG) | $0,048 |
+| nantes | OCR + auto-grid pages 1–9 | 59 | 10,6% | 82 / 57 (96,6% extrait) | $0,001 |
 
-Total publié : 260 codes de zone; coût des huit dépôts acceptés : environ **$0,449**.
+Total publié : 319 codes de zone; coût des neuf dépôts acceptés : environ **$0,450**.
 
-Les huit slugs ont ensuite reçu `lot-zone-join-run.ts` et `lots-enriched-run.ts`. Résultats notables : Sainte-Famille 95,18% de lots normés, Saint-François-d’Assise 100%, Howick 92,64%, La Trinité-des-Monts 99,44%. Saint-Damien est volontairement limité aux dix pages traitées (2,6% de lots normés); Saint-Just est limité aux douze pages traitées (7,53%).
+Les neuf slugs ont ensuite reçu `lot-zone-join-run.ts` et `lots-enriched-run.ts`. Résultats notables : Sainte-Famille 95,18% de lots normés, Saint-François-d’Assise 100%, Howick 92,64%, La Trinité-des-Monts 99,44%, Nantes 73,29%. Saint-Damien est volontairement limité aux dix pages traitées (2,6% de lots normés); Saint-Just est limité aux douze pages traitées (7,53%).
 
 ## Gates / preuves d’échec
 
@@ -44,4 +45,4 @@ Les rejets restent parquet-free et ne modifient pas le manifeste partagé. Les m
 
 ## État final
 
-Après la dernière supervision et le merge, le sélecteur shard 2/4 a listé 48 slugs encore `zones=done & normes!=done`; ils restent à reprendre par une prochaine passe avec nouvelles sources officielles/MRC. Les dépôts de cette passe sont les huit lignes ci-dessus. Les modifications préexistantes et concurrentes dans `.claude`, `.track`, `acquisition/src`, `packages` et `work/` ont été laissées intactes.
+Après la dernière supervision et le merge, le sélecteur shard 2/4 a listé 47 slugs encore `zones=done & normes!=done`; ils restent à reprendre par une prochaine passe avec nouvelles sources officielles/MRC. Les dépôts de cette passe sont les neuf lignes ci-dessus. Les modifications préexistantes et concurrentes dans `.claude`, `.track`, `acquisition/src`, `packages` et `work/` ont été laissées intactes.
