@@ -36,4 +36,4 @@ Les manifests de découverte dédiés à cette passe sont sous `work/zonage-norm
 
 ## Coût et état final
 
-Coût Mistral observé de cette passe: environ **1,275 USD** au total; aucune ville n’a dépassé **1 USD**. Un seul dépôt net a franchi tous les gates. Aucun commit/push n’est effectué ici: l’arbre contient déjà de nombreuses modifications et fichiers appartenant à d’autres activités; seuls les artefacts de cette passe et ce rapport doivent être sélectionnés explicitement par le propriétaire.
+Coût Mistral observé de cette passe: environ **1,275 USD** au total; aucune ville n’a dépassé **1 USD**. Un seul dépôt net a franchi tous les gates. Le commit ciblé `f114ffc` contient uniquement ce rapport et le manifeste généré; il a été poussé sur `origin/feat/cadre-acquisition`. Les autres modifications et fichiers du worktree appartiennent à d’autres activités et n’ont pas été inclus.
