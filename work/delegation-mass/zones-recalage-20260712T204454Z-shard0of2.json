@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-07-12T20:44:54Z",
+  "branch": "feat/cadre-acquisition",
+  "model": "claude-sonnet-4-6",
+  "shard": {
+    "remainder": 0,
+    "modulus": 2,
+    "rule": "index in complete sorted city list % 2 == 0"
+  },
+  "policy": {
+    "nodeTsOnly": true,
+    "maxSecondsPerCommand": 300,
+    "agolOwnerHarvest": false,
+    "antiInvention": true
+  },
+  "supervision": {
+    "initialZonesScoreboard": 821,
+    "postDepositZonesScoreboard": 823,
+    "currentNonDoneInShard": 146,
+    "currentPdfBucketCount": 138,
+    "rerunAfterDeposit": true
+  },
+  "deposits": [
+    {
+      "slug": "forestville",
+      "method": "t2-auto-gcp-aniso-arbitration-text",
+      "source": "work/pdf-cache/forestville-carte3.pdf",
+      "gcp": "work/gcp/forestville-retry2-20260712.autogcp.json",
+      "gcpReport": "work/gcp/forestville-retry2-20260712.autogcp.report.json",
+      "independentGcps": 10,
+      "residualMaxM": 20.245,
+      "holdoutMaxM": 4.999,
+      "anisotropy": 1.158,
+      "servingCoveragePct": 98.84,
+      "distinctLabelCodes": 85,
+      "servedFeatures": 39,
+      "lotsAssigned": 1966,
+      "lotsTotal": 1989,
+      "lotCoveragePct": 98.84,
+      "surfaceCoveredPct": 90.54,
+      "spatialKm": 1.837,
+      "zoneKey": "normalized/ca-qc-zonage/qc-zonage-forestville.geojson",
+      "inline": {
+        "lotZoneJoin": "deposited and verified after retry with simplify-zones-m=2",
+        "lotsEnriched": "deposited",
+        "zoneCodePct": 98.89,
+        "surfacePct": 100,
+        "fsaPct": 100,
+        "addressPct": 87.33
+      },
+      "artifacts": [
+        "work/gcp/forestville-retry2-20260712.autogcp.json",
+        "work/gcp/forestville-retry2-20260712.autogcp.report.json",
+        "work/zones-recalage/shard0of2/forestville-t2-live-20260712/qc-zonage-forestville.geojson",
+        "work/zones-recalage/shard0of2/forestville-t2-live-20260712/qc-zonage-forestville.stats.json"
+      ]
+    }
+  ],
+  "freshAttempts": [
+    { "slug": "bonaventure", "method": "t1-text-two-official-variants", "result": "ABORT spatial 8.64 km; second variant lacks embedded georef" },
+    { "slug": "rougemont", "method": "t1-claude-vision-dict", "result": "ABORT anti-#74: 42 validated codes, all numeric, fewer than 3 lettered codes" },
+    { "slug": "amherst", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "bethanie", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "chartierville", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "montcalm", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "notre-dame-du-portage", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "saint-etienne-des-gres", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "forestville", "method": "t2-auto-gcp", "result": "PASS after moderate-anisotropy lot arbitration" },
+    { "slug": "desbiens", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "duhamel", "method": "t1-text", "result": "ABORT spatial 9.57 km" },
+    { "slug": "fassett", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "hebertville", "method": "t1-text", "result": "ABORT no embedded georef" },
+    { "slug": "grandes-piles", "method": "t2-auto-gcp", "result": "ABORT only 0-5 independent GCP matches; no residual/holdout pass" },
+    { "slug": "inverness", "method": "t2-auto-gcp", "result": "ABORT svg_points=0; no candidate matches" }
+  ],
+  "priorEvidence": {
+    "report": "work/delegation-mass/zones-recalage-20260712T202826Z-shard0of2.json",
+    "beforeForestvilleReplacement": 147,
+    "currentResidualCovered": 146
+  },
+  "commit": {
+    "targetedOnly": true,
+    "secretsTouched": false,
+    "claudeTouched": false,
+    "trackTouched": false
+  }
+}
