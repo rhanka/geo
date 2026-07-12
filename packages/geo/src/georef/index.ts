@@ -42,6 +42,43 @@ export {
   type NeatlineFrac,
 } from "./gcp.js";
 
+// T2 auto-GCP vector compute. PDF rendering, cadastre acquisition, and CRS
+// reprojection of non-WGS84 inputs remain in the acquisition app layer.
+export {
+  buildGcpFileFromMatches,
+  deriveAutoSeedGcpsFromVectors,
+  deriveAutonomousGcpsFromVectors,
+  parseSvgVectorPoints,
+  type AutoGcpFitMode,
+  type AutoGcpMatch,
+  type AutoGcpVectorOptions,
+  type AutoGcpVectorReport,
+  type AutoSeedAttempt,
+  type AutoSeedOrientationCandidate,
+  type AutoSeedVectorOptions,
+  type AutoSeedVectorReport,
+  type ParseSvgVectorPointOptions,
+  type Pt,
+} from "./autogcp.js";
+
+// T1 positioned-text label compute. pdftotext and file access stay in
+// acquisition; this subpath accepts already-positioned words only.
+export {
+  extractLabelsFromWords,
+  filterExtractedLabelsByDict,
+  kindForPrefix,
+  looksLikeZoneCode,
+  normalizeZoneCodeText,
+  splitCode,
+  zoneLabelCandidatesFromWords,
+  type CodePoint,
+  type ExtractLabelsResult,
+  type LabelComputeOptions,
+  type LabelRegionFrac,
+  type RawLabel,
+  type ZoneCodeOptions,
+} from "./labels.js";
+
 // Affine/similarity decomposition + orientation/isotropy/mirror gate: refuse to
 // serve a residual-clean but geometrically-wrong (stretched/mirrored/flipped) fit.
 export {
