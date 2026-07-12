@@ -44,7 +44,6 @@ export {
 
 // T1 positioned-text label compute. pdftotext and file access stay in acquisition.
 export {
-  ZONE_CODE_RE,
   extractLabelsFromWords,
   filterExtractedLabelsByDict,
   kindForPrefix,

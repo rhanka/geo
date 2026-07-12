@@ -50,8 +50,9 @@ function codes(words: RawLabel[], opts: Parameters<typeof extractLabelsFromWords
 }
 
 describe("t1-labels zone-code parser", () => {
-  it("does not expose mutable stopwords through the public georef barrel", () => {
+  it("does not expose mutable parser internals through the public georef barrel", () => {
     expect("STOPWORDS" in publicGeoref).toBe(false);
+    expect("ZONE_CODE_RE" in publicGeoref).toBe(false);
   });
 
   it("preserves Carignan compound codes split across stacked PDF words", () => {
