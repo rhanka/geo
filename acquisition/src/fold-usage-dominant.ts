@@ -129,10 +129,22 @@ interface Feature {
   properties?: Record<string, unknown>;
 }
 
-async function loadFeatures(s3: S3, key: string): Promise<{ fc: { features: Feature[] }; feats: Feature[] }> {
-  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: Feature[] };
-  const feats = fc.features ?? [];
-  return { fc: { features: feats }, feats };
+async function loadFeatures(
+  s3: S3,
+  key: string,
+): Promise<{ fc: Record<string, unknown> & { features: Feature[] }; feats: Feature[]; repaired: boolean }> {
+  // PRÉSERVE la FeatureCollection COMPLÈTE (type, crs, name, …) — on mute .features
+  // en place puis on réécrit l'objet entier. NE JAMAIS reconstruire { features } seul:
+  // ça droppe `type:"FeatureCollection"` et geo-api rend alors 404 Unknown collection.
+  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as Record<string, unknown> & {
+    type?: string;
+    features?: Feature[];
+  };
+  const feats = (fc.features ?? []) as Feature[];
+  fc.features = feats;
+  const repaired = typeof fc.type !== "string"; // objet déjà cassé par l'ancien bug
+  if (repaired) fc.type = "FeatureCollection";
+  return { fc, feats, repaired };
 }
 
 /** --list-prefixes: distribution des préfixes alpha + échantillons de codes (aucun map requis). */
@@ -178,7 +190,7 @@ async function foldSlug(s3: S3, slug: string, opts: { dryRun: boolean; strip: bo
     console.log(`SKIP ${slug} — polygone qc-zonage NON servi`);
     return;
   }
-  const { fc, feats } = await loadFeatures(s3, key);
+  const { fc, feats, repaired } = await loadFeatures(s3, key);
   let changed = 0;
   let noCode = 0;
   const catCount = new Map<string, number>(); // "residentiel"|..|"null"
@@ -221,8 +233,9 @@ async function foldSlug(s3: S3, slug: string, opts: { dryRun: boolean; strip: bo
     );
     console.log(`     dist: ${dist} null=${nullN}`);
   }
-  if (!opts.dryRun && changed > 0) {
+  if (!opts.dryRun && (changed > 0 || repaired)) {
     await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+    if (repaired) console.log(`     RÉPARÉ type:"FeatureCollection" (objet cassé par l'ancien bug loadFeatures)`);
   }
 }
 
