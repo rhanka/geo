@@ -13,7 +13,7 @@
  * La clé d'upload est TOUJOURS le slug cadastre exact (jamais slugify ascii).
  *
  * IDEMPOTENT & RESUMABLE : skip si parquet existe / checkpoint
- * /tmp/role_province_progress.json ; borné par --max-seconds.
+ * .h2a/tmp/role_province_progress.json ; borné par --max-seconds.
  *
  * Usage :
  *   tsx src/cadastre-role-province.ts [--max-seconds 3000] [--chunk N]
@@ -27,9 +27,10 @@ import { s3Client, getBytes, putBytes, listSlugs } from "./lib/s3.js";
 import { norm } from "./cadastre-clip-sda.js";
 import { fetchIndex, parseRole, joinLotsRole } from "./role-foncier.js";
 import { writeRoleParquet } from "./lib/parquet.js";
+import { workspaceTmp, workspaceTmpFile } from "./lib/workspace-tmp.js";
 
-const PROG = "/tmp/role_province_progress.json";
-const WORK = "/tmp/role_province";
+const PROG = workspaceTmpFile("role_province_progress.json");
+const WORK = workspaceTmp("role_province");
 const BOUNDARIES = WORK + "/qc-municipalites.geojson";
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";

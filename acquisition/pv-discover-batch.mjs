@@ -14,7 +14,8 @@
  */
 
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { S3Client, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
 // ── Config ──────────────────────────────────────────────────────────────────
@@ -26,6 +27,8 @@ const TIMEOUT_MS = 12000;
 const USER_AGENT = 'radar-immobilier/0.1 (+https://github.com/rhanka/radar-immobilier)';
 const BUCKET = 'sentropic-geo';
 const S3ENV = '/home/antoinefa/src/_acquisition-shared/s3.env';
+const WORKTMP = process.env.GEO_TMPDIR ?? resolve('.h2a/tmp');
+mkdirSync(WORKTMP, { recursive: true });
 
 // ── Batch selection ──────────────────────────────────────────────────────────
 
@@ -37,13 +40,13 @@ function getBatchCities() {
     return slugsArg.split(',').map(s => s.trim()).filter(Boolean);
   }
   if (batchArg !== undefined) {
-    const batchFile = `/tmp/pv_batch_${batchArg}.json`;
+    const batchFile = join(WORKTMP, `pv_batch_${batchArg}.json`);
     if (existsSync(batchFile)) {
       return JSON.parse(readFileSync(batchFile, 'utf8'));
     }
   }
   // Read from stdin
-  const allFile = '/tmp/to_research_cities.txt';
+  const allFile = join(WORKTMP, 'to_research_cities.txt');
   if (existsSync(allFile)) {
     return readFileSync(allFile, 'utf8').split('\n').filter(Boolean);
   }

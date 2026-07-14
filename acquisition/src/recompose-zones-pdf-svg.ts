@@ -22,6 +22,7 @@ import type { Feature, FeatureCollection, Polygon } from "geojson";
 import proj4 from "proj4";
 
 import { BUCKET, putBytes, s3Client } from "./lib/s3.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
@@ -464,7 +465,7 @@ async function main(): Promise<void> {
   }
   console.error(`[svg] creator=${gdal.creator ?? "?"} pix=${gdal.pixelSize.join("x")}`);
 
-  const tmpDir = `/tmp/geo-svg-${slug}-${Date.now()}`;
+  const tmpDir = workspaceTmp(`geo-svg-${slug}-${Date.now()}`);
   const svgPath = ensureSvg(pdfPath, tmpDir);
   const candidates = extractSvgCandidates(svgPath);
   const labels = readPdfLabels(pdfPath);
