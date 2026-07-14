@@ -15,7 +15,9 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 REPO="$(pwd)"
 PROMPTS="$REPO/work/delegation-mass/agent-prompts"
-mkdir -p "$PROMPTS"
+export GEO_TMPDIR="${GEO_TMPDIR:-$REPO/.h2a/tmp}"
+export TMPDIR="$GEO_TMPDIR"
+mkdir -p "$PROMPTS" "$GEO_TMPDIR"
 TOTAL=24
 TS="$(date -u +%Y%m%dT%H%M%SZ)"
 MODEL="claude-opus-4-8"

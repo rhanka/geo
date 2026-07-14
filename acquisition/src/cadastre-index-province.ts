@@ -11,7 +11,7 @@
  *
  * CLÉ D'UPLOAD = le slug cadastre EXACT (accents préservés), JAMAIS slugify.
  * IDEMPOTENT & RESUMABLE : skip si parquet existe / si déjà dans le checkpoint
- * /tmp/index_province_progress.json ; borné par --max-seconds.
+ * .h2a/tmp/index_province_progress.json ; borné par --max-seconds.
  *
  * Usage :
  *   tsx src/cadastre-index-province.ts [--max-seconds 86400] [--chunk N]
@@ -23,12 +23,13 @@ import type { S3Client } from "@aws-sdk/client-s3";
 
 import { listSlugs, putBytes, s3Client as core_s3Client } from "./lib/s3.js";
 import * as core from "./build-index-immo.js";
+import { workspaceTmp, workspaceTmpFile } from "./lib/workspace-tmp.js";
 
 const BUCKET = core.BUCKET;
 const GRIDS_MAP = core.GRIDS_MAP;
 
-const PROG = "/tmp/index_province_progress.json";
-const WORK = "/tmp/index_province";
+const PROG = workspaceTmpFile("index_province_progress.json");
+const WORK = workspaceTmp("index_province");
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
