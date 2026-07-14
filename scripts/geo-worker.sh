@@ -27,7 +27,8 @@ set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/.." && pwd)"
 LOGDIR="$REPO/work/delegation-mass/worker-logs"
-mkdir -p "$LOGDIR"
+WORKTMP="${GEO_TMPDIR:-$REPO/.h2a/tmp}"
+mkdir -p "$LOGDIR" "$WORKTMP"
 
 usage() { sed -n '2,40p' "$0"; exit "${1:-2}"; }
 
@@ -121,7 +122,7 @@ case "$cmd" in
     remote="remote-$session"
     h2a stop "$session" >/dev/null 2>&1 || true
     tmux kill-session -t "$remote" 2>/dev/null || true
-    h2a run "$engine" "$REPO" --name "$session" --no-attach --no-gw >/dev/null 2>&1 || {
+    TMPDIR="$WORKTMP" GEO_TMPDIR="$WORKTMP" h2a run "$engine" "$REPO" --name "$session" --no-attach --no-gw >/dev/null 2>&1 || {
       echo "h2a run failed for engine=$engine session=$session"; exit 1; }
     # wait for the session pane, let the CLI boot its input, then inject the prompt.
     pane=""
@@ -160,7 +161,7 @@ $body"
     q=""; for a in "$@"; do q="$q $(printf '%q' "$a")"; done
     tmux kill-session -t "$session" 2>/dev/null || true
     tmux new-session -d -s "$session" \
-      "cd '$REPO';$q > '$log' 2>&1; echo \"EXIT:\$? \$(date -u +%FT%TZ)\" >> '$log'; sleep 3600"
+      "cd '$REPO'; export TMPDIR='$WORKTMP' GEO_TMPDIR='$WORKTMP';$q > '$log' 2>&1; echo \"EXIT:\$? \$(date -u +%FT%TZ)\" >> '$log'; sleep 3600"
     echo "launched bg session=$session log=$log cmd:$q" ;;
 
   *) usage 2 ;;

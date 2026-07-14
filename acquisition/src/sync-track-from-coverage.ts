@@ -40,7 +40,7 @@
 import { execFileSync } from "node:child_process";
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { tmpdir } from "node:os";
+import { workspaceTmpFile } from "./lib/workspace-tmp.js";
 
 import { MATRIX_PATH } from "./coverage-matrix.js";
 import { COVERAGE_LAYERS, findTrack, type CoverageLayer } from "./coverage-tracks.js";
@@ -225,7 +225,7 @@ function loadTrackItems(trackBin: string, cwd: string): TrackItem[] {
   // `track item ls` produit une grande sortie JSON ; on la redirige vers un fichier
   // (fd stdio) plutôt qu'un buffer string execFileSync — ce dernier tronque au-delà
   // d'un certain volume malgré maxBuffer. Le fichier est autoritatif et complet.
-  const tmp = join(tmpdir(), `track-items-${process.pid}.json`);
+  const tmp = workspaceTmpFile(`track-items-${process.pid}.json`);
   const fd = openSync(tmp, "w");
   try {
     execFileSync(trackBin, ["item", "ls", "--format", "json"], {

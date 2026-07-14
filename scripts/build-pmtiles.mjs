@@ -5,7 +5,11 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { execSync } from "child_process";
 
-const W = "/tmp/pmtiles-work";
+import { mkdirSync } from "node:fs";
+import { join, resolve } from "node:path";
+
+const W = join(process.env.GEO_TMPDIR ?? resolve(".h2a/tmp"), "pmtiles-work");
+mkdirSync(W, { recursive: true });
 const LOG = "/home/antoinefa/src/_acquisition-shared/pmtiles-build.log";
 const IMG = "klokantech/tippecanoe";
 fs.mkdirSync(W + "/zones", { recursive: true });
