@@ -10,6 +10,7 @@ import { readFileSync } from "node:fs";
 import type { FeatureCollection } from "geojson";
 
 import { getBytes, putBytes, s3Client } from "./lib/s3.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
 
 interface Args {
   slugs: string[];
@@ -89,7 +90,8 @@ async function main(): Promise<void> {
       statsRaw = JSON.parse((await getBytes(s3, stKey)).toString("utf8")) as unknown;
     } catch {
       try {
-        statsRaw = JSON.parse(readFileSync(`/tmp/georef-real-current/qc-zonage-${slug}.stats.json`, "utf8")) as unknown;
+        const localStatsDir = process.env["GEO_GEOREF_STATS_DIR"] ?? workspaceTmp("georef-real-current");
+        statsRaw = JSON.parse(readFileSync(`${localStatsDir}/qc-zonage-${slug}.stats.json`, "utf8")) as unknown;
       } catch {
         statsRaw = {};
       }
