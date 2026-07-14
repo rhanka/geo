@@ -87,6 +87,7 @@ import {
 import proj4 from "proj4";
 
 import { s3Client, putBytes, BUCKET } from "./lib/s3.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
@@ -1274,8 +1275,7 @@ async function main(): Promise<void> {
   );
 
   // ── ÉTAPE 0 : résolution du PDF (URL → fichier local temporaire) ────────
-  const tmpDir = `/tmp/geo-recompose-${slug}-${Date.now()}`;
-  mkdirSync(tmpDir, { recursive: true });
+  const tmpDir = workspaceTmp(`geo-recompose-${slug}-${Date.now()}`);
 
   let pdfPath: string;
   const isUrl = pdfArg.startsWith("https://") || pdfArg.startsWith("http://");
