@@ -38,7 +38,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { closeSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -51,6 +51,11 @@ import {
   loadImmoLotsSummaryFromCache,
   type ImmoLotsSummary,
 } from "./immo-lots-track.js";
+import { ZONAGE_ENRICHMENT_CACHE } from "./zonage-enrichment-audit.js";
+import {
+  applyZonageEnrichmentTrack,
+  loadSummaryFromCache as loadZonageEnrichmentSummary,
+} from "./zonage-enrichment-track.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -585,6 +590,39 @@ function applyImmoLotsFromCache(trackBin: string, cwd: string, outDir: string, s
   }
 }
 
+/**
+ * Rafraîchit le WP `zonage-enrichment` (reglement / usage_dominant / effet_densifiant 4a)
+ * depuis son cache S3-recensé (work/coverage/zonage-enrichment.json). Idempotent, comme
+ * immo-lots. Le cache est produit à part par `zonage-enrichment-audit.ts` (accès S3) — si
+ * absent, on saute proprement (pas de gonflage, message explicite).
+ */
+function applyZonageEnrichmentFromCache(trackBin: string, cwd: string, outDir: string): void {
+  if (!existsSync(ZONAGE_ENRICHMENT_CACHE)) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `\n[apply] zonage-enrichment: cache absent (${ZONAGE_ENRICHMENT_CACHE}) — skip.` +
+        " Lancer d'abord: npx tsx acquisition/src/zonage-enrichment-audit.ts",
+    );
+    return;
+  }
+  const summary = loadZonageEnrichmentSummary(ZONAGE_ENRICHMENT_CACHE);
+  const result = applyZonageEnrichmentTrack({ summary, trackBin, cwd, outDir });
+  // eslint-disable-next-line no-console
+  console.log(
+    `\n[apply] zonage-enrichment track OK: rootWpCreated=${result.rootWpCreated} ` +
+      `fieldWpsCreated=${result.fieldWpsCreated} ` +
+      `leavesCreated=${result.leavesCreated} realizeEvents=${result.realizeEvents}`,
+  );
+  if (result.focusSetMissing.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`  focus-set hors matrice: ${result.focusSetMissing.join(", ")}`);
+  }
+  for (const total of result.totals) {
+    // eslint-disable-next-line no-console
+    console.log(`  ${total.wpTitle.padEnd(28)} done=${total.done}/${total.total}\tremaining=${total.remaining.length}`);
+  }
+}
+
 function main(argv: readonly string[]): number {
   const apply = argv.includes("--apply");
   const trackBin = arg(argv, "--track-bin") ?? "track";
@@ -631,6 +669,7 @@ function main(argv: readonly string[]): number {
     // eslint-disable-next-line no-console
     console.log("\n[apply] aucune transition à appliquer.");
     applyImmoLotsFromCache(trackBin, cwd, outDir, immoSummary);
+    applyZonageEnrichmentFromCache(trackBin, cwd, outDir);
     return 0;
   }
 
@@ -641,6 +680,7 @@ function main(argv: readonly string[]): number {
   // eslint-disable-next-line no-console
   console.log(`[apply] transitions track ingest OK (${n} lignes en retour).`);
   applyImmoLotsFromCache(trackBin, cwd, outDir, immoSummary);
+  applyZonageEnrichmentFromCache(trackBin, cwd, outDir);
   return 0;
 }
 
