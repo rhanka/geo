@@ -516,7 +516,36 @@ export interface PdfIntegrityOptions {
 export interface PdfIntegrity {
   byteLength: number;
   pageCount: number;
+  /** Raw `/Type /Page` object occurrences; exceeds pageCount when a revision is superseded. */
+  pageObjectCount: number;
   sha256: string;
+}
+
+/**
+ * A PDF's page count is the page tree root's `/Count`, not the number of `/Type /Page`
+ * occurrences: an incremental update appends the new revision and keeps the superseded
+ * page object, so a legitimate one-page grid can carry several. Fixtures with no page
+ * tree fall back to the object count. Divergent page trees fail closed rather than guess.
+ */
+function readPdfPageCount(text: string): { pageCount: number; pageObjectCount: number } {
+  const pageObjectCount = text.match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  const treeCounts: number[] = [];
+  // Scan object bodies so a /Count never binds across an object boundary.
+  for (const object of text.matchAll(/\d+\s+\d+\s+obj\b([\s\S]*?)endobj/g)) {
+    const body = object[1] ?? "";
+    if (!/\/Type\s*\/Pages\b/.test(body)) continue;
+    const count = /\/Count\s+(\d+)/.exec(body);
+    if (count) treeCounts.push(Number(count[1]));
+  }
+  if (treeCounts.length === 0) return { pageCount: pageObjectCount, pageObjectCount };
+  const distinct = [...new Set(treeCounts)];
+  if (distinct.length > 1) {
+    fail("PDF_PAGE_TREE_AMBIGUOUS", "PDF declares divergent page tree counts", {
+      treeCounts,
+      pageObjectCount,
+    });
+  }
+  return { pageCount: distinct[0]!, pageObjectCount };
 }
 
 export function validatePdfBytes(bytes: Uint8Array, options: PdfIntegrityOptions): PdfIntegrity {
@@ -556,15 +585,17 @@ export function validatePdfBytes(bytes: Uint8Array, options: PdfIntegrityOptions
     fail("PDF_TRAILER_MISSING", "PDF has no terminal %%EOF marker");
   }
   const text = body.toString("latin1");
-  const pageCount = text.match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  const { pageCount, pageObjectCount } = readPdfPageCount(text);
   if (pageCount !== 1) {
     fail("PDF_PAGE_COUNT_MISMATCH", "official zone grid must contain exactly one page", {
       pageCount,
+      pageObjectCount,
     });
   }
   return {
     byteLength: body.length,
     pageCount,
+    pageObjectCount,
     sha256: createHash("sha256").update(body).digest("hex"),
   };
 }
