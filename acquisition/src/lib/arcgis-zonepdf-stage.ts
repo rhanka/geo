@@ -527,7 +527,7 @@ export interface PdfIntegrity {
  * page object, so a legitimate one-page grid can carry several. Fixtures with no page
  * tree fall back to the object count. Divergent page trees fail closed rather than guess.
  */
-function readPdfPageCount(text: string): { pageCount: number; pageObjectCount: number } {
+export function readPdfPageCount(text: string): { pageCount: number; pageObjectCount: number } {
   const pageObjectCount = text.match(/\/Type\s*\/Page\b/g)?.length ?? 0;
   const treeCounts: number[] = [];
   // Scan object bodies so a /Count never binds across an object boundary.
