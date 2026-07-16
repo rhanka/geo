@@ -92,6 +92,7 @@ function evidence(index: number): PdfEvidence {
     contentLength: body.length,
     byteLength: body.length,
     pageCount: 1,
+    pageObjectCount: 1,
     sha256: createHash("sha256").update(body).digest("hex"),
   };
 }
@@ -385,6 +386,50 @@ describe("ArcGIS item and PDF evidence", () => {
     expect(result.sha256).toHaveLength(64);
   });
 
+  it("should count one page when an incremental update leaves a superseded page object", () => {
+    // A re-saved PDF appends the new revision and keeps the superseded object, so raw
+    // "/Type /Page" occurrences overcount. The page tree /Count stays authoritative.
+    const body = Buffer.from(
+      "%PDF-1.7\n" +
+        "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" +
+        "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n" +
+        "3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n" +
+        "trailer\n<< /Root 1 0 R >>\n%%EOF\n" +
+        "3 0 obj\n<< /Type /Page /Parent 2 0 R /Contents 4 0 R >>\nendobj\n" +
+        "trailer\n<< /Root 1 0 R /Prev 9 >>\n%%EOF\n",
+    );
+    const result = validatePdfBytes(body, {
+      expectedBytes: body.length,
+      contentLength: String(body.length),
+      contentType: "application/pdf",
+      minBytes: 10,
+      maxBytes: 1_000,
+    });
+    expect(result).toMatchObject({ pageCount: 1, pageObjectCount: 2 });
+  });
+
+  it("should reject a genuinely two-page PDF on the page tree count", () => {
+    const body = Buffer.from(
+      "%PDF-1.7\n" +
+        "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" +
+        "2 0 obj\n<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>\nendobj\n" +
+        "3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n" +
+        "4 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n" +
+        "trailer\n<< /Root 1 0 R >>\n%%EOF\n",
+    );
+    expect(
+      captureError(() =>
+        validatePdfBytes(body, {
+          expectedBytes: body.length,
+          contentLength: String(body.length),
+          contentType: "application/pdf",
+          minBytes: 10,
+          maxBytes: 1_000,
+        }),
+      ).code,
+    ).toBe("PDF_PAGE_COUNT_MISMATCH");
+  });
+
   it("should reject a truncated PDF", () => {
     const truncated = Buffer.from("%PDF-1.7\n1 0 obj\n<< /Type /Page >>\nendobj\n");
     expect(
@@ -639,7 +684,7 @@ describe("deterministic content manifest", () => {
       },
       cause: expect.objectContaining({
         code: "PDF_PAGE_COUNT_MISMATCH",
-        details: { pageCount: 2 },
+        details: { pageCount: 2, pageObjectCount: 2 },
       }),
     });
   });

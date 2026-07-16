@@ -88,7 +88,8 @@
 # Current Blocker
 
 - [ ] External source-read quota prevents the next live 109/109 run until 2026-07-21.
-- [ ] Identify the exact official PDF reported with `pageCount=2` and decide whether the one-page invariant or the source document is wrong.
+- [x] Decide whether the one-page invariant or the source document is wrong: neither. The count itself was measured wrong — raw `/Type /Page` occurrences overcount a one-page PDF that keeps a superseded page object from an incremental update (reproduced in test). The page count now reads the page tree `/Count`; a divergent page tree fails closed.
+- [ ] Confirm on the 2026-07-21 live run that the previously rejected PDF passes. The offending PDF stays unidentified until then (source read is quota-blocked), but the diagnostic now carries `pageObjectCount` beside `pageCount`, so one run separates an incremental-update artifact from a genuine two-page document.
 
 # Feedback Loop
 
