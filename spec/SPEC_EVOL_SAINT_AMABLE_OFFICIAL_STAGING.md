@@ -77,9 +77,13 @@ Le runner ingère directement le JSON `snake_case` du parseur de variantes sans 
 
 `READY_STAGING` ne vaut jamais `GO_PRODUCTION`.
 
-## État d'acceptation au 2026-07-15
+## État d'acceptation au 2026-07-16
 
-Le premier run live a validé les 109 enregistrements source, puis a rejeté un PDF compté à deux pages avec `PDF_PAGE_COUNT_MISMATCH`. Le diagnostic contient maintenant OID, code zone et item ID, mais la relance d'identification est bloquée par le quota de lecture externe jusqu'au 2026-07-21. Aucun `READY_STAGING` n'a été créé et la géométrie officielle n'a pas été publiée.
+Le run live identifie le PDF rejeté : OID 93, zone `HCV-191`, item `1907475766e54cba9eacca6e15950901`, `pageCount=2` et `pageObjectCount=2`. Les deux comptes concordent, donc ce n'est pas un artefact de révision : le document a réellement deux pages. La page 2 est la **continuation de la grille de la même zone** (même en-tête règlement 712-00-2013, quatre colonnes `HCV-191` supplémentaires avec leurs marqueurs d'usage). Le relevé sur les 109 grilles donne `{"1": 108, "2": 1}` : `HCV-191` est la seule grille multi-pages.
+
+**L'invariant une-page de D3 est donc FAUX** ; le document municipal est correct. Une zone à colonnes nombreuses déborde légitimement sur une deuxième page — c'est le cas multi-variantes de D5 poussé au-delà d'une page. La correction porte sur D3 (borne multi-pages) ET D5 (extraction des variantes à travers les pages d'une même zone), plus un golden `HCV-191`. La garde Lot 1 reste fermée tant que le Lot 2 ne lit pas la page 2 : la relâcher seule perdrait silencieusement les quatre variantes de la page 2, ce que D5/D6 interdisent.
+
+Il n'y a jamais eu de quota de lecture externe. La collecte Lot 1 live n'avait simplement aucun point d'entrée committé (`collectZonePdfContentManifest` n'était exercé que par les tests) ; `acquisition/src/saint-amable-lot1-collect.ts` comble ce manque. Aucun `READY_STAGING` n'a été créé et la géométrie officielle n'a pas été publiée.
 
 ## Revue contradictoire
 
