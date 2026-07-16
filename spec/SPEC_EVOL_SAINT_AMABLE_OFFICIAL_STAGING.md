@@ -22,6 +22,8 @@ L'acceptation exige l'égalité exacte des 109 OID, 109 codes raw/canoniques et 
 
 Le champ `pdf` est la source canonique; `hyperlien` n'est qu'une corroboration dont le href doit être identique. Chaque URL doit viser un item ArcGIS public 32-hex, de type PDF, dont le titre correspond au code attendu. Le runner vérifie métadonnées avant/après, magic PDF, taille bornée, une page et SHA-256 des octets.
 
+L'autorité du compte de pages est le `/Count` de l'arbre de pages, jamais le nombre d'occurrences `/Type /Page` : une mise à jour incrémentale conserve l'objet page remplacé, donc une grille légitime d'une page peut en porter plusieurs. Un arbre de pages divergent échoue fermé (`PDF_PAGE_TREE_AMBIGUOUS`). Le nombre d'objets page reste exposé (`pageObjectCount`) à côté de `pageCount` pour distinguer un artefact de révision d'un vrai document multi-pages. La protection anti-substitution reste le SHA-256, le titre d'item et la taille.
+
 ### D4 — Code observé et code autoritaire
 
 Le code autoritaire vient exclusivement du manifeste FeatureServer. Les deux lectures d'extraction doivent néanmoins observer indépendamment le même header; `expectedZone` ne peut pas masquer un PDF échangé. Les suffixes de note (`H-59 *27`, `H-59 *6`) sont des artefacts interdits.
