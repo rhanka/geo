@@ -1121,11 +1121,11 @@
       "_note": "DOC MUET: doc = grilles (48 p). p3 dit «Cette grille fait partie integrante du reglement de zonage» -- SANS numero; recherche plein texte «zonage <num>» / «reglement <num>» = 0 occurrence => null."
     },
     "harrington": {
-      "reglement_numero": null,
+      "reglement_numero": "192-2012",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET: en-tete «Annexe 2 du Reglement de zonage» sur les 51 p, et un cartouche «No. de reglement | Entree en vigueur» qui reste VIDE; recherche plein texte = 0 numero => null."
+      "reglement_page_source": 1,
+      "reglement_url": "https://harrington.ca/wp-content/uploads/2020/03/Zoning-By-Law-192-2012-English-Version.pdf",
+      "_note": "REFUTATION du null precedent: il disait «DOC MUET: en-tete «Annexe 2 du Reglement de zonage» sur les 51 p, et un cartouche «No. de reglement | Entree en vigueur» qui reste VIDE» — ce verdict est exact mais il portait sur l'ANNEXE seule; le CORPS n'avait jamais ete lu. L'API REST WordPress (2266 medias) l'a rendu a $0. Proprietaire: OWNER-OK («PROVINCE OF QUEBEC / TOWNSHIP OF HARRINGTON» p1, «Township of Harrington» ~10x). NUMERO verbatim p1 (cartouche): «BY-LAW NUMBER 192-2012 / ZONING BY-LAW», confirme par la clause de titre art. 1.1.1 «Title of by-law»: «This by-law shall be entitled «Zoning By-law» and be known as by-law number 192-2012.» — clause de titre, pas un renvoi. PIEGE ECARTE (nom de fichier): le PDF frere «reglement-192-2012-zonage.pdf» (55 p), dont le NOM annonce le zonage, est en realite un PLAN D'URBANISME — il dit p10 «Le present reglement abroge le reglement no. 60-27165, intitule « Plan d'urbanisme »» et sa TDM est celle d'un plan d'urbanisme; le nom de fichier ne fait jamais foi, le numero est lu dans le document qui porte «ZONING BY-LAW». CANDIDATS ECARTES: «98-91» (art. 1.1.2 «This By-law repeals By-law number 98-91 entitled «Planning Regulations»» = abroge) et «201-2012» («Amendment By-law 201-2012: came into force 15-02-2013» = amendement isole). MILLESIME null: le cartouche p1 porte les libelles «NOTICE OF MOTION:», «ADOPTION:», «COMING INTO FORCE:» LAISSES EN BLANC au gabarit, et la table «Modifications to the by-law / By-law number | Came into force» est vide; aucune date d'adoption verbatim => null (l'annee du numero ne fait pas foi). Note: la sonde plein texte est aveugle ici car ses motifs sont FRANCAIS («reglement numero») alors que le corps est un «By-law number» ANGLAIS — angle mort d'outil, pas une absence."
     },
     "howick": {
       "reglement_numero": "08-HOW-14",
@@ -1338,11 +1338,11 @@
       "_note": "ACCES REFUSE: le source_url du manifest «https://potton.ca/download/362/annexes-zonage-1-a-10/26128/plan-zonage-annexe-6-grille-implantation-maj-fevrier-2025.pdf» repond HTTP 403 (telechargement gate cote serveur). Aucun document a lire => null. Voie = re-essai / re-decouverte de l'URL."
     },
     "nominingue": {
-      "reglement_numero": null,
+      "reglement_numero": "2012-362",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://nominingue.ca/wp-content/uploads/2021/11/zonage_annexe_a_grilles_des_usages_et_normes.pdf» repond HTTP 404 (nom de fichier sans numero de toute facon) => null. Voie = re-decouverte de l'URL."
+      "reglement_page_source": 2,
+      "reglement_url": "https://nominingue.ca/wp-content/uploads/2016/11/reglement_2012-362_zonage_version-administrative.pdf",
+      "_note": "REFUTATION du null precedent, qui etait une CIBLE et non un verdict: il disait «LIEN MORT: le source_url du manifest ... repond HTTP 404 ... Voie = re-decouverte de l'URL.» — la re-decouverte a ete faite a $0 par l'API REST WordPress (/wp-json/wp/v2/media, 2979 medias enumeres), qui rend le CORPS jamais vu par les passes precedentes (le verdict portait sur l'ANNEXE des grilles). Proprietaire: OWNER-OK («Municipalite de Nominingue» en en-tete des 183 p). NUMERO verbatim p2 (cartouche): «Reglement de zonage numero 2012-362», confirme par la clause de titre art. 1.1 p11: «Le present reglement est intitule « Reglement de zonage numero 2012-362 ».» — clause de titre, pas un renvoi. Corrobore par les amendements publies sur le meme portail: «projet_reglement_2012-362-7», «projet_reg_2012-362-8», «Reglement 2012-362 Annexe D» (motif: le base est nomme par ses amendements). CANDIDAT ECARTE: «97-188», lisible p2 («ATTENDU qu'il y a lieu de remplacer le reglement relatif au zonage numero 97-188») et p11 («Le present reglement remplace ... le reglement numero 97-188») => c'est le reglement ABROGE, pas le courant. MILLESIME null: le document est une «version administrative» (codification); la section 1.8 «Entree en vigueur» (TDM p3) ne porte AUCUNE date verbatim, et l'annee du NUMERO ne fait jamais foi (un «2012-XXX» peut etre adopte en 2013). Aucune date d'adoption lisible => null plutot qu'une deduction."
     },
     "rigaud": {
       "reglement_numero": "275-2010",
