@@ -91,7 +91,7 @@ function zonageKeys(slug: string): string[] {
   ];
 }
 
-function readEntries(artifact: string): Map<string, Entry> {
+export function readEntries(artifact: string): Map<string, Entry> {
   if (!existsSync(artifact)) throw new Error(`artifact introuvable: ${artifact}`);
   const raw = JSON.parse(readFileSync(artifact, "utf8")) as unknown;
   if (!Array.isArray(raw)) throw new Error("artifact: expected a JSON array");
@@ -120,16 +120,48 @@ function readEntries(artifact: string): Map<string, Entry> {
     if (!(["match", "flag"] as string[]).includes(entry.steve_coherence ?? "")) {
       throw new Error(`artifact: steve_coherence invalide pour ${entry.zone_code}`);
     }
+    // Cross-field anti-invention lock (Opus 4.8 ⊕ Codex luna consensus, both ranked #1):
+    // effet_densifiant is DERIVED from the two counts, never a trusted input. A fleet lane
+    // replaces the human who guaranteed this by hand, so the guarantee has to live here or
+    // the lane serves densifications the source documents do not support. A null count
+    // forces 'inconnu'; two counts force the sign of their comparison.
+    const av = entry.densite_avant ?? null;
+    const ap = entry.densite_apres ?? null;
+    const eff = entry.effet_densifiant;
+    if (av === null || ap === null) {
+      if (eff !== "inconnu") {
+        throw new Error(
+          `artifact: ${entry.zone_code} a un compteur null (avant=${av}, apres=${ap}) mais effet=${eff} — doit être 'inconnu'`,
+        );
+      }
+    } else {
+      const derived: Effet = ap > av ? "densifie" : ap < av ? "reduit" : "stable";
+      if (eff !== derived) {
+        throw new Error(
+          `artifact: ${entry.zone_code} effet=${eff} contredit les compteurs ${av}->${ap} (dérivé=${derived})`,
+        );
+      }
+    }
     entries.set(entry.zone_code, entry as Entry);
   }
   return entries;
 }
 
-async function findKey(s3: ReturnType<typeof s3Client>, slug: string): Promise<string> {
+/**
+ * ALL existing S3 keys for the slug, not just the first. geo-api serves the sub-folder
+ * key (memory fold-double-key-s3): stamping only the flat key — as the old findKey did —
+ * lets the fold report "OK matched=N" while the served collection stays null. Mirror
+ * fold-reglement-to-zonage, which stamps every existing key for exactly this reason.
+ */
+async function findKeys(s3: ReturnType<typeof s3Client>, slug: string): Promise<string[]> {
+  const keys: string[] = [];
   for (const key of zonageKeys(slug)) {
-    if (await exists(s3, key)) return key;
+    if (await exists(s3, key)) keys.push(key);
   }
-  throw new Error(`collection S3 introuvable: ${zonageKeys(slug).join(" ou ")}`);
+  if (keys.length === 0) {
+    throw new Error(`collection S3 introuvable: ${zonageKeys(slug).join(" ou ")}`);
+  }
+  return keys;
 }
 
 function applyEntry(
@@ -154,45 +186,46 @@ async function main(): Promise<void> {
   const config = configFromArgs(argv);
   const entries = readEntries(config.artifact);
   const s3 = s3Client();
-  const key = await findKey(s3, config.slug);
+  const keys = await findKeys(s3, config.slug);
 
-  // Parse and mutate the complete JSON object. Rebuilding only {features} drops
-  // type/crs and makes the OGC API collection unservable.
-  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as GeoJsonLike;
-  if (fc.type !== "FeatureCollection") throw new Error(`not a FeatureCollection: ${key}`);
-  if (!Array.isArray(fc.features)) throw new Error(`features array missing: ${key}`);
+  for (const key of keys) {
+    // Parse and mutate the complete JSON object. Rebuilding only {features} drops
+    // type/crs and makes the OGC API collection unservable.
+    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as GeoJsonLike;
+    if (fc.type !== "FeatureCollection") throw new Error(`not a FeatureCollection: ${key}`);
+    if (!Array.isArray(fc.features)) throw new Error(`features array missing: ${key}`);
 
-  const seen = new Set<string>();
-  let matched = 0;
-  for (const feature of fc.features) {
-    feature.properties ??= {};
-    const zone = feature.properties["zone_code"];
-    if (typeof zone !== "string") continue;
-    const entry = entries.get(zone);
-    if (!entry) continue;
-    applyEntry(feature.properties, entry, config);
-    seen.add(zone);
-    matched++;
+    const seen = new Set<string>();
+    let matched = 0;
+    for (const feature of fc.features) {
+      feature.properties ??= {};
+      const zone = feature.properties["zone_code"];
+      if (typeof zone !== "string") continue;
+      const entry = entries.get(zone);
+      if (!entry) continue;
+      applyEntry(feature.properties, entry, config);
+      seen.add(zone);
+      matched++;
+    }
+
+    const missing = [...entries.keys()].filter((zone) => !seen.has(zone));
+    if (missing.length > 0) {
+      throw new Error(`artifact zones absentes de ${key}: ${missing.join(", ")}`);
+    }
+
+    console.log(
+      `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched} crs=${fc.crs === undefined ? "absent" : "preserved"}`,
+    );
+
+    if (!dryRun) {
+      // Write the whole object back, preserving top-level type, crs, and all
+      // untouched collection members.
+      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+    }
   }
-
-  const missing = [...entries.keys()].filter((zone) => !seen.has(zone));
-  if (missing.length > 0) {
-    throw new Error(`artifact zones absentes de la collection: ${missing.join(", ")}`);
-  }
-
   console.log(
-    `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched}`,
+    `old=${config.oldReglement}/${config.oldMillesime} new=${config.newReglement}/${config.newMillesime} keys=${keys.length}`,
   );
-  console.log(
-    `old=${config.oldReglement}/${config.oldMillesime} new=${config.newReglement}/${config.newMillesime}`,
-  );
-  console.log(`envelope type=${String(fc.type)} crs=${fc.crs === undefined ? "absent" : "preserved"}`);
-
-  if (!dryRun) {
-    // Write the whole object back, preserving top-level type, crs, and all
-    // untouched collection members.
-    await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
-  }
 }
 
 const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
