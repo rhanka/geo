@@ -1926,11 +1926,11 @@
       "_note": "p1 verbatim (page-titre): «MUNICIPALITÉ DE SAINT-CHRYSOSTOME / RÈGLEMENT DE ZONAGE / NUMÉRO 243-2024». Preuve d'article TITRE p13: «1.1. TITRE DU RÈGLEMENT -- Le présent règlement est intitulé « Règlement de zonage numéro 243-2024 de la Municipalité de Saint-Chrysostome »». ECARTE 083-2004: p13 verbatim «remplace, à toutes fins que de droit, toutes les dispositions du Règlement de zonage numéro 083-2004 ainsi que tous ses amendements à ce jour» = ancien zonage ABROGE (piege type coaticook). Millesime = segment annee 4 chiffres du numero verbatim (le doc ne porte pas de date d'adoption; le «178-2004» de p77 est un reglement de controle interimaire, sans rapport)."
     },
     "notre-dame-du-laus": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "08-07-2000",
+      "reglement_millesime": "2000",
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "AUCUN DOC A LIRE: le source_url du manifest «https://www.notre-dame-du-laus.ca/publication/reglements» est une page de LISTE de reglements (HTML), pas un document -- et le fetch echoue (FETCH FAIL, hote injoignable). Rien a relever verbatim => null. Voie = decouverte du PDF de zonage (hors lane P0_1)."
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le source_url, pas sur le disque). L'ancien _note disait «AUCUN DOC A LIRE: le source_url ... est une page de LISTE de reglements (HTML) ... et le fetch echoue (FETCH FAIL)» — mais le PDF etait deja en local: work/zonage-norms/notre-dame-du-laus/grille.pdf (23 p, texte natif). MOTIF «l'amendement NOMME son reglement de base»: le doc lu EST l'amendement «RÈGLEMENT NO 07-04-2019 / RELATIF AU ZONAGE» (p1), qui enonce sa base verbatim p1: «ATTENDU que la municipalité de Notre-Dame-du-Laus a adopté le règlement numéro 08-07-2000 relatif au zonage;» puis «ATTENDU que ledit règlement numéro 08-07-2000 est entré en vigueur le 13 septembre 2000 et a été modifié par les règlements numéros : ...». Le zonage est donc le 08-07-2000, PAS le 07-04-2019 (amendement isole = hors-cible). MILLESIME 2000 = «entré en vigueur le 13 septembre 2000», date verbatim du reglement de BASE (et non du 07-04-2019). CANDIDAT ECARTE = «444»: «ATTENDU l'entrée en vigueur du règlement numéro 444 de la MRC d'Antoine-Labelle» = reglement de MRC, pas de la muni. Corpus LOCAL => url null."
     },
     "notre-dame-du-sacre-coeur-dissoudun": {
       "reglement_numero": null,
@@ -3144,11 +3144,11 @@
       "_note": "ANTI-INVENTION => null. LE DOSSIER DE SLUG MENT: work/zonage-norms/matapedia/ porte les documents de SAINT-ALEXIS-DE-MATAPÉDIA, une AUTRE municipalite. Preuve verbatim p1 de grille.pdf: «GRILLES DE SPÉCIFICATIONS — MUNICIPALITÉ DE SAINT-ALEXIS-DE-MATAPÉDIA»; les noms de fichiers concordent («PlanZonage_StAlexis_LL_20210210.pdf», «ANNEXE_2_Grilles_spe-cifications_St-AlexisV6.pdf»). ANGLE MORT DU GATE PROPRIETAIRE A DOCUMENTER: `_reglement-owner-gate` rend OWNER-OK (nom-complet=13) sur ce doc — FAUX POSITIF, parce que le nom du slug «matapedia» est une SOUS-CHAINE de «Saint-Alexis-de-MATAPÉDIA». Le gate attrape le piege de PREFIXE (saint-rene ⊂ saint-rene-de-matane) mais PAS le piege de SUFFIXE (matapedia ⊂ saint-alexis-de-matapedia): sa regex n'est ancree ni a gauche ni a droite. Un slug court et generique (matapedia, brome, portneuf...) passera donc toujours OWNER-OK sur le doc d'une muni composee. Ici seule la LECTURE de la forme de surface («MUNICIPALITÉ DE SAINT-ALEXIS-DE-MATAPÉDIA») a leve le piege. Defaut de DECOUVERTE: il manque le reglement de Matapedia."
     },
     "papineauville": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "https://www.papineauville.ca/application/files/5017/1525/8459/Tableau_de_la_grille_de_zonage.pdf",
-      "_note": "DOC MUET: «Tableau_de_la_grille_de_zonage.pdf» = grille transposee sur 1 seule page geante (51 codes), texte natif OK. En-tete verbatim «Grille des spécifications de zonage», sans numero ni annee. ZERO occurrence du motif «reglement numero/no/#» dans tout le doc; les seules mentions sont generiques et renvoient a des reglements TIERS: «Zone assujettie au règlement sur les plans d'aménagement d'ensemble (PAE) en vigueur». Aucun numero de zonage verbatim => null."
+      "reglement_numero": "2022-005",
+      "reglement_millesime": "2022",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le MAUVAIS DOCUMENT). L'ancien _note concluait «DOC MUET» sur «Tableau_de_la_grille_de_zonage.pdf» = la grille transposee d'1 page geante servie par le source_url. Or le dossier local porte work/zonage-norms/papineauville/grille.pdf (191 p, texte natif) = le CORPS du reglement, qui porte le numero verbatim p1: «MUNICIPALITÉ DE PAPINEAUVILLE / PROVINCE DE QUÉBEC / RÈGLEMENT DE ZONAGE / Règlement numéro 2022-005», re-enonce en entete de chaque page «Règlement de zonage / Règlement numéro 2022-005» et p2 «PROVINCE DE QUÉBEC  RÈGLEMENT NUMÉRO 2022-005 / RÈGLEMENT DE ZONAGE». MILLESIME 2022 = «RÉADOPTION : 07/02/2022» (p2), retenue comme l'acte d'adoption OPERANT: la page porte la sequence verbatim «AVIS DE MOTION : 09/03/2021 / ADOPTION DU 1ER PROJET : 09/03/2021 / ADOPTION DU 2E PROJET : 10/08/2021 / ADOPTION : 14/09/2021 / RÉADOPTION : 07/02/2022» — la readoption 2022 est posterieure et concorde avec le segment «2022» du numero. CANDIDAT ECARTE = millesime 2021 («ADOPTION : 14/09/2021»): l'adoption de 2021 a ete REPRISE par la readoption de 2022, et un reglement numerote 2022-005 ne peut etre le millesime 2021. Aucune ligne «entrée en vigueur» datee dans le doc. Corpus LOCAL => url null."
     },
     "saint-damien": {
       "reglement_numero": null,
@@ -3298,11 +3298,11 @@
       "_note": "Numero + proprietaire verbatim p5, cartouche d'en-tete de la grille (texte pivote; lisible en `pdftotext -raw`, invisible en -layout qui eclate le bloc): «ANNEXE B / GRILLE DES SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE NUMÉRO 2018-239 / MUNICIPALITÉ DE SAINTE-THÉRÈSE-DE-GASPÉ». CANDIDAT ECARTE: «2022-370», porte par l'URL/nom de fichier (Reglement-2022-370-grille.pdf) — ABSENT du document (grep sur les 5 pages: 0 occurrence); c'est le reglement modificateur qui a refait la grille, pas le reglement de zonage. MILLESIME null ASSUME: le doc est la seule annexe B, sans date d'adoption ni d'entree en vigueur (5 pages verifiees). CANDIDAT ECARTE: «2018», lisible dans le numero lui-meme — l'annee portee par un numero n'est PAS l'annee d'adoption (refute dans ce corpus a stoneham: 09-591 adopte en 2010)."
     },
     "ripon": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "2019-02-339",
+      "reglement_millesime": "2019",
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null: le document ne PORTE PAS le numero du reglement de base. Doc lu a $0 (1 page, texte natif): «GRILLE DES ... / 16 ZONAGE / Date: Février 2019». Les SEULS numeros presents sont des AMENDEMENTS references en notes de bas de grille, rattaches a une zone: «Note 4  Note 5  132  2020-02-360, 20 mai 2021» (+ 2022-06-399, 2022-06-400) — un numero d'amendement isole est explicitement hors-cible. CANDIDAT ECARTE: «2019-02-339», porte par l'URL/nom de fichier (ripon-regl-zonage-2019-02-339-grille-des-specifications-version-finale.pdf) mais ABSENT du document (grep «339»: 0 occurrence) — l'URL ne fait pas foi (piege prouve a coaticook). A LEVER hors P0_1: ouvrir le CORPS du reglement de zonage de Ripon (la grille seule est muette)."
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le MAUVAIS FICHIER du dossier). L'ancien _note ecartait «2019-02-339» comme «porte par l'URL/nom de fichier mais ABSENT du document (grep 339: 0 occurrence)» — ce grep portait sur la GRILLE d'1 page. Le dossier contient un SECOND PDF, work/zonage-norms/ripon/annexe-2019-02-339.pdf (104 p, texte natif), qui est le CORPS et porte le numero verbatim p1: «CANADA / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE RIPON / Règlement nº 2019-02-339 / RÈGLEMENT DE ZONAGE», confirme en entete p5: «Règlement de zonage nº 2019-02-339». Le numero de l'URL etait donc JUSTE, mais ce n'est PAS l'URL qui fait foi ici: il est lu verbatim dans le corps. MILLESIME 2019 = date verbatim p1, deux fois concordantes: «Adoption du règlement : 6 février 2019» et «Entrée en vigueur : 21 mai 2019» (le segment «2019» du numero n'est PAS la source, piege stoneham evite). Corpus LOCAL => url null."
     },
     "quebec": {
       "reglement_numero": null,
