@@ -91,6 +91,11 @@ async function main(): Promise<void> {
   const foldPath = resolve(ROOT, "acquisition", "src", `_reglement-shard${shard}-foldcandidates.json`);
   writeFileSync(foldPath, JSON.stringify(foldCandidates, null, 2));
   console.log(`\nFOLD-CANDIDATES (registre a un numéro, enrichment=false) = ${foldCandidates.length}: ${foldCandidates.join(",")}`);
+  // Frais: pas encore dans le registre curé => à sonder --local (corps peut porter le numéro).
+  const fresh = targets.filter((s) => !(s in registry.slugs));
+  const freshPath = resolve(ROOT, "acquisition", "src", `_reglement-shard${shard}-fresh.json`);
+  writeFileSync(freshPath, JSON.stringify(fresh, null, 2));
+  console.log(`\nFRESH (absent du registre) = ${fresh.length}: ${fresh.join(",")}`);
   console.log(`\nSUMMARY shard=${shard}/${n} targets=${targets.length} withServedUrl=${withUrl} alreadyRegistryNum=${inRegistryNum} actionable(httpUrl,noNum)=${actionable.length} -> ${outPath}`);
 }
 
