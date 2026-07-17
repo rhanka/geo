@@ -1,6 +1,62 @@
 {
   "$comment": "Provenance règlement par slug (P0a lane, demande Steve/immo 2026-07-12). 4 champs servis par ligne de grille: reglement_numero/millesime/page_source/url. Anti-invention: seulement des valeurs réelles; champ inconnu = null. Pilote MT/Sutton/Alma; à généraliser aux 817 (depuis _reglement/_source_url des dépôts ou registre par muni).",
   "slugs": {
+    "saint-vianney": {
+      "reglement_numero": "184-2002",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 184-2002 / DE LA MUNICIPALITÉ DE / SAINT-VIANNEY». Les «Modifié par : Règlement 208-2006...295-2024» qui suivent sont les AMENDEMENTS, pas le reglement de base. MILLESIME null ASSUME: gabarit MRC de La Matapedia — aucune date d'adoption ni d'entree en vigueur dans les 217 pages (verifie). CANDIDAT ECARTE: «2002», lisible dans le numero lui-meme, mais l'annee portee par un numero n'est PAS l'annee d'adoption — refute dans ce corpus meme a stoneham (09-591 adopte en 2010). Corpus LOCAL => url null."
+    },
+    "saint-alexandre-des-lacs": {
+      "reglement_numero": "03-04",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 03-04 / DE LA MUNICIPALITÉ DE / SAINT-ALEXANDRE-DES-LACS». Les 12 «Règlement n° ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia sans date d'adoption; cf. saint-vianney). Corpus LOCAL => url null. NB: le source_url «mrcmatapedia.qc.ca» du manifest est ici legitime (muni bien en Matapedia), contrairement a saint-barthelemy."
+    },
+    "saint-moise": {
+      "reglement_numero": "2004-03",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 2004-03 / DE LA MUNICIPALITÉ DE / SAINT-MOÏSE». Les 14 «Règlement no ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia sans date d'adoption; cf. saint-vianney). Corpus LOCAL => url null."
+    },
+    "saint-noel": {
+      "reglement_numero": "141-04",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 141-04 / DE LA MUNICIPALITÉ DE / SAINT-NOËL». Les 14 «Règlement no. ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia; aucune date d'adoption dans les 212 pages, verifie). Corpus LOCAL => url null."
+    },
+    "saint-zenon-du-lac-humqui": {
+      "reglement_numero": "04-2004",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 04-2004 / DE LA MUNICIPALITÉ DE / SAINT-ZÉNON-DU-LAC-HUMQUI». Les 11 «Règlement no ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia sans date d'adoption; cf. saint-vianney). Corpus LOCAL => url null."
+    },
+    "sainte-florence": {
+      "reglement_numero": "03-2004",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 03-2004 / DE LA MUNICIPALITÉ DE / SAINTE-FLORENCE». Les «Règlement no. ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia sans date d'adoption; cf. saint-vianney). Corpus LOCAL => url null."
+    },
+    "sainte-irene": {
+      "reglement_numero": "07-2004",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 07-2004 / DE LA MUNICIPALITÉ DE / SAINTE-IRÈNE». Les 20 «RÈGLEMENT NO ...» suivants sont les amendements. MILLESIME null ASSUME (gabarit MRC de La Matapedia; aucune date d'adoption dans les 206 pages, verifie). Corpus LOCAL => url null."
+    },
+    "saint-barthelemy": {
+      "reglement_numero": "288-90",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim p1 (ANNEXE I / GRILLE DES SPÉCIFICATIONS): «Amendements au règlement de zonage 288-90 de la Municipalité de Saint-Barthélemy: 303-92, 304-92, ... 728-25» => 288-90 est le reglement de BASE, tout le reste est la liste de ses amendements. MILLESIME null ASSUME: le doc local ne fait que 2 pages (l'annexe seule) et ne porte aucune date; «-90» n'est PAS une preuve d'adoption (piege stoneham). PROVENANCE DU MANIFEST FAUSSE: son source_url «mrcmatapedia.qc.ca» est l'artefact du bug transposed-ingest (defaut sans --source-url) — Saint-Barthelemy est dans D'Autray/Lanaudiere et n'a aucun lien avec la MRC de La Matapedia. => url null plutot que la fausse."
+    },
     "saint-gabriel-de-rimouski": {
       "reglement_numero": "211-10",
       "reglement_millesime": "2011",
