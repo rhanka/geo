@@ -56,7 +56,7 @@ describe("readEntries cross-field anti-invention lock", () => {
 describe("golden: the 3 hand-served artifacts satisfy the lock", () => {
   // Regression gate (both reviewers): the lane must reproduce the manually served cities,
   // and those artifacts must themselves be internally consistent under the new invariant.
-  for (const slug of ["saint-stanislas-de-kostka", "sutton", "saint-raphael"]) {
+  for (const slug of ["saint-stanislas-de-kostka", "sutton", "saint-raphael", "coaticook"]) {
     it(`${slug} passes readEntries without throwing`, () => {
       const path = join(ROOT, "work", "effet-densifiant", `${slug}.json`);
       const entries = readEntries(path);
