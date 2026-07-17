@@ -2087,11 +2087,11 @@
       "_note": "DOC MUET (type barkmere): PDF = «ANNEXE \"B\" / Les grilles des usages et normes. / Zones A / Août 2007» (24 p, texte natif OK). Chaque grille porte «Cette grille fait partie intégrante du règlement de zonage / Annexe B» + les signatures (Maire / Directrice générale) -- l'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part. Le «Août 2007» de p1 est une date sans numero: le gate exige le numero => null."
     },
     "saint-fabien": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. PIEGE URL REFUTE A $0: le manifest pointe «476-Saint-Fabien_ZONAGE_Grille-codifié.pdf» — le nom de fichier annonce «476», mais ce nombre est ABSENT du PLEIN TEXTE du doc local (2 pages, FIND-0 sur «476»). Gate proprietaire OWNER-OK mais FAIBLE (nom-complet=1). Stamper 476 aurait viole le gate «jamais deduit de l'URL ni du nom de fichier». Defaut de DECOUVERTE: il manque le corps."
+      "reglement_numero": "476",
+      "reglement_millesime": "2014",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saint-fabien.ca/wp-content/uploads/2025/10/476-Saint-Fabien_ZONAGE-codifie%CC%81.pdf",
+      "_note": "REFUTE la _note precedente («ANTI-INVENTION => null ... le 476 du nom de fichier est ABSENT du PLEIN TEXTE du doc local (2 pages, FIND-0) ... Defaut de DECOUVERTE: il manque le corps»): elle avait raison de refuser de deduire 476 de l'URL sur la seule foi de la GRILLE (2 p), et elle nommait elle-meme sa voie — le corps MANQUAIT. Le corps EXISTE et confirme le candidat par lecture directe. CORPS codifie (263 p, natif) decouvert via l'API REST WordPress (www.saint-fabien.ca/wp-json/wp/v2/media, x-wp-total=2433). Numero + proprietaire verbatim p1: «Municipalité de Saint-Fabien / Règlement de zonage / Règlement no 476 / Version codifiée», repris p2 «QUÉBEC / MUNICIPALITÉ DE SAINT-FABIEN / RÈGLEMENT NUMÉRO 476 / RÈGLEMENT DE ZONAGE» et en entete de chaque page «Règlement de zonage no 476». MILLESIME 2014 = dates verbatim p2: «AVIS DE MOTION : 7 AVRIL 2014 / ADOPTION : 2 JUIN 2014 / ENTRÉE EN VIGUEUR : 5 SEPTEMBRE 2014». 476 est bien la BASE: la table p2 «Modifications incluses dans ce document» liste #494-16 (16 aout 2016) etc., et les amendements freres publies s'intitulent tous «modifiant le règlement de zonage 476 pour la municipalité de Saint-Fabien» (578-R, 579-R, 585-P1/P2, 573-R, 568-R). ⛔ PIEGE D'URL NFD: le source_url rendu par l'API porte un «é» DECOMPOSE (e + U+0301); l'encoder en NFC (%C3%A9) rend 404, il faut %CC%81 — meme famille que le piege de TIRET de boucherville."
     },
     "saint-felicien": {
       "reglement_numero": null,
@@ -2220,11 +2220,11 @@
       "_note": "DOC MUET: PDF = «GRILLE DES SPÉCIFICATIONS / Règlement de zonage / ZONE P1-1» (2 p, 582 car. de texte natif). La grille se declare grille DU reglement de zonage sans jamais le numeroter. FAUX POSITIF ECARTE: le «P1-1» capte par le scanner est le CODE DE ZONE (etiquette «ZONE» juste au-dessus), pas un numero de reglement => null."
     },
     "saint-joachim-de-shefford": {
-      "reglement_numero": null,
+      "reglement_numero": "491-2007",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "BLOCAGE ACCES (type orford): le source_url «https://st-joachim.ca/wp-content/uploads/2024/09/mj-7-zonage-aout-2024.pdf» repond HTTP 403 (WAF). Le «mj-7» du nom de fichier n'est de toute facon pas un numero de reglement plausible (et exclu par le gate URL). Voie restante: acces non-bot au PDF (hors lane P0_1)."
+      "reglement_page_source": 1,
+      "reglement_url": "https://st-joachim.ca/wp-content/uploads/2023/04/576-2023-18-reglement-amendement-zonage-residence-de-tourisme-zone-rt-1.pdf",
+      "_note": "REFUTE la _note precedente («BLOCAGE ACCES (type orford): le source_url ... repond HTTP 403 (WAF) ... Voie restante: acces non-bot au PDF (hors lane P0_1)»): le 403 frappait UNE URL de PDF, PAS le site — l'API REST WordPress du MEME hote repond en anonyme (st-joachim.ca/wp-json/wp/v2/media, x-wp-total=1935). Un «403 WAF» sur un fichier n'est donc pas un verdict d'hote. Le CORPS 491-2007 n'est PAS publie (filtre «491» sur les 1935 medias = 2 hits, tous deux le meme projet) — mais ses AMENDEMENTS le NOMMENT, motif deja valide sur lascension/sainte-helene-de-bagot. Numero LU (non deduit) dans un amendement ADOPTE, verbatim p1: «PROVINCE DE QUÉBEC / MRC DE LA HAUTE-YAMASKA / MUNICIPALITÉ DE SAINT-JOACHIM-DE-SHEFFORD / RÈGLEMENT NO. 576-2023-18 / MODIFIANT LE RÈGLEMENT DE ZONAGE NO. 491-2007 (RÉSIDENCE DE TOURISME)». CORROBORE par un 2e doc independant: le projet 585-2024 dit «RÈGLEMENT NO. 585-2024 / MODIFIANT LE RÈGLEMENT DE ZONAGE NO. 491-2007». Le doc porteur choisi est l'ADOPTE (576-2023-18), pas le projet — le projet 585-2024 ne sert que de corroboration. Proprietaire + MRC nommes verbatim => pas d'homonyme. MILLESIME null ASSUME: aucun des deux amendements ne DATE le 491-2007; le «2007» du numero n'est pas retenu (piege stoneham / annee-du-numero-fausse)."
     },
     "saint-laurent-de-lile-dorleans": {
       "reglement_numero": "601-2021",
