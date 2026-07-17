@@ -1,16 +1,15 @@
 {
-  "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts.",
+  "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts. 2026-07-17: rééquilibrage vers les DONNÉES COMPLÉMENTAIRES immo (reglement/usage_dominant/immo-lots), qui n'avaient AUCUNE lane alors que la couverture en avait 8. engineFallback = engine de repli quand la lane bute sur une limite de dépense/quota.",
   "engine": "claude",
+  "engineFallback": "codex",
   "lanes": [
-    { "name": "geo-focus30",  "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/focus30-e2e-base.txt",    "shards": 6, "note": "RÉSERVÉ 6 agents CLAUDE (quota revenu): focus immo e2e — Claude boucle + lit les glyphes (Codex bloquait dessus, ex MT). Broad reste Codex." },
-    { "name": "geo-nm",       "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 4, "note": "broad normes ~530 restants — le goulot (découverte de sources); extraction Mistral" },
-    { "name": "geo-zn-recal", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 2, "note": "broad zones ~314 restants; glyph/vision Claude exclu de la lane Codex" },
-    { "name": "geo-pv",       "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/pv-base.txt",             "shards": 2, "note": "broad pv ~49 restants — réactivé (demande principal: pousser les 4 couches en //)" }
+    { "name": "geo-reglement", "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/reglement-provenance-base.txt", "shards": 2, "note": "P0_1 Steve: reglement_numero 79/830. Gisement = 483 grilles avec URL source mais sans numéro extrait. Lecture PDF -> registre curé -> fold --all." },
+    { "name": "geo-usage-dom", "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/usage-dominant-base.txt", "shards": 2, "note": "usage_dominant 8/830. Lecture de la légende des préfixes du règlement -> config prefix_map -> fold. null explicite sur zone duale/publique." },
+    { "name": "geo-immo-lots", "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/immo-lots-fields-base.txt", "shards": 1, "note": "WP9: adresse 2% (cause = --enrich-no-role qui null l'adresse) + folded-normes 3%. Le rôle est servi à 100%, aucune acquisition." },
+    { "name": "geo-nm", "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 2, "note": "broad normes 733/1106 — goulot = découverte de sources; extraction Mistral. Réduit de 5 à 2: la couverture ne doit plus manger toute la flotte." },
+    { "name": "geo-zn-recal", "engine": "claude", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 1, "note": "broad zones 830/1106; lever PDF épuisé (cf mémoire), gisement = SIG/JMap." }
   ],
-  "singletons": [
-    { "name": "geo-port-npm",   "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/port-to-npm.txt" },
-    { "name": "geo-immo-clean", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/immo-clean.txt" }
-  ],
+  "singletons": [],
   "backfill": {
     "session": "geo-immo-gap-loop",
     "match": "qc-lots-backfill.ts",
