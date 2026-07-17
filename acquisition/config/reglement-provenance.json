@@ -1,6 +1,97 @@
 {
   "$comment": "Provenance règlement par slug (P0a lane, demande Steve/immo 2026-07-12). 4 champs servis par ligne de grille: reglement_numero/millesime/page_source/url. Anti-invention: seulement des valeurs réelles; champ inconnu = null. Pilote MT/Sutton/Alma; à généraliser aux 817 (depuis _reglement/_source_url des dépôts ou registre par muni).",
   "slugs": {
+    "saint-gabriel-de-rimouski": {
+      "reglement_numero": "211-10",
+      "reglement_millesime": "2011",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1 «RÈGLEMENT NUMÉRO 211-10» + art.1.1 «...Saint-Gabriel-de-Rimouski » et est identifié par le numéro 211-10.». Millesime = adoption verbatim §18.4: «Adopté à Saint-Gabriel-de-Rimouski, ce septième jour du mois de février 2011.» => 2011 et NON 2010, que le «-10» du numero ET les plans de zonage «9025-2010-D/E» auraient tous deux suggere (meme piege qu'a stoneham 09-591=2010). Doc lu dans le corpus LOCAL work/zonage-norms/saint-gabriel-de-rimouski/grille.pdf; manifest source_url = «file:...» donc aucune URL publique => reglement_url null (precedent alma)."
+    },
+    "saint-ferreol-les-neiges": {
+      "reglement_numero": "15-674",
+      "reglement_millesime": "2015",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero lu au PIED DE GRILLE, verbatim et repete a chaque page: «RÈGLEMENT NO 15-674 SUR LE ZONAGE DE LA MUNICIPALITÉ DE SAINT-FERRÉOL-LES-NEIGES». Le doc est l'«ANNEXE J - GRILLES DES SPÉCIFICATIONS» du reglement, pas son corps. Millesime verbatim entete p1: «En vigueur le _______2015» (jour et mois laisses en blanc dans le doc, annee imprimee). NE PAS confondre avec le reglement 15-673 «sur les permis et certificats» cite en note de grille. Corpus LOCAL, pas d'URL publique => url null."
+    },
+    "victoriaville": {
+      "reglement_numero": "1261-2019",
+      "reglement_millesime": "2019",
+      "reglement_page_source": 2,
+      "reglement_url": null,
+      "_note": "Numero verbatim p2 (et entete de chaque page): «RÈGLEMENT DE ZONAGE NUMÉRO 1261-2019». Millesime = adoption verbatim p1: «Adoption : 11 mars 2019». Corpus LOCAL (638 p), pas d'URL publique au manifest => url null."
+    },
+    "piedmont": {
+      "reglement_numero": "757-07",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim p1: «RÈGLEMENT NUMÉRO 757-07», doc de la «Municipalité de Piedmont» (proprietaire confirme: «...par le Conseil de la municipalité de Piedmont»). Millesime = ADOPTION verbatim p1: «Adoption du règlement : 5 novembre 2007» (l'entree en vigueur, verbatim elle aussi, est posterieure: «Entrée en vigueur : 18 janvier 2008» — on retient l'adoption, coherente avec le «-07» du numero). Corpus LOCAL => url null."
+    },
+    "hatley": {
+      "reglement_numero": "98-06",
+      "reglement_millesime": "1998",
+      "reglement_page_source": 3,
+      "reglement_url": null,
+      "_note": "Numero verbatim p3: «Règlement de zonage n° 98-06». Proprietaire confirme «MUNICIPALITÉ DE HATLEY» (et non le Canton de Hatley, entite distincte). Millesime = adoption verbatim p3: «Adoption : 5 octobre 1998» (entree en vigueur verbatim: «25 novembre 1998», meme annee). Corpus LOCAL => url null."
+    },
+    "maddington-falls": {
+      "reglement_numero": "101",
+      "reglement_millesime": "2011",
+      "reglement_page_source": 3,
+      "reglement_url": null,
+      "_note": "Numero verbatim p3: «Règlement de zonage n° 101». Doc de la «Municipalité de Maddington» (ancien nom de Maddington Falls, meme entite). Millesime verbatim p3: «Adoption : ____________2011» / «Entrée en vigueur : ____________2011» — jour et mois laisses en blanc dans le doc, annee imprimee et concordante sur les deux lignes. Corpus LOCAL => url null."
+    },
+    "morin-heights": {
+      "reglement_numero": "642-2022",
+      "reglement_millesime": "2023",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «Règlement 642-2022 de zonage» (version administrative). Millesime = SEULE date verbatim du doc: «Entrée en vigueur le 27 février 2023» => 2023. On n'ecrit PAS 2022: ce «-2022» n'existe que dans le numero, et deduire l'annee du numero est le piege prouve a stoneham (09-591 adopte en 2010, pas 2009). Aucune date d'adoption au doc. La «LISTE DES MODIFICATIONS» p2 (670-2023, 673-2023 a 737-2023) recense des AMENDEMENTS, pas le reglement de base. Corpus LOCAL => url null."
+    },
+    "val-david": {
+      "reglement_numero": "601",
+      "reglement_millesime": "2008",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «MUNICIPALITÉ DU VILLAGE DE VAL-DAVID / RÈGLEMENT DE ZONAGE NO. 601». Millesime = date portee par la couverture du doc: «11 mars 2008» (le doc est l'ANNEXE 2 «Grilles des spécifications» du reglement 601; il ne porte pas de ligne «adopté le» explicite pour le reglement de base). Coherent avec le doc: le plus ancien amendement recense est «601-4 / 21-mai-09», donc le 601 de base est anterieur a 2009. Corpus LOCAL => url null."
+    },
+    "barraute": {
+      "reglement_numero": "134",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim p1 «Règlement no. 134», p2 «RÈGLEMENT NUMÉRO 134», entete de page «Municipalité de Barraute / Règlement de zonage / Numéro 134» (proprietaire confirme). MILLESIME null ASSUME: le doc ne le porte NULLE PART — la couverture imprime «Adopté le :» et «Entrée en vigueur le :» avec la valeur laissee EN BLANC, et la table «MISES À JOUR DU RÈGLEMENT DE ZONAGE NO. 134» (p4) est vide de toute ligne. Aucune date verbatim dans les 203 pages => null plutot qu'une deduction."
+    },
+    "gatineau": {
+      "reglement_numero": "532-2020",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero lu au PIED DE GRILLE verbatim (p1 et p2): «Règlement de zonage 532-2020». Le doc local n'est qu'un extrait de 2 pages (grille de la zone «Co-04-075»), pas le corps du reglement. MILLESIME null ASSUME: l'extrait ne porte aucune date d'adoption ni d'entree en vigueur; ecrire «2020» reviendrait a deduire l'annee du numero, exactement le piege prouve a stoneham (09-591 adopte en 2010). Le manifest pointe le portail HTML gatineau.ca/.../reglements (pas un PDF) => url null; le millesime reste a lire dans le corps du 532-2020."
+    },
+    "guerin": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le reglement de zonage de Guerin NE PORTE PAS de numero: art.1.2 TITRE DU RÈGLEMENT verbatim = «Le présent règlement est cité sous le nom de « RÈGLEMENT DE ZONAGE » de la municipalité de Guérin.» — aucun numero, comme a coaticook. La couverture ne porte qu'«ENTRÉE EN VIGUEUR : 29 JUIN 1995». PIEGE ECARTE: le doc est sur papier a en-tete de la MRC de Temiscamingue qui liste ses munis membres en colonne, et pdftotext -layout colle «de-Guigues» (= St-Bruno/St-Eugene-de-Guigues, voisines) sur la ligne d'entree en vigueur; le doc est bien celui de Guerin («MUNICIPALITÉ DE GUÉRIN», «ATTENDU QUE la corporation municipale de Guérin...»)."
+    },
+    "laverlochere-angliers": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Meme cas que guerin (MRC de Temiscamingue): art.1.2 verbatim = «Le présent règlement est cité sous le nom de « RÈGLEMENT DE ZONAGE » de la municipalité de Laverlochère.» — SANS numero. Couverture: «ENTRÉE EN VIGUEUR : 19 OCTOBRE 1994». RESERVE A LEVER (hors P0_1): le doc est celui de LAVERLOCHÈRE seule, anterieur a la fusion Laverlochere+Angliers (2018) qui a cree le slug; il ne couvre donc pas le secteur Angliers."
+    },
+    "normetal": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null: MAUVAIS DOCUMENT. work/zonage-norms/normetal/grille.pdf porte verbatim «Règlement de zonage des Territoires non organisés de la MRC d’Abitibi-Ouest» (entete de chaque page) et «Le présent règlement s'applique à l'ensemble des TNO de la MRCAO, soit le TNO de Rivière-Ojima...». Son numero («Règlement no. 08-2020», adopte le 16 decembre 2020, en vigueur le 18 decembre 2020) est celui des TNO de la MRC, PAS de la municipalite de Normetal: le stamper serait une provenance fausse. ESCALADE: la grille normes de normetal (21 zones) a ete extraite de ce meme doc => son zonage est lui aussi a re-qualifier."
+    },
     "mont-tremblant": {
       "reglement_numero": "2008-102",
       "reglement_millesime": "2008",
