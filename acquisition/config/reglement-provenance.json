@@ -2143,11 +2143,11 @@
       "_note": "Doc = «Tableau des dispositions spécifiques» par zone (1564 p, texte natif OK), sans page-titre. Recherche PLEIN TEXTE sur les 1564 p: «U-2300» = 1 SEULE occurrence, verbatim dans les «Dispositions spéciales» de la zone RU 3-8: «L'utilisation de conteneurs ou complexes de conteneurs à des fins de culture agricole est autorisé selon les dispositions de l'article 10.2.19 du règlement de zonage U-2300.» => le doc nomme lui-meme son reglement parent (precedent baie-saint-paul), l'URL n'a PAS servi de preuve. page_source null: renvoi interne a une grille de zone, pas une page-titre. ECARTE: le «U-2679 11 septembre 2025» du nom de fichier = reglement MODIFIANT/version (gate URL + pas d'amendement isole). Millesime null: aucune annee rattachee au U-2300 dans le doc."
     },
     "nantes": {
-      "reglement_numero": null,
+      "reglement_numero": "399-12",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "HOTE INJOIGNABLE (type bonsecours, meme hebergeur municipalites-du-quebec): le source_url «https://municipalites-du-quebec.com/nantes/docs/reglements/2/2026-03-13 - Grille des spécifications.pdf» n'aboutit pas (curl -sIL http=000, timeout 25 s; idem fetch sonde). Aucun doc a lire => null. Voie = re-decouverte de l'URL, pas une extraction."
+      "_note": "RE-QUALIFIE (le _note precedent «HOTE INJOIGNABLE ... Aucun doc a lire => null» est REFUTE: verdict rendu sur l'URL morte sans regarder le corpus local, or `work/zonage-norms/nantes/grille.pdf` (9 feuillets, texte natif) est sur disque). Numero verbatim, en-tete de CHACUN des 9 feuillets: «Annexe 1 du règlement / de zonage No. 399-12 / Feuillet 1 / 9» (p1), «... Feuillet 2 / 9» (p2)... Le doc est l'ANNEXE 1, mais la phrase numerote explicitement son PARENT («du règlement de zonage No. 399-12»): ce n'est donc pas un numero d'annexe, et le gate «PAS un numero d'annexe» est respecte. Gate proprietaire: OWNER-OK, 9 occurrences «Nantes», forme NUE = le slug (Nantes/Le Granit; aucune forme concurrente «Nantes-xxx» — piege de prefixe ecarte). MILLESIME null ASSUME: PLEIN TEXTE des 10 pages, «vigueur» = 0 occurrence, «adopt» = 0 occurrence — aucune date nulle part. Le «12» du numero n'est PAS retenu (piege de l'annee du numero). URL null: source_url du manifest (hebergeur municipalites-du-quebec) toujours mort."
     },
     "saint-lambert": {
       "reglement_numero": "2024-215",
@@ -2252,7 +2252,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "DOC MUET (type barkmere): PDF = «cahier de spécifications - annexe B» (40 p, texte natif OK). Le cahier ne numerote jamais son reglement de zonage parent. CANDIDATS ECARTES (les 2 seuls numeros du doc, aucun n'est le zonage): (a) «926-26» = reglement sur les USAGES CONDITIONNELS, verbatim: «Seul le point 5 de la classe C-6 a) complémentaire aux activités industrielles sont autorisé aux conditions du règlement 926-26 sur les usages conditionnels.»; (b) «923-26» = reglement de LOTISSEMENT («règlement de lotissement 923-26»). Stamper l'un des deux servirait un reglement qui n'est pas le zonage => null."
+      "_note": "HOLD null (PROJET), mais le _note precedent est REFUTE sur son constat et corrige ici: il concluait «DOC MUET ... Le cahier ne numerote jamais son reglement de zonage parent» — ce verdict a ete rendu sur `cahier-annexe-b.pdf` (41 p) alors que le SECOND PDF local, `grille.pdf` (240 p), est le CORPS et porte le numero verbatim p1: «Ville de Saint-Antonin / RÈGLEMENT DE ZONAGE NO922-26 / (Version administrative) 2026». Le zonage de Saint-Antonin porte donc bien un numero: 922-26 — ce qui CONFIRME retroactivement la lecture de l'ancien _note (il ecartait «923-26 = lotissement» et «926-26 = usages conditionnels»: la serie 922/923/926 est coherente, 922-26 = le zonage). CE QUI BLOQUE est le STATUT, pas le numero: p2 porte verbatim «Ville de Saint-Antonin / PROJET : RÈGLEMENT DE ZONAGE NUMÉRO : 922-26», en contradiction avec le «(Version administrative) 2026» de p1 (une version administrative ne se redige que pour du droit EN VIGUEUR, un projet n'est pas du droit en vigueur — doctrine du registre, cf. saint-edouard-de-lotbiniere / ham-sud / saint-laurent-de-lile-dorleans). Non tranche => pas de stamp. Gate proprietaire OK (22 occurrences «Saint-Antonin», p1 «Ville de Saint-Antonin»). Millesime introuvable de toute facon: «2026» est la date de la version administrative, pas une adoption. ETAPE = preuve d'adoption (avis d'entree en vigueur / certificat MRC de Riviere-du-Loup); a un seul pas du depot."
     },
     "ragueneau": {
       "reglement_numero": "2015-03",
@@ -2388,11 +2388,11 @@
       "_note": "Doc = «ZONAGE 2017-02 - ANNEXE B   GRILLES DES USAGES ET NORMES / Municipalité de Saint-Bernard-de-Michaudville» (37 p, texte natif OK), en-tete p1 verbatim, muni CONFORME. RESERVE assumee (type paspebiac): le doc n'ecrit jamais la formule complete «Règlement de zonage numéro 2017-02» -- recherche plein texte: les 2 seules occurrences sont «ZONAGE 2017-02» (l'en-tete d'annexe, repete) et «Règlement sur les P...» (PIIA/PPCMOI, sans rapport); le numero suit toutefois directement le mot ZONAGE dans le titre de l'annexe B du reglement de zonage. Millesime = segment annee 4 chiffres du numero verbatim; le source_url est opaque (file-20932), aucun risque de piege URL."
     },
     "saint-calixte": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "722-2023",
+      "reglement_millesime": "2023",
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "DOC MUET (type montreal-ouest): PDF = «Annexe 2 du Règlement de zonage» par zone (94 p, texte natif OK), en-tete p1 «Annexe 2 du Règlement de zonage   Zone AD-1». L'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part: recherche plein texte «règlement de zonage[^,;.]{0,35}» = uniquement «règlement de zonage» / «Règlement de zonage», jamais suivi d'un numero. Le source_url est opaque (679110f34217c622473876.pdf), sans candidat => null."
+      "_note": "RE-QUALIFIE (le _note precedent «DOC MUET ... L'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part» est REFUTE: le verdict a ete rendu sur le MAUVAIS des deux PDF locaux — `grille-specifications-officielle.pdf` (95 p) EST bien l'annexe muette decrite, mais `grille.pdf` (383 p) est le CORPS du reglement et porte le numero). Numero verbatim p1 (couverture): «Règlement de zonage / n° 722-2023 / (VERSION ADMINISTRATIVE CODIFIÉE)», p2 «RÈGLEMENT DE ZONAGE N° 722-2023 / MUNICIPALITÉ DE SAINT-CALIXTE», p3 «PROVINCE DE QUÉBEC / MUNICIPALITÉ DE SAINT-CALIXTE / RÈGLEMENT Nº 722-2023 / RÈGLEMENT DE ZONAGE». Coherence interne: art. 1.1.2 «Le présent règlement abroge le règlement n° 345-A-88, intitulé « Règlement de zonage »» (345-A-88 = l'ancien, ECARTE). Gate proprietaire: 394 occurrences, toutes «Saint-Calixte» = le slug. Millesime = ADOPTION verbatim p3: «AVIS DE MOTION : 13 FÉVIRER 2023 [sic] / ADOPTION : 17 AVRIL 2023 / ADOPTION AVEC MODIFICATION : 10 JUILLET 2023 / ENTRÉE EN VIGUEUR : 16 AOÛT 2023» => 2023 (toutes les etapes tombent en 2023, aucune ambiguite). URL null: le source_url du manifest est opaque (679110f34217c622473876.pdf) et pointe l'annexe, pas le corps."
     },
     "saint-christophe-darthabaska": {
       "reglement_numero": null,
@@ -3827,7 +3827,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: le seul doc local (src.pdf) fait 1 page et la sonde p1-8 rend «NO-CANDIDATE-LINE (aucun motif règlement/vigueur)» — c'est un extrait, pas le corps du reglement. ETAPE = lane normes-discovery."
+      "_note": "ANTI-INVENTION => null. Precision sur le _note precedent («le seul doc local (src.pdf) fait 1 page ... c'est un extrait, pas le corps du reglement»): src.pdf fait 2 pages et n'est pas un extrait de reglement du tout — c'est une FICHE DU ROLE D'EVALUATION FONCIERE, verbatim p1: «2022/07/27   MUNICIPALITÉ SACRÉ-COEUR-DE-JÉSUS   N° Page 1 / Confirmation de l'évaluation et des taxes (Détaillée) / 1. Identification de l'unité d'évaluation   Numéro de matricule: 5817 65 4420 0 000 0000 / 2. Propriétaire   Nom: PARE BRUNO». Le doc est donc HORS-SUJET pour la lane (il porte «Zonage municipal: AFa 2» = le code de zone d'UN lot, jamais un numero de reglement) — aucune sonde textuelle n'en tirera quoi que ce soit, inutile d'y revenir. Defaut de DECOUVERTE integral. ETAPE = lane normes-discovery."
     },
     "pointe-a-la-croix": {
       "reglement_numero": null,
