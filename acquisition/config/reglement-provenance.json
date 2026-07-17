@@ -526,11 +526,11 @@
       "_note": "REFUTE le null «scan illisible». Le verdict precedent tenait sur «NO-TEXT-LAYER (scan image) — route vision requise»: c'est un FAUX COUT. Le scan a ete LU A $0, SANS OCR PAYANT: `pdftoppm -f 1 -l 1 -r 130 -png` + lecture vision de l'agent (ne facturer Mistral que si l'agent lui-meme ne lit pas la page). NUMERO verbatim p1, titre de l'amendement 329: «RÈGLEMENT NUMÉRO 329 MODIFIANT LE RÈGLEMENT DE ZONAGE NUMÉRO 265 TEL QU'AMENDÉ RELATIVEMENT AUX USAGES INDUSTRIELS, AINSI QUE LE PLAN DE ZONAGE ET LES GRILLES DE SPÉCIFICATIONS S'Y RATTACHANT» => la BASE zonage est 265; 329 est l'AMENDEMENT et est ECARTE (pas un numero d'amendement isole). Confirme 2x independamment dans le meme doc: art. 1.1 TITRE ET NUMÉRO DU RÈGLEMENT «Le présent règlement porte le titre de « Règlement numéro 329 modifiant le règlement de zonage numéro 265 relativement aux usages industriels et commerciaux ainsi, que le plan de zonage et les grilles de spécifications s'y rattachant ».» et art. 1.3 BUT DU RÈGLEMENT «Le présent règlement a pour but d'apporter des modifications au Règlement de zonage #265 actuellement en vigueur sur le territoire de la Municipalité.» (=> 265 est bien celui EN VIGUEUR, pas un abroge: piege coaticook ecarte). MILLESIME 2010 VERBATIM (et non deduit du numero — «265» ne porte aucune annee): CONSIDERANT p1 «CONSIDÉRANT QUE le règlement de zonage de la municipalité est en vigueur depuis 2010;» — l'antecedent de «le règlement de zonage de la municipalité» est sans ambiguite le 265 que l'art. 1.3 dit «actuellement en vigueur». ATTENTION: NE PAS confondre avec les dates du cartouche p1, qui sont toutes celles de l'AMENDEMENT 329 («Adoption du règlement (2021-022) : 1er février 2021», «Avis public d'entrée en vigueur : 31 mars 2021») — c'est le piege inverse de aston-jonction. GATE PROPRIETAIRE: PASSE — «PROVINCE DE QUÉBEC / MRC DE MONTMAGNY / MUNICIPALITÉ DE BERTHIER-SUR-MER» (en-tete p1), «Règlements de la Municipalité de Berthier-sur-Mer» (bandeau), art. 1.4 «Le présent règlement s'applique sur l'ensemble du territoire sous juridiction de la Municipalité de Berthier-sur-Mer.» (MRC de Montmagny = bien celle de Berthier-sur-Mer; 0 muni tierce). Corpus LOCAL => url null."
     },
     "boisbriand": {
-      "reglement_numero": null,
+      "reglement_numero": "RV-1441",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "HOLD null MAIS le _note precedent est FACTUELLEMENT FAUX et corrige ici: il affirmait «0 motif «Reglement ... numero X» sur tout le doc» — or `work/zonage-norms/boisbriand/grille.pdf` porte en pied de CHAQUE page (55 occurrences) le motif verbatim «Règlement de zonage numéro RV-1441», et le tableau d'amendements cite «RV-1441-049 / 21-sept-16» et «RV-1441-050 / 21-sept-16». Le numero EST donc lisible. CE QUI BLOQUE est autre chose, et c'est le gate PROPRIETAIRE: le doc ne se nomme JAMAIS — 0 occurrence de «Boisbriand», 0 motif «Ville de ...» / «Municipalité de ...» sur tout le doc. Or la contamination de dossier est PROUVEE 3x ce jour sur ce meme shard (saint-rene / saint-cleophas-de-brandon / saint-camille-de-lellis portaient le reglement d'une AUTRE muni): un doc anonyme n'est pas stampable sur la foi du dossier qui le contient, meme si le prefixe «RV-» (Reglement de Ville) est la convention connue de Boisbriand. Millesime introuvable de toute facon: «À jour au : 21 septembre 2016» est une MISE A JOUR, pas une adoption. ETAPE = piece qui NOMME la ville (corps du RV-1441, avis d'entree en vigueur), pas une re-extraction de cette annexe."
+      "_note": "REFUTATION du HOLD precedent (gate PROPRIETAIRE), sur une preuve que le gate ne POUVAIT PAS voir. Le _note precedent tenait null au motif verbatim: «le doc ne se nomme JAMAIS — 0 occurrence de «Boisbriand», 0 motif «Ville de ...» / «Municipalité de ...» sur tout le doc». Cette premisse est vraie de la COUCHE TEXTE et FAUSSE du document: `work/zonage-norms/boisbriand/grille.pdf` porte en EN-TETE de chaque planche le LOGO-CARTOUCHE officiel de la ville (arbre vert + mot-marque «Boisbriand»), qui est une IMAGE — invisible a `_reglement-owner-gate` (grep texte, rendu OWNER-ABSENT nom-complet=0 jeton=0) et lisible en vision a $0. Verifie sur 2 planches distantes (p1 zone «CONS 101», p40 zone «I-2 130»): meme cartouche => lettre a en-tete reelle, pas un ornement isole. Le doc se nomme donc bien, et le gate proprietaire de [[corpus-slug-owner-mismatch]] est SATISFAIT: aucune contamination possible, la muni est imprimee sur chaque page. NUMERO verbatim en pied de CHAQUE page (55 occurrences): «Règlement de zonage numéro RV-1441». Ecarte: «RV-1441-049» et «RV-1441-050» (colonne «Amendements / No. Règl.» de la grille) = AMENDEMENTS du RV-1441, pas le reglement de base (piege 1 de [[reglement-numero-url-trap]]). MILLESIME null ASSUME: «À jour au : 21 septembre 2016» en en-tete est une date de MISE A JOUR/codification, jamais une adoption ([[reglement-annee-du-numero-fausse]]); «RV-1441» ne porte aucun segment annee. SIGNAL D'OUTIL (generalisable): `_reglement-owner-gate` est aveugle aux mot-marques en IMAGE; un OWNER-ABSENT sur un doc a cartouche graphique est un FAUX NEGATIF => re-qualifier en vision avant de conclure."
     },
     "bolton-est": {
       "reglement_numero": null,
@@ -3386,7 +3386,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "HOLD null: doc local PRESENT (94 p) mais ILLISIBLE a $0 — «NO-TEXT-LAYER (scan image)» sur p1-8: le PDF est un scan sans couche texte, pdftotext ne rend rien. Aucun numero n'a donc ete LU; ne rien stamper. Ce n'est PAS «le doc est muet» (on ignore ce qu'il porte) et ce n'est PAS un defaut de decouverte (le doc est la). ETAPE = route vision sur p1-3 (couverture + page d'adoption), ~$0.01; RE-OUVRIR avec --overwrite des qu'un OCR est passe."
+      "_note": "ANNEXE NUE => null. CORRIGE le motif du _note precedent («scan image — route vision requise»): la route vision a ete FAITE, a $0 (`pdftoppm -r 120 -png` p1 + vision de l'agent), et elle ne rend AUCUN numero — inutile de facturer un OCR sur 94 pages. VERBATIM p1: page-titre de division portant EXACTEMENT trois lignes — «RÈGLEMENT DE ZONAGE», «ANNEXE A», «TERMINOLOGIE». Aucun numero, aucune muni, aucune date. Le doc local (`grille.pdf`, 8.07MB, 94 p) est donc l'ANNEXE A (terminologie) du reglement de zonage, pas le corps: c'est le motif «Règlement de zonage» SANS numero (faux positif de motif, meme famille que sorel-tracy/notre-dame-du-mont-carmel/barkmere). Un cahier de terminologie ne porte structurellement pas le numero de la base. ETAPE = corps du reglement de zonage de Maskinonge (defaut de DECOUVERTE), pas une re-extraction de cette annexe."
     },
     "saint-alexis-de-matapedia": {
       "reglement_numero": null,
@@ -3673,7 +3673,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "HOLD null: doc local PRESENT (7 p) mais ILLISIBLE a $0 — «NO-TEXT-LAYER (scan image)»: pdftotext ne rend rien. Aucun numero n'a ete LU => aucun stamp. ETAPE = route vision sur les 7 pages (~$0.01); RE-OUVRIR avec --overwrite."
+      "_note": "MAUVAIS REGLEMENT (bonne muni) => null. CORRIGE le _note precedent, qui tenait null sur «scan illisible / route vision requise» et renvoyait donc a une depense OCR: cette depense serait PERDUE, car le doc ne portera JAMAIS le numero de zonage. Le scan a ete LU A $0 (`pdftoppm -r 120 -png` p1-p2 + vision de l'agent, sans OCR payant). CE QU'IL EST, verbatim: p1 = page-titre «RÈGLEMENT DE CONSTRUCTION / NUMÉRO 84» (foliotage imprime «32»); p2 = «CHAPITRE NO 3 / RÈGLEMENT DE CONSTRUCTION / SECTION NUMÉRO 1 DISPOSITIONS DÉCLARATOIRES», art. 3.1.1 TITRE verbatim: «Le titre du présent règlement est \"Règlement concernant la construction dans la municipalité de Clerval\" et peut être cité sous le nom de \"Règlement de construction\" ou \"Règlement numéro 84\".» (foliotage imprime «33»). => 84 est le reglement de CONSTRUCTION, a ECARTER pour la provenance ZONAGE (meme famille que saint-hilaire-de-dorset/229-2018 = comite consultatif d'urbanisme, et saint-pierre-de-lamy/2022-005 = plan d'urbanisme: un numero parfaitement lisible mais du MAUVAIS reglement). GATE PROPRIETAIRE: PASSE (art. 3.1.1 + art. 3.1.4 «l'ensemble du territoire soumis à la juridiction de la municipalité de Clerval»); le blocage n'est ni la lisibilite ni le proprietaire. CE QUI MANQUE: le doc local (7 p) n'est qu'un FRAGMENT — le «CHAPITRE NO 3» d'une codification d'urbanisme dont le foliotage imprime commence a 32; le reglement de ZONAGE est un AUTRE chapitre de cette codification, absent du dossier. art. 3.1.3 confirme que 84 n'abroge que du construction: «Le présent règlement abroge et remplace en entier, tous les règlements ou dispositions antérieurs ayant trait à la construction, ainsi que le règlement numéro 50.» ETAPE = chapitre ZONAGE de la codification de Clerval (defaut de DECOUVERTE); NE PAS OCRiser ce PDF."
     },
     "fermont": {
       "reglement_numero": null,
@@ -4844,6 +4844,90 @@
       "reglement_url": "https://voute.bape.gouv.qc.ca/dl/?id=00000422308",
       "_note": "Numero + proprietaire verbatim p1: «VILLE DE TERREBONNE / Direction de l’aménagement du territoire / Règlement de zonage # 1001 – chapitre 16». Confirme p3: «TERREBONNE / Règlement de zonage # 1001 / chapitre 16 - Grille des usages et des normes». Millesime null: ce chapitre de refonte administrative ne porte aucune date d'adoption ou d'entree en vigueur du 1001; «1001-009» p3 est en «AMENDEMENT (USAGE INTERNE)»."
     },
+    "montreal": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-montreal: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/montreal/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-eloi": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-eloi: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-eloi/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-elzear--bonaventure": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-elzear--bonaventure: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-elzear--bonaventure/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-ephrem-de-beauce": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-ephrem-de-beauce: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-ephrem-de-beauce/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-honore-de-temiscouata": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-honore-de-temiscouata: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-honore-de-temiscouata/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-ignace-de-loyola": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-ignace-de-loyola: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-ignace-de-loyola/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-marcel": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-marcel: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-marcel/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-pierre-de-la-riviere-du-sud": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-pierre-de-la-riviere-du-sud: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-pierre-de-la-riviere-du-sud/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "saint-pierre-de-lile-dorleans": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-pierre-de-lile-dorleans: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-pierre-de-lile-dorleans/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "sainte-angele-de-merici": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-sainte-angele-de-merici: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/sainte-angele-de-merici/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
+    "sainte-anne-des-monts": {
+      "reglement_numero": "04-620",
+      "reglement_millesime": "2004",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + millesime de la BASE lus verbatim p1 du PDF local cdx-23-951-projet-modification-reglement-de-zonage-urbanisme.pdf: «le règlement de zonage numéro 04-620 est entré en vigueur le 16 mars 2004». CANDIDAT ÉCARTÉ: «RÈGLEMENT NUMÉRO 23-951», car la couverture le qualifie verbatim «PREMIER PROJET ... MODIFIANT PLUSIEURS ARTICLES DU RÈGLEMENT DE ZONAGE 04-620»; 23-951 est donc l'amendement, pas la base. Croisement de qc-zonage-norms-sainte-anne-des-monts: HTTP 404, donc URL source absente => url null."
+    },
+    "sainte-apolline-de-patton": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-sainte-apolline-de-patton: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/sainte-apolline-de-patton/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+    },
     "grand-saint-esprit": {
       "reglement_numero": null,
       "reglement_millesime": null,
@@ -4928,6 +5012,62 @@
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-jean-de-lile-dorleans: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-jean-de-lile-dorleans/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
     },
+    "lery": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Corpus local grille.pdf (83 p): le seul candidat lisible, p1 puis en-tete p2-p12, est «(M) Amendement 2017-464 - CAD #1 - Entrée en vigueur le 5 juin 2017». «Amendement» qualifie explicitement 2017-464: ce n'est PAS le règlement de zonage de base. Aucun numéro de règlement de zonage n'est porté par ce cahier de grilles. Croisement qc-zonage-norms-lery: HTTP 404, donc URL source absente."
+    },
+    "lile-cadieux": {
+      "reglement_numero": "196",
+      "reglement_millesime": "2021",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim p1: «MRC DE VAUDREUIL-SOULANGES / VILLE D'ÎLE-CADIEUX / RÈGLEMENT DE ZONAGE NO 196». Millesime = adoption verbatim p1: «Adoption du règlement : Le 9 février 2021» (entree en vigueur imprimee «Le XXXX 2021», donc elle ne sert pas de date). _source_url servi = «non-disponible», donc url null."
+    },
+    "saint-edouard": {
+      "reglement_numero": "2015-259",
+      "reglement_millesime": null,
+      "reglement_page_source": 4,
+      "reglement_url": null,
+      "_note": "Numero officiel verbatim p4, art. 1 «Titre»: «Le présent règlement porte le nom de “Règlement de zonage de la municipalité de Saint-Édouard” (Règlement numéro 2015-259).» Le meme article dit que ce reglement «abroge et remplace le règlement 115». CANDIDAT ÉCARTÉ: «Règlement de zonage numéro 2015-258», simple pied de page p1-p175 contradictoire avec l'article Titre. Millesime null: p1 est titree «PROJET RÈGLEMENT DE ZONAGE» et donne seulement «30 novembre 2015», sans libelle adoption/entree en vigueur; le 2015 du numero n'est pas transforme en millesime. _source_url servi = «non-disponible», donc url null."
+    },
+    "saint-isidore--roussillon": {
+      "reglement_numero": "160-2007",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 10,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim p10, art. 1.1: «Le présent règlement portant le numéro 160-2007 est intitulé “Règlement de zonage de la municipalité de Saint-Isidore”.» Millesime = adoption et entree en vigueur verbatim p1: «Adopté le : 05 MARS 2007» / «En vigueur : 19 JUIN 2007». CANDIDAT ÉCARTÉ: «règlement de zonage numéro 56-96», explicitement abroge et remplace p10. Croisement qc-zonage-norms-saint-isidore--roussillon: HTTP 404, donc url null."
+    },
+    "saint-urbain-premier": {
+      "reglement_numero": "476-24",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero officiel verbatim p1: «MUNICIPALITÉ DE SAINT-URBAIN-PREMIER / RÈGLEMENT DE ZONAGE / NUMÉRO 476-24». Millesime null: la codification p2 ne fournit aucune adoption ni entree en vigueur de la base 476-24. CANDIDAT ÉCARTÉ: «510-26», dans la table des «modifications ... apportées au Règlement numéro 476-24»; ses dates 2026 appartiennent donc a l'amendement. _source_url servi = «non-disponible», donc url null."
+    },
+    "sainte-anne-des-plaines": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Les deux PDF locaux ne sont pas le reglement de zonage: grille.pdf est un plan cartographique p1 («Sainte-Anne-des-Plaines») sans motif «règlement» ni numero; grille-tarifaire-urbanisme-environnement.pdf est une «Grille tarifaire en date de janvier 2026 (sujet à changement)». Aucun numéro de règlement de zonage verbatim. Croisement qc-zonage-norms-sainte-anne-des-plaines: HTTP 404, donc url null."
+    },
+    "sainte-flavie": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Croisement qc-zonage-norms-sainte-flavie: HTTP 404, donc aucune grille ni URL source servie. Le seul fichier local grille.pdf pese 2 630 octets, sous le seuil de PDF exploitable de la sonde; aucun document de règlement ne peut etre lu verbatim => pas de stamp."
+    },
+    "sainte-martine": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://sainte-martine.ca/document/reglement-zonage-annexe-grille-h/",
+      "_note": "ANTI-INVENTION => null. L'URL servie livre bien le PDF de 35 p, un cahier «GRILLES DES USAGES ET NORMES PAR ZONE». Son seul numero de reglement lisible, repete p1-p12, est «AMENDEMENTS (RÈGLEMENT N° 2019-342, ANNEXE A.)»: 2019-342 est explicitement dans la rubrique AMENDEMENTS et n'est PAS retenu comme reglement de zonage de base. Aucun numero de base verbatim dans le document."
+    },
     "saint-lambert--abitibi-ouest": {
       "reglement_numero": null,
       "reglement_millesime": null,
@@ -5011,62 +5151,6 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-sainte-francoise--les-basques: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/sainte-francoise--les-basques/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
-    },
-    "lery": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Corpus local grille.pdf (83 p): le seul candidat lisible, p1 puis en-tete p2-p12, est «(M) Amendement 2017-464 - CAD #1 - Entrée en vigueur le 5 juin 2017». «Amendement» qualifie explicitement 2017-464: ce n'est PAS le règlement de zonage de base. Aucun numéro de règlement de zonage n'est porté par ce cahier de grilles. Croisement qc-zonage-norms-lery: HTTP 404, donc URL source absente."
-    },
-    "lile-cadieux": {
-      "reglement_numero": "196",
-      "reglement_millesime": "2021",
-      "reglement_page_source": 1,
-      "reglement_url": null,
-      "_note": "Numero + proprietaire verbatim p1: «MRC DE VAUDREUIL-SOULANGES / VILLE D'ÎLE-CADIEUX / RÈGLEMENT DE ZONAGE NO 196». Millesime = adoption verbatim p1: «Adoption du règlement : Le 9 février 2021» (entree en vigueur imprimee «Le XXXX 2021», donc elle ne sert pas de date). _source_url servi = «non-disponible», donc url null."
-    },
-    "saint-edouard": {
-      "reglement_numero": "2015-259",
-      "reglement_millesime": null,
-      "reglement_page_source": 4,
-      "reglement_url": null,
-      "_note": "Numero officiel verbatim p4, art. 1 «Titre»: «Le présent règlement porte le nom de “Règlement de zonage de la municipalité de Saint-Édouard” (Règlement numéro 2015-259).» Le meme article dit que ce reglement «abroge et remplace le règlement 115». CANDIDAT ÉCARTÉ: «Règlement de zonage numéro 2015-258», simple pied de page p1-p175 contradictoire avec l'article Titre. Millesime null: p1 est titree «PROJET RÈGLEMENT DE ZONAGE» et donne seulement «30 novembre 2015», sans libelle adoption/entree en vigueur; le 2015 du numero n'est pas transforme en millesime. _source_url servi = «non-disponible», donc url null."
-    },
-    "saint-isidore--roussillon": {
-      "reglement_numero": "160-2007",
-      "reglement_millesime": "2007",
-      "reglement_page_source": 10,
-      "reglement_url": null,
-      "_note": "Numero + proprietaire verbatim p10, art. 1.1: «Le présent règlement portant le numéro 160-2007 est intitulé “Règlement de zonage de la municipalité de Saint-Isidore”.» Millesime = adoption et entree en vigueur verbatim p1: «Adopté le : 05 MARS 2007» / «En vigueur : 19 JUIN 2007». CANDIDAT ÉCARTÉ: «règlement de zonage numéro 56-96», explicitement abroge et remplace p10. Croisement qc-zonage-norms-saint-isidore--roussillon: HTTP 404, donc url null."
-    },
-    "saint-urbain-premier": {
-      "reglement_numero": "476-24",
-      "reglement_millesime": null,
-      "reglement_page_source": 1,
-      "reglement_url": null,
-      "_note": "Numero officiel verbatim p1: «MUNICIPALITÉ DE SAINT-URBAIN-PREMIER / RÈGLEMENT DE ZONAGE / NUMÉRO 476-24». Millesime null: la codification p2 ne fournit aucune adoption ni entree en vigueur de la base 476-24. CANDIDAT ÉCARTÉ: «510-26», dans la table des «modifications ... apportées au Règlement numéro 476-24»; ses dates 2026 appartiennent donc a l'amendement. _source_url servi = «non-disponible», donc url null."
-    },
-    "sainte-anne-des-plaines": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Les deux PDF locaux ne sont pas le reglement de zonage: grille.pdf est un plan cartographique p1 («Sainte-Anne-des-Plaines») sans motif «règlement» ni numero; grille-tarifaire-urbanisme-environnement.pdf est une «Grille tarifaire en date de janvier 2026 (sujet à changement)». Aucun numéro de règlement de zonage verbatim. Croisement qc-zonage-norms-sainte-anne-des-plaines: HTTP 404, donc url null."
-    },
-    "sainte-flavie": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Croisement qc-zonage-norms-sainte-flavie: HTTP 404, donc aucune grille ni URL source servie. Le seul fichier local grille.pdf pese 2 630 octets, sous le seuil de PDF exploitable de la sonde; aucun document de règlement ne peut etre lu verbatim => pas de stamp."
-    },
-    "sainte-martine": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "https://sainte-martine.ca/document/reglement-zonage-annexe-grille-h/",
-      "_note": "ANTI-INVENTION => null. L'URL servie livre bien le PDF de 35 p, un cahier «GRILLES DES USAGES ET NORMES PAR ZONE». Son seul numero de reglement lisible, repete p1-p12, est «AMENDEMENTS (RÈGLEMENT N° 2019-342, ANNEXE A.)»: 2019-342 est explicitement dans la rubrique AMENDEMENTS et n'est PAS retenu comme reglement de zonage de base. Aucun numero de base verbatim dans le document."
     },
     "sainte-helene-de-mancebourg": {
       "reglement_numero": null,
