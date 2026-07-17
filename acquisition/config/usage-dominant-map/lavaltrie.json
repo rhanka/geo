@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "L": "environnemental",
+    "P": null
+  },
+  "source": "https://www.ville.lavaltrie.qc.ca/storage/app/media/R%C3%A8glements%20municipaux/urbanisme/RRU2-2012_zonage_2026.pdf",
+  "note": "Règlement de zonage numéro RRU2-2012 (Ville de Lavaltrie, « Version administrative », mise à jour le 11 juin 2026), Chapitre 2 « Le plan de zonage, les grilles des spécifications et la classification des usages », art. 2.1 « LE PLAN DE ZONAGE ». Texte porteur VERBATIM: « Chacune des zones montrées au plan de zonage, et dont les prescriptions sont entre autres décrites à la grille des spécifications, est identifiée à ce plan par une lettre, suivie d'un numéro. Le numéro confère à la zone un caractère unique. LA LETTRE CONFÈRE À LA ZONE SA DOMINANCE OU SA VOCATION PRINCIPALE, le tout tel que spécifié ci-après : ». Suit la table à 2 colonnes « Identification de la dominance | Dominance » (lue avec pdftotext -layout), VERBATIM ligne à ligne: « A | Agricole »; « C | Commerciale »; « I | Industrielle »; « L | Loisirs »; « P | Publique et communautaire »; « R | Résidentielle »; « V | Mixte de type villageois [59] »; « U | Mixte de type urbain [59] ». Le règlement déclare donc lui-même que la lettre EST la vocation dominante — aucune inférence à partir des lettres n'est nécessaire. Mapping: R « Résidentielle » = residentiel; A « Agricole » = agricole; C « Commerciale » = commercial; I « Industrielle » = industriel. Null explicite: P « Publique et communautaire » = affectation publique/communautaire -> null par la règle PUBLIQUE/institutionnelle. ÉQUIVALENCE APPLIQUÉE (signalée pour revue): L « Loisirs » -> environnemental, au titre de la famille récréative (le bucket environnemental couvre « Récréative ») ; le libellé verbatim est « Loisirs », pas « Récréative » — 3 polygones concernés, à basculer sur null si le conducteur juge l'équivalence trop large. NON mappés (hors SIG servi, aucune invention): « V » (« Mixte de type villageois ») et « U » (« Mixte de type urbain ») figurent bien au règlement mais N'APPARAISSENT PAS dans la collection servie (préfixes réels mesurés: R 63, A 52, C 29, P 17, I 5, L 3 = 169 polygones) — ils seraient de toute façon DUAUX (« Mixte ») donc null. Les 6 préfixes réellement servis sont tous couverts ci-dessus (aucun fall-through). Tous les préfixes sont mono-lettre: aucun enjeu de longest-prefix. La grille des spécifications (annexe B, matrice des usages permis) n'est pas utilisée."
+}
