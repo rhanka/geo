@@ -2,9 +2,15 @@
  * _reglement-targets.ts — lane P0_1 provenance règlement (Steve/immo).
  *
  * Sort le GISEMENT: les villes dont le polygone ne porte PAS encore la provenance
- * (`reglement=false` dans work/coverage/zonage-enrichment.json) MAIS dont la grille
- * de normes servie porte déjà une URL source (`_source_url` / `reglement_url`) —
- * donc le PDF du règlement est ouvrable SANS découverte à l'aveugle.
+ * (`reglement=false` dans work/coverage/zonage-enrichment.json) MAIS dont on connaît
+ * déjà une URL source — donc le PDF du règlement est ouvrable SANS découverte à
+ * l'aveugle.
+ *
+ * L'URL vient du MANIFEST (`registry/qc-zonage-norms/manifest.json`), qui fait
+ * autorité; le `_source_url` du GeoJSON servi n'est qu'un REPLI. Les deux divergent:
+ * mesuré 2026-07-17, le GeoJSON vaut souvent la chaîne littérale «non-disponible»
+ * là où le manifest porte le vrai PDF (saint-malo, saint-jude, saint-martin…), ce
+ * qui affamait le scan (62 cibles vues contre 74 réelles sur le shard 1/2).
  *
  * Lecture seule (aucun PUT). Anti-invention: passthrough verbatim des champs
  * déposés (`_reglement`, `_source_url`), jamais de dérivation depuis l'URL.
@@ -23,6 +29,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ENRICH = resolve(ROOT, "work", "coverage", "zonage-enrichment.json");
 const REGISTRY = resolve(ROOT, "acquisition", "config", "reglement-provenance.json");
 const NORMS_PREFIX = "normalized/qc-zonage-norms/";
+const MANIFEST_KEY = "registry/qc-zonage-norms/manifest.json";
 
 interface PerMuni {
   slug: string;
@@ -44,7 +51,14 @@ function arg(argv: string[], k: string): string | undefined {
 }
 
 const asStr = (v: unknown): string | null => (typeof v === "string" && v.trim() ? v : null);
-const isUrl = (v: unknown): v is string => typeof v === "string" && /^https?:\/\//.test(v);
+/**
+ * URL réellement ouvrable. Le placeholder «non-disponible» est déposé tel quel par
+ * les lanes de grille, parfois préfixé («https://non-disponible») — il passe donc
+ * /^https?:/ tout en ne désignant aucun document. Le rejeter ici évite de compter
+ * comme gisement des cibles qu'aucun fetch ne peut servir.
+ */
+const isUrl = (v: unknown): v is string =>
+  typeof v === "string" && /^https?:\/\//.test(v) && !/^https?:\/\/non-disponible/i.test(v);
 
 /** Map en concurrence bornée (S3 = I/O-bound, mais on reste sobre). */
 async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T, i: number) => Promise<R>): Promise<R[]> {
@@ -80,23 +94,45 @@ async function main(): Promise<void> {
   console.log(`univers=${universe.length} shard=${shard} mine=${mine.length}`);
 
   const s3 = s3Client();
+
+  // Le manifest fait autorité pour l'URL source (mémoire norms-manifest-is-authority).
+  const manifestUrl = new Map<string, string>();
+  try {
+    const mf = JSON.parse((await getBytes(s3, MANIFEST_KEY)).toString("utf8")) as {
+      entries?: Array<{ slug?: string; source_url?: unknown }>;
+    };
+    for (const e of mf.entries ?? []) {
+      if (typeof e.slug === "string" && isUrl(e.source_url)) manifestUrl.set(e.slug, e.source_url);
+    }
+  } catch (e) {
+    console.log(`manifest illisible (${e instanceof Error ? e.message : String(e)}) -- repli _source_url du GeoJSON`);
+  }
+
   const rows = await mapLimit(mine, 8, async (slug, i): Promise<Target | null> => {
     if (registry.slugs[slug]) return null; // déjà curé (registre = vérité durable)
+    const fromManifest = manifestUrl.get(slug) ?? null;
+    // La grille servie n'apporte que `_reglement`/`_source_url` (confort): son absence
+    // à la clé plate ne doit PAS tuer une cible dont le manifest porte déjà l'URL,
+    // sinon on s'interdit ~19 villes ouvrables du seul fait du layout S3.
     const key = `${NORMS_PREFIX}qc-zonage-norms-${slug}.geojson`;
-    if (!(await exists(s3, key))) return null; // pas de grille servie => pas d'URL connue
     let props: Record<string, unknown> = {};
-    try {
-      const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-      props = fc.features?.[0]?.properties ?? {};
-    } catch {
-      return null;
+    if (await exists(s3, key)) {
+      try {
+        const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+        props = fc.features?.[0]?.properties ?? {};
+      } catch {
+        props = {};
+      }
+    } else if (!fromManifest) {
+      return null; // ni grille servie ni URL au manifest => rien à ouvrir
     }
     const t: Target = {
       slug,
       index: i,
       mined_reglement: asStr(props["_reglement"]),
-      source_url: isUrl(props["_source_url"]) ? (props["_source_url"] as string) : null,
-      reglement_url: isUrl(props["reglement_url"]) ? (props["reglement_url"] as string) : null,
+      // manifest d'abord, `_source_url` du GeoJSON en repli (souvent «non-disponible»).
+      source_url: fromManifest ?? (isUrl(props["_source_url"]) ? props["_source_url"] : null),
+      reglement_url: isUrl(props["reglement_url"]) ? props["reglement_url"] : null,
     };
     return t;
   });
