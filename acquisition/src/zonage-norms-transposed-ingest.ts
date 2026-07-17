@@ -43,6 +43,8 @@ import {
   parseTransposedGrilleNativePage,
   parseTransposedColumnsGrille,
   looksLikeTransposedColumnsGrille,
+  parseAffectationMatrixGrille,
+  looksLikeAffectationMatrixGrille,
 } from "../../packages/qc-sources/src/sources/grille-ocr-extractor.js";
 
 import { s3Client } from "./lib/s3.js";
@@ -62,6 +64,8 @@ const SNAPSHOT = new Date().toISOString().slice(0, 10);
 const METHODE = "native-text/grille-transposee";
 /** Provenance tag for the zones-in-COLUMNS variant (Sept-Îles/Saint-Tite/Valcourt). */
 const METHODE_COLS = "native-text/grille-transposee-colonnes";
+/** Provenance tag for the stacked number/letter affectation MATRIX (MRC de Papineau). */
+const METHODE_MATRIX = "native-text/grille-matrice-affectation";
 /** Anti-invention floor: never deposit a product with fewer real zone codes. */
 const MIN_DEPOSIT_ZONE_CODES = 3;
 /** Default provenance anchor for the MRC de La Matapédia family (override with --source-url). */
@@ -133,6 +137,7 @@ async function ingestSlug(
   let transposedPages = 0;
   let matPages = 0;
   let colPages = 0;
+  let matrixPages = 0;
   for (let i = 0; i < pages.length; i++) {
     const text = pages[i] ?? "";
     let zs = parseTransposedGrilleNativePage(text, i + 1, {
@@ -149,6 +154,18 @@ async function ingestSlug(
       });
       if (zs.length > 0) colPages++;
     }
+    // Last: the affectation MATRIX (MRC de Papineau), whose header is stacked
+    // number-over-letter and whose code is never printed. Its signature is
+    // exclusive of both parsers above (they need a literal label row / an inline
+    // code), so it only ever sees pages the others returned nothing for.
+    if (zs.length === 0 && looksLikeAffectationMatrixGrille(text)) {
+      zs = parseAffectationMatrixGrille(text, i + 1, {
+        source_url: opts.sourceUrl,
+        snapshot: SNAPSHOT,
+        methode: METHODE_MATRIX,
+      });
+      if (zs.length > 0) matrixPages++;
+    }
     if (zs.length > 0) transposedPages++;
     for (const zn of zs) {
       const key = canonZone(zn.zone_code);
@@ -158,7 +175,12 @@ async function ingestSlug(
   }
   // The deposit's summary methode reflects the parser that produced the majority of
   // pages (per-field provenance already carries the exact method per zone).
-  const depositMethode = colPages > matPages ? METHODE_COLS : METHODE;
+  const depositMethode =
+    matrixPages > colPages && matrixPages > matPages
+      ? METHODE_MATRIX
+      : colPages > matPages
+        ? METHODE_COLS
+        : METHODE;
   const zones = [...byZone.values()];
   const fieldPct = publishedFieldPct(zones);
 
