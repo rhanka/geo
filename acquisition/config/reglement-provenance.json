@@ -561,11 +561,11 @@
       "_note": "REFUTATION du HOLD precedent (gate PROPRIETAIRE), sur une preuve que le gate ne POUVAIT PAS voir. Le _note precedent tenait null au motif verbatim: «le doc ne se nomme JAMAIS — 0 occurrence de «Boisbriand», 0 motif «Ville de ...» / «Municipalité de ...» sur tout le doc». Cette premisse est vraie de la COUCHE TEXTE et FAUSSE du document: `work/zonage-norms/boisbriand/grille.pdf` porte en EN-TETE de chaque planche le LOGO-CARTOUCHE officiel de la ville (arbre vert + mot-marque «Boisbriand»), qui est une IMAGE — invisible a `_reglement-owner-gate` (grep texte, rendu OWNER-ABSENT nom-complet=0 jeton=0) et lisible en vision a $0. Verifie sur 2 planches distantes (p1 zone «CONS 101», p40 zone «I-2 130»): meme cartouche => lettre a en-tete reelle, pas un ornement isole. Le doc se nomme donc bien, et le gate proprietaire de [[corpus-slug-owner-mismatch]] est SATISFAIT: aucune contamination possible, la muni est imprimee sur chaque page. NUMERO verbatim en pied de CHAQUE page (55 occurrences): «Règlement de zonage numéro RV-1441». Ecarte: «RV-1441-049» et «RV-1441-050» (colonne «Amendements / No. Règl.» de la grille) = AMENDEMENTS du RV-1441, pas le reglement de base (piege 1 de [[reglement-numero-url-trap]]). MILLESIME null ASSUME: «À jour au : 21 septembre 2016» en en-tete est une date de MISE A JOUR/codification, jamais une adoption ([[reglement-annee-du-numero-fausse]]); «RV-1441» ne porte aucun segment annee. SIGNAL D'OUTIL (generalisable): `_reglement-owner-gate` est aveugle aux mot-marques en IMAGE; un OWNER-ABSENT sur un doc a cartouche graphique est un FAUX NEGATIF => re-qualifier en vision avant de conclure."
     },
     "bolton-est": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET: PDF = «Annexe I - Grille de specifications et des usages» (73 p, texte natif OK), 0 motif «Reglement ... numero X». Le «2025-11-10» du nom de fichier est une date de version, pas un numero => null."
+      "reglement_numero": "2025-447",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.boltonest.ca/storage/app/media/municipalite/administration-et-finances/reglementation-municipale/reglements-urbanisme/version-finale/reglement-zonage-version-finale-2025-12-15.pdf",
+      "_note": "CURED (etait HOLD-NULL 'DOC MUET': l'annexe I servie -grille version-final-2025-11-10- ne numerote pas son reglement). Corps re-decouvert a $0 (WebSearch) sur le meme host. PDF 267 p (Municipalite de Bolton-Est). VERBATIM p1: «RÈGLEMENT DE ZONAGE N°2025-447 / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE BOLTON-EST / RÈGLEMENT DE ZONAGE N° 2025-447 / AVIS DE MOTION : 5 mai 2025 / ADOPTION DU PROJET 5 mai 2025 / ADOPTION : 4 août 2025 / ENTRÉE EN VIGUEUR : 15 décembre 2025». Millesime=2025 = adoption verbatim (EEV 15 dec 2025). C'est le reglement EN VIGUEUR qui correspond a la grille servie (2025-11-10, meme refonte 2025-447), et remplace les anterieurs 2014-278 / 2021-387. Proprietaire OK «MUNICIPALITÉ DE BOLTON-EST»."
     },
     "brossard": {
       "reglement_numero": "REG-362",
@@ -2073,11 +2073,11 @@
       "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
     },
     "saint-cuthbert": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le PDF local (3 pages) est un extrait de grilles. Les seules lignes captees sont des renvois de NOTE DE CELLULE — p3 «Uniquement les usages « industrie de l'abattage et du conditionnement de la viande » autorisés par la CPTAQ avant l'entrée en vigueur du présent règlement.» — qui parlent du reglement sans jamais le numeroter (faux positif de motif). Defaut de DECOUVERTE: il manque le corps."
+      "reglement_numero": "352",
+      "reglement_millesime": "2024",
+      "reglement_page_source": 1,
+      "reglement_url": "https://st-cuthbert.qc.ca/wp-content/uploads/2024/07/352-reglementzonage-st-cuthbert.pdf",
+      "_note": "CURED (etait HOLD-NULL: le PDF local 3p n'etait qu'un extrait de grilles/notes de cellule). Corps 115p re-decouvert a $0 (WebSearch) sur wp-content/uploads (accessible malgre REST API 401). VERBATIM p1: «RÈGLEMENT DE ZONAGE / RÈGLEMENT NUMÉRO 352 / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE SAINT-CUTHBERT». Adoption VERBATIM art.159 (Dispositions finales, p99): «FAIT et adopté par le Conseil de la Municipalité de Saint-Cuthbert au cours de la séance tenue le 2 juillet 2024» (maire M. Richard Belhumeur; DG M. Larry Drapeau). Millesime=2024 = adoption verbatim (le numero 352 n'encode pas d'annee). Plan d'urbanisme companion = 351. Proprietaire OK."
     },
     "saint-damase--la-matapedia": {
       "reglement_numero": "216",
