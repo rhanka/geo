@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "H": "residentiel",
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "AR": null,
+    "M": null,
+    "P": null
+  },
+  "source": "https://www.ville.daveluyville.qc.ca/medias/doc/r-480_zonage_maj_2024-02-27.pdf",
+  "note": "Les préfixes SIG servis (A, H, R, AR, C, M, I, P) sont le zonage PRÉ-FUSION (Daveluyville a fusionné avec Sainte-Anne-du-Sault en 2018); la grille du règlement 2025-137 servie par la sonde ne nomme aucune vocation (codes harmonisés R/M/ID/V/I/P/A) et son corps est un PDF vide côté serveur. Deux légendes verbatim couvrent exactement les codes servis (comptes de zones concordants R×10, M×5): (1) Règlement R-480 (ancienne Daveluyville), art. 2.1 « La lettre confère à la zone sa dominance ou sa vocation principale [...] R Résidentielle; I Industrielle; M Multifonctionnelle; P Publique ou Communautaire » -> R residentiel, I industriel, M null (multifonctionnelle=mixte), P null (publique). (2) Règlement R-238 (ancienne Sainte-Anne-du-Sault, https://www.ville.daveluyville.qc.ca/medias/doc/r-238_zonage_maj_2024-02-26.pdf), art. 3.2 « IDENTIFICATION DES ZONES », tableau « Affectation principale | Lettre d'appellation »: Habitation=H, Commerce=C, Industrie=I, Publique=P, Agricole=A, Agro-Résidentielle=AR -> H residentiel, C commercial, A agricole. Null explicite: AR « Agro-Résidentielle » (DUALE agricole+résidentiel); M « Multifonctionnelle » (mixte); P « Publique ». Longest-prefix: AR (len2) distinct de A (len1). Préfixes mappés = uniquement ceux présents au SIG."
+}
