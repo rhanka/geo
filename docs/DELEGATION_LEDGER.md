@@ -21,7 +21,13 @@ and effort are a conscious, documented decision.
 - ⛔ `codex --model gpt-5.5` — **stalls in silent backoff** (heavily rate-limited OpenAI side);
   not a hard quota, just dead air. Do NOT use for a task that must complete. Use luna.
 - `codex --model gpt-5.6-sol --effort xhigh` — token-metered; used when owner says quota is back.
-- `codex --model gpt-5.6-tera` — does NOT exist on this account (silent fallback to luna).
+- `codex --model gpt-5.6-terra` (spelled terr**a**) — **EXISTS and is the Codex CLI default via
+  `h2a run codex`**, runs `xhigh fast`; it is what the FLEET uses. The earlier "tera doesn't
+  exist / falls back to luna" was a COMPANION call with the wrong string `gpt-5.6-tera` — a
+  path+spelling error, not the model's absence. Correction 2026-07-17 (fleet peek showed all
+  agents on `gpt-5.6-terra xhigh fast`).
+- PATH MATTERS, not just model: `h2a run codex` (tmux, fleet path) has been reliable; the
+  `codex-companion` (Claude plugin) stalled on 5.5 and sol. Same engine, different launcher.
 - `claude` agents (Agent tool `model: opus|sonnet|haiku|fable`) — Claude subscription; opus =
   Opus 4.8 (strongest, most credits), fable = Fable 5. Effort not settable via the Agent tool.
 - `agy -p <prompt> --model "Gemini 3.5 Flash (High)" --output-format json` — **one-shot,
