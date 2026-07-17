@@ -42,5 +42,12 @@ and effort are a conscious, documented decision.
 | 2026-07-17 | codex gpt-5.6-luna | xhigh | forfait | design-review | geo-4a lane (2nd opinion) | ~4min | ~ | ⭐ strong — converged with Opus independently; sharpened idempotence/ledger |
 | 2026-07-17 | codex gpt-5.5 | xhigh | forfait | design-review | geo-4a lane | 22min→killed | — | ⛔ FAILED — silent backoff, 22min dead air, cancelled |
 | 2026-07-17 | fable (Fable 5) | n/a | forfait | design-review | graphify typed-linking capability | ~5min | 126.7k | ⭐ excellent — caught partition-scoping hole, cite-grounding precedent, occurrences.json empty stub |
-| 2026-07-17 | codex gpt-5.6-sol | xhigh | token | design-review | graphify capability (4th, find-what-others-missed) | running | — | (pending) |
+| 2026-07-17 | codex gpt-5.6-sol | xhigh | token | design-review | graphify capability (4th, find-what-others-missed) | froze @18s | — | ⛔ NO OUTPUT — log froze 18s in (mid file-read), companion later lost the job. Same failure class as 5.5. |
+
+## Reliability insight (2026-07-17)
+The **Codex-companion detached path failed 2 of 3 recent long reviews** (5.5 stalled 22min; sol
+froze 18s in + job lost). luna succeeded once. The **Claude Agent path delivered 2/2** (Opus,
+Fable) reliably and with the sharpest findings. RULE: for a LONG, high-value review, prefer a
+Claude agent (opus/fable); use Codex companion for shorter delegated coding where a stall is
+cheap to retry. Always wrap detached Codex with `scripts/codex-await.sh`, but expect losses.
 | 2026-07-17 | agy Gemini 3.5 Flash (High) | high | quota | design-review | graphify capability (5th, eval agy) | 3 tries | >300k in | ⛔ BAD FIT for review — headless auto-denies tools → empty; skip-perms → wanders FS. Suited only to bounded @-input extraction (its grille engine-C role). Eval it via the grille bench instead. |
