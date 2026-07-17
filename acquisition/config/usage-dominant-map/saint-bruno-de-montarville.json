@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "HA": "residentiel",
+    "HB": "residentiel",
+    "HC": "residentiel",
+    "CA": "commercial",
+    "CB": "commercial",
+    "CE": "commercial",
+    "IA": "industriel",
+    "IC": "industriel",
+    "AA": "agricole",
+    "AB": "agricole",
+    "AC": "agricole",
+    "MH": null,
+    "MC": null,
+    "PA": null,
+    "PB": null,
+    "PC": null,
+    "PD": null
+  },
+  "source": "https://saintbruno-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2026/07/urb-z2017-1-dispositions-declaratoires-codad-web.pdf",
+  "note": "Règlement de zonage URB-Z2017 (Ville de Saint-Bruno-de-Montarville, chapitre 1 « Dispositions déclaratoires », codification web 2026-07), SECTION 3, ARTICLE 13 « IDENTIFICATION D'UNE ZONE »: « Chacune des zones montrées au plan de zonage est identifiée à ce plan par un code alphanumérique. La partie numérique du code est composée de 3 chiffres servant à l'identification de la zone. La première lettre du code représente le groupe d'usage dominant dans la zone tandis que la seconde identifie l'usage principal. La lettre « M » identifie une zone multifonctionnelle où sont autorisés plus d'un groupe d'usage. Cette lettre est suivie de la lettre identifiant le groupe d'usage dominant. Les zones sont identifiées de la manière suivante : 1° HA Habitation unifamiliale / 2° HB Habitation bifamiliale, Habitation trifamiliale / 3° HC Habitation multifamiliale, Habitation collective / 4° CA Commerce de voisinage / 5° CB Commerce de quartier et régional / 6° CC Commerce de gros régional / 7° CE Poste d'essence, station-service / 8° IA Bureau et Industrie de haute performance / 9° IB Industrie limitée / 10° IC Industrie générale / 11° MH Multifonctionnelle Habitation / 12° MC Multifonctionnelle Commerce / 13° PA Communautaire / 14° PB Récréation / 15° PC Protection et mise en valeur / 16° PD Utilité / 17° AA Agricole limitée / 18° AB Agricole générale / 19° AC Agricole conservation ». Cette table est la légende qui fait foi. RÈGLE DE LECTURE = la PREMIÈRE lettre porte le « groupe d'usage dominant » (l'article le dit littéralement), la seconde n'est que l'usage principal: groupe H « Habitation » (HA/HB/HC) -> residentiel; groupe C « Commerce » (CA/CB/CE) -> commercial; groupe I (IA/IC) -> industriel — IA « Bureau et Industrie de haute performance » reste industriel car son groupe DOMINANT est I; groupe A « Agricole » (AA/AB/AC) -> agricole — AC « Agricole conservation » reste agricole pour la même raison. Null explicite: le groupe P (PA « Communautaire », PB « Récréation », PC « Protection et mise en valeur », PD « Utilité ») est la famille communautaire/publique — le règlement ne nomme aucune des cinq catégories pour le groupe P lui-même, et c'est le GROUPE qui est dominant, pas le sous-usage; MH « Multifonctionnelle Habitation » et MC « Multifonctionnelle Commerce » sont des zones MULTIFONCTIONNELLES « où sont autorisés plus d'un groupe d'usage » -> aucune dominante unique n'est forcée. DÉCISION RÉVERSIBLE À SIGNALER: pour les zones M, le règlement précise que la lettre suivant le M « identifi[e] le groupe d'usage dominant » (donc MH=Habitation dominante, MC=Commerce dominante); ces 20 zones (MH 8, MC 12) sont néanmoins laissées null par application de la règle « zone mixte -> null » du contrat servi. Un arbitrage du conducteur peut les basculer à residentiel/commercial sans nouvelle lecture du règlement. CC « Commerce de gros régional » et IB « Industrie limitée » figurent à la légende mais sont ABSENTS du SIG servi -> non mappés. Préfixes mappés = les 17 réellement présents dans le SIG (HA 100, PA 51, HC 48, IA 18, PC 17, MC 12, AA 10, CB 10, MH 8, AB 7, CA 6, CE 5, IC 4, HB 4, AC 4, PD 4, PB 1 = 309 polygones). Le tableau des spécifications (matrice des usages, art. 16) n'est pas utilisé."
+}
