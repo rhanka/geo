@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "AG": "agricole",
+    "L": "environnemental",
+    "P": null
+  },
+  "source": "https://www.csp20.com/Handlers/FileHandler.aspx?path=Reglements\\Client-7dd71093-ca17-4f3f-a0c1-da6a8d57d022\\e761d121-b8c3-49b2-bee9-3a2c7754a484.pdf",
+  "note": "Municipalité de La Guadeloupe (MRC Beauce-Sartigan), règlement de zonage no 373-2007 (mise à jour mai 2025, règl. 547-2024, 130 p., texte natif). Table de légende VERBATIM à l'art. 2.6.3 « Type de zones », dans le CHAPITRE 2 « DISPOSITIONS INTERPRÉTATIVES » (p.4): « Agricole A | Industrielle I | Agroforestière Ag | Institutionnelle et publique P | Résidentielle R | Loisir L | Commerciale C ». Propriétaire attesté par le CORPS: page de garde « LE RÈGLEMENT DE ZONAGE NO 373-2007 — LA GUADELOUPE », en-tête de chaque page « Municipalité de La Guadeloupe », 130 occurrences du toponyme contre 0 de « Saint-Éphrem » (le règlement voisin partage le même gabarit de MRC). Ag « Agroforestière » -> agricole (famille agricole/agroforestière/forestière), corroboré par l'art. 3.2.10: « À l'intérieur d'une zone agroforestière (Ag), les constructions et usages suivants sont autorisés: a) Toutes les constructions et usages énumérés pour une zone agricole (A) ». La forme servie par le SIG est « AG » (le règlement écrit « Ag »): le match normalise la casse, la déclaration suit la forme du SIG. L « Loisir » -> environnemental, fondé par l'art. 3.2.8: « Ce groupe comprend les constructions et les usages servant à des fins récréatives ou de conservation » — les deux termes retombent sur la MÊME catégorie du contrat (récréative/conservation), il n'y a donc pas de dualité. Null explicite: P « Institutionnelle et publique » est publique. A et AG sont tous deux agricole: le longest-prefix est sans risque. Falsification contre les codes réels (le doc n'est pas un millésime abrogé disjoint): le corps porte R-[0-9]x23, C-[0-9]x25, A-[0-9]x5, Ag-[0-9]x5, I-9x9, L-2000x6, P-1000x8 — nomenclature concordante avec le SIG. Coquille sans effet signalée à l'art. 4.3.2.2 (« zones agricoles (Ag), agroforestières (A) »), qui inverse A/Ag contre 2.6.3, 3.2.9 et 3.2.10: sans impact, les deux tombent sur agricole. La matrice des usages permis n'a pas été utilisée pour fonder les dominances. Couverture 7/7 préfixes = 75/75 polygones."
+}
