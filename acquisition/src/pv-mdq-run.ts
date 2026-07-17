@@ -143,11 +143,17 @@ interface SlugResult {
 }
 
 async function runSlug(slug: string, args: Args): Promise<SlugResult> {
+  // Une panne d'hôte ne DOIT PAS se lire comme « pas sur le portail » : sans cette
+  // distinction, un portail tombé produirait un faux « not-on-portal » qu'un agent
+  // suivant classerait à tort en dead-end terminal. On exige donc au moins UNE
+  // vraie réponse HTTP (status > 0) pour conclure quoi que ce soit de négatif.
+  let sawHttpResponse = false;
   for (const host of HOSTS) {
     for (const alias of slugAliases(slug)) {
       await sleep(args.delayMs);
       const url = `${host}/${alias}/${SCAN_ENDPOINT}`;
       const r = await getJson(url);
+      if (r.status > 0) sawHttpResponse = true;
       if (!r.ok || !r.body.trim().startsWith("{")) continue;
 
       let tree: ScanNode;
@@ -212,7 +218,14 @@ async function runSlug(slug: string, args: Args): Promise<SlugResult> {
       };
     }
   }
-  return { slug, status: "not-on-portal", pairs: 0 };
+  return sawHttpResponse
+    ? { slug, status: "not-on-portal", pairs: 0 }
+    : {
+        slug,
+        status: "portal-unreachable",
+        pairs: 0,
+        note: "aucune réponse HTTP (hôte injoignable) — indéterminé, NE PAS conclure au dead-end ; réessayer",
+      };
 }
 
 async function main(): Promise<void> {
