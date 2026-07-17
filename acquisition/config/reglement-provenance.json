@@ -848,11 +848,11 @@
       "_note": "RE-QUALIFICATION d'un HOLD-NULL. Numero verbatim p1 «Règlement no. 149», p2 «RÈGLEMENT NUMÉRO 149», proprietaire verbatim p3: «Municipalité de Berry — Règlement de zonage Numéro 149». MILLESIME = ADOPTION verbatim p1: «Adopté le : 7 avril 2015» (l'entree en vigueur p1 «Entrée en vigueur le : 23 juin 2015» tombe la MEME annee, donc 2015 sans ambiguite). Le doc porte aussi p3 «MISES À JOUR DU RÈGLEMENT DE ZONAGE NO. 149» = table d'amendements, confirmant que 149 est la BASE. Corpus LOCAL => url null."
     },
     "boucherville": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://www.boucherville.ca/wp-content/uploads/2018/02/Reglement_zonage_2018-290_Grilles_H.pdf» repond HTTP 404. Le «2018-290» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL."
+      "reglement_numero": "2018-290",
+      "reglement_millesime": "2018",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.boucherville.ca/wp-content/uploads/2018/11/Reglement-zonage-2018-290.pdf",
+      "_note": "«LIEN MORT» LEVE -- et le 404 etait un piege de TIRET: le source_url du manifest «.../2018/02/Reglement_zonage_2018-290_Grilles_H.pdf» (underscore apres «Reglement») est bien 404, mais le fichier vit sous «Reglement-2018-290_Grilles_H.pdf» (tiret). La «re-decouverte de l'URL» annoncee comme voie est faite a $0 par _wp-media-enum.ts --site https://www.boucherville.ca --filter zonage (x-wp-total=8933), qui rend en prime le CORPS (11,7 Mo) et non la seule annexe. Numero lu VERBATIM dans le DOCUMENT (jamais deduit du nom de fichier): p1 couverture «Boucherville / Règlement numéro 2018-290 / RÈGLEMENT DE ZONAGE»; p2 cartouche «CODIFICATION ADMINISTRATIVE DU RÈGLEMENT NO 2018-290 / Règlement de zonage / Codifié au : 2026-06-22». MILLESIME 2018 par la date VERBATIM de la couverture «Décembre 2018» (une date ECRITE, pas le «2018» du numero -- piege 2007-08 evite), corroboree par la table des modifications p2 dont le PREMIER amendement est «2019-290-1» (donc base anterieure a 2019). NB: aucun article d'adoption date dans la codification; si une piece officielle donnait un jour la date exacte, elle ne pourrait que confirmer decembre 2018. ECARTES: tous les «2019-290-1, 2020-290-2, 2020-290-4/5/6...» de la table = AMENDEMENTS du 2018-290 (dont «2019-290-1 (Règlement retiré)»), ainsi que «2026-290-56» et «2026-290-57» vus a l'API = amendements 2026."
     },
     "brigham": {
       "reglement_numero": null,
