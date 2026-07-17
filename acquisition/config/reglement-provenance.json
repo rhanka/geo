@@ -4205,7 +4205,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE PUR: cible NO-GRILLE (aucune entree au manifest) ET aucun PDF dans work/zonage-norms/escuminac/ (NO-LOCAL-PDF mesure). Rien a lire => on ne stampe rien. ETAPE = decouverte du doc, hors gate $0 de cette lane."
+      "_note": "ANTI-INVENTION => null MAINTENU, mais la RAISON du null precedent est PERIMEE et corrigee ici. L'ancienne note disait «aucun PDF dans work/zonage-norms/escuminac/ (NO-LOCAL-PDF mesure). Rien a lire»: une lane amont a depuis depose annexe2-grilles.pdf (le disque a bouge PENDANT cette passe — mesure NO-LOCAL-PDF puis LOCAL=1 a ~20 min d'intervalle). Le doc a ete lu en PLEIN TEXTE ($0): c'est une GRILLE NUE anonyme qui ne numerote jamais son reglement. Verbatim p1: «GRILLES DE SPÉCIFICATIONS   MUNICIPALITÉ D'ESCUMINAC» et unique occurrence du motif sur tout le doc, l.874: «ANNEXE II - GRILLES DE SPÉCIFICATIONS   MUNICIPALITÉ D'ESCUMINAC» — zero occurrence de «règlement numéro N» / «entrée en vigueur». Le proprietaire est OK, c'est le NUMERO qui est absent du document. CANDIDAT ECARTE: «2021-003», lisible dans le NOM DE FICHIER du source_url manifest («...Mun Esc LL R 2021-003 Zonage Annexe 2 Grilles de spcifications adopt FUSIONN mj.pdf») — le numero d'une URL n'est jamais une lecture (piege prouve ~1/4 sur ce corpus) et il est ABSENT du contenu. ETAPE = decouverte du CORPS du reglement."
     },
     "honfleur": {
       "reglement_numero": null,
@@ -5298,6 +5298,27 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, pas d'extraction. Aucune entree au manifest qc-zonage-norms pour ce slug (etat NO-GRILLE) => aucun source_url a ouvrir, et aucun PDF local: `work/zonage-norms/lac-sergent/` est vide (NO-LOCAL-DOC). Le polygone qc-zonage-lac-sergent est servi, mais rien dans le corpus ne porte le reglement. ETAPE = decouvrir le reglement de zonage de Lac-Sergent (le fold provenance n'exige PAS de grille: un corps suffit)."
+    },
+    "oka": {
+      "reglement_numero": "2016-149",
+      "reglement_millesime": "2016",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/oka/grille.pdf, 332 p, texte natif). OWNER-OK (nom-complet=348). NUMERO verbatim p1: «PROVINCE DE QUÉBEC / MUNICIPALITÉ D’OKA / CONSOLIDATION ADMINISTRATIVE DU RÈGLEMENT CONCERNANT LE ZONAGE NO 2016-149», repris p2 en en-tete «RÈGLEMENT CONCERNANT LE ZONAGE NO 2016-149». MILLESIME verbatim p2, ligne de tete de la table des amendements (colonnes «Règlement | Date d’adoption | Entrée en vigueur»): «2016-149  2016-06-06  2016-08-25» => adoption 2016-06-06 => 2016. CANDIDAT ECARTE: «2023», lisible p1 «Mise à jour le 12 avril 2023» — c'est la date de la CONSOLIDATION administrative, pas celle du reglement (le doc se declare lui-meme «DOCUMENT ADMINISTRATIF», la version officielle etant «disponible au bureau municipal»). url null: le source_url du manifest pointe l'ANNEXE B seule (Annexe-B-Grille-des-usages-et-des-normes.pdf), qui ne porte pas le numero; le doc qui le porte est le corps consolide local, dont l'URL n'est pas connue => on ne rattache pas un numero a une URL qui ne le contient pas."
+    },
+    "saint-alphonse-rodriguez": {
+      "reglement_numero": "423-1990",
+      "reglement_millesime": null,
+      "reglement_page_source": 7,
+      "reglement_url": null,
+      "_note": "Cible NO-GRILLE (aucune entree au manifest) mais PDF LOCAL present (work/zonage-norms/saint-alphonse-rodriguez/grille.pdf, 89 p, texte natif): «NO-GRILLE» = absent du manifest, pas absent du disque. OWNER-OK (nom-complet=102, «Saint-Alphonse-Rodriguez Page» 89x en pied). NUMERO verbatim p7, ARTICLE 1.1 TITRE DU RÈGLEMENT: «Le présent règlement peut être identifié sous le titre « Règlement de zonage » ou « Règlement numéro 423-1990 ».» — clause de titre. MILLESIME = null ASSUME: aucune date d'adoption ni d'entree en vigueur du 423-1990 n'est verbatim au doc; l'ARTICLE 1.4 ENTRÉE EN VIGUEUR n'est qu'une FORMULE («Le présent règlement entre en vigueur après la délivrance du certificat de conformité conformément aux prescriptions de la Loi sur l’aménagement et l’urbanisme»), sans date. CANDIDAT ECARTE: «1990», lisible dans le numero lui-meme (423-1990) — l'annee d'un numero n'est pas l'annee d'adoption (piege mesure 3/3 sur ce corpus). Les seules dates du doc datent d'AUTRES reglements (art. 1.3 abroge les «nos 338, 339, 348»; «1986/81, adopté le 9 juillet 1981»). url null: pas d'entree au manifest."
+    },
+    "saint-mathieu-du-parc": {
+      "reglement_numero": "2022-103",
+      "reglement_millesime": "2022",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Cible NO-GRILLE mais PDF LOCAL present (work/zonage-norms/saint-mathieu-du-parc/grille.pdf, 154 p, texte natif). OWNER-OK (nom-complet=146, «Saint-Mathieu-du-Parc VERSION ADMINISTRATIVE EN VIGUEUR» 144x). ANGLE MORT DE SONDE leve a la main: la couverture p1 n'ecrit PAS «règlement de zonage» — seulement «Règlement numéro 2022-103» — donc la sonde ligne-a-ligne rend NO-NUM; c'est l'art. 1.1 qui tranche. NUMERO verbatim art. 1.1 «Titre du règlement»: «Le présent règlement est intitulé « Règlement de zonage ». Ce règlement porte le numéro 2022-103.» MILLESIME verbatim p1: «Adopté le 7 novembre 2022» => 2022. CANDIDAT ECARTE: «2023», lisible p1 «Entrée en vigueur : 2023-02-17» — millesime = annee d'ADOPTION (l'adoption est pleinement datee au doc). url null: pas d'entree au manifest."
     }
   }
 }
