@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "residentiel",
+    "RE": "residentiel",
+    "I": null,
+    "CW": null
+  },
+  "source": "Town of Hampstead Zoning By-law Number 1001 (amended and consolidated version, 04-03-2025), corpus local work/zonage-norms/hampstead/grille.pdf",
+  "note": "Legende lue VERBATIM a la SECTION 26 «Division of the territory into zones»: «Each of the zones in the Zoning Plan in Schedule A is identified by an alphanumeric reference comprised of two parts separated by a dash. The first part refers to the main class of use in the zone (RA, RB, RC, RD, RE, CW and I), while the second part refers to the number of the zone.» La classe de tete R correspond au groupe «Residential» de la Table 1 (Classification of uses): H1 «Detached single-family dwelling», H2 «Semi-detached», H3 «duplex», H4 «Row housing», H5 «Multifamily dwelling». Donc RA/RB/RC/RE (variantes de densite residentielle) -> residentiel. Prefixes reellement servis dans le SIG: RA(1344), RB(487), RC(22), RE(1), I(9), CW(6) -- RD est defini au by-law mais ABSENT du SIG, donc non mappe. NULL EXPLICITE: I -> classe institutionnelle (aucune industrie: la Section «Uses specifically excluded» prohibe «Industries» et «Businesses» sur tout le territoire; Table 1 n'a que Residential, Public [PB1/PB2/PB3] et Place of worship [R]); institutionnel/public -> null. CW -> la classe «CW» n'est PAS expansee verbatim dans le texte consolide; la grille de la zone CW-1 n'autorise que des usages H1/H2/H3 (residentiel) + R (lieu de culte) + PB3 (espace public) et AUCUN commerce (les commerces sont prohibes partout), donc CW n'a pas de dominante unique lisible sans invention -> null. La matrice des usages permis (colonnes H/R/PB des grilles) N'EST PAS utilisee pour trancher la dominante; seule la Section 26 (main class of use) l'est."
+}
