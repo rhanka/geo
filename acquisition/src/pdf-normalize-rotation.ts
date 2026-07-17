@@ -50,6 +50,23 @@ export interface PageFrame {
   rot: number;
 }
 
+/** Below this, a page has no text layer worth protecting (a glyph plan). */
+const MIN_WORDS_TO_GUARD = 20;
+/** The bake may cost a few stray tokens; it may not cost the layer. */
+const SURVIVAL_RATIO = 0.5;
+
+/** Thrown when the bake would trade a wrong frame for destroyed labels. */
+export class NormalizeDestroyedTextError extends Error {
+  constructor(
+    message: string,
+    readonly wordsBefore: number,
+    readonly wordsAfter: number,
+  ) {
+    super(message);
+    this.name = "NormalizeDestroyedTextError";
+  }
+}
+
 /** Read the page box AND the /Rotate that the six pdfPageSize copies ignore. */
 export function readPageFrame(pdfPath: string, page = 1): PageFrame {
   const info = execFileSync("pdfinfo", ["-f", String(page), "-l", String(page), pdfPath], {
@@ -68,14 +85,47 @@ export function readPageFrame(pdfPath: string, page = 1): PageFrame {
   };
 }
 
+/** Words pdftotext can still read on a page — the label lane's raw material. */
+export function readableWords(pdfPath: string, page: number): number {
+  let txt = "";
+  try {
+    txt = execFileSync("pdftotext", ["-f", String(page), "-l", String(page), pdfPath, "-"], {
+      encoding: "utf8",
+      timeout: 60_000,
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+  } catch {
+    return 0;
+  }
+  // Count only words made of characters a zone code could use. A destroyed
+  // Type 3 re-encode still emits "words" — they are just U+FFFD replacement
+  // runs — so counting whitespace tokens would happily report success.
+  return (txt.match(/[A-Za-z0-9À-ÿ][A-Za-z0-9À-ÿ.\-']*/g) ?? []).length;
+}
+
 /**
  * Bake /Rotate into the content. Returns the path to use downstream: the
  * normalised copy when the page was rotated, the ORIGINAL path when it was not
  * (so callers can pipe unconditionally without paying a re-write).
+ *
+ * MEASURED FAILURE MODE (saint-nazaire-d'Acton, 2026-07-17, reported from a
+ * shard-0 lot run): on a PDF whose labels use TYPE 3 fonts (here Distiller
+ * 6.0.1), `pdftocairo -pdf` re-encodes the text and pdftotext comes back as
+ * U+FFFD runs — "Municipalité de Saint-Nazaire-d'Acton" became "������".
+ * Measured damage: n_distinct_codes 2 -> 0, serving coverage 37.48% -> 0%.
+ *
+ * That failure is INVISIBLE downstream and it is the exact damage this module
+ * exists to prevent: a wiped label layer yields 0% lot coverage, which every
+ * gate then reports as an honest "labels do not land on lots" SKIP. So the bake
+ * is REFUSED unless the readable-word count survives it: better to hand back the
+ * rotated original (and let the caller log a real frame mismatch) than to hand
+ * back a frame-correct PDF whose labels we silently destroyed.
  */
 export function normalizeRotation(pdfPath: string, outPath: string, page = 1): string {
   const before = readPageFrame(pdfPath, page);
   if (before.rot === 0) return pdfPath;
+  const wordsBefore = readableWords(pdfPath, page);
   mkdirSync(dirname(outPath), { recursive: true });
   execFileSync("pdftocairo", ["-pdf", pdfPath, outPath], { timeout: 300_000 });
   if (!existsSync(outPath)) throw new Error(`pdftocairo -pdf produced nothing at ${outPath}`);
@@ -91,6 +141,20 @@ export function normalizeRotation(pdfPath: string, outPath: string, page = 1): s
   if (Math.abs(after.pageW - wantW) > 2 || Math.abs(after.pageH - wantH) > 2) {
     throw new Error(
       `normalise failed: expected ${wantW}x${wantH} after baking rot ${before.rot}, got ${after.pageW}x${after.pageH}`,
+    );
+  }
+  // The Type 3 guard. A page that carried no text to begin with (a pure glyph
+  // plan) has nothing to lose, so only a REGRESSION counts.
+  const wordsAfter = readableWords(outPath, page);
+  if (wordsBefore >= MIN_WORDS_TO_GUARD && wordsAfter < wordsBefore * SURVIVAL_RATIO) {
+    throw new NormalizeDestroyedTextError(
+      `refus de normaliser ${pdfPath}: la couche texte NE SURVIT PAS au bake ` +
+        `(${wordsBefore} -> ${wordsAfter} mots lisibles, seuil ${Math.round(SURVIVAL_RATIO * 100)}%). ` +
+        `Signature Type 3 / re-encodage poppler. Le PDF TOURNÉ d'origine reste la seule source honnête: ` +
+        `ses étiquettes sont intactes mais son repère est faux — traiter en glyph-vision (--labels claude --dict) ` +
+        `plutôt que servir 0% de couverture et l'appeler un SKIP honnête.`,
+      wordsBefore,
+      wordsAfter,
     );
   }
   return outPath;
