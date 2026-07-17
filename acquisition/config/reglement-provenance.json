@@ -1140,6 +1140,69 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "HOTE INJOIGNABLE: le source_url du manifest «https://www.saint-andre-argenteuil.ca/storage/app/media/uploads/files/RUP/Annexe-B-Tableau-spec.pdf» echoue au fetch (FETCH FAIL, aucun octet). Le nom de fichier ne porte aucun numero de toute facon => null. Voie = re-essai quand l'hote repond."
+    },
+    "lachute": {
+      "reglement_numero": "2013-739",
+      "reglement_millesime": "2013",
+      "reglement_page_source": 1,
+      "reglement_url": "https://lachute.ca/cont/uploads/2022/05/Annexe-B-Grilles-specifications-version-administrative-20220929.pdf",
+      "_note": "p1 verbatim (pied de grille, repete p1-p5 des 208 p): «ANNEXEE AU REGLEMENT DE ZONAGE NUMERO: 2013-739» + «MISE A JOUR: 22-juin-22». Millesime = 2013 porte par le numero lui-meme (meme forme que saint-amable 712-00-2013); le «20220929» de l'URL est la date de la version administrative, pas le millesime du reglement."
+    },
+    "leclercville": {
+      "reglement_numero": "2019-151",
+      "reglement_millesime": "2019",
+      "reglement_page_source": 1,
+      "reglement_url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=c8e8d7ea-2c4e-4c09-aa7d-3864b7d630b3",
+      "_note": "p1 verbatim (page de titre): «Municipalite de Leclercville / Reglement no : 2019-151 / Reglement de zonage / (Codification administrative en date du 22 octobre 2025)». Millesime confirme p2: «Adoption du reglement : 11 mars 2019» + «Entree en vigueur : 14 mai 2019». Le millesime retenu est l'annee du reglement de base (2019), pas celle de la codification (2025). URL opaque (document.ashx) => aucun numero deductible de l'URL de toute facon."
+    },
+    "lac-drolet": {
+      "reglement_numero": "491",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://lacdrolet.ca/download/grille-de-specification-annexe-reglement-491-sur-le-zonage/?wpdmdl=8208",
+      "_note": "p1 verbatim (en-tete, repete sur les 8 feuillets): «Annexe 1 du reglement / de zonage No. 491» => 491 est le reglement PARENT de la grille (pas un amendement). Millesime null: recherche plein texte «vigueur|adopt|19xx|20xx» = 0 match sur les 8 p (doc = grilles seules, sans page de titre ni date)."
+    },
+    "lambton": {
+      "reglement_numero": "09-345",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://vmorin.com/wp-content/uploads/2021/02/GRILLE-Zonage-Lambton.xlsx.pdf",
+      "_note": "p1 verbatim (en-tete): «Annexe 2 du reglement / de zonage No.09-345 / Feuillet 7 / 9» => reglement PARENT. Millesime null: aucune date dans le doc (1 p, grille seule); le «09» du numero SUGGERE 2009 mais le deduire serait une invention (gate: millesime coherent avec le document), et le «2021/02» de l'URL est une date d'upload."
+    },
+    "landrienne": {
+      "reglement_numero": "238",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "http://www.landrienne.com/wp-content/uploads/238_Zonage_Landrienne.pdf",
+      "_note": "p1 verbatim: «MUNICIPALITE DE LANDRIENNE / RÈGLEMENT DE ZONAGE / Reglement no. 238»; confirme p2: «REGLEMENT DE ZONAGE / REGLEMENT NUMERO 238 / CE DOCUMENT CONSTITUE UNE COPIE CONFORME DE L'ORIGINAL DU REGLEMENT DE ZONAGE». Millesime null: la page de garde porte «Adopte le :» et «Entree en vigueur le :» VIDES, et le tableau «MISES A JOUR DU REGLEMENT DE ZONAGE NO. 238» (p3) est vide (colonnes Note / Reglement # / Entree en vigueur sans ligne). Le filigrane «PROJET» n'infirme pas le numero (verbatim en 4 endroits, dont la copie conforme)."
+    },
+    "lac-superieur": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "PIEGE URL type coaticook. Doc = PLAN DE ZONAGE (carte, 1 p, texte natif OK). p1 verbatim: «Reglement de zonage / Municipalite de Lac Superieur / PLAN DE ZONAGE» -- SANS numero -- et cartouche «Approbation: 1 : 25 000 30 mars 2015 / Plan de zonage mis a jour novembre 2022». Recherche plein texte «560» = 0 match: le «2015-560» n'existe que dans le nom de fichier (2015-560-Plan-de-zonage-Annexe-A) => ecarte par le gate (jamais deduire de l'URL). Millesime seul (2015) non stampe: sans numero, immo n'affiche rien."
+    },
+    "la-presentation": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC = EXTRAIT, pas le reglement. p1 verbatim: «La Presentation / Section zonage / Chapitre 12 / Dispositions relatives a la grille de specifications» (7 p, «Version : 25 octobre 2022»), sans page de titre ni numero. Les SEULS numeros du doc sont des reglements TIERS explicitement nommes: «12.6.1 Reglement 10-129 portant sur les projets particuliers (PPCMOI)», «12.6.2 Reglement 10-140 portant sur les plans d'implantation et d'integration architecturale (PIIA)», «12.6.3 Reglement 284-22 portant sur les usages conditionnels» -- aucun n'est le reglement de zonage; les renvois a celui-ci sont non numerotes («le present reglement») => null."
+    },
+    "lac-des-aigles": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET: PDF = grille des specifications (7 p, texte natif OK), 0 occurrence de «reglement» et 0 motif d'adoption/vigueur. Les seuls nombres a 4 chiffres sont des codes d'usage CUBF, PAS des annees: «Industrie de categorie 2 - I2 / 2011 a 2099, 2711 a 2722» (piege millesime). Nom de fichier «Grillespec_LDA.pdf» sans numero => null."
+    },
+    "lascension": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION: doc = «Grilles des specifications» (15 p, texte natif OK), 0 motif «reglement de zonage numero X». Les seuls verbatims numerotes sont des reglements MODIFIANTS cites en notes de grille: «2014, R-2014-472, a.4.1», «Abris forestiers (Abroge R-2005-395)», «2010, R-2010-443, a.3» -- des amendements (le doc les date meme par leur annee d'amendement), pas le zonage de base, qui n'est jamais numerote dans le doc. Le «_R3» du nom de fichier est un indice de version => null."
     }
   }
 }
