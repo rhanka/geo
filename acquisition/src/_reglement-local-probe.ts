@@ -16,12 +16,22 @@
  * lignes VERBATIM + leur page; l'opérateur relève le numéro. Le nom du fichier
  * ne fait PAS foi (piège coaticook: l'URL portait un règlement ABROGÉ).
  *
+ * PIÈGE CORRIGÉ (mesuré 2026-07-17, 4 faux « null » prouvés): la sonde ne lisait
+ * QUE `pdfs[0]`, le plus GROS fichier du dossier. Or le plus gros est presque
+ * toujours le cahier de GRILLES (des centaines de planches nues, sans numéro),
+ * tandis que le CORPS du règlement — qui porte le numéro en couverture — est un
+ * PDF frère plus petit (`corps-*`, `*-body`, `src.pdf`). Lire le seul plus gros
+ * rendait un verdict « le doc ne porte pas de numéro » sur un doc qui n'était pas
+ * le bon. `--all-pdfs` (défaut) sonde CHAQUE PDF du dossier et s'arrête au premier
+ * qui porte une ligne NUM; `--biggest-only` restaure l'ancien comportement.
+ *
  * Usage:
  *   npx tsx acquisition/src/_reglement-local-probe.ts --slugs a,b [--pages 8]
+ *   npx tsx acquisition/src/_reglement-local-probe.ts --slugs-file lot.txt
  *   npx tsx acquisition/src/_reglement-local-probe.ts --slugs a --inventory
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,9 +43,19 @@ function arg(name: string, def?: string): string | undefined {
   return i >= 0 && i + 1 < process.argv.length ? process.argv[i + 1] : def;
 }
 
-/** Lignes qui PEUVENT porter le numéro officiel du règlement de zonage. */
+/** Lignes qui PEUVENT porter le numéro officiel du règlement de zonage. Large
+ *  exprès: on AFFICHE tout ce qui parle règlement/zonage, l'opérateur tranche. */
 const NUM_RE =
   /(r[eè]glement[s]?\s+(de\s+)?(zonage|d[eu]\s+zonage)|zonage\s+(num[eé]ro|n[°ºo]))|r[eè]glement\s*(num[eé]ro|n[°ºo]|#)\s*[:.]?\s*[0-9]|identifi[eé]\s+par\s+le\s+num[eé]ro/i;
+
+/** FAUX POSITIF DE MOTIF (mesuré la-pocatiere/saint-lin-laurentides 2026-07-17):
+ *  « Voir les dispositions au règlement de zonage (Chapitre 4, section 4) » et
+ *  « Annexe 2 du Règlement de zonage — Zone A-1 » matchent NUM_RE alors qu'aucun
+ *  NUMÉRO n'y figure. Un cahier de grilles en est tapissé; s'arrêter dessus fait
+ *  rendre « pas de numéro » sans jamais ouvrir le corps frère qui le porte.
+ *  Le critère d'ARRÊT exige donc qu'un numéro suive VRAIMENT le mot-clé. */
+const STRONG_NUM_RE =
+  /(r[eè]glement|zonage)\s*(de\s+zonage\s*)?(num[eé]ro|n[°ºo]s?\.?|#)\s*[:.]?\s*[A-Za-z]*[-. ]?\d/i;
 /** Lignes de millésime: adoption / entrée en vigueur / codification. */
 const DATE_RE =
   /(entr[eé]e?\s+en\s+vigueur|en\s+vigueur\s+le|adopt[eé]\s|adoption|codification\s+administrative|consolid)/i;
@@ -52,7 +72,10 @@ function localPdfs(slug: string): string[] {
     .sort((a, b) => statSync(b).size - statSync(a).size);
 }
 
-function probe(slug: string, path: string, maxPages: number): void {
+/** Sonde UN pdf. Retourne true si au moins une ligne NUM a été imprimée (le doc
+ *  est un candidat sérieux), false sinon — l'appelant enchaîne alors sur le PDF
+ *  frère suivant plutôt que de conclure « pas de numéro ». */
+function probe(slug: string, path: string, maxPages: number): boolean {
   let info = '';
   try {
     info = execFileSync('pdfinfo', [path], { encoding: 'utf8' });
@@ -68,34 +91,47 @@ function probe(slug: string, path: string, maxPages: number): void {
       timeout: 120_000,
     });
   } catch {
-    console.log(`${slug}\tERR-PDFTOTEXT ${path}`);
-    return;
+    console.log(`${slug}\tERR-PDFTOTEXT ${path.replace(ROOT + '/', '')}`);
+    return false;
   }
   if (txt.replace(/\s/g, '').length < 40) {
-    console.log(`${slug}\tNO-TEXT-LAYER (scan image) pages=${pagesTotal} — route vision requise`);
-    return;
+    console.log(`${slug}\tNO-TEXT-LAYER (scan image) ${path.replace(ROOT + '/', '')} pages=${pagesTotal} — route vision requise`);
+    return false;
   }
-  console.log(`\n===== ${slug} (${path.replace(ROOT + '/', '')}, pages=${pagesTotal}) =====`);
-  let shown = 0;
+  const lines: string[] = [];
+  let numHits = 0;
   txt.split('\f').forEach((p, i) => {
     for (const raw of p.split(/\r?\n/)) {
       const l = raw.trim();
       if (l.length < 3 || l.length > 160) continue;
       const isNum = NUM_RE.test(l);
       if (!isNum && !DATE_RE.test(l)) continue;
-      if (shown++ > 50) return;
-      console.log(`p${i + 1}\t${isNum ? 'NUM ' : 'DATE'}\t${l}`);
+      const strong = isNum && STRONG_NUM_RE.test(l);
+      if (strong) numHits++;
+      if (lines.length > 50) continue;
+      lines.push(`p${i + 1}\t${strong ? 'NUM*' : isNum ? 'num ' : 'DATE'}\t${l}`);
     }
   });
-  if (shown === 0) console.log(`${slug}\tNO-CANDIDATE-LINE (aucun motif règlement/vigueur p1-${maxPages})`);
+  if (lines.length === 0) {
+    console.log(`${slug}\tNO-CANDIDATE-LINE ${path.replace(ROOT + '/', '')} (aucun motif règlement/vigueur p1-${maxPages})`);
+    return false;
+  }
+  console.log(`\n===== ${slug} (${path.replace(ROOT + '/', '')}, pages=${pagesTotal}) =====`);
+  for (const l of lines) console.log(l);
+  return numHits > 0;
 }
 
 function main(): void {
-  const slugs = (arg('slugs') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  const slugsFile = arg('slugs-file');
+  const raw = slugsFile
+    ? readFileSync(resolve(slugsFile), 'utf8').split(/[\s,]+/)
+    : (arg('slugs') ?? '').split(',');
+  const slugs = raw.map((s) => s.trim()).filter(Boolean);
   const maxPages = Number(arg('pages', '8'));
   const inventory = process.argv.includes('--inventory');
+  const biggestOnly = process.argv.includes('--biggest-only');
   if (!slugs.length) {
-    console.log('usage: _reglement-local-probe.ts --slugs a,b [--pages 8] [--inventory]');
+    console.log('usage: _reglement-local-probe.ts (--slugs a,b | --slugs-file f) [--pages 8] [--inventory] [--biggest-only]');
     process.exit(1);
   }
   let hit = 0;
@@ -110,7 +146,14 @@ function main(): void {
       console.log(`${slug}\tLOCAL=${pdfs.length}\t${pdfs.map((p) => p.split('/').pop()).join(',')}`);
       continue;
     }
-    probe(slug, pdfs[0]!, maxPages);
+    // Le plus gros d'abord (souvent le corps quand il n'y a qu'un doc), puis les
+    // frères: on ne s'arrête qu'à un PDF qui porte VRAIMENT une ligne NUM.
+    const list = biggestOnly ? pdfs.slice(0, 1) : pdfs;
+    let found = false;
+    for (const p of list) {
+      if (probe(slug, p, maxPages)) { found = true; break; }
+    }
+    if (!found) console.log(`${slug}\tNO-NUM-IN-ANY-PDF (${list.length} pdf sondés)`);
   }
   console.log(`\n# slugs=${slugs.length} avec-PDF-local=${hit} sans=${slugs.length - hit}`);
 }
