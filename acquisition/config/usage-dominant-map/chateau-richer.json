@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "AGF": "agricole",
+    "ASD": "residentiel",
+    "AV": "agricole",
+    "FR": null,
+    "F": "agricole",
+    "H": "residentiel",
+    "HM": "residentiel",
+    "C": "commercial",
+    "CO": "environnemental",
+    "M": null,
+    "I": "industriel",
+    "P": null,
+    "RT": "environnemental"
+  },
+  "source": "https://cdn.gestionweblex.ca/files/w99Hy21gpn",
+  "note": "Règlement de zonage numéro 575-20 de la Ville de Château-Richer (version codifiée, art. 1.1: « Le présent règlement porte le titre de « Règlement de zonage 575-20 » »), art. 2.2 « CODIFICATION DES ZONES », p. 11. Page canonique de diffusion: https://www.chateauricher.qc.ca/pages/reglementation-durbanisme (le PDF est servi par le CDN WebLex). Verbatim: « Chaque zone porte un code d'identification composé d'un groupe de lettres et de chiffres. Les lettres ou les groupes de lettres indiquent le ou les usages dominants comme suit : » — Zones agricoles: AD « Agricole dynamique », AGF « Agricole forestier », ASD « Agricole secteur déstructuré », AV « Agricole viable »; Zones forestières: F « Forestier », FR « Forestier récréatif », VP « Villégiature prioritaire »; Zones d'habitation: H « Habitation », HM « Habitation de type maison mobile »; Zones commerciales: C « Commercial », M « Mixte (habitations, commerces et services, publics) »; Zones industrielles: I « Industrie »; Zones publiques: P « Public et communautaire »; Zones récréotouristiques: RT « Récréation, tourisme, parc ou loisir »; Zones de conservation: CO « Conservation ». AD/AGF/AV/F -> agricole (règle de lane: famille Agricole/Agroforestière/Forestière; F « Forestier » est un usage de ressource rurale, que le règlement distingue explicitement de CO « Conservation »); corroboré par les art. 12.2 c) et 12.3 d) « L'usage prioritaire est l'agriculture et ses activités connexes ». HM -> residentiel (« de type maison mobile » = qualificatif). RT « Récréation, tourisme, parc ou loisir » -> environnemental (récréation/tourisme/parc/loisir CONVERGENT, aucun second terme n'est une des cinq). CO « Conservation » -> environnemental. ASD « Agricole secteur déstructuré » -> residentiel par l'ARTICLE DÉFINISSEUR art. 12.4 « Dispositions spécifiques aux zones agricoles déstructurées », verbatim: « À l'intérieur des zones agricoles déstructurées, en plus des usages autorisés dans les autres affectations agricoles, il est permis de lotir, d'aliéner et d'utiliser les terrains à des fins résidentielles unifamiliales isolées » — formule NON disjonctive et sans caractérisation négative (cf. précédent ormstown ADR art. 5.25); preuve interne corroborante: le règlement accorde la clause « L'usage prioritaire est l'agriculture » à AV (12.2 c) et AGF (12.3 d) mais la RETIRE pour ASD, seule affectation agricole privée de cette clause, et l'art. 12.8.1 traite le morcellement « pour la création d'emplacements résidentiels » comme l'activité normale des secteurs déstructurés. Null explicite: FR « Forestier récréatif » nomme 2 des cinq (forestier=agricole + récréatif=environnemental) = DUALE (cf. précédent RF « Récréoforestier » -> null); M « Mixte (habitations, commerces et services, publics) » nomme 2+ des cinq = DUALE; P « Public et communautaire » a pour sujet « Public ». Les nulls FR et M, et le CO environnemental, sont ANTI-FALL-THROUGH (le match est longest-prefix: sans eux FR tomberait sur F->agricole et CO sur C->commercial). L'en-tête de famille « Zones forestières » n'est pas invoqué (il contient VP « Villégiature prioritaire », donc regroupement hétérogène): seule la colonne des libellés fait foi. La matrice des usages permis des grilles n'est pas utilisée."
+}
