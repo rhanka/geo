@@ -159,6 +159,14 @@ function loadDict(path: string): { codes: string[]; kindByPrefix?: Record<string
   return { codes: codes.map(String), kindByPrefix };
 }
 
+/**
+ * The NUMBER-DOMINANCE codes of an authoritative dict (`17-R`, `502-AV`, `1-H`).
+ * Empty when the muni does not code that way — the relaxation then stays OFF.
+ */
+function compositeDictSet(dictCodes: string[]): Set<string> {
+  return new Set(dictCodes.map((c) => c.trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,3}$/.test(c)));
+}
+
 function filterTextLabelsByDict(
   lab: ExtractLabelsResult,
   dictCodes: string[],
@@ -357,10 +365,18 @@ async function main(): Promise<void> {
     );
     console.error(`[t2-build] Claude-4.8 rejects: ${claudeLab.reject_samples.join(" | ")}`);
   } else {
+    // Composite lane (dict-gated): munis coding a zone as NUMBER ⊕ DOMINANCE print
+    // the two parts as separate tokens (matane legend "17 R"). Recognising the join
+    // needs the authoritative dict, which also bounds it — see lib/t1-labels.ts.
+    const compositeDict = dictCodes ? compositeDictSet(dictCodes) : undefined;
+    if (compositeDict?.size) {
+      console.error(`[t2-build] composite relaxation ON: ${compositeDict.size} dict-backed NUMBER-DOMINANCE codes`);
+    }
     lab = extractLabels(pdfPath, geo, {
       page,
       excludeRegions: gcpFile.excludeRegions,
       ...(numericDict ? { numericDict } : {}),
+      ...(compositeDict?.size ? { compositeDict } : {}),
     });
     if (dictCodes) {
       const filtered = filterTextLabelsByDict(lab, dictCodes);

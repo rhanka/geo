@@ -35,6 +35,7 @@ import { execSync } from "node:child_process";
 import type { FeatureCollection } from "geojson";
 
 import { getBytes, s3Client } from "./lib/s3.js";
+import type { LabelRegionFrac } from "./lib/t1-labels.js";
 import { deriveAutoSeedGcps, type FitMode, type OrientationCandidate } from "./lib/t2-autogcp.js";
 import type { GcpFile } from "./lib/t2-georef.js";
 
@@ -51,6 +52,17 @@ interface Args {
   maxGcps: number;
   orientationTolDeg: number;
   fit: FitMode;
+  /**
+   * Page-fraction boxes masked out of label extraction, written into the emitted
+   * GcpFile so every downstream builder inherits them.
+   *
+   * Needed because a title block INSIDE the neatline can print REAL zone codes at
+   * a FALSE position: matane's amendment table (top-left) lists "Zone 49-C",
+   * "109-C", "110-R" — all verbatim in the by-law dict, so the dict filter cannot
+   * catch them, and each would plant a spurious label metres from the town's NW
+   * corner. The neatline gate does not help: the table is drawn inside the frame.
+   */
+  excludeRegions?: LabelRegionFrac[];
 }
 
 function parseArgs(argv: string[]): Args {
@@ -86,7 +98,35 @@ function parseArgs(argv: string[]): Args {
     maxGcps: a["max-gcps"] ? Number(a["max-gcps"]) : 48,
     orientationTolDeg: a["orientation-tol-deg"] ? Number(a["orientation-tol-deg"]) : 20,
     fit: a["fit"] === "similarity" ? "similarity" : "affine",
+    excludeRegions: parseExcludeRegions(a["exclude-region"]),
   };
+}
+
+/**
+ * `--exclude-region fx0,fy0,fx1,fy1[;fx0,fy0,fx1,fy1...]` (page fractions, y down).
+ *
+ * Fractions may exceed 1: on a sheet stored portrait with /Rotate 90, poppler
+ * reports the UNROTATED MediaBox as the page size but emits word boxes in the
+ * ROTATED frame, so a word's x/pageW legitimately reaches ~1.41 (3370/2384).
+ * That skew is self-cancelling — `extractLabelsFromWords` compares a region
+ * against the very same ratio — so measure regions with `_pdf-word-locate.ts`
+ * (which divides by the same page size) and pass them through verbatim. Hence the
+ * bound is a sanity check (≤2), not a [0,1] clamp that would reject a valid mask.
+ */
+function parseExcludeRegions(raw: string | boolean | undefined): LabelRegionFrac[] | undefined {
+  if (typeof raw !== "string" || !raw.trim()) return undefined;
+  const regions = raw
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => {
+      const f = s.split(",").map(Number);
+      if (f.length !== 4 || !f.every((n) => Number.isFinite(n) && n >= 0 && n <= 2)) {
+        throw new Error(`--exclude-region expects 4 page fractions in [0,2]: "${s}"`);
+      }
+      return { fx0: f[0]!, fy0: f[1]!, fx1: f[2]!, fy1: f[3]! };
+    });
+  return regions.length ? regions : undefined;
 }
 
 async function readCadastre(slug: string, path?: string): Promise<FeatureCollection> {
@@ -162,10 +202,18 @@ async function main(): Promise<void> {
     );
   }
 
+  // Carry the title-block masks into the emitted GcpFile: an in-neatline
+  // amendment table prints REAL dict codes at a FALSE position, and no dict
+  // filter downstream can tell those apart from the map's own labels.
+  const emitted: GcpFile = args.excludeRegions?.length
+    ? { ...chosen.gcp, excludeRegions: [...(chosen.gcp.excludeRegions ?? []), ...args.excludeRegions] }
+    : chosen.gcp;
+
   mkdirSync(dirname(args.outGcp), { recursive: true });
-  writeFileSync(args.outGcp, JSON.stringify(chosen.gcp, null, 2));
+  writeFileSync(args.outGcp, JSON.stringify(emitted, null, 2));
   console.error(
-    `[t2-emit-northup-gcp] wrote ${args.outGcp} (${chosen.gcp.gcps.length} GCPs) via ${chosen.how}`,
+    `[t2-emit-northup-gcp] wrote ${args.outGcp} (${emitted.gcps.length} GCPs) via ${chosen.how}` +
+      (args.excludeRegions?.length ? ` | ${args.excludeRegions.length} exclude-region(s)` : ""),
   );
 
   if (args.report) {
