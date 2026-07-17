@@ -1,0 +1,10 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "AC": null,
+    "E": "industriel"
+  },
+  "source": "https://www.ville.dunham.qc.ca/wp-content/uploads/R%C3%A8glement-de-zonage-382-19-v.-finale-3-d%C3%A9c.-2019-V-Web.pdf",
+  "note": "Règlement de zonage # 382-19 (Ville de Dunham). L'art. 17 « Division du territoire en zones » renvoie les identifiants au Plan de zonage (annexe C) sans table lettre->dominance consolidée; les vocations sont nommées verbatim à l'art. 207 (déboisement par zone): « Dans les zones Agricoles (A) et Extraction (E) [...] Dans les zones Agroforestières (AF) et Récroforestières (RF) ». Mappés (préfixes réellement servis, probe 2026-07-17): A « Agricoles » (A-1..A-3) -> agricole; AF « Agroforestières » (AF-2..AF-8) -> agricole; E « Extraction » (E-1) -> industriel (extraction = industriel). Null: AC (AC-1) n'est pas défini verbatim dans le règlement -> null EXPLICITE, ce qui bloque aussi le repli longest-prefix vers « A ». Non mappés (donc null honnête): ID « îlot déstructuré » (10 zones: enclave résidentielle en zone agricole sans dominante contractuelle, même traitement que saint-pascal/ascot-corner); RF « Récroforestières » (récréation + foresterie: vocation duale hors des cinq); P (publique). La grille des spécifications des usages n'est pas utilisée."
+}
