@@ -966,6 +966,35 @@ export function mapMarkdownPageToZones(
  * Returns [] when there is no "ZONE:" header (anti-invention: no header, no zone) —
  * the caller then falls back to OCR/vision for that page (image-only scan).
  */
+function numberedHeightFields(
+  hauteurMetres: NormFieldT,
+  hauteurEtages: NormFieldT,
+): { min: NormFieldT | null; max: NormFieldT } {
+  if (hauteurMetres.value !== null) return { min: null, max: hauteurMetres };
+  if (hauteurEtages.value === null) return { min: null, max: hauteurEtages };
+
+  // In this numbered grille's HEIGHT row only, `1/2` (or PDF-text `1\\2`)
+  // denotes the integer storey range 1–2. No generic fraction/ratio parser is
+  // changed, so a slash in another norm keeps its historical semantics.
+  const m = hauteurEtages.raw.match(
+    /^\s*(\d+)\s*[/\\]\s*(\d+)(?:\s*(?:é|e)tages?)?\s*$/iu,
+  );
+  if (!m) return { min: null, max: hauteurEtages };
+
+  const min = Number(m[1]);
+  const max = Number(m[2]);
+  if (!Number.isInteger(min) || !Number.isInteger(max) || min < 1 || max > 20 || min > max) {
+    return {
+      min: null,
+      max: { ...hauteurEtages, value: null, confidence: 0, flag: "hors-plage" },
+    };
+  }
+  return {
+    min: { ...hauteurEtages, value: min },
+    max: { ...hauteurEtages, value: max },
+  };
+}
+
 export function parseNumberedGrilleNativePage(
   layoutText: string,
   page: number,
@@ -994,7 +1023,12 @@ export function parseNumberedGrilleNativePage(
     const after = line.slice((bm.index ?? 0) + bm[0].length);
     // LEFTMOST value column = the first numeric token (or a "-" absent marker) after
     // the bound. A row with no value tail (e.g. an empty "arrière" min) → null.
-    const tok = after.match(/(-|\d+(?:[.,]\d+)?)/);
+    // Preserve an integer storey range as ONE verbatim cell (`1/2`, `1\\2`).
+    // The range is interpreted only later, in the height-specific mapper; other
+    // slash values retain the historical generic-number behaviour.
+    const tok = after.match(
+      /(-|\d+(?:[.,]\d+)?(?:\s*[/\\]\s*\d+(?:[.,]\d+)?)?)/,
+    );
     const val = tok ? tok[1]! : null;
     const rank = boundRank(field, bm[1]!);
     const prev = ranks[field];
@@ -1020,14 +1054,14 @@ export function parseNumberedGrilleNativePage(
   };
   const hauteurMetres = field("hauteur_metres");
   const hauteurEtages = field("hauteur_etages");
-  const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+  const hauteur = numberedHeightFields(hauteurMetres, hauteurEtages);
   const zn: ZoneNormsT = {
     zone_code: zoneCode,
     zone_page: `PAGE ${page} ZONE ${zoneCode}`,
     usages: [],
     densite: field("densite"),
-    hauteur_min: null,
-    hauteur_max: hauteurMax,
+    hauteur_min: hauteur.min,
+    hauteur_max: hauteur.max,
     marges: {
       avant_min: field("marge_avant_min"),
       laterale_min: field("marge_laterale_min"),
@@ -1091,11 +1125,13 @@ function tokensWithCols(line: string): ColToken[] {
 }
 
 const NUMERO_DE_ZONE_RE = /num[eé]ro\s+de\s+zone/i;
-const USAGE_DOMINANT_RE = /usage\s+dominant/i;
+// "Affectation dominante" is the Côte-Nord (Ragueneau) wording of the same row;
+// it matches neither "usage dominant" nor "dominance", so it needs its own branch.
+const USAGE_DOMINANT_RE = /(?:usage\s+dominant|affectation\s+dominante|dominance)/i;
 
 /**
  * Does this page/text carry the TRANSPOSED grille signature — BOTH the literal
- * "Numéro de zone" and "Usage dominant" label rows? (The anti-invention anchor:
+ * "Numéro de zone" and an usage/dominance label row? (The anti-invention anchor:
  * we only ever pair a number to a usage when both literal rows exist.)
  */
 export function looksLikeTransposedGrille(text: string): boolean {
@@ -1183,8 +1219,8 @@ export function parseTransposedGrilleNativePage(
   for (let b = 0; b < numIdxs.length; b++) {
     const numIdx = numIdxs[b]!;
     const blockEnd = b + 1 < numIdxs.length ? numIdxs[b + 1]! : lines.length;
-    // The "Usage dominant" row must sit immediately below the number row (≤3
-    // lines). No usage row ⇒ refuse this block (anti-invention).
+    // The "Usage dominant"/"Dominance" row must sit immediately below the number
+    // row (≤3 lines). No usage row ⇒ refuse this block (anti-invention).
     let usageIdx = -1;
     for (let k = numIdx + 1; k <= Math.min(numIdx + 3, blockEnd - 1); k++) {
       if (USAGE_DOMINANT_RE.test(lines[k]!)) {
@@ -1233,7 +1269,37 @@ export function parseTransposedGrilleNativePage(
       const label = line.slice(0, Math.max(0, valueRegionStart));
       const field = labelToFieldId(label);
       if (!field) continue;
-      for (const v of valToks) {
+      // Some native PDFs (Saint-Flavien / GestionWeblex family) preserve the
+      // split number+dominance header cleanly but compact each norm row's values
+      // into a plain numeric run ("9.0 9.0 9.0 10.0 9.0") rather than placing the
+      // tokens at the header columns. When the row carries EXACTLY one numeric-like
+      // cell per zone anchor, assign by left-to-right ordinal. This is still
+      // verbatim and strictly anchored by the literal header rows + mappable norm
+      // label; ragged rows with blanks keep the safer column-nearest path below.
+      let valueToks = valToks;
+      // A "Réf." column often sits immediately before the value columns. On some
+      // pages its integer token is close enough to the first zone anchor that the
+      // nearest-column path would publish the reference number itself (21/40) as a
+      // norm. When there are more tokens than zone anchors and the leading token is
+      // a bare integer reference, drop that leading token before value assignment.
+      if (valueToks.length > anchors.length && /^\d{1,3}$/.test(valueToks[0]!.t)) {
+        valueToks = valueToks.slice(1);
+      }
+      const isNormCell = (tk: ColToken): boolean =>
+        /^(-|—|–|\d+(?:[.,]\d+)?|NIL|N\/A|ND)$/.test(tk.t);
+      if (valueToks.length === anchors.length && valueToks.every(isNormCell)) {
+        for (let ai = 0; ai < anchors.length; ai++) {
+          if (!pairedUsage.has(ai)) continue; // only paired zones
+          const val = valueToks[ai]!.t;
+          if (/^[-—–]$/.test(val)) continue;
+          const fields = perZone.get(ai) ?? {};
+          if (fields[field] === undefined) fields[field] = val; // first-seen wins
+          perZone.set(ai, fields);
+        }
+        continue;
+      }
+
+      for (const v of valueToks) {
         const ai = nearestAnchor(anchors, v.start, tol);
         if (ai < 0 || !pairedUsage.has(ai)) continue; // only paired zones
         const fields = perZone.get(ai) ?? {};
