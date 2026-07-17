@@ -114,6 +114,36 @@ describe("t1-labels zone-code parser", () => {
     expect(got).not.toContain("999");
   });
 
+  it("rejects NUMBER-DOMINANCE composite labels without a dict", () => {
+    // matane prints "503 A" as two tokens. With no authoritative dict there is
+    // nothing to bound the join → it must NOT be read as a zone code.
+    const got = codes([
+      word("503", 100, 100, 130, 116, 1, 1),
+      word("A", 132, 100, 142, 116, 1, 1),
+      word("5", 200, 100, 210, 116, 2, 2),
+      word("C", 212, 100, 222, 116, 2, 2),
+    ]);
+    expect(got).toEqual([]);
+  });
+
+  it("admits dict-backed NUMBER-DOMINANCE composites, split or already joined", () => {
+    const compositeDict = new Set(["503-A", "5-C", "17-R"]);
+    const got = codes(
+      [
+        word("503", 100, 100, 130, 116, 1, 1), // split pair → joined
+        word("A", 132, 100, 142, 116, 1, 1),
+        word("5", 200, 100, 210, 116, 2, 2), // short composite (ZONE_CODE_RE alone rejects it)
+        word("C", 212, 100, 222, 116, 2, 2),
+        word("17-R", 300, 100, 340, 116, 3, 3), // already joined by pdftotext
+        word("841", 400, 100, 430, 116, 4, 4), // NOT in dict → dropped
+        word("X", 432, 100, 442, 116, 4, 4),
+      ],
+      { compositeDict },
+    );
+    expect(got.sort()).toEqual(["17-R", "5-C", "503-A"]);
+    expect(got).not.toContain("841-X");
+  });
+
   it("masks Saint-Lambert title-box revision pseudo-codes", () => {
     const revisionRows = Array.from({ length: 12 }, (_, i) =>
       word(`V${i + 1}`, 520, 235 + i * 12, 535, 247 + i * 12, 1, i + 1),

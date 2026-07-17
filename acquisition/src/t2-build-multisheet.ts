@@ -230,6 +230,15 @@ async function main(): Promise<void> {
   }
   const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
   if (numericDict) console.error(`[t2-multisheet] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
+  // Composite lane (dict-gated, no flag needed — a composite is a LETTERED code):
+  // the muni prints NUMBER ⊕ DOMINANCE as two tokens (matane "17 R"); the dict
+  // both enables and bounds the join. See lib/t1-labels.ts.
+  const compositeDict = dictCodes
+    ? new Set(dictCodes.map((c) => c.trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,3}$/.test(c)))
+    : undefined;
+  if (compositeDict?.size) {
+    console.error(`[t2-multisheet] composite relaxation ON: ${compositeDict.size} dict-backed NUMBER-DOMINANCE codes`);
+  }
 
   // 1. Per-feuillet: georef + labels; each passes its OWN gates or is excluded.
   const sheetResults: SheetResult[] = [];
@@ -326,6 +335,7 @@ async function main(): Promise<void> {
         nInFrame = gptLab.nInsideFrame;
       } else {
         const lab = extractLabels(pdfPath, geo, {
+          ...(compositeDict?.size ? { compositeDict } : {}),
           page,
           excludeRegions: gcpFile.excludeRegions,
           ...(numericDict ? { numericDict } : {}),
