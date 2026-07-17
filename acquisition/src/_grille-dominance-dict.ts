@@ -24,7 +24,11 @@ import { writeFileSync } from "node:fs";
 import { pdftotextWords, type RawLabel } from "./lib/t1-labels.js";
 
 const NUMBER_RE = /^\d{1,3}$/;
-const DOMINANCE_RE = /^[A-Z]{1,3}$/;
+// Dominance token: starts uppercase (drops row-label noise like « de »/« et »),
+// then 0-2 letters of ANY case so the mixed-case codes « Rec »/« Cn »/« AF » of
+// the Excel-grille variant survive. Emitted verbatim (never upper-cased) so the
+// dict spelling matches the plan's printed label for the composite join.
+const DOMINANCE_RE = /^[A-Z][A-Za-z]{0,2}$/;
 
 interface PairedCode {
   code: string;
@@ -80,8 +84,14 @@ export function extractDominanceDict(pdfPath: string, pages: number, debug = fal
     const { words } = pdftotextWords(pdfPath, { page });
     if (words.length === 0) continue;
 
-    const numAnchor = findRowAnchor(words, /^NUM[ÉE]ROS$/i, /^ZONES$/i);
-    const domAnchor = findRowAnchor(words, /^ET$/i, /^DOMINANCES$/i);
+    let numAnchor = findRowAnchor(words, /^NUM[ÉE]ROS$/i, /^ZONES$/i);
+    let domAnchor = findRowAnchor(words, /^ET$/i, /^DOMINANCES$/i);
+    // Variant « grille Excel » (ex. Bonaventure R2006-543) : l'en-tête est libellé
+    // sur deux lignes « Numéro de zone »» » / « Dominance »» » au lieu de
+    // « NUMÉROS DE ZONES » / « ET DOMINANCES ». L'appariement spatial (colonne x)
+    // qui suit est IDENTIQUE — seul le repérage de la ligne change.
+    if (!numAnchor) numAnchor = findRowAnchor(words, /^Num[ée]ro$/i, /^zone$/i);
+    if (!domAnchor) domAnchor = words.find((w) => hasBox(w) && /^Dominance$/i.test(w.text));
     if (!numAnchor || !domAnchor || !hasBox(numAnchor) || !hasBox(domAnchor)) continue;
     pagesWithHeader.push(page);
 
@@ -118,6 +128,9 @@ export function extractDominanceDict(pdfPath: string, pages: number, debug = fal
         abstained.push({ number: num.text, page, reason: `no dominance within ${tol.toFixed(1)}pt (nearest ${bestDist.toFixed(1)}pt)` });
         continue;
       }
+      // Emit UPPER-CASE: the composite dict is looked up via `code.toUpperCase()`
+      // in `isDictComposite` (t1-labels), and matane's served dict is upper-case —
+      // so « Rec »/« Cn » must be normalised to « REC »/« CN » to match the join.
       paired.push({ code: `${num.text}-${best.text.toUpperCase()}`, number: num.text, dominance: best.text.toUpperCase(), page });
     }
   }
