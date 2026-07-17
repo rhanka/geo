@@ -1,0 +1,24 @@
+{
+  "prefix_map": {
+    "HA": "residentiel",
+    "HB": "residentiel",
+    "HM": "residentiel",
+    "V": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "AAD": "agricole",
+    "AD": "agricole",
+    "AC": "agricole",
+    "AF": "agricole",
+    "AFV": "agricole",
+    "F": "agricole",
+    "REC": "environnemental",
+    "CN": "environnemental",
+    "M": null,
+    "P": null,
+    "VR": null
+  },
+  "source": "https://drive.google.com/file/d/1d1Ry_GQVn52BwYUtEEXMQZ57kVYqAWMm/view",
+  "note": "Règlement de zonage numéro 994-14 de la Ville de La Malbaie, corps du règlement (298 p.), section 2.2 « CODIFICATION DES ZONES », lue VERBATIM: « Chaque zone porte un code d'identification composé d'un groupe de lettres et de chiffres. Les lettres ou les groupes de lettres indiquent le ou les usages dominants comme suit : a) HA – Habitation de faible densité; b) HB – Habitation de moyenne densité; c) HM – Maison mobile ou unimodulaire; d) C – Commerciale; e) M – Mixte; f) I – Industrie; g) P – Publique; h) A – Agricole; i) AAD – Agricole à dynamiser; j) AD – Agricole déstructurée; k) AC – Agricole à consolider; l) AF – Agroforestière; m) AFV – Agroforestière villageoise; n) F – Forestière; o) REC – Récréative; p) CN – Conservation; q) V – Villégiature; r) VR – Villégiature récréotouristique. Les chiffres indiquent le numéro de la zone lui conférant un caractère unique. » Mappage: HA/HB « Habitation de faible/moyenne densité » et HM « Maison mobile ou unimodulaire » -> résidentiel; V « Villégiature » -> résidentiel (jurisprudence mont-tremblant citée dans l'en-tête de fold-usage-dominant.ts: « V »=résidentiel-villégiature, et saint-raymond.json mappe FV « forestières de villégiature » -> résidentiel); C « Commerciale » -> commercial; I « Industrie » -> industriel; A « Agricole », AAD « Agricole à dynamiser », AD « Agricole déstructurée », AC « Agricole à consolider », AF « Agroforestière », AFV « Agroforestière villageoise » et F « Forestière » -> agricole (famille agricole/agroforestière/forestière explicitement regroupée par le règlement); REC « Récréative » et CN « Conservation » -> environnemental. Null explicite: M « Mixte » est DUALE; P « Publique » est publique; VR « Villégiature récréotouristique » est DUALE (le règlement précise lui-même que les lettres indiquent « le ou LES usages dominants » — villégiature/résidentiel ET récréotouristique/environnemental relèvent de deux catégories distinctes, aucune ne prime verbatim). Longest-prefix vérifié: VR bat V, CN bat C, AAD/AD/AC/AF/AFV battent A (toutes agricole). Les 18 préfixes du SIG servi (222 polygones) sont TOUS définis par cette légende, aucun préfixe mappé n'est absent du SIG. ATTENTION: le reglement_url servi sur la collection (drive id 1CrwXmlfBrbuN5tfHUgtlVHIaOUNmXPcH) est l'« Annexe 2 Grille LM », c.-à-d. la GRILLE DE SPÉCIFICATIONS, pas le corps du règlement; la matrice des usages permis des grilles n'est pas utilisée. Source consultée le 2026-07-17."
+}

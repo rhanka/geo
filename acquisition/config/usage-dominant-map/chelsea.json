@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AGV": "agricole",
+    "PAR": "environnemental",
+    "REC": "environnemental",
+    "CON": "environnemental",
+    "RES-CV": "residentiel",
+    "RUR": null,
+    "MIX": null,
+    "MUL-RU": null,
+    "PI-CV": null,
+    "REF": null
+  },
+  "source": "https://www.chelsea.ca/download_file/view/8272/279",
+  "note": "Règlement de zonage no 1215-22 (en vigueur 29 novembre 2022, compilation administrative no 17 en vigueur le 17 avril 2026), chapitre 1 « Dispositions déclaratoires, administratives et interprétatives », légende d'identification des zones lue VERBATIM: « Les lettres utilisées pour l'identification des zones font référence à l'affectation dans laquelle la zone est incluse, conformément au Règlement sur le Plan d'urbanisme, soit : AGV : Agricole viable / PAR : Parc / REC : Récréotouristique / RUR : Rurale / RUR-C : Rurale de consolidation / REF : Réserve foncière / MUL-RU : Multifonctionnelle / MIX-FP : Mixte dans le périmètre d'urbanisation Farm Point / MIX-CV : Mixte dans le périmètre d'urbanisation Centre-Village / RES-CV : Résidentielle au Centre-Village / PI-CV : Publique et institutionnelle au Centre-Village ». Suivi de « Toute zone est identifiée par une lettre et un ou des chiffres, par exemple « RES-CV-3 » ou « RUR-9 » ». Mappage: AGV « Agricole viable » -> agricole; PAR « Parc » et REC « Récréotouristique » -> environnemental (famille parc/récréative); RES-CV « Résidentielle au Centre-Village » -> résidentiel. CON n'apparaît PAS dans cette légende mais est défini ailleurs dans le même règlement, article 7.3.9 « Abattage d'arbre dans les zones « Conservation (CON) » » (verbatim: « à l'intérieur des zones « Conservation (CON) » telles qu'elles sont identifiées au plan de zonage ») -> environnemental. Null explicite: RUR « Rurale » et RUR-C « Rurale de consolidation » désignent un CONTEXTE DE MILIEU, pas une des cinq dominantes — le règlement de zonage ne leur attribue aucune vocation principale et renvoie au Plan d'urbanisme; cohérent avec saint-raymond.json qui mappe déjà RU « rurales » à null (préfixe RUR couvre RUR-C par longest-prefix, les deux étant null). MIX (SIG: MIX1-CV, MIX2-CV, MIX-FP) « Mixte » et MUL-RU « Multifonctionnelle » sont DUALES; PI-CV « Publique et institutionnelle » est publique; REF « Réserve foncière » n'énonce pas de dominante. Non mappés volontairement (fallthrough null honnête): les 3 zones « V-* » et la zone « S-CV-10 » servies au SIG n'ont AUCUNE définition dans le règlement 1215-22. ATTENTION millésime: le reglement_url servi sur la collection pointe le règlement 636-05 (PÉRIMÉ, il identifie les zones par NUMÉRO SEUL: « 1 à 110 et 151 à 199 »), qui ne peut PAS expliquer les codes RUR/RES-CV/MIX servis; 1215-22 est le millésime en vigueur correspondant au SIG. La matrice des usages permis des grilles (Annexe 2) n'est pas utilisée. Source consultée le 2026-07-17."
+}
