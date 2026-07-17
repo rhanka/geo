@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "F": "agricole",
+    "I": "industriel",
+    "R": "residentiel",
+    "RP": "residentiel",
+    "Rec": "environnemental",
+    "ENV": "environnemental",
+    "M": null,
+    "P": null,
+    "RUR": null,
+    "IM": null,
+    "Id": null
+  },
+  "source": "https://municipalitedebury.qc.ca/wp-content/uploads/2024/02/339-1-2023-Reglement-zonage.pdf",
+  "note": "Légende VERBATIM du plan de zonage du règlement 339-1-2023 (la grille des spécifications ne nomme aucune vocation par zone): « Agricole (A) / Forestier (F) / Industriel (I) / Résidentielle (R) / Résidentielle de périphérie (RP) / Récréation (Rec) / Environnement (ENV) / Mixte (M) / Publique (P) / Rural (RUR) / Ilot avec morcellement (IM) / Ilot déstructuré (Id) ». Corroboré par le corps du règlement: « exclusivement pour les zones agricoles (A) et forestières (F) ». Mapping: A/F -> agricole (Agricole/Forestier); I -> industriel; R/RP -> residentiel (Résidentielle*); Rec « Récréation » et ENV « Environnement » -> environnemental. Null explicite: M « Mixte » et P « Publique » (par règle); RUR « Rural » (rural multi-vocation, hors des 5 catégories); IM « Ilot avec morcellement » et Id « Ilot déstructuré » (îlots déstructurés LPTAA, enclaves résidentielles en zone agricole -> dominance non unique). Longest-prefix sain (RP/RUR/Rec l'emportent sur R; IM/Id sur I). Préfixes mappés = uniquement ceux présents au SIG (A, ENV, F, I, IM, Id, M, P, R, RP, RUR, Rec)."
+}
