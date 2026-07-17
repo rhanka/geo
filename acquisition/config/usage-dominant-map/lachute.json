@@ -1,0 +1,28 @@
+{
+  "prefix_map": {
+    "Ha": "residentiel",
+    "Hb": "residentiel",
+    "Hc": "residentiel",
+    "Hd": "residentiel",
+    "Ca": "commercial",
+    "Cb": "commercial",
+    "Cs": "commercial",
+    "Cv": "commercial",
+    "In": "industriel",
+    "Af": "agricole",
+    "Ag": "agricole",
+    "Pr": "environnemental",
+    "Rc": "environnemental",
+    "Au": null,
+    "Cm": null,
+    "Des": null,
+    "Fh": null,
+    "Ic": null,
+    "Ima": null,
+    "Pi": null,
+    "Va": null,
+    "P": null
+  },
+  "source": "https://lachute.ca/cont/uploads/2022/06/zonage-version-geomatique-20260623.pdf",
+  "note": "Ville de Lachute, Règlement de zonage numéro 2013-739 (version géomatique à jour 2026-06), article 2.1.3 « Identification de la vocation dominante des zones »: « Les vocations dominantes indiquées par les lettres servant à l'identification des zones sont : » Ha « Résidentielle unifamiliale », Hb « Résidentielle bifamiliale, trifamiliale ou quadrifamiliale », Hc « Résidentielle multifamiliale », Hd « Habitation maison mobile » -> residentiel; Ca « Commerce artériel léger », Cb « Commerce artériel lourd », Cs « Commerciale de service », Cv « Commerciale de centre-ville » -> commercial; In « Industrielle » -> industriel; Af « Agroforestière », Ag « Agricole » -> agricole; Pr « Communautaire récréative » et Rc « Récréation » -> environnemental (« récréative » est nommée verbatim; l'en-tête « Communautaire » ne prime pas sur le libellé). Cv est tranché commercial et non null-dual: la TÊTE du libellé est « Commerciale » (une des cinq) et « de centre-ville » est un qualifiant de localisation hors des cinq -- même règle que « Résidentielle patrimoniale » -> residentiel; à distinguer d'un « Centre-ville » NU, qui lui reste null faute de tête. Null explicite: Cm « Commerciale mixte » et Ima « Industrielle mixte et aviation » portent « mixte » explicite; Ic « Industrielle et commerciale », Fh « Forestière et résidentielle » et Au « Agricole et d'utilité publique » sont DUALES (coordination « et » de deux vocations co-égales retombant sur deux des cinq différentes, dont l'utilité publique pour Au); Pi « Communautaire institutionnelle » est publique; Va « Villégiature » seule n'est pas une des cinq. Des « Îlots déstructurés pour l'agriculture » (Règl. 2019-739-71, art. 1) -> null par le TEST DÉCISIF de l'îlot déstructuré: (1) la colonne Dominance ne nomme PAS « résidentielle » -- la tête est « Îlots déstructurés », qui n'est aucune des cinq, « pour l'agriculture » désignant le régime LPTAAQ (grammaire inverse de « Extraction en zone agricole », où la tête EST une des cinq); (2) le règlement ne DÉFINIT nulle part l'îlot déstructuré -- aucune entrée en terminologie, les seules occurrences sont opératoires (art. 9.10.5 distances séparatrices, art. 9.15 déboisement), et l'unique mention CPTAQ (« la décision 377034 émise le 15 septembre 2014 par la CPTAQ en vertu de l'article 59 de la LPTAAQ concernant les îlots déstructurés ») porte sur le CALCUL DES DISTANCES SÉPARATRICES, pas sur une habilitation résidentielle; (3) corroboration: la grille Des-514-1 autorise h1 Habitation unifamiliale, p3 Communautaire récréatif, u1 Utilité publique légère ET a1 Production culture => constructible en résidence sans vocation dominante unique. P (seul) est ABSENT de l'art. 2.1.3, qui ne définit que Pi et Pr: la grille P-238 autorise p3 « Communautaire récréatif », u1 « Utilité publique légère » et c13 « Commerce de récréation extérieure extensive » => aucune dominance déclarée, triple vocation, et l'usage ne se déduit pas de la lettre -> null. Le null de P est aussi l'anti-fall-through critique de Lachute (P est préfixe strict de Pi et Pr; le match longest-prefix rend bien Pr-418 -> environnemental et P-238 -> null). Ac « Agricole et commerciale », Ar « Agricole et résidentielle » et Fe « Forestière et d'extraction » sont à la légende mais ABSENTS du SIG -> non mappés. 22/22 préfixes du SIG couverts. La matrice des usages permis des grilles n'est pas utilisée comme source de dominance."
+}
