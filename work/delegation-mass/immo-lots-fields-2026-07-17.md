@@ -269,3 +269,56 @@ colonnes `surface_m2` et `code_postal` sont déjà complètes au niveau lot. Auc
 Aucune des villes testées n'était sans parquet de normes ; les échecs viennent des
 zones absentes/inexploitables, de la couverture SIG ou de jeux de codes disjoints,
 pas d'une acquisition de normes manquante.
+
+## Passe shard 0/1 — 23:22Z
+
+Mesures d'autorité : deux exécutions S3 de `immo-lots-audit.ts`, avant et
+après les dépôts de cette passe (853 produits `qc-lots` servis). Aucun chiffre
+ci-dessous n'est estimé.
+
+### Avant / après, par champ
+
+| Champ | Avant (lots / dénominateur) | Avant % | Après (lots / dénominateur) | Après % | Écart lots |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `surface_m2` | 3 368 162 / 3 368 162 | 100,00 % | 3 368 162 / 3 368 162 | 100,00 % | 0 |
+| `adresse` | 2 542 382 / 3 368 162 | 75,48 % | 2 542 382 / 3 368 162 | 75,48 % | 0 |
+| `code_postal` | 3 368 161 / 3 368 162 | 100,00 % | 3 368 161 / 3 368 162 | 100,00 % | 0 |
+| `folded-normes` | 860 646 / 3 368 162 | 25,55 % | 860 604 / 3 368 162 | 25,55 % | -42 |
+| `in_tod` (périmètre TOD) | 28 431 / 28 431 | 100,00 % | 28 431 / 28 431 | 100,00 % | 0 |
+
+Le delta `folded-normes=-42` est l'observation entre les deux audits ; cette
+passe ne le lui attribue pas sans preuve causale. `surface_m2` et
+`code_postal` sont déjà complets au niveau lot (le second est 3 368 161 / 3
+368 162, arrondi 100 %) : aucun backfill artificiel n'a été lancé.
+
+### Villes traitées
+
+- Adresse, rôle actif (jamais `--no-role`) : `saint-pierre`,
+  `saint-louis-de-gonzague-du-cap-tourmente`, `saint-felix-de-dalquier`,
+  `franquelin`, `saint-gabriel-de-valcartier`,
+  `saint-eugene-de-ladriere`, `remigny`. Les sept dépôts ont été vérifiés et
+  les adresses restent nulles : candidat `code_geo` absent pour
+  `saint-felix-de-dalquier`; les autres échouent le seuil anti-homonymie
+  (respectivement 238/639, 1/98, 22/30, 21/30, 4/30 et 1/30 lots
+  correspondants).
+- Chaîne lot→zone→normes puis enrichissement :
+  `saint-mathias-sur-richelieu`, `lambton`, `lisle-aux-coudres`,
+  `beaulac-garthby`, `saint-ferdinand`, `ascot-corner`, `saint-cuthbert`,
+  `sainte-melanie`, `brigham`, `daveluyville`. Les jointures couvrent
+  97,20–100 % des lots, mais seulement 7,29–27,07 % des codes de zones ont une
+  norme déposée ; les valeurs restantes sont donc restées nulles.
+
+### Skips vérifiés
+
+- Zones absentes : `cap-chat`, `sainte-anne-de-bellevue`, `amherst`,
+  `baie-durfe`.
+- Jointure sans norme correspondante (0 %) : `huntingdon`, `la-presentation`,
+  `saint-chrysostome`, `saint-benoit-labre`, `notre-dame-des-neiges`.
+- `saint-martin` : 0 % des lots reçoivent une zone.
+- Correspondance zone→norme seulement 0,05–0,62 % :
+  `fossambault-sur-le-lac`, `lavenir`, `saint-romain`, `ham-nord`,
+  `duhamel-ouest`, `chesterville`, `guerin`, `armagh`, `manseau`,
+  `saint-ours`.
+
+Ces derniers résidus nécessitent des zones servies ou des normes dont les codes
+rejoignent le SIG : ils relèvent respectivement des lanes zonage et normes.
