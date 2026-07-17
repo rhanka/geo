@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "RU": "residentiel",
+    "RNU": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "AF": null,
+    "M": null,
+    "P": null,
+    "V": null
+  },
+  "source": "https://stada.ca/wp-content/uploads/zonage-St-Andre-MAJ-JANV.-2026-2.pdf",
+  "note": "Municipalité de Saint-André-d'Argenteuil, règlement de zonage numéro 47 (codification à jour janvier 2026), ARTICLE 10 « IDENTIFICATION DES ZONES » : « Chacune des zones montrées au plan de zonage est identifiée à ce plan par une lettre d'appellation indiquant leur affectation principale à des fins de compréhension seulement, selon le tableau suivant ». Table verbatim (colonnes « SYMBOLE » / « AFFECTATION PRINCIPALE ») : « RNU | Résidentielle non urbaine » et « RU | Résidentielle urbaine » -> residentiel ; « C | Commerciale » -> commercial ; « I | Industrielle » -> industriel ; « A | Agricole » -> agricole. Null explicite : « P | Publique » est publique ; « M | Mixte » est duale, confirmé par l'alinéa d) « Les zones de type mixte (M) et villégiature (V) n'ont pas le premier chiffre puisqu'il réfère à plusieurs classes d'usage » ; « V | Villégiature » n'est aucune des cinq catégories. « AF » -> null ANTI-FALL-THROUGH obligatoire : le symbole est ABSENT de la table et de tout le corps (millésimes 2021 et 2026), et sans ce null explicite « AF-193.1 » retomberait par longest-prefix sur « A » -> agricole (2 polygones faux en silence) ; le mapper agricole serait déduire de la lettre. Recouvrement table<->SIG = 8/8 symboles présents dans les codes servis. Préfixe OMIS : « DES » (5 polygones, DES-102.1...) est absent de l'art. 10 et du corps ; le seul « îlot déstructuré » du règlement est l'art. 267.3, qui ne régit que le déboisement d'un terrain situé à l'intérieur d'un îlot et ne définit aucune zone DES ni ne lui assigne de vocation -> omis (on ignore le libellé) et non null (le règlement ne refuse pas une dominante) ; aucun fall-through possible, « D » n'étant pas déclaré. « Secteur de zone A (V-171) » (1 polygone) n'est pas un code de zone. La lettre d'appellation prime : le chapitre 2 classe des USAGES (P1 « parc, terrain de jeux et espace vert », P2 « institutionnelle », P3 « infrastructure ») et non des zones — la colonne « AFFECTATION PRINCIPALE » dit « Publique » pour tout P (précédents committés lac-beauport PS et saint-georges PA). La matrice des usages permis (annexe B) n'est pas utilisée. Propriété du document attestée : chaque page porte « Municipalité de Saint-André-d'Argenteuil » (hôte officiel stada.ca) ; l'art. 10 est identique mot pour mot dans les codifications 2021 et 2026."
+}
