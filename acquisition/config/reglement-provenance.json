@@ -5277,6 +5277,27 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Doc local = `chapitre-10-tableau-specifications.pdf` (47 p), un EXTRAIT (chapitre 10) du reglement, pas le corps. Gate proprietaire OK (47 occurrences «Labrecque»), donc le doc est bien celui du slug — mais il est MUET sur le numero: balayage PLEIN TEXTE des 47 pages sur «zonage numéro» = FIND-0, et les seules lignes captees sont l'en-tete «RÈGLEMENT DE ZONAGE» (p1-p5), sans numero (faux positif de motif). Defaut de DECOUVERTE (il manque le corps / la page de titre), pas d'extraction. ETAPE = acquerir le corps du reglement de Labrecque."
+    },
+    "matane": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: GATE PROPRIETAIRE (famille normetal/authier-nord). Le numero est pourtant VERBATIM et sans ambiguite: chaque planche du doc du manifest (Reg-zonage-VM-89-codification-octobre-2025_WEB_Annexe-1-Grilles-1.pdf, 10 p) porte «CETTE GRILLE FAIT PARTIE INTÉGRANTE DU RÈGLEMENT NO VM-89» (p1, p94, p192, p288... du texte extrait), et les colonnes «révisé le / amendement» listent VM-89-1 (02-08-2004) jusqu'a VM-89-227 (27-06-2024) => VM-89 = le reglement de zonage de base, VM-89-N = ses amendements. MAIS le doc ne NOMME JAMAIS sa municipalite: 0 occurrence «Matane» sur les 10 pages (seuls «LE MAIRE / LE GREFFIER / AUTHENTIFIÉE CE JOUR» figurent, non renseignes). La seule preuve d'appartenance serait l'HOTE (www.ville.matane.qc.ca) et le nom de fichier — or ni l'URL ni le nom de fichier ne font foi (piege prouve coaticook), et «VM = Ville de Matane» est une DEDUCTION, pas du verbatim. Ecart assume avec le cas normetal (meme gate, meme verdict) pour ne pas creer de precedent «l'hote suffit». ETAPE = le CORPS du VM-89, qui nommera Matane: sonde a $0 infructueuse (.../Reg-zonage-VM-89-codification-octobre-2025_WEB.pdf => HTTP 404; page reglements-durbanisme => 0 lien PDF zonage; recherche du site => 0 PDF). Des que le corps est acquis, le stamp est immediat (numero deja tranche)."
+    },
+    "saint-jerome": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, pas d'extraction. Le manifest porte la SENTINELLE schemee «https://non-disponible» comme source_url (hote sans FQDN, injoignable: curl echoue meme en --insecure) — ce n'est pas une piste, c'est l'absence de piste deguisee. Et aucun PDF local: `work/zonage-norms/saint-jerome/` est vide (NO-LOCAL-DOC). La grille est pourtant servie (108 zones, methode=mistral-vision), donc un doc a existe en amont sans que son URL soit conservee. ETAPE = re-decouvrir le reglement de zonage sur le site de la Ville de Saint-Jerome. (NB: sans rapport avec le recalage zonage de saint-jerome, servi a 99,69%.)"
+    },
+    "lac-sergent": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, pas d'extraction. Aucune entree au manifest qc-zonage-norms pour ce slug (etat NO-GRILLE) => aucun source_url a ouvrir, et aucun PDF local: `work/zonage-norms/lac-sergent/` est vide (NO-LOCAL-DOC). Le polygone qc-zonage-lac-sergent est servi, mais rien dans le corpus ne porte le reglement. ETAPE = decouvrir le reglement de zonage de Lac-Sergent (le fold provenance n'exige PAS de grille: un corps suffit)."
     }
   }
 }
