@@ -1581,6 +1581,62 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "AUCUN DOC A LIRE: le source_url du manifest est une page HTML de portail «https://www.notredamedelourdes.ca/fr/vie-municipale/conseil-municipal/proces-verbaux-et-ordres-du-jour/» (liste de proces-verbaux), pas un PDF de reglement -- le fetch rend du HTML (magic=«<!DO»). Rien a relever verbatim => null. NB: ne pas confondre avec notre-dame-de-lourdes--lerable (deja cure, 02-2023)."
+    },
+    "belleterre": {
+      "reglement_numero": "75",
+      "reglement_millesime": "1993",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.mrctemiscamingue.org/app/uploads/2024/01/belleterre-reglement-de-zonage.pdf",
+      "_note": "Gabarit MRC de Temiscamingue. p1 verbatim (colonne centrale): «VILLE DE BELLETERRE / RÈGLEMENT ZONAGE / N0 75 / ENTRÉE EN VIGUEUR : 10 NOVEMBRE 1993 / MIS À JOUR : 11 JUIN 2021». Millesime = annee du reglement de base (1993), pas celle de la mise a jour (2021), precedent ayers-cliff. PIEGE DE COLONNES ECARTE: la colonne de GAUCHE est un sommaire de navigation listant les 21 munis de la MRC (Angliers, Bearn, ... Ville-Marie); une lecture ligne-a-ligne accole «Rémigny» a la date d'entree en vigueur -- ce n'est PAS la muni du doc. Lecture -layout p1 obligatoire."
+    },
+    "duhamel-ouest": {
+      "reglement_numero": "196",
+      "reglement_millesime": "1993",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.mrctemiscamingue.org/app/uploads/2026/06/duhamel-ouest-reglement-de-zonage-6.pdf",
+      "_note": "Gabarit MRC de Temiscamingue. p1 verbatim (colonne centrale): «MUNICIPALITÉ DE DUHAMEL-OUEST / RÈGLEMENT DE ZONAGE / No 196 / DATE : 2 DÉCEMBRE 1992 / ENTRÉE EN VIGUEUR : 11 MARS 1993 / ENTRÉE EN VIGUEUR DU DERNIER AMENDEMENT : 3 JUIN 2026». Millesime = entree en vigueur du reglement de base (1993); adoption 1992, dernier amendement 2026 ecartes. PIEGE URL PROUVE: le nom de fichier «duhamel-ouest-reglement-de-zonage-6.pdf» porte «6» = numero de revision du fichier sur le portail MRC, PAS le numero du reglement (196)."
+    },
+    "fugereville": {
+      "reglement_numero": "227-07-95",
+      "reglement_millesime": "1995",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.mrctemiscamingue.org/app/uploads/2024/01/fugereville-reglement-de-zonage.pdf",
+      "_note": "Gabarit MRC de Temiscamingue. p1 verbatim: «MUNICIPALITÉ DE FUGÈREVILLE / RÈGLEMENT DE ZONAGE / NO 227-07-95 / DATE : 3 JUILLET 1995 / ENTRÉE EN VIGUEUR : 9 AOÛT 1995 / MIS À JOUR : 25 SEPTEMBRE 2018». Millesime = 1995 (base), pas 2018 (mise a jour). NB sonde: le motif NUM ne matche que «RÈGLEMENT DE ZONAGE» -- le numero est sur sa PROPRE ligne, invisible a la sonde ligne-a-ligne; releve par dump -layout p1."
+    },
+    "chute-aux-outardes": {
+      "reglement_numero": "401-2015",
+      "reglement_millesime": "2015",
+      "reglement_page_source": 1,
+      "reglement_url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20220221104800-reglement-n-401-2015-zonage-rev1.pdf",
+      "_note": "p1 verbatim: «RÈGLEMENT NUMÉRO 401-2015». Doc de 416 p. Le numero de l'URL coincide ici avec le verbatim, mais c'est le verbatim p1 qui fait foi (gate)."
+    },
+    "dupuy": {
+      "reglement_numero": "263-2025",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 1,
+      "reglement_url": "https://dupuy.ao.ca/documents/pages/reglement-no-263-2025---zonage.pdf",
+      "_note": "p1 verbatim: «RÈGLEMENT NUMÉRO 263-2025» + «Adopté le 20 mai 2025 – Résolution 280-2025». CANDIDAT ECARTE: «280-2025» est le numero de la RESOLUTION d'adoption, pas du reglement."
+    },
+    "entrelacs": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type montreal-ouest): le source_url rend la grille SEULE (2 p, texte natif OK) «Municipalité d'Entrelacs / grille des usages principaux et des normes» (zones S-1..S-6), sans page de titre ni pied de grille numerotant le reglement. CANDIDAT ECARTE: la seule occurrence est «Zone S1 à S9 (ajout, règlement 08-426-9)» = reglement MODIFIANT isole cite en note de grille, pas le numero du reglement de zonage => null (gate: pas un numero d'amendement isole)."
+    },
+    "fort-coulonge": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "LIEN MORT (type mont-saint-michel): le source_url du manifest «https://fortcoulonge.qc.ca/IMG/pdf/reglements_de_zonage_maj_sept_2012.pdf» repond HTTP 404 (verifie curl -sIL). Aucun doc a lire => null. Le «sept 2012» du nom de fichier n'est PAS retenu comme millesime (gate: jamais deduire de l'URL). Voie = re-decouverte de l'URL."
+    },
+    "bonsecours": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOTE INJOIGNABLE: le source_url du manifest «https://municipalites-du-quebec.ca/bonsecours/custom/zonage.pdf» n'aboutit pas (curl http=000, timeout 25s; idem fetch sonde). Aucun doc a lire => null. Voie = re-decouverte de l'URL (site muni actuel), pas une extraction."
     }
   }
 }
