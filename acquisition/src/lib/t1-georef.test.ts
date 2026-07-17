@@ -13,7 +13,7 @@ import zlib from "node:zlib";
 
 import { describe, it, expect } from "vitest";
 
-import { inflatePdfText, extractGeoRef } from "./t1-georef.js";
+import { inflatePdfText, extractGeoRef, viewportGeoRefs } from "./t1-georef.js";
 
 function pdfWithStream(payload: Buffer, tail = ""): Buffer {
   const z = zlib.deflateSync(payload);
@@ -73,5 +73,55 @@ describe("inflatePdfText — anti Invalid string length", () => {
     const geo = extractGeoRef(pdfWithStream(Buffer.from("draw ops"), GEO_TAIL));
     expect(geo).not.toBeNull();
     expect(geo!.maxResidualM).toBeLessThan(2);
+  });
+});
+
+/**
+ * A `/VP` array element may be an INDIRECT reference (`/VP [ 141 0 R ]`) instead
+ * of an inline `<< … >>` dict — both are legal per ISO 32000. The walker only
+ * split inline dicts, so an indirect viewport yielded ZERO georefs and t1-build
+ * ABORTed with "no /VP /Measure /GEO georeferencing found" on a PDF that carries
+ * a perfectly good one.
+ *
+ * MEASURED (2026-07-17, shard 0/1): `sainte-justine-de-newton` — a real municipal
+ * GeoPDF (ANNEXE A, règlement 414, `/Subtype /GEO`, WKT `NAD_1983_CSRS_MTM_8`
+ * = EPSG 2950, `/Subtype /RL` absent so NOT the §2.1 CAD false positive) was
+ * classed "not a GeoPDF" and pushed onto the chamfer/T3 raster lane, where it
+ * failed. The georef was there all along. This is a silent FALSE NEGATIVE, and
+ * likely transverse to every plan exported by the same toolchain.
+ */
+describe("viewportGeoRefs — a /VP element may be an INDIRECT reference", () => {
+  const MEASURE =
+    "/Measure << /Subtype /GEO /Bounds [0 0 0 1 1 1 1 0] " +
+    "/GPTS [45.50 -73.50 45.51 -73.50 45.51 -73.49 45.50 -73.49] " +
+    '/GCS << /WKT (PROJCS["NAD83 / MTM 8",PROJECTION["Transverse_Mercator"],' +
+    'PARAMETER["Central_Meridian",-73.5],PARAMETER["Latitude_Of_Origin",0],' +
+    'PARAMETER["Scale_Factor",0.9999],PARAMETER["False_Easting",304800],' +
+    'PARAMETER["False_Northing",0]]) >> >>';
+
+  it("resolves `/VP [ N 0 R ]` (the sainte-justine-de-newton false negative)", () => {
+    const hay =
+      "/VP [ 141 0 R ] /MediaBox [0 0 100 100]\n" +
+      `141 0 obj\n<< /BBox [0 0 100 100] ${MEASURE} >>\nendobj\n`;
+    const vps = viewportGeoRefs(hay);
+    expect(vps).toHaveLength(1);
+    expect(vps[0]!.bbox).toEqual([0, 0, 100, 100]);
+    expect(vps[0]!.gpts).toHaveLength(8);
+    expect(vps[0]!.wkt).toContain("PROJCS");
+  });
+
+  it("still splits inline viewport dicts (no regression)", () => {
+    const vps = viewportGeoRefs(GEO_TAIL);
+    expect(vps).toHaveLength(1);
+    expect(vps[0]!.gpts).toHaveLength(8);
+  });
+
+  it("handles a MIXED array: inline dict + indirect ref side by side", () => {
+    const hay =
+      `/VP [ << /BBox [0 0 50 50] ${MEASURE} >> 141 0 R ] /MediaBox [0 0 100 100]\n` +
+      `141 0 obj\n<< /BBox [0 0 100 100] ${MEASURE} >>\nendobj\n`;
+    const vps = viewportGeoRefs(hay);
+    expect(vps).toHaveLength(2);
+    expect(vps.map((v) => v.bbox[2])).toEqual([50, 100]);
   });
 });

@@ -364,9 +364,62 @@ export interface ViewportGeoRef {
 }
 
 /**
+ * Split a `/VP […]` array body into its element bodies. ISO 32000 allows BOTH
+ * forms, and real municipal GeoPDFs use both:
+ *   - inline dict      `/VP [ << /BBox … /Measure << … >> >> ]`
+ *   - indirect ref     `/VP [ 141 0 R ]`   ← resolved here
+ *
+ * MEASURED (2026-07-17): only inline dicts were split, so a plan whose viewport
+ * is an indirect object yielded ZERO georefs and t1-build ABORTed with "no /VP
+ * /Measure /GEO georeferencing found" — a SILENT FALSE NEGATIVE on a PDF that
+ * carries a valid georef (sainte-justine-de-newton, règlement 414, EPSG 2950).
+ * Such a plan is then pushed onto the chamfer/T3 raster lane, where it fails for
+ * the wrong reason. `/Measure` was already resolved when indirect; the array
+ * element itself was not.
+ */
+function vpElementBodies(hay: string, from: number, to: number): string[] {
+  const bodies: string[] = [];
+  let k = from;
+  while (k < to) {
+    if (hay[k] === "<" && hay[k + 1] === "<") {
+      let dd = 0;
+      let e = k;
+      for (; e < to; e++) {
+        if (hay[e] === "<" && hay[e + 1] === "<") {
+          dd++;
+          e++;
+        } else if (hay[e] === ">" && hay[e + 1] === ">") {
+          dd--;
+          e++;
+          if (dd === 0) {
+            e++;
+            break;
+          }
+        }
+      }
+      bodies.push(hay.slice(k, e));
+      k = e;
+      continue;
+    }
+    // `N 0 R` at the array's TOP level (a ref nested inside a dict is consumed
+    // by the branch above, so this never mistakes /Measure 141 0 R for a viewport).
+    const ref = /^(\d+)\s+0\s+R/.exec(hay.slice(k, Math.min(k + 24, to)));
+    if (ref) {
+      const resolved = resolveObj(hay, Number(ref[1]));
+      if (resolved) bodies.push(resolved);
+      k += ref[0].length;
+      continue;
+    }
+    k++;
+  }
+  return bodies;
+}
+
+/**
  * Per-viewport GEO registration: each `/VP[…]` array element is a viewport dict
  * carrying its own `/BBox` (page neatline) AND its `/Measure` — inline, or as an
- * indirect `N 0 R` reference we resolve. Reading the GEO measure that BELONGS to
+ * indirect `N 0 R` reference we resolve (both the element and the measure — see
+ * `vpElementBodies`). Reading the GEO measure that BELONGS to
  * each viewport (rather than globally scanning `/GPTS` and guessing by geographic
  * span) is what disambiguates a plan that carries a REGIONAL LOCATOR INSET (a tiny
  * page rectangle whose GPTS cover a WIDE area) from the MAIN municipal map (a large
@@ -392,28 +445,7 @@ export function viewportGeoRefs(hay: string): ViewportGeoRef[] {
         }
       }
     }
-    // Walk the array body and split into top-level << … >> viewport dicts.
-    let k = arrStart + 1;
-    while (k < j) {
-      const ds = hay.indexOf("<<", k);
-      if (ds < 0 || ds >= j) break;
-      let dd = 0;
-      let e = ds;
-      for (; e < j; e++) {
-        if (hay[e] === "<" && hay[e + 1] === "<") {
-          dd++;
-          e++;
-        } else if (hay[e] === ">" && hay[e + 1] === ">") {
-          dd--;
-          e++;
-          if (dd === 0) {
-            e++;
-            break;
-          }
-        }
-      }
-      const body = hay.slice(ds, e);
-      k = e;
+    for (const body of vpElementBodies(hay, arrStart + 1, j)) {
       const bm = body.match(/\/BBox\s*\[([^\]]+)\]/);
       const bbox = bm ? numArray(bm[1]!) : [];
       if (bbox.length < 4) continue;
