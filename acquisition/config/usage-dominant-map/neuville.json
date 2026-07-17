@@ -1,0 +1,26 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "A/c": "agricole",
+    "Af": "agricole",
+    "C": "commercial",
+    "C/I": null,
+    "Cons": "environnemental",
+    "I": "industriel",
+    "Ie": "industriel",
+    "M": null,
+    "M/a": null,
+    "Pa": null,
+    "Pb": null,
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rec": "environnemental",
+    "Rh": "residentiel",
+    "Rm": "residentiel",
+    "Rx": null,
+    "T": null
+  },
+  "source": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/administration-et-finances/reglementation-municipale/reglement-de-zonage-104.pdf",
+  "note": "Règlement de zonage 104 de la Ville de Neuville (MRC de Portneuf), chapitre 3 « Plan de zonage et grilles des spécifications », art. 3.2 « CODIFICATION DES ZONES », p.3-1: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante. Les lettres font référence aux types de zones et aux vocations dominantes suivantes », suivi de la table « Types de zone / Vocations dominantes » relevée VERBATIM. Résidentielle: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « Résidentielle de faible densité en milieu agricole », Rb « Résidentielle de moyenne densité », Rc « Résidentielle de haute densité », Rh « Résidentielle historique », Rm « Résidentielle de maisons mobiles ou résidences unimodulaires » -> residentiel (« Ra » couvre les codes servis Ra/a-* par longest-prefix, même dominante). Commerciale: C « Commerciale » -> commercial. Industrielle: I « Industrielle », Ie « Industrielle-extraction » -> industriel. Agricole et/ou forestière: A « Agricole dynamique », A/c « Agricole avec contrainte », Af « Agroforestière » (codes servis Af/a, Af/b, Af/c) -> agricole. Publique, récréative ou conservation: Rec « Récréative », Cons « Conservation » -> environnemental. Null explicite: M « Mixte (résidentielle et commerciale) » et M/a « Mixte en milieu agricole (résidentielle et commerciale) » sont DUALES par le libellé même; C/I « Commerciale et industrielle » est DUALE — mappé explicitement (et non laissé tomber sur « C ») parce que le match est longest-prefix: sans cette entrée le code servi C/I-1 hériterait à tort de « C » -> commercial; Pa « Publique et institutionnelle » et Pb « Utilité publique » sont publics; T « Transport » n'appartient à aucune des cinq catégories; Rx « Résidentielle de réserve » est une RÉSERVE (dominante non établie, cf. cap-sante.json). NON mappé parce qu'ABSENT du SIG servi (gate): Fo/u « Forestière-urbaine » figure dans la légende mais aucun polygone ne le porte. Les 20 préfixes mappés couvrent exactement les 17 préfixes présents au SIG servi (127 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée."
+}
