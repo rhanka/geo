@@ -2927,11 +2927,11 @@
       "_note": "BLOCAGE EXTRACTION (pas absence), type berthier-sur-mer/havelock: «Grille-usage-revisee.pdf» = 29 pages SCAN IMAGE, charsNonBlancs=0 => pdftotext ne rend rien, aucun verbatim lisible. Le nom de fichier ne porte aucun numero. Voie restante: route vision sur ce PDF."
     },
     "sainte-victoire-de-sorel": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "PAS UN PDF: le source_url du manifest «.../Rglement_zonage_290-06_refondu_Sainte-Victoire-de-Sorel23.pdf» repond du HTML (magic=«<!DO», page d'erreur/portail), pas un document PDF. Le «290-06» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "290-06",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 2,
+      "reglement_url": "https://web.archive.org/web/20240123224218id_/https://saintevictoiredesorel.qc.ca/municipalite/images/Rglement_zonage_290-06_refondu_Sainte-Victoire-de-Sorel23.pdf",
+      "_note": "Le verdict «PAS UN PDF => null» etait juste sur le LIEN DIRECT mais faux sur le DOCUMENT: le source_url du manifest repond toujours du HTML (magic=«<!DO», 442ko), mais Wayback en mode «id_» sert le vrai corps (4,4Mo, 143 p) -- meme voie que batiscan. Numero lu VERBATIM (jamais deduit de l'URL): p1 couverture «Municipalite Sainte-Victoire-de-Sorel / Reglement de zonage # 290-06»; p2 en-tete «REGLEMENT DE ZONAGE NO 290-06» et «il est propose [...] et resolu que le reglement portant le no 290-06 soit et est adopte»; pied de page de chaque page «#290-06 Reglement de zonage - version refondue». MILLESIME 2007 et NON 2006: le «-06» du numero est l'annee de l'AVIS DE MOTION (6 novembre 2006); p2 verbatim «Adoption du reglement : 2 avril 2007 / Entree en vigueurdu reglement : 12 juillet 2007» [sic, «vigueurdu» colle dans le doc]. ECARTES: «205-91» = le reglement de zonage ABROGE (p2 «CONCERNANT LE REMPLACEMENT DU REGLEMENT DE ZONAGE # 205-91»); «164-06» = reglement de la MRC du Bas-Richelieu (schema d'amenagement), pas de la muni; «468-2005» = decret du gouvernement (Politique de protection des rives). Muni NOMMEE par le doc (gate proprietaire): p2 «la Municipalite de Sainte-Victoire-de-Sorel a le pouvoir [...] d'adopter [...] un reglement concernant le zonage sur son territoire»."
     },
     "temiscaming": {
       "reglement_numero": "427",
