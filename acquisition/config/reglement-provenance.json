@@ -2920,11 +2920,11 @@
       "_note": "GABARIT JAMAIS REMPLI (2e occurrence apres sainte-anne-des-lacs, et ici l'URL l'avoue): PDF = «ANNEXE 1 / Grille des specifications / MUNICIPALITE DE SAINTE-PAULE» (2 p, texte natif OK). p1 porte le blanc a saisir «Cette grille fait partie integrante du reglement no.» suivi de RIEN, les colonnes «Revise le / Reglement #» sont vides et «Authentifiee le» est vide. Le nom de fichier confirme l'etat du gabarit: «SP_XXX-19_zonage-grille.pdf» -- «XXX» est litteralement le placeholder du numero. Aucun numero verbatim => null."
     },
     "sainte-elizabeth-de-warwick": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "BLOCAGE EXTRACTION (pas absence), type berthier-sur-mer/havelock: «Grille-usage-revisee.pdf» = 29 pages SCAN IMAGE, charsNonBlancs=0 => pdftotext ne rend rien, aucun verbatim lisible. Le nom de fichier ne porte aucun numero. Voie restante: route vision sur ce PDF."
+      "reglement_numero": "405",
+      "reglement_millesime": "2021",
+      "reglement_page_source": 2,
+      "reglement_url": "https://www.sainte-elizabeth-de-warwick.ca/wp-content/uploads/2024/01/405_ZonageR414R426.pdf",
+      "_note": "«BLOCAGE EXTRACTION => voie restante: route vision» LEVE a $0 SANS payer la vision: le verdict etait juste sur la GRILLE (scan image, charsNonBlancs=0) mais il n'a jamais fallu la grille -- le CORPS est en texte natif. Voie: _wp-media-enum.ts --site https://www.sainte-elizabeth-de-warwick.ca --filter zonage (x-wp-total=803) => «405_ZonageR414R426.pdf» (1,1 Mo). LECON: sonder le PDF FRERE en natif avant d'engager une route vision sur un scan. Numero lu VERBATIM dans le DOCUMENT (jamais deduit du nom de fichier): p2 «CODIFICATION ADMINISTRATIVE DU RÈGLEMENT DE ZONAGE NUMÉRO 405»; p1 couverture = logo «Sainte-Élizabeth de Warwick» + «RÈGLEMENT DE ZONAGE» (gate proprietaire OK). MILLESIME 2021 par les dates VERBATIM p2: «AVIS DE MOTION : 2 AOÛT 2021 / ADOPTION : 13 SEPTEMBRE 2021 / ENTRÉE EN VIGUEUR : 25 NOVEMBRE 2021» (adoption ET vigueur concordent sur 2021). ECARTES: «414», «426-A», «426-C» = les 3 AMENDEMENTS de la table «Modifications apportées» p2; «405-01» et le «premier projet de règlement 451» vus a l'API = amendement et PROJET non adopte. NB p2 «MISE EN GARDE : Cette codification a été préparée uniquement pour la commodité du lecteur et n'a aucune valeur officielle» -- sans effet sur le NUMERO et les dates, qui sont ceux du reglement tel qu'adopte."
     },
     "sainte-victoire-de-sorel": {
       "reglement_numero": "290-06",
