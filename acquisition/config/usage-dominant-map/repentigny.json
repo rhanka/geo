@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "CON": "environnemental",
+    "P": null,
+    "IC": null,
+    "MX": null
+  },
+  "source": "https://repentigny.ca/sites/default/files/2025-07/ville_repentigny_reglement_438_zonage_2025-07_chapitre-1.pdf",
+  "note": "Ville de Repentigny, Règlement de zonage numéro 438, Chapitre 1 « Dispositions déclaratoires et interprétatives » (version 2025-07), article 18 « Identification des zones », lu VERBATIM: « Chacune des zones montrées au plan de zonage est identifiée à ce plan par une lettre d'appellation indiquant l'affectation principale de la zone aux fins de compréhension seulement, selon le tableau suivant : [table « GROUPE D'APPELLATION / AFFECTATION PRINCIPALE »] H1 à H4 – Habitation; C1 à C8 – Commercial; P1 à P4 – Communautaire-utilité publique; I1 à I3 – Industriel; A1 et A2 – Agricole; CON1 et CON2 – Conservation; IC – Industrielle-commerciale; MX – Mixte urbain. Chacune des zones est en outre désignée par un numéro suivant le groupe d'appellation, ce numéro identifie spécifiquement la zone. » (dernière modification citée en pied d'article: 2025-06-26, r. 438-52, a.4). Mappage: H « Habitation » -> résidentiel; C « Commercial » -> commercial; I « Industriel » -> industriel; A « Agricole » -> agricole; CON « Conservation » -> environnemental. Null explicite: P « Communautaire-utilité publique » est publique; IC « Industrielle-commerciale » et MX « Mixte urbain » sont DUALES (le règlement énonce lui-même les deux fonctions). Longest-prefix vérifié: CON bat C (CON1-003 -> environnemental, pas commercial), IC bat I (IC-469 -> null, pas industriel). Les 8 préfixes du SIG servi (469 polygones: H, C, P, A, MX, I, IC, CON) sont TOUS définis par ce tableau, aucun préfixe mappé n'est absent du SIG. ATTENTION millésime/numéro: la collection sert reglement_numero=« 437 » et un reglement_url pointant le visualiseur cartographique JS (carte.ville.repentigny.qc.ca/Geomatique/GrilleUsage/), non exploitable; le règlement de zonage en vigueur est le 438 (il « abroge et remplace le Règlement de zonage portant le numéro 65 »), retrouvé via les chapitres PDF officiels — cf. piège reglement-numero-url-trap. Réserve honnête: le règlement précise que la lettre d'appellation indique l'affectation principale « aux fins de compréhension seulement »; la valeur servie reste donc la nomenclature déclarée, pas une lecture de la matrice des usages permis des grilles (non utilisée). Source consultée le 2026-07-17."
+}
