@@ -1,0 +1,154 @@
+# Provenance règlement — shard 0/2 — 2026-07-17
+
+## Périmètre et bilan
+
+- Univers: 272 villes servies avec `reglement=false` dans zonage-enrichment.json, triées par slug.
+- Shard traité: indices pairs, soit 136 villes.
+- Avant ce passage: 20 entrées du registre avaient un numéro de règlement et 116 étaient déjà des verdicts null motivés.
+- Après ce passage: les mêmes 20 numéros sont confirmés par l’API des polygones; les 116 null restent explicitement non stampés.
+- Fold: deux lots de dix; résultat idempotent, 0 cellule modifiée (les polygones étaient déjà servis avec les valeurs du registre).
+- Vérification servie: requête API limit=1 effectuée pour chacune des 20 villes numérotées, toutes conformes ci-dessous.
+
+## Villes servies et vérifiées
+
+- acton-vale — 069-2003
+- bolton-est — 2025-447 (2025)
+- coteau-du-lac — URB 400
+- franklin — 272
+- labrecque — 300-07
+- lac-sainte-marie — 2024-08-002
+- mont-laurier — 134 (2007)
+- new-carlisle — 2013-344 (2013)
+- potton — 2001-291 (2001)
+- saint-antonin — 922-26
+- saint-cuthbert — 352 (2024)
+- saint-eustache — 1288 (1988)
+- saint-gilles — 363-08 (2008)
+- saint-marc-du-lac-long — 2015-02
+- saint-prosper-de-champlain — 04-04-2009
+- saint-rene — 119-06 (2006)
+- sainte-angele-de-merici — 2010-06
+- schefferville — 2013-120
+- sorel-tracy — 2222 (2013)
+- tres-saint-redempteur — 288-2026
+
+## Villes null — raison consignée verbatim
+
+Chaque ligne reprend la première phrase du _note curé du registre, sans réinterprétation; le _note complet reste la source durable de la preuve et des citations PDF. La seule normalisation est l’omission des délimiteurs typographiques autour du chemin de fichier de Denholm.
+
+- ange-gardien — «CONTAMINATION HOMONYME (3e cas de la famille L'Ange-Gardien) => null.»
+- authier — «DOC MUET: «grille-des-specifications.pdf» (16 p) est la grille seule; recherche plein texte = 0 occurrence de «reglement», «zonage» ET de toute annee (19xx/20xx).»
+- baie-des-sables — «ANTI-INVENTION => null.»
+- baie-trinite — «AUCUNE SOURCE: le source_url du manifest vaut litteralement «non-disponible» (grille deposee par vision sans URL).»
+- candiac — «AUCUNE SOURCE: le source_url du manifest vaut litteralement «non-disponible» (grille deposee par vision sans URL).»
+- champneuf — «ANTI-INVENTION => null.»
+- cheneville — «DOC MUET: PDF = 2 pages de grille d'usages (texte natif OK, 4357 car.), seule mention datee «Date: Juin 2016».»
+- clerval — «MAUVAIS REGLEMENT (bonne muni) => null.»
+- coaticook — «ANTI-INVENTION: le reglement de zonage consolide en vigueur est intitule (art.1.1) «Règlement de zonage de la ville de Coaticook» SANS numero.»
+- crabtree — «DOC MUET: en-tete «Annexe 2 du Reglement de zonage» sur les 72 p, mais 0 occurrence d'un numero (recherche plein texte «zonage <num>» = 0 page).»
+- denholm — «null MAINTENU mais RAISON CORRIGEE — l'ancien _note («AUCUN DOC A LIRE: le source_url du manifest est la page d'accueil https://www.denholm.ca, pas un document») est PERIME: un PDF est desormais sur le disque, work/zonage-norms/denholm/grille.pdf (134 p, texte natif), et c'est le BON doc — le corps du reglement de zonage de la BONNE muni (p1 verbatim: «CHAPITRE 4 : RÈGLEMENT DE ZONAGE / MUNICIPALITÉ DE DENHOLM»).»
+- disraeli--les-appalaches--2 — «AUCUNE SOURCE: le source_url du manifest vaut litteralement «non-disponible» (grille deposee par vision sans URL).»
+- dundee — «ANTI-INVENTION => null.»
+- entrelacs — «DOC MUET (type montreal-ouest): le source_url rend la grille SEULE (2 p, texte natif OK) «Municipalité d'Entrelacs / grille des usages principaux et des normes» (zones S-1..S-6), sans page de titre ni pied de grille numerotant le reglement.»
+- farnham — «ANTI-INVENTION => null.»
+- fort-coulonge — «HOLD null: CONFLIT DE NUMEROS INTERNE NON LEVE (famille bristol).»
+- frontenac — «ANTI-INVENTION => null.»
+- girardville — «ANTI-INVENTION => null.»
+- grande-riviere — «AUCUNE SOURCE: le source_url du manifest vaut litteralement «non-disponible» (grille deposee par vision sans URL).»
+- hemmingford--les-jardins-de-napierville — «ANTI-INVENTION => null.»
+- hope — «ANTI-INVENTION => null.»
+- huntingdon — «ANTI-INVENTION => null.»
+- la-corne — «AUCUNE SOURCE: le source_url du manifest vaut litteralement «non-disponible» (grille deposee par vision sans URL).»
+- la-presentation — «DOC = EXTRAIT, pas le reglement.»
+- la-reine — «ANTI-INVENTION => null.»
+- lac-des-plages — «ANTI-INVENTION => null.»
+- lacolle — «ANTI-INVENTION => null.»
+- lascension-de-patapedia — «ANTI-INVENTION => null.»
+- laval — «ANTI-INVENTION => null.»
+- laverlochere-angliers — «ANTI-INVENTION => null.»
+- les-bergeronnes — «ANTI-INVENTION => null.»
+- lile-du-grand-calumet — «ANTI-INVENTION => null.»
+- lotbiniere — «ANTI-INVENTION => null.»
+- matapedia — «ANTI-INVENTION => null.»
+- montreal — «ANTI-INVENTION => null.»
+- murdochville — «ANTI-INVENTION => null.»
+- normetal — «ANTI-INVENTION => null: MAUVAIS DOCUMENT.»
+- notre-dame-de-la-paix — «ANTI-INVENTION => null.»
+- notre-dame-des-monts — «ANTI-INVENTION => null.»
+- notre-dame-des-pins — «HOLD null: le doc est un RECUEIL de 5 reglements d'urbanisme et n'enonce JAMAIS lequel est le zonage.»
+- notre-dame-du-mont-carmel — «ANTI-INVENTION => null.»
+- notre-dame-du-sacre-coeur-dissoudun — «HOLD null: le doc porte DEUX numeros CONTRADICTOIRES et rien ne permet de trancher a $0 (famille bristol) => ne rien stamper plutot que risquer une fausse provenance.»
+- ormstown — «ANTI-INVENTION => null.»
+- palmarolle — «ABORT gate => null.»
+- piopolis — «ANTI-INVENTION => null.»
+- pointe-a-la-croix — «ANTI-INVENTION => null.»
+- pointe-lebel — «ANTI-INVENTION => null.»
+- prevost — «ANTI-INVENTION => null.»
+- quebec — «ANTI-INVENTION => null, et BLOCAGE STRUCTUREL du modele per-muni (pas un defaut d'extraction).»
+- ristigouche-sud-est — «DOC MUET (type barkmere): PDF = «ANNEXE II - GRILLES DE SPÉCIFICATIONS   MUNICIPALITÉ DE RISTIGOUCHE-PARTIE-SUD-EST» (15 p, texte natif OK, muni CONFORME).»
+- roquemaure — «ANTI-INVENTION => null.»
+- roxton-falls — «ANTI-INVENTION => null.»
+- saint-adolphe-dhoward — «ANTI-INVENTION (meme cas que rawdon / les-coteaux).»
+- saint-adrien-dirlande — «⚠️ MAUVAIS DOCUMENT => null.»
+- saint-aime-des-lacs — «ANTI-INVENTION => null.»
+- saint-alexis-de-matapedia — «ANTI-INVENTION => null.»
+- saint-ambroise-de-kildare — «DOC MUET TOTAL: PDF = «ANNEXE - GRILLE DES USAGES» zones H1..»
+- saint-andre-dargenteuil — «HOTE INJOIGNABLE: le source_url du manifest «https://www.saint-andre-argenteuil.ca/storage/app/media/uploads/files/RUP/Annexe-B-Tableau-spec.pdf» echoue au fetch (FETCH FAIL, aucun octet).»
+- saint-andre-de-restigouche — «MAUVAIS DOC -- MUNICIPALITE DIFFERENTE (2e occurrence du piege, cf.»
+- saint-anselme — «ANTI-INVENTION: doc = «grilles de specification et plan de zonage» (123 p, texte natif OK).»
+- saint-barnabe-sud — «DOC MUET TOTAL: PDF = «Annexe A - grille des usages» (16 p, texte natif OK), colonnes «Usage dominant / Classes d'usages / Article de zonage / Zones».»
+- saint-bernard-de-lacolle — «ANTI-INVENTION => null.»
+- saint-christophe-darthabaska — «DOC MUET (type montreal-ouest / saint-calixte, meme gabarit): PDF = «Annexe 2 du Règlement de zonage   Zone P-1» (76 p, texte natif OK).»
+- saint-cleophas-de-brandon — «PROPRIETAIRE MISMATCH => null (le dossier de slug ment).»
+- saint-damase--les-maskoutains — «ANTI-INVENTION => null.»
+- saint-david — «ANTI-INVENTION => null.»
+- saint-denis-sur-richelieu — «AUCUN DOC A LIRE: le source_url du manifest est la page d'accueil du site municipal «https://www.stdenissurrichelieu.com» -- le fetch rend du HTML (magic=«<!DO»), pas un PDF.»
+- saint-edmond-de-grantham — «DOC MUET: page titre p1 verbatim en entier = «ANNEXE "B" / La Grille des usages et normes / 2021» (51 p, texte natif OK).»
+- saint-eloi — «ANTI-INVENTION => null.»
+- saint-elzear--bonaventure — «ANTI-INVENTION => null.»
+- saint-ephrem-de-beauce — «ANTI-INVENTION => null.»
+- saint-esprit — «AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL).»
+- saint-eugene — «DOC MUET (type barkmere): PDF = «ANNEXE "B" / Les grilles des usages et normes.»
+- saint-flavien — «DOC MUET (type bedford): PDF = «Municipalité de Saint-Flavien / ANNEXE B: GRILLE DE SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE» (23 p, texte natif OK).»
+- saint-francois-de-la-riviere-du-sud — «ANTI-INVENTION => null.»
+- saint-gabriel — «ANTI-INVENTION => null.»
+- saint-hippolyte — «AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL).»
+- saint-hubert-de-riviere-du-loup — «DOC MUET (type barkmere): PDF = grille des specifications (31 p, texte natif OK).»
+- saint-hyacinthe — «ANTI-INVENTION => null.»
+- saint-ignace-de-stanbridge — «DOC MUET (cas extreme, type ristigouche-sud-est): PDF = «GRILLE DES USAGES ET NORMES SAINT-IGNACE-DE-STANBRIDGE / ANNEXE C» (21 p, texte natif OK, 24706 car.).»
+- saint-jacques-de-leeds — «ANTI-INVENTION => null.»
+- saint-jean-de-lile-dorleans — «ANTI-INVENTION => null.»
+- saint-jerome — «ANTI-INVENTION => null.»
+- saint-just-de-bretenieres — «ANTI-INVENTION => null.»
+- saint-lambert--abitibi-ouest — «ANTI-INVENTION => null.»
+- saint-louis — «ANTI-INVENTION => null.»
+- saint-louis-de-gonzague-du-cap-tourmente — «CONTAMINATION INTER-MUNI => null, malgre un numero parfaitement lisible.»
+- saint-lucien — «ANTI-INVENTION => null.»
+- saint-majorique-de-grantham — «DOC MUET (type barkmere): PDF = grille des usages et normes d'implantation (4 p, texte natif OK).»
+- saint-mathias-sur-richelieu — «ANTI-INVENTION => null.»
+- saint-narcisse-de-beaurivage — «ANNEXE NUE => null.»
+- saint-patrice-de-beaurivage — «ANTI-INVENTION => null.»
+- saint-philippe-de-neri — «ANTI-INVENTION => null.»
+- saint-pie-de-guire — «ANTI-INVENTION => null.»
+- saint-pierre-de-lamy — «MAUVAIS DOC (mauvais REGLEMENT, bonne muni) => null.»
+- saint-severin--beauce-centre — «DOC MUET (type boisbriand: date sans numero): PDF = «Annexe B [...] / Grille des spécifications des usages» (2 p, texte natif OK), en-tete p1 verbatim «Annexe B Adopté à Saint-Séverin, ce 2 jour de mai 2022».»
+- saint-thomas — «ANTI-INVENTION => null.»
+- saint-wenceslas — «ANTI-INVENTION => null.»
+- sainte-anne-des-lacs — «GABARIT JAMAIS REMPLI (variante inedite du doc muet): PDF = grilles des usages/normes/dimensions (38 p, texte natif OK).»
+- sainte-aurelie — «MAUVAIS DOCUMENT => null.»
+- sainte-eulalie — «DOC MUET (type saint-eugene, meme gabarit): PDF = «Grille des usages et normes / Cette grille fait partie intégrante du règlement de zonage / Annexe B / Zone H11 / Municipalité de Sainte-Eulalie» (2 p, texte natif OK).»
+- sainte-flavie — «ANTI-INVENTION => null.»
+- sainte-genevieve-de-berthier — «ANTI-INVENTION => null.»
+- sainte-helene-de-mancebourg — «ANTI-INVENTION => null.»
+- sainte-justine — «ANTI-INVENTION => null.»
+- sainte-lucie-de-beauregard — «ANTI-INVENTION => null.»
+- sainte-madeleine — «ANTI-INVENTION => null.»
+- sainte-marie-madeleine — «ANTI-INVENTION => null.»
+- sainte-paule — «GABARIT JAMAIS REMPLI (2e occurrence apres sainte-anne-des-lacs, et ici l'URL l'avoue): PDF = «ANNEXE 1 / Grille des specifications / MUNICIPALITE DE SAINTE-PAULE» (2 p, texte natif OK).»
+- sainte-sabine--les-etchemins — «ANTI-INVENTION => null.»
+- sherbrooke — «ANTI-INVENTION => null.»
+- taschereau — «ANTI-INVENTION => null.»
+- thetford-mines — «HOTE INJOIGNABLE: le source_url du manifest «https://www.villethetford.ca/wp-content/uploads/2024/01/02-01-GrilleSpecificationsZonage-Janv2024.pdf» ne repond pas (fetch failed; curl -L rend http=000 size=0, echec de connexion -- ni 404 ni redirection).»
+- val-des-monts — «DOC MUET (faux positif «Numero» type sainte-melanie): PDF = «Reglement de zonage - ANNEXE B / Grilles des specifications» (120 p, texte natif OK).»
+- val-saint-gilles — «ANTI-INVENTION => null.»
+- warden — «ANTI-INVENTION => null.»
