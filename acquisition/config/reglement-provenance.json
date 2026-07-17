@@ -3772,6 +3772,90 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Le doc (grilles-de-zones.pdf, 10 p, telecharge OK depuis l'URL manifest rapide-danseur.ao.ca) est un SCAN IMAGE sans couche texte: pdftotext rend <40 caracteres sur tout le doc; pdfinfo confirme la provenance scanner: «Creator: Xerox WorkCentre 7835 / Producer: Xerox WorkCentre 7835 / CreationDate: Thu Jan 5 12:53:34 2017». Aucune lecture verbatim possible a $0 => on ne stampe rien. Route vision requise (hors gate $0 de cette lane); relancer le probe apres OCR."
+    },
+    "notre-dame-des-prairies": {
+      "reglement_numero": "1362-2024",
+      "reglement_millesime": "2024",
+      "reglement_page_source": 2,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim p2: «VILLE DE NOTRE-DAME-DES-PRAIRIES / RÈGLEMENT Nº 1362-2024 / RÈGLEMENT DE ZONAGE», re-confirme en pied courant p3-p4 «RÈGLEMENT DE ZONAGE N ° 1362-2024». Millesime = ADOPTION verbatim p2: «ADOPTION : 19 AOÛT 2024» (entree en vigueur «16 OCTOBRE 2024», meme annee, aucune ambiguite). Corpus LOCAL (641 p) => url null. NB: la lane NORMES tient ce slug pour terminal (millesime disjoint) — c'est un verdict sur l'extraction des GRILLES, sans effet sur la provenance, qui se lit sur la couverture."
+    },
+    "saint-bruno-de-guigues": {
+      "reglement_numero": "339-95",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim p1: «RÈGLEMENT DE ZONAGE NO 339-95», re-confirme dans le corps: «règlement no 339-95 renoncent à sa lecture et le directeur général». Proprietaire verbatim: «MUNICIPALITÉ DE SAINT-BRUNO-DE-GUIGUES» + «ATTENDU QUE la corporation municipale de Saint-Bruno-de-Guigues désire apporter...». (La liste «St-Bruno-de-Guigues St-Édouard-de-Fabre St-Eugène-de-Guigues Témiscaming Ville-Marie» en tete de p1 est l'en-tete du cabinet/MRC de Témiscamingue qui a redige, pas une co-propriete du reglement.) MILLESIME null ASSUME: recherche exhaustive des 59 pages («en vigueur le|adopté le|adoption :») => aucune date. Le «95» du numero n'est PAS retenu (piege stoneham). Corpus LOCAL => url null."
+    },
+    "port-daniel-gascons": {
+      "reglement_numero": "2017-06",
+      "reglement_millesime": "2018",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Le doc local (src.pdf, 4 p) est un SECOND PROJET d'amendement, mais il NOMME SA BASE verbatim p1: «SECOND PROJET DE RÈGLEMENT NUMÉRO 2024-01 MODIFIANT LE RÈGLEMENT DE ZONAGE NUMÉRO 2017-06 DE LA MUNICIPALITÉ DE PORT-DANIEL–GASCONS» et «Le Règlement de zonage numéro 2017-06 est modifié de la façon suivante :». => le reglement de ZONAGE est 2017-06. 2024-01 est ECARTE deux fois: c'est un amendement isole (interdit par le gate) ET il n'est meme pas adopte («SECOND PROJET»). Millesime = ENTREE EN VIGUEUR de la base, verbatim p1: «CONSIDÉRANT que le règlement de zonage numéro 2017-06 de la municipalité de Port-Daniel–Gascons est entré en vigueur le 27 mars 2018;» => 2018 et NON 2017: le numero porte «2017» mais la base n'est en vigueur qu'en 2018 (piege stoneham). Corpus LOCAL => url null."
+    },
+    "palmarolle": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ABORT gate => null. MISMATCH DE PROPRIETAIRE: le PDF depose dans work/zonage-norms/palmarolle/ n'est PAS le reglement de Palmarolle — sa couverture p1 se declare, en tout premier mot, des «TERRITOIRES NON ORGANISÉS» (le zonage des TNO releve de la MRC, ici Abitibi-Ouest; Palmarolle est une municipalite ORGANISEE, qui adopte son propre reglement). Mesure: «palmarolle» apparait 0 fois sur les 173 pages. Le doc porte pourtant un numero et des dates parfaitement lisibles («Règlement no. 08-2020 / Adopté le : 16 décembre 2020 / Entrée en vigueur le : 18 décembre 2020») — c'est precisement ce qui rend le piege dangereux: sans controle de proprietaire, la lane stampait 08-2020 sur Palmarolle. SIGNAL: contamination croisee du corpus (3e cas du shard avec authier-nord et saint-camille-de-lellis)."
+    },
+    "saint-camille-de-lellis": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ABORT gate => null. MISMATCH DE PROPRIETAIRE: le PDF depose dans work/zonage-norms/saint-camille-de-lellis/ est le reglement de SAINT-CAMILLE (Canton, MRC des Sources, Estrie), PAS de Saint-Camille-de-Lellis (MRC Les Etchemins, Chaudiere-Appalaches) — 2 municipalites DISTINCTES. Verbatim du corps: «Les dispositions du présent règlement s’appliquent à toutes les zones du territoire de la municipalité de Saint-...», «le mot «municipalité» désigne la municipalité de Saint-Camille;» et «Le règlement de zonage numéro 02-87 de la municipalité de Saint-Camille Canton ainsi que tous leurs [amendements sont abroges]». «Camille-de-Lellis» n'apparait jamais. Le doc porte pourtant un numero lisible («RÈGLEMENT DE ZONAGE / #2002-04») => sans controle de proprietaire, la lane stampait 2002-04 sur la mauvaise ville."
+    },
+    "notre-dame-du-bon-conseil--drummond--2": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: PROPRIETAIRE NON VERIFIABLE + slug ambigu. Le doc local (44 p) est une annexe de grilles dont l'entete de chaque page porte «ZONAGE NO. 2021-427 - ANNEXE B / GRILLES DES USAGES ET DES NORMES» — le numero 2021-427 est donc lisible, MAIS le document ne nomme JAMAIS sa municipalite (mesure: «bon-conseil»/«bon conseil» = 0 occurrence sur 44 pages; l'annexe ne contient que des grilles). Deux raisons de ne pas stamper: (a) le corpus de ce shard est prouve contamine (authier-nord, saint-camille-de-lellis, palmarolle) — un doc anonyme dans un dossier de slug n'est pas une preuve d'appartenance; (b) Notre-Dame-du-Bon-Conseil existe en DEUX municipalites (Village et Paroisse) et le slug porte un suffixe de desambiguisation «--2»: meme si le doc etait du bon toponyme, rien n'y dit laquelle. ETAPE = telecharger le CORPS du 2021-427 (il nomme son proprietaire en couverture); si Paroisse confirmee => --overwrite numero=2021-427."
+    },
+    "saint-celestin--nicolet-yamaska--2": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: doc local PRESENT (2 p) mais ILLISIBLE a $0 — «NO-TEXT-LAYER (scan image)»: pdftotext ne rend rien. Aucun numero n'a ete LU => aucun stamp. ETAPE = route vision sur les 2 pages (~$0.01); attention, le slug porte un suffixe «--2» (Village/Paroisse): verifier le proprietaire au passage. RE-OUVRIR avec --overwrite."
+    },
+    "sacre-coeur-de-jesus": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: le seul doc local (src.pdf) fait 1 page et la sonde p1-8 rend «NO-CANDIDATE-LINE (aucun motif règlement/vigueur)» — c'est un extrait, pas le corps du reglement. ETAPE = lane normes-discovery."
+    },
+    "pointe-a-la-croix": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/pointe-a-la-croix/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "roxton-falls": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/roxton-falls/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "saint-adrien": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/saint-adrien/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery (attention a l'homonymie Saint-Adrien / Saint-Adrien-d'Irlande au moment de la decouverte)."
+    },
+    "saint-alphonse": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/saint-alphonse/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery (attention a l'homonymie Saint-Alphonse (Bonaventure) / Saint-Alphonse-Rodriguez au moment de la decouverte)."
     }
   }
 }
