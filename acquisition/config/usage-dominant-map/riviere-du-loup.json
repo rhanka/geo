@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "F": "agricole",
+    "CGS": "commercial",
+    "CLR": "commercial",
+    "CONS": "environnemental",
+    "REC": "environnemental",
+    "HFD": "residentiel",
+    "HMD": "residentiel",
+    "HHD": "residentiel",
+    "I": "industriel",
+    "IL": "industriel",
+    "IT": "industriel",
+    "CV": null,
+    "ID": null,
+    "M": null,
+    "P": null,
+    "V": null
+  },
+  "source": "https://villerdl.ca/uploads/PDF/Reglements_(Version_Adm)/Annexe_2_-_RU2162.pdf",
+  "note": "Ville de Rivière-du-Loup, Règlement 2162 concernant le zonage, Annexe 2 (grille des spécifications, version administrative, 671 p.). L'art. 1.2.3 « SUBDIVISION DU TERRITOIRE EN ZONES » du corps est un ARTICLE-CROUPION -- il pose le principe sans table: « Chaque zone comporte une identification de base formée par une lettre ou une combinaison de lettres. L'identification de base correspond au caractère général de la zone. » La légende réelle est portée par les EN-TÊTES DE SECTION de l'Annexe 2, appariés au code verbatim (17 familles A à Q): « A) Zones agricoles » (Zone A-201), « B) Zones Commerciales grande surface » (Zone CGS-301), « C) Zones commerciales locales régionales » (Zone CLR-301), « D) Zones de conservation » (Zone CONS-101), « E) Zones Centre-Ville » (Zone CV-301), « F) Zones forestières » (Zone F-301), « G) Zones habitation faible densité » (Zone HFD-201), « H) Zones habitation moyenne densité », « I) Zones habitation forte densité », « J) Zones ilots destructurés », « K) Zones industrielles », « L) Zones industrielles locales » (Zone IL-301), « M) Zones industrielles territoriales » (Zone IT-201), « N) Zones mixtes » (Zone M-211), « O) Zones publiques », « P) Zones récréatives », « Q) Zones de villégiature ». Liaison CORROBORÉE par le corps verbatim: « zones industrielles « I », « IL » et « IT » » (art. 9.1.4.1), « zone Centre-ville « CV » », « zone communautaire « P » », « zones agricoles « A », habitations « HFD », « HMD » et « HHD » et villégiature « V » », « conservation « CONS » et les zones récréatives « REC » », « zone Îlot déstructuré « ID » ». Le corps ne contient 0 occurrence de « CLR » ou « CGS », d'où la nécessité de l'Annexe 2. Null explicite: CV « Zones Centre-Ville » nu ne nomme aucune des cinq; M « Zones mixtes » est duale; P « Zones publiques » est publique; V « Zones de villégiature » seule n'est pas une des cinq; ID « Zones ilots destructurés » -> null par le TEST DÉCISIF, l'art. 1.2.4 DÉFINITIONS en donnant une caractérisation NÉGATIVE: « Îlot déstructuré — Concentration d'entité ponctuelle de superficie restreinte, déstructurée par l'addition au fil du temps d'usages non agricoles et à l'intérieur de laquelle subsistent de rares lots vacants enclavés et irrécupérables pour l'agriculture. » -- aucune des cinq n'est nommée, la résidence n'est jamais mentionnée. Le null de ID est aussi l'anti-fall-through de I -> industriel. CAVEAT mesuré: dans l'Annexe 2, IL-202/203/204 sont rangées sous « N) Zones mixtes » alors que IL-201 et IL-301..306 sont sous « L) Zones industrielles locales » -- anomalie PAR ZONE du tableur source, pas une redéfinition du préfixe (7/10 zones industrielles + le corps qualifie « IL » d'industrielle 4 fois); IL=industriel tient, à revoir si le fold devient par-zone. 17/17 préfixes du SIG couverts. La matrice des usages permis n'est pas utilisée comme source de dominance."
+}
