@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "AFT": "agricole",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "IL": null,
+    "M": null,
+    "P": null,
+    "RU": null
+  },
+  "source": "https://cdn.gestionweblex.ca/files/JyThz0XPX3",
+  "note": "Municipalité de Milan (MRC du Granit), règlement de zonage no 2005-32 (adoption 9 janvier 2006, en vigueur 19 mai 2006). Table VERBATIM à l'art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES », colonnes « ZONE | VOCATION DOMINANTE », introduite par: « Chaque zone comporte un numéro d'identification auquel sont attachées une ou plusieurs lettres suffixes indiquant la vocation dominante ». Contenu: « A Agricole | Af Agroforestière | Cons Conservation | I Industrielle | M Mixte | P Publique | R Résidentielle | Rec Récréative | Ru Rurale | Vill Villégiature ». C'est le moule de la MRC du Granit (même art. 5.1 et même colonne « VOCATION DOMINANTE » que stornoway 2010-452, lac-drolet 491, sainte-cecile-de-whitton 2009-08, saint-robert-bellarmin 2009-08, saint-augustin-de-woburn 279-2010), mais la table lue est bien celle de Milan. Propriétaire attesté par le CORPS (jamais pdfinfo, dont le Title dit « zonage » / Author « Aménagement »): p.1 « MUNICIPALITÉ DE MILAN » / « RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE MILAN »; préambule « Séance régulière du conseil de la Municipalité de Milan tenue 9 janvier 2006 » et « CONSIDÉRANT QUE la Corporation municipale de Milan fait partie de la Municipalité… »; pied de page récurrent « RÈGLEMENT DE ZONAGE – MILAN »; grille (annexe 1) « Municipalité de Milan (Milieu rural) » / « (Périmètre d'urbanisation) » + « de zonage No. 2005-32 ». ⛔ IL = « ÎLOT » (géométrie), PAS « Industriel » — null anti-fall-through OBLIGATOIRE: (1) « Îlot » est ABSENT de la table 5.1; (2) la grille (feuillet 2/5) porte l'en-tête « zonage Aft1-12 Aft1-13 Aft1-14 Aft1-15 Îlot 31 Îlot 32 Cons 1 Cons 2 Cons 3 Cons 4 » = EXACTEMENT les 2 polygones IL-31/IL-32 du SIG. NUANCE: le lexique de Milan n'a pas d'entrée verbatim « Îlot : … » (seul « Lot : … »); la preuve repose sur les colonnes de grille « Îlot NN » + l'absence de « IL » en table 5.1 (mode stornoway), d'autant que Milan ne sert AUCUN code « I » bare (la table définit I Industrielle mais aucun polygone I servi). Sans cette clé, IL-31/32 tomberaient sur « I » -> industriel EN SILENCE. VILL sans objet: la ligne « Vill Villégiature » est en table 5.1 mais aucun polygone Vill servi. Null explicites: M « Mixte » est dual; P « Publique » est public; RU « Rurale » ne nomme aucune des cinq catégories. AFT « Af Agroforestière » -> agricole (forme servie du SIG); REC « Rec Récréative » et CONS « Cons Conservation » -> environnemental; R « Résidentielle » -> residentiel. Recouvrement: les 8 préfixes servis (AFT M RU CONS R IL REC P) sont TOUS sourcés verbatim par la table 5.1 (ou la grille pour Îlot); aucun code étranger introduit."
+}
