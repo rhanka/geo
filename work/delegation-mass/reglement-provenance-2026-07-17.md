@@ -152,3 +152,38 @@ Chaque ligne reprend la première phrase du _note curé du registre, sans réint
 - val-des-monts — «DOC MUET (faux positif «Numero» type sainte-melanie): PDF = «Reglement de zonage - ANNEXE B / Grilles des specifications» (120 p, texte natif OK).»
 - val-saint-gilles — «ANTI-INVENTION => null.»
 - warden — «ANTI-INVENTION => null.»
+
+## Shard 1/2 — contrôle de service 2026-07-17
+
+### Avant / après
+
+- Univers du shard: 136 slugs (`index % 2 == 1`) parmi les 272 villes servies alors marquées `reglement=false`.
+- Avant le fold: les dix slugs ci-dessous avaient déjà une entrée curée numérotée; les 126 autres avaient un verdict `null` explicite dans le registre.
+- Après `fold-reglement-to-zonage --slugs`: 10/10 succès, `cellsChanged=0` (données déjà en place), puis lecture API `qc-zonage-<slug>?limit=1` conforme pour chacun. Aucun numéro n'a été inventé et aucun `null` n'a été stampé.
+
+### Villes servies et vérifiées
+
+- compton — 2020-166 (2020)
+- saint-adrien — 248-2003
+- saint-alphonse — 274-2013
+- saint-donat--la-mitis — 318
+- saint-epiphane — 157 (1991)
+- saint-jacques-le-majeur-de-wolfestown — 98 (1990)
+- saint-joseph-de-coleraine — 376
+- saint-luc-de-bellechasse — 05-07 (2007)
+- saint-michel-de-bellechasse — 545-2026 (2026)
+- sainte-catherine-de-hatley — 90-256
+
+### Villes null relues — raison verbatim
+
+- barkmere — «ANTI-INVENTION => null. PDF servi (28 p, texte natif) : p1 «GRILLE DES SPÉCIFICATIONS / Annexe 2 du Règlement de zonage / VILLE DE BARKMERE». Sur les 28 pages, l'annexe ne nomme AUCUN numéro de règlement de zonage ; la colonne «No. de règlement / Entrée en vigueur» est un en-tête de modifications sans valeur. La date p1 «13 juin 2009» est celle d'«Apur urbanistes-conseils», pas une adoption.»
+- degelis — «ANTI-INVENTION => null. PDF servi = «ANNEXE II – GRILLES DE SPÉCIFICATIONS» (13 p, texte natif). Les seuls numéros sont explicitement des amendements : p2 «Modifications : Règlement 676», puis p4/p6/p7 «Règlement 738», p8 «Règlement 712 // Règlements 738», p9 «Règlement 694», p11/p13 «Règlement 712» et p13 «Règlement 695». Le règlement de zonage de base n'est jamais numéroté dans le document.»
+- disraeli--les-appalaches — «ANTI-INVENTION => null. PDF servi (20 p, texte natif) = grilles de zones ; il ne porte aucun cartouche ni article donnant le numéro du règlement de zonage. p1 ne contient que «ZONE 1-R» et des renvois dont «Art. complémentaires – règlement de lotissement» : ce ne sont pas un numéro de zonage. Aucun numéro de base ne peut être relevé verbatim.»
+- ham-nord — «HOLD null: PDF servi = «ANNEXE B / La Grille des usages et normes» (48 p). p3 dit verbatim «Cette grille fait partie intégrante du règlement de zonage» sans numéro. Deux cartouches tardifs sont incompatibles sans relation de remplacement : p41-42 «Règlement n° 480», p43-44 «Règlement n° 496», chacun suivi de la même formule. Le document ne dit ni lequel est le règlement de zonage courant ni si l'un modifie/remplace l'autre ; ne pas choisir un candidat isolé.»
+- lac-des-aigles — «ANTI-INVENTION => null. PDF servi = grille de spécifications (7 p, texte natif) ; il ne contient aucune occurrence de «règlement», ni numéro, ni date d'adoption/entrée en vigueur. Les nombres à quatre chiffres sont des codes d'usage CUBF («Industrie de catégorie 2 - I2 / 2011 à 2099, 2711 à 2722»), pas un millésime.»
+- mont-joli — «ANTI-INVENTION => null. PDF servi = «Règlement de zonage / ANNEXE 2 / LA GRILLE DES NORMES D’IMPLANTATION» (6 p, texte natif). L'en-tête désigne le règlement sans le numéroter. Le pied p6 énumère sans qualification «RÈGLEMENT 2009-1210, 2010-1241, 2010-1244, …, 2021-1450» ; le document ne dit pas lequel est le règlement de base ni quels sont des amendements. Le «2009-1210» du nom de fichier est donc aussi écarté : jamais déduit de l'URL.»
+- orford — «ANTI-INVENTION => null MAINTENU (2026-07-17: la RAISON precedente «BLOCAGE ACCES HTTP 403/WAF» est PERIMEE). Le source_url «https://canton.orford.qc.ca/.../951_Zonage-et-lotissement-Annexe-3-Grilles-Complet_20251211.pdf» repond MAINTENANT HTTP 200 (UA Mozilla/5.0, 2,0 Mo, application/pdf, 126 p texte natif). LU: c'est un cahier de grilles pur — p1 verbatim «GRILLE DES USAGES ET DES SPÉCIFICATIONS PAR ZONE / ZONE: P1», aucune couverture, aucun cartouche, aucun nom de municipalite, et FIND-0 sur «951» ou toute mention «règlement (de zonage) numéro N» dans les 126 pages (seul motif capte = la phrase generique de note de grille «l'entrée en vigueur du présent règlement», sans numero). Le «951» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL). => grille annexe SANS numero verbatim; le corps (qui porterait le numero) n'est pas la piece servie. Voie restante = decouverte du CORPS (hors lane P0_1 URL-connue).»
+- pointe-fortune — «ANTI-INVENTION => null. _source_url = «PF_R400-2024_Zonage_AnnexeB_Grilles.pdf» (40 p, Annexe B grilles). «400» / «400-2024» = 0 occurrence verbatim (piege nom de fichier). Le doc porte une table d'amendements (colonnes «Numéro de règlement / Numéro d'article / Date d'entrée en vigueur») mais qui ne liste PAS le base. Corps requis.»
+- portneuf — «DOC MUET (type barkmere): PDF = «Annexe I / Règlement de zonage / Grille des spécifications / FEUILLETS DES USAGES (A) ET DES NORMES (B)» (91 p, texte natif OK). L'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part (0 motif «Reglement ... numero X») => null.»
+- saint-aime — «ANTI-INVENTION => null. _source_url = «393-2023-annexeB-grilles-usages-normes.pdf» (Annexe B grilles). «393» = 0 occurrence verbatim (piege nom de fichier). Grille pure sans cartouche de base.»
+- saint-anicet — «ANTI-INVENTION => null. _source_url = «SAT_R585_Zonage_AnnexeB_Grilles.pdf» (annexe B grilles). «585» = 0 occurrence verbatim (piege nom de fichier); le doc cite seulement «Règlement de lotissement 586» (le LOTISSEMENT, pas le zonage) et une table d'amendements sans le base. Corps zonage requis.»
