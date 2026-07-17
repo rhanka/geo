@@ -48,10 +48,24 @@ interface Entry {
 /** Le manifest stocke des SENTINELLES texte ('non-disponible', '-', 'n/a') dans
  *  `source_url`. Une sentinelle est truthy: elle était comptée comme TODO-URL et
  *  gonflait le gisement (shard 0/2: 47 « TODO-URL » annoncés pour 14 URL réelles).
- *  Seule une URL http(s) est une piste ouvrable. */
+ *  Seule une URL http(s) est une piste ouvrable.
+ *
+ *  Le test `^https?://` NE SUFFIT PAS: le manifest porte la sentinelle SCHÉMÉE
+ *  `https://non-disponible`, qui le passe (mesuré shard 1/2 2026-07-17: 6 des 9
+ *  « TODO-URL » étaient cette sentinelle). Un agent la prend pour une piste et
+ *  brûle un fetch sur un hôte qui n'existe pas. Discriminant $0: un hôte réel
+ *  porte un point (FQDN); `non-disponible` n'en a pas. */
 function httpUrl(raw: string | undefined): string | null {
   const v = (raw ?? '').trim();
-  return /^https?:\/\//i.test(v) ? v : null;
+  if (!/^https?:\/\//i.test(v)) return null;
+  let host: string;
+  try {
+    host = new URL(v).hostname;
+  } catch {
+    return null;
+  }
+  if (!host.includes('.')) return null; // 'non-disponible', 'localhost', 'n-a'...
+  return v;
 }
 
 async function main(): Promise<void> {
