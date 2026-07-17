@@ -1373,11 +1373,11 @@
       "_note": "Doc = Annexe 2 (grille des specifications, 23 p). En-tete de CHAQUE grille, p1 verbatim: «Annexe 2 au reglement de zonage no 251-11-07 / Grille des specifications / Municipalite de Saint-Agapit». MILLESIME null: l'annexe ne porte aucune date d'adoption et le «07» du numero n'est pas une annee 4 chiffres. NB: l'URL est un CDN webflow opaque (69d95e0a...) -- aucune deduction possible depuis l'URL."
     },
     "rawdon": {
-      "reglement_numero": null,
+      "reglement_numero": "2021-02",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION (meme cas que montreal-est / brigham). Doc = grilles des specifications (239 p, texte natif OK) en-tetees «Annexe 2 du Reglement de zonage Zone CON-1» -- SANS numero. Recherche plein texte «zonage (no|num|#)|reglement (no|num|#)» = 0 match. Les seuls verbatims numerotes sont les cases «No. de reglement / [date] vigueur» des grilles: «2021-02-05 23-05-2024», «2021-02-8 29-05-2025», «2021-02-11 2026-06-01», «2021-02-03 25-01-2024» = des reglements MODIFIANTS (suffixes). Le «2021-02» de base n'est jamais ecrit seul dans le doc (il n'existe que dans le nom de fichier; le deduire d'un numero d'amendement est exclu par le gate) => null."
+      "_note": "REFUTATION du HOLD precedent, dont la premisse centrale est FAUSSE. Le _note precedent concluait: «Recherche plein texte «zonage (no|num|#)|reglement (no|num|#)» = 0 match [...] Le «2021-02» de base n'est jamais ecrit seul dans le doc (il n'existe que dans le nom de fichier; le deduire d'un numero d'amendement est exclu par le gate) => null». Or la COUVERTURE (p1) de `work/zonage-norms/rawdon/grille.pdf` PORTE le numero de base, ecrit SEUL, verbatim: «RÈGLEMENT DE ZONAGE N° 2021-02» puis, en sous-titre, «ANNEXE 2 : Grilles des spécifications» (filigrane «VERSION ADMINISTRATIVE»). Le numero n'est donc PAS deduit du nom de fichier ni d'un amendement: il est lu dans le document. POURQUOI LE PLEIN-TEXTE A RENDU 0 MATCH: cette couverture est GRAPHIQUE — son texte n'est pas dans la couche texte (la sonde `_reglement-local-probe` rend NO-NUM-IN-ANY-PDF sur p1-6 alors que la page est parfaitement lisible en vision a $0). Un «0 match plein texte» sur un doc a couverture rendue est donc un FAUX NEGATIF, pas une preuve d'absence ([[normes-scan-nest-pas-grille]]: «TEXT-LAYER: 0» est AVEUGLE, rendre la page en image avant de conclure). PROPRIETAIRE OK et double: logo-cartouche officiel «Rawdon — Forte de sa diversité» sur la couverture + `_reglement-owner-gate` OWNER-OK (237 occurrences «Rawdon» dans la couche texte des grilles). COHERENCE: les amendements releves par le _note precedent («2021-02-05», «2021-02-8», «2021-02-11», «2021-02-03») sont tous des SUFFIXES de 2021-02 — ils corroborent que le reglement de base est bien 2021-02, au lieu de le contredire. MILLESIME null ASSUME: aucune date d'adoption/entree en vigueur verbatim dans ce doc (c'est l'annexe des grilles); le «2021» du numero n'est PAS retenu (piege stoneham: [[reglement-annee-du-numero-fausse]], `2007-08` adopte en 2008) et les dates des cases d'amendement (2024-2026) sont celles des MODIFIANTS. ETAPE (millesime seul): corps du 2021-02 ou avis d'entree en vigueur. Corpus LOCAL => url null."
     },
     "saint-ambroise-de-kildare": {
       "reglement_numero": null,
@@ -2031,11 +2031,11 @@
       "_note": "PIEGE AMENDEMENT (le doc EST l'amendement, 3 p). Titre p1 verbatim: «RÈGLEMENT NUMÉRO 2023-399.1 AMENDANT LE RÈGLEMENT 2017-324 INTITULÉ RÈGLEMENT DE ZONAGE, AFIN DE MODFIER LA GRILLE DES USAGES ET DES NORMES POUR LA ZONE R-9» => le reglement de ZONAGE est le 2017-324, nomme verbatim par l'amendement lui-meme; confirme par l'art.1 «Le présent règlement s'intitule règlement numéro 2023-399.1 amendant le règlement 2017-324 intitulé règlement de zonage» et l'art.3 «L'annexe B du règlement 2017-324 est modifiée». ECARTE 2023-399.1 = le MODIFIANT (celui que porte le nom de fichier -- le stamper aurait servi un amendement comme reglement de zonage = FAUX). ECARTE aussi «Entrée en vigueur : 24 avril 2024» (p1) = entree en vigueur de l'AMENDEMENT, pas du 2017-324. Millesime = segment annee 4 chiffres du numero verbatim."
     },
     "saint-cleophas": {
-      "reglement_numero": null,
+      "reglement_numero": "164-04",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "AUCUN DOC A LIRE (type albertville / lac-au-saumon): le source_url du manifest est la page d'accueil «https://www.mrcmatapedia.qc.ca/» (MRC), pas un document. Rien a relever verbatim => null. Voie = decouverte du vrai PDF de zonage (hors lane P0_1)."
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le source_url, pas sur le disque). L'ancien _note disait «AUCUN DOC A LIRE ... le source_url du manifest est la page d'accueil https://www.mrcmatapedia.qc.ca/ (MRC), pas un document» — mais le PDF etait deja en local: work/zonage-norms/saint-cleophas/grille.pdf (202 p, texte natif). Numero lu VERBATIM deux fois, concordantes: couverture p1 «RÈGLEMENT DE ZONAGE NUMÉRO 164-04 / DE LA MUNICIPALITÉ DE / SAINT-CLÉOPHAS / Modifié par : Règlement no 179 ... Règlement no 255», et surtout la clause de titre art. 1.1: «Le présent règlement est intitulé « Règlement de zonage de la municipalité de Saint-Cléophas » et est identifié par le numéro 164-04.» — l'art. 1.1 fait foi. Gate proprietaire OK: la muni se NOMME dans le doc. MILLESIME null ASSUME: l'art. 17.6 «Entrée en vigueur [CM 446, 450 et 452]» n'enonce que la formule «Ce règlement de zonage entre en vigueur selon les exigences prescrites par la Loi.» — aucune date d'adoption/vigueur dans les 202 p. Le «04» de 164-04 n'est PAS expanse en 2004 (piege du millesime a 2 chiffres, cf. 575-20 / 08-HOW-14). Corpus LOCAL => url null."
     },
     "saint-colomban": {
       "reglement_numero": null,
@@ -2052,18 +2052,18 @@
       "_note": "ANTI-INVENTION => null. Le PDF local (3 pages) est un extrait de grilles. Les seules lignes captees sont des renvois de NOTE DE CELLULE — p3 «Uniquement les usages « industrie de l'abattage et du conditionnement de la viande » autorisés par la CPTAQ avant l'entrée en vigueur du présent règlement.» — qui parlent du reglement sans jamais le numeroter (faux positif de motif). Defaut de DECOUVERTE: il manque le corps."
     },
     "saint-damase--la-matapedia": {
-      "reglement_numero": null,
+      "reglement_numero": "216",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "AUCUN DOC A LIRE (type albertville / lac-au-saumon): le source_url du manifest est la page d'accueil «https://www.mrcmatapedia.qc.ca/» (MRC), pas un document. Rien a relever verbatim => null. Voie = decouverte du vrai PDF de zonage (hors lane P0_1)."
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le source_url, pas sur le disque) — meme motif que saint-cleophas, meme MRC. L'ancien _note disait «AUCUN DOC A LIRE ... page d'accueil https://www.mrcmatapedia.qc.ca/ (MRC), pas un document» — mais work/zonage-norms/saint-damase--la-matapedia/grille.pdf (216 p, texte natif) etait en local. Numero lu VERBATIM: couverture p1 «RÈGLEMENT DE ZONAGE NUMÉRO 216 / Modifié par : Règlement no 243 ... Règlement no 342-2025», et clause de titre art. 1.1: «Le présent règlement est intitulé « Règlement de zonage de la municipalité de Saint-Damase » et est identifié par le numéro 216.» — l'art. 1.1 fait foi. Gate proprietaire OK: la muni se NOMME dans le doc (homonyme saint-damase ecarte: le doc dit «Saint-Damase» et le corpus est celui de la Matapedia). MILLESIME null ASSUME: art. 18.3 «Entrée en vigueur [CM 446, 450 et 452]» = «Ce règlement de zonage entre en vigueur selon les dispositions de la Loi.», sans date; aucune date d'adoption dans les 216 p. Le numero «216» ne porte AUCUN segment d'annee. Corpus LOCAL => url null."
     },
     "saint-denis-de-brompton": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "474",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 5,
       "reglement_url": null,
-      "_note": "AUCUN DOC A LIRE: le source_url du manifest «https://www.sddb.ca/fr/services-aux-citoyens/centre-documentaire/c5392/reglement-de-zonage/page-1» est une page HTML de centre documentaire (liste), pas un PDF -- le fetch rend du HTML (magic=«<!DO»). Rien a relever verbatim => null. Voie = decouverte du PDF de zonage (hors lane P0_1)."
+      "_note": "REFUTATION du HOLD-NULL precedent (verdict rendu sur le source_url, pas sur le disque). L'ancien _note disait «AUCUN DOC A LIRE: le source_url ... est une page HTML de centre documentaire (liste), pas un PDF -- le fetch rend du HTML (magic=<!DO)» — mais work/zonage-norms/saint-denis-de-brompton/grille.pdf (244 p, texte natif, «Version administrative») etait en local. Numero lu VERBATIM en couverture p5: «PROVINCE DE QUÉBEC / M.R.C. DU VAL-SAINT-FRANÇOIS / MUNICIPALITÉ DE SAINT-DENIS-DE-BROMPTON / RÈGLEMENT DE ZONAGE / ... / RÈGLEMENT # 474__» (les «__» finaux sont un artefact de gabarit, pas des chiffres). CONFIRMATION INDEPENDANTE: toute la famille d'amendements du doc se rattache au 474 — «# 2011-474-B», «#2012-474-C», «#2014-474-E», «# 474-2021-A», «#474-2022-C» — ce qui etablit 474 comme le reglement de BASE. La clause de titre est muette sur le numero («Le présent règlement est intitulé « Règlement de zonage ».»), d'ou page_source=5 (la couverture). MILLESIME 2007 = date d'adoption VERBATIM du chapitre ENTRÉE EN VIGUEUR: «Fait et adopté par le Conseil de la Corporation municipale au cours de la séance tenue le 10 septembre 2007.», concordante avec la couverture p5 «À une séance régulière du conseil de Ville tenue à l'hôtel de ville, le 10 septembre 2007». Corpus LOCAL => url null."
     },
     "saint-denis-sur-richelieu": {
       "reglement_numero": null,
