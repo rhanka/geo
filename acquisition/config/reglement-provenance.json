@@ -3310,6 +3310,62 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null, et BLOCAGE STRUCTUREL du modele per-muni (pas un defaut d'extraction). Doc officiel lu a $0: l'open data CC-BY vdq-zonage-grille.xlsx (source du depot normes, 4786 zones). La SEULE colonne de reglement y est intitulee verbatim «Dernier règlement ayant modifié la zone» = un AMENDEMENT par zone (explicitement hors-cible), jamais le reglement de base. Ses valeurs sont PAR ARRONDISSEMENT: «R.C.A.1V.Q. 70», «R.C.A.2V.Q. 241», «R.C.A.3V.Q. 22», «R.C.A.4V.Q. 62», «R.C.A.5V.Q. 231», «R.C.A.6V.Q. 76» (+ «R.V.Q. 2730» pour les reglements de la ville-centre). Le classeur porte aussi la requete SQL qui l'engendre («select zone.no_zone, ... from zone left outer join H1 on H1.gri_no=zone.gri_no ...»): aucun numero de reglement de base n'y figure. CONSEQUENCE POUR P0_1: Quebec n'a PAS un reglement de zonage per-muni — chacun des 6 arrondissements a le sien (R.C.A.NV.Q.). L'hypothese de fold-reglement-to-zonage («le reglement de zonage est per-muni = constant sur tous les polygones») est donc FAUSSE ici: stamper une valeur unique sur les 4786 zones serait une provenance fausse pour 5 arrondissements sur 6. A LEVER hors P0_1: servir la provenance par ARRONDISSEMENT (jointure zone -> arrondissement), pas par muni."
+    },
+    "wotton": {
+      "reglement_numero": "249-23",
+      "reglement_millesime": "2024",
+      "reglement_page_source": 2,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/wotton/grille.pdf, 156 p) => url null: le source_url du manifest n'est que la page d'accueil «https://www.wotton.ca», qui ne porte aucun numero. Numero + proprietaire verbatim p2: «Province de Québec  Règlement numéro 249- 23 / Municipalité de Wotton  Règlement de zonage / Codification administrative» (3 occurrences concordantes; l'espace dans «249- 23» est un artefact de crenage de la couche texte — un numero de reglement ne porte pas d'espace). MILLESIME verbatim p2, table de procedure: «Adoption du règlement : 8 avril 2024» => 2024. CANDIDAT ECARTE: «2023», lisible dans le numero lui-meme (249-23) ET date de l'avis de motion / du premier projet («Avis de motion : 5 juin 2023»); l'annee portee par un numero n'est PAS l'annee d'adoption — ce doc en est la preuve directe (249-23 adopte en 2024). NB: «Avis public d'entrée en vigueur :» est VIDE au doc => millesime = annee d'ADOPTION."
+    },
+    "abercorn": {
+      "reglement_numero": "234",
+      "reglement_millesime": "2009",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/abercorn/grille.pdf, 120 p) => url null. Numero + proprietaire verbatim p1: «Municipalité du village d'Abercorn / Règlement de zonage numéro 234». MILLESIME verbatim, table des amendements en tete (colonnes «Numéro du règlement | Date de l'avis de motion | Date de l'adoption | Date du certificat de conformité MRC | Date de l'entrée en vigueur»), ligne de base: «234  31 mars 2009  31 mars 2009  30 juin 2009  1er juin 2009» => 2009 (toutes les dates de la ligne 234 sont en 2009, l'annee est non-ambigue). CANDIDATS ECARTES: «312-15», «314-15» et les suivants de la meme table — ce sont les AMENDEMENTS (lignes sous la ligne 234)."
+    },
+    "auclair": {
+      "reglement_numero": "2014-07",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/auclair/grille.pdf, 4 p) => url null. ATTENTION: le doc local n'est PAS le reglement de zonage, c'est un AMENDEMENT — il nomme neanmoins le reglement de base VERBATIM p1: «Le présent règlement s'intitule « Règlement numéro 2018-05 modifiant le Règlement de zonage numéro 2014-07 de la municipalité d'Auclair ».» => le reglement de zonage d'Auclair est le 2014-07. CANDIDAT ECARTE: «2018-05», numero du doc lui-meme = l'amendement (hors-cible). MILLESIME null ASSUME: le doc de l'amendement ne porte aucune date d'adoption ni d'entree en vigueur du 2014-07; «2014» lisible dans le numero n'est PAS une preuve d'annee d'adoption (refute dans ce corpus a wotton: 249-23 adopte en 2024). A LEVER: ouvrir le corps du 2014-07 pour dater."
+    },
+    "caplan": {
+      "reglement_numero": "213-2013",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/caplan/grille.pdf, 5 p) => url null. ATTENTION: le doc local n'est PAS le reglement de zonage, c'est un PROJET d'amendement — il nomme le reglement de base VERBATIM p1: «PROJET DE RÈGLEMENT NUMÉRO 313-2022 MODIFIANT LE RÈGLEMENT NUMÉRO 213-2013 « RÈGLEMENT DE ZONAGE » DE LA MUNICIPALITÉ DE CAPLAN», confirme au dispositif: «le règlement numéro 213-2013 (Règlement de zonage) de la municipalité de Caplan». CANDIDAT ECARTE: «313-2022», numero du doc = un PROJET d'amendement (double motif d'exclusion: amendement + non adopte). MILLESIME null ASSUME: aucune date d'adoption du 213-2013 au doc. A LEVER: ouvrir le corps du 213-2013 pour dater."
+    },
+    "irlande": {
+      "reglement_numero": "339",
+      "reglement_millesime": null,
+      "reglement_page_source": 2,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/irlande/grille.pdf, 119 p) => url null. Numero + proprietaire verbatim p2: «Règlement de zonage numéro 339» + pied de page repete «Règlement de zonage 339 et ses amendements – Municipalité d'Irlande». Contexte d'adoption verbatim p2: «ATTENDU QUE le Conseil juge opportun d'adopter un nouveau règlement de zonage, remplaçant ainsi les dispositions contenues au règlement no 307 et à ses amendements». CANDIDAT ECARTE: «307», verbatim mais explicitement REMPLACE par le 339. MILLESIME null ASSUME: aucune date d'adoption ni d'entree en vigueur lisible p1-3 (le numero 339 ne porte pas d'annee). A LEVER: sonder les pages de fin (table des amendements) pour dater."
+    },
+    "martinville": {
+      "reglement_numero": "2016-103",
+      "reglement_millesime": "2016",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Corpus LOCAL (work/zonage-norms/martinville/grille.pdf, 195 p) => url null. Numero verbatim p1 (page titre): «RÈGLEMENT NO 2016-103 / RÈGLEMENT DE ZONAGE», repete p2 et en pied: «Règlement de zonage numéro 2016-103». MILLESIME verbatim p2, table de procedure: «Adoption du règlement  14 mars 2016» + «Entrée en vigueur  mai 2016» => 2016 (adoption ET entree en vigueur concordent sur 2016)."
+    },
+    "frontenac": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null: MAUVAIS DOCUMENT. work/zonage-norms/frontenac/grille.pdf (2 p) n'est PAS le reglement de zonage — c'est un reglement sur le COLPORTAGE. Verbatim p1: «RÈGLEMENT NO. 378-2008 REMPLAÇANT LE RÈGLEMENT NO. 316-99 SUR LE COLPORTAGE» / «Attendu que le conseil de la Municipalité de Frontenac a adopté le règlement sur le colportage n° 316-99 qui est entré en vigueur le 12 juillet 1999» / «Adopté à Frontenac, ce 16 septembre 2008». CANDIDAT ECARTE: «378-2008» — stamper ce numero donnerait une provenance FAUSSE (reglement de colportage presente comme reglement de zonage). ESCALADE: la grille normes de frontenac a ete derivee de ce meme fichier => son zonage est lui aussi a re-qualifier."
+    },
+    "gallichan": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null: MAUVAIS DOCUMENT. work/zonage-norms/gallichan/grille.pdf (36 p) n'est PAS un reglement — c'est le BULLETIN MUNICIPAL. Verbatim p1: «MAI 2019 / MUNICIPALITÉ DE GALLICHAN / 168, chemin de Gallichan C.P. 38... / LE GALLICHAN Page 2 / VotreConseilMunicipal / Henri Bourque, maire». PISTE (NON stampee, source secondaire): un resume de seance p3 dit «Adopté le second projet de règlement #239 modifiant le règlement de zonage #93» — le reglement de zonage de Gallichan serait le #93, mais un compte rendu de bulletin n'est pas le document reglementaire et «#239» n'y est qu'un SECOND PROJET. A LEVER: ouvrir le corps du reglement de zonage #93 pour confirmer numero + millesime. ESCALADE: la grille normes de gallichan a ete derivee du bulletin => zonage a re-qualifier."
     }
   }
 }
