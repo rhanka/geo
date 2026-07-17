@@ -25,9 +25,10 @@ function arg(name: string, def = ''): string {
 }
 const pageUrl = arg('page');
 const outDir = arg('out');
-const all = process.argv.includes('--all');
+// NB: `--all` seul est intercepté par npx ; on utilise `--every`.
+const all = process.argv.includes('--every');
 if (!pageUrl) {
-  console.log('usage: _normes-sibling-annex-probe.ts --page <url> [--out dir] [--all]');
+  console.log('usage: _normes-sibling-annex-probe.ts --page <url> [--out dir] [--every]');
   process.exit(1);
 }
 
