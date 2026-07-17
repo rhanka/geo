@@ -46,7 +46,21 @@ text.split("\f").forEach((page, i) => {
   const typLine = page.split(/\r?\n/).find((l) => TYPE_RE.test(l));
   if (!secLine || !typLine) return;
 
-  const nums = (SECTEUR_RE.exec(secLine)?.[1] ?? "").trim().split(/\s+/).filter((t) => /^\d{1,3}$/.test(t));
+  // Les numéros de secteur sont écrits en LISTES et en PLAGES groupées par colonne,
+  // pas un par colonne :
+  //   « Numéro de secteur   2,4,5,6   1,3,7,8,9 et 10 »   → énumération
+  //   « Numéro de secteur   1         2à6 »                → plage (2,3,4,5,6)
+  // Les virgules et « et » ne sont que des séparateurs ; « à » dénote une plage
+  // fermée, qu'on développe (la grille l'énonce, on ne l'invente pas).
+  const secRaw = SECTEUR_RE.exec(secLine)?.[1] ?? "";
+  const nums: string[] = [];
+  const consumed = secRaw.replace(/(\d{1,3})\s*(?:à|a|-)\s*(\d{1,3})/gi, (_m, a: string, b: string) => {
+    const lo = Number(a);
+    const hi = Number(b);
+    if (hi >= lo && hi - lo <= 60) for (let n = lo; n <= hi; n++) nums.push(String(n));
+    return " ";
+  });
+  for (const m of consumed.matchAll(/\d{1,3}/g)) nums.push(m[0]);
   const typs = (TYPE_RE.exec(typLine)?.[1] ?? "")
     .trim()
     .split(/\s+/)
@@ -54,15 +68,21 @@ text.split("\f").forEach((page, i) => {
 
   if (!nums.length || !typs.length) return;
 
-  // Chaque colonne = un secteur. Si un seul type est répété, il vaut pour toutes.
+  // Un tableau du chapitre 10 porte UN type de zone (répété par colonne d'usage).
+  // Si la page mêle plusieurs types distincts, l'appariement numéro↔type est ambigu :
+  // on s'abstient plutôt que de fabriquer un code.
+  const distinctTypes = [...new Set(typs)];
+  if (distinctTypes.length !== 1) {
+    perPage.push(`p${i + 1}: SKIP (types multiples: ${distinctTypes.join("/")} — appariement ambigu)`);
+    return;
+  }
+  const t = distinctTypes[0]!;
   const found: string[] = [];
-  nums.forEach((n, k) => {
-    const t = typs[k] ?? (typs.length === 1 ? typs[0] : undefined);
-    if (!t) return;
+  for (const n of [...new Set(nums)]) {
     const code = `${t}${n}`;
     codes.add(code);
     found.push(code);
-  });
+  }
   if (found.length) perPage.push(`p${i + 1}: ${found.join(" ")}`);
 });
 
