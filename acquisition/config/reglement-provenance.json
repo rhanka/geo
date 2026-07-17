@@ -1,6 +1,62 @@
 {
   "$comment": "Provenance règlement par slug (P0a lane, demande Steve/immo 2026-07-12). 4 champs servis par ligne de grille: reglement_numero/millesime/page_source/url. Anti-invention: seulement des valeurs réelles; champ inconnu = null. Pilote MT/Sutton/Alma; à généraliser aux 817 (depuis _reglement/_source_url des dépôts ou registre par muni).",
   "slugs": {
+    "saint-antoine-de-tilly": {
+      "reglement_numero": "97-367",
+      "reglement_millesime": "1998",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «PROVINCE DE QUÉBEC / MRC DE LOTBINIÈRE / MUNICIPALITÉ DE SAINT-ANTOINE-DE-TILLY / RÈGLEMENT 97-367» (entete de chaque page: «Règlement de zonage no.97-367 – Version administrative»). Millesime = adoption verbatim, lue dans l'objet de l'amendement 98-384: «Corriger divers erreurs et oublis dans le nouveau règlement de zonage adopté le 2 mars 1998» — «le nouveau règlement de zonage» y designe sans ambiguite le 97-367, celui que 98-384 modifie. => 1998 et NON 1997: 3e occurrence mesuree du piege stoneham dans ce corpus (apres 09-591=2010 et saint-albert 2007-08=2008). ATTENTION: le «adopté le 2 mars 1998» est dans une LIGNE D'AMENDEMENT; ne pas le confondre avec l'adoption du 98-384 lui-meme (en vigueur 1998-09-09). Corpus LOCAL => url null."
+    },
+    "lislet": {
+      "reglement_numero": "158-2013",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «PROVINCE DE QUÉBEC / MRC DE L’ISLET / MUNICIPALITÉ DE L’ISLET / RÈGLEMENT # 158-2013», confirme par «VERSION ADMINISTRATIVE DU RÈGLEMENT CONCERNANT LE ZONAGE 158-2013». MILLESIME null ASSUME: l'art. 22.5 «Entrée en vigueur» n'enonce que la formule «Le présent règlement entrera en vigueur selon la loi.» — aucune date dans les 162 pages. Le «2013» du numero n'est pas retenu (piege stoneham). Corpus LOCAL => url null."
+    },
+    "bristol": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: le doc porte DEUX numeros CONTRADICTOIRES et rien ne permet de trancher a $0 => ne rien stamper plutot que risquer une fausse provenance. (a) Couverture et entete de CHAQUE page: «Zoning By-law - Number 312A.1» / «- Zoning By-Law number 312A.1 - The French version is the only official version -». (b) Le CORPS dit 264, deux fois et independamment: art.1.1 TITLE OF THE BY-LAW «The present By-law is known as \"Zoning By-law number 264\" of the Municipality of Bristol.» et art.1.4 REPLACED BY-LAW «The Zoning By-law of the Municipality of Bristol, designated as number 204, its amendments and the plans which are included, are abrogated and replaced by the present By-law: Zoning By-law number 264.» (204 = ancien, abroge). Lecture probable: 312A.1 = version codifiee/amendante estampillee en entete, 264 = le reglement lui-meme (l'art.1.1 fait foi par doctrine). NON TRANCHE: si 312A.1 avait remplace 264, l'art.1.4 le dirait. ETAPE = confirmation ville/MRC Pontiac. Millesime introuvable de toute facon: chap.7 BRINGING IN FORCE = «will come into force once all procedures under the law are fulfilled», sans date."
+    },
+    "amos": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (grille-original.pdf, 550 p) est un recueil de grilles nues: p1 = «#A) Zones agricoles « A-1 » / GRILLE DE SPECIFICATIONS / ZONE A-1 / Numéro de colonne...». Aucun numero de reglement, ni en entete, ni en pied, ni en note, sur toute l'etendue sondee. Defaut de DECOUVERTE (il manque le corps du reglement), pas d'extraction."
+    },
+    "drummondville": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (16 p) est un extrait de grilles: p1 = «ZONE : H-0005 / GRILLE DES USAGES ET DES NORMES». Aucun numero de reglement nulle part. Defaut de DECOUVERTE (il manque le corps)."
+    },
+    "sorel-tracy": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (745 p) est l'annexe des grilles: entete de chaque page = «GRILLE DES SPÉCIFICATIONS / Règlement de zonage / Annexe « B »» — le mot «Règlement de zonage» y figure SANS numero (faux positif de motif). Le manifest ne pointe que le portail HTML ville.sorel-tracy.qc.ca/.../reglementation-durbanisme. Defaut de DECOUVERTE (il manque le corps)."
+    },
+    "notre-dame-du-mont-carmel": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (142 p) est l'«Annexe C – Grilles de spécifications». Ses «NOTES PRÉLIMINAIRES» RENVOIENT au reglement sans jamais le numeroter («La section 5 du Règlement de zonage précise...», «...incluses dans le Règlement de zonage.») = faux positifs de motif. Defaut de DECOUVERTE (il manque le corps)."
+    },
+    "saint-honore": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Les 3 docs locaux (grille-territoire/grille/grille-urbain) sont des cahiers de grilles: «VILLE DE SAINT-HONORÉ / CAHIER DES SPÉCIFICATIONS». Le seul motif capte est un renvoi de cellule («Voir règlement de zonage article»), sans numero. Defaut de DECOUVERTE (il manque le corps)."
+    },
     "trecesson": {
       "reglement_numero": "224",
       "reglement_millesime": "2015",
@@ -3247,6 +3303,13 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null: le document ne PORTE PAS le numero du reglement de base. Doc lu a $0 (1 page, texte natif): «GRILLE DES ... / 16 ZONAGE / Date: Février 2019». Les SEULS numeros presents sont des AMENDEMENTS references en notes de bas de grille, rattaches a une zone: «Note 4  Note 5  132  2020-02-360, 20 mai 2021» (+ 2022-06-399, 2022-06-400) — un numero d'amendement isole est explicitement hors-cible. CANDIDAT ECARTE: «2019-02-339», porte par l'URL/nom de fichier (ripon-regl-zonage-2019-02-339-grille-des-specifications-version-finale.pdf) mais ABSENT du document (grep «339»: 0 occurrence) — l'URL ne fait pas foi (piege prouve a coaticook). A LEVER hors P0_1: ouvrir le CORPS du reglement de zonage de Ripon (la grille seule est muette)."
+    },
+    "quebec": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null, et BLOCAGE STRUCTUREL du modele per-muni (pas un defaut d'extraction). Doc officiel lu a $0: l'open data CC-BY vdq-zonage-grille.xlsx (source du depot normes, 4786 zones). La SEULE colonne de reglement y est intitulee verbatim «Dernier règlement ayant modifié la zone» = un AMENDEMENT par zone (explicitement hors-cible), jamais le reglement de base. Ses valeurs sont PAR ARRONDISSEMENT: «R.C.A.1V.Q. 70», «R.C.A.2V.Q. 241», «R.C.A.3V.Q. 22», «R.C.A.4V.Q. 62», «R.C.A.5V.Q. 231», «R.C.A.6V.Q. 76» (+ «R.V.Q. 2730» pour les reglements de la ville-centre). Le classeur porte aussi la requete SQL qui l'engendre («select zone.no_zone, ... from zone left outer join H1 on H1.gri_no=zone.gri_no ...»): aucun numero de reglement de base n'y figure. CONSEQUENCE POUR P0_1: Quebec n'a PAS un reglement de zonage per-muni — chacun des 6 arrondissements a le sien (R.C.A.NV.Q.). L'hypothese de fold-reglement-to-zonage («le reglement de zonage est per-muni = constant sur tous les polygones») est donc FAUSSE ici: stamper une valeur unique sur les 4786 zones serait une provenance fausse pour 5 arrondissements sur 6. A LEVER hors P0_1: servir la provenance par ARRONDISSEMENT (jointure zone -> arrondissement), pas par muni."
     }
   }
 }
