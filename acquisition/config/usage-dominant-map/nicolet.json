@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "R": "environnemental",
+    "P": null,
+    "X": null
+  },
+  "source": "https://nicolet.ca/file-17396",
+  "note": "Règlement de zonage numéro 77-2004 de la Ville de Nicolet, version administrative (mise à jour novembre 2025, 374 p.), Chapitre 1 « Dispositions déclaratoires et interprétatives », article 16 « IDENTIFICATION DES ZONES », lu VERBATIM: « Chaque zone délimitée au plan de zonage est identifiée par une lettre d'appellation indiquant l'affectation principale de la zone, comme suit : [table « Lettre d'appellation / Affectation principale »] H – Habitation; C – Commerciale; I – Industrielle; P – Communautaire; R – Récréative; A – Agricole; X – Réserve urbaine. » L'article précise le format: « Chaque zone est aussi identifiée par deux séries de chiffres qui suivent la lettre d'appellation. La première série de chiffres réfère au secteur de planification [...] À titre d'exemple : H01-101 — H: Affectation principale « Habitation », 01 : Secteur de planification 01, 101 : Ordre numérique de la zone », ce qui correspond exactement aux zone_code servis au SIG (H04-424, C04-422, A04-425...). Mappage: H « Habitation » -> résidentiel; C « Commerciale » -> commercial; I « Industrielle » -> industriel; A « Agricole » -> agricole; R « Récréative » -> environnemental. Null explicite: P « Communautaire » désigne les équipements collectifs/institutionnels (famille publique) et n'est pas une des cinq catégories; X « Réserve urbaine » est une RÉSERVE (développement futur) et n'énonce aucune dominante. Les 7 préfixes du SIG servi (183 polygones: H, C, A, P, I, R, X) sont TOUS définis par cette table, aucun préfixe mappé n'est absent du SIG. La matrice des usages permis des grilles n'est pas utilisée. Note: le reglement_url servi sur la collection est la racine « https://www.nicolet.ca/ » (non résolvante); le document a été retrouvé via le centre documentaire de la Ville. Source consultée le 2026-07-17."
+}
