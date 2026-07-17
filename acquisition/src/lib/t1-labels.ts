@@ -49,6 +49,28 @@ export interface ZoneCodeOptions {
    * anti-#74 rule). See lib/numeric-codes.ts for the full guard.
    */
   numericDict?: Set<string>;
+  /**
+   * SAFE composite relaxation (default OFF). Some munis code a zone as
+   * NUMBER ⊕ DOMINANCE printed as two separate tokens on the plan — matane's own
+   * legend reads "Numéro de zone et dominance  17 R" (→ `17-R`); same shape as the
+   * already-served lac-sergent (`1-H`, `20-I`). Such a code is LETTERED (so it is
+   * not an anti-#74 concern), but it is digit-leading — which `safeMultiWordCode`
+   * refuses by construction, and short forms (`5-C`) do not match ZONE_CODE_RE.
+   * When provided, a composite is admitted IFF it is VERBATIM in this
+   * authoritative dictionary (built from the municipal grille). The dict is the
+   * whole guard: a join is recognised, never invented.
+   */
+  compositeDict?: Set<string>;
+}
+
+/** NUMBER-DOMINANCE, the composite shape (`17-R`, `502-AV`, `1-H`). */
+const COMPOSITE_CODE_RE = /^\d{1,3}-[A-Z]{1,3}$/i;
+
+/** True when `text` is a composite code listed VERBATIM in the authoritative dict. */
+export function isDictComposite(text: string, opts: ZoneCodeOptions = {}): boolean {
+  if (!opts.compositeDict) return false;
+  const t = normalizeZoneCodeText(text);
+  return COMPOSITE_CODE_RE.test(t) && opts.compositeDict.has(t.toUpperCase());
 }
 
 export function looksLikeZoneCode(text: string, opts: ZoneCodeOptions = {}): boolean {
@@ -57,6 +79,8 @@ export function looksLikeZoneCode(text: string, opts: ZoneCodeOptions = {}): boo
   if (STOPWORDS.has(t.toLowerCase())) return false;
   // Numeric relaxation: a dict-backed pure-numeric code is a real zone code.
   if (opts.numericDict && /^\d{1,4}$/.test(t) && opts.numericDict.has(t)) return true;
+  // Composite relaxation: a dict-backed NUMBER-DOMINANCE code is a real zone code.
+  if (isDictComposite(t, opts)) return true;
   if (!/[A-Za-z]/.test(t) || !/\d/.test(t)) return false; // anti-#74
   if (/^REG(?:[-.]|\d)/i.test(t)) return false;
   return ZONE_CODE_RE.test(t);
@@ -113,6 +137,8 @@ export interface PdfTextOptions {
   excludeRegions?: LabelRegionFrac[];
   /** SAFE numeric relaxation (default OFF): dict-backed pure-numeric zone codes. */
   numericDict?: Set<string>;
+  /** SAFE composite relaxation (default OFF): dict-backed NUMBER-DOMINANCE codes. */
+  compositeDict?: Set<string>;
 }
 
 /** Run pdftotext -bbox-layout and return all words with their center. */
@@ -305,6 +331,8 @@ export function zoneLabelCandidatesFromWords(words: RawLabel[], opts: ZoneCodeOp
   for (let i = 0; i < words.length; i++) {
     const first = words[i]!;
     const single = normalizeZoneCodeText(first.text);
+    // (an already-joined composite — pdftotext emitting "503-A" as one word — is
+    // covered here too: looksLikeZoneCode admits dict-listed composites.)
     if (looksLikeZoneCode(single, opts)) candidates.push(makeCandidate(words, [i], single));
     if (!isCodePart(first.text)) continue;
 
@@ -319,7 +347,11 @@ export function zoneLabelCandidatesFromWords(words: RawLabel[], opts: ZoneCodeOp
       const code = joinCodeParts(parts);
       // Multi-word joins stay lettered-only (safeMultiWordCode already refuses a
       // digit-leading join), so the numericDict never fabricates a joined code.
-      if (looksLikeZoneCode(code) && safeMultiWordCode(parts, code)) {
+      // The ONE exception is a composite listed verbatim in --dict (`17-R`): the
+      // muni prints it as two tokens, so the join must be allowed explicitly —
+      // and the dict bounds it to the real municipal code list.
+      const composite = isDictComposite(code, { compositeDict: opts.compositeDict });
+      if ((looksLikeZoneCode(code) && safeMultiWordCode(parts, code)) || composite) {
         candidates.push(makeCandidate(words, [...indexes], code));
       }
       prev = next;
@@ -391,7 +423,10 @@ export function extractLabelsFromWords(
   geo: GeoRef,
   opts: PdfTextOptions = {},
 ): ExtractLabelsResult {
-  const candidates = zoneLabelCandidatesFromWords(words, { numericDict: opts.numericDict });
+  const candidates = zoneLabelCandidatesFromWords(words, {
+    numericDict: opts.numericDict,
+    compositeDict: opts.compositeDict,
+  });
   const hasSplitPrefixCompounds = candidates.some(
     (c) => (c.sourceWordCount ?? 1) > 1 && /^[A-Z]{1,4}\d{0,3}(?:-[A-Z])?-\d{2,4}(?:-[A-Z0-9]{1,4})?$/i.test(c.text),
   );
@@ -415,9 +450,18 @@ export function extractLabelsFromWords(
   let nInside = 0;
   let rejectedOutside = 0;
   for (const w of candidates) {
-    if (!looksLikeZoneCode(w.text, { numericDict: opts.numericDict })) continue;
+    if (!looksLikeZoneCode(w.text, { numericDict: opts.numericDict, compositeDict: opts.compositeDict })) continue;
     if (isTinyCandidate(w)) continue;
-    if (hasSplitPrefixCompounds && (w.sourceWordCount ?? 1) === 1 && isDigitLeadingSingleLetter(w.text)) continue;
+    // A dict-listed composite is the muni's real code — never drop it as a stray
+    // digit-leading fragment of some other lettered compound.
+    if (
+      hasSplitPrefixCompounds &&
+      (w.sourceWordCount ?? 1) === 1 &&
+      isDigitLeadingSingleLetter(w.text) &&
+      !isDictComposite(w.text, opts)
+    ) {
+      continue;
+    }
     nCodeLike++;
     const px = w.pageX * sx; // PDF user-space x
     const pyTop = w.pageY * sy; // top-down y

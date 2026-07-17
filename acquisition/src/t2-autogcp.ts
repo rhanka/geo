@@ -12,6 +12,7 @@ import { dirname } from "node:path";
 import type { FeatureCollection } from "geojson";
 
 import { getBytes, s3Client } from "./lib/s3.js";
+import { isTrivialContiguousSequence, numericDictSet } from "./lib/numeric-codes.js";
 import { deriveAutoSeedGcps, deriveAutonomousGcps, type FitMode } from "./lib/t2-autogcp.js";
 import {
   decideAnisoArbitration,
@@ -50,6 +51,10 @@ interface Args {
   anisoServingCoverageFloor: number;
   /** Distinct lettered codes floor for an arbitrated fit. Default 3. */
   anisoMinDistinctCodes: number;
+  /** Authoritative by-law code list (JSON array) — MANDATORY for --allow-numeric-codes. */
+  dict?: string;
+  /** SAFE, dict-gated relaxation (§7.5) applied to the lot-coverage MEASUREMENT. */
+  allowNumericCodes: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -68,6 +73,11 @@ function parseArgs(argv: string[]): Args {
   }
   const autoSeed = Boolean(a["auto-seed"]);
   if (!a["slug"]) throw new Error("required: --slug <slug>");
+  // §7.5 contract: the numeric relaxation NEVER runs without an authoritative
+  // dictionary. Fail loudly rather than silently measuring lettered-only.
+  if (Boolean(a["allow-numeric-codes"]) && !a["dict"]) {
+    throw new Error("--allow-numeric-codes REQUIRES --dict <codes.json> (anti-#74: no dict, no numeric codes)");
+  }
   if (a["fit"] !== undefined && a["fit"] !== "affine" && a["fit"] !== "similarity") {
     throw new Error(`--fit must be "affine" or "similarity", got "${String(a["fit"])}"`);
   }
@@ -98,7 +108,55 @@ function parseArgs(argv: string[]): Args {
     anisoArbitrateMax: a["aniso-arbitrate-max"] ? Number(a["aniso-arbitrate-max"]) : 1.5,
     anisoServingCoverageFloor: a["aniso-serving-coverage-floor"] ? Number(a["aniso-serving-coverage-floor"]) : 85,
     anisoMinDistinctCodes: a["aniso-min-distinct-codes"] ? Number(a["aniso-min-distinct-codes"]) : 3,
+    dict: a["dict"] ? String(a["dict"]) : undefined,
+    allowNumericCodes: Boolean(a["allow-numeric-codes"]),
   };
+}
+
+/**
+ * Build the pure-numeric admission set for the lot-coverage measurement, under
+ * the §7.5 guards: dict MANDATORY, dict must carry a real numeric grille, and it
+ * must not be a trivial contiguous 1..N run (an OBJECTID fingerprint). Any guard
+ * failing ABORTS — a measurement is never quietly widened.
+ */
+function loadNumericDict(args: Args): Set<string> | undefined {
+  if (!args.allowNumericCodes || !args.dict) return undefined;
+  const raw = JSON.parse(readFileSync(args.dict, "utf8")) as unknown;
+  if (!Array.isArray(raw)) throw new Error(`--dict must be a JSON array of codes: ${args.dict}`);
+  const codes = raw.map((c) => String(c));
+  const set = numericDictSet(codes);
+  if (set.size < 3) {
+    throw new Error(
+      `--dict carries only ${set.size} pure-numeric codes (< 3) — not an authoritative numeric grille; refusing to relax`,
+    );
+  }
+  if (isTrivialContiguousSequence([...set].map(Number))) {
+    throw new Error(
+      `--dict numeric codes form a trivial contiguous 1..N run — indistinguishable from an OBJECTID sequence; refusing to relax`,
+    );
+  }
+  console.error(`[t2-autogcp] numeric relaxation ON: ${set.size} dict-backed numeric codes from ${args.dict}`);
+  return set;
+}
+
+/**
+ * The NUMBER-DOMINANCE codes of `--dict`, for the lot-coverage MEASUREMENT.
+ *
+ * Unlike the numeric relaxation this needs no opt-in flag: a composite (`17-R`)
+ * is a LETTERED code, so it never touches the anti-#74 rule — the dict only
+ * teaches the reader that the muni prints the two parts as separate tokens.
+ * Absent/empty → historical behaviour, bit-for-bit.
+ */
+function loadCompositeDict(args: Args): Set<string> | undefined {
+  if (!args.dict) return undefined;
+  const raw = JSON.parse(readFileSync(args.dict, "utf8")) as unknown;
+  if (!Array.isArray(raw)) throw new Error(`--dict must be a JSON array of codes: ${args.dict}`);
+  const set = new Set(
+    raw.map((c) => String(c).trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,3}$/.test(c)),
+  );
+  if (set.size === 0) return undefined;
+  console.error(`[t2-autogcp] composite relaxation ON: ${set.size} dict-backed NUMBER-DOMINANCE codes from ${args.dict}`);
+  return set;
 }
 
 async function readCadastre(slug: string, path?: string): Promise<FeatureCollection> {
@@ -120,6 +178,8 @@ function pdfPageSize(pdfPath: string, page = 1): { pageW: number; pageH: number 
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  const numericDict = loadNumericDict(args);
+  const compositeDict = loadCompositeDict(args);
 
   if (args.autoSeed) {
     const pdfPath = args.pdf!;
@@ -169,6 +229,8 @@ async function main(): Promise<void> {
           pageH: size.pageH,
           cadastre,
           discriminationCutoffM: args.disambigCutoffM,
+          numericDict,
+          compositeDict,
         });
         console.error(
           `[t2-autogcp]   rot${m.rotation}° (bearing ${m.bearing_right_deg}°, ${m.selected_gcps} GCPs, ` +
@@ -230,6 +292,8 @@ async function main(): Promise<void> {
           pageH: size.pageH,
           cadastre,
           discriminationCutoffM: args.disambigCutoffM,
+          numericDict,
+          compositeDict,
         });
         console.error(
           `[t2-autogcp]   ${cand.extent}/rot${m.rotation}° (${m.selected_gcps} GCPs, residual ${m.residual_max_m}m): ` +
@@ -250,6 +314,10 @@ async function main(): Promise<void> {
         aniso_arbitrate_max: args.anisoArbitrateMax,
         serving_coverage_floor_pct: args.anisoServingCoverageFloor,
         min_distinct_codes: args.anisoMinDistinctCodes,
+        // Provenance of the §7.5 relaxation: which dict admitted numeric labels
+        // into the coverage measurement (null = historical lettered-only).
+        numeric_dict: args.allowNumericCodes ? args.dict : null,
+        numeric_dict_codes: numericDict ? numericDict.size : null,
         winner: decision.winner ? { rotation: decision.winner.rotation, extent: decision.winner.extent } : undefined,
         ranking: decision.ranking.map((r) => ({ ...r, gcp_file: undefined })),
       };
