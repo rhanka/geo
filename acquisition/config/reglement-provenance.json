@@ -1030,11 +1030,11 @@
       "_note": "RE-QUALIFICATION d'un HOLD-NULL. Numero + proprietaire verbatim couverture p1: «MUNICIPALITÉ D'ELGIN» / «RÈGLEMENT DE ZONAGE / NUMÉRO 283» / «CODIFICATION ADMINISTRATIVE» / «FÉVRIER 2026». Gate proprietaire: nom-complet=115, forme «Elgin Numéro» 102x. MILLESIME null ASSUME — piege evite: la couverture porte «FÉVRIER 2026», mais c'est la date de la CODIFICATION ADMINISTRATIVE, pas de l'adoption; la retenir aurait servi «(2026)» pour un reglement anterieur a 2008. La table p3 «Amendements au règlement de zonage numéro 283» (colonnes «Numéro du règlement | Adoption du règlement | Entrée en vigueur du règlement») commence a 283-1 «7 avril 2008» — elle date les AMENDEMENTS, jamais la base 283, dont l'adoption est donc anterieure a avril 2008 et introuvable dans ce doc. Corpus LOCAL => url null."
     },
     "forestville": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION: doc = grilles de specification (10 p). Seul numero verbatim: «Grille des specifications # 2025334» = numero de la GRILLE, pas du reglement de zonage. Le «334» et le «Certificat n° 492» du nom de fichier sont des candidats NON RETENUS (gate) => null."
+      "reglement_numero": "2009-236",
+      "reglement_millesime": "2009",
+      "reglement_page_source": 1,
+      "reglement_url": "https://ville.forestville.ca/wp-content/uploads/2025/10/1-Forestville-reglement-236-et-ses-amendements-Zonage-Certificat-492.pdf",
+      "_note": "PIEGE DE L'URL DEJOUE, 3 fois. Le nom de fichier dit «reglement-236», la grille servie dit «334-Grilles-specification-2025-334-Certificat-n-492», et le media WP «325 - Reglement de zonage» — les TROIS sont faux. Le doc dit VERBATIM p1: «CODIFICATION ADMINISTRATIVE - RÈGLEMENT DE ZONAGE # 2009-236» et «Règlement # 2009-236 relatif au zonage abrogeant le règlement # 93 et ses amendements». Corps obtenu a $0 via l'API REST WordPress (1893 medias). Millesime 2009 = adoption verbatim p1: «Extrait certifié conforme du règlement adopté à la séance ordinaire du conseil municipal de la Ville de Forestville tenue le 12 mai 2009 à 19 h 30», concordant avec la table des amendements p2 qui donne la BASE «2009-236 | 12 mai 2009 | 26 mai 2009 | Certificat MRC 303». C'est cette table qui tranche: 2010-247, 2012-258, 2013-262, 2015-270, 2021-295, 2022-305, 2024-322, 2024-325, 2025-333, 2025-334 y sont TOUS listes comme AMENDEMENTS du 2009-236 => «325» = 2024-325 et «334» = 2025-334 sont des amendements, pas la base; «93» = l'ancien reglement abroge. Proprietaire GATE-OK: nom-complet=9, dont «FORESTVILLE ORDONNE CE QUI SUIT» et «Forestville juge opportun de réviser»."
     },
     "frampton": {
       "reglement_numero": null,
@@ -1779,11 +1779,11 @@
       "_note": "RE-QUALIFICATION d'un HOLD-NULL. Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NO 48-2002 / DE LA MUNICIPALITÉ DE / LAC-AU-SAUMON / MODIFIÉ PAR :» suivi de 27 amendements (63-2004 -> 260-2026) — 48-2002 = BASE. Gate proprietaire: nom-complet=236, «Lac-au-Saumon décrète le présent règlement». MILLESIME null ASSUME: FIND-0 sur «adopté à|adopté le <date>|en vigueur le <date>» dans les 275 pages du PLEIN TEXTE; le «2002» du numero n'est pas retenu (piege stoneham). Corpus LOCAL (manifest = domaine nu mrcmatapedia.qc.ca) => url null."
     },
     "lac-etchemin": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://lac-etchemin.ca/wp-content/uploads/2026/06/grille-de-specification.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "62-2006",
+      "reglement_millesime": "2006",
+      "reglement_page_source": 1,
+      "reglement_url": "https://lac-etchemin.ca/wp-content/uploads/2025/04/rg-236-2024-zonage.pdf",
+      "_note": "REFUTATION du null precedent, qui etait une CIBLE: «LIEN MORT: le source_url du manifest «...2026/06/grille-de-specification.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1).» — le 404 datait l'URL, pas la municipalite; l'API REST WordPress (1302 medias) rend le CORPS a $0. Proprietaire: OWNER-OK («MUNICIPALITE DE LAC-ETCHEMIN» en en-tete de chaque page, «CONSIDERANT QUE la Municipalite de Lac-Etchemin est une municipalite regie par la Loi sur les cites et villes»). ⛔ PIEGE DU NOM DE FICHIER, EVITE — c'est le coeur de ce cas: le fichier s'appelle «rg-236-2024-zonage.pdf» et le portail le titre «RG 236-2024 - Zonage», mais le DOCUMENT dit tout autre chose. NUMERO verbatim p1 (cartouche): «REGLEMENT NUMERO 62-2006 / ZONAGE», confirme par l'en-tete de la table des matieres «ZONAGE (62-2006) - TABLE DES MATIERES». Le «236-2024» est le DERNIER AMENDEMENT, lisible p1 dans «LISTE DES MISES A JOUR / REGLEMENTS : 91-2009, 104-2010, 116-2011, 131-2012, 136-2013, 146-2015, 158-2016, 176-2018, 197-2020, 216-2022, 222-2023, 229-2024 et 236-2024» — stamper «236-2024» aurait servi un numero d'amendement a la place du reglement. MILLESIME verbatim p1: «ADOPTION : 2 MAI 2006 / EN VIGUEUR : 7 JUIN 2006» => 2006 (adoption et entree en vigueur la meme annee). CANDIDATS ECARTES: les 13 numeros de la liste des mises a jour ci-dessus, tous des amendements du 62-2006."
     },
     "lac-sainte-marie": {
       "reglement_numero": null,
@@ -2227,11 +2227,11 @@
       "_note": "BLOCAGE ACCES (type orford): le source_url «https://st-joachim.ca/wp-content/uploads/2024/09/mj-7-zonage-aout-2024.pdf» repond HTTP 403 (WAF). Le «mj-7» du nom de fichier n'est de toute facon pas un numero de reglement plausible (et exclu par le gate URL). Voie restante: acces non-bot au PDF (hors lane P0_1)."
     },
     "saint-laurent-de-lile-dorleans": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET + PROJET: PDF = grilles «Zones à dominance mixte» dont la colonne «Référence au règlement» ne contient que des numeros d'ARTICLES (4.1.2, ...), les colonnes etant des codes de zone (R-606, CM-601...) -- 0 motif «Reglement ... numero X» sur les 11 p (texte natif OK). Le nom de fichier «Annexe-5Grilles_Projet_2020_STL-V2021-09-13» annonce en outre un PROJET (cf. ham-sud: un projet n'est pas du droit en vigueur) => null."
+      "reglement_numero": "601-2021",
+      "reglement_millesime": "2021",
+      "reglement_page_source": 1,
+      "reglement_url": "https://saintlaurentio.com/wp-content/uploads/2024/07/601-2021-Reglement-de-zonage_2020_STL-V2022-12-12.pdf",
+      "_note": "Corps obtenu a $0 via l'API REST WordPress (941 medias); la grille servie etait «Annexe-5Grilles_Projet_2020_STL» — un PROJET, d'ou l'absence de numero. Numero VERBATIM p1: «RÈGLEMENT DE ZONAGE 601-2021», confirme p2 «RÈGLEMENT NUMÉRO 601-2021», p12 «RÈGLEMENT DE ZONAGE NUMÉRO 601-2021» et l'en-tete de chacune des 202 pages. Millesime 2021 = «Adoption : 3 mai 2021» + «Entrée en vigueur : 7 juillet 2021» verbatim p1, concordant avec le segment annee du numero. Proprietaire: le doc se NOMME p1 «MUNICIPALITÉ DE SAINT-LAURENT-DE-L'ÎLE-D'ORLÉANS». ATTENTION _reglement-owner-gate rend OWNER-ABSENT nom-complet=0 jeton«dorleans»=0 = FAUX NEGATIF: le doc ecrit «D'ORLÉANS» avec l'apostrophe TYPOGRAPHIQUE (U+2019), que la normalisation du gate ne replie pas sur le jeton «dorleans» du slug. Famille sig-sanity-dot-separator-blindspot (le separateur inattendu rend la donnee invisible au motif) => ne pas croire un OWNER-ABSENT sans dumper la couverture. ECARTE: 619-2022 = «Règlement modifiant le règlement de zonage 601-2021» = amendement."
     },
     "saint-augustin-de-woburn": {
       "reglement_numero": "279-2010",
@@ -3231,8 +3231,8 @@
       "reglement_numero": null,
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": "http://sldg.ca/sldg/wp-content/uploads/2026/04/Grilles-des-usages-et-normes-par-zone.pdf",
-      "_note": "DOC MUET + GABARIT VIDE. Doc = «GRILLES DES USAGES ET DES NORMES PAR ZONE» (68 p, texte natif OK), en-tete sans numero ni annee. Chaque grille porte un tableau d'amendements dont SEULS les en-têtes sont imprimes -- «Numéro de règlement | Numéro d'article | Description de la modification | Date d'entrée en vigueur» -- sans aucune ligne remplie. Le nom de fichier ne porte aucun numero. Aucun numero verbatim => null. (A ne pas confondre avec le slug «saint-louis-de-gonzague», autre muni.)"
+      "reglement_url": null,
+      "_note": "CONTAMINATION INTER-MUNI => null, malgre un numero parfaitement lisible. Le site source du slug (sldg.ca) et son API REST WordPress (1452 medias) servent le corps «Règlement de zonage / Règlement numéro 16-125» (240 p, VERSION EN VIGUEUR EN DATE DU 12 juin 2025) — mais ce doc N'EST PAS celui de Saint-Louis-de-Gonzague-DU-CAP-TOURMENTE. Preuves: (a) la couverture p1 dit «Municipalité de Saint-Louis-de-Gonzague» tout court, jamais le nom legal complet; (b) «Cap-Tourmente» = FIND-0 sur le PLEIN TEXTE des 240 p du corps ET des 69 p de la grille; (c) CONTRE-EPREUVE MRC decisive: le corps nomme «MRC de Beauharnois-Salaberry» (p3 «Service de l'aménagement et du développement du territoire de la MRC de Beauharnois-Salaberry», p19), et «Côte-de-Beaupré» = FIND-0 sur 240 p — or Saint-Louis-de-Gonzague-du-Cap-Tourmente est dans la MRC de La Côte-de-Beaupré (Capitale-Nationale), tandis que Saint-Louis-de-Gonzague est dans Beauharnois-Salaberry (Monterégie). Donc 16-125 = le zonage de l'HOMONYME. Famille mistral-window-ne-prouve-pas-le-proprietaire / normes-homonym-muni-contamination. ⚠️ ESCALADE LANE ZONES (pas provenance): la grille SERVIE de ce slug (work/zonage-norms/.../grille.pdf, 69 p, rows=67) vient du MEME sldg.ca et est elle aussi OWNER-ABSENT + Cap-Tourmente FIND-0 => les normes servies sous ce slug sont probablement celles de l'homonyme. Famille les-hauteurs-sert-verdun-contamination."
     },
     "sainte-adele": {
       "reglement_numero": "1314-2021-Z",
@@ -5279,11 +5279,11 @@
       "_note": "null MAINTENU, RAISON CORRIGEE (l'ancienne est factuellement fausse). L'ancien _note affirmait «il est MUET sur le numero: balayage PLEIN TEXTE des 47 pages sur «zonage numéro» = FIND-0, et les seules lignes captees sont l'en-tete «RÈGLEMENT DE ZONAGE» (p1-p5), sans numero». C'est FAUX: le motif cherche («zonage numéro») ne matche pas la forme reellement employee («zonage no.»). Le doc N'EST PAS muet — il porte son emplacement de numero, p47 verbatim: «Ce Tableau des spécifications fait partie intégrante du règlement de zonage no.XXX-2004 .» suivi de «Authentifié ce jour ___». Le null tient donc pour une raison DIFFERENTE et plus forte: le numero est reste au GABARIT — «XXX» est un placeholder litteral, jamais renseigne (meme famille que denholm «RÈGLEMENT NUMÉRO __________» et tres-saint-redempteur «ADOPTION : XXX»). PIEGE ECARTE: «2004» est un millesime lisible et tentant, mais il n'est que le suffixe d'un numero incomplet — sans le prefixe on ne peut ni stamper le numero, ni adosser le millesime a un numero prouve => les 2 restent null. ETAPE inchangee = acquerir le CORPS du reglement de Labrecque (le doc local `chapitre-10-tableau-specifications.pdf` n'est que le chapitre 10; gate proprietaire OK, 47 occurrences «Labrecque»), le corps portera le numero reel dont «XXX-2004» est le gabarit. Motif [[null-verdict-perime-par-depot-amont]]: raison re-ecrite pour que le prochain agent ne re-teste pas le mauvais motif."
     },
     "matane": {
-      "reglement_numero": null,
+      "reglement_numero": "VM-89",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "HOLD null: GATE PROPRIETAIRE (famille normetal/authier-nord). Le numero est pourtant VERBATIM et sans ambiguite: chaque planche du doc du manifest (Reg-zonage-VM-89-codification-octobre-2025_WEB_Annexe-1-Grilles-1.pdf, 10 p) porte «CETTE GRILLE FAIT PARTIE INTÉGRANTE DU RÈGLEMENT NO VM-89» (p1, p94, p192, p288... du texte extrait), et les colonnes «révisé le / amendement» listent VM-89-1 (02-08-2004) jusqu'a VM-89-227 (27-06-2024) => VM-89 = le reglement de zonage de base, VM-89-N = ses amendements. MAIS le doc ne NOMME JAMAIS sa municipalite: 0 occurrence «Matane» sur les 10 pages (seuls «LE MAIRE / LE GREFFIER / AUTHENTIFIÉE CE JOUR» figurent, non renseignes). La seule preuve d'appartenance serait l'HOTE (www.ville.matane.qc.ca) et le nom de fichier — or ni l'URL ni le nom de fichier ne font foi (piege prouve coaticook), et «VM = Ville de Matane» est une DEDUCTION, pas du verbatim. Ecart assume avec le cas normetal (meme gate, meme verdict) pour ne pas creer de precedent «l'hote suffit». ETAPE = le CORPS du VM-89, qui nommera Matane: sonde a $0 infructueuse (.../Reg-zonage-VM-89-codification-octobre-2025_WEB.pdf => HTTP 404; page reglements-durbanisme => 0 lien PDF zonage; recherche du site => 0 PDF). Des que le corps est acquis, le stamp est immediat (numero deja tranche)."
+      "reglement_page_source": 17,
+      "reglement_url": "https://www.ville.matane.qc.ca/wp-content/uploads/2025/10/Reg-zonage-VM-89-codification-octobre-2025-Reduit.pdf",
+      "_note": "Corps obtenu a $0 via l'API REST WordPress (5496 medias); la grille servie n'etait que l'«Annexe 1 Grilles» de la meme codification. Numero VERBATIM p17, article 1, forme canonique: «1. LE TITRE ET LE NUMÉRO DU RÈGLEMENT / Le présent règlement porte le titre de \"Règlement numéro VM-89 de zonage\".» Confirme par l'en-tete «VM-89 ZONAGE - CHAPITRE I» sur chaque page. Proprietaire GATE-OK: nom-complet=75, dont «Matane du cadastre de la» (et «Matane-sur-Mer» 14x = un secteur de Matane, pas une autre muni). MILLESIME null ASSUME: l'article 264 «L'ENTRÉE EN VIGUEUR» (p309-312) n'enonce que la formule «Le présent règlement entre en vigueur conformément aux dispositions de la Loi sur l'aménagement et l'urbanisme (L.R.Q., c. A-19.1).» — aucune date d'adoption de la BASE dans les 349 pages. Le «89» de VM-89 n'est PAS expanse en 1989 (regle: jamais expanser un millesime a 2 chiffres, piege stoneham). Le pied «Mise a jour juillet 2024 / Codification administrative» date la CODIFICATION, pas l'adoption. ECARTE: VM-89-137 (2014-05-22), VM-89-224 (2023-03-06), VM-89-232, VM-89-234 = amendements."
     },
     "saint-jerome": {
       "reglement_numero": null,
