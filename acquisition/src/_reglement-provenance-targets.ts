@@ -45,6 +45,15 @@ interface Entry {
   methode?: string;
 }
 
+/** Le manifest stocke des SENTINELLES texte ('non-disponible', '-', 'n/a') dans
+ *  `source_url`. Une sentinelle est truthy: elle était comptée comme TODO-URL et
+ *  gonflait le gisement (shard 0/2: 47 « TODO-URL » annoncés pour 14 URL réelles).
+ *  Seule une URL http(s) est une piste ouvrable. */
+function httpUrl(raw: string | undefined): string | null {
+  const v = (raw ?? '').trim();
+  return /^https?:\/\//i.test(v) ? v : null;
+}
+
 async function main(): Promise<void> {
   const shardSpec = arg('shard');
   const limit = Number(arg('limit', '0'));
@@ -87,7 +96,7 @@ async function main(): Promise<void> {
     const cur = registry.slugs[slug];
     const done = cur ? (cur['reglement_numero'] ? 'CURED' : 'HOLD-NULL') : null;
     const e = bySlug.get(slug);
-    const url = e?.source_url ?? null;
+    const url = httpUrl(e?.source_url);
     rows.push({
       slug,
       url,
