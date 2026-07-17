@@ -765,6 +765,24 @@ NORMES PRESCRITES
 DISPOSITIONS PARTICULIÈRES
 Ville de Nicolet`;
 
+const PETITE_RIVIERE_U24_SOURCE_URL =
+  "https://www.petiteriviere.com/wp-content/uploads/2020/12/RE%CC%80GLEMENT-603-RELATIF-AU-ZONAGE.pdf";
+const PETITE_RIVIERE_U24_OPTS = {
+  source_url: PETITE_RIVIERE_U24_SOURCE_URL,
+  snapshot: "2026-07-06",
+};
+
+// Petite-Rivière-Saint-François, Règlement 603, PDF page 87, zone U-24: the
+// grid's storey cell is a min/max RANGE, not the arithmetic fraction one-half.
+// Reproducible derivation: `pdftotext -f 87 -l 87 -layout <pdf> -`, then retain
+// the literal ZONE/NORMES/BÂTIMENT/hauteur rows below without normalising `1/2`.
+const PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT = `
+CATÉGORIES D'USAGES                                      ZONE: U-24
+NORMES PRESCRITES
+  51 BÂTIMENT
+  52      hauteur (étages)                         max.   1/2
+`;
+
 describe("parseNumberedGrilleNativePage — deterministic $0 native-text path", () => {
   const zones = parseNumberedGrilleNativePage(NICOLET_I01_132_LAYOUT, 1, OPTS2);
 
@@ -782,6 +800,60 @@ describe("parseNumberedGrilleNativePage — deterministic $0 native-text path", 
     expect(z.frontage_min?.value).toBe(26); // terrain d'angle largeur, not BÂTIMENT (7)
     expect(z.hauteur_max?.value).toBe(10); // hauteur (m) max
     expect(z.hauteur_max?.unit).toBe("m");
+  });
+
+  it("represents U-24 height 1/2 as the 1-to-2 storey range", () => {
+    const z = parseNumberedGrilleNativePage(
+      PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT,
+      87,
+      PETITE_RIVIERE_U24_OPTS,
+    )[0]!;
+
+    expect(z.hauteur_min).toMatchObject({
+      value: 1,
+      raw: "1/2",
+      unit: "etages",
+    });
+    expect(z.hauteur_max).toMatchObject({
+      value: 2,
+      raw: "1/2",
+      unit: "etages",
+    });
+  });
+
+  it("routes U-24 through the native parser and never enqueues its page for vision/OCR", () => {
+    // This mirrors the exact native-first gate in acquisition/zonage-norms-run:
+    // header + NORMES band + at least one published norm => merge + `continue`.
+    const eligible =
+      parseZoneHeader(PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT) !== null &&
+      isNumberedGrilleSpec(PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT);
+    const nativeZones = eligible
+      ? parseNumberedGrilleNativePage(
+          PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT,
+          87,
+          PETITE_RIVIERE_U24_OPTS,
+        )
+      : [];
+    const z = nativeZones[0];
+    const publishedCount = z
+      ? [
+          z.densite,
+          z.hauteur_min,
+          z.hauteur_max,
+          z.frontage_min,
+          z.superficie_min,
+          z.marges.avant_min,
+          z.marges.laterale_min,
+          z.marges.arriere_min,
+        ].filter((f) => f && f.value !== null).length
+      : 0;
+    const wouldEnqueueOcr = !(eligible && nativeZones.length > 0 && publishedCount > 0);
+
+    expect(parseZoneHeader(PETITE_RIVIERE_U24_HEIGHT_RANGE_LAYOUT)).toBe("U-24");
+    expect(eligible).toBe(true);
+    expect(publishedCount).toBe(2);
+    expect(z?.hauteur_max?._provenance.methode).toBe("native-text/grille-spec");
+    expect(wouldEnqueueOcr).toBe(false);
   });
 
   it("matches the OCR path's values (native ⇔ OCR agreement, $0 preferred)", () => {
@@ -930,6 +1002,41 @@ describe("parseTransposedGrilleNativePage — column-aligned number+usage pairin
         expect(f!.confidence).toBeGreaterThanOrEqual(PUBLISH_THRESHOLD);
       }
     }
+  });
+});
+
+// Ragueneau "Cahier des spécifications" (Côte-Nord family, règl. 2015-03): the same
+// transposed number+usage shape, but the usage row is labelled "Affectation
+// dominante" rather than "Usage dominant". Labels/values are verbatim from p.12 of
+// reglement_2015-03_zonage_cahier_specifications.pdf; "33 H" canonicalises to the
+// SIG code "H-33".
+const RZONE_COLS = [50, 57, 64, 71];
+const RAGUENEAU_LAYOUT = [
+  placeCols([0, ...RZONE_COLS], ["GROUPE ET     Numéro de zone", "33", "34", "35", "36"]),
+  placeCols([0, ...RZONE_COLS], ["CLASSE        Affectation dominante", "H", "H", "H", "H"]),
+  placeCols([4, ...RZONE_COLS], ["Hauteur maximale (en mètres)", "9,00", "9,00", "9,00", "9,00"]),
+  placeCols([4, ...RZONE_COLS], ["Marge de recul avant", "6", "6", "6", "6"]),
+].join("\n");
+
+describe("parseTransposedGrilleNativePage — 'Affectation dominante' usage label", () => {
+  it("detects the transposed signature when the usage row says 'Affectation dominante'", () => {
+    expect(looksLikeTransposedGrille(RAGUENEAU_LAYOUT)).toBe(true);
+  });
+
+  it("pairs number+affectation per column → the REAL code ('33 H', canon H-33)", () => {
+    const zones = parseTransposedGrilleNativePage(RAGUENEAU_LAYOUT, 12, OPTS2);
+    expect(zones.map((z) => z.zone_code).sort()).toEqual(["33 H", "34 H", "35 H", "36 H"]);
+  });
+
+  it("reads the transposed norm fields by COLUMN (hauteur en mètres, marge avant)", () => {
+    const zones = parseTransposedGrilleNativePage(RAGUENEAU_LAYOUT, 12, OPTS2);
+    const z33 = tByCode(zones, "33 H");
+    expect(z33.hauteur_max?.value).toBe(9); // "9,00" FR comma
+    expect(z33.marges.avant_min?.value).toBe(6);
+  });
+
+  it("still requires BOTH literal rows (an affectation row alone proves nothing)", () => {
+    expect(looksLikeTransposedGrille("Affectation dominante   H  H  H")).toBe(false);
   });
 });
 
