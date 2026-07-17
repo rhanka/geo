@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rec": "environnemental",
+    "Rur": null,
+    "C": "commercial",
+    "Ind": "industriel",
+    "IP": null,
+    "I": null,
+    "P": null,
+    "Agr": "agricole",
+    "For": "agricole"
+  },
+  "source": "https://eastangus.ca/wp-content/uploads/2020/12/Reglement-745-Zonage.pdf",
+  "note": "Règlement de zonage numéro 745 de la Ville de East Angus, art. 5.1 « Division du territoire en zones », alinéa 1° (p. 58), verbatim: « Chaque zone est identifiée par un code qui se compose des éléments suivants : 1° Des lettres référant à un groupe de constructions et d'usages dominant : « Ra » pour résidentielle unifamiliale; « Rb » pour résidentielle bifamiliale; « Rc » pour résidentielle multifamiliale; « C » pour commercial; « Ind » pour industriel; « I » pour institutionnelle; « IP » pour institutionnelle patrimoniale; « P » pour « publique »; « Rec » pour récréative et loisir; « Agr » pour agricole; « Rur » pour rurale; « For » pour forestière; 2° Le numéro de la zone. » Confirmé mot pour mot par la légende du plan de zonage (https://eastangus.ca/wp-content/uploads/2022/05/REGLEMENT-745-CARTE-Zonage-.pdf), qui porte « Ce plan fait partie intégrante du règlement de zonage numéro 745 ». Ra/Rb/Rc « résidentielle unifamiliale/bifamiliale/multifamiliale » -> residentiel (la densité est un qualificatif). Rec « récréative et loisir » -> environnemental (le contrat range Conservation/Récréative/Faunique; « loisir » CONVERGE avec « récréative » et ne nomme pas une seconde des cinq). Agr « agricole » et For « forestière » -> agricole (règle de lane: famille Agricole/Agroforestière/Forestière). Null explicite: I « institutionnelle » et IP « institutionnelle patrimoniale » ne sont aucune des cinq catégories (« patrimoniale » = qualificatif); P « publique » est public; Rur « rurale » n'est aucune des cinq et l'art. 5.1 nomme « rurale » comme la dominance elle-même, aucune colonne « usages dominants » ne lui assignant l'Habitation. Les nulls Rur et IP sont ANTI-FALL-THROUGH (le match est longest-prefix: sans eux Rur tomberait sur R et IP sur I). La matrice des usages permis des grilles n'est pas utilisée."
+}
