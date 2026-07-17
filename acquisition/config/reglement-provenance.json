@@ -1310,11 +1310,11 @@
       "_note": "p2 (resolution d'adoption) verbatim: «RE GLEMENT NUMERO 595-16 RELATIF AU ZONAGE» et «que le conseil adopte le reglement suivant portant le numero 595-16 intitule « Reglement de zonage de la municipalite de la Paroisse de Plessisville »» = article TITRE. Corrobore par l'en-tete courant des 248 p «Municipalite de la Paroisse de Plessisville | Reglement de zonage 595-16». Millesime = «2016» porte VERBATIM par la page-titre p1 (sous «REGLEMENT DE ZONAGE / MUNICIPALITE DE LA PAROISSE DE PLESSISVILLE»), concordant avec le segment «16» du numero; le doc ne porte pas de date d'adoption jour/mois. ECARTE 364-90 = reglement REMPLACE (p2 verbatim «remplacant le reglement numero 364-90 intitule « Reglement de zonage »») -- piege type coaticook. NB: le doc est celui de l'ANCIENNE Paroisse de Plessisville (cf. chemin «reglements-ancienne-Paroisse»); c'est la source dont la grille servie est issue."
     },
     "montreal-est": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION: doc = «ANNEXE B / GRILLES DES SPECIFICATIONS» (532 p, texte natif OK). Recherche plein texte «zonage (no|num|#)|reglement (no|num|#)» = 0 match: le doc ne numerote JAMAIS son reglement parent. Les seuls verbatims numerotes sont les cases «Modifications reglementaires : 58-2016-1, 58-2016-9 a.3, 58-2016-63, 58-2016-68, 58-2016-69» = des reglements MODIFIANTS (suffixes). Le «58-2016» de base n'est ecrit nulle part dans le doc (il n'existe que dans le nom de fichier, exclu par le gate; le deduire d'un numero d'amendement est exclu aussi) => null. Meme cas que bedford--brome-missisquoi--2 / brigham."
+      "reglement_numero": "58-2016",
+      "reglement_millesime": "2016",
+      "reglement_page_source": 1,
+      "reglement_url": "https://ville.montreal-est.qc.ca/wp-content/uploads/2026/06/58-2016-Zonage-76-Du-2026-05-26-au-XXXX-XX-XX.pdf",
+      "_note": "REFUTE le verdict «bucket annexe: 58-2016 n'existe QUE dans le nom de fichier» — vrai de l'ANNEXE B (grilles des specifications), faux du CORPS, jamais ouvert jusqu'ici. Corps obtenu a $0 via l'API REST WordPress (/wp-json/wp/v2/media, 3256 medias). Numero VERBATIM p1: «Reglement 58-2016 - RÈGLEMENT DE ZONAGE» (et metadonnee PDF Title identique). Millesime 2016 = «Entree en vigueur : 2016-11-02» verbatim p1, sur la meme ligne-bloc que le numero de base. Proprietaire GATE-OK: nom-complet=12 «Montreal-Est», dont «Montreal-Est est divise en zones» — HOMONYMIE avec la ville de Montreal / l'arrondissement ECARTEE (le doc ne se dit jamais de Montreal). ECARTE: 58-2016-1 a 58-2016-22 = la table des AMENDEMENTS listee p1 sous le numero de base (58-2016-11 est meme le Subject du PDF), chacun avec son propre EEV; deduire la base d'un amendement est exclu, mais ici la base est ecrite telle quelle. ECARTE: «(76)» = numero de la mise a jour/codification, pas un reglement."
     },
     "notre-dame-de-la-merci": {
       "reglement_numero": "R-214",
@@ -1436,11 +1436,11 @@
       "_note": "p1 verbatim: «MUNICIPALITE DE LANDRIENNE / RÈGLEMENT DE ZONAGE / Reglement no. 238»; confirme p2: «REGLEMENT DE ZONAGE / REGLEMENT NUMERO 238 / CE DOCUMENT CONSTITUE UNE COPIE CONFORME DE L'ORIGINAL DU REGLEMENT DE ZONAGE». Millesime null: la page de garde porte «Adopte le :» et «Entree en vigueur le :» VIDES, et le tableau «MISES A JOUR DU REGLEMENT DE ZONAGE NO. 238» (p3) est vide (colonnes Note / Reglement # / Entree en vigueur sans ligne). Le filigrane «PROJET» n'infirme pas le numero (verbatim en 4 endroits, dont la copie conforme)."
     },
     "lac-superieur": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "PIEGE URL type coaticook. Doc = PLAN DE ZONAGE (carte, 1 p, texte natif OK). p1 verbatim: «Reglement de zonage / Municipalite de Lac Superieur / PLAN DE ZONAGE» -- SANS numero -- et cartouche «Approbation: 1 : 25 000 30 mars 2015 / Plan de zonage mis a jour novembre 2022». Recherche plein texte «560» = 0 match: le «2015-560» n'existe que dans le nom de fichier (2015-560-Plan-de-zonage-Annexe-A) => ecarte par le gate (jamais deduire de l'URL). Millesime seul (2015) non stampe: sans numero, immo n'affiche rien."
+      "reglement_numero": "2015-560",
+      "reglement_millesime": "2015",
+      "reglement_page_source": 1,
+      "reglement_url": "https://muni.lacsuperieur.qc.ca/wp-content/uploads/2025/11/2015-560-Reglement-de-zonage-m.a.j.-nov.-2025.pdf",
+      "_note": "CORPS obtenu a $0 par l'API REST WordPress (1219 medias). La cible du manifest etait «2015-560-Plan-de-zonage-Annexe-A-m.a.j.-25-11-22.pdf» = une ANNEXE (le PLAN), d'ou 1 seule zone lue; le CORPS n'avait jamais ete ouvert. Proprietaire: OWNER-OK (p1 «PROVINCE DE QUEBEC / MRC DES LAURENTIDES / MUNICIPALITE DE LAC-SUPERIEUR», puis «Municipalite de Lac-Superieur» en en-tete de chaque page). NUMERO verbatim p1 (cartouche): «Reglement de zonage / Numero 2015-560». MILLESIME verbatim p1: «Avis de motion le : 10 avril 2015 / Reglement adopte le : 5 juin 2015 / Entree en vigueur le : 23 juillet 2015» => 2015 (l'adoption ET l'entree en vigueur tombent la meme annee, aucune ambiguite). CANDIDAT ECARTE: «2026-682», publie sur le meme portail sous le titre «SECOND PROJET DE REGLEMENT NUMERO 2026-682» et «2026-682_PROJET_1ER_Zonage_2015-560» — c'est un PROJET de refonte du zonage, non en vigueur (les projets sont ecartes par la lane, cf. schefferville/saint-antonin); le document servi reste le 2015-560, dont la mise a jour de nov. 2025 est la plus recente version administrative."
     },
     "la-presentation": {
       "reglement_numero": null,
@@ -1534,11 +1534,11 @@
       "_note": "p1 verbatim (page de titre MRC de Temiscamingue): «REGLEMENTATION MUNICIPALE D'URBANISME / MUNICIPALITE DE LORRAINVILLE / RÈGLEMENT DE ZONAGE / NO 05-08-95 / DATE : 22 AOUT 1995» + «ENTREE EN VIGUEUR : 14 FEVRIER 1996». Millesime = 1995 (annee du reglement, coherente avec le «95» du numero); l'entree en vigueur (1996) est posterieure -- les deux dates sont portees par le doc, on retient l'annee d'adoption comme partout ailleurs dans ce registre. Le nom de fichier ne porte aucun numero."
     },
     "les-coteaux": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION (meme cas que rawdon). Doc = «Annexe 1 – Grille de specifications» (157 p, texte natif OK), p1 en-tete «Municipalite de Les Coteaux / Annexe 1 – Grille de specifications / Zone agricole A-101» -- SANS numero de reglement parent. Recherche plein texte «zonage (no|num|#)|reglement (no|num|#)» = 0 match. Les seules occurrences de «317» sont des cases de la colonne «N règlement / d'adoption» des grilles: «317-01 11-06-2026», «317-1» = le reglement MODIFIANT. Le «R317» de base n'est jamais ecrit seul (il n'existe que dans le nom de fichier R317_Annexe-1_...); le deduire d'un numero d'amendement est exclu par le gate => null."
+      "reglement_numero": "317",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 1,
+      "reglement_url": "https://les-coteaux.qc.ca/wp-content/uploads/2026/06/R317_zonage_codifie_20260611.pdf",
+      "_note": "REFUTE le verdict «bucket annexe: R317 n'existe QUE dans le nom de fichier, 0 match plein texte» — ce fait etait vrai de l'ANNEXE (grilles) qui etait le seul doc lu; le CORPS n'avait jamais ete ouvert. Corps obtenu a $0 via l'API REST WordPress (/wp-json/wp/v2/media, 2169 medias) qui le publie sous titre «317 - Reglement de zonage». Numero VERBATIM p1: «Reglement de zonage / Reglement no 317»; confirme p2 «Reglement de zonage no 317» et en-tete «RÈGLEMENT DE ZONAGE N° 317». Proprietaire GATE-OK: nom-complet=8, jeton «coteaux»=344, dont «Les Coteaux Reglement de zonage no». Millesime 2025 = adoption verbatim p1 «Adoption : 15 septembre 2025» + «Entree en vigueur : 12 novembre 2025», concordant avec p332 «ADOPTION DU RÈGLEMENT Le 20 janvier 2025 / RÉADOPTION DU RÈGLEMENT Le 15 septembre 2025» — les 3 dates tombent en 2025, aucune ambiguite. ECARTE: «19» (= R19_zonage_codifie, l'ANCIEN reglement de zonage, que le 317 remplace: p3 «CONSIDÉRANT QU'il est opportun de remplacer le reglement de zonage a la suite de l'adoption du plan d'urbanisme revise»). ECARTE: «317-01» (amendement en consultation, avis public 2026-03-24). ECARTE: «19-2023-02»/«19-2023-03» (amendements de l'ancien)."
     },
     "riviere-bleue": {
       "reglement_numero": "2015-364",
@@ -1793,11 +1793,11 @@
       "_note": "LIEN MORT: le source_url du manifest «https://www.lac-sainte-marie.com/images/reglements/reglement-2024-08-002-grilles.pdf» repond HTTP 404. Le «2024-08-002» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL."
     },
     "lange-gardien--les-collines-de-loutaouais": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://municipalitedelangegardien.com/wp-content/uploads/2025/05/20240517-Annexe-3-Grilles-zonage.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "2025-008",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 1,
+      "reglement_url": "https://municipalitedelangegardien.com/wp-content/uploads/2025/05/Reglement-de-zonage_final.pdf",
+      "_note": "REFUTATION du null precedent, qui etait une CIBLE: «LIEN MORT: le source_url du manifest «...20240517-Annexe-3-Grilles-zonage.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1).» — la re-decouverte a ete faite a $0 par l'API REST WordPress (1942 medias): le fichier mort a simplement ete RENOMME («20240517-Annexe-3-LAnge-Gardien-Grilles-de-zonage-finale.pdf»), et le portail publie en prime le CORPS, jamais lu. NUMERO verbatim p1 (cartouche): «MUNICIPALITE DE L'ANGE-GARDIEN / REGLEMENT DE ZONAGE / REGLEMENT NUMERO 2025-008». MILLESIME verbatim p1: «ENTRE EN VIGUEUR LE 23 mai 2025» => 2025. NB: la clause de titre («Le present reglement est intitule « Reglement de zonage ».») ne numerote PAS le reglement; le numero vient du cartouche. Ce n'est PAS un projet: le portail publie aussi «Reglement-de-zonage_Deuxieme-projet.pdf» (mars 2025), document DISTINCT et ecarte; celui retenu porte la mention d'entree en vigueur. GATE HOMONYME (il existe deux L'Ange-Gardien au QC: MRC Les Collines-de-l'Outaouais et MRC La Cote-de-Beaupre): le DOCUMENT ne discrimine pas — il ne nomme ni MRC ni toponyme — donc le gate est leve par le PORTAIL et non par le doc, a dire honnetement: municipalitedelangegardien.com est le hostname que le manifest attribue deja a ce slug (le source_url mort en venait), et il publie «MRC des Collines», «Defi des Collines sans tondeuse», «AFF_11x17_Collinessanstondeuse_Les Collines» => c'est bien L'Ange-Gardien des Collines-de-l'Outaouais. Preuve indirecte mais concordante; si un doute surgit, le point faible est ici."
     },
     "lisle-aux-coudres": {
       "reglement_numero": null,
