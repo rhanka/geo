@@ -540,11 +540,11 @@
       "_note": "DOC MUET: PDF = «Annexe I - Grille de specifications et des usages» (73 p, texte natif OK), 0 motif «Reglement ... numero X». Le «2025-11-10» du nom de fichier est une date de version, pas un numero => null."
     },
     "brossard": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "PIEGE URL type coaticook: PDF = «GRILLE DES USAGES ET NORMES» zones 001-041 (85 p, texte natif OK), 0 motif «Reglement ... numero X» dans le document. L'URL porte «REG-362» = candidat NON RETENU (gate: jamais deduire du nom de fichier) => null."
+      "reglement_numero": "REG-362",
+      "reglement_millesime": "2016",
+      "reglement_page_source": 1,
+      "reglement_url": "https://brossard.ca/app/uploads/2026/03/REG-362_ReglementZonage_CA_2026-03-04.pdf",
+      "_note": "REFUTE la _note precedente («PIEGE URL type coaticook ... L'URL porte REG-362 = candidat NON RETENU => null»): elle etait JUSTE sur ce qu'elle avait lu (l'annexe B des grilles, 85 p, muette) et a eu raison de refuser de deduire le numero de l'URL — mais c'etait un defaut de DECOUVERTE du corps, pas une absence. Le corps EXISTE et confirme le candidat par lecture directe. CORPS (583 p, natif) decouvert via l'API REST WordPress (brossard.ca/wp-json/wp/v2/media, x-wp-total=5319) — le source_url du manifest ne servait que l'annexe B des grilles. Numero verbatim p1, apres le preambule: «LE CONSEIL MUNICIPAL DÉCRÈTE CE QUI SUIT : / RÈGLEMENT NUMÉRO REG-362 / RÈGLEMENT DE ZONAGE / CODIFICATION ADMINISTRATIVE». Proprietaire nomme verbatim p1: «une seance du conseil municipal de la Ville de Brossard». MILLESIME 2016 = adoption verbatim p1: «CONSIDÉRANT QU'à une séance du conseil municipal de la Ville de Brossard, tenue le 6 décembre 2016» (avis de motion 14 novembre 2016). Le «2026-03-04» du nom de fichier est la date de la CODIFICATION, pas l'adoption; la table de codification p1 liste les amendements posterieurs (REG-362-01 (2017-04-28) ... REG-362-05 (2018-03-27)), ce qui confirme REG-362 comme reglement de BASE et non un amendement."
     },
     "cap-saint-ignace": {
       "reglement_numero": "270",
@@ -1828,11 +1828,11 @@
       "_note": "LIEN MORT: le source_url du manifest «https://www.montsaintmichel.ca/sites/www.montsaintmichel.ca/files/Grilles_specifications_R257.pdf» repond HTTP 404. Le «R257» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL."
     },
     "montreal-ouest": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET (type barkmere): PDF = «GRILLE DES SPÉCIFICATIONS / Annexe 2 du Règlement de zonage / VILLE DE MONTRÉAL-OUEST» (55 p, texte natif OK). L'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part (0 motif «Reglement ... numero X») => null."
+      "reglement_numero": "2020-002",
+      "reglement_millesime": "2020",
+      "reglement_page_source": 1,
+      "reglement_url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf",
+      "_note": "REFUTE la _note precedente («DOC MUET (type barkmere) ... l'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part => null»): elle etait JUSTE sur ce qu'elle avait lu (l'Annexe 2 des grilles, 55 p) — defaut de DECOUVERTE du corps, pas une absence. CORPS consolide (128 p, natif) decouvert via l'API REST WordPress (montreal-ouest.ca/wp-json/wp/v2/media, x-wp-total=4079) — le source_url du manifest ne servait que «Final-Grilles-modifiees-FRA.pdf». Numero + proprietaire verbatim p1: «VILLE DE MONTRÉAL-OUEST / RÈGLEMENT NO 2020-002 – RÈGLEMENT PORTANT SUR LA REFONTE DU RÈGLEMENT DE ZONAGE DE LA VILLE DE MONTRÉAL-OUEST ET MODIFIANT DIVERSES AUTRES DISPOSITIONS DE CELUI-CI», repris p2 «RÈGLEMENT DE ZONAGE NO 2020-002». MILLESIME 2020 = dates verbatim p2: «AVIS DE MOTION : 24 FÉVRIER 2020 / ADOPTION : 30 MARS 2020 / ENTRÉE EN VIGUEUR : 8 AVRIL 2020». Le titre du fichier dit «Consolidé 2026» mais la table p2 «Modifications au règlement n º 2020-002» (2023-004, 2024-003, 2024-005) prouve que 2020-002 est le reglement de BASE refondu, pas un amendement. Muni bilingue: le mot-cle francophone «règlement numéro» est present, mais les freres anglais disent «By-Law amending zoning by-law-2020-002» — coherent."
     },
     "notre-dame-de-lourdes--joliette": {
       "reglement_numero": null,
@@ -2745,11 +2745,11 @@
       "_note": "DOC MUET (type barkmere): PDF = grille des usages et normes d'implantation (4 p, texte natif OK). En-tete de CHAQUE page verbatim: «Annexe V, Reglement de zonage, Saint-Majorique-de-Grantham» -- l'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part (3 occurrences de «reglement», toutes cet en-tete). Le nom de fichier «Usages et normes dimplantation.pdf» ne porte aucun numero => null."
     },
     "saint-odilon-de-cranbourne": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "PIEGE URL type coaticook + doc muet: PDF = Annexe B, «Grille des specifications des usages» (4 p, texte natif OK). Pied de CHAQUE page: «MUNICIPALITE DE SAINT-ODILON-DE-CRANBOURNE / REGLEMENT DE ZONAGE PAGE B-I» -- le doc se declare grille DU reglement de zonage sans jamais le numeroter (0 motif «Reglement ... numero X»). Les «394-2021» et «423-2024» du nom de fichier sont des candidats NON RETENUS (gate: jamais deduire de l'URL) => null."
+      "reglement_numero": "394-2021",
+      "reglement_millesime": "2022",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saint-odilon.qc.ca/wp-content/uploads/2022/06/394-2021-Zonage.pdf",
+      "_note": "REFUTE la _note precedente («PIEGE URL type coaticook + doc muet ... les 394-2021 et 423-2024 du nom de fichier sont des candidats NON RETENUS => null»): elle etait JUSTE sur ce qu'elle avait lu (l'Annexe B, 4 p, qui se declare grille DU reglement de zonage sans jamais le numeroter) — defaut de DECOUVERTE du corps, pas une absence. CORPS (108 p, natif) decouvert via l'API REST WordPress (www.saint-odilon.qc.ca/wp-json/wp/v2/media, x-wp-total=898) — le source_url du manifest ne servait que la grille de specifications. Numero verbatim p1: «Règlement de zonage / Règlement 394-2021 / Adopté le 7 février 2022 / Entré en vigueur le 24 mars 2022», confirme p2 «Règlement de zonage / Règlement numéro 394-2021». Proprietaire nomme verbatim p1: «Municipalité de Saint-Odilon-de-Cranbourne». MILLESIME 2022 et NON 2021: piege de l'annee-du-numero — le doc DATE lui-meme son adoption p2 «Date d'adoption du règlement : 7 février 2022» et «Date d'entrée en vigueur : 24 mars 2022»; le «2021» du numero n'est que l'annee de l'avis de motion (p2: «Date de l'avis de motion : 15 novembre 2021»). ECARTE: le frere «394-2021-Zonage-1er-projet.pdf» (PROJET) et «383-2020-2e-projet-modification-du-rglement-de-zonage-324-2014.pdf» (projet d'amendement de l'ANCIEN zonage 324-2014, abroge)."
     },
     "saint-juste-du-lac": {
       "reglement_numero": null,
