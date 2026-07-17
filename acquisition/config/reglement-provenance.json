@@ -65,11 +65,11 @@
       "_note": "ANTI-INVENTION => null. Le doc local (16 p) est un extrait de grilles: p1 = «ZONE : H-0005 / GRILLE DES USAGES ET DES NORMES». Aucun numero de reglement nulle part. Defaut de DECOUVERTE (il manque le corps)."
     },
     "sorel-tracy": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local (745 p) est l'annexe des grilles: entete de chaque page = «GRILLE DES SPÉCIFICATIONS / Règlement de zonage / Annexe « B »» — le mot «Règlement de zonage» y figure SANS numero (faux positif de motif). Le manifest ne pointe que le portail HTML ville.sorel-tracy.qc.ca/.../reglementation-durbanisme. Defaut de DECOUVERTE (il manque le corps)."
+      "reglement_numero": "2222",
+      "reglement_millesime": "2013",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.ville.sorel-tracy.qc.ca/storage/app/media/services/services-aux-citoyens/reglements-municipaux/urbanisme/2222_web_adm_zon_20.pdf",
+      "_note": "CURED (etait HOLD-NULL 'defaut de DECOUVERTE': la _note precedente n'avait lu que l'annexe B des grilles -745 p, en-tete sans numero-). Corps 521 p re-decouvert a $0 (WebFetch page reglements + prefixe OctoberCMS /storage/app/media/ -- les liens /services/ 404, /storage/app/media/services/ = 200). VERBATIM p1: «VILLE DE SOREL-TRACY / RÈGLEMENT DE ZONAGE / Règlement numéro 2222 / PROVINCE DE QUÉBEC / RÈGLEMENT NUMÉRO 2222 / AVIS DE MOTION : 18 février 2013 / ADOPTION : 25 février 2013 / ENTRÉE EN VIGUEUR : 15 mars 2013». Millesime=2013 = adoption verbatim (EEV 15 mars 2013). Base 2222 confirmee par les tables d'amendements (Numero du reglement / Date d'entree en vigueur). Proprietaire OK «VILLE DE SOREL-TRACY»."
     },
     "notre-dame-du-mont-carmel": {
       "reglement_numero": null,
@@ -4663,11 +4663,11 @@
       "_note": "ANTI-INVENTION => null. LE DOSSIER DE SLUG MENT: work/zonage-norms/saint-jacques-de-leeds/grille.pdf porte le reglement d'une AUTRE municipalite — SAINT-JACQUES (MRC de Montcalm, Lanaudiere) — alors que Saint-Jacques-de-Leeds est dans la MRC des Appalaches (Chaudiere-Appalaches). Preuves verbatim: p1 «MUNICIPALITÉ DE SAINT-JACQUES» (jamais «de-Leeds»); p2 «Attendu que la Municipalité régionale de comté de Montcalm a adopté un schéma d'aménagement révisé / entré en vigueur le 8 mai 2009 ;» et «Et résolu à l'unanimité que le conseil de la Municipalité de Saint-Jacques adopte ce qui suit :»; entete de chaque page «Municipalité de Saint-Jacques». Gate proprietaire: OWNER-WEAK, nom-complet=0 (le nom COMPLET du slug n'apparait pas une seule fois dans 246 pages) alors que le jeton «jacques» sort 263x — exactement le profil du piege de prefixe. Le numero «Règlement de zonage numéro 011-2022» (p3) est donc REEL mais appartient a Saint-Jacques; le stamper aurait servi a immo le zonage d'une autre muni, avec numero et dates parfaitement propres. 4e cas mesure de cette famille (apres authier, saint-camille, TNO)."
     },
     "saint-joseph-de-coleraine": {
-      "reglement_numero": null,
+      "reglement_numero": "376",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "MAUVAIS TYPE DE DOCUMENT => null. Le doc local (grille.pdf, 9 p) n'est pas un reglement municipal de zonage mais un reglement de la MRC portant sur le SCHEMA D'AMENAGEMENT, et de surcroit un PROJET: p1 «Règlement numéro 205 (projet) amendant le schéma d’aménagement révisé afin...», entete de chaque page «MRC des Appalaches / Projet de règlement numéro 205», corps «La carte des grandes affectations du territoire, introduite par le règlement numéro 150, est modifiée...», et p4 «Adoption du projet : 14 juillet 2021 / Adoption du règlement : [vide] / Entrée en vigueur : [vide]». ATTENTION: le gate propriétaire rend OWNER-OK (nom-complet=4) — FAUX POSITIF, le doc NOMME la muni («Saint-Joseph-de-Coleraine demande à la MRC») parce qu'elle est l'objet de l'amendement, pas son auteur. OWNER-OK ne prouve donc PAS le bon type de doc (meme motif que palmarolle=TNO, competence MRC). Ecartes: 205 (projet MRC), 150 (schema). Defaut de DECOUVERTE: le reglement de zonage municipal n'est pas sur le disque."
+      "_note": "CURED (le disque a bouge, null-verdict-perime-par-depot-amont): le _note precedent tenait null sur le SEUL grille.pdf (9 p = reglement MRC des Appalaches, SCHEMA d'amenagement, PROJET 205, mauvais type). Depuis, le CORPS a ete depose localement work/zonage-norms/saint-joseph-de-coleraine/reglement-376.pdf (228 p, natif Word). NUMERO verbatim couverture p1: «MUNICIPALITÉ DE SAINT-JOSEPH-DE-COLERAINE / RÈGLEMENT DE ZONAGE NUMÉRO 376 / ET LES AMENDEMENTS NUMÉROS 385, 388, 389, ... 662-2021», repris «PROVINCE DE QUÉBEC / MRC DE L'AMIANTE / MUNICIPALITÉ DE SAINT-JOSEPH-DE-COLERAINE / RÈGLEMENT DE ZONAGE NUMÉRO 376» et la mise en garde «le règlement de zonage 376 et ses amendements [...] adoptés par le conseil de la municipalité de Saint-Joseph-de-Coleraine». OWNER-OK (muni nommee, MRC de l'Amiante = correcte, homonyme absent). Base = 376 (document de codification a jour de l'amendement 662-2021); ECARTES tous les amendements listes 385..662-2021, et 205/150 (schema MRC de l'ancien doc). MILLESIME null: AUCUNE date d'adoption/entree en vigueur verbatim du BASE 376 dans le doc (les seules dates sont celles des amendements year-suffixes et la prose «entree en vigueur du premier reglement municipal»); ne pas expanser une annee depuis le numero. reglement_url null: numero lu sur la copie corpus locale (portail WebLex gestionweblex, meme source que weblex-r-glement-666-2022...); URL publique du 376 a back-filler (defaut de DECOUVERTE d'URL, pas de numero). page_source=1 (couverture)."
     },
     "saint-celestin--nicolet-yamaska": {
       "reglement_numero": "311",
