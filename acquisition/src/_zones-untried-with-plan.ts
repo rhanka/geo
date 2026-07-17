@@ -67,13 +67,48 @@ function slugOf(path: string, pool: string[]): string | null {
   return null;
 }
 
-/** Slugs portant une trace de run (rapport OU GcpFile). */
+/**
+ * Slugs portant une trace de run (rapport OU GcpFile).
+ *
+ * ⚠️ Ne PAS se limiter à `work/gcp/` : des runs déposent leur rapport à côté du
+ * PDF, dans `work/zones-recalage/<shard>/` (mesuré : `eastman` y a
+ * `eastman-perimetre-t2-report.json` + `-disambig-report.json`, ~20 tentatives,
+ * et un balayage `work/gcp`-seul le recomptait « jamais tenté » à chaque passe).
+ */
 const tried = new Set<string>();
-for (const f of readdirSync("work/gcp")) {
-  if (!f.endsWith(".json")) continue;
-  const s = slugOf(f, allByLen);
-  if (s) tried.add(s);
+/**
+ * `anyJson` : dans `work/gcp/` TOUT .json est une trace de run (c'est le dossier
+ * des calages). Ailleurs, filtrer sur le nom — `work/zones-recalage/` contient
+ * aussi des .json de données qui ne prouvent aucune tentative.
+ */
+function collectRunTraces(dir: string, anyJson: boolean): void {
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return;
+  }
+  for (const e of entries) {
+    const p = join(dir, e);
+    let st;
+    try {
+      st = statSync(p);
+    } catch {
+      continue;
+    }
+    if (st.isDirectory()) {
+      collectRunTraces(p, anyJson);
+      continue;
+    }
+    if (!/\.json$/i.test(e)) continue;
+    // *-t2-report.json / *-disambig-report.json / *.autogcp.report.json …
+    if (!anyJson && !/gcp|report|autogcp|disambig|register|chamfer|seed/i.test(e)) continue;
+    const s = slugOf(e, allByLen);
+    if (s) tried.add(s);
+  }
 }
+collectRunTraces("work/gcp", true);
+collectRunTraces("work/zones-recalage", false);
 
 const withPlan = new Map<string, { path: string; rot: number; pages: number }[]>();
 for (const p of pdfs) {
