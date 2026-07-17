@@ -2589,6 +2589,69 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "GABARIT JAMAIS REMPLI (variante inedite du doc muet): PDF = grilles des usages/normes/dimensions (38 p, texte natif OK). Le pied de CHAQUE page porte litteralement le blanc a remplir: «Annexe \"A\" du reglement de zonage numero ___» -- le numero n'a jamais ete saisi dans le gabarit. Seul numero present, «1002-02-2021» (date 2022-03-17), figure dans le bloc «NOTES AMENDEMENTS / No. Regl. Date» = reglement MODIFIANT, ECARTE. Aucun numero de zonage verbatim => null."
+    },
+    "mont-carmel": {
+      "reglement_numero": "340-2025",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 4,
+      "reglement_url": "https://www.mont-carmel.ca/wp-content/uploads/2025/02/MTCAR_340-2025_ZONAGE_VF_28022025-1.pdf",
+      "_note": "Page reglementaire p4 verbatim: «RÈGLEMENT DE ZONAGE / Règlement numéro 340-2025». Doc = corps du reglement de zonage (239 p, texte natif). MILLESIME 2025 = annee portee verbatim p4 par les 3 lignes de statut ET par le numero. CAVEAT (dit, pas invente): le gabarit de la page de statut n'est REMPLI qu'a la ligne projet -- «ADOPTION DU PROJET 17 décembre 2025», puis «ADOPTION DU RÈGLEMENT XXXX 2025» et «ENTRÉE EN VIGUEUR XXXX 2025»: le jour/mois est reste le placeholder «XXXX», seule l'ANNEE 2025 est ecrite. Le millesime (4 chiffres) est donc verbatim; c'est la date exacte d'entree en vigueur qui est inconnue, et elle n'est pas un champ servi."
+    },
+    "saint-cyrille-de-lessard": {
+      "reglement_numero": "457-2025",
+      "reglement_millesime": "2025",
+      "reglement_page_source": 1,
+      "reglement_url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=7b84faef-f636-407f-b9e8-fc11d5f6dcbf",
+      "_note": "En-tete verbatim de CHAQUE grille (p1 et repris p2..p16): «GRILLE DE SPÉCIFICATIONS DU RÈGLEMENT DE ZONAGE N°457-2025 DE LA MUNICIPALITÉ DE SAINT-CYRILLE-DE-LESSARD» -- la grille servie nomme elle-meme son reglement parent. L'URL est un GUID gestionweblex et ne porte aucun candidat (aucun piege nom-de-fichier ici). MILLESIME = le «2025» du numero (convention du registre quand le numero porte une annee 4 chiffres, cf. alma/saint-amable): le doc ne porte AUCUNE date d'adoption ou d'entree en vigueur."
+    },
+    "saint-charles-de-bellechasse": {
+      "reglement_numero": "23-372",
+      "reglement_millesime": "2023",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saint-charles.ca/documents/44/reglementations/4846/23-372-reglement-zonage-en-vigueur.pdf",
+      "_note": "Page titre p1 verbatim: «RÈGLEMENT DE ZONAGE / MUNICIPALITÉ DE SAINT-CHARLES-DE-BELLECHASSE / Règlement 23-372 / Adoption : 1er novembre 2023 / Entrée en vigueur (publication) : 25 janvier 2024 / VERSION ADM / Dernière mise à jour : 09 janvier 2026». Le numero du nom de fichier («23-372-reglement-zonage-en-vigueur») coincide, mais il est ici CONFIRME verbatim en p1 -- ce n'est pas une lecture d'URL. MILLESIME = adoption REELLE 2023 (precedent beauceville/sainte-christine: l'adoption prime sur la publication 2024), coherent avec le «23» du numero."
+    },
+    "saint-felix-de-kingsey": {
+      "reglement_numero": "547",
+      "reglement_millesime": "2013",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saintfelixdekingsey.ca/fichiersUpload/fichiers/20250805115029-reglement-547-codification-administrative.pdf",
+      "_note": "Page titre p1 verbatim: «RÈGLEMENT DE ZONAGE / # 547 / MUNICIPALITÉ DE SAINT-FÉLIX-DE-KINGSEY / En vigueur : 12 juillet 2013 / Version administrative : Janvier 2022»; confirme par le pied de CHAQUE page: «Règlement # 547, Zonage». Le nom de fichier porte «reglement-547-codification-administrative» mais le numero est LU dans le doc (double source p1 + pied). MILLESIME = entree en vigueur verbatim 2013; le «Janvier 2022» est la date de la version administrative (codification), pas du reglement."
+    },
+    "matapedia": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://matapedialesplateaux.com/wp-content/uploads/2021/03/ANNEXE_2_Grilles_spe%CC%81cifications_St-AlexisV6.pdf",
+      "_note": "DOC MUET: annexe de grilles pures (13 p, texte natif OK), en-tete «GRILLES DE SPÉCIFICATIONS / MUNICIPALITÉ DE SAINT-ALEXIS-DE-MATAPÉDIA». ZERO occurrence des mots «reglement»/«zonage» et ZERO annee 20xx dans TOUT le document (grep sur les 13 pages) => aucun numero verbatim, null. ALERTE HORS-P0_1 (a verifier par la lane normes, ne bloque pas ce champ): le doc est celui de SAINT-ALEXIS-DE-MATAPEDIA alors que le slug servi est «matapedia» -- possible mismatch de muni sur la grille source."
+    },
+    "papineauville": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://www.papineauville.ca/application/files/5017/1525/8459/Tableau_de_la_grille_de_zonage.pdf",
+      "_note": "DOC MUET: «Tableau_de_la_grille_de_zonage.pdf» = grille transposee sur 1 seule page geante (51 codes), texte natif OK. En-tete verbatim «Grille des spécifications de zonage», sans numero ni annee. ZERO occurrence du motif «reglement numero/no/#» dans tout le doc; les seules mentions sont generiques et renvoient a des reglements TIERS: «Zone assujettie au règlement sur les plans d'aménagement d'ensemble (PAE) en vigueur». Aucun numero de zonage verbatim => null."
+    },
+    "saint-damien": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://www.st-damien.com/uploads/8/0/4/0/80408348/753_-_zonage_-_grilles_des_sp%C3%A9cifications_-_version_administrative_-_2026-04-15.pdf",
+      "_note": "PIEGE AMENDEMENT + PIEGE NOM DE FICHIER. Doc = 98 p de grilles, en-tete de chaque page «GRILLE DES SPÉCIFICATIONS / Annexe 2 du Règlement de zonage» -- l'annexe ne nomme JAMAIS le numero de son reglement parent. Le seul numero du doc est «753-21» (bloc «MODIFICATIONS / No. de règlement | Entrée en vigueur» => 753-21, 2023-09-20) = reglement MODIFIANT, ECARTE par le gate (amendement isole). Le «753» du nom de fichier est donc NON confirme verbatim: le stamper reviendrait a deduire le parent en tronquant un numero d'amendement. ECARTE aussi «règlement 770 et ses...» (renvoi vers le reglement de lotissement). null."
+    },
+    "saint-edmond-de-grantham": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://www.st-edmond-de-grantham.qc.ca/file-9720",
+      "_note": "DOC MUET: page titre p1 verbatim en entier = «ANNEXE \"B\" / La Grille des usages et normes / 2021» (51 p, texte natif OK). Le seul renvoi au parent est generique et sans numero: «Cette grille fait partie intégrante du règlement de zonage» (repete p2, p4, p6...). ZERO occurrence du motif «reglement + numero» dans tout le doc. L'URL («file-9720») est un identifiant de CMS, aucun candidat. Aucun numero verbatim => null (le «2021» de la page titre date l'annexe, pas un numero)."
+    },
+    "saint-eusebe": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://www.sainteusebe.ca/images/stories/Urbansime/St-Eus%C3%A8be_zonage_annexe_2_Grilles_specifications_St-Eus%C3%A8be.pdf",
+      "_note": "DOC MUET: annexe 2 = grille sur 1 page (texte natif OK), en-tete «Zones R / Usage et implantation permis, par classe d'usage», sans numero ni annee ni renvoi nomme au reglement parent. Le nom de fichier porte «zonage_annexe_2_Grilles_specifications» et AUCUN numero. Aucun numero verbatim => null."
     }
   }
 }
