@@ -213,6 +213,83 @@ GCP par **enregistrement d'image** (patch-matching plan↔cadastre rendu), pour 
 raster/scan sans texte ni vecteur exploitable. Wrapper **strictement local** (pas de
 fallback S3 : un report en échec ne masque jamais une dépendance réseau).
 
+**T3 RAFFINE, il n'AMORCE pas** — c'est le trou que le §6.5 comble : son
+`maxCandidateDistanceM` vaut **18 m** par défaut, donc il exige un seed déjà quasi-juste,
+et il **refuse** un `GcpFile` de moins de 3 contrôles (`t2-raster-register.ts:120-125`).
+Or le seul générateur de seed (§6.2) est **vectoriel-only**. Sur un plan raster, aucune
+des deux voies ne peut démarrer : c'est une **absence d'amorce**, pas une absence de
+méthode. Constaté et enregistré comme blocage pendant plusieurs passes
+(`work/delegation-mass/RASTER-REGISTER.md`, `zones-recalage-2026-07-10T224607Z-shard0of2.md`).
+
+### 6.5 T3 amorcé — seed chamfer depuis le cadastre IMPRIMÉ (`t3-chamfer-seed`)
+
+Le motif dominant du résidu : le plan est **collé en image** dans un corps Word / « Print
+To PDF » (`svg_points = 0`), souvent en **annexe DANS le corps** du règlement — pas à
+l'URL « zonage » de la matrice. Le §6.2 ne peut pas s'y amorcer (aucun coin vectoriel à
+apparier) et le §6.3 attend un seed que personne ne produit.
+
+**L'idée** : un plan de zonage municipal **DESSINE le cadastre** (légende « Cadastre ») —
+les lignes de lots sont imprimées sur la feuille. Le cadastre réel est déjà possédé en
+vecteur. **L'encre du plan est donc une cible de recalage.**
+`acquisition/src/lib/t3-chamfer-seed.ts` (`deriveChamferSeed`, `searchChamferPose`) :
+
+1. rendu de la page (poppler) → masque d'arêtes → **distance transform euclidienne
+   exacte** (Felzenszwalb–Huttenlocher, `distanceTransform`) bornée à la **neatline** ;
+2. le cadastre réel est échantillonné à **pas d'arc constant** (`sampleCadastreModel`) —
+   les sommets bruts se massent là où l'arpenteur a brisé une ligne, ce qui pondérerait
+   le score vers le coin de ville à la géométrie la plus bavarde ;
+3. balayage **(rotation × échelle × translation)**, grossier puis raffiné (fenêtre de
+   rotation ±2° : une feuille collée en image est rarement d'équerre) ;
+4. **chamfer asymétrique** : seul le modèle est pénalisé. La feuille imprime aussi les
+   routes, l'hydrographie et les lots des munis voisines — cette encre-là ne doit pas
+   tirer le fit.
+
+**Le point dur : l'unité du score.** Scoré en **pixels**, le chamfer asymétrique est
+**dégénéré** — rétrécir l'échelle rétrécit toute erreur, donc l'optimum fuit vers un
+modèle minuscule aggloméré sur un pâté d'encre. Mesuré sur saint-roch-ouest : verrouillage
+à `scale_ratio 0.287`, **36 m d'erreur au sol**, annoncés avec un confiant « 1,2 px ». Le
+score est donc en **MÈTRES AU SOL**, invariant d'échelle :
+
+| régime | ce qui se passe | score |
+|---|---|---|
+| échelle → 0 | `dist_px / échelle` explose | sature à `truncM` (**perdant**) |
+| échelle → ∞ | le modèle quitte le cadre | sature à `truncM` (**perdant**) |
+| **pose vraie** | les lignes de lots tombent sur les lignes imprimées | **quelques mètres** |
+
+Les deux dégénérescences **perdent** au lieu de gagner. Test verrouillé
+(`t3-chamfer-seed.test.ts`, **8/8**) : avec la bande d'échelle **ouverte à 0,1**, la vraie
+pose gagne quand même — ce n'est pas la bande qui la sauve. La bande reste un garde-fou
+secondaire, et `scale_ratio` est publié : un run collé à une borne se lit comme suspect.
+
+**Anti-invention — le seed n'est JAMAIS servi.** Tout GCP émis est `independent: false` /
+`cadastre-chamfer-seed`, donc `checkIndependentGcps` (§6.2, `t2-georef.ts`) **refuse de le
+compter comme preuve** : un seed ne peut pas être pris pour une calibration. La preuve
+reste **intégralement en aval** — T3 doit re-dériver des contrôles **indépendants**
+patch-vérifiés contre des sommets cadastraux réels sous résidu+holdout, puis la
+**couverture-lots arbitre** (§8). Un seed subtilement faux meurt là.
+
+**Deux flags qui manquaient** (`acquisition/src/t3-chamfer-seed.ts`) :
+`--dump-cadastre` (aucun script ne stageait le cadastre **local** qu'exige le §6.3, seul
+`--cadastre` = clé S3 existait ailleurs) et `--neatline` (inexistant en CLI, alors qu'une
+feuille porte souvent un **ENCART à une autre échelle** qui capte le fit).
+
+**Cas prouvé — `saint-roch-ouest`** (plan p110 du corps 151-2023, annexe 3), 5 preuves
+convergentes et **$0** :
+
+| Preuve | Mesure |
+|---|---|
+| chamfer | rot **0** (= north-up lu à l'œil), ratio **0,837**, **6,3 m** au sol, **91,7 %** d'inliers, marge **67,6 %** |
+| recoupement **indépendant** | la passe 1500Z estimait ~0,89 via la **barre d'échelle** imprimée, sans que le chamfer en sache rien |
+| T3 | **19 GCP indépendants**, résidu max **17,8 m**, holdout **16,1 m** (gate 30) |
+| gates build | 19 indépendants / **0** bbox ; labels **5/5 exact** dict-validés (grille p99, en-tête « NUMÉRO DE ZONE ») ; spatial **0,56 km** |
+| couverture-lots (§8) | **260/311 (83,6 %)** |
+| cardinal **tiers** | **2/2** (A1-1 au nord de A1-3 ; A1-4 à l'est de A1-2) |
+
+**Limite d'emprise (honnête)** : le modèle est le cadastre de **toute** la muni. Un plan
+qui n'en couvre qu'une **fraction** (feuillet « 1 de 3 », noyau urbain d'un immense
+territoire) ne peut pas converger — le chamfer chercherait à y caser tout le cadastre.
+Ce cas relève du §6.4 (multi-feuillets), feuillet par feuillet.
+
 ### 6.4 Multi-feuillets — `t2-build-multisheet.ts` (`facdcd7`)
 
 Les plans ruraux « feuillet 1 de N » sont recalés **feuillet par feuillet** (chaque
@@ -351,7 +428,8 @@ flowchart TD
   PDF[Plan de zonage PDF] --> Q1{Géoréf embarqué ?<br/>/VP /Measure/GEO /GPTS}
   Q1 -- oui --> T1[T1 géoréf embarqué]
   Q1 -- non, vectoriel --> T2[T2 --auto-seed<br/>bbox↔neatline × rotations<br/>coins de lots réels]
-  Q1 -- raster/scan --> T3[T3 raster-register<br/>patch-matching local]
+  Q1 -- raster/scan<br/>svg_points = 0 --> SEED[t3-chamfer-seed<br/>cadastre réel ↔ encre imprimée<br/>score en MÈTRES AU SOL<br/>seed independent:false]
+  SEED --> T3[T3 raster-register<br/>patch-matching local<br/>→ GCP INDÉPENDANTS]
   T1 --> L{Étiquettes ?}
   L -- texte sélectionnable --> LT[pdftotext -bbox verbatim]
   L -- glyphes --> LG[--labels gpt55 --dict<br/>vision GPT-5.5, snap dict]
@@ -390,7 +468,11 @@ anti-invention. Dépôts vérifiés sur `normalized/ca-qc-zonage/qc-zonage-<slug
 munis restantes n'ont **pas de plan PDF géoréférençable**. Les blocages observés ne sont
 plus des échecs de méthode mais des **absences d'entrée** :
 
-- plan **scan/QGIS sans texte ni vecteur** exploitable (saint-hippolyte, saint-mathieu-du-parc) ;
+- ~~plan **scan/QGIS sans texte ni vecteur** exploitable (saint-hippolyte, saint-mathieu-du-parc)~~ —
+  **partiellement levé par le §6.5** (2026-07-17) : ce n'était pas une absence d'entrée
+  mais une **absence d'amorce**. `saint-roch-ouest` est servi ainsi. Reste bloqué le plan
+  raster qui **ne dessine pas le cadastre** (rien à apparier) ou qui ne couvre qu'une
+  **fraction** de la muni (limite d'emprise, §6.5) ;
 - **codes tout-numériques glyphes** sans dictionnaire réglementaire (rougemont) — le §7.5
   ne débloque que si un `--dict` autoritaire existe ;
 - **mauvais document** (règlement scanné multi-pages, carte d'aléa sans code de zone :
@@ -436,6 +518,9 @@ T2 3-GCP/auto-seed (cf. mémoire projet `zonage-acquisition-qa-gate`).
   `acquisition/src/lib/t2-labels-gpt55.ts` (vision GPT-5.5 dict-validée) ;
   `acquisition/src/t2-build-multisheet.ts` (`--sheets`) ;
   `acquisition/src/t2-raster-register.ts` + `lib/t2-raster-register.ts` (T3) ;
+  `acquisition/src/t3-chamfer-seed.ts` + `lib/t3-chamfer-seed.ts` (§6.5 : `deriveChamferSeed`,
+  `searchChamferPose`, `distanceTransform`, `sampleCadastreModel` ; tests 8/8 dont la
+  non-régression de la dégénérescence d'échelle) ;
   `acquisition/src/t1-build.ts` (`--labels gpt55 --dict`), `lib/t1-georef.ts`.
 - Commits : `ca2a5aa` (T1 glyph-vision + durcissement gros PDF), `7e766f3` (`--auto-seed`),
   `facdcd7` (multi-feuillets), `72db439` (iso-gate), `aab83dd` (rotation-disambig),
