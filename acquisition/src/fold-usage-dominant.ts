@@ -116,13 +116,21 @@ function categoryFor(code: string, prefixMap: Record<string, MapValue>): MapValu
   return best;
 }
 
-/** Clé S3 du polygone zonage (layout plat OU sous-dossier). */
-async function zonageKey(s3: S3, slug: string): Promise<string | null> {
-  const flat = `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`;
-  if (await exists(s3, flat)) return flat;
-  const sub = `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
-  if (await exists(s3, sub)) return sub;
-  return null;
+/** Clés S3 du polygone zonage: layout plat ET sous-dossier — les DEUX quand elles
+ *  coexistent. Ne PAS s'arrêter à la première: quand les deux existent, geo-api
+ *  sert le SOUS-DOSSIER (mesuré sur boischatel puis mont-saint-hilaire 2026-07-17:
+ *  API=240 features = la clé sous-dossier, alors que la clé plate en porte 170).
+ *  Un fold qui ne stampait que la plate rapportait « OK cellsChanged=340 » pour un
+ *  servi resté null. On stampe donc chaque clé existante (idempotent, et immunisé
+ *  contre la règle de résolution de l'API). Même correctif que fold-reglement-to-zonage. */
+async function zonageKeys(s3: S3, slug: string): Promise<string[]> {
+  const candidates = [
+    `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`,
+    `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
+  ];
+  const keys: string[] = [];
+  for (const k of candidates) if (await exists(s3, k)) keys.push(k);
+  return keys;
 }
 
 interface Feature {
@@ -149,11 +157,15 @@ async function loadFeatures(
 
 /** --list-prefixes: distribution des préfixes alpha + échantillons de codes (aucun map requis). */
 async function listPrefixes(s3: S3, slug: string): Promise<void> {
-  const key = await zonageKey(s3, slug);
-  if (!key) {
+  const keys = await zonageKeys(s3, slug);
+  if (keys.length === 0) {
     console.log(`LIST ${slug} — polygone qc-zonage NON servi`);
     return;
   }
+  for (const key of keys) await listPrefixesKey(s3, slug, key);
+}
+
+async function listPrefixesKey(s3: S3, slug: string, key: string): Promise<void> {
   const { feats } = await loadFeatures(s3, key);
   const byPrefix = new Map<string, { count: number; samples: Set<string> }>();
   let noCode = 0;
@@ -185,11 +197,21 @@ async function foldSlug(s3: S3, slug: string, opts: { dryRun: boolean; strip: bo
     console.log(`SKIP ${slug} — pas de config acquisition/config/usage-dominant-map/${slug}.json`);
     return;
   }
-  const key = await zonageKey(s3, slug);
-  if (!key) {
+  const keys = await zonageKeys(s3, slug);
+  if (keys.length === 0) {
     console.log(`SKIP ${slug} — polygone qc-zonage NON servi`);
     return;
   }
+  for (const key of keys) await foldKey(s3, slug, key, map, opts);
+}
+
+async function foldKey(
+  s3: S3,
+  slug: string,
+  key: string,
+  map: UsageMap | null,
+  opts: { dryRun: boolean; strip: boolean },
+): Promise<void> {
   const { fc, feats, repaired } = await loadFeatures(s3, key);
   let changed = 0;
   let noCode = 0;
