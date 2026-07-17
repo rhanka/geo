@@ -4507,6 +4507,48 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "MAUVAIS DOCUMENT => null. Le doc local est un AVIS PUBLIC d'une seule page, a couche texte OCR fortement degradee. Titre verbatim (tel quel): «ENTRÉE EN vIGUEUR DU n RÈcr,nuENT REMrLAÇANT ln nÈcr-nMENT oÉcnÉuNr» ; corps: «municipale, le ministère des Affaires municipales et de I'Habitation (MAMH) a décrété l'entrée en vigueur du», «Le règlement entre en vigueur à compter de la date de publication de cet avis public», «décembre 2023, le présent avis public d'entrée en vigueur du règlement.» Ce n'est ni le reglement de zonage ni sa grille, et l'avis ne numerote aucun reglement de zonage. Defaut de DECOUVERTE."
+    },
+    "lassomption": {
+      "reglement_numero": "300-2015",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim en ENTETE DE CHAQUE PAGE (p1-65): «Règlement numéro 300-2015 relatif au zonage». Proprietaire verbatim, meme entete: «Ville de L’Assomption» (p1-65). ATTENTION GATE: _reglement-owner-gate rend OWNER-ABSENT sur ce slug — FAUX NEGATIF, pas une contamination: le slug «lassomption» a elide l'apostrophe de «L’Assomption», or le regex du gate ne pose des separateurs qu'ENTRE les jetons separes par un tiret; un slug d'un seul jeton ne peut pas matcher «L’Assomption». Verifie a la main via --find «assomption». MILLESIME null ASSUME (precedent lislet): le doc est le recueil de grilles, aucune date d'adoption/vigueur sur les 65 pages. Le «2015» du numero n'est PAS retenu (piege stoneham). Corpus LOCAL => url null."
+    },
+    "lepiphanie": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: le territoire du slug est couvert par DEUX reglements de zonage CONCURRENTS, un par ancienne entite (regroupement Ville+Paroisse de L’Épiphanie, 2021). Aucun numero unique n'est attribuable au polygone servi. (a) 2022-05-02-Codification-administrative-EXTERNE.pdf (318 p), p3: «MUNICIPALITÉ DE LA PAROISSE DE L’ÉPIPHANIE» + «Règlement numéro 278-07-13 - Règlement de zonage» / «Adopté le 1er octobre 2013» / «Entrée en vigueur le 10 janvier 2014». (b) 2022-05-02-Zonage-codification-administrative-externe-1.pdf (183 p), p1-2: «VILLE DE L’ÉPIPHANIE» + «RÈGLEMENT DE ZONAGE» + «RÈGLEMENT NUMÉRO 577», p4: «QUE le conseil municipal adopte le règlement n° 577, intitulé « règlement de zonage de la...»», p3: «ENTRÉE EN VIGUEUR : 23 JUIN 2015». Les deux codifications portent la MEME date d'edition (2022-05-02) => les deux sont vivantes et maintenues en parallele sur leur ancien territoire respectif. Stamper l'un des deux mettrait une provenance FAUSSE sur ~la moitie des lots. PIEGE OUTIL: _reglement-local-probe ne sonde que le PDF LE PLUS GROS et n'aurait montre que (a). ETAPE = decoupe par ancien territoire (hors P0_1) ou confirmation ville d'un reglement unifie posterieur."
+    },
+    "saint-germain-de-kamouraska": {
+      "reglement_numero": "82",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Le doc local (bylaw.pdf, 26 p) est un AMENDEMENT qui NOMME SA BASE verbatim. Titre p1: «RÈGLEMENT NUMÉRO 194 / VISANT À MODIFIER LE RÈGLEMENT DE ZONAGE NUMÉRO 82 DE LA MUNICIPALITÉ AFIN D’INTÉGRER LES DISPOSITIONS DU RÈGLEMENT DE CONTRÔLE INTÉRIMAIRE NUMÉRO 134», confirme par l'art.1: «Le règlement de zonage numéro 82 est modifié de la manière suivante :». => le reglement de ZONAGE est le 82. ECARTES: 194 (amendement isole, «QUE le présent règlement portant le numéro 194 est adopté» — c'est le doc lu, pas le zonage) et 134 (reglement de controle interimaire, ni l'un ni l'autre). PROPRIETAIRE: gate OWNER-WEAK (nom-complet=0, jeton «kamouraska»=4) — leve a la main: le nom OFFICIEL de la muni est «Saint-Germain» tout court, verbatim p1 «MUNICIPALITÉ DE SAINT-GERMAIN» + «MRC DE KAMOURASKA» et p10 «La municipalité de Saint-Germain est située dans...»; le suffixe «-de-kamouraska» du slug est un desambiguisateur de MRC, pas le toponyme. MILLESIME null: le doc ne date ni l'adoption du 82 ni celle du 194. Corpus LOCAL => url null."
+    },
+    "saint-jean-de-brebeuf": {
+      "reglement_numero": "107",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «REGLEMENT NO. 107»; l'objet ZONAGE est verbatim p2 «NO • .107» + «ZONAGE», et le corps l'ancre: p10 «Le \"plan de zonage\" de la Municipalité de Saint-Jean-de-Brébeuf élaboré par la M,R,C, de l'Amiante. Ce plan de zonage est joint au présent règlement comme \"Annexe A\".» Proprietaire OWNER-OK (nom-complet=7). Le nom de fichier (635.pdf) ne fait PAS foi et n'a PAS ete retenu. MILLESIME null ASSUME: les seules dates verbatim du doc sont des etapes PREALABLES a l'adoption — p2 «ATTENDU que le projet du présent règlement a été accepté par ce Conseil le 1er octobre 1990;» et «ATTENDU qu'une assemblée publique d'information a été tenue à Saint-Jean-de-Brébeuf le 29 octobre 1990;». L'art.12.2 «ENTREE EN VIGUEUR» (p63) n'enonce que la formule «Le présent règlement entre en vigueur conformément...», sans date. L'adoption est donc >= 29 octobre 1990 et pourrait tomber en 1991: 1990 serait DEDUIT, pas lu. Corpus LOCAL => url null."
+    },
+    "saint-jean-de-la-lande": {
+      "reglement_numero": "2015-167",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «Règlement de zonage numéro 2015-167 de la municipalité de [Saint-Jean-de-la-Lande]», confirme par l'entete de chaque page «Règlement de zonage numéro 2015-167» et par la resolution p2 «Et résolu (à l’unanimité) que le Conseil adopte le règlement de zonage # 2015-167 tel que...». Proprietaire OWNER-OK (nom-complet=7, formes «Saint-Jean-de-la-Lande»); MRC coherente: p2 «la municipalité régionale de comté de Témiscouata». MILLESIME null ASSUME: le doc est une version de TRAVAIL dont les dates sont des GABARITS NON REMPLIS — p2 «Attendu que la municipalité a adopté un nouveau plan d’urbanisme le X,» (litteralement «le X»). Aucune date d'adoption/vigueur remplie; le «10 octobre 2010» de la p2 est l'entree en vigueur du SCHEMA de la MRC, pas de ce reglement. Le «2015» du numero n'est PAS retenu (piege stoneham). Corpus LOCAL => url null."
+    },
+    "east-broughton": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Les QUATRE PDF locaux (grille.pdf, reglement.pdf, websrc.pdf, zonages-usages-generaux.pdf) sont des SCANS IMAGE sans couche texte: _reglement-owner-gate --all-pdfs rend «NO-TEXT-LAYER — route vision requise» sur les 4 (reglement.pdf = 16 p). Verdict pris sur TOUS les PDF du dossier, pas sur le seul plus gros (piege lepiphanie du meme lot). Rien n'est lisible en natif a $0 => ni numero, ni proprietaire. Defaut d'EXTRACTION (route vision), pas de decouverte. Coherent avec la memoire shard0/2: east-broughton terminal cote normes pour la meme raison."
     }
   }
 }
