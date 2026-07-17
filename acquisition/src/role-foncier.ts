@@ -308,41 +308,36 @@ function asArray<T>(v: T | T[] | undefined): T[] {
   return Array.isArray(v) ? v : [v];
 }
 
-/**
- * Parse un XML de rôle MAMH -> { matricule (RL0103Ax) -> attrs bâtiment }.
- * Une unité peut référencer N lots ; un lot vu plusieurs fois : la première
- * occurrence gagne, sauf si une occurrence ultérieure a une superficie bâtiment
- * alors que la première non (priorité aux données bâtiment) — IDENTIQUE au .py.
- */
-export function parseRole(xmlBytes: Buffer | string): Record<string, RoleAttrs> {
-  const root = xml.parse(xmlBytes.toString()) as Record<string, unknown>;
-  const rl = (root["RL"] ?? root) as Record<string, unknown>;
-  const codeGeo = txt(rl["RLM01A"]) ?? "";
-  const millesime = txt(rl["RLM02A"]) ?? "";
-
-  const lookup: Record<string, RoleAttrs> = {};
-  for (const unit of asArray(rl["RLUEx"]) as Record<string, unknown>[]) {
-    const rl0103 = unit["RL0103"] as Record<string, unknown> | undefined;
-    const matricules: string[] = [];
-    if (rl0103) {
-      for (const x of asArray(rl0103["RL0103x"]) as Record<string, unknown>[]) {
-        const ax = txt(x?.["RL0103Ax"]);
-        if (ax) matricules.push(ax);
-      }
+/** Une unité RLUEx -> ses matricules + ses attrs. null si l'unité ne référence
+ *  aucun lot (rien à joindre au cadastre). */
+function unitEntry(
+  unit: Record<string, unknown>,
+  codeGeo: string,
+  millesime: string,
+): { matricules: string[]; attrs: RoleAttrs } | null {
+  const rl0103 = unit["RL0103"] as Record<string, unknown> | undefined;
+  const matricules: string[] = [];
+  if (rl0103) {
+    for (const x of asArray(rl0103["RL0103x"]) as Record<string, unknown>[]) {
+      const ax = txt(x?.["RL0103Ax"]);
+      if (ax) matricules.push(ax);
     }
-    if (matricules.length === 0) continue;
+  }
+  if (matricules.length === 0) return null;
 
-    // Adresse civique : première occurrence RL0101x de l'unité (cohérent avec le
-    // "first occurrence wins" appliqué aux attributs). Une unité peut porter
-    // plusieurs adresses ; le rôle ne les rattache pas lot-à-lot.
-    let adresse: string | null = null;
-    const rl0101 = unit["RL0101"] as Record<string, unknown> | undefined;
-    if (rl0101) {
-      const occ = asArray(rl0101["RL0101x"])[0] as Record<string, unknown> | undefined;
-      if (occ) adresse = assembleAddress(occ);
-    }
+  // Adresse civique : première occurrence RL0101x de l'unité (cohérent avec le
+  // "first occurrence wins" appliqué aux attributs). Une unité peut porter
+  // plusieurs adresses ; le rôle ne les rattache pas lot-à-lot.
+  let adresse: string | null = null;
+  const rl0101 = unit["RL0101"] as Record<string, unknown> | undefined;
+  if (rl0101) {
+    const occ = asArray(rl0101["RL0101x"])[0] as Record<string, unknown> | undefined;
+    if (occ) adresse = assembleAddress(occ);
+  }
 
-    const attrs: RoleAttrs = {
+  return {
+    matricules,
+    attrs: {
       usage_cubf: txt(unit["RL0105A"]),
       nb_etages_max: safeInt(unit["RL0306A"]),
       annee_construction: safeInt(unit["RL0307A"]),
@@ -360,17 +355,119 @@ export function parseRole(xmlBytes: Buffer | string): Record<string, RoleAttrs> 
       _source: SOURCE_ID,
       _source_code_geo: codeGeo,
       _source_millesime: millesime,
-    };
+    },
+  };
+}
 
-    for (const m of matricules) {
-      if (!(m in lookup)) lookup[m] = attrs;
-      else if (
-        attrs.superficie_batiment_m2 !== null &&
-        lookup[m]!.superficie_batiment_m2 === null
-      ) {
-        lookup[m] = attrs;
-      }
+/** Un lot vu plusieurs fois : la première occurrence gagne, sauf si une
+ *  occurrence ultérieure a une superficie bâtiment alors que la première non
+ *  (priorité aux données bâtiment) — IDENTIQUE au .py. */
+function mergeEntry(
+  lookup: Record<string, RoleAttrs>,
+  matricules: string[],
+  attrs: RoleAttrs,
+): void {
+  for (const m of matricules) {
+    if (!(m in lookup)) lookup[m] = attrs;
+    else if (
+      attrs.superficie_batiment_m2 !== null &&
+      lookup[m]!.superficie_batiment_m2 === null
+    ) {
+      lookup[m] = attrs;
     }
+  }
+}
+
+/**
+ * Taille max d'une string Node (~512 MiB en unités UTF-16). Un Buffer UTF-8 de N
+ * octets produit toujours ≤ N unités UTF-16, donc `octets <= MAX` garantit que
+ * `.toString()` tient ; au-delà il LÈVE, d'où le chemin par fragments.
+ * Mesuré : le rôle 2026 de Montréal (66023) pèse 758 MiB.
+ */
+const MAX_STRING_LENGTH = 0x1fffffe8;
+
+const UNIT_OPEN = Buffer.from("<RLUEx");
+const UNIT_CLOSE = Buffer.from("</RLUEx>");
+/** Octets admis juste après `<RLUEx` pour que ce soit bien cette balise et non
+ *  un nom plus long (`<RLUExtra>`) : `>`, `/`, ou une espace XML. */
+const TAG_END_BYTES = new Set([0x3e, 0x2f, 0x20, 0x0a, 0x0d, 0x09]);
+
+/** Découpe le buffer en fragments `<RLUEx>…</RLUEx>`. On ne convertit en string
+ *  QUE le fragment (petit) : le document entier n'est jamais matérialisé. Les
+ *  bornes tombent sur des balises ASCII, donc jamais au milieu d'un caractère. */
+function* unitFragments(buf: Buffer): Generator<string> {
+  let pos = 0;
+  for (;;) {
+    const start = buf.indexOf(UNIT_OPEN, pos);
+    if (start < 0) return;
+    const after = buf[start + UNIT_OPEN.length];
+    if (after === undefined || !TAG_END_BYTES.has(after)) {
+      pos = start + UNIT_OPEN.length; // `<RLUExtra>` & co : pas notre balise
+      continue;
+    }
+    const end = buf.indexOf(UNIT_CLOSE, start);
+    if (end < 0) return;
+    // Une unité auto-fermante (`<RLUEx/>`) n'a pas de fermeture : sans ce garde
+    // on avalerait le `</RLUEx>` du voisin, fusionnant deux unités.
+    const nextOpen = buf.indexOf(UNIT_OPEN, start + UNIT_OPEN.length);
+    if (nextOpen >= 0 && nextOpen < end) {
+      pos = nextOpen;
+      continue;
+    }
+    const stop = end + UNIT_CLOSE.length;
+    yield buf.toString("utf8", start, stop);
+    pos = stop;
+  }
+}
+
+/** RLM01A/RLM02A vivent dans l'en-tête, avant la 1re unité — lus verbatim. */
+function headerFields(buf: Buffer): { codeGeo: string; millesime: string } {
+  const firstUnit = buf.indexOf(UNIT_OPEN);
+  const headEnd = Math.min(firstUnit < 0 ? buf.length : firstUnit, 64 * 1024);
+  const head = buf.toString("utf8", 0, headEnd);
+  return {
+    codeGeo: /<RLM01A>([^<]*)<\/RLM01A>/.exec(head)?.[1]?.trim() ?? "",
+    millesime: /<RLM02A>([^<]*)<\/RLM02A>/.exec(head)?.[1]?.trim() ?? "",
+  };
+}
+
+/**
+ * Même parse que `parseRole`, mais unité par unité, pour les rôles qui dépassent
+ * la limite de string Node. Exporté pour que le test prouve l'équivalence des
+ * deux chemins sur un même document.
+ */
+export function parseRoleLarge(buf: Buffer): Record<string, RoleAttrs> {
+  const { codeGeo, millesime } = headerFields(buf);
+  const lookup: Record<string, RoleAttrs> = {};
+  for (const fragment of unitFragments(buf)) {
+    const parsed = xml.parse(fragment) as Record<string, unknown>;
+    const unit = parsed["RLUEx"];
+    if (!unit || typeof unit !== "object") continue;
+    const entry = unitEntry(unit as Record<string, unknown>, codeGeo, millesime);
+    if (entry) mergeEntry(lookup, entry.matricules, entry.attrs);
+  }
+  return lookup;
+}
+
+/**
+ * Parse un XML de rôle MAMH -> { matricule (RL0103Ax) -> attrs bâtiment }.
+ * Une unité peut référencer N lots ; voir `mergeEntry` pour l'arbitrage.
+ * Au-delà de la limite de string Node, bascule sur le chemin par fragments —
+ * sinon `.toString()` lèverait et la muni resterait sans adresse (cf. Montréal).
+ */
+export function parseRole(xmlBytes: Buffer | string): Record<string, RoleAttrs> {
+  if (Buffer.isBuffer(xmlBytes) && xmlBytes.length > MAX_STRING_LENGTH) {
+    return parseRoleLarge(xmlBytes);
+  }
+  const root = xml.parse(xmlBytes.toString()) as Record<string, unknown>;
+  const rl = (root["RL"] ?? root) as Record<string, unknown>;
+  const codeGeo = txt(rl["RLM01A"]) ?? "";
+  const millesime = txt(rl["RLM02A"]) ?? "";
+
+  const lookup: Record<string, RoleAttrs> = {};
+  for (const unit of asArray(rl["RLUEx"]) as Record<string, unknown>[]) {
+    const entry = unitEntry(unit, codeGeo, millesime);
+    if (entry) mergeEntry(lookup, entry.matricules, entry.attrs);
   }
   return lookup;
 }
