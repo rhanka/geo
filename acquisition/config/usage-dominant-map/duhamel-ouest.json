@@ -1,0 +1,24 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "R/EVh": null,
+    "Ca": null,
+    "Cb": null,
+    "Aa": "agricole",
+    "Aa/R": null,
+    "Aa/Ca": null,
+    "Aa/Cb": null,
+    "AaCa": null,
+    "Ab": "agricole",
+    "Ax": "agricole",
+    "F": "agricole",
+    "EVg": "environnemental",
+    "EVh": "environnemental",
+    "EVm": "environnemental",
+    "EVt": "environnemental"
+  },
+  "source": "https://www.mrctemiscamingue.org/app/uploads/2026/06/duhamel-ouest-reglement-de-zonage-6.pdf — Règlement de zonage No 196, Municipalité de Duhamel-Ouest (corps, gabarit MRC de Témiscamingue; lu localement work/zonage-norms/duhamel-ouest/grille.pdf)",
+  "note": "Article 5.2 « LES ZONES »: « Les différentes zones se déclinent selon les catégories suivantes, déterminées selon les usages principaux qui y sont autorisés : » — Le zonage résidentiel : R Résidentielle ; Ra Résidentielle avec restriction ; Rb Résidentielle sans maison mobile ; Rv Résidentielle secteur villégiature. Le zonage commercial : Ca Résidentielle et commerciale, petites superficies ; Cb Résidentielle et commerciale, grandes superficies. Le zonage espace vert : EVg Espace vert (golf) ; EVh Espace vert (site historique) ; EVm Espace vert (marais) ; EVT Espace vert (tampon). Le zonage agricole : Aa Agricole sans restriction ; Ab Agricole sans déboisement ; Ax Agricole sans construction ; Aa/R Agricole sans restriction et résidentielle ; Aa/Ca Agricole sans restriction, résidentielle et commerciale, petites superficies ; Aa/Cb Agricole sans restriction, résidentielle et commerciale, grandes superficies. Le zonage forestier : F Forestière. Mapping VERBATIM (match longest-prefix sur le code complet): R/Ra/Rb -> residentiel ; Aa/Ab/Ax -> agricole (Agricole sans …) ; F -> agricole (Forestière) ; EVg/EVh/EVm/EVt -> environnemental (Espace vert). Null explicite (DUALES/COMPOSITES, jamais de dominante forcée): Ca et Cb « Résidentielle ET commerciale » -> null ; Aa/R « Agricole ET résidentielle » -> null ; Aa/Ca et Aa/Cb « Agricole, résidentielle ET commerciale » -> null (AaCa = forme sans barre oblique de Aa/Ca servie AaCa1) ; R/EVh « Résidentielle / Espace vert historique » -> null (composite servi R/EVh1). Les 8 zones du bucket alpha « Aa » servi sont TOUTES des composites Aa/R* ou Aa/Cb* (aucune Aa pure) -> null via les clés longues; « Aa » -> agricole reste comme base verbatim (0 zone servie). La matrice des usages (sections II-V) n'est pas utilisée."
+}
