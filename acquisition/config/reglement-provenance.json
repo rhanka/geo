@@ -1,6 +1,62 @@
 {
   "$comment": "Provenance règlement par slug (P0a lane, demande Steve/immo 2026-07-12). 4 champs servis par ligne de grille: reglement_numero/millesime/page_source/url. Anti-invention: seulement des valeurs réelles; champ inconnu = null. Pilote MT/Sutton/Alma; à généraliser aux 817 (depuis _reglement/_source_url des dépôts ou registre par muni).",
   "slugs": {
+    "trecesson": {
+      "reglement_numero": "224",
+      "reglement_millesime": "2015",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim p1 «Règlement no. 224» / p2 «RÈGLEMENT NUMÉRO 224», proprietaire verbatim p3: «Municipalité du Canton de Trécesson - Règlement de zonage Numéro 224». Millesime = adoption verbatim p1: «Adopté le : 3 mars 2015» (entree en vigueur «17 juin 2015», meme annee). Corpus LOCAL (le manifest ne portait que le domaine nu municipalitedetrecesson.com) => url null."
+    },
+    "saint-albert": {
+      "reglement_numero": "2007-08",
+      "reglement_millesime": "2008",
+      "reglement_page_source": 3,
+      "reglement_url": null,
+      "_note": "Numero verbatim p3: «Règlement de zonage n° 2007-08», proprietaire «MUNICIPALITÉ DE SAINT-ALBERT». Millesime = ADOPTION verbatim p3: «Adoption : 7 janvier 2008» => 2008 et NON 2007. NOUVELLE CONFIRMATION du piege stoneham dans ce corpus: le numero porte «2007» mais le reglement a ete adopte en 2008 (et n'est entre en vigueur qu'en 2009: «Entrée en vigueur : 5 janvier 2009»). Corpus LOCAL => url null."
+    },
+    "saint-didace": {
+      "reglement_numero": "60-89-2",
+      "reglement_millesime": "1989",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim art.1.1: «peut être cité sous le nom de \"Règlement de zonage\" ou \"Règlement numéro 60-89-2\".» Proprietaire verbatim: «Corporation Municipale de la Paroisse de Saint-Didace.» Millesime = entree en vigueur verbatim couverture p1: «Entré en vigueur le 6 janvier 1989» (le doc est la «version administrative», «À jour au 26 janvier 2026»; l'art.1.2 ENTREE EN VIGUEUR n'enonce que la formule du certificat de conformite, sans date). Corpus LOCAL => url null."
+    },
+    "saint-julien": {
+      "reglement_numero": "243",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 243», confirme p2: «Le présent document constitue une codification administrative du règlement no 243 adopté par le conseil de la municipalité de Saint-Julien.» ECARTE: le «règlement numéro 217» cite p3 est l'ANCIEN zonage, que le 243 abroge («Attendu que le Conseil juge opportun d’adopter un nouveau règlement de zonage abrogeant ainsi les dispositions contenues au règlement numéro 217»). MILLESIME null ASSUME: la table «Liste des règlements pris en considération» ne date QUE les modificateurs (315..395, soit 2009->2023) et jamais le 243 lui-meme; le doc ne porte aucune date d'adoption du reglement de base. Corpus LOCAL => url null."
+    },
+    "saint-sulpice": {
+      "reglement_numero": "316",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «PROVINCE DE QUÉBEC / MUNICIPALITÉ RÉGIONALE DE COMTÉ DE L’ASSOMPTION / MUNICIPALITÉ DE LA PAROISSE DE SAINT-SULPICE / Règlement de zonage numéro 316». MILLESIME null ASSUME: la seule date de la couverture est «(révisé le 29 septembre 2015)» — une REVISION de la codification, ni une adoption ni une entree en vigueur. Les «316-15-2021», «316-5-2018» du corps sont des amendements. Corpus LOCAL => url null."
+    },
+    "saint-theophile": {
+      "reglement_numero": "209-2006",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero + proprietaire verbatim couverture p1: «LE RÈGLEMENT DE ZONAGE 209-2006 [...] SAINT-THÉOPHILE / Municipalité de Saint-Théophile». MILLESIME null ASSUME: la seule date du doc est «Dernière mise à jour : 18 juin 2025 (Réf. Règ. 323-2025)» — une mise a jour, pas l'adoption; et le «323-2025» est un AMENDEMENT, pas le reglement de base. Le «2006» du numero n'est pas retenu (piege stoneham, re-confirme a saint-albert: numero 2007-08 adopte en 2008). Corpus LOCAL => url null."
+    },
+    "saint-louis": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (4 pages) est une grille nue: «Paroisse de Saint-Louis / GRILLE DE SPÉCIFICATIONS - TABLEAU A / ZONE AGRICOLE PERMANENTE». Il ne cite AUCUN numero de reglement, ni en entete, ni en pied, ni en note. Defaut de DECOUVERTE (il faut le corps du reglement), pas d'extraction."
+    },
+    "saint-sylvestre": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local est «ANNEXE B : CAHIER DE SPÉCIFICATIONS (DOSSIER 005-06-UR-CS-B)» (37 p). PIEGE ECARTE: «005-06-UR-CS-B» est un numero de DOSSIER d'urbanisme (mandat du consultant), PAS un numero de reglement — le confondre stamperait une reference inexistante. L'annexe renvoie aux articles du reglement («Réf. au règlement 2.2.1.1») sans jamais le numeroter. Defaut de DECOUVERTE (il faut le corps)."
+    },
     "saint-vianney": {
       "reglement_numero": "184-2002",
       "reglement_millesime": null,
@@ -3170,6 +3226,27 @@
       "reglement_page_source": null,
       "reglement_url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-luce/_publication/fichiers/ANNEXE%202%20GRILLE%20DES%20NORMES%20IMPLANTATION%20R-2025-411.pdf",
       "_note": "PIEGE NOM DE FICHIER + LISTE NON QUALIFIEE. Doc = «Annexe 2 / La grille des normes d'implantation» (4 p, texte natif OK), en-tete «Règlement de zonage» SANS numero. Le seul bloc numerote est un pied de grille listant 9 numeros a plat, sans dire lequel est le zonage de base: «RÈGLEMENTS R-2009-114, R-2013-182, R-2015-205, R-2020-289, R-2021-304, R-2022-316, R-2024-371, R-2024-397, R-2025-411». Le «R-2025-411» du nom de fichier est le DERNIER de cette liste (le plus recent = modificateur), le stamper serait le piege coaticook inverse; et retenir «R-2009-114» (le plus ancien) serait une DEDUCTION par ordre chronologique, pas un verbatim. Aucun numero qualifie «de zonage» => null."
+    },
+    "saint-ulric": {
+      "reglement_numero": "2008-82",
+      "reglement_millesime": "2008",
+      "reglement_page_source": 1,
+      "reglement_url": "https://st-ulric.ca/wp-content/uploads/2021/08/SU_2008-82_zonage_2021-321_ev2021-06-17.pdf",
+      "_note": "Numero verbatim p1: «RÈGLEMENT NUMÉRO 2008-82 POUR L'ADOPTION D'UN NOUVEAU RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE SAINT-ULRIC «ABROGEANT ET REMPLACANT LES RÈGLEMENTS DE ZONAGE NUMÉROS 88-03 et 184...»; confirme au dispositif p1: «QUE le Conseil municipal adopte le présent règlement numéro 2008-82». MILLESIME verbatim p3, table de suivi: «Règlement de zonage / Entrée en vigueur : 12 juin 2008» => 2008 (date REELLE d'entree en vigueur, pas l'annee deduite du numero). CANDIDAT ECARTE: «2021-321», porte par l'URL/nom de fichier (SU_2008-82_zonage_2021-321_ev2021-06-17.pdf) — c'est le DERNIER AMENDEMENT, liste p3 comme «Règlement numéro 2021-321   17 juin 2021» parmi 7 amendements (2009-98, 2009-107, 2011-118, 2013-141, 2014-153, 2018-302, 2021-321). CANDIDATS ECARTES: «88-03» et «184», verbatim p1 mais explicitement ABROGES par 2008-82. NB ACCES: l'hote st-ulric.ca sert un certificat TLS invalide (curl exit 60); doc recupere en --insecure (doc PUBLIC, integrite garantie par la lecture verbatim)."
+    },
+    "sainte-therese-de-gaspe": {
+      "reglement_numero": "2018-239",
+      "reglement_millesime": null,
+      "reglement_page_source": 5,
+      "reglement_url": "https://saintetheresedegaspe.com/wp-content/uploads/2023/02/Reglement-2022-370-grille.pdf",
+      "_note": "Numero + proprietaire verbatim p5, cartouche d'en-tete de la grille (texte pivote; lisible en `pdftotext -raw`, invisible en -layout qui eclate le bloc): «ANNEXE B / GRILLE DES SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE NUMÉRO 2018-239 / MUNICIPALITÉ DE SAINTE-THÉRÈSE-DE-GASPÉ». CANDIDAT ECARTE: «2022-370», porte par l'URL/nom de fichier (Reglement-2022-370-grille.pdf) — ABSENT du document (grep sur les 5 pages: 0 occurrence); c'est le reglement modificateur qui a refait la grille, pas le reglement de zonage. MILLESIME null ASSUME: le doc est la seule annexe B, sans date d'adoption ni d'entree en vigueur (5 pages verifiees). CANDIDAT ECARTE: «2018», lisible dans le numero lui-meme — l'annee portee par un numero n'est PAS l'annee d'adoption (refute dans ce corpus a stoneham: 09-591 adopte en 2010)."
+    },
+    "ripon": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null: le document ne PORTE PAS le numero du reglement de base. Doc lu a $0 (1 page, texte natif): «GRILLE DES ... / 16 ZONAGE / Date: Février 2019». Les SEULS numeros presents sont des AMENDEMENTS references en notes de bas de grille, rattaches a une zone: «Note 4  Note 5  132  2020-02-360, 20 mai 2021» (+ 2022-06-399, 2022-06-400) — un numero d'amendement isole est explicitement hors-cible. CANDIDAT ECARTE: «2019-02-339», porte par l'URL/nom de fichier (ripon-regl-zonage-2019-02-339-grille-des-specifications-version-finale.pdf) mais ABSENT du document (grep «339»: 0 occurrence) — l'URL ne fait pas foi (piege prouve a coaticook). A LEVER hors P0_1: ouvrir le CORPS du reglement de zonage de Ripon (la grille seule est muette)."
     }
   }
 }
