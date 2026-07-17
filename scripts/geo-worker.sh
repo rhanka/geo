@@ -28,7 +28,13 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/.." && pwd)"
 LOGDIR="$REPO/work/delegation-mass/worker-logs"
 WORKTMP="${GEO_TMPDIR:-$REPO/.h2a/tmp}"
-mkdir -p "$LOGDIR" "$WORKTMP"
+# tmux 3.6 does NOT recreate its socket directory: if /tmp/tmux-<uid> is missing (a
+# /tmp wipe or remount), `tmux new-session` dies with "server exited unexpectedly" and
+# every `h2a run` fails — while the fleet tick still reports "relaunched N/N". Ensure
+# it exists before launching anything. Mode 700 + user ownership is what tmux demands.
+TMUX_SOCKET_DIR="/tmp/tmux-$(id -u)"
+mkdir -p "$LOGDIR" "$WORKTMP" "$TMUX_SOCKET_DIR"
+chmod 700 "$TMUX_SOCKET_DIR" 2>/dev/null || true
 
 usage() { sed -n '2,40p' "$0"; exit "${1:-2}"; }
 
@@ -122,6 +128,13 @@ case "$cmd" in
     remote="remote-$session"
     h2a stop "$session" >/dev/null 2>&1 || true
     tmux kill-session -t "$remote" 2>/dev/null || true
+    # The host /tmp is tmpfs. tmux panes inherit the tmux SERVER environment, not the
+    # env of whoever invokes `h2a run` — so prefixing this call is useless. Set it on
+    # the server so every pane it spawns (agent CLI + all its children) lands in the
+    # workspace-local scratch instead of burning RAM.
+    tmux start-server 2>/dev/null || true
+    tmux set-environment -g TMPDIR "$WORKTMP" 2>/dev/null || true
+    tmux set-environment -g GEO_TMPDIR "$WORKTMP" 2>/dev/null || true
     TMPDIR="$WORKTMP" GEO_TMPDIR="$WORKTMP" h2a run "$engine" "$REPO" --name "$session" --no-attach --no-gw >/dev/null 2>&1 || {
       echo "h2a run failed for engine=$engine session=$session"; exit 1; }
     # wait for the session pane, let the CLI boot its input, then inject the prompt.
