@@ -356,7 +356,7 @@ interface GeoMeasure {
   gptsIndex: number;
 }
 
-interface ViewportGeoRef {
+export interface ViewportGeoRef {
   bbox: number[];
   bounds: number[];
   gpts: number[];
@@ -373,7 +373,7 @@ interface ViewportGeoRef {
  * page rectangle over a small area). The widest-GPTS heuristic wrongly picks the
  * inset's registration and stretches the whole map off its true position.
  */
-function viewportGeoRefs(hay: string): ViewportGeoRef[] {
+export function viewportGeoRefs(hay: string): ViewportGeoRef[] {
   const out: ViewportGeoRef[] = [];
   const re = /\/VP\s*\[/g;
   let m: RegExpExecArray | null;
@@ -488,7 +488,24 @@ function geoMeasures(hay: string): GeoMeasure[] {
 // ---------------------------------------------------------------------------
 // Extract georeferencing from a GeoPDF buffer.
 // ---------------------------------------------------------------------------
-export function extractGeoRef(pdf: Buffer, pdfPath?: string): GeoRef | null {
+export interface ExtractGeoRefOptions {
+  /**
+   * Index du CADRE géoréférencé à retenir, cadres triés par aire-page DÉCROISSANTE.
+   * `0` (défaut) = la carte principale — comportement historique, inchangé.
+   * `>0` = un cadre secondaire (encart « périmètre d'urbanisation »), qui porte sa
+   * PROPRE registration. Cf. `_geopdf-viewports.ts` pour les énumérer.
+   * Retourne `null` si le cadre demandé n'existe pas (jamais un repli silencieux sur
+   * un autre cadre : ce serait recaler des labels sous la mauvaise transformation).
+   */
+  frame?: number;
+}
+
+export function extractGeoRef(
+  pdf: Buffer,
+  pdfPath?: string,
+  opts: ExtractGeoRefOptions = {},
+): GeoRef | null {
+  const frame = opts.frame ?? 0;
   const hay = inflatePdfText(pdf);
 
   // page MediaBox FIRST (needed to reject the giant XObject /Form BBox, which is
@@ -539,9 +556,15 @@ export function extractGeoRef(pdf: Buffer, pdfPath?: string): GeoRef | null {
   const vgeo = viewportGeoRefs(hay).filter((v) => inPage(v.bbox) && /PROJCS/.test(v.wkt));
   if (vgeo.length > 0) {
     vgeo.sort((a, b) => bboxArea(b.bbox) - bboxArea(a.bbox));
-    const v = vgeo[0]!;
+    const v = vgeo[frame];
+    // Cadre demandé absent : ABORT plutôt que de recaler sous la transformation d'un
+    // AUTRE cadre (silencieusement faux).
+    if (!v) return null;
     gm = { bounds: v.bounds, gpts: v.gpts, wkt: v.wkt, nearBBox: [] };
     bboxArr = v.bbox;
+  } else if (frame > 0) {
+    // Pas de registration par-viewport : le repli ci-dessous ne connaît qu'UN cadre.
+    return null;
   }
 
   // Fallback (no per-viewport GEO registration parsed): the old heuristic — widest
