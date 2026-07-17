@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "F": "agricole",
+    "R": "residentiel",
+    "V": "residentiel",
+    "I": "industriel",
+    "CA": "commercial",
+    "PA": null,
+    "PB": null,
+    "PC": null,
+    "PD": "residentiel"
+  },
+  "source": "Règlement de zonage de la Municipalité de Saint-Didace, corpus local work/zonage-norms/saint-didace/grille.pdf",
+  "note": "Legende lue VERBATIM aux titres de la Section 9 «DISPOSITIONS SPECIFIQUES A CHAQUE ZONE», qui nomme la vocation de chaque code: «ZONE RESIDENTIELLE RA/RB/RC/RM», «ZONE COMMERCIALE CA», «ZONE INSTITUTIONNELLE PA/PB/PC», «ZONE AGRICOLE AA/AB/AF», «ZONE INDUSTRIELLE IA/IB», «ZONE FORESTIERE FA/FB/FC/FD/FE/FF», «ZONE VILLEGIATURE VA/VB», et -- PIEGE -- «ZONE RESIDENTIELLE PD» (art. 9.12): PD est RESIDENTIELLE malgre son prefixe P, distinct des zones institutionnelles PA/PB/PC. Mapping des prefixes du SIG: famille A* (AA/AB/AF confirmees «ZONE AGRICOLE»; AG/AH/AI/AJ/AK partagent la famille A sans vocation contradictoire) -> agricole; famille F* «ZONE FORESTIERE» -> agricole; famille R* «ZONE RESIDENTIELLE» -> residentiel; famille V* «ZONE VILLEGIATURE» -> residentiel; I* «ZONE INDUSTRIELLE» -> industriel; CA «ZONE COMMERCIALE» -> commercial. NULL EXPLICITE: PA/PB/PC «ZONE INSTITUTIONNELLE» -> public -> null. PD -> residentiel (mappe separement de PA/PB/PC car nomme «ZONE RESIDENTIELLE»; longest-prefix distinct). La matrice des usages permis n'est pas utilisee; seuls les titres de vocation par zone le sont."
+}
