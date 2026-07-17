@@ -38,6 +38,14 @@ describe("numeric-codes: numericDictSet", () => {
     const s = numericDictSet(["100", "H-101", "605-Cb", "1000", "12345", "REC-a"]);
     expect([...s].sort()).toEqual(["100", "1000"]);
   });
+  it("keeps subdivision-suffixed numeric codes (saint-come 105-1, 503-1)", () => {
+    const s = numericDictSet(["105", "105-1", "105-2", "503-1", "608-1"]);
+    expect([...s].sort()).toEqual(["105", "105-1", "105-2", "503-1", "608-1"]);
+  });
+  it("still refuses a suffix that is not a 1–2 digit subdivision", () => {
+    // `1234-5678` is a cadastral lot shape, never a zone code
+    expect([...numericDictSet(["1234-5678", "12345-1"])]).toEqual([]);
+  });
 });
 
 describe("numeric-codes: validateNumericRelaxation", () => {
@@ -104,5 +112,42 @@ describe("numeric-codes: nonAdmissibleCodes (build gate)", () => {
   it("rejects a numeric code (7) absent from the val-dor dict (dropped by gaps)", () => {
     // 105 % 7 == 0 → removed from dict → not admissible
     expect(nonAdmissibleCodes(["105"], numericDict)).toEqual(["105"]);
+  });
+
+  describe("subdivision-suffixed numeric codes (saint-come 206-1990)", () => {
+    // the real saint-come shape: numeric zones split by amendment
+    const stComeDict = numericDictSet(["105", "105-1", "105-2", "403-1", "411-1", "503-1", "608-1", "829"]);
+
+    it("admits a dict-backed subdivision code (105-1) — the ABORT this fixes", () => {
+      expect(nonAdmissibleCodes(["105", "105-1", "105-2", "411-1", "829"], stComeDict)).toEqual([]);
+    });
+
+    it("STILL rejects a subdivision-shaped code absent from the dict", () => {
+      // the dict guard is the whole safety story: shape alone admits nothing
+      expect(nonAdmissibleCodes(["105-9", "777-1"], stComeDict)).toEqual(["105-9", "777-1"]);
+    });
+
+    it("STILL rejects an old-cadastre lot number (12-3) absent from the dict", () => {
+      // `\d{1,4}-\d{1,2}` also matches an old cadastral lot; only the dict separates them
+      expect(nonAdmissibleCodes(["12-3"], stComeDict)).toEqual(["12-3"]);
+    });
+
+    it("REJECTS a trivial 1..N run even when suffixed codes are dict-backed", () => {
+      // the OBJECTID fingerprint is judged on the bare integers, unchanged
+      const r = validateNumericRelaxation({
+        distinctExtracted: ["1", "2", "3", "4", "5"],
+        dictCodes: ["1", "2", "3", "4", "5", "1-1"],
+      });
+      expect(r.ok).toBe(false);
+      expect(r.reason).toMatch(/trivial contiguous 1\.\.N/);
+    });
+
+    it("passes the real saint-come set (gaps, hundreds base, suffixed subdivisions)", () => {
+      const r = validateNumericRelaxation({
+        distinctExtracted: ["105", "105-1", "105-2", "411-1", "829"],
+        dictCodes: ["105", "105-1", "105-2", "403-1", "411-1", "503-1", "608-1", "829"],
+      });
+      expect(r.ok).toBe(true);
+    });
   });
 });
