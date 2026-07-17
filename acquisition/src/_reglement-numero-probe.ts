@@ -17,10 +17,13 @@
  *   npx tsx acquisition/src/_reglement-numero-probe.ts --slugs a --pages 12
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, statSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { s3Client, getBytes } from './lib/s3.js';
+
+const CORPUS = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'work', 'zonage-norms');
 
 const CACHE = resolve(
   process.env.SCRATCH_DIR ??
@@ -66,7 +69,32 @@ function curlTo(path: string, url: string, insecure: boolean): { code: string; t
 }
 
 function isPdf(path: string): boolean {
-  return execFileSync('head', ['-c', '4', path], { encoding: 'latin1' }).startsWith('%PDF');
+  try {
+    return execFileSync('head', ['-c', '4', path], { encoding: 'latin1' }).startsWith('%PDF');
+  } catch {
+    return false;
+  }
+}
+
+/** Doc LOCAL déjà téléchargé par la lane normes: `work/zonage-norms/<slug>/*.pdf`.
+ *  Mesuré shard 0/2 (2026-07-17): 92/128 cibles ont un PDF local, alors que leur
+ *  `source_url` de manifest est une sentinelle / un hôte mort / un 404 / un portail.
+ *  Le corpus local est donc le vrai gisement, l'URL l'exception. Les PDF les plus
+ *  gros d'abord: le CORPS du règlement (qui porte le numéro officiel) pèse plus que
+ *  la grille (qui n'en porte souvent que les amendements). */
+function localDoc(slug: string): string | null {
+  const dir = resolve(CORPUS, slug);
+  let names: string[] = [];
+  try {
+    names = readdirSync(dir).filter((n) => n.toLowerCase().endsWith('.pdf'));
+  } catch {
+    return null;
+  }
+  const ranked = names
+    .map((n) => resolve(dir, n))
+    .filter((p) => statSync(p).size > 4096 && isPdf(p))
+    .sort((a, b) => statSync(b).size - statSync(a).size);
+  return ranked[0] ?? null;
 }
 
 function fetchDoc(slug: string, url: string): Fetched {
@@ -152,10 +180,26 @@ function probe(slug: string, path: string, maxPages: number): void {
 async function main(): Promise<void> {
   const slugs = (arg('slugs') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
   const maxPages = Number(arg('pages', '8'));
+  const local = process.argv.includes('--local');
   if (!slugs.length) {
-    console.log('usage: _reglement-numero-probe.ts --slugs a,b [--pages 8]');
+    console.log('usage: _reglement-numero-probe.ts --slugs a,b [--pages 8] [--local]');
     process.exit(1);
   }
+
+  // --local: corpus déjà téléchargé, 0 réseau, 0 S3 (donc immunisé aux hôtes morts).
+  if (local) {
+    for (const slug of slugs) {
+      const path = localDoc(slug);
+      if (!path) {
+        console.log(`\n===== ${slug} =====\n${slug}\tNO-LOCAL-DOC (aucun PDF dans work/zonage-norms/${slug}/)`);
+        continue;
+      }
+      console.log(`# ${slug} local=${path}`);
+      probe(slug, path, maxPages);
+    }
+    return;
+  }
+
   const s3 = s3Client();
   const manifest = JSON.parse(
     (await getBytes(s3, 'registry/qc-zonage-norms/manifest.json')).toString('utf8'),
