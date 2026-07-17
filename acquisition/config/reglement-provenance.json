@@ -673,11 +673,11 @@
       "_note": "p1 verbatim: «ANNEXE AU REGLEMENT DE ZONAGE #378» (forme «#»). MILLESIME null: les 4 dates du doc sont celles des AMENDEMENTS listes dans la case «Amendements : DATE» -- «Amendement 378-23 - Entre en vigueur le 6 juillet 2022», «378-16 - 15 mai 2017», «378-13 - 11 juin 2015», «378-7 - 19 aout 2010» => aucune date du 378 lui-meme; les stamper serait un faux millesime."
     },
     "frelighsburg": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "PIEGE URL: doc = «Reglement-131-2022-Annexe-B-Grilles-dusage-VAdmin.pdf» (52 p, texte natif OK) mais recherche plein texte = 0 match pour «reglement + annee», «131-2022» ET «zonage no/numero/#» => l'annexe B ne se numerote NULLE PART. Le «131-2022» n'existe que dans le nom de fichier (exclu par le gate) => null."
+      "reglement_numero": "131-2022",
+      "reglement_millesime": "2022",
+      "reglement_page_source": 1,
+      "reglement_url": "https://frelighsburg.ca/wp-content/uploads/2025/07/Reglement-131-2022_Zonage-VAdmin-incl.-131-10-2022_162-08-2024_174-04-2025.pdf",
+      "_note": "CORPS obtenu a $0 par l'API REST WordPress (1542 medias). Proprietaire: OWNER-OK («Municipalite de Frelighsburg» en en-tete des 8154 lignes; «MRC BROME-MISSISQUOI / MUNICIPALITE DE FRELIGHSBURG» sur l'amendement). NUMERO verbatim p1 (couverture du corps): «Municipalite de Frelighsburg / Reglement sur le zonage numero 131-2022». MILLESIME verbatim: l'amendement adopte 174-04-2025 (REGLEMENT-174-04-2025-modifiant-le-reglement-de-zonage.pdf, p1) ecrit «ATTENDU QUE : le reglement de zonage NO 131-2022 est en vigueur depuis le 27 juin 2022;» => 2022 (date ECRITE, pas deduite du numero). CONFLIT INTERNE TRANCHE, a documenter: le meme corps porte DEUX numeros verbatim contradictoires — la clause de titre art. 1 dit «Le present reglement est cite sous le titre \" Reglement sur le zonage \" et porte le numero 131-2021.» et le PIED DE PAGE des ~150 pages repete «Reglement sur le zonage numero 131-2021», alors que la COUVERTURE dit 131-2022. Retenu 131-2022 sur 3 preuves externes concordantes: (1) l'amendement 174-04-2025 ADOPTE le nomme 4x «131-2022» et le DATE (27 juin 2022); (2) l'amendement 131-10-2022; (3) l'avis public de promulgation des reglements d'urbanisme «130-2022, 131-2022, 132-2022...». Le «131-2021» est donc un residu du PROJET (rediger 2021 / adopte 2022) reste dans le gabarit — c'est la famille documentee «l'annee du numero est fausse», ici a l'envers. CONTRE-INDICE PESE PUIS ECARTE: les reglements freres sont publies «132-2021 lotissement» et «134-2021 permis et certificats», ce qui suggerait une serie -2021; mais aucun d'eux n'est le zonage, et la seule source qui DATE le zonage dit 27 juin 2022. CANDIDATS ECARTES: «124-2010 / 124-11-2016» (art. 2 «Reglements abroges»); «174-04-2025», «131-10-2022», «162-08-2024» (amendements)."
     },
     "kamouraska": {
       "reglement_numero": "2025-04",
@@ -778,18 +778,18 @@
       "_note": "REFUTE le verdict «LIEN MORT / aucun document a lire»: le PDF du manifest est bien 404, mais le CORPS est sur disque (work/zonage-norms/la-peche/corps-113-2025.pdf, 236 p, texte natif) -- la premisse «aucun document a lire» etait fausse (motif reglement-corpus-local-gisement). Numero verbatim couverture p1: «PROVINCE DE QUEBEC / MUNICIPALITE DE LA PECHE / REGLEMENT DE ZONAGE / NUMERO 113-2025», corrobore par l'art.1 TITRE DU REGLEMENT (p12 PDF = p1 du doc): «Le present reglement s'intitule « Reglement de zonage » au numero administratif 113-2025.» Proprietaire verbatim art.1: «le territoire municipal de la corporation municipale de la Municipalite de La Peche» => doc CONFORME au slug. CANDIDAT ECARTE: «03-429» = l'ANCIEN reglement, art.2 ABROGATION ET REMPLACEMENT: «Le present reglement abroge et remplace le reglement de zonage 03-429 de la Municipalite de La Peche et ses amendements.» MILLESIME null ASSUME: l'art.257 ENTREE EN VIGUEUR n'enonce que la formule «Le reglement entre en vigueur conformement a la loi.» -- aucune date d'adoption ni de vigueur dans les 236 p (aucun bloc avis de motion/maire/greffier). Le «2025» du numero n'est PAS retenu (piege prouve: 2007-08 adopte en 2008). Corpus LOCAL => url null."
     },
     "lac-beauport": {
-      "reglement_numero": null,
+      "reglement_numero": "09-207",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: source_url «...Annexe-B-grilles-de-specifications-et-darbre-de-decision.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_page_source": 1,
+      "reglement_url": "https://lac-beauport.quebec/wp-content/uploads/2024/06/Codification-Regl-zonage-09-207-v48_2024-06-19.pdf",
+      "_note": "CORPS obtenu a $0 par l'API REST WordPress (2962 medias enumeres sur x-wp-total=4940). Proprietaire: OWNER-OK (art. 3 «...juridiction de la Municipalite de Lac-Beauport. Sur ce territoire, le present reglement...»). NUMERO verbatim p1 (cartouche): «Reglement de zonage / Numero 09-207», repete en en-tete de CHACUNE des ~150 pages («Numero 09-207»). NB: la clause de titre art. 1 ne numerote PAS le reglement — elle dit seulement «Le present reglement porte le titre de \" Reglement de zonage \".» — le numero vient donc du cartouche et des en-tetes, pas d'un renvoi ni du nom de fichier. MILLESIME null: le document est une codification administrative («Ce document est une codification administrative et n'a aucune valeur officielle. / A jour au 19 juin 2024») dont la table «MODIFICATIONS INCLUSES DANS CE DOCUMENT : Numero du reglement | Date d'entree en vigueur» ne liste que les AMENDEMENTS (la plus ancienne: «10-09-207-02 | 16 avril 2010»); la date d'entree en vigueur du 09-207 lui-meme n'y figure pas. Le «09» du numero ne fait pas foi => null plutot qu'une deduction. CANDIDATS ECARTES: tous les «10-09-207-XX» de la table = amendements datant de 2010+, pas le reglement de base."
     },
     "lac-des-ecorces": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: source_url «...grilles_de_specifications.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "40-2004",
+      "reglement_millesime": "2004",
+      "reglement_page_source": 1,
+      "reglement_url": "https://lacdesecorces.ca/wp-content/uploads/2024/05/268-2022_zonage_-_modifiant_40-2004_-_final.pdf",
+      "_note": "REFUTATION du null precedent, qui etait une CIBLE explicite: «LIEN MORT: source_url «...grilles_de_specifications.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1).» — la re-decouverte a ete faite a $0 par l'API REST WordPress (1420 medias enumeres), qui rend 3 amendements du reglement de zonage. Le corps lui-meme n'est PAS publie, mais il est NOMME et DATE par ses amendements (motif deja valide sur sainte-helene-de-bagot 307-2006). Proprietaire: OWNER-OK (p1 «MUNICIPALITE DE LAC-DES-ECORCES / MRC D'ANTOINE-LABELLE»). NUMERO verbatim p1 du reglement 268-2022: «MODIFIANT LE REGLEMENT NO 40-2004 / RELATIF AU ZONAGE», puis «ATTENDU que la Municipalite de Lac-des-Ecorces a adopte le reglement no 40-2004 relatif au zonage;» — le doc qualifie explicitement 40-2004 de reglement RELATIF AU ZONAGE (leve toute confusion avec le lotissement). MILLESIME verbatim p1: «ATTENDU que ledit reglement no 40-2004 est entre en vigueur le 22 juin 2004» => 2004 (date d'entree en vigueur ECRITE, pas deduite du numero). CANDIDAT ECARTE: «268-2022» = le numero de l'AMENDEMENT porteur, pas le reglement de zonage; ecartes aussi les 16 amendements listes p1 (50-2005, 60-2005, 78-2006, 100-2008, 112-2009, 115-2009, 123-2010, 148-2011, 167-2013, 174-2013, 180-2014, 195-2016, 201-2016, 219-2018, 226-2018, 232-2019, 238-2020) — la table «a ete modifie par les reglements suivants» les designe comme modifications du 40-2004."
     },
     "berthierville": {
       "reglement_numero": "748",
@@ -855,11 +855,11 @@
       "_note": "«LIEN MORT» LEVE -- et le 404 etait un piege de TIRET: le source_url du manifest «.../2018/02/Reglement_zonage_2018-290_Grilles_H.pdf» (underscore apres «Reglement») est bien 404, mais le fichier vit sous «Reglement-2018-290_Grilles_H.pdf» (tiret). La «re-decouverte de l'URL» annoncee comme voie est faite a $0 par _wp-media-enum.ts --site https://www.boucherville.ca --filter zonage (x-wp-total=8933), qui rend en prime le CORPS (11,7 Mo) et non la seule annexe. Numero lu VERBATIM dans le DOCUMENT (jamais deduit du nom de fichier): p1 couverture «Boucherville / Règlement numéro 2018-290 / RÈGLEMENT DE ZONAGE»; p2 cartouche «CODIFICATION ADMINISTRATIVE DU RÈGLEMENT NO 2018-290 / Règlement de zonage / Codifié au : 2026-06-22». MILLESIME 2018 par la date VERBATIM de la couverture «Décembre 2018» (une date ECRITE, pas le «2018» du numero -- piege 2007-08 evite), corroboree par la table des modifications p2 dont le PREMIER amendement est «2019-290-1» (donc base anterieure a 2019). NB: aucun article d'adoption date dans la codification; si une piece officielle donnait un jour la date exacte, elle ne pourrait que confirmer decembre 2018. ECARTES: tous les «2019-290-1, 2020-290-2, 2020-290-4/5/6...» de la table = AMENDEMENTS du 2018-290 (dont «2019-290-1 (Règlement retiré)»), ainsi que «2026-290-56» et «2026-290-57» vus a l'API = amendements 2026."
     },
     "brigham": {
-      "reglement_numero": null,
+      "reglement_numero": "06-101",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION: doc = grille des usages et normes (2 p), 0 motif «Reglement ... numero X». Seuls verbatims numerotes = des MODIFICATIONS: «Mod. 06-101-M1-07», «Mod. 2017-15», «Mod. 2009-03-A», «Mod. 2012-14», «Mod. 2013-04», «Mod. 2016-08», «Mod. 2017-11», «Mod. 2017-03». Le «06-101» de base n'est jamais ecrit seul (le deduire d'un numero d'amendement est exclu par le gate) => null."
+      "reglement_page_source": 1,
+      "reglement_url": "https://brigham.ca/wp-content/uploads/R%C3%A8glement-2018-08-modifiant-le-r%C3%A8glement-sur-le-zonage-no.-06-101.pdf",
+      "_note": "REFUTATION CIBLEE du null precedent. Celui-ci disait: «Seuls verbatims numerotes = des MODIFICATIONS: «Mod. 06-101-M1-07» ... Le «06-101» de base n'est jamais ecrit seul (le deduire d'un numero d'amendement est exclu par le gate) => null.» Ce jugement est EXACT sur le document qu'il avait (la grille des usages, 2 p), ou 06-101 n'apparait que comme PREFIXE d'un numero d'amendement — l'en deduire aurait bien viole le gate. Il est FAUX comme verdict global: un AUTRE document, jamais lu (API REST WordPress, 2932 medias, $0), ecrit le numero SEUL et en toutes lettres. Proprietaire: OWNER-OK (p1 «MRC BROME-MISSISQUOI / MUNICIPALITE DE BRIGHAM», «ADOPTE A BRIGHAM»). NUMERO verbatim p1 du reglement 2018-08: en-tete «MODIFIANT LE REGLEMENT / SUR LE ZONAGE NUMERO 06-101», puis art. 4 des dispositions declaratoires: «Le present reglement modifie le reglement sur le zonage numero 06-101.» — phrase complete qui DESIGNE le reglement de zonage par son numero; ce n'est pas une deduction a partir d'un numero d'amendement. Motif deja valide sur sainte-helene-de-bagot (307-2006, nomme par ses amendements). CANDIDAT ECARTE: «2018-08» = le numero de l'AMENDEMENT porteur. MILLESIME null: le seul verbatim date du doc est «ADOPTE A BRIGHAM, CE 10 JUILLET 2018» — c'est la date de l'AMENDEMENT 2018-08, jamais celle du 06-101; le «06» du numero ne fait pas foi (un «06-XXX» peut etre adopte en 2007) => null plutot qu'une deduction."
     },
     "candiac": {
       "reglement_numero": null,
@@ -4397,11 +4397,11 @@
       "_note": "ANTI-INVENTION => null. Le doc est bien le reglement de zonage de la bonne muni (p1 «RÈGLEMENT DE ZONAGE / Juin 2014 / Municipalité de Saint-Anaclet-de-Lessard») mais il NE SE NUMEROTE PAS: aucune couverture numerotee, et l'art. 1.12 ne nomme que le reglement ABROGE — verbatim p13: «Ce règlement abroge le Règlement de zonage numéro 118-89 et tous ses amendements.» (118-89 = ancien, ECARTE). Les seuls autres numeros du doc sont ses AMENDEMENTS, listes p1-2 sous «MODIFICATIONS INCLUSES DANS CE DOCUMENT» (432-2014 «12 JUIN 2015», 434-2015 «17 JUIN 2015», 499-2021 «5 OCTOBRE 2021») — ECARTES. Sonde etendue aux 4 PDF du dossier (dont saint-anaclet_zonage_-_codifie_novembre_2021.pdf, identique): meme resultat. Defaut de DECOUVERTE: il manque la page de titre numerotee."
     },
     "saint-camille": {
-      "reglement_numero": null,
+      "reglement_numero": "2002-04",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Les docs locaux (grille-annexe3.pdf 44 p, grille.pdf) sont des cahiers de grilles nues: NO-CANDIDATE-LINE mesure — aucun motif «règlement de zonage / numéro / adoption / entrée en vigueur» sur les pages sondees. Defaut de DECOUVERTE (il manque le corps du reglement). Cible NO-GRILLE (aucune entree au manifest)."
+      "reglement_page_source": 1,
+      "reglement_url": "https://saint-camille.ca/wp-content/uploads/2021/08/2021-02-Modifiant-le-r%C3%A8glement-de-zonage_Adoption_Juillet.pdf",
+      "_note": "REFUTATION du null precedent, qui etait une CIBLE: «Les docs locaux ... sont des cahiers de grilles nues: NO-CANDIDATE-LINE mesure ... Defaut de DECOUVERTE (il manque le corps du reglement).» — le corps manque toujours (non publie), mais il est NOMME par ses amendements, obtenus a $0 par l'API REST WordPress (678 medias sur x-wp-total=1891). Motif deja valide sur sainte-helene-de-bagot (307-2006). Proprietaire: OWNER-OK (p1 «MUNICIPALITE REGIONALE DE COMTE DES SOURCES / MUNICIPALITE DU CANTON DE SAINT-CAMILLE»). NUMERO verbatim p1 du «REGLEMENT 2021-02»: en-tete «Modifiant le reglement de zonage numero 2002-04 et ses amendements», puis «CONSIDERANT QUE le Reglement de zonage numero 2002-04 est en vigueur sur le territoire de la municipalite du canton de Saint-Camille ;» — enonce le reglement de zonage EN VIGUEUR, ce n'est pas une deduction. RESERVE LEVEE: le 1er document lu (2021-04) portait «PROJET DE REGLEMENT 2021-04» — un PROJET, ecarte par la lane sur d'autres slugs (schefferville, saint-antonin); j'ai donc corrobore sur un 2e document ADOPTE, le «REGLEMENT 2021-02» (sans la mention PROJET), qui porte le MEME considerant mot pour mot => 2002-04 ne repose pas sur un projet. CANDIDATS ECARTES: «2021-02» et «2021-04» = numeros des AMENDEMENTS porteurs. MILLESIME null: aucun des 2 documents ne DATE l'adoption ni l'entree en vigueur du 2002-04 (ils disent seulement qu'il «est en vigueur»); le «2002» du numero ne fait pas foi => null plutot qu'une deduction."
     },
     "poularies": {
       "reglement_numero": null,
