@@ -67,3 +67,27 @@ Vérification OGC effectuée sur `https://api.geo.sent-tech.ca/collections/qc-zo
 | la-conception | `FC`; `RF`; `RR` | « Foresterie et de conservation »; « Résidentielle et faunique »; « Résidentielle et récréation »: chacune joint deux catégories. |
 
 Notes de qualité: Côte-Saint-Luc comporte 3 polygones sans code SIG, servis `null` sans inventer de préfixe. Bedford--Brome-Missisquoi est laissé hors lot: le règlement local lu identifie les zones par lettres et numéros, mais ne donne pas la légende lettre→dominante; aucune catégorie n'est déduite des grilles d'usages. La collection résolue de Beaupré comporte 20 polygones sans code SIG, donc aucun mapping supplémentaire n'est créé.
+
+## Shard 0/2 — second lot de publication
+
+| Ville | résidentiel | commercial | industriel | agricole | environnemental | null |
+|---|---:|---:|---:|---:|---:|---:|
+| lawrenceville | 19 | 0 | 3 | 17 | 0 | 5 |
+| mont-saint-hilaire | 119 | 24 | 5 | 36 | 27 | 29 |
+| neuville | 52 | 6 | 5 | 32 | 8 | 24 |
+| pointe-claire | 71 | 6 | 7 | 0 | 22 | 16 |
+| preissac | 10 | 0 | 1 | 10 | 2 | 2 |
+
+Toutes les distributions sont vérifiées sur l’API OGC après fold. Les légendes réglementaires pertinentes sont citées verbatim dans chaque carte committée; les grilles d'usages permis ne sont pas utilisées.
+
+### Préfixes `null` explicites
+
+| Ville | Préfixes | Justification réglementaire |
+|---|---|---|
+| lawrenceville | `MIX`; `P`; `PAT` | Zones mixtes; publiques; patrimoniales, hors des cinq catégories. |
+| mont-saint-hilaire | `CA`; `P` | « Commercial-agricole » est dual; « Publique et institutionnelle » est public. |
+| neuville | `M`, `M/a`, `C/I`; `Pa`, `Pb`; `T`; `Rx` | Vocations duales; publique/utilité publique; transport; résidentielle de réserve. |
+| pointe-claire | `Cv`; `Pb`, `Pc`; `U` | Commerce et logements villageois (dual); institutions/cimetières; services d'utilité publique. |
+| preissac | `REC` | « Récréotouristique » rangée par le règlement sous la dominante communautaire, hors catégories servies. |
+
+La Sarre est laissée hors lot: 340 de ses 570 polygones n'ont pas de code SIG. Aucun `null` de dominante n'est créé pour masquer cette absence de code.
