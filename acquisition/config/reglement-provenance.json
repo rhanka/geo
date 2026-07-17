@@ -1763,6 +1763,90 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "LIEN MORT (type mont-saint-michel): le source_url du manifest «https://www.municipalite-lefebvre.ca/pdf_reglements/n. 387 - Règlement de zonage.pdf» repond HTTP 404 (verifie curl -sIL, URL-encodee). Aucun doc a lire => null. CANDIDAT ECARTE: le «n. 387» du nom de fichier est plausible mais NON RETENU (gate: jamais deduire du nom de fichier -- piege coaticook). Voie = re-decouverte de l'URL."
+    },
+    "saint-dominique": {
+      "reglement_numero": "2017-324",
+      "reglement_millesime": "2017",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.st-dominique.ca/fichiersUpload/fichiers/20260120115527-2023-399-1-adoption-finale-modification-de-la-zone-r-9-vf-cartable.pdf",
+      "_note": "PIEGE AMENDEMENT (le doc EST l'amendement, 3 p). Titre p1 verbatim: «RÈGLEMENT NUMÉRO 2023-399.1 AMENDANT LE RÈGLEMENT 2017-324 INTITULÉ RÈGLEMENT DE ZONAGE, AFIN DE MODFIER LA GRILLE DES USAGES ET DES NORMES POUR LA ZONE R-9» => le reglement de ZONAGE est le 2017-324, nomme verbatim par l'amendement lui-meme; confirme par l'art.1 «Le présent règlement s'intitule règlement numéro 2023-399.1 amendant le règlement 2017-324 intitulé règlement de zonage» et l'art.3 «L'annexe B du règlement 2017-324 est modifiée». ECARTE 2023-399.1 = le MODIFIANT (celui que porte le nom de fichier -- le stamper aurait servi un amendement comme reglement de zonage = FAUX). ECARTE aussi «Entrée en vigueur : 24 avril 2024» (p1) = entree en vigueur de l'AMENDEMENT, pas du 2017-324. Millesime = segment annee 4 chiffres du numero verbatim."
+    },
+    "saint-cleophas": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUN DOC A LIRE (type albertville / lac-au-saumon): le source_url du manifest est la page d'accueil «https://www.mrcmatapedia.qc.ca/» (MRC), pas un document. Rien a relever verbatim => null. Voie = decouverte du vrai PDF de zonage (hors lane P0_1)."
+    },
+    "saint-colomban": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
+    },
+    "saint-cuthbert": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type lac-tremblant-nord): PDF = «ANNEXE B - GRILLES DES SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE DE SAINT-CUTHBERT / EXTÉRIEUR DU PÉRIMÈTRE D'URBANISATION» (4 p, texte natif OK). L'annexe nomme son reglement parent par la MUNICIPALITE, jamais par un NUMERO: les seuls renvois sont «Rappel des autres normes contenues au règlement de zonage» / «du règlement de lotissement» (p2) et «avant l'entrée en vigueur du présent règlement» (p3), tous sans numero. Le «352» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null."
+    },
+    "saint-damase--la-matapedia": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUN DOC A LIRE (type albertville / lac-au-saumon): le source_url du manifest est la page d'accueil «https://www.mrcmatapedia.qc.ca/» (MRC), pas un document. Rien a relever verbatim => null. Voie = decouverte du vrai PDF de zonage (hors lane P0_1)."
+    },
+    "saint-denis-de-brompton": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUN DOC A LIRE: le source_url du manifest «https://www.sddb.ca/fr/services-aux-citoyens/centre-documentaire/c5392/reglement-de-zonage/page-1» est une page HTML de centre documentaire (liste), pas un PDF -- le fetch rend du HTML (magic=«<!DO»). Rien a relever verbatim => null. Voie = decouverte du PDF de zonage (hors lane P0_1)."
+    },
+    "saint-denis-sur-richelieu": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUN DOC A LIRE: le source_url du manifest est la page d'accueil du site municipal «https://www.stdenissurrichelieu.com» -- le fetch rend du HTML (magic=«<!DO»), pas un PDF. Rien a relever verbatim => null. Voie = decouverte du PDF de zonage (hors lane P0_1)."
+    },
+    "saint-esprit": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
+    },
+    "saint-eugene": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type barkmere): PDF = «ANNEXE \"B\" / Les grilles des usages et normes. / Zones A / Août 2007» (24 p, texte natif OK). Chaque grille porte «Cette grille fait partie intégrante du règlement de zonage / Annexe B» + les signatures (Maire / Directrice générale) -- l'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part. Le «Août 2007» de p1 est une date sans numero: le gate exige le numero => null."
+    },
+    "saint-fabien": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "LIEN MORT: le source_url du manifest «https://www.saint-fabien.ca/wp-content/uploads/2025/10/476-Saint-Fabien_ZONAGE_Grille-codifié.pdf» repond HTTP 404. Le «476» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL."
+    },
+    "saint-felicien": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "PIEGE URL PROUVE (type frelighsburg): doc = «cahier_des_specifications_accompagnant_le_reglement_de_zonage_18-943_2022-07-14.pdf» (236 p, texte natif OK, 463171 car.) mais recherche plein texte «18-943» = 0 MATCH sur tout le document. Le cahier ne cite son parent que SANS numero: «Voir les dispositions du Règlement de zonage sur les antennes [...] (Règlement de zonage, article 17.2)» (p1). Le «18-943» n'existe que dans le nom de fichier (exclu par le gate) => null."
+    },
+    "saint-flavien": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type bedford): PDF = «Municipalité de Saint-Flavien / ANNEXE B: GRILLE DE SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE» (23 p, texte natif OK). L'en-tete se declare annexe DU reglement de zonage sans jamais le numeroter; les seuls numeros verbatim sont des MODIFIANTS, p1: «Amendements : R. 05-2010, R. 06-2010, R. 03-2012» + «Abrogé (R. 03-2015)» + «Entreposage exterieur de type E (R. 09-2016)» (gate: pas d'amendement isole) => null."
     }
   }
 }
