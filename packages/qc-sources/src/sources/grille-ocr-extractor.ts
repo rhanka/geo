@@ -1654,6 +1654,316 @@ export function parseTransposedColumnsGrille(
 }
 
 // ───────────────────────────────────────────────────────────────────────────
+//  AFFECTATION-MATRIX grille (MRC de Papineau family: ripon, lac-des-plages,
+//  namur, saint-émile-de-suffolk). The zone header is STACKED across two lines and
+//  the code itself is NEVER printed anywhere on the sheet:
+//
+//        1    2    3    4  …   15  …   20  …   41
+//        V    F    V    AD …   iN  …   AD  …   C
+//
+//  The REAL zone code is the per-COLUMN pair letter+number ("20"+"AD" → "AD-20") —
+//  exactly how the SIG grille codes it. PROVEN on ripon: these 41 header columns
+//  reproduce the 41 SIG codes with zero residue on either side, and the règlement's
+//  own notes spell the same pairs out the other way round ("la zone 36-H", "la zone
+//  15-iN", "la zone 24-V") — column 36 does carry H, 15 carries iN, 24 carries V.
+//
+//  WHY EVERY OTHER ROUTE FAILS HERE. `parseTransposedGrilleNativePage` demands the
+//  LITERAL "Numéro de zone"/"Usage dominant" label rows (this header is unlabelled);
+//  `columnsHeaderZones` merges a number+letter pair only when HORIZONTALLY adjacent
+//  on ONE line ("107 R"), never a VERTICALLY stacked one. OCR cannot rescue it
+//  either — no engine can emit a code the page never prints (mistral-schema
+//  measured: 0 zones on ripon).
+//
+//  ANTI-INVENTION:
+//    • the number row must be the contiguous run 1,2,3,…,N (N≥5) — a grille numbers
+//      its zone columns from 1, so a note reference / year / gutter never anchors;
+//    • the letter row must be ENTIRELY short alpha tokens — prose is never paired;
+//    • a number with NO letter column-aligned within tolerance is DROPPED (never
+//      handed a fabricated affectation), and a letter claimed by TWO numbers VOIDS
+//      the whole band (that is a mis-alignment, not a grille);
+//    • values bind by COLUMN position (nearestAnchor), never by token index;
+//    • every value stays the verbatim token, gated by the frozen `buildVisionField`;
+//    • the caller's SIG cross-validation (overlap≠0) stays the outer gate.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** An affectation token ("V", "AD", "iN", "CO"): 1-3 letters, EITHER case — this
+ *  family lower-cases two of its own classes ("i" Institution, "iN" Industrie),
+ *  which the SIG upper-cases ("I-35", "IN-15"); `canonZone` reconciles the case. */
+const AM_LETTER_RE = /^[A-Za-zÀ-ÿ]{1,3}$/;
+/** Shortest zone-column run that can anchor a band (below this, a stray numeric
+ *  row could coincidentally look like a header). */
+const AM_MIN_COLS = 5;
+/** Lines scanned below a number row for its stacked affectation row (the sheet
+ *  interleaves blank/bullet rows between the two). */
+const AM_LETTER_LOOKAHEAD = 4;
+
+/**
+ * The zone-column number anchors of an affectation matrix: the bare integers of
+ * `line` forming the contiguous run 1,2,3,…,N (N ≥ AM_MIN_COLS). Any other numeric
+ * row (a note reference, a year, a line-number gutter) fails this shape.
+ */
+export function affectationNumberRun(line: string): ColToken[] {
+  const run: ColToken[] = [];
+  for (const tk of tokensWithCols(line)) {
+    if (!/^\d{1,3}$/.test(tk.t)) continue;
+    if (Number(tk.t) === run.length + 1) run.push(tk);
+    else if (run.length) break; // the run must stay contiguous from 1
+  }
+  return run.length >= AM_MIN_COLS ? run : [];
+}
+
+/**
+ * Pair a number run with the affectation letters STACKED on `letterLine`: each
+ * number takes the letter whose column is nearest it (within tolerance), yielding
+ * the SIG's own spelling ("20"+"AD" → "AD-20"). Returns [] unless the letter line
+ * is ENTIRELY short-alpha (prose is never paired) and the pairing is injective.
+ */
+export function stackedAffectationZones(numLine: string, letterLine: string): ColZone[] {
+  const nums = affectationNumberRun(numLine);
+  if (!nums.length) return [];
+  const tol = anchorColTolerance(nums);
+  // Only the tokens INSIDE the number run's span are candidate affectations: the sheet
+  // prints gutters outside it (ripon's amendment list, "2022-06-400-B, 24 mars 2023",
+  // shares the letter row). Judging the whole line would reject the band outright and
+  // silently lose the only rows that carry values.
+  const lets = tokensWithCols(letterLine).filter(
+    (tk) => tk.start >= nums[0]!.start - tol && tk.start <= nums[nums.length - 1]!.start + tol,
+  );
+  // Inside the span, EVERY token must be a short affectation: prose there means this is
+  // not an affectation row, and pairing it would fabricate codes.
+  if (!lets.length || !lets.every((tk) => AM_LETTER_RE.test(tk.t))) return [];
+
+  // ONE letter per number ⇒ bind by ORDER. Both rows are printed from the same column
+  // grid, so their k-th tokens are the same column BY CONSTRUCTION; `pdftotext -layout`
+  // only preserves that in the tight half of a wide sheet (ripon's bottom header drifts
+  // to 6 chars by column 5), which is why nearest-column pairing must not be the only
+  // rule. Verified end-to-end: ripon's 41 pairs reproduce its 41 SIG codes exactly.
+  if (lets.length === nums.length) {
+    return nums.map((n, i) => ({ code: `${lets[i]!.t}-${n.t}`, start: n.start }));
+  }
+
+  // Ragged row (a column with no affectation printed): fall back to column position and
+  // drop what cannot be bound unambiguously.
+  const out: ColZone[] = [];
+  const claimed = new Set<number>();
+  for (const n of nums) {
+    const li = nearestAnchor(lets, n.start, tol);
+    if (li < 0) continue; // no affectation aligned to this column → drop it
+    // One letter cell cannot belong to two zone columns: that is a mis-alignment,
+    // and publishing it would attribute one zone's norms to another.
+    if (claimed.has(li)) return [];
+    claimed.add(li);
+    out.push({ code: `${lets[li]!.t}-${n.t}`, start: n.start });
+  }
+  return out.length >= AM_MIN_COLS ? out : [];
+}
+
+/**
+ * Does this page carry the affectation-matrix signature — a stacked number/letter
+ * header AND at least one mappable norm label? (The dual anchor keeps a wide
+ * usages-only matrix, which carries no value to publish, from qualifying.)
+ */
+export function looksLikeAffectationMatrixGrille(text: string): boolean {
+  const lines = text.split(/\r?\n/);
+  const hasHeader = lines.some((_, i) => affectationMatrixBandAt(lines, i) !== null);
+  if (!hasHeader) return false;
+  return /marge de recul|marge|hauteur|superficie|largeur|coefficient|occupation|emprise|implantation/i.test(
+    text,
+  );
+}
+
+/** The band anchored at line `i` (its number row), paired with the nearest stacked
+ *  letter row below it, or null when line `i` is not a zone-column header. */
+function affectationMatrixBandAt(
+  lines: string[],
+  i: number,
+): { anchors: ColZone[]; letterIdx: number } | null {
+  if (!affectationNumberRun(lines[i] ?? "").length) return null;
+  for (let j = i + 1; j <= i + AM_LETTER_LOOKAHEAD && j < lines.length; j++) {
+    if (!(lines[j] ?? "").trim()) continue;
+    const anchors = stackedAffectationZones(lines[i]!, lines[j]!);
+    if (anchors.length) return { anchors, letterIdx: j };
+  }
+  return null;
+}
+
+/**
+ * DETERMINISTIC NATIVE-TEXT ($0, no LLM) parser for the affectation-matrix grille.
+ * Reads ONE page's `pdftotext -layout` text → one `ZoneNorms` per zone COLUMN.
+ *
+ * Returns [] for a page with no stacked number/letter header — anti-invention: no
+ * header, no zone.
+ */
+export function parseAffectationMatrixGrille(
+  layoutText: string,
+  page: number,
+  opts: OcrMapOptions,
+): ZoneNormsT[] {
+  const methode = opts.methode ?? "native-text/grille-matrice-affectation";
+  const lines = layoutText.split(/\r?\n/);
+
+  // A wide sheet REPEATS its header band (ripon prints it above the usages block and
+  // again above the marges block), so collect every band and merge by canonical code:
+  // the usages band carries no value, the marges band carries them all.
+  const bands: { anchors: ColZone[]; bandEnd: number }[] = [];
+  // Every number run is a header, whether or not it PAIRS. An unpaired one still ends
+  // the previous band's body: its rows belong to ITS columns, which are printed on a
+  // different grid. Binding them to the previous band's anchors would attribute one
+  // zone's norms to another (measured on ripon before this: V-1 took 10m, truth 6m).
+  const headerIdx: number[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!affectationNumberRun(lines[i] ?? "").length) continue;
+    headerIdx.push(i);
+    const b = affectationMatrixBandAt(lines, i);
+    if (b) bands.push({ anchors: b.anchors, bandEnd: b.letterIdx });
+  }
+  if (!bands.length) return [];
+  /** First header line strictly below `row` — the hard end of that row's band body. */
+  const nextHeaderAfter = (row: number): number =>
+    headerIdx.find((h) => h > row) ?? lines.length;
+
+  const acc = new Map<
+    string,
+    { code: string; fields: Partial<Record<FieldId, string>>; ranks: Partial<Record<FieldId, number>> }
+  >();
+
+  for (let b = 0; b < bands.length; b++) {
+    const { anchors, bandEnd } = bands[b]!;
+    const anchTok = anchorTokens(anchors);
+    const tol = anchorColTolerance(anchTok);
+    const valueRegionStart = anchors[0]!.start - 6;
+    // The band's RIGHT edge: past it sit the sheet's right-hand gutters (the repeated
+    // line number, the amendment list). Without it they would be mistaken for the last
+    // zone's value — or inflate the token count and void the exact-count pairing below.
+    const valueRegionEnd = anchors[anchors.length - 1]!.start + tol;
+    const bodyEnd = nextHeaderAfter(bandEnd);
+
+    const perZone = anchors.map(() => ({}) as Partial<Record<FieldId, string>>);
+    const perRank = anchors.map(() => ({}) as Partial<Record<FieldId, number>>);
+    let section: FieldId | null = null;
+
+    for (let r = bandEnd + 1; r < bodyEnd; r++) {
+      const line = lines[r]!;
+      if (!line.trim()) continue;
+      const toks = tokensWithCols(line);
+      const firstCol = toks.length ? toks[0]!.start : 0;
+      const inBand = toks.filter(
+        (tk) => tk.start >= valueRegionStart && tk.start <= valueRegionEnd,
+      );
+      const labelParts = toks
+        .filter((tk) => tk.start < valueRegionStart || tk.start > valueRegionEnd)
+        .map((tk) => tk.t);
+      const valueByAnchor = new Map<number, string>();
+
+      // POSITIONAL binding is the default, but `pdftotext -layout` cannot hold a wide
+      // matrix's narrow columns in register: a 3-char cell ("10m") under a 1-char header
+      // ("2") drifts left cumulatively (measured on ripon: -12 chars by column 22, while
+      // columns 23-41 stay within 2). So when the row carries EXACTLY one token per zone
+      // column, bind by ORDER — that is bijective and unambiguous, and it is the sheet's
+      // own convention that every cell is filled ("-" materialises an empty one). Any
+      // other count (a usages row with scattered "*", a note) falls back to position, so
+      // a ragged row is never index-paired. Where position IS reliable (ripon's columns
+      // 23-41) the two agree, which is what validates the rule.
+      if (inBand.length === anchors.length) {
+        for (let i = 0; i < inBand.length; i++) valueByAnchor.set(i, inBand[i]!.t);
+      } else {
+        const valueDist = new Map<number, number>();
+        for (const tk of inBand) {
+          const ai = nearestAnchor(anchTok, tk.start, tol);
+          if (ai < 0) {
+            labelParts.push(tk.t);
+            continue;
+          }
+          const d = Math.abs(tk.start - anchors[ai]!.start);
+          const prev = valueDist.get(ai);
+          if (prev === undefined || d < prev) {
+            valueByAnchor.set(ai, tk.t);
+            valueDist.set(ai, d);
+          }
+        }
+      }
+      const label = labelParts.join(" ").trim();
+      const ownField = labelToFieldId(label);
+      if (valueByAnchor.size === 0) {
+        if (firstCol <= 2 || ownField !== null) section = ownField;
+        continue;
+      }
+      const field = ownField ?? section;
+      if (!field) continue;
+      if (ownField) section = null;
+      const rank = subRowRank(label, field);
+      for (const [ai, cell] of valueByAnchor) {
+        const val = cell && cell.trim().length ? cell : null;
+        const prev = perRank[ai]![field];
+        if (prev === undefined) {
+          if (val !== null) perZone[ai]![field] = val;
+          perRank[ai]![field] = rank;
+        } else if (rank > prev && val !== null) {
+          perZone[ai]![field] = val;
+          perRank[ai]![field] = rank;
+        }
+      }
+    }
+
+    for (let ai = 0; ai < anchors.length; ai++) {
+      const code = anchors[ai]!.code;
+      const key = code.toUpperCase().replace(/\s+/g, "");
+      let entry = acc.get(key);
+      if (!entry) {
+        entry = { code, fields: {}, ranks: {} };
+        acc.set(key, entry);
+      }
+      const fields = perZone[ai]!;
+      const ranks = perRank[ai]!;
+      for (const fid of Object.keys(fields) as FieldId[]) {
+        const val = fields[fid];
+        if (val === undefined) continue;
+        const rank = ranks[fid] ?? 1;
+        if (entry.fields[fid] === undefined || rank > (entry.ranks[fid] ?? -1)) {
+          entry.fields[fid] = val;
+          entry.ranks[fid] = rank;
+        }
+      }
+    }
+  }
+
+  const out: ZoneNormsT[] = [];
+  for (const { code, fields } of acc.values()) {
+    const provenance = (): FieldProvenanceT => ({
+      source_url: opts.source_url,
+      methode,
+      snapshot: opts.snapshot,
+      page: `PAGE ${page} ZONE ${code}`,
+    });
+    const field = (id: FieldId): NormFieldT => {
+      const spec = FIELD_SPECS.find((s) => s.id === id)!;
+      const raw = fields[id] ?? null;
+      return buildVisionField(spec, raw, raw, provenance());
+    };
+    const hauteurMetres = field("hauteur_metres");
+    const hauteurEtages = field("hauteur_etages");
+    const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+    const zn: ZoneNormsT = {
+      zone_code: code,
+      zone_page: `PAGE ${page} ZONE ${code}`,
+      usages: [],
+      densite: field("densite"),
+      hauteur_min: null,
+      hauteur_max: hauteurMax,
+      marges: {
+        avant_min: field("marge_avant_min"),
+        laterale_min: field("marge_laterale_min"),
+        arriere_min: field("marge_arriere_min"),
+      },
+      frontage_min: field("frontage_min"),
+      superficie_min: field("superficie_min"),
+    };
+    out.push(ZoneNorms.parse(zn));
+  }
+  return out;
+}
+
+// ───────────────────────────────────────────────────────────────────────────
 //  SINGLE-ZONE-per-page "grille des spécifications" whose header SPLITS the zone
 //  code into a "Numéro de zone: <N>" row and a "Dominance[ d'usage]: <X>" row
 //  (Béloeil / Saint-Félicien / Montérégie-Saguenay family). The REAL zone code is
