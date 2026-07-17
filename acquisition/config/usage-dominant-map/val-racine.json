@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AFT": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "IL": null,
+    "M": null,
+    "P": null,
+    "RU": null
+  },
+  "source": "https://www.val-racine.com/fichiersUpload/fichiers/20250528135741-reglement-no-214-sur-le-zonage-25-04-2025.pdf",
+  "note": "Municipalité de Val-Racine (MRC du Granit), règlement de zonage no 214 (adoption résolution 2009-180, « Donné à Val-Racine, ce 14 mai 2009 », remplace le zonage no 102; codification 25-04-2025). Table VERBATIM à l'art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES », colonnes « ZONE | VOCATION DOMINANTE », introduite par: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant la vocation dominante ». Contenu: « A Agricole | Af Agroforestière | Cons Conservation | I Industrielle | M Mixte | P Publique | R Résidentielle | Rec Récréative | Ru Rurale | Vill Villégiature ». C'est le moule de la MRC du Granit (même art. 5.1 que stornoway/lac-drolet/whitton/saint-robert-bellarmin/woburn/milan), mais la table lue est bien celle de Val-Racine. Propriétaire attesté par le CORPS: p.1 « MUNICIPALITÉ DE VAL-RACINE » / « RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE VAL-RACINE »; « CONSIDÉRANT QUE la Corporation municipale de VAL-RACINE… »; pied de page récurrent « RÈGLEMENT DE ZONAGE – VAL-RACINE »; grille (annexe 2, fichier séparé grille-de-specifications-25-04-2025.pdf) « Municipalité de Val-Racine (Milieu rural) » / « (Périmètre d'urbanisation) » + « de zonage No. 214 ». ⛔ IL = « ÎLOT » (géométrie), PAS « Industriel » — null anti-fall-through OBLIGATOIRE, décisif ici car Val-Racine sert IL(2) ET I(2): (1) « Îlot » ABSENT de la table 5.1; (2) la grille (feuillet 1/4) porte « zonage Aft1-1 Aft1-2 Aft1-3 Aft1-4 A1 Îlot 6 Îlot 7 » = EXACTEMENT les 2 polygones IL-6/IL-7 du SIG; (3) « I » est servi SÉPARÉMENT (feuillet 4/4 « M-1 M-2 P-1 I-1 », corroboré par l'art. 13.6.2 « DISPOSITION SPÉCIFIQUE À LA ZONE I-1 »). NUANCE: le lexique n'a pas d'entrée verbatim « Îlot : … » (seul « Lot : … »); preuve via colonnes de grille + absence table 5.1 (mode stornoway). Sans cette clé, IL-6/7 tomberaient sur « I » -> industriel EN SILENCE. VILL sans objet: ligne « Vill Villégiature » en table 5.1 mais aucun polygone Vill servi. Null explicites: M « Mixte » est dual; P « Publique » est public; RU « Rurale » ne nomme aucune des cinq catégories. A « Agricole » et AFT « Af Agroforestière » -> agricole; I « Industrielle » (zone I-1 réelle) -> industriel; REC « Rec Récréative » et CONS « Cons Conservation » -> environnemental. Recouvrement: les 9 préfixes servis (RU REC AFT CONS M IL I A P) sont TOUS sourcés verbatim par la table 5.1 (ou la grille pour Îlot); aucun code étranger introduit."
+}
