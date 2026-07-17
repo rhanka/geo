@@ -3702,6 +3702,76 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/cloridorme/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "notre-dame-de-stanbridge": {
+      "reglement_numero": "315-08",
+      "reglement_millesime": "2009",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1 (IDENTIQUE sur les 2 docs locaux, grille.pdf et le CORPS 315-08-concernant-le-zonage.pdf): «Municipalité de Notre-Dame-de-Stanbridge / Règlement de zonage numéro 315-08». MILLESIME = 2009 et NON 2008: la couverture porte le tableau des amendements, dont la PREMIERE ligne est le reglement de base lui-meme, verbatim: colonnes «Numéro du règlement | Date de l'avis de motion | Date de l'adoption | Date de l'entrée en vigueur» => «315-08 | 2-12-2008 | 2-02-2009 | 5-05-2009». Adoption 2-02-2009 => 2009. Enieme occurrence du piege stoneham (le «-08» du numero = l'annee de l'AVIS DE MOTION, pas de l'adoption). Corpus LOCAL (l'URL du manifest, .../373-13-annexe-c-grilles-des-usages.pdf, est RESEAU-KO: hote mort meme en --insecure) => url null."
+    },
+    "saint-guillaume": {
+      "reglement_numero": "247-2021",
+      "reglement_millesime": "2021",
+      "reglement_page_source": 2,
+      "reglement_url": null,
+      "_note": "Numero + millesime verbatim page de garde p2: «PROVINCE DE QUÉBEC / RÈGLEMENT NUMÉRO 247-2021 / MUNICIPALITÉ DE SAINT-GUILLAUME / RÈGLEMENT DE ZONAGE / AVIS DE MOTION : 2 aout 2021 / ADOPTION : 7 septembre 2021». Millesime = adoption verbatim (7 septembre 2021) => 2021, qui CONCORDE ici avec le «-2021» du numero (concordance constatee, non deduite). L'«ENTRÉE EN VIGUEUR : ___________ 2021» est laissee EN BLANC dans le doc => on retient l'adoption. Corpus LOCAL (le manifest ne pointe que le portail HTML saintguillaume.ca/fr/urbanisme/reglements-d-urbanisme/) => url null."
+    },
+    "saint-octave-de-metis": {
+      "reglement_numero": "357-10",
+      "reglement_millesime": "2010",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «RÈGLEMENT DE ZONAGE / DE LA MUNICIPALITÉ DE / SAINT-OCTAVE-DE-MÉTIS / RÈGLEMENT NUMÉRO 357-10», CONFIRME independamment par le CORPS (art. 1 titre): «...Saint-Octave-de-Métis» et est identifié par le numéro 357-10.» + entete «RÈGLEMENT 357-10» sur les pages. Millesime = clause d'adoption verbatim en fin de doc (art. 18.4 Entrée en vigueur): «Adopté à Saint-Octave-de-Métis, ce 7ième jour du mois de septembre 2010» => 2010 (concorde avec le «-10», constate et non deduit). Corpus LOCAL (URL manifest municipalites-du-quebec.ca) => url null."
+    },
+    "saint-prosper": {
+      "reglement_numero": "17-2007",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1 du doc local 2007ZonageMAJ03-10-2025.pdf: «Règlement de zonage / Numéro 17-2007 / Mise à jour en date du 03-10-2025». ATTENTION au faux ami du nom de fichier: «2007Zonage» n'est PAS le numero (piege URL prouve sur coaticook); le numero officiel est 17-2007, lu dans le doc. Millesime = section «Date d'adoption» verbatim: «La municipalité de Saint-Prosper a adopté le présent règlement le 5 novembre 2007.» (+ «Date d'entrée en vigueur / Le présent règlement est entré en vigueur le 14 décembre 2007.») => 2007. Le doc est la version consolidee «Mise à jour en date du 03-10-2025»: la MAJ n'est pas le millesime d'adoption. Corpus LOCAL => url null."
+    },
+    "saint-georges-de-windsor": {
+      "reglement_numero": "234-2025",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim p1 du doc local (717 p): «Annexe I / Grilles des usages et spécifications par zone / Municipalité de Saint-Georges-de-Windsor  Règlement de zonage et de lotissement No. 234-2025». Cas d'annexe qui NOMME son reglement (le doc est l'Annexe I, pas le corps) => le numero est porte verbatim, on le retient. Reglement COMBINE zonage+lotissement: 234-2025 est bien le reglement qui porte le zonage servi. MILLESIME null ASSUME: «234-2025» n'apparait QU'UNE seule fois dans les 717 pages (mesure: grep sur le doc entier) et le doc ne porte AUCUNE date d'adoption / entree en vigueur — les «Entrée en vigueur» captes p2+ sont des ENTETES DE COLONNE de grille, pas des dates. Le «2025» du numero n'est pas retenu (piege stoneham). Corpus LOCAL (manifest = home page st-georges-de-windsor.org) => url null."
+    },
+    "pierreville": {
+      "reglement_numero": "160-2017",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Cas «l'amendement NOMME sa base». Le doc local est un amendement (247-2023_modif.-160-2017_FINAL.pdf) mais il designe sa base sans ambiguite, 3 fois verbatim: titre p1 «RÈGLEMENT 247-2023 MODIFIANT LE RÈGLEMENT DE ZONAGE No 160-2017 AFIN DE MODIFIER CERTAINES DISPOSITIONS», puis «CONSIDÉRANT QUE le conseil considère qu'il est dans l'intérêt de l'ensemble des contribuables que la Municipalité de Pierreville modifie le règlement de zonage no 160-2017 ;» et art. «...utilisation du règlement de zonage 160-2017 comme suit :». Le reglement de zonage de Pierreville = 160-2017 (247-2023 n'est qu'un modificateur, ne PAS le stamper). MILLESIME null ASSUME: aucune date verbatim du 160-2017 dans le corpus; les dates du doc (adoption 23 janvier 2024, entree en vigueur 26 février 2024) sont celles de l'AMENDEMENT 247-2023, pas de la base. Le «2017» du numero n'est pas retenu (piege stoneham). Les 2 autres PDF locaux (230-2022, 261-2025) sont des scans SANS couche texte; grille.pdf idem. URL manifest = 404 (http=404 text/html) => url null."
+    },
+    "saint-just-de-bretenieres": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (132 p) est un cahier de grilles nues: entete de CHAQUE page = «Annexe 2 du Règlement de zonage    Zone A-1» (puis A-2, A-3...). Le mot «Règlement de zonage» y figure SANS numero = faux positif de motif. CONTRE-PREUVE mesuree a $0 sur le doc ENTIER (pas seulement les pages sondees): grep «numéro|no. <chiffres>|règlement <chiffre>» => ZERO occurrence sur les 132 pages. Defaut de DECOUVERTE (il manque le corps du reglement), pas d'extraction. URL manifest sjdl.qc.ca = 404 (http=404 text/html)."
+    },
+    "sainte-marie-madeleine": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (13 p) est un extrait de grilles. Il ne porte QUE des references d'AMENDEMENTS en note de cellule, jamais le reglement de base: «...est autorisé reg 13-411», «...est autorisé reg 13-411 30/05/2013», «reg 13-417 30/01/2014». CANDIDAT ECARTE = «07-222»: la seule ligne qui le nomme prouve qu'il ne s'agit PAS du zonage municipal mais d'un reglement de la MRC, verbatim: «...au moment de l'entrée en vigueur du Règlement numéro 07-222 modifiant le Schéma d'aménagement révisé (16 octobre 2007).» — un Schema d'amenagement n'est pas le reglement de zonage de la muni. Defaut de DECOUVERTE (il manque le corps). Le manifest ne pointe que le portail HTML sainte-marie-madeleine.ca/publication/reglements-municipaux."
+    },
+    "laval": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local est le PLAN de zonage (carte, feuillet CDU-1-5), pas un texte: p1 = «Annexe I au règlement» — SANS numero (faux positif de motif), suivi de la legende des categories (T1 Naturel, T2 Agricole ... SZD Secteur de zonage différé). CANDIDAT ECARTE = la date «2024-05-28»: elle est dans un cartouche dont l'entete est verbatim «Projet de règlement | Date» et dont la colonne «Projet de règlement» est VIDE — la date n'est donc rattachee a AUCUN numero, et «Projet de règlement» signale de surcroit un doc NON adopte. Le manifest ne pointe pas un PDF mais un portail de consultation (info-reglements.laval.ca/consultation/grilles/1054/, methode=portail-info-reglements-natif) => le numero est cote portail, pas dans le corpus. Defaut de DECOUVERTE."
+    },
+    "rapide-danseur": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc (grilles-de-zones.pdf, 10 p, telecharge OK depuis l'URL manifest rapide-danseur.ao.ca) est un SCAN IMAGE sans couche texte: pdftotext rend <40 caracteres sur tout le doc; pdfinfo confirme la provenance scanner: «Creator: Xerox WorkCentre 7835 / Producer: Xerox WorkCentre 7835 / CreationDate: Thu Jan 5 12:53:34 2017». Aucune lecture verbatim possible a $0 => on ne stampe rien. Route vision requise (hors gate $0 de cette lane); relancer le probe apres OCR."
     }
   }
 }
