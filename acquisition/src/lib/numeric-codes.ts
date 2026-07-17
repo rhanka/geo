@@ -27,6 +27,21 @@
  * wider is treated as a lot number / OBJECTID and never admitted here. */
 export const PURE_NUMERIC_RE = /^\d{1,4}$/;
 
+/**
+ * A numeric zone code carrying a SUBDIVISION SUFFIX (`105-1`, `503-1`, `608-1`):
+ * the dominant QC pattern for a zone split by amendment (saint-come 206-1990
+ * creates `105-2` out of `105-1`; `411-1`, `608-1`, `828-A` are the same move).
+ *
+ * Why admitting this is SAFE — strictly safer than the bare integer this module
+ * already admits: the anti-#74 target is a SEQUENTIAL OBJECTID/NO_ZONE run, and
+ * such a run never carries a `-N` suffix. `105-1` is therefore FURTHER from the
+ * fabrication fingerprint than `105`. It stays gated on the identical guard: the
+ * code must appear VERBATIM in the authoritative dict. That guard is what stops
+ * the one real ambiguity here — an OLD-cadastre lot number (`12-3`) — since a
+ * lot number is never in a zoning grille index.
+ */
+export const NUMERIC_ZONE_RE = /^\d{1,4}(-\d{1,2})?$/;
+
 function normalizeCode(code: string): string {
   return String(code).trim().replace(/\s+/g, "-");
 }
@@ -40,7 +55,7 @@ export function numericDictSet(dictCodes: string[]): Set<string> {
   const s = new Set<string>();
   for (const c of dictCodes) {
     const t = normalizeCode(c);
-    if (PURE_NUMERIC_RE.test(t)) s.add(t);
+    if (NUMERIC_ZONE_RE.test(t)) s.add(t);
   }
   return s;
 }
@@ -112,7 +127,7 @@ export function validateNumericRelaxation(params: {
     };
   }
 
-  const extractedNumeric = [...new Set(params.distinctExtracted.map(normalizeCode))].filter((c) => PURE_NUMERIC_RE.test(c));
+  const extractedNumeric = [...new Set(params.distinctExtracted.map(normalizeCode))].filter((c) => NUMERIC_ZONE_RE.test(c));
   // No numeric codes extracted → nothing to relax (pure-lettered build): pass.
   if (extractedNumeric.length === 0) return { ...base, ok: true };
 
@@ -155,7 +170,7 @@ export function nonAdmissibleCodes(distinct: string[], numericDict: Set<string>)
   return distinct.filter((raw) => {
     const c = normalizeCode(raw);
     const lettered = /[A-Za-z]/.test(c) && /\d/.test(c);
-    const dictNumeric = PURE_NUMERIC_RE.test(c) && numericDict.has(c);
+    const dictNumeric = NUMERIC_ZONE_RE.test(c) && numericDict.has(c);
     return !lettered && !dictNumeric;
   });
 }
