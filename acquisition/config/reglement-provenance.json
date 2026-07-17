@@ -1889,6 +1889,90 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "HOTE INJOIGNABLE (type bonsecours, meme hebergeur municipalites-du-quebec): le source_url «https://municipalites-du-quebec.com/nantes/docs/reglements/2/2026-03-13 - Grille des spécifications.pdf» n'aboutit pas (curl -sIL http=000, timeout 25 s; idem fetch sonde). Aucun doc a lire => null. Voie = re-decouverte de l'URL, pas une extraction."
+    },
+    "saint-lambert": {
+      "reglement_numero": "2024-215",
+      "reglement_millesime": "2024",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saint-lambert.ca/files/upload/2024-215_reglement_zonage_codification_2025-11-25.pdf",
+      "_note": "p1 verbatim (page-titre): «VILLE DE SAINT-LAMBERT / RÈGLEMENT DE ZONAGE / 2024-215» + tableau de procedure p1 «1er Avis de motion 17 avril 2023 / 1ère Adoption 18 septembre 2023 / Adoption 15 mars 2024 / Avis de conformité 24 mai 2024 / Entrée en vigueur 24 mai 2024» => millesime 2024 (adoption ET entree en vigueur, verbatim). Corrobore p135 (tableau des reglements) «2024-215 Règlement de zonage 2024-03-15 2024-05-24» et p139 (en-tete d'annexe) «Ville de Saint-Lambert / Règlement de zonage 2024-215 / Annexe 2 – Grilles des usages et normes». Le «codification_2025-11-25» du nom de fichier est la date de codification (p1 «Avis au lecteur : La présente codification administrative n'a pas de valeur officielle [...] Dernière mise à jour le 25 novembre 2025»), pas l'adoption."
+    },
+    "saint-joseph-de-lepage": {
+      "reglement_numero": "2011-02",
+      "reglement_millesime": "2011",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.municipalite.saint-joseph-de-lepage.qc.ca/medias/reglements-urbanisme/zonage_2011-02.pdf",
+      "_note": "p1 verbatim (page-titre): «Règlement de zonage / de la municipalité / de Saint-Joseph-de-Lepage / Règlement numéro 2011-02 / Version refondue mars 2013». Millesime = adoption verbatim p223 «Adopté à Saint-Joseph-de-Lepage, ce quatrième jour du mois de juillet 2011» (coherent avec le segment «2011» du numero); le «mars 2013» de p1 est la version REFONDUE, pas l'adoption. ECARTES: (a) 90-5 = ancien zonage ABROGE, p223 verbatim «Règlement de zonage numéro 90-5 et ses amendements» (piege type coaticook); (b) 9070-2011-C = le PLAN de zonage, pas le reglement -- p81 verbatim «la municipalité est divisée en zones délimitées au plan de zonage portant le numéro 9070-2011-C qui fait partie intégrante du présent règlement»."
+    },
+    "saint-hermenegilde": {
+      "reglement_numero": "237-14",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.st-hermenegilde.qc.ca/upload/reglements/REG.%20237-14_zonage_annexe2_grille_specification.pdf",
+      "_note": "Doc = «Municipalité de Saint-Herménégilde / Grille des spécifications - Annexe 2» (28 p, texte natif OK). Numero lu au pied de CHAQUE grille, p1 verbatim: «Règlement de zonage numéro 237-14» (repete p2, p3, p4...) -- lu DANS le document; le nom de fichier le porte aussi mais n'a PAS servi de preuve. MILLESIME null (anti-invention, type dixville/east-hereford): l'annexe ne porte aucune date d'adoption ni d'entree en vigueur, et le «14» du numero n'est pas une annee 4 chiffres => pas de deduction."
+    },
+    "saint-gabriel-de-valcartier": {
+      "reglement_numero": "262",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://saint-gabriel-de-valcartier.ca/files/pdf/Assemblee-publique-de-consultation.pdf",
+      "_note": "PIEGE AMENDEMENT/PROJET (le doc est un AVIS PUBLIC, 3 p, scan OCR). p1 verbatim: «AVIS PUBLIC / Assemblée publique de consultation / Projet de règlement numéro 276 modifiant le Règlement de zonage numéro 262 : Modifiant la carte de zonage en zone A-2 et MX-1» => le reglement de ZONAGE en vigueur est le 262, nomme verbatim par l'avis. ECARTE 276 = PROJET de reglement MODIFIANT (ni en vigueur, ni le zonage lui-meme; cf. ham-sud: un projet n'est pas du droit en vigueur). MILLESIME null: la seule date du doc (assemblee «Mardi 18 juin 2024») est celle de la CONSULTATION sur le projet 276, pas l'adoption du 262 => la stamper serait un faux millesime."
+    },
+    "saint-francois-du-lac": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "MAUVAIS DOC -- MUNICIPALITE DIFFERENTE (piege nouveau, a surveiller ailleurs). Le source_url du manifest «https://sfxb.qc.ca/wp-content/uploads/2021/03/Reglement_zonage_2010-116_maj-2020-02.pdf» pointe le zonage de SAINT-FRANCOIS-XAVIER-DE-BROMPTON (Estrie, hote sfxb.qc.ca), PAS de Saint-Francois-du-Lac (Centre-du-Quebec, MRC Nicolet-Yamaska). Le doc le dit verbatim p1: «RÈGLEMENT DE ZONAGE #2010-116 / MUNICIPALITE DE SAINT-FRANÇOIS-XAVIER-DE-BROMPTON», et l'en-tete courant le repete «MUNICIPALITÉ DE SAINT-FRANÇOIS-XAVIER-DE-BROMPTON ZONAGE / RÈGLEMENT DE ZONAGE NUMÉRO 2010-116» (p2, p38, p79, p116). Stamper 2010-116 servirait le reglement d'une AUTRE ville => null. Voie = re-decouverte de l'URL + AUDIT de la grille servie qc-zonage-norms-saint-francois-du-lac (contamination amont probable: la grille vient peut-etre du meme mauvais PDF)."
+    },
+    "saint-gabriel-de-brandon": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET: PDF = grilles «Classes d'usages et sous-classes autorisées / ZONE :» (80 p, texte natif OK), 0 motif «Reglement ... numero X». Le «URB-28» de p1 est le CODE DE ZONE (il suit l'etiquette «ZONE :»), pas un numero de reglement; la case d'amendement «Numéro | Date» est VIDE; les seuls renvois sont «avant l'entrée en vigueur du présent règlement» (sans numero) et «(2) R101, R105 et R204» (des zones). Le «20251201» du nom de fichier est une date de version => null."
+    },
+    "saint-gilles": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type bedford): PDF = «4.3.1 Grille de spécification pour le périmètre urbain» (2 p, texte natif OK), en-tetes verticaux «RÈGLEMENT DE ZONAGE» / «RÈGLEMENT RELATIF A...» + une colonne «Réf. au règlement» et une case «AMENDEMENTS» -- aucun de ces en-tetes ne porte de NUMERO (0 motif). Le source_url est un FileHandler.aspx a GUID: le nom de fichier ne porte aucun numero non plus => null."
+    },
+    "saint-hippolyte": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
+    },
+    "saint-hugues": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "LIEN MORT: le source_url du manifest «https://saint-hugues.com/fichiersUpload/fichiers/annexeA.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+    },
+    "saint-jean-de-matha": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET: PDF = «GRILLE DES SPÉCIFICATIONS / Règlement de zonage / ZONE P1-1» (2 p, 582 car. de texte natif). La grille se declare grille DU reglement de zonage sans jamais le numeroter. FAUX POSITIF ECARTE: le «P1-1» capte par le scanner est le CODE DE ZONE (etiquette «ZONE» juste au-dessus), pas un numero de reglement => null."
+    },
+    "saint-joachim-de-shefford": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "BLOCAGE ACCES (type orford): le source_url «https://st-joachim.ca/wp-content/uploads/2024/09/mj-7-zonage-aout-2024.pdf» repond HTTP 403 (WAF). Le «mj-7» du nom de fichier n'est de toute facon pas un numero de reglement plausible (et exclu par le gate URL). Voie restante: acces non-bot au PDF (hors lane P0_1)."
+    },
+    "saint-laurent-de-lile-dorleans": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET + PROJET: PDF = grilles «Zones à dominance mixte» dont la colonne «Référence au règlement» ne contient que des numeros d'ARTICLES (4.1.2, ...), les colonnes etant des codes de zone (R-606, CM-601...) -- 0 motif «Reglement ... numero X» sur les 11 p (texte natif OK). Le nom de fichier «Annexe-5Grilles_Projet_2020_STL-V2021-09-13» annonce en outre un PROJET (cf. ham-sud: un projet n'est pas du droit en vigueur) => null."
     }
   }
 }
