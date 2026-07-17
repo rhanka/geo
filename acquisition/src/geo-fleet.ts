@@ -32,6 +32,8 @@ type Singleton = { name: string; engine?: string; prompt: string; model?: string
 type Backfill = { session: string; match: string; cmd: string[] };
 type Config = {
   engine: string;
+  /** Engine used to retry a lane whose primary engine hit a spend/usage limit. */
+  engineFallback?: string;
   lanes: Lane[];
   singletons: Singleton[];
   backfill?: Backfill;
@@ -85,6 +87,18 @@ function isAlive(name: string): boolean {
   return tmuxPane(`remote-${name}`).includes('esc to interrupt');
 }
 
+/** The pane exists at all — distinguishes "CLI still booting" from "never launched". */
+function hasPane(name: string): boolean {
+  return tmuxPane(`remote-${name}`).trim().length > 0;
+}
+
+/** Spend/usage limit banners: the lane is not broken, its engine is exhausted. */
+const LIMIT_MARKERS = ['spend limit', 'usage limit', 'rate limit', 'limite de dépense', 'quota'];
+function isLimited(name: string): boolean {
+  const pane = tmuxPane(`remote-${name}`).toLowerCase();
+  return LIMIT_MARKERS.some((m) => pane.includes(m));
+}
+
 function launch(engine: string, a: Agent): boolean {
   if (!existsSync(resolve(REPO, a.prompt))) {
     console.log(`MISS  ${a.name} (prompt ${a.prompt} absent)`);
@@ -95,6 +109,34 @@ function launch(engine: string, a: Agent): boolean {
   if (a.model) args.push('--model', a.model);
   sh('bash', [WORKER, ...args]); // sequential by necessity: tmux paste-buffer is a shared global
   return true;
+}
+
+/**
+ * Launch, then PROVE the session came up.
+ *
+ * `launch()` only reports that the worker was invoked: for four days this pilot logged
+ * "relaunched 16/16" while tmux was broken and zero agent existed. A relaunch is only
+ * real once its pane answers. On a spend/usage limit we retry once on the fallback
+ * engine instead of burning the slot on an exhausted account.
+ */
+function launchVerified(engine: string, fallback: string | undefined, a: Agent): 'up' | 'up-fallback' | 'failed' {
+  if (!launch(engine, a)) return 'failed';
+  for (let i = 0; i < 12; i++) {
+    if (hasPane(a.name)) {
+      if (!isLimited(a.name)) return 'up';
+      break; // limited: fall through to the fallback engine
+    }
+    sh('sleep', ['1'], 3_000);
+  }
+  if (fallback !== undefined && fallback !== engine) {
+    console.log(`LIMIT    ${a.name} on ${engine} → retry on ${fallback}`);
+    if (!launch(fallback, a)) return 'failed';
+    for (let i = 0; i < 12; i++) {
+      if (hasPane(a.name) && !isLimited(a.name)) return 'up-fallback';
+      sh('sleep', ['1'], 3_000);
+    }
+  }
+  return 'failed';
 }
 
 function stopAll(agents: Agent[]) {
@@ -193,15 +235,29 @@ function tick(cfg: Config) {
   console.log(`=== geo-fleet tick ${iso()} ===`);
   const agents = expand(cfg);
   let relaunched = 0;
+  let failed = 0;
   const dead: string[] = [];
+  const notUp: string[] = [];
   for (const a of agents) {
     if (isAlive(a.name)) {
       console.log(`ALIVE    ${a.name}`);
-    } else {
-      dead.push(a.name);
-      console.log(`RELAUNCH ${a.name} shard=${a.shard ?? 'none'} model=${a.model ?? 'default'}`);
-      if (launch(a.engine ?? cfg.engine, a)) relaunched++;
+      continue;
     }
+    dead.push(a.name);
+    console.log(`RELAUNCH ${a.name} shard=${a.shard ?? 'none'} model=${a.model ?? 'default'}`);
+    const outcome = launchVerified(a.engine ?? cfg.engine, cfg.engineFallback, a);
+    if (outcome === 'failed') {
+      failed++;
+      notUp.push(a.name);
+      console.log(`FAILED   ${a.name} (no pane after launch — session did not come up)`);
+    } else {
+      relaunched++;
+      if (outcome === 'up-fallback') console.log(`OK-FB    ${a.name} (on ${cfg.engineFallback})`);
+    }
+  }
+  if (failed > 0) {
+    console.log(`\n!! ${failed}/${agents.length} agents FAILED to come up: ${notUp.join(', ')}`);
+    console.log('!! check tmux: a missing /tmp/tmux-$UID socket dir makes every h2a run die silently.');
   }
   const bf = ensureBackfill(cfg.backfill);
   console.log(`backfill ${cfg.backfill?.session ?? '(none)'}: ${bf}`);
@@ -220,9 +276,33 @@ function tick(cfg: Config) {
     sh('h2a', ['loop', 'report', cfg.h2aLoop, '--note', `tick ${iso()}: relaunched=${relaunched} | ${line}`], 30_000);
   }
 
-  const row = { ts: iso(), sb, relaunched, alive: agents.length - dead.length, total: agents.length, dead, backfill: bf };
+  // `alive` is measured BEFORE relaunching, `up` AFTER and verified: the pair is what
+  // tells a stalled fleet (up=0 tick after tick) from a working one.
+  const up = agents.filter((a) => isAlive(a.name)).length;
+  const row = { ts: iso(), sb, relaunched, failed, alive: agents.length - dead.length, up, total: agents.length, dead, backfill: bf };
   appendTimeline(cfg.timeline, row);
-  console.log(`=== tick done (relaunched=${relaunched}/${agents.length}, timeline ${cfg.timeline}) ===`);
+  console.log(`=== tick done (relaunched=${relaunched}, failed=${failed}, UP=${up}/${agents.length}, timeline ${cfg.timeline}) ===`);
+}
+
+/**
+ * Permanent supervision: tick, wait, tick again — forever.
+ *
+ * Nothing was re-ticking the fleet (no cron, no timer), so a dead agent stayed dead
+ * until a human noticed. This keeps the configured lanes populated on its own.
+ * Run it detached, once:
+ *   bash scripts/geo-worker.sh bg geo-fleet-loop -- npx tsx acquisition/src/geo-fleet.ts loop --every 600
+ */
+async function loop(cfg: Config, everySec: number): Promise<void> {
+  console.log(`=== geo-fleet loop: tick every ${everySec}s (${expand(cfg).length} agents configured) ===`);
+  for (;;) {
+    try {
+      tick(cfg);
+    } catch (error) {
+      // A single bad tick (S3 blip, reconcile timeout) must never end the supervision.
+      console.error(`[loop] tick failed, continuing: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    await new Promise((r) => setTimeout(r, everySec * 1000));
+  }
 }
 
 function status(cfg: Config) {
@@ -257,6 +337,10 @@ function main() {
   switch (cmd) {
     case 'tick':
       return tick(cfg);
+    case 'loop': {
+      const i = argv.indexOf('--every');
+      return loop(cfg, i >= 0 ? Number(argv[i + 1]) || 600 : 600);
+    }
     case 'status':
       return status(cfg);
     case 'timeline':

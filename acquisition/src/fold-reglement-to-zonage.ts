@@ -14,11 +14,18 @@
  * Usage (npx tsx, from acquisition/):
  *   npx tsx src/fold-reglement-to-zonage.ts --slugs mont-tremblant,sutton --dry-run
  *   npx tsx src/fold-reglement-to-zonage.ts --slugs mont-tremblant,sutton,saint-raphael
+ *   npx tsx src/fold-reglement-to-zonage.ts --all --dry-run   # toutes les villes zones-servies
+ *   npx tsx src/fold-reglement-to-zonage.ts --all
+ *
+ * --all: le P0_1 vise TOUTES les villes, pas une liste à la main. L'univers est la
+ * matrice de couverture (zones=done); chaque ville sans numéro côté norms est skippée
+ * (null honnête), donc le passage est idempotent et sans invention.
  */
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { loadMatrix, MATRIX_PATH } from "./coverage-matrix.js";
 import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -69,9 +76,17 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
   const strip = argv.includes("--strip");
-  const slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  let slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  if (argv.includes("--all")) {
+    const matrix = loadMatrix(MATRIX_PATH);
+    if (matrix === null) throw new Error(`matrice introuvable: ${MATRIX_PATH}`);
+    slugs = Object.keys(matrix.cities)
+      .filter((s) => matrix.cities[s]?.zones?.status === "done")
+      .sort();
+    console.log(`--all: ${slugs.length} villes zones-servies`);
+  }
   if (slugs.length === 0) {
-    console.error("pass --slugs <a,b>");
+    console.error("pass --slugs <a,b> or --all");
     process.exit(2);
   }
   const s3 = s3Client();
