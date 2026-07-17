@@ -21,6 +21,8 @@ import {
   looksLikeTransposedGrille,
   parseTransposedColumnsGrille,
   looksLikeTransposedColumnsGrille,
+  parseAffectationMatrixGrille,
+  looksLikeAffectationMatrixGrille,
   columnsHeaderZones,
   parseZoneHeader,
   isNumberedGrilleSpec,
@@ -1159,6 +1161,83 @@ describe("looksLikeTransposedColumnsGrille — detection", () => {
   });
   it("does NOT fire on a NOTES page whose only 'codes' were fabricated ranges", () => {
     expect(looksLikeTransposedColumnsGrille(SAINTTITE_NOTES_PAGE)).toBe(false);
+  });
+});
+
+// ── Affectation MATRIX (MRC de Papineau / ripon) ────────────────────────────
+// The zone code is NEVER printed: the header stacks a column-number row over an
+// affectation-letter row, and the code is the per-column pair ("20"+"AD" → "AD-20",
+// the SIG's own spelling). Reproduced from the real ripon sheet, INCLUDING the two
+// traits that broke naive readers:
+//   • DRIFT — `pdftotext -layout` cannot hold a wide matrix in register, so the
+//     value cells sit LEFT of their header numbers (here up to 6 chars) and
+//     nearest-column pairing alone mis-binds. Value rows carry one token per column.
+//   • REPEATED headers — the sheet reprints the header above each block (usages,
+//     then marges). Only the LAST block carries values; binding them to an earlier
+//     block's anchors would attribute one zone's norms to another.
+// Columns sit well right of the row labels (as on the real sheet, where the label
+// ends near col 80 and the first zone column starts at 155).
+const AM_NUM_COLS = [100, 106, 112, 118, 124, 130];
+const AM_LET_COLS = [100, 106, 112, 118, 124, 130];
+// Value cells drift progressively left of their header number (0,-1,-2,-3,-4,-5).
+const AM_VAL_COLS = [100, 105, 110, 115, 120, 125];
+const AFFECTATION_MATRIX_LAYOUT = [
+  "                    GRILLE DES USAGES ET NORMES",
+  placeCols(AM_NUM_COLS, ["1", "2", "3", "4", "5", "6"]),
+  placeCols(AM_LET_COLS, ["V", "F", "V", "AD", "AF", "iN"]),
+  placeCols([4, ...AM_VAL_COLS], ["Résidence unifamiliale isolée (HAB9)", "", "*", "", "", "", ""]),
+  // The header is REPRINTED above the norms block, with the amendment gutter that
+  // shares the letter row (it sits outside the number run's span).
+  placeCols(AM_NUM_COLS, ["1", "2", "3", "4", "5", "6"]),
+  placeCols([...AM_LET_COLS, 160], ["V", "F", "V", "AD", "AF", "iN", "2022-06-400-B, 24 mars 2023"]),
+  placeCols([4, ...AM_VAL_COLS], ["MARGE AVANT - Lots de 3715 mètres carrés et moins", "6m", "10m", "6m", "10m", "10m", "-"]),
+  placeCols([4, ...AM_VAL_COLS], ["MARGE LATÉRALE - Lots de 3715 mètres carrés et moins", "3m", "4m", "3m", "4m", "4m", "-"]),
+].join("\n");
+
+describe("parseAffectationMatrixGrille — stacked number/letter header (MRC de Papineau)", () => {
+  it("pairs each column number with its affectation → the SIG's own code", () => {
+    const zones = parseAffectationMatrixGrille(AFFECTATION_MATRIX_LAYOUT, 1, OPTS2);
+    expect(zones.map((z) => z.zone_code)).toEqual(["V-1", "F-2", "V-3", "AD-4", "AF-5", "iN-6"]);
+  });
+
+  it("binds each value to ITS OWN column despite the layout drift", () => {
+    const zones = parseAffectationMatrixGrille(AFFECTATION_MATRIX_LAYOUT, 1, OPTS2);
+    const avant = Object.fromEntries(zones.map((z) => [z.zone_code, z.marges.avant_min?.raw ?? null]));
+    // Verbatim row: 6m 10m 6m 10m 10m - — zone-for-zone, no shift.
+    expect(avant).toEqual({
+      "V-1": "6m",
+      "F-2": "10m",
+      "V-3": "6m",
+      "AD-4": "10m",
+      "AF-5": "10m",
+      "iN-6": "-",
+    });
+    const lat = Object.fromEntries(zones.map((z) => [z.zone_code, z.marges.laterale_min?.raw ?? null]));
+    expect(lat["V-1"]).toBe("3m");
+    expect(lat["AD-4"]).toBe("4m");
+  });
+
+  it("REFUSES a number row with no affectation row stacked under it", () => {
+    const noLetters = [
+      "                    GRILLE DES USAGES ET NORMES",
+      placeCols(AM_NUM_COLS, ["1", "2", "3", "4", "5", "6"]),
+      placeCols([4, ...AM_VAL_COLS], ["MARGE AVANT", "6m", "10m", "6m", "10m", "10m", "-"]),
+    ].join("\n");
+    expect(parseAffectationMatrixGrille(noLetters, 1, OPTS2)).toEqual([]);
+  });
+
+  it("REFUSES a numeric row that is not the run 1,2,3,… (a note/year never anchors)", () => {
+    const notARun = [
+      placeCols(AM_NUM_COLS, ["12", "17", "23", "31", "44", "52"]),
+      placeCols(AM_LET_COLS, ["V", "F", "V", "AD", "AF", "iN"]),
+      placeCols([4, ...AM_VAL_COLS], ["MARGE AVANT", "6m", "10m", "6m", "10m", "10m", "-"]),
+    ].join("\n");
+    expect(parseAffectationMatrixGrille(notARun, 1, OPTS2)).toEqual([]);
+  });
+
+  it("does NOT fire on the Matapédia or Sept-Îles families (exclusive signatures)", () => {
+    expect(looksLikeAffectationMatrixGrille(TRANSPOSED_LAYOUT)).toBe(false);
+    expect(looksLikeAffectationMatrixGrille(SEPTILES_COLS_LAYOUT)).toBe(false);
   });
 });
 
