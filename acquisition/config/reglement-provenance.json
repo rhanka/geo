@@ -1973,6 +1973,48 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "DOC MUET + PROJET: PDF = grilles «Zones à dominance mixte» dont la colonne «Référence au règlement» ne contient que des numeros d'ARTICLES (4.1.2, ...), les colonnes etant des codes de zone (R-606, CM-601...) -- 0 motif «Reglement ... numero X» sur les 11 p (texte natif OK). Le nom de fichier «Annexe-5Grilles_Projet_2020_STL-V2021-09-13» annonce en outre un PROJET (cf. ham-sud: un projet n'est pas du droit en vigueur) => null."
+    },
+    "saint-augustin-de-woburn": {
+      "reglement_numero": "279-2010",
+      "reglement_millesime": "2010",
+      "reglement_page_source": 1,
+      "reglement_url": "https://cdn.gestionweblex.ca/files/e9j8snZspi",
+      "_note": "Doc = grille des specifications (6 p, texte natif OK). Numero lu verbatim en tete de CHAQUE feuillet, p1: «Annexe 1 du règlement / de zonage No. 279-2010 / Feuillet 1 / 6», avec l'identite de la muni confirmee sur la meme page: «Municipalité de Saint-Augustin de Woburn (Milieu rural)». Millesime = segment annee 4 chiffres du numero verbatim (precedent paspebiac/parisville): le doc ne porte aucune date d'adoption. Le source_url est un CDN opaque (cdn.gestionweblex.ca/files/e9j8snZspi), sans nom de fichier: aucun risque de piege URL ici."
+    },
+    "saint-andre-de-restigouche": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "MAUVAIS DOC -- MUNICIPALITE DIFFERENTE (2e occurrence du piege, cf. saint-francois-du-lac). Le source_url du manifest «https://matapedialesplateaux.com/wp-content/uploads/2021/03/ANNEXE_2_Grilles_spécifications_St-AlexisV6.pdf» rend les grilles de SAINT-ALEXIS-DE-MATAPEDIA, PAS de Saint-Andre-de-Restigouche. Le doc le dit verbatim p1: «GRILLES DE SPÉCIFICATIONS   MUNICIPALITÉ DE SAINT-ALEXIS-DE-MATAPÉDIA» (et le nom de fichier porte «St-Alexis»). Rien de ce doc ne peut etre stampe sur saint-andre-de-restigouche => null. Voie = re-decouverte de l'URL + AUDIT de la grille servie qc-zonage-norms-saint-andre-de-restigouche (35 codes): contamination amont probable, la grille vient peut-etre de ce meme mauvais PDF."
+    },
+    "saint-antonin": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type barkmere): PDF = «cahier de spécifications - annexe B» (40 p, texte natif OK). Le cahier ne numerote jamais son reglement de zonage parent. CANDIDATS ECARTES (les 2 seuls numeros du doc, aucun n'est le zonage): (a) «926-26» = reglement sur les USAGES CONDITIONNELS, verbatim: «Seul le point 5 de la classe C-6 a) complémentaire aux activités industrielles sont autorisé aux conditions du règlement 926-26 sur les usages conditionnels.»; (b) «923-26» = reglement de LOTISSEMENT («règlement de lotissement 923-26»). Stamper l'un des deux servirait un reglement qui n'est pas le zonage => null."
+    },
+    "ragueneau": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type barkmere): PDF = «Cahier des spécifications Municipalité de RAGUENEAU» (24 p, texte natif OK, muni CONFORME). Recherche plein texte: aucun «règlement <numero>» -- les seules occurrences sont sans numero («règlement (Bande riveraine», «règlements applicables à l'égard de l'utilisation projetée au moment de l'entrée en vigueur du présent», «Règlement sur les»). CANDIDAT ECARTE: le «2015-03» du nom de fichier (reglement_2015-03_zonage_cahier_specifications.pdf) est plausible mais NON RETENU (gate: jamais deduire de l'URL) => null."
+    },
+    "ristigouche-sud-est": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "DOC MUET (type barkmere): PDF = «ANNEXE II - GRILLES DE SPÉCIFICATIONS   MUNICIPALITÉ DE RISTIGOUCHE-PARTIE-SUD-EST» (15 p, texte natif OK, muni CONFORME). Recherche plein texte: ZERO occurrence du mot «règlement» ET zero occurrence de «2022-002» dans tout le doc. CANDIDAT ECARTE: le «R 2022-002» du nom de fichier («2022-08-31 MRSE R 2022-002 Zonage Annexe 2 Grilles de spcifications MJ Adopt.pdf») est plausible mais NON RETENU -- il n'apparait nulle part DANS le document (gate: jamais deduire de l'URL; type saint-felicien) => null."
+    },
+    "pont-rouge": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "AUCUN DOC A LIRE: le source_url du manifest «https://ville.pontrouge.qc.ca/reglement-zonage-496-2015-annexe-2-grilles» est une PAGE HTML (pas de .pdf; le fetch ne rend pas de magic %PDF). CANDIDAT ECARTE: le «496-2015» du chemin d'URL est plausible mais NON RETENU (gate: jamais deduire de l'URL -- piege coaticook) => null. Voie = suivre la page pour en extraire le vrai PDF (hors lane P0_1)."
     }
   }
 }
