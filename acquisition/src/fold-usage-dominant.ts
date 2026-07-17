@@ -35,7 +35,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
-import { SIG_ZONE_CODE_FIELDS } from "./lib/zonage-norms.js";
+import { canonZoneCodeServe, SIG_ZONE_CODE_FIELDS } from "./lib/zonage-norms.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const MAP_DIR = resolve(ROOT, "acquisition", "config", "usage-dominant-map");
@@ -83,7 +83,7 @@ function loadMap(slug: string): UsageMap | null {
 }
 
 /** Zone code brut d'une feature (1re valeur non-vide de la whitelist SIG). */
-function zoneCodeOf(props: Record<string, unknown>): string | null {
+export function zoneCodeOf(props: Record<string, unknown>): string | null {
   for (const name of SIG_ZONE_CODE_FIELDS) {
     const v = props[name];
     if (v === null || v === undefined) continue;
@@ -102,15 +102,21 @@ function alphaPrefix(code: string): string {
 /** Catégorie du PLUS LONG préfixe du map qui préfixe le code (case-insensible).
  *  Un préfixe mappé à null gagne quand même s'il est le plus long => il BLOQUE
  *  le fallthrough vers un préfixe plus court (voir MapValue). Aucun match => null. */
-function categoryFor(code: string, prefixMap: Record<string, MapValue>): MapValue {
-  const up = code.toUpperCase();
+export function categoryFor(code: string, prefixMap: Record<string, MapValue>): MapValue {
   let best: MapValue = null;
   let bestLen = -1;
-  for (const [prefix, cat] of Object.entries(prefixMap)) {
-    const p = prefix.toUpperCase();
-    if (up.startsWith(p) && p.length > bestLen) {
-      best = cat;
-      bestLen = p.length;
+  // Keep the raw form for existing maps whose verified SIG codes are digit-first
+  // (for example "22 H"), then also test the reversible served form ("H-22") so
+  // regulatory prefix maps (H, P, Rec…) work on the same feature.
+  const forms = [code, canonZoneCodeServe(code)].filter((v, i, a) => v && a.indexOf(v) === i);
+  for (const form of forms) {
+    const up = form.toUpperCase();
+    for (const [prefix, cat] of Object.entries(prefixMap)) {
+      const p = prefix.toUpperCase();
+      if (up.startsWith(p) && p.length > bestLen) {
+        best = cat;
+        bestLen = p.length;
+      }
     }
   }
   return best;
@@ -175,7 +181,7 @@ async function listPrefixesKey(s3: S3, slug: string, key: string): Promise<void>
       noCode++;
       continue;
     }
-    const pref = alphaPrefix(code) || "(numérique)";
+    const pref = alphaPrefix(canonZoneCodeServe(code) || code) || "(numérique)";
     let e = byPrefix.get(pref);
     if (!e) {
       e = { count: 0, samples: new Set() };
