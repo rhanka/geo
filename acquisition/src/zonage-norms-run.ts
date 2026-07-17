@@ -768,7 +768,32 @@ async function main(): Promise<void> {
           `${win.firstPage}..${win.lastPage} (±${AUTO_GRID_MARGIN}, page cap overridden)`,
       );
     } else {
-      console.error("[auto-grid] aucune page-grille détectée — fallback comportement normal");
+      // On a miss the old behaviour fell through to the p1-80 cap — i.e. it paid a
+      // full 80-page OCR pass over exactly the documents where the detector just
+      // proved there is no grille to read. Measured on courcelles-saint-evariste and
+      // saint-elzear-de-temiscouata: $0.08 each, 0 zones. Both are règlement BODIES
+      // whose grille lives in a sibling "Annexe 1" PDF that is not in this file, so
+      // no window could have made the pass succeed. Asking to bound the window is
+      // asking not to spend unbounded — so a miss aborts.
+      console.error(
+        "[auto-grid] aucune page-grille détectée — ABORT (le fallback p1-80 paierait " +
+          "une passe OCR complète sur un PDF sans grille prouvée). Relancer sans " +
+          "--auto-grid-page pour forcer, ou trouver le PDF frère portant l'annexe.",
+      );
+      console.log(
+        JSON.stringify(
+          {
+            slug: args.slug,
+            deposited: false,
+            reason: "auto-grid: no grille window proven ($0 abort)",
+            route: decision.route,
+            visionUsd: 0,
+          },
+          null,
+          2,
+        ),
+      );
+      return;
     }
   }
 
