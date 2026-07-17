@@ -78,6 +78,9 @@ async function main(): Promise<void> {
   }
 
   const staleOnly = process.argv.includes("--stale-only");
+  const accessFailOnly = process.argv.includes("--access-fail");
+  // Échec d'ACCÈS mesurable (peut se rétablir): à re-curler à $0.
+  const ACCESS_FAIL = /(http[ =]?(000|403|404|5\d\d)|lien mort|injoignable|timeout|time ?out|ne repond pas|http=000|blocage acces|waf|403|404)/i;
   // Prémisse MESURABLE périmable: la note affirme "rien à lire / pas d'URL / dossier
   // vide", MAIS le manifest sert MAINTENANT une URL réelle => null STALE (levier cdx,
   // mémoire null-verdict-perime-par-depot-amont). À re-ouvrir à $0.
@@ -92,8 +95,10 @@ async function main(): Promise<void> {
     const noteRaw = reg._note ?? "";
     const noteFlat = noteRaw.replace(/[éèê]/g, "e").toLowerCase();
     const stale = !!url && STALE_PREMISE.test(noteFlat);
+    const accessFail = ACCESS_FAIL.test(noteRaw);
     if (corpsOnly && !(shape === "CORPS" || shape === "MIXTE")) continue;
     if (staleOnly && !stale) continue;
+    if (accessFailOnly && !accessFail) continue;
     shown++;
     const note = noteRaw.replace(/\s+/g, " ").slice(0, 260);
     console.log(`\n### ${slug}  [${shape}]${stale ? " ⚠️STALE(note=rien-à-lire mais URL servie)" : ""}`);
