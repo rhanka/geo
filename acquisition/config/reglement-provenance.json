@@ -530,7 +530,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "DOC MUET: PDF = «Annexe III - Grilles des usages et normes» zones 101-143 (56 p, texte natif OK), en-tete «ZONE: CONS 101 / A jour au : 21 septembre 2016» -- 0 motif «Reglement ... numero X» sur tout le doc. Une date sans numero ne suffit pas (le gate exige le numero) => null."
+      "_note": "HOLD null MAIS le _note precedent est FACTUELLEMENT FAUX et corrige ici: il affirmait «0 motif «Reglement ... numero X» sur tout le doc» — or `work/zonage-norms/boisbriand/grille.pdf` porte en pied de CHAQUE page (55 occurrences) le motif verbatim «Règlement de zonage numéro RV-1441», et le tableau d'amendements cite «RV-1441-049 / 21-sept-16» et «RV-1441-050 / 21-sept-16». Le numero EST donc lisible. CE QUI BLOQUE est autre chose, et c'est le gate PROPRIETAIRE: le doc ne se nomme JAMAIS — 0 occurrence de «Boisbriand», 0 motif «Ville de ...» / «Municipalité de ...» sur tout le doc. Or la contamination de dossier est PROUVEE 3x ce jour sur ce meme shard (saint-rene / saint-cleophas-de-brandon / saint-camille-de-lellis portaient le reglement d'une AUTRE muni): un doc anonyme n'est pas stampable sur la foi du dossier qui le contient, meme si le prefixe «RV-» (Reglement de Ville) est la convention connue de Boisbriand. Millesime introuvable de toute facon: «À jour au : 21 septembre 2016» est une MISE A JOUR, pas une adoption. ETAPE = piece qui NOMME la ville (corps du RV-1441, avis d'entree en vigueur), pas une re-extraction de cette annexe."
     },
     "bolton-est": {
       "reglement_numero": null,
@@ -680,11 +680,11 @@
       "_note": "PIEGE URL: doc = «Reglement-131-2022-Annexe-B-Grilles-dusage-VAdmin.pdf» (52 p, texte natif OK) mais recherche plein texte = 0 match pour «reglement + annee», «131-2022» ET «zonage no/numero/#» => l'annexe B ne se numerote NULLE PART. Le «131-2022» n'existe que dans le nom de fichier (exclu par le gate) => null."
     },
     "kamouraska": {
-      "reglement_numero": null,
+      "reglement_numero": "2025-04",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://www.kamouraska.ca/documents/rglement-zonage-2025-041758132807.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "_note": "Numero ET proprietaire dans la MEME ligne verbatim, entete de chacune des 30 pages: «RÈGLEMENT SUR LE ZONAGE NUMÉRO 2025-04 DE LA MUNICIPALITÉ DE KAMOURASKA   Zone 1PI» (p1), «... Zone 2PI» (p2), etc. Gate proprietaire: 52 occurrences, toutes «Kamouraska» = le slug. MILLESIME null ASSUME: le doc est le cahier de grilles; recherche plein texte «adopt|en vigueur» => 0 hit hors entetes, aucune date nulle part. Le «2025» du numero n'est PAS retenu (piege de l'annee du numero, mesure 3/3 dans ce corpus: 2007-08=2008, 09-591=2010, 06-70=2007). URL null: source_url du manifest «https://www.kamouraska.ca/documents/rglement-zonage-2025-041758132807.pdf» renvoie 404/text-html (re-teste 2026-07-17)."
     },
     "kingsbury": {
       "reglement_numero": "121",
@@ -1275,11 +1275,11 @@
       "_note": "LIEN MORT: le source_url du manifest «https://municipalitedelangegardien.com/wp-content/uploads/2025/05/20240517-Annexe-3-Grilles-zonage.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
     },
     "lavaltrie": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "RRU2-2012",
+      "reglement_millesime": "2012",
+      "reglement_page_source": 2,
       "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://www.ville.lavaltrie.qc.ca/storage/app/media/urbanisme/RRU2-2012_zonage_2026.pdf» repond HTTP 404. Le «RRU2-2012» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL) => null. Voie = re-decouverte de l'URL."
+      "_note": "Numero verbatim p2, dans le CERTIFICAT D'ADOPTION lui-meme: «CERTIFICAT D'APPROBATION ET/OU PROCESSUS D'ADOPTION / RÈGLEMENT NUMÉRO RRU2-2012 / Règlement zonage», signe «Jean Claude Gravel, maire / Madeleine Barbeau, greffière»; pied de page de chaque page «Règlement de zonage numéro RRU2-2012». Proprietaire verbatim p1: «PROVINCE DE QUÉBEC / VILLE DE LAVALTRIE / RÈGLEMENT DE ZONAGE / Numéro RRU2 – 2012 / Version administrative» (11 occurrences «Lavaltrie», aucune concurrente). page_source=2 et non 1: la couverture p1 porte la forme «RRU2 – 2012» (tiret cadratin + espaces), la forme canonique «RRU2-2012» stampee est celle de p2. Millesime = ADOPTION verbatim p2, tableau du certificat: «Adoption du règlement 2012-12-03» => 2012 (l'entree en vigueur, «2013-02-08», bascule en 2013 — convention du registre = l'adoption). URL null: source_url du manifest 404 (re-teste 2026-07-17)."
     },
     "notre-dame-de-lile-perrot": {
       "reglement_numero": "437",
@@ -1888,14 +1888,14 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "LIEN MORT (type mont-saint-michel): le source_url du manifest «https://fortcoulonge.qc.ca/IMG/pdf/reglements_de_zonage_maj_sept_2012.pdf» repond HTTP 404 (verifie curl -sIL). Aucun doc a lire => null. Le «sept 2012» du nom de fichier n'est PAS retenu comme millesime (gate: jamais deduire de l'URL). Voie = re-decouverte de l'URL."
+      "_note": "HOLD null: CONFLIT DE NUMEROS INTERNE NON LEVE (famille bristol). Proprietaire OK (66 occurrences «Fort-Coulonge» = le slug, «MUNICIPALITÉ DU VILLAGE DE FORT-COULONGE» p1). Mais le doc porte DEUX numeros pour LE MEME reglement de zonage: (a) couverture p1 verbatim «Règlement no2004-202: (modifié remplaçant règlement no. 156, adopté le 5 juillet 1991) / Règlement de zonage / Adopté le 1er décembre 2004 / Mise à jour 17 septembre 2012 (incluant l'amendement numéro 2012-228» => le zonage en vigueur = 2004-202, et le 156 est l'ANCIEN (1991) qu'il remplace; (b) l'art. 1.1 TITRE DU RÈGLEMENT p2 verbatim «Le présent règlement numéro 156 a été adopté à la réunion du Conseil de la Corporation municipale du Village de Fort-Coulonge du 1er décembre 2004. Ce règlement peut être cité sous le nom de ''Règlement de zonage''.» — l'art. 1.1 fait foi par doctrine (cf. bristol), et il dit 156. NON TRANCHE, et l'art. 1.1 est de surcroit AUTO-CONTRADICTOIRE avec la couverture sur la date meme du 156 (5 juillet 1991 en p1 vs 1er décembre 2004 en p2): la lecture probable est un reste de gabarit non renumerote lors de la refonte 2004, mais «probable» n'est pas verbatim. Les deux sources s'accordent en revanche sur la date d'adoption du reglement EN VIGUEUR: 1er décembre 2004 (=> millesime 2004 des que le numero sera tranche). ETAPE = piece officielle (avis d'entree en vigueur / certificat MRC Pontiac)."
     },
     "bonsecours": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "06-70",
+      "reglement_millesime": "2007",
+      "reglement_page_source": 3,
       "reglement_url": null,
-      "_note": "HOTE INJOIGNABLE: le source_url du manifest «https://municipalites-du-quebec.ca/bonsecours/custom/zonage.pdf» n'aboutit pas (curl http=000, timeout 25s; idem fetch sonde). Aucun doc a lire => null. Voie = re-decouverte de l'URL (site muni actuel), pas une extraction."
+      "_note": "RE-QUALIFIE (le _note precedent «HOTE INJOIGNABLE ... Aucun doc a lire => null» est REFUTE: le verdict etait rendu sur l'URL morte SANS regarder le corpus local, or `work/zonage-norms/bonsecours/grille.pdf` (231 p, texte natif) est sur disque). Numero + proprietaire verbatim p3: «VERSION ADMINISTRATIVE / MUNICIPALITÉ DE BONSECOURS / Règlement de zonage n° 06-70», confirme p1 «MUNICIPALITÉ DE BONSECOURS / Réglementation d'urbanisme / par Teknika HBA / Février 2007». Gate proprietaire: 8/8 occurrences du jeton = «Bonsecours» nu = le slug. Millesime = ADOPTION verbatim p3: «Avis de motion : 5 février 2007 / Adoption : 8 février 2007 / Entrée en vigueur : 18 avril 2007» => 2007 et NON 2006: 4e confirmation mesuree du piege stoneham (le numero porte «06», le reglement est adopte en 2007). URL null: le source_url du manifest «https://municipalites-du-quebec.ca/bonsecours/custom/zonage.pdf» reste mort (re-teste 2026-07-17) => ne pas servir un lien mort a immo."
     },
     "otterburn-park": {
       "reglement_numero": "431",
@@ -2017,11 +2017,11 @@
       "_note": "PAS UN REGLEMENT: le source_url «https://www.lac-frontiere.ca/web/download/reglement-2021-07-annexe-a/?wpdmdl=1689» rend un PLAN de zonage -- 1 seule page, format 792x1224 pts, contenu = numeros de lots + «Zonage municipal» / «Demande de modification du zonage municipal» / «Lac-Frontière». ZERO occurrence du mot «règlement» dans tout le doc (grep -ic = 0) => rien a relever verbatim => null. CANDIDAT ECARTE: le «reglement-2021-07» du chemin d'URL (gate: jamais deduire de l'URL)."
     },
     "lefebvre": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "387",
+      "reglement_millesime": "2020",
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "LIEN MORT (type mont-saint-michel): le source_url du manifest «https://www.municipalite-lefebvre.ca/pdf_reglements/n. 387 - Règlement de zonage.pdf» repond HTTP 404 (verifie curl -sIL, URL-encodee). Aucun doc a lire => null. CANDIDAT ECARTE: le «n. 387» du nom de fichier est plausible mais NON RETENU (gate: jamais deduire du nom de fichier -- piege coaticook). Voie = re-decouverte de l'URL."
+      "_note": "Numero + proprietaire verbatim p1: «Municipalité de Lefebvre / Règlement de zonage / Règlement numéro 387», confirme par l'entete de CHAQUE page «Règlement de zonage / Numéro 387 / Municipalité de Lefebvre» et p2 «Liste des amendements au règlement no 387». Gate proprietaire: 356 occurrences, toutes «Lefebvre» = le slug. Millesime = ADOPTION verbatim p1: «Avis de motion : 5 octobre 2020 / Adoption du 1er projet : 5 octobre 2020 / Adoption : 17 novembre 2020 / Entrée en vigueur : 21 janvier 2021» => 2020 (adoption), l'entree en vigueur bascule en 2021 — convention du registre = l'adoption (cf. saint-albert, saint-antoine-de-tilly). URL null: source_url du manifest 404 (re-teste 2026-07-17, GET partiel => text/html)."
     },
     "saint-dominique": {
       "reglement_numero": "2017-324",
@@ -2556,11 +2556,11 @@
       "_note": "DOC MUET (type barkmere): PDF = grille des specifications (31 p, texte natif OK). FAUX POSITIF ECARTE: la sonde capte «RÈGLEMENT DE ZONAGE   NUMÉRO DE ZONE   01  02  03...» -- le «NUMÉRO» appartient a l'en-tete de colonne «NUMÉRO DE ZONE», et 01/02/03 sont des CODES DE ZONE, pas un numero de reglement. Recherche plein texte «règlement[^,;.]{0,40}»: uniquement «RÈGLEMENT DE LOTISSEMENT», «règlement de zonage», «Règlement de zonage» -- jamais suivis d'un numero => null."
     },
     "saint-dominique-du-rosaire": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "147-15",
+      "reglement_millesime": "2015",
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "HOTE INJOIGNABLE (type bonsecours/nantes, meme hebergeur municipalites-du-quebec): le source_url «https://municipalites-du-quebec.com/st-dominique-du-rosaire/docs/reglements/5/147-15          Zonage_SDR.pdf» n'aboutit pas (fetch sonde FETCH-FAIL). Aucun doc a lire => null. CANDIDAT ECARTE: le «147-15» du nom de fichier (gate: jamais deduire de l'URL). Voie = re-decouverte de l'URL."
+      "_note": "RE-QUALIFIE (le _note precedent «HOTE INJOIGNABLE ... Aucun doc a lire => null. CANDIDAT ECARTE: le «147-15» du nom de fichier» est REFUTE: le doc EST en local, `work/zonage-norms/saint-dominique-du-rosaire/grille.pdf` (179 p, texte natif)). Le 147-15 n'est donc PLUS deduit de l'URL: il est lu VERBATIM p1 «MUNICIPALITÉ DE SAINT-DOMINIQUE-DU-ROSAIRE / RÈGLEMENT DE ZONAGE / Règlement no. 147-15», confirme par l'entete de page p3 «Municipalité de Saint-Dominique-du-Rosaire   Règlement de zonage Numéro 147-15» et p3 «MISES À JOUR DU RÈGLEMENT DE ZONAGE NO. 147-15». Gate proprietaire: 84 occurrences du nom COMPLET «Saint-Dominique-du-Rosaire» = le slug (aucune forme concurrente). Millesime = ADOPTION verbatim p1: «Adopté le : 12 mai 2015» => 2015 (la ligne «Entrée en vigueur le :» de la couverture est VIDE). URL null: source_url du manifest injoignable."
     },
     "shefford": {
       "reglement_numero": "2016-532",
@@ -3638,7 +3638,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "HOLD null: MISMATCH DE PROPRIETAIRE (partiel) => ne rien stamper plutot que risquer une fausse provenance (meme posture que bristol). Le doc local porte un numero parfaitement lisible — p1 «MUNICIPALITÉ DE / COURCELLES» + «RÈGLEMENT N° 22-423» — et une adoption verbatim «Adoption du règlement : 1 mai 2023» (avis de motion 6 sept. 2022; le «22» du numero est donc FAUX, enieme confirmation du piege stoneham). MAIS le slug est la muni FUSIONNEE «courcelles-saint-evariste», alors que le doc ne se declare que de COURCELLES: mesure sur les 159 pages, «Évariste» apparait 0 fois. Le 22-423 ne gouverne donc, au mieux, que le secteur Courcelles; l'estamper sur tous les polygones donnerait au secteur Saint-Évariste un reglement qui ne le regit pas — exactement la fausse provenance que la fiche immo afficherait. ETAPE = confirmer aupres de la muni/MRC si 22-423 a ete etendu a tout le territoire apres la fusion; si oui, --overwrite avec numero=22-423 millesime=2023 page=1."
+      "_note": "HOLD null: MUNI PREDECESSEUR (variante du piege de proprietaire, sens «le doc nomme MOINS que le slug»). `work/zonage-norms/courcelles-saint-evariste/grille.pdf` (159 p) porte p1 verbatim «MUNICIPALITÉ DE / COURCELLES / RÈGLEMENT DE ZONAGE / RÈGLEMENT N° 22-423» — numero parfaitement lisible. Mais le gate proprietaire echoue par DEFAUT DE COUVERTURE: 147 occurrences «Courcelles», 0 occurrence «Évariste». Le slug `courcelles-saint-evariste` est la muni ISSUE du regroupement Courcelles + Saint-Évariste-de-Forsyth; le 22-423 est le reglement de l'EX-Courcelles seule et ne couvre donc, en l'etat de la preuve, qu'une PARTIE du territoire servi. Stamper reviendrait a afficher sur les lots de l'ex-Saint-Évariste un reglement qui ne les regit pas. Millesime introuvable de toute facon: l'art. 1.8 ENTRÉE EN VIGUEUR n'enonce que la formule «Le présent règlement est adopté et entre en vigueur conformément aux dispositions de [la loi]», sans date; le «22» du numero n'est pas retenu (piege de l'annee du numero). ETAPE = piece post-regroupement (reglement de concordance de la muni fusionnee) ou confirmation que 22-423 a ete etendu au territoire regroupe."
     },
     "dunham": {
       "reglement_numero": "382-19",
