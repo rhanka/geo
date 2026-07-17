@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "Forestiere": "agricole",
+    "Agro-forestiere": "agricole",
+    "Villegiature": "residentiel",
+    "Conservation": "environnemental",
+    "Industrielle": "industriel",
+    "Rurale": null,
+    "Publique": null,
+    "Mixte": null,
+    "Aeroport": null,
+    "Artisanale": null,
+    "Protection": null
+  },
+  "source": "zone_code SIG auto-descriptif (chaque zone_code EST sa vocation, verbatim) — règlement de zonage VC-434-13 (2013), Ville de Clermont (MRC d'Abitibi-Ouest); collection qc-zonage-clermont--abitibi-ouest",
+  "note": "Cas particulier: le SIG sert directement la VOCATION comme zone_code (verbatim), il n'y a donc pas de préfixe cryptique à décoder — la « légende » EST le libellé servi. Codes distincts servis (probe): « Forestiere-1..6 », « Agro-forestiere-1..3 », « Villegiature-1..3 », « Conservation-1..2 », « Industrielle », « Rurale-1..6 », « Publique et communautaire 1..4 », « Mixte », « Aeroport », « Artisanale », « Protection ». Mapping verbatim: Forestiere + Agro-forestiere -> agricole (famille forestière/agroforestière); Villegiature -> residentiel; Conservation -> environnemental; Industrielle -> industriel. Null explicite (dominance non unique / hors des 5 catégories / prudence anti-invention): Rurale (rural nu, mixte); « Publique et communautaire » (publique); Mixte; Aeroport (infrastructure publique de transport); Artisanale (petite production ambiguë commercial/industriel, non tranchée sans règlement); Protection (« Protection » seul, non confirmé environnemental sans le texte du règlement — non forcé). Aucun préfixe mappé absent du SIG."
+}
