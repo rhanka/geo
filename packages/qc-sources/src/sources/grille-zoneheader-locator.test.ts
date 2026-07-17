@@ -122,6 +122,12 @@ describe("readZoneHeaderCode", () => {
     expect(readZoneHeaderCode("ANNEXE J GRILLES DE SPÉCIFICATION   ZONE 1- HA\n  USAGE")).toBe("1-HA");
   });
 
+  it("reads plaisance 'ZONE 5-P (Affectation …)' headers verbatim", () => {
+    expect(
+      readZoneHeaderCode("Grille de spécifications ZONE 5-P (Affectation Habitation, mixte)\nUSAGES AUTORISÉS"),
+    ).toBe("5-P");
+  });
+
   it("EXCLUDES the transposed 'Numéro de zone:' family (not one-zone-per-page)", () => {
     expect(readZoneHeaderCode(TRANSPOSED_PAGE)).toBeNull();
   });
@@ -143,6 +149,21 @@ describe("readNumeroZoneHeaderCode", () => {
   it("keeps readZoneHeaderCode's transposed-family exclusion intact", () => {
     expect(readZoneHeaderCode(NUMERO_ZONE_ONLY_PAGE)).toBeNull();
     expect(readNumeroZoneHeaderCode(TRANSPOSED_PAGE)).toBeNull();
+  });
+
+  it("reads roberval abbreviated 'No de zone' banner + BARE code (same line)", () => {
+    expect(
+      readNumeroZoneHeaderCode("Zone résidentielle              No de zone   3R\nGroupe d'usage"),
+    ).toBe("3R");
+  });
+
+  it("reads roberval 'No de zone' banner + BARE code on the next non-blank line", () => {
+    expect(readNumeroZoneHeaderCode("No de zone\n\n21CO\nConstruction")).toBe("21CO");
+    expect(readNumeroZoneHeaderCode("No de zone\n\n3REC\n")).toBe("3REC");
+  });
+
+  it("does NOT trip on ordinary prose mentioning a zone (no 'no … de zone' banner)", () => {
+    expect(readNumeroZoneHeaderCode("les usages de la zone sont permis\n3R remains")).toBeNull();
   });
 });
 

@@ -55,6 +55,13 @@ const ZONE_COLON_NUMERIC_INLINE = /\bZONE\b\s*[:°]\s*(\d{1,4})(?=$|[^0-9])/i;
  *  augustin "ZONE ID-1"). Anchoring to the line END is what keeps a PROSE "…de la zone
  *  H-3 demeure inchangée" (code followed by more words) from matching. */
 const ZONE_NOCOLON_EOL = new RegExp(`\\bZONE\\b\\s+(${CODE_BODY})\\s*$`, "i");
+/** "ZONE <code> (Affectation …)" — NO colon, code followed by the regulatory
+ *  affectation parenthetical on the SAME header line (Plaisance Urb-02-2024). The
+ *  "Affectation" guard keeps ordinary prose "… zone H-3 (…)" out. */
+const ZONE_NOCOLON_AFFECTATION = new RegExp(
+  `\\bZONE\\b\\s+(${CODE_BODY})\\s*\\(\\s*Affectation\\b`,
+  "i",
+);
 /** A bare "ZONE :" at the END of a line — the code sits on the FOLLOWING non-blank line
  *  (durham-sud "Dispositions applicables à la zone :\n\n H-11"). */
 const ZONE_COLON_EOL = /\bZONE\b\s*[:°]\s*$/i;
@@ -74,6 +81,15 @@ const ISOLATED_CODE_LINE = /^([A-Za-z]{1,3}[ \t]*[-–—][ \t]*\d{1,3}(?:[ \t]*
  *  banner (it names a zone FAMILY whose members are columns). Excluded from gabarit A. */
 const NUMERO_DE_ZONE = /num[ée]ro\s+de\s+zone/i;
 const NUMERO_DE_ZONE_CAPTURE = /num[ée]ro\s+de\s+zone\b(.*)$/i;
+/** Abbreviated one-zone banner "No de zone" / "N° de zone" / "No. de zone" — the
+ *  Roberval "grille des spécifications" gabarit ("… No de zone   3R", code on the
+ *  SAME layout line or on the next non-blank line). Kept narrow ("no … de zone",
+ *  never bare "zone") so ordinary prose "de la zone H-3" cannot trip it. */
+const NO_DE_ZONE_CAPTURE = /\bn[o°]\s*\.?\s*de\s+zone\b(.*)$/i;
+/** A BARE digit-prefixed code token (SIG "numéro+lettre(s)" family, NO dash): "3R",
+ *  "10A", "21CO", "3REC", "58R". Accepted ONLY as a WHOLE trimmed line right after a
+ *  zone banner (anti-invention: never mid-prose, never a partial token). */
+const BARE_CODE_WHOLE_LINE = /^(\d{1,4}[A-Za-zÉÈ]{1,4})$/;
 
 /**
  * Normalise a captured code: long dashes → "-", drop inner spaces, uppercase.
@@ -119,6 +135,9 @@ export function readZoneHeaderCode(pageText: string): string | null {
     // A2b — "ZONE <code>" (no colon) at the END of the line (never mid-prose).
     const eol = line.match(ZONE_NOCOLON_EOL);
     if (eol?.[1]) return normalizeHeaderCode(eol[1]);
+    // A2c — "ZONE <code> (Affectation …)" on a one-zone grille header line.
+    const affectation = line.match(ZONE_NOCOLON_AFFECTATION);
+    if (affectation?.[1]) return normalizeHeaderCode(affectation[1]);
     // A1 — a bare "ZONE :" at line end; the code is on the next non-blank line.
     if (ZONE_COLON_EOL.test(line)) {
       for (let j = i + 1; j < Math.min(lines.length, i + 5); j++) {
@@ -155,6 +174,11 @@ export function readNumeroZoneHeaderCode(pageText: string): string | null {
   const scan = Math.min(lines.length, HEADER_SCAN_LINES);
   const accept = (raw: string): string | null => {
     const t = raw.trim();
+    // BARE "numéro+lettre(s)" family (Roberval "3R"/"21CO"/"3REC"): a whole-line
+    // token with no dash. Checked first so the dash-oriented matchers below never
+    // shadow it. Uppercased by normalizeHeaderCode; already has a digit + a letter.
+    const bare = t.match(BARE_CODE_WHOLE_LINE)?.[1];
+    if (bare) return normalizeHeaderCode(bare);
     const whole = t.match(CODE_WHOLE_LINE)?.[1];
     const embedded = whole ? [whole] : [...t.matchAll(CODE_IN_TEXT)].map((m) => m[2]).filter(Boolean);
     if (embedded.length !== 1 || !embedded[0]) return null;
@@ -165,7 +189,7 @@ export function readNumeroZoneHeaderCode(pageText: string): string | null {
 
   for (let i = 0; i < scan; i++) {
     const line = lines[i]!;
-    const banner = line.match(NUMERO_DE_ZONE_CAPTURE);
+    const banner = line.match(NUMERO_DE_ZONE_CAPTURE) ?? line.match(NO_DE_ZONE_CAPTURE);
     if (!banner) continue;
     const tail = banner[1]?.trim() ?? "";
     if (/^[:°]/.test(tail)) return null;
