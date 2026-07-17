@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "E": "industriel",
+    "A": "agricole",
+    "F": "agricole",
+    "R": "environnemental",
+    "P": null,
+    "RES": null
+  },
+  "source": "https://www.villelapeche.qc.ca/wp-content/uploads/2024/01/R.113-2025_Zonage04072025-13h.43.pdf",
+  "note": "Règlement de zonage R.113-2025 de la Municipalité de La Pêche (page titre VERBATIM: « PROVINCE DE QUÉBEC / MUNICIPALITÉ DE LA PÊCHE / RÈGLEMENT DE ZONAGE », 216 p. — le document NOMME sa muni). TABLE DE LÉGENDE VERBATIM — art. 14 « CODIFICATION DES ZONES »: « Chaque zone est désignée par une ou des lettres qui indiquent sa vocation dominante ou une affectation donnée à laquelle se rattache un numéro d'identification. […] Le tableau ci-dessous représente les types de zones : Tableau 1 — Abréviation / Dominance : A Agricole / C Commerciale / E Extraction / F Forestière / H Habitation / I Industrielle / P Publique et communautaire / R Récréative / RES Réserve ». C'est la table « Abréviation / Dominance » elle-même, PAS la grille des spécifications (non utilisée). Le numéro ne porte aucune vocation — art. 14 VERBATIM: « Le numéro d'identification unique est composé d'un chiffre qui peut varier entre 001 et 100. […] Exemple : A-001 / A : Agricole / 001 : Numéro séquentiel unique de la zone ». Mapping: H « Habitation » -> residentiel; C « Commerciale » -> commercial; I « Industrielle » -> industriel; E « Extraction » -> industriel (le brief range Extraction avec Industrielle; « Extraction » est ici une dominance SIMPLE, sans complément de lieu, cf. la grammaire EXA/INA de Farnham); A « Agricole » et F « Forestière » -> agricole (famille agricole/forestière); R « Récréative » -> environnemental (le brief range Récréative avec Conservation/Faunique; ici la DOMINANCE elle-même est nommée « Récréative » dans la colonne Dominance, cf. le PV d'Otterburn-Park, et non un simple mot « parc » sous une famille publique, cf. le PA null de Saint-Georges). NULL EXPLICITE, aucune dominante forcée (22 polygones): P « Publique et communautaire » (14 pol.) est une vocation publique et ne nomme aucune des cinq. RES « Réserve » (8 pol.) -> null car « réserve » n'énonce pas une dominante parmi les cinq (même traitement que ZR « Zone en réserve » à Champlain); ce null est de plus ANTI-FALL-THROUGH et CRITIQUE: le match étant longest-prefix, « RES » (3 lettres) bat « R » (1 lettre), donc RES-008 ne tombe PAS à tort sur R -> environnemental (sans ce null explicite, 8 polygones de réserve seraient servis « environnemental » EN SILENCE). Préfixes SIG réellement présents (167 polygones, sansCode=0, lus sur la collection SERVIE via `fold-usage-dominant.ts --slugs la-peche --list-prefixes`): H(88, ex H-041), R(16, ex R-014), P(14, ex P-011), C(14, ex C-010), F(14, ex F-002), A(10, ex A-002), RES(8, ex RES-008), E(2, ex E-001), I(1, ex I-001). Les 9 préfixes du SIG sont TOUS déclarés, ils correspondent EXACTEMENT aux 9 abréviations du Tableau 1 (millésime concordant, et la forme des codes du SIG est celle de l'exemple « A-001 » de l'art. 14), et aucun préfixe mappé n'est absent du SIG."
+}
