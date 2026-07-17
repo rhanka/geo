@@ -36,8 +36,13 @@ const root = resolve(process.cwd());
 /** Canonical grille headers (the classifieur signal from the retained design). */
 const GRILLE_RE =
   /grille\s+(des?\s+)?(usages?\s+et\s+)?(des?\s+)?(sp[ée]cifications?|normes?)|grille\s+de\s+zonage/i;
-/** SIG-shaped zone codes: 1-4 letters, dash, digits (H-12, RA-3, AF-33, CH-10). */
-const CODE_RE = /\b[A-Z]{1,4}-\d{1,3}\b/g;
+/**
+ * SIG-shaped zone codes: 1-4 letters, separator, digits (H-12, RA-3, AF-33, AC.1).
+ * The separator class MUST include the DOT: the MRC de Montmagny family codes
+ * `AC.1`/`CBM.1`, and a dash-only pattern reported "CODE-DENSE: NONE" for those
+ * documents — a structural false negative that hides a real grille on disk.
+ */
+const CODE_RE = /\b[A-Z]{1,4}[.-]\d{1,3}\b/g;
 
 function pdfPages(pdf: string): number {
   try {
