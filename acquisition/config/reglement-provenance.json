@@ -1,6 +1,34 @@
 {
   "$comment": "Provenance règlement par slug (P0a lane, demande Steve/immo 2026-07-12). 4 champs servis par ligne de grille: reglement_numero/millesime/page_source/url. Anti-invention: seulement des valeurs réelles; champ inconnu = null. Pilote MT/Sutton/Alma; à généraliser aux 817 (depuis _reglement/_source_url des dépôts ou registre par muni).",
   "slugs": {
+    "pincourt": {
+      "reglement_numero": "780",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.villepincourt.qc.ca/uploads/html_content/R%C3%A8glements/Reg.780.pdf",
+      "_note": "CORPS (191 p, texte natif). Numero verbatim couverture p1: «VILLE DE PINCOURT / RÈGLEMENT NUMÉRO 780 / RÈGLEMENT DE ZONAGE ET DE PLANS D'IMPLANTATION ET D'INTÉGRATION ARCHITECTURALE», repris en pied de chaque annexe «Ville de Pincourt / Règlement de zonage numéro 780». Owner-OK. MILLESIME null: art.238 ENTREE EN VIGUEUR = «Le présent règlement entre en vigueur conformément à la Loi.» (aucune date); la seule date du doc est «avis de motion ... donné le 19 juin 2007» (motion != adoption, piege stoneham), et le pied «0 – 2008 – XX» est un gabarit de numero de resolution, pas une date d'adoption verbatim."
+    },
+    "saint-marc-sur-richelieu": {
+      "reglement_numero": "3-2011",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Le _source_url servi est l'AMENDEMENT «RÈGLEMENT #2-2019» (4 p, poules urbaines). Il nomme verbatim le reglement de zonage de BASE, p1: «MODIFIANT LE RÈGLEMENT DE ZONAGE #3-2011, TEL QU'AMENDÉ» et «...permet de modifier le contenu du règlement de zonage no.3-2011». Owner-OK: «MUNICIPALITÉ DE SAINT-MARC-SUR-RICHELIEU» p1. => reglement_numero = 3-2011 (le zonage de base, PAS l'amendement isole 2-2019). MILLESIME null: le 3-2011 n'est pas date dans l'amendement (le «2011» du numero != adoption verbatim). url null: l'URL servie porte 2-2019, pas 3-2011 (regle oka: on ne rattache pas le numero a une URL qui ne le porte pas)."
+    },
+    "mercier": {
+      "reglement_numero": "2022-1009",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.ville.mercier.qc.ca/wp-content/uploads/Annexes-reglement-de-zonage-2022-1009-Codification-administrative-4.pdf",
+      "_note": "Doc = annexes/codification du reglement de zonage (185 p, texte natif). Numero verbatim p1 (Annexe A, Plan de zonage): «Règlement de zonage / no. 2022-1009», repris en pied de l'Annexe B sur ~toutes les pages: «Annexe B du Règlement de zonage n°2022-1009 / Ville de Mercier». Owner-OK (Ville de Mercier). La table des modifications liste «2022-1009-09/-12/-13/-14» = amendements de la base 2022-1009. ECARTE «Règlement n° 2022-1010» (x170) = autre reglement (non-zonage). MILLESIME null: aucune formule «adopte/en vigueur <date>» dans le doc d'annexes (le «2022» du numero != adoption verbatim)."
+    },
+    "vaudreuil-sur-le-lac": {
+      "reglement_numero": "300",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://cdn.prod.website-files.com/5f4e5b6c545abb001212eb2a/602446f732e40e156759ceb3_Annexe%20C%20-%20Grille%20de%20zonage.pdf",
+      "_note": "Doc = «Grille des usages et normes - Annexe C du règlement de zonage n° 300» (5 p, texte natif). Numero verbatim en en-tete de p1-p5: «Vaudreuil-sur-le-Lac - Grille des usages et normes- Annexe C du règlement de zonage n° 300». Owner-OK: «Vaudreuil-sur-le-Lac» nomme verbatim (distinct de Vaudreuil-Dorion). L'amendement «Règl. 300-01» confirme 300 = base. MILLESIME null: aucune date d'adoption dans la grille."
+    },
     "saint-antoine-de-tilly": {
       "reglement_numero": "97-367",
       "reglement_millesime": "1998",
