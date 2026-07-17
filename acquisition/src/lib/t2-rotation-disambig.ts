@@ -79,6 +79,33 @@ export interface MeasureContext {
    * flip's displaced labels fail to attach. NOT the serving cutoff.
    */
   discriminationCutoffM?: number;
+  /**
+   * SAFE numeric relaxation (default OFF) — the §7.5 dict gate applied to the
+   * MEASUREMENT, not just the build. A muni that zones in pure-numeric codes
+   * (rougemont 107–636, val-dor 100–1000) reads 0 lettered labels, so its
+   * lot-coverage measures ~0% and the arbitration below can never confirm a
+   * legitimate stretch/orientation — the fit is discarded for lack of a signal
+   * that the default extraction is structurally blind to (rougemont: 26 GCPs,
+   * residual 8.1 m, north-up, yet 0.75% "coverage" from one stray token).
+   *
+   * When set, a PURE-NUMERIC label is admitted IFF it is verbatim in this
+   * authoritative by-law dictionary (lib/numeric-codes.numericDictSet). This
+   * RELAXES NOTHING ELSE: the coverage floors, the margin, the min-distinct-code
+   * count and every downstream build gate are unchanged, and the coverage must
+   * still be earned by labels landing on real cadastral lots. Absent → the
+   * historical lettered-only behaviour, bit-for-bit.
+   */
+  numericDict?: Set<string>;
+  /**
+   * SAFE composite relaxation (default OFF) — the same "don't measure blind"
+   * argument as `numericDict` above, for munis coding a zone as NUMBER ⊕ DOMINANCE
+   * printed as two tokens (matane `17 R`, lac-sergent `1-H`). Without the dict the
+   * default extraction reads ~0 label on such a plan, so the lot-coverage signal
+   * the whole arbitration rests on would be structurally absent — and a perfectly
+   * good fit would be discarded for lack of a signal, not for lack of merit.
+   * Admits a composite IFF verbatim in the dict; RELAXES NOTHING ELSE.
+   */
+  compositeDict?: Set<string>;
 }
 
 export const DEFAULT_DISCRIMINATION_CUTOFF_M = 300;
@@ -93,7 +120,12 @@ export const DEFAULT_DISCRIMINATION_CUTOFF_M = 300;
 export function measureRotationLotAssignment(cand: OrientationCandidate, ctx: MeasureContext): MeasuredRotation {
   const gf = cand.gcp_file;
   const { geo } = buildGeoRefFromGcpsCrs(gf.gcps, ctx.pageW, ctx.pageH, gf.crs, gf.neatline);
-  const lab = extractLabels(ctx.pdfPath, geo, { page: ctx.page, excludeRegions: gf.excludeRegions });
+  const lab = extractLabels(ctx.pdfPath, geo, {
+    page: ctx.page,
+    excludeRegions: gf.excludeRegions,
+    numericDict: ctx.numericDict,
+    compositeDict: ctx.compositeDict,
+  });
 
   const { center: cadCenter, bbox: cadBbox } = bboxCenter(ctx.cadastre);
   const lat0 = (cadBbox[1] + cadBbox[3]) / 2;

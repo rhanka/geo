@@ -78,6 +78,25 @@ function compare(aCode: string, bCode: string, axis: "lat" | "lon", label: strin
 }
 
 console.log(`geojson=${path} features=${fc.features.length}`);
+
+// --list : les codes SERVIS et leur centroïde mesuré, triés par latitude (N→S).
+// Sert à choisir des repères falsifiables : un code lu sur le plan mais absent du
+// servi ne prouve rien (il n'a pas d'étiquette lue, ou pas de lot), et le test
+// cardinal doit porter sur des zones réellement présentes.
+if (process.argv.includes("--list")) {
+  const rows = fc.features
+    .map((f) => {
+      const code = String(f.properties?.zone_code);
+      const c = centroid(code);
+      return c ? { code, lon: c.lon, lat: c.lat } : undefined;
+    })
+    .filter((r): r is { code: string; lon: number; lat: number } => Boolean(r))
+    .sort((a, b) => b.lat - a.lat);
+  console.log(`\n${rows.length} zones servies (triées NORD → SUD) :`);
+  for (const r of rows) console.log(`  ${r.code.padEnd(9)} lat=${r.lat.toFixed(4)} lon=${r.lon.toFixed(4)}`);
+  process.exit(0);
+}
+
 console.log("attendu (lu sur le plan) vs mesuré (géométrie servie) :");
 
 const north = arg("north");
