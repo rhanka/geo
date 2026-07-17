@@ -19,8 +19,16 @@
  *
  * N'invente rien : n'émet qu'un code réellement imprimé dans un en-tête de page.
  *
+ * Variante `--code-below` : certains gabarits (Annexe « grilles combinées ») impriment
+ * l'étiquette et le code sur DEUX lignes, le code aligné à droite sous l'étiquette :
+ *
+ *     GRILLE DES SPÉCIFICATIONS                                    ZONE
+ *           Règlement de zonage                                    P1-26
+ *
+ * Le code est alors le DERNIER token de la ligne qui suit celle de l'étiquette.
+ *
  * Usage : npx tsx acquisition/src/_grille-zoneheader-dict.ts --pdf <grille.pdf> \
- *           [--out work/dict/<slug>.json] [--label "Zone"]
+ *           [--out work/dict/<slug>.json] [--label "Zone"] [--code-below]
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -35,6 +43,7 @@ const pdf = arg("pdf");
 if (!pdf) throw new Error("required: --pdf <grille.pdf>");
 const out = arg("out");
 const label = arg("label") ?? "Zone";
+const codeBelow = process.argv.includes("--code-below");
 
 const text = execFileSync("pdftotext", ["-layout", "-enc", "UTF-8", pdf, "-"], {
   encoding: "utf8",
@@ -45,16 +54,26 @@ const text = execFileSync("pdftotext", ["-layout", "-enc", "UTF-8", pdf, "-"], {
 // verbatim ; on accepte le numérique pur (100) et le lettré (H-3, Ra1).
 const HEADER_RE = new RegExp(`\\b${label}\\s+([A-Za-z]{0,3}-?\\d{1,4}[A-Za-z]?)\\b`);
 const HEADER_LINES = 6;
+// Forme admise pour `--code-below` : le token doit RESSEMBLER à un code de zone.
+// Couvre le numérique pur (100), le lettré (H-3, Ra1) et le lettré-subdivisé (P1-26).
+const CODE_BELOW_RE = /^[A-Za-z]{0,3}\d{0,4}-?\d{1,4}[A-Za-z]?$/;
 
 const pages = text.split("\f");
 const found: { page: number; code: string }[] = [];
 
 pages.forEach((p, i) => {
-  const head = p
-    .split(/\r?\n/)
-    .filter((l) => l.trim())
-    .slice(0, HEADER_LINES)
-    .join("\n");
+  const lines = p.split(/\r?\n/).filter((l) => l.trim());
+  if (codeBelow) {
+    // Le code est le DERNIER token de la ligne SUIVANT celle qui porte l'étiquette.
+    const li = lines.slice(0, HEADER_LINES).findIndex((l) => new RegExp(`\\b${label}\\b`).test(l));
+    if (li < 0) return;
+    const next = lines[li + 1];
+    if (!next) return;
+    const tok = next.trim().split(/\s+/).pop() ?? "";
+    if (CODE_BELOW_RE.test(tok)) found.push({ page: i + 1, code: tok });
+    return;
+  }
+  const head = lines.slice(0, HEADER_LINES).join("\n");
   const m = head.match(HEADER_RE);
   if (m) found.push({ page: i + 1, code: m[1].trim() });
 });
