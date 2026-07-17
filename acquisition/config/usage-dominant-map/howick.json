@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rm": "residentiel",
+    "Rx": "residentiel",
+    "Cm": "commercial",
+    "A": "agricole",
+    "I": "industriel",
+    "Ca": null,
+    "Cv": null,
+    "Pu": null
+  },
+  "source": "http://www.villagehowick.com/docs/fichiers_documents/9.pdf",
+  "note": "Règlement de zonage 08-HOW-14 (Village de Howick). Art. 10.1.3 « IDENTIFICATION DES ZONES » (VERBATIM): « Chaque zone est identifiée par sa vocation dominante indiquée par une (1) ou des lettres majuscules. » La table lettre->vocation est sur le plan de zonage (image, non extractible); la vocation est donc lue via les grilles des spécifications (chap. 11.3, en-têtes + usages permis dominants), jamais déduite de la lettre. Ra (11.3.11-18): seul « Habitation unifamiliale » dominant -> residentiel; Rb (11.3.19/20): « Habitation unifamiliale/bifamiliale » -> residentiel; Rm (11.3.21) + art. 9.2 « les zones Rm [...] maison mobile » -> residentiel; Rx (11.3.22/23) + art. 9.10 « PROJET INTÉGRÉ D'HABITATION — Dans les zones Rx » -> residentiel (Rx = habitation en projet intégré, PAS réserve); A (11.3.1): « Agriculture » + « Foresterie et sylviculture » dominants (habitation unifam. seulement note (1) = droits LPTAA) -> agricole; I (11.3.6): « Industrie légère » -> industriel; Cm (11.3.3/4): « Commerce de détail/d'appoint/artériel » -> commercial. Null explicite: Ca (11.3.2) et Cv (11.3.5) = grilles MIXTES (habitation ET commerce/hébergement/communautaire, noyau/centre-village) -> null; Pu (11.3.7-10) = « Communautaire » + « Utilité publique » -> null (publique). Longest-prefix: Ra/Rb/Rm/Rx et Cm/Ca/Cv distincts. Préfixes mappés = uniquement ceux présents au SIG (Ra, Pu, Cm, Ca, Rx, Rb, A, Rm, Cv, I)."
+}
