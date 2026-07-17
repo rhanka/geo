@@ -7,8 +7,15 @@
  * FALSE "annexe non publiée" (measured: 1 link scraped vs 37 in the rendered
  * DOM). Playwright is unavailable here (ECONNREFUSED 127.0.0.1:9222), but WP's
  * REST API is anonymous, paginated and EXHAUSTIVE — it enumerates the same
- * corpus with plain fetch. `x-wp-total` gives the true count, so a "not found"
- * from this tool is a real absence, not a scraping artefact.
+ * corpus with plain fetch.
+ *
+ * ⚠️ `x-wp-total` alone does NOT prove absence. MEASURED on `hope` and
+ * `cloridorme`: both are WordPress with a correct x-wp-total, but their bylaws
+ * do not live in the media library at all — they are held by the **WP File
+ * Download** plugin (served via `admin-ajax.php?action=wpfd&task=file.download`).
+ * The media library showed 24 and 9 PDFs; the plugin's own sitemap listed 244
+ * and 135. So `--wpfd` probes `/wpfd_file-sitemap.xml` too, and only when BOTH
+ * indexes come back empty is "not found" a real absence.
  *
  * Read-only: prints matches, downloads nothing.
  *   npx tsx acquisition/src/_wp-media-enum.ts --site https://ville.x.qc.ca \
@@ -70,4 +77,32 @@ for (let page = 1; page <= maxPages; page++) {
 
 for (const h of hits) console.log(`  ${h.date}  ${h.url}\n            title="${h.title}"`);
 console.log(`\n# ${hits.length} match(es) over ${scanned} media enumerated (x-wp-total=${total})`);
+
+// WP File Download index — the media library is NOT the whole corpus (see header).
+let wpfdSeen = 0;
+let wpfdHits = 0;
+for (const sm of ['/wpfd_file-sitemap.xml', '/wpfd-category-sitemap.xml']) {
+  try {
+    const r = await fetch(`${base}${sm}`, {
+      headers: { 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64)' },
+    });
+    if (!r.ok) continue;
+    const xml = await r.text();
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((m) => m[1]);
+    wpfdSeen += locs.length;
+    for (const l of locs) {
+      if (re.test(l)) {
+        wpfdHits++;
+        console.log(`  WPFD ${l}`);
+      }
+    }
+  } catch {
+    /* plugin absent — normal */
+  }
+}
+if (wpfdSeen) {
+  console.log(`# WP File Download: ${wpfdHits} match(es) over ${wpfdSeen} entries indexed`);
+} else {
+  console.log('# WP File Download: no plugin sitemap (media library is the whole corpus)');
+}
 console.log('# NOTE: an amendment ("modifiant la grille") is NOT the grille — check the title.');
