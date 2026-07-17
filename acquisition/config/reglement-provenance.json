@@ -1944,7 +1944,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "BLOCAGE ACCES (pas absence): le source_url «https://canton.orford.qc.ca/wp-content/uploads/2025/12/951_Zonage-et-lotissement-Annexe-3-Grilles-Complet_20251211.pdf» repond HTTP 403 -- y compris re-tente avec un UA navigateur complet (Chrome/120): le serveur rend 75 ko de HTML d'erreur => WAF. Le «951» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL). Voie restante: acces non-bot au PDF (hors lane P0_1)."
+      "_note": "ANTI-INVENTION => null MAINTENU (2026-07-17: la RAISON precedente «BLOCAGE ACCES HTTP 403/WAF» est PERIMEE). Le source_url «https://canton.orford.qc.ca/.../951_Zonage-et-lotissement-Annexe-3-Grilles-Complet_20251211.pdf» repond MAINTENANT HTTP 200 (UA Mozilla/5.0, 2,0 Mo, application/pdf, 126 p texte natif). LU: c'est un cahier de grilles pur — p1 verbatim «GRILLE DES USAGES ET DES SPÉCIFICATIONS PAR ZONE / ZONE: P1», aucune couverture, aucun cartouche, aucun nom de municipalite, et FIND-0 sur «951» ou toute mention «règlement (de zonage) numéro N» dans les 126 pages (seul motif capte = la phrase generique de note de grille «l'entrée en vigueur du présent règlement», sans numero). Le «951» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL). => grille annexe SANS numero verbatim; le corps (qui porterait le numero) n'est pas la piece servie. Voie restante = decouverte du CORPS (hors lane P0_1 URL-connue)."
     },
     "portneuf": {
       "reglement_numero": null,
@@ -5297,7 +5297,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, pas d'extraction. Aucune entree au manifest qc-zonage-norms pour ce slug (etat NO-GRILLE) => aucun source_url a ouvrir, et aucun PDF local: `work/zonage-norms/lac-sergent/` est vide (NO-LOCAL-DOC). Le polygone qc-zonage-lac-sergent est servi, mais rien dans le corpus ne porte le reglement. ETAPE = decouvrir le reglement de zonage de Lac-Sergent (le fold provenance n'exige PAS de grille: un corps suffit)."
+      "_note": "ANTI-INVENTION => null MAINTENU (2026-07-17: la RAISON precedente «NO-GRILLE / aucun source_url a ouvrir» est PERIMEE — le manifest qc-zonage-norms sert desormais une URL). Le source_url «https://www.villelacsergent.com/assets/pdf/reglements/Reglement_314-14_grilles_usages_et_normes-VF.pdf» repond HTTP 200 (455 ko, application/pdf natif genere Excel, 27 p). LU: cahier de grilles pur — p1 verbatim «VILLE DE LAC-SERGENT / Grille des usages et normes / Annexe B» (OWNER-OK: nomme la ville). FIND-0 sur «314» et sur toute date d'adoption / «entrée en vigueur du règlement no N» dans les 27 pages. Le «314-14» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL). => grille annexe SANS numero verbatim; le corps n'est pas servi. Voie restante = decouverte du CORPS (hors lane P0_1 URL-connue)."
     },
     "oka": {
       "reglement_numero": "2016-149",
