@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-07-17T07:28:52Z",
+  "shard": "0/1",
+  "selection": [
+    "amherst",
+    "austin",
+    "begin",
+    "bethanie",
+    "oka",
+    "saint-clet",
+    "saint-telesphore",
+    "sainte-justine-de-newton"
+  ],
+  "deposits": [
+    {
+      "slug": "oka",
+      "collection": "qc-zonage-oka",
+      "method": "t1-geopdf-text",
+      "pdf": "work/zonage-pdf/oka-1.pdf",
+      "georef_residual_m": 0.129,
+      "zone_codes_distinct": 116,
+      "lot_to_zone_pct": 99.84,
+      "lots_enriched": 1913,
+      "lot_zone_join": "ok",
+      "lots_enriched_run": "ok"
+    }
+  ],
+  "rejections": [
+    {
+      "slug": "amherst",
+      "reason": "published regulation has no embedded georef and omits its two cartographic annexes"
+    },
+    {
+      "slug": "austin",
+      "reason": "published regulation has no embedded georef and its annex pages are dividers without maps"
+    },
+    {
+      "slug": "begin",
+      "reason": "published regulation has no embedded georef and references two separate map sheets not included in the PDFs"
+    },
+    {
+      "slug": "bethanie",
+      "reason": "raster T3 independently verified only 1 GCP; minimum is 8",
+      "reports": [
+        "zones-recalage-20260717T-bethanie-t2.json",
+        "zones-recalage-20260717T-bethanie-t3-seed.json",
+        "zones-recalage-20260717T-bethanie-t3-register.json"
+      ]
+    },
+    {
+      "slug": "saint-clet",
+      "reason": "raster T3 independently verified only 3 GCPs; minimum is 8",
+      "reports": [
+        "zones-recalage-20260717T-saint-clet-t2.json",
+        "zones-recalage-20260717T-saint-clet-t3-seed.json",
+        "zones-recalage-20260717T-saint-clet-t3-register.json"
+      ]
+    },
+    {
+      "slug": "saint-telesphore",
+      "reason": "T2 orientation ambiguous; best tight-coverage margin 0.10 percentage point is below the 15-point decision threshold; anisotropy serving coverage 78.65% is below 85%",
+      "reports": [
+        "zones-recalage-20260717T-saint-telesphore-t2.json"
+      ]
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "reason": "raster T3 independently verified 0 GCPs; minimum is 8",
+      "reports": [
+        "zones-recalage-20260717T-sainte-justine-de-newton-t2.json",
+        "zones-recalage-20260717T-sainte-justine-de-newton-t3-seed.json",
+        "zones-recalage-20260717T-sainte-justine-de-newton-t3-register.json"
+      ]
+    }
+  ],
+  "post_lot_scoreboard": {
+    "zones": 839
+  }
+}
