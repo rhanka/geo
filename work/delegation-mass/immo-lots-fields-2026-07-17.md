@@ -1,3 +1,72 @@
+# WP9 — champs lots immo, shard 0/1
+
+Date : 2026-07-17.  Mesures S3 par `immo-lots-audit.ts` : référence
+`2026-07-17T21:34:47Z`, mesure finale `2026-07-17T21:54:31Z`.
+
+## Avant / après, par champ
+
+| Champ | Avant S3 | Après S3 | Écart confirmé |
+|---|---:|---:|---:|
+| `surface_m2` | 3 365 896 / 3 365 896 (100 %) | 3 365 896 / 3 365 896 (100 %) | 0 |
+| `adresse` | 2 540 332 / 3 365 896 (75,47 %) | 2 540 332 / 3 365 896 (75,47 %) | 0 |
+| `code_postal` | 3 365 895 / 3 365 896 (100 %) | 3 365 895 / 3 365 896 (100 %) | 0 |
+| `folded-normes` | 855 648 / 3 365 896 (25,42 %) | 856 226 / 3 365 896 (25,44 %) | **+578** |
+| `in_tod` (scope TOD) | 28 431 / 28 431 (100 %) | 28 431 / 28 431 (100 %) | 0 |
+
+Le gain net revendiqué est exclusivement celui de l'audit final. Les fiches
+finales confirment notamment `audet` à 759/759, `saint-maurice` à 30/2 387
+(1,26 %) et `sainte-melanie` à 624/2 326 (26,83 %). Une variation de 117
+valeurs ailleurs dans les audits intermédiaires empêche d'attribuer par simple
+soustraction l'intégralité de ces écarts locaux : elle n'est donc pas
+revendiquée.
+
+## Villes traitées
+
+Adresse, avec le rôle foncier activé à chaque fois : `franquelin`, `remigny`,
+`saint-eugene-de-ladriere`, `saint-felix-de-dalquier`,
+`saint-gabriel-de-valcartier`, `saint-louis-de-gonzague-du-cap-tourmente`,
+`saint-pierre`.
+
+Chaîne lot → zone → normes puis enrichissement : `acton-vale`, `adstock`,
+`alma`, `amos`, `amqui`, `armagh`, `arundel`, `ascot-corner`, `audet`,
+`roxton-pond`, `vercheres`, `sainte-beatrix`, `mont-laurier`,
+`lange-gardien--la-cote-de-beaupre`, `saint-maurice`, `sainte-melanie`,
+`blue-sea`, `saint-christophe-darthabaska`, `scott`,
+`sainte-victoire-de-sorel`, `huntingdon`, `saint-martin`, `la-presentation`,
+`saint-chrysostome`, `saint-benoit-labre`, `saint-lin-laurentides`,
+`varennes`, `pont-rouge`, `rigaud`, `rosemere`, `saint-zotique`, `prevost`,
+`hemmingford--les-jardins-de-napierville--2`, `saint-amable`.
+
+## Villes skippées ou sans valeur source
+
+- Adresse : les sept villes à 0 % ont toutes été ré-enrichies avec rôle.
+  `franquelin` (22 correspondances < 30), `remigny` (1 < 30),
+  `saint-eugene-de-ladriere` (4 < 30),
+  `saint-gabriel-de-valcartier` (21 < 30),
+  `saint-louis-de-gonzague-du-cap-tourmente` (1 < 98) et `saint-pierre`
+  (238 < 639) échouent le seuil de recouvrement; `saint-felix-de-dalquier`
+  n'a aucun candidat `code_geo`. Les adresses restent nulles par contrat.
+- Zones absentes, donc pas de jointure honnête : `amherst`, `cap-chat`,
+  `sainte-anne-de-bellevue`, `baie-durfe`.
+- Normes déposées mais aucune valeur foldable avec les zones servies :
+  `roxton-pond`, `vercheres`, `sainte-beatrix`, `mont-laurier`,
+  `lange-gardien--la-cote-de-beaupre`, `blue-sea`,
+  `saint-christophe-darthabaska`, `scott`, `sainte-victoire-de-sorel`,
+  `huntingdon`, `la-presentation`, `saint-chrysostome`,
+  `saint-benoit-labre`. `saint-martin` n'a aucune zone assignée.
+- Les dix villes de contrôle `saint-pierre`, `saint-lin-laurentides`,
+  `varennes`, `pont-rouge`, `rigaud`, `rosemere`, `saint-zotique`, `prevost`,
+  `hemmingford--les-jardins-de-napierville--2`, `saint-amable` ont été
+  ré-enrichies sans gain : le taux `zone_code_match_rate` ne mesure pas le
+  champ audité `folded-normes`; l'audit et le runner donnent les mêmes valeurs.
+
+## Conclusion opérationnelle
+
+`surface_m2`, `code_postal` et `in_tod` sont déjà à 100 % dans l'audit S3.
+Le résidu `adresse` est désormais constitué de jointures rôle non sûres, non
+de l'option `--no-role`. Le résidu `folded-normes` exige une amélioration des
+sources normes ou de la couverture/compatibilité zone, pas une nouvelle
+matérialisation identique des lots.
 # Champs LOT immo (WP9) — shard 0/1 — 2026-07-17
 
 Mesure d'autorité : `immo-lots-audit.ts` sur S3 (832 munis servis / 1106, 3 321 961 lots),
