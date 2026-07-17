@@ -24,6 +24,8 @@ Contrôle API (`qc-zonage-<slug>`, première feature):
 
 Avant/après du fold: les dix premières villes ci-dessus étaient déjà identiques au registre (`cellsChanged=0`). Saint-Eustache avait déjà `1288`, mais pas de lien: le registre porte maintenant l’URL source servie et le fold a écrit ce seul champ sur les 321 polygones (`cellsChanged=321`). Le PDF source porte verbatim en p.1: «REGLEMENT 1288», «Ville de Saint-Eustache» et «entrée en vigueur 88-02-17».
 
+État de surface après écriture: le contrôle API confirme encore `1288` mais rend `reglement_url=null`; la lecture S3 de la même clé confirme l’URL sur les 321 features. L’API conserve donc cet objet en mémoire. `deploy/gcp-tool/serve_geojson.py` documente explicitement qu’un `rollout restart deploy/geo-api` est requis après une écriture S3 pour exposer la collection. Aucun redémarrage n’a été fait dans ce lot (hors autorisation); le lien sera visible après ce refresh de service.
+
 ## Nuls maintenus — document source muet
 
 | Slug | Raison vérifiée, verbatim |
