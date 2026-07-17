@@ -40,23 +40,72 @@ const NUM_RE =
 const DATE_RE =
   /(entr[eé]e?\s+en\s+vigueur|en\s+vigueur\s+le|adopt[eé]|adoption|codification\s+administrative|mise\s+[àa]\s+jour|consolid)/i;
 
-async function fetchDoc(slug: string, url: string): Promise<string | null> {
+/** UA navigateur: plusieurs hôtes municipaux renvoient 403 à un UA non-navigateur. */
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
+
+/** Résultat de fetch: le chemin OU la RAISON du refus (diagnostic actionnable —
+ *  « FETCH-FAIL » indifférencié faisait passer un cert TLS périmé pour un doc
+ *  absent, et une URL périmée pour un blocage réseau). */
+type Fetched = { path: string; insecure: boolean } | { path: null; why: string };
+
+function curlTo(path: string, url: string, insecure: boolean): { code: string; type: string } {
+  const out = execFileSync(
+    'curl',
+    [
+      insecure ? '-skL' : '-sL',
+      '--max-time', '90',
+      '-A', UA,
+      '-o', path,
+      url,
+      '-w', '%{http_code}\t%{content_type}',
+    ],
+    { encoding: 'utf8', timeout: 100_000 },
+  );
+  const [code, type] = out.trim().split('\t');
+  return { code: code ?? '000', type: type ?? '' };
+}
+
+function isPdf(path: string): boolean {
+  return execFileSync('head', ['-c', '4', path], { encoding: 'latin1' }).startsWith('%PDF');
+}
+
+function fetchDoc(slug: string, url: string): Fetched {
   mkdirSync(CACHE, { recursive: true });
   const path = resolve(CACHE, `${slug}.pdf`);
-  if (existsSync(path) && statSync(path).size > 4096) return path;
-  try {
-    execFileSync(
-      'curl',
-      ['-sL', '--max-time', '90', '-A', 'Mozilla/5.0 (geo-acquisition; +https://sent-tech.ca)', '-o', path, url],
-      { encoding: 'utf8', timeout: 100_000 },
-    );
-  } catch {
-    return null;
+  // Cache: ne ré-utiliser QUE si c'est un vrai PDF. Une page HTML (404 mou) mise
+  // en cache par un run antérieur passait le test de taille et était re-servie à
+  // pdftotext, qui crachait 120 lignes de « Illegal character » pour un doc
+  // jamais téléchargé.
+  if (existsSync(path) && statSync(path).size > 4096 && isPdf(path)) {
+    return { path, insecure: false };
   }
-  if (!existsSync(path) || statSync(path).size < 1024) return null;
+
+  let res: { code: string; type: string } | null = null;
+  let insecure = false;
+  try {
+    res = curlTo(path, url, false);
+  } catch {
+    // curl exit != 0 (cert TLS invalide = 60, DNS = 6...). On retente en -k: ces
+    // docs sont PUBLICS et la garantie d'intégrité est le gate verbatim (on lit le
+    // numéro DANS le doc), pas le certificat de l'hôte. Le repli est TRACÉ.
+    try {
+      res = curlTo(path, url, true);
+      insecure = true;
+    } catch {
+      return { path: null, why: 'RESEAU-KO (curl échoue même en --insecure: DNS/TLS/hôte mort)' };
+    }
+  }
+  if (!existsSync(path) || statSync(path).size < 1024) {
+    return { path: null, why: `VIDE http=${res.code} type=${res.type}` };
+  }
   // Un PDF commence par %PDF ; sinon c'est une page HTML (portail), pas le doc.
-  const head = execFileSync('head', ['-c', '4', path], { encoding: 'latin1' });
-  return head.startsWith('%PDF') ? path : null;
+  if (!isPdf(path)) {
+    return {
+      path: null,
+      why: `PAS-UN-PDF http=${res.code} type=${res.type} (URL manifest périmée → page portail/404 mou)`,
+    };
+  }
+  return { path, insecure };
 }
 
 function probe(slug: string, path: string, maxPages: number): void {
@@ -119,13 +168,13 @@ async function main(): Promise<void> {
       console.log(`\n===== ${slug} =====\n${slug}\tNO-URL (pas de source_url au manifest)`);
       continue;
     }
-    const path = await fetchDoc(slug, url);
-    if (!path) {
-      console.log(`\n===== ${slug} =====\n${slug}\tFETCH-FAIL / NOT-A-PDF url=${url}`);
+    const got = fetchDoc(slug, url);
+    if (got.path === null) {
+      console.log(`\n===== ${slug} =====\n${slug}\tFETCH-FAIL ${got.why} url=${url}`);
       continue;
     }
-    console.log(`# ${slug} url=${url}`);
-    probe(slug, path, maxPages);
+    console.log(`# ${slug} url=${url}${got.insecure ? ' [fetch --insecure: cert TLS hôte invalide]' : ''}`);
+    probe(slug, got.path, maxPages);
   }
 }
 
