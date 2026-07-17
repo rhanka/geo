@@ -39,10 +39,14 @@ function arg(argv: string[], k: string): string | undefined {
 
 /** Motifs de numéro de règlement — sortis AVEC leur contexte (jamais réécrits). */
 const PATTERNS: RegExp[] = [
-  /r[èe]glement[^\n]{0,40}?(?:de\s+)?zonage[^\n]{0,30}?(?:num[ée]ro|n[o°s]?\s*\.?)\s*[:\s]*([0-9][\w\-\.\/]{0,20})/gi,
-  /r[èe]glement\s+(?:de\s+)?zonage\s+([0-9][\w\-\.\/]{1,20})/gi,
-  /r[èe]glement\s+(?:num[ée]ro|n[o°s]?\s*\.?)\s*[:\s]*([0-9][\w\-\.\/]{0,20})[^\n]{0,60}zonage/gi,
-  /zonage[^\n]{0,40}(?:num[ée]ro|n[o°s]?\s*\.?)\s*[:\s]*([0-9][\w\-\.\/]{0,20})/gi,
+  // « … numéro X », « … no X », « … #X », « … : X » — et un numéro peut commencer
+  // par une lettre (Z-3001, R-630, RV-2011-11-23), pas seulement par un chiffre.
+  /r[èe]glement[^\n]{0,40}?(?:de\s+)?zonage[^\n]{0,30}?(?:num[ée]ro|n[o°s]?\s*\.?|#)\s*[:\s]*([A-Z]{0,3}-?[0-9][\w\-\.\/]{0,20})/gi,
+  /r[èe]glement\s+(?:de\s+)?zonage\s+([A-Z]{0,3}-?[0-9][\w\-\.\/]{1,20})/gi,
+  /r[èe]glement\s+(?:num[ée]ro|n[o°s]?\s*\.?|#)\s*[:\s]*([A-Z]{0,3}-?[0-9][\w\-\.\/]{0,20})[^\n]{0,60}zonage/gi,
+  /zonage[^\n]{0,40}(?:num[ée]ro|n[o°s]?\s*\.?|#)\s*[:\s]*([A-Z]{0,3}-?[0-9][\w\-\.\/]{0,20})/gi,
+  // Cartouche de plan: « ZONAGE ANNEXÉ AU RÈGLEMENT Z-3001 ET ADOPTÉ LE … ».
+  /annex[ée][^\n]{0,20}au\s+r[èe]glement\s+([A-Z]{0,3}-?[0-9][\w\-\.\/]{0,20})[^\n]{0,60}/gi,
 ];
 /**
  * L'article « TITRE » d'un règlement québécois PORTE le numéro officiel
@@ -52,7 +56,7 @@ const PATTERNS: RegExp[] = [
 const TITLE_PATTERNS: RegExp[] = [
   /(?:pr[ée]sent\s+r[èe]glement|ce\s+r[èe]glement)[^\n]{0,60}?(?:porte\s+le\s+(?:titre\s+et\s+le\s+)?num[ée]ro|est\s+identifi[ée][^\n]{0,20}num[ée]ro|porte\s+le\s+num[ée]ro)[^\n]{0,140}/gi,
   /(?:conna[îi]tre|cit[ée])\s+sous\s+le\s+(?:titre|num[ée]ro)[^\n]{0,140}/gi,
-  /r[èe]glement\s+(?:de\s+)?zonage\s+(?:num[ée]ro|n[o°]\s*\.?)\s*[:\s]*[0-9][\w\-\.\/]{0,20}[^\n]{0,80}/gi,
+  /r[èe]glement\s+(?:de\s+)?zonage\s+(?:num[ée]ro|n[o°]\s*\.?|#)\s*[:\s]*[A-Z]{0,3}-?[0-9][\w\-\.\/]{0,20}[^\n]{0,80}/gi,
 ];
 /** Faux positifs prouvés: « Plan No 2 », « ANNEXE I – Plan No 1 », renvois d'articles. */
 const FALSE_POSITIVE = /plan\s+(?:no|n[o°]|num[ée]ro)|annexe\s+[ivx]|feuillet/i;
