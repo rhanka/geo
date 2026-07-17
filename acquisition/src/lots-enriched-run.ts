@@ -73,6 +73,11 @@ import { computeLotAttrs } from "./lot-attrs-geom.js";
 import { fetchIndex, parseRole, type RoleAttrs } from "./role-foncier.js";
 import { FSA_KEY, loadFsaIndex, lookupFsa, type FsaIndex } from "./lib/fsa-geocode.js";
 import { BUCKET, exists, getBytes, getGeoJsonFeatureCollection, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
+import {
+  AddressRegressionGuardError,
+  guardedQcLotsUpload,
+  readExistingStatsOrNull,
+} from "./lib/address-regression-guard.js";
 
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
 const ZONAGE_PREFIX = "normalized/qc-lot-zonage/";
@@ -391,6 +396,11 @@ function gatherCandidateCodes(ctx: RoleContext, slug: string): string[] {
   const aliased = ALIAS_SLUG_TO_CODE[normCadastreSlug(slug)];
   if (aliased) out.add(aliased);
   add(slug);
+  // `norm` drops apostrophes without a separator ("L'Assomption" -> "lassomption")
+  // while the cadastre slug keeps a dash ("l-assomption"), so the two never meet.
+  // The alias table already carries that spelling; a candidate it yields still has
+  // to clear the lot-overlap bar below, so a wrong one yields null, never a guess.
+  for (const alias of CADASTRE_SLUG_ALIASES[slug] ?? []) add(alias);
   const segs = slug.split(/-{2,}/); // "saint-lambert--abitibi-ouest" -> base
   for (let i = segs.length; i > 0; i--) add(segs.slice(0, i).join("-"));
   return [...out];
@@ -675,8 +685,21 @@ async function runCity(
 
     if (!args.noUpload) {
       const body = await readFile(path);
-      await putBytes(s3, outKey(slug), body, "application/geo+json");
-      await putBytes(s3, statsKey(slug), Buffer.from(JSON.stringify(stats, null, 2), "utf8"), "application/json");
+      await guardedQcLotsUpload({
+        slug,
+        candidateAddressCount: numWithAdresse,
+        readExistingStats: async () =>
+          readExistingStatsOrNull(() => getJson(s3, statsKey(slug))),
+        uploadGeoJson: async () =>
+          putBytes(s3, outKey(slug), body, "application/geo+json"),
+        uploadStats: async () =>
+          putBytes(
+            s3,
+            statsKey(slug),
+            Buffer.from(JSON.stringify(stats, null, 2), "utf8"),
+            "application/json",
+          ),
+      });
       const dep = await verifyDeposit(s3, slug);
       stats.verified_deposit = dep;
     } else {
@@ -814,6 +837,7 @@ async function main(): Promise<void> {
       summaries.push(stats);
       printSummary(stats);
     } catch (error) {
+      if (error instanceof AddressRegressionGuardError) throw error;
       const reason = error instanceof Error ? error.message : String(error);
       skipped.push({ slug, reason });
       console.log(`SKIP ${slug} ${reason}`);
