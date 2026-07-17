@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "I": "industriel",
+    "R": "residentiel",
+    "RC": "environnemental",
+    "M": null,
+    "P": null,
+    "RU": null,
+    "V": null,
+    "VA": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-michel-du-squatec/_publication/fichiers/projet_de_rglement_smds_zonage_-_346.pdf",
+  "note": "Municipalité de Saint-Michel-du-Squatec (MRC de Témiscouata), règlement de zonage numéro 346. Légende VERBATIM, art. 1.3.2 « IDENTIFICATION DES ZONES » (page imprimée 40): « Chacune des zones est identifiée par un code unique, composé d'initiales suivies d'un chiffre. Les initiales qualifient la zone de la manière suivante : 1° EA : agricole (qui comprend EA/A et EA/B); 2° EAF : agroforestière; 3° EF : forestière; 4° I : industrielle; 5° M : mixte; 6° P : publique; 7° R : résidentielle; 8° RC : récréative; 9° RU : de réserve urbaine; 10° V : de villégiature; 11° V/A : de villégiature en zone agricole. » Propriétaire attesté par le CORPS (page de garde « MUNICIPALITÉ DE SAINT-MICHEL-DU-SQUATEC », art. 1.3.1 « le territoire de la municipalité de Saint-Michel-du-Squatec est divisé en zones », 178 occurrences du toponyme); l'en-tête de page dit « Règlement de LOTISSEMENT numéro 346 » 167 fois (copier-coller du gabarit) — la masse ment, la page de garde fait foi. FORME SERVIE: le règlement écrit « EA/A », « EA/B », « V/A » là où le SIG sert « EAA », « EAB », « VA » — la forme déclarée est celle du SIG (le match est un startsWith brut, sans split sur séparateur: déclarer « EA/A » donnerait 0 match silencieux). EA/EAF/EF (agricole, agroforestière, forestière) -> agricole, la famille étant regroupée par le règlement lui-même. RC -> environnemental sur le VERBATIM « RC : récréative », item 8 DISTINCT de l'item 7 « R : résidentielle »; RC ne pouvait pas être omis (il retomberait en silence sur R -> residentiel), et la série résidentielle servie saute justement le C (RA, RB, RD). ⚠️ ATTENTION: à Rivière-Bleue, même MRC et même gabarit de consultant, « RC » est au contraire une sous-classe de « R : résidentielle » — la lettre s'inverse entre 2 munis voisines, ne jamais transporter cette table. Null explicites: M « mixte » est dual; P « publique » est public; RU « de réserve urbaine » est une réserve; V « de villégiature » et V/A « de villégiature en zone agricole » ne nomment aucune des cinq catégories (« villégiature » n'en est pas une, et « en zone agricole » n'est qu'un complément de LIEU qui ne transfère pas la dominance). RU est déclaré bien que non servi actuellement, en anti-fall-through (sinon un futur RU-x tomberait sur R -> residentiel). Aucune sous-classe de R n'est énumérée par la légende: RA/RB/RD tombent sur « R » -> residentiel par longest-prefix. Le document est intitulé « PROJET DE RÈGLEMENT »; le recouvrement 13/13 avec les codes réellement servis atteste que c'est bien la nomenclature de la donnée servie (toute ré-acquisition amont l'invaliderait). Source S3 attestée byte-exact (2 294 133 o) contre le corpus local work/zonage-norms/saint-michel-du-squatec/grille.pdf; l'URL du portail squatec.qc.ca est une coquille SPA VPlus de 2 630 o (soft-404 à 200). Couverture 13/13 préfixes = 84/84 polygones."
+}
