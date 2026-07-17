@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "CGS": "commercial",
+    "CO": "environnemental",
+    "A": "agricole",
+    "I": "industriel",
+    "M": null,
+    "MS": null,
+    "P": null
+  },
+  "source": "https://saint-constant.ca/uploads/attachments/1528-17_ZONAGE.pdf",
+  "note": "Ville de Saint-Constant, Règlement de zonage numéro 1528-17, Chapitre 1 « DISPOSITIONS DÉCLARATOIRES, INTERPRÉTATIVES ET ADMINISTRATIVES », ARTICLE 17 « IDENTIFICATION DES ZONES »: « Pour fins d'identification et de référence, chaque zone est désignée par une ou des lettres d'appellation indiquant l'affectation principale de la zone, de la manière suivante : », puis table à 2 colonnes « Lettre(s) d'appellation | Affectation principale »: « A | Agricole »; « C | Commerciale »; « CO | Conservation »; « CGS | Commerciale grande surface »; « H | Habitation »; « I | Industrielle »; « ID | Îlots déstructurés »; « M | Mixte »; « MS | Mixte structurante »; « P | Publique et institutionnelle ». -> H « Habitation » = residentiel; C « Commerciale » = commercial; A « Agricole » = agricole; I « Industrielle » = industriel; CO « Conservation » = environnemental. CGS « Commerciale grande surface » = commercial: « Commerciale » est la SEULE des cinq catégories nommée, « grande surface » n'étant qu'un qualificatif de format (règle des libellés composés). Nulls explicites: M « Mixte » et MS « Mixte structurante » sont DUALES par le libellé même (le règlement nomme la zone « Mixte » sans énoncer de dominante — l'art. 17 précise d'ailleurs que « à l'identification des zones s'ajoute une spécification quant à la dominance d'usage dans cette zone », dominance qui n'est PAS portée par le zone_code servi: l'exemple donné est « MS-201 » + « Dominance d'usage H » hors-code); P « Publique et institutionnelle » est publique. Nulls ANTI-FALL-THROUGH indispensables (match longest-prefix): sans « CO » -> null-bloquant, « CO-404 » tomberait à tort sur « C » -> commercial; « CGS-102 » est explicité pour la même raison; « MS-416 » sans « MS » tomberait sur « M ». NON mappé (anti-invention): « ID » « Îlots déstructurés » est défini par l'art. 17 mais N'EXISTE PAS dans le SIG servi (aucun code ID-*), et un îlot déstructuré ne nomme de toute façon aucune des cinq catégories. Préfixes SIG servis (152 polygones, 9 préfixes, tous couverts par la table): H 90, P 25, MS 20, A 5, C 4, CO 3, M 2, CGS 2, I 1. La matrice des usages permis des grilles de spécifications n'est pas utilisée."
+}
