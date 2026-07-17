@@ -139,6 +139,55 @@ const DEFAULT_MAX_CHARS = 400 * 1024 * 1024;
 /** Georef dicts are tiny; anything past this is a drawing stream we can skip. */
 const DEFAULT_MAX_INFLATE = 64 * 1024 * 1024;
 
+/**
+ * A PDF 1.5 object stream (`/Type /ObjStm`) packs many objects into one deflated
+ * stream. Once inflated they carry NO `N 0 obj … endobj` syntax — just a
+ * `num offset num offset …` header followed by the bare bodies — so `resolveObj()`
+ * cannot find them and every indirect reference into an ObjStm dies silently.
+ *
+ * MEASURED (2026-07-17, shard 0/1): `sacre-coeur-f1.pdf` carries
+ * `/VP[<</BBox[…]/Measure 166 0 R…>>]` with object 166 inside an
+ * `<</First 394/N 44/Type/ObjStm>>` stream. The viewport, its GEO measure and the
+ * PROJCS WKT were all present and all unreachable → `extractGeoRef` returned null
+ * → the plan was pushed onto the chamfer/T3 raster lane and failed there, for the
+ * wrong reason. A corpus sweep found 25 such plans.
+ *
+ * Reads `/N` and `/First` from the stream's own dict.
+ * Returns null when the dict is not an ObjStm or lacks either key.
+ */
+function objStmDictBefore(buf: Buffer, streamAt: number): { n: number; first: number } | null {
+  const head = buf.subarray(Math.max(0, streamAt - 512), streamAt).toString("latin1");
+  if (!/\/Type\s*\/ObjStm/.test(head)) return null;
+  const n = head.match(/\/N\s+(\d+)/);
+  const first = head.match(/\/First\s+(\d+)/);
+  if (!n || !first) return null;
+  return { n: Number(n[1]), first: Number(first[1]) };
+}
+
+/**
+ * Re-emit an inflated ObjStm's objects as top-level `N 0 obj … endobj` text, so
+ * that every downstream reader (resolveObj, viewportGeoRefs, geoMeasures) works
+ * unchanged. Returns null when the offset table is unusable — the caller then
+ * keeps the raw inflated text, i.e. the exact prior behaviour.
+ */
+function expandObjStm(out: Buffer, meta: { n: number; first: number }): string | null {
+  const { n, first } = meta;
+  if (n <= 0 || first <= 0 || first >= out.length) return null;
+  const nums = out.subarray(0, first).toString("latin1").match(/\d+/g);
+  if (!nums || nums.length < 2 * n) return null;
+  const parts: string[] = [];
+  for (let k = 0; k < n; k++) {
+    const num = Number(nums[2 * k]!);
+    const off = Number(nums[2 * k + 1]!);
+    const nextOff = k + 1 < n ? Number(nums[2 * k + 3]!) : out.length - first;
+    const a = first + off;
+    const b = Math.min(first + nextOff, out.length);
+    if (!Number.isFinite(num) || !(b > a) || a < first || a >= out.length) continue;
+    parts.push(`\n${num} 0 obj\n${out.subarray(a, b).toString("latin1")}\nendobj\n`);
+  }
+  return parts.length ? parts.join("") : null;
+}
+
 export function inflatePdfText(buf: Buffer, opts: InflateOptions = {}): string {
   const maxChars = Math.max(1, opts.maxChars ?? DEFAULT_MAX_CHARS);
   const maxInflate = Math.max(1, opts.maxInflateBytes ?? DEFAULT_MAX_INFLATE);
@@ -179,7 +228,12 @@ export function inflatePdfText(buf: Buffer, opts: InflateOptions = {}): string {
     if (out && bufHasGeorefMarker(out)) {
       parts.push("\n");
       total += 1;
-      pushBuf(out);
+      // An ObjStm's objects are re-emitted with their true numbers so indirect
+      // refs (/Measure N 0 R, /GCS N 0 R) resolve; otherwise keep the raw text.
+      const meta = objStmDictBefore(buf, i);
+      const expanded = meta ? expandObjStm(out, meta) : null;
+      if (expanded) pushBuf(Buffer.from(expanded, "latin1"));
+      else pushBuf(out);
     }
     idx = j + 9;
   }
