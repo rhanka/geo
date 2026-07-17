@@ -292,11 +292,13 @@ function tick(cfg: Config) {
  * Run it detached, once:
  *   bash scripts/geo-worker.sh bg geo-fleet-loop -- npx tsx acquisition/src/geo-fleet.ts loop --every 600
  */
-async function loop(cfg: Config, everySec: number): Promise<void> {
-  console.log(`=== geo-fleet loop: tick every ${everySec}s (${expand(cfg).length} agents configured) ===`);
+async function loop(overrides: Map<string, number>, everySec: number): Promise<void> {
+  console.log(`=== geo-fleet loop: tick every ${everySec}s ===`);
   for (;;) {
     try {
-      tick(cfg);
+      // Reload config each tick so engine/shard edits to fleet.json take effect live,
+      // without restarting the detached supervisor (e.g. flipping claude↔codex).
+      tick(loadConfig(overrides));
     } catch (error) {
       // A single bad tick (S3 blip, reconcile timeout) must never end the supervision.
       console.error(`[loop] tick failed, continuing: ${error instanceof Error ? error.message : String(error)}`);
@@ -339,7 +341,7 @@ function main() {
       return tick(cfg);
     case 'loop': {
       const i = argv.indexOf('--every');
-      return loop(cfg, i >= 0 ? Number(argv[i + 1]) || 600 : 600);
+      return loop(parseOverrides(argv), i >= 0 ? Number(argv[i + 1]) || 600 : 600);
     }
     case 'status':
       return status(cfg);
