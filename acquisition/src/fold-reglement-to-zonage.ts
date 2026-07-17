@@ -63,13 +63,21 @@ async function normsReglement(s3: S3, slug: string): Promise<Record<string, unkn
   return out["reglement_numero"] ? out : null;
 }
 
-/** Clé S3 du polygone zonage (layout plat OU sous-dossier). */
-async function zonageKey(s3: S3, slug: string): Promise<string | null> {
-  const flat = `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`;
-  if (await exists(s3, flat)) return flat;
-  const sub = `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
-  if (await exists(s3, sub)) return sub;
-  return null;
+/** Clés S3 du polygone zonage: layout plat ET sous-dossier — les DEUX quand elles
+ *  coexistent. Ne PAS s'arrêter à la première: quand les deux existent, geo-api
+ *  sert le SOUS-DOSSIER (mesuré sur boischatel 2026-07-17: API numberMatched=17
+ *  = la clé sous-dossier, alors que la clé plate en porte 55). Un fold qui ne
+ *  stampait que la plate rapportait « OK cellsChanged=220 » pour un servi resté
+ *  null. On stampe donc chaque clé existante (idempotent, et immunisé contre la
+ *  règle de résolution de l'API). */
+async function zonageKeys(s3: S3, slug: string): Promise<string[]> {
+  const candidates = [
+    `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`,
+    `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
+  ];
+  const keys: string[] = [];
+  for (const k of candidates) if (await exists(s3, k)) keys.push(k);
+  return keys;
 }
 
 async function main(): Promise<void> {
@@ -98,29 +106,31 @@ async function main(): Promise<void> {
       skipped.push(`${slug} (pas de reglement_numero: ni registre ni qc-zonage-norms)`);
       continue;
     }
-    const key = await zonageKey(s3, slug);
-    if (!key) {
+    const keys = await zonageKeys(s3, slug);
+    if (keys.length === 0) {
       skipped.push(`${slug} (polygone qc-zonage non servi)`);
       continue;
     }
-    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-    const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
-    let changed = 0;
-    for (const f of feats) {
-      f.properties = f.properties ?? {};
-      for (const field of FIELDS) {
-        if (strip) {
-          if (field in f.properties) { delete f.properties[field]; changed++; }
-        } else {
-          const val = (regl as Record<string, unknown>)[field] ?? null;
-          if (f.properties[field] !== val) { f.properties[field] = val; changed++; }
+    const numero = strip ? "(stripped)" : regl!["reglement_numero"];
+    for (const key of keys) {
+      const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+      const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+      let changed = 0;
+      for (const f of feats) {
+        f.properties = f.properties ?? {};
+        for (const field of FIELDS) {
+          if (strip) {
+            if (field in f.properties) { delete f.properties[field]; changed++; }
+          } else {
+            const val = (regl as Record<string, unknown>)[field] ?? null;
+            if (f.properties[field] !== val) { f.properties[field] = val; changed++; }
+          }
         }
       }
-    }
-    const numero = strip ? "(stripped)" : regl!["reglement_numero"];
-    console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} cellsChanged=${changed} reglement=${numero} key=${key}`);
-    if (!dryRun && changed > 0) {
-      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+      console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} cellsChanged=${changed} reglement=${numero} key=${key}`);
+      if (!dryRun && changed > 0) {
+        await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+      }
     }
     ok++;
   }
