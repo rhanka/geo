@@ -1,0 +1,21 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "C": "commercial",
+    "Cons": "environnemental",
+    "Fo": "agricole",
+    "FoF": null,
+    "I": "industriel",
+    "Ie": "industriel",
+    "M": null,
+    "P": null,
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rec": "environnemental",
+    "Rec/f": null,
+    "Rv": "residentiel",
+    "Rx": null
+  },
+  "source": "https://riviereapierre.com/uploads/files/reglements/Reglement-de-zonage-refondu-09-2025-compresse.pdf",
+  "note": "Règlement de zonage 435-14 de la Municipalité de Rivière-à-Pierre (refondu 09-2025, MRC de Portneuf), chapitre 3, art. 3.2 « CODIFICATION DES ZONES », p.3-1, table « Types de zone / Vocations dominantes » relevée VERBATIM. Résidentielle: Rb « Résidentielle de moyenne densité (unifamiliale isolée ou jumelée et bifamiliale isolée) », Rc « Résidentielle de haute densité », Rv « Résidentielle de villégiature » -> residentiel. Commerciale: C « Commerciale » -> commercial. Industrielle: I « Industrielle », Ie « Industrielle-extraction » -> industriel. Agricole et forestière: A « Agricole dynamique », Fo « Forestière » -> agricole. Publique, récréative ou conservation: Rec « Récréative », Cons « Conservation » -> environnemental. Null explicite: M « Résidentielle et commerciale » est DUALE par le libellé même du règlement; P « Publique-institutionnelle » est public; Rx « Expansion résidentielle » est une RÉSERVE de croissance (la dominante résidentielle n'y est pas établie, cf. cap-sante.json / neuville.json Rx « Résidentielle de réserve », même gabarit MRC de Portneuf). JUGEMENT SIGNALÉ: Rec/f « Forestière et récréative » et FoF « Forestière et faunique » -> null — chaque libellé nomme DEUX fonctions qui tombent dans DEUX catégories servies distinctes (« Forestière » -> agricole, « récréative »/« faunique » -> environnemental); aucune des deux ne domine l'autre dans le texte, donc aucune dominante n'est forcée. Le règlement les range sous le titre de famille « Agricole et forestière », mais ce titre est un regroupement de commodité (saint-ubalde énumère « forestière et récréative » comme membre distinct de sa propre famille) et non un énoncé de dominance. Ces préfixes sont mappés EXPLICITEMENT à null car le match est longest-prefix: sans eux, Rec/f-* hériterait de « Rec » et FoF-* de « Fo ». Les 15 préfixes mappés couvrent exactement les 14 préfixes présents au SIG servi (135 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée."
+}
