@@ -39,7 +39,14 @@ function arg(name: string, def?: string): string | undefined {
   return i >= 0 && i + 1 < process.argv.length ? process.argv[i + 1] : def;
 }
 
-/** Insensible aux accents ET à la casse: le corpus mélange « Sainte-Hélène » et « SAINTE-HELENE ». */
+/**
+ * Insensible aux accents ET à la casse: le corpus mélange « Sainte-Hélène » et
+ * « SAINTE-HELENE ». Les classes de séparateur incluent les tirets UNICODE
+ * (U+2010..U+2015, soft hyphen): `sainte-lucie-de-beauregard` répondait
+ * OWNER-ABSENT alors que sa couverture dit « MUNICIPALITÉ DE SAINTE‑LUCIE‑DE‑
+ * BEAUREGARD » — au tiret insécable près. Un faux négatif de gate coûte un null
+ * injustifié; un faux positif coûte une fausse provenance. Les deux se paient.
+ */
 function fold(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
@@ -58,10 +65,13 @@ function nameOf(slug: string): string {
   return slug.split('--')[0]!;
 }
 
-/** « saint-cleophas-de-brandon » → /saint[\s-]+cleophas[\s-]+de[\s-]+brandon/ (accents pliés). */
+/** Séparateurs de toponyme: espace, tirets ASCII **et Unicode**, apostrophes. */
+const SEP = "[\\s\\-\\u2010-\\u2015\\u00ad’']";
+
+/** « saint-cleophas-de-brandon » → /saint[\s-]*cleophas[\s-]*de[\s-]*brandon/ (accents pliés). */
 function fullNameRe(slug: string): RegExp {
   const parts = nameOf(slug).split('-').filter(Boolean).map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  return new RegExp(parts.join('[\\s\\-’\']*'), 'gi');
+  return new RegExp(parts.join(`${SEP}*`), 'gi');
 }
 
 /** Jeton le PLUS distinctif: rattrape « Municipalité de Saint-Cléophas » (sans « -de-Brandon »). */
@@ -115,7 +125,7 @@ function count(hay: string, re: RegExp): number {
  */
 function surfaceForms(raw: string, folded: string, slug: string): Map<string, number> {
   const parts = nameOf(slug).split('-').filter(Boolean).map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  const re = new RegExp(`${parts.join("[\\s\\-’']*")}(?:[\\s\\-’']+[a-z']{1,20}){0,4}`, 'gi');
+  const re = new RegExp(`${parts.join(`${SEP}*`)}(?:${SEP}+[a-z']{1,20}){0,4}`, 'gi');
   const forms = new Map<string, number>();
   for (const m of folded.matchAll(re)) {
     if (m.index === undefined) continue;
