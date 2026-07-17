@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "M": null,
+    "P": null
+  },
+  "source": "https://www3.longueuil.quebec/sites/longueuil/files/reglements-urbanisme/ru_vl-2025-839_pte1_decl_adm_interp_pen-vl.pdf",
+  "note": "Règlement VL-2025-839 relatif à l'urbanisme de l'arrondissement du Vieux-Longueuil, Partie 1 « Dispositions déclaratoires, administratives, interprétatives et pénales », chapitre 2, SECTION 2 « DISPOSITIONS RELATIVES AU PLAN DE ZONAGE », art. 16: « Chacune des zones montrées au plan de zonage est identifiée par une appellation alphanumérique dont la signification est la suivante : 1° la lettre d'appellation indique l'affectation principale de la zone afin d'illustrer le type d'usage présent ou souhaité pour la zone, telle qu'identifiée au tableau suivant ». Tableau 1 « Affectations principales d'une zone » reproduit VERBATIM (colonnes « Lettre d'appellation / Affectation principale »): H « Habitation », C « Commerce », M « Mixte », I « Industrie », P « Publique », A « Agricole ». Mapping: H « Habitation » -> residentiel; C « Commerce » -> commercial; I « Industrie » -> industriel; A « Agricole » -> agricole. Null explicite: M « Mixte » est mixte par définition (aucune dominante unique); P « Publique » est public. La matrice des usages permis des grilles (annexe B / gociteweb URL_Grille) n'est PAS utilisée. AGGLOMÉRATION 3 ARRONDISSEMENTS — le même Tableau 1 est reproduit à l'identique dans les 3 règlements d'urbanisme issus de la refonte 2025, ce qui couvre l'ensemble des codes servis: SH-2025-551 (Saint-Hubert, Partie 1 art. 17, « le premier chiffre [...] soit le « 1 » correspond à l'arrondissement; de Saint-Hubert »), GP-2025-170 (Greenfield Park, Partie 1 art. 17, « le « 2 » correspond à l'arrondissement; de Greenfield Park »), VL-2025-839 (Vieux-Longueuil, art. 16, « le « 3 » correspond à l'arrondissement du Vieux-Longueuil »). Les 3 chiffres d'arrondissement 1/2/3 sont TOUS présents dans le SIG servi (ex. H-11-001, H-21-001, H-34-327), d'où la vérification des 3 légendes avant dépôt. Préfixes SIG réellement présents (1927 polygones, lus sur S3): H(1042), P(411), M(160), C(157), I(110), A(47) — aucun autre préfixe, et aucun préfixe mappé qui n'existe pas dans le SIG. Le zone_code brut porte un suffixe d'arrondissement (« H34-327 (VLO) », « I13-116 (STH) ») sans effet sur le match longest-prefix d'une seule lettre."
+}
