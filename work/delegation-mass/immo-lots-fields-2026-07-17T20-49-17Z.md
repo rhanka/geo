@@ -43,7 +43,9 @@ Pour `folded-normes`, la chaîne `lot-zone-join-run.ts` puis
   `adresse` reste entièrement nulle.
 - `pierreville` : un lot n'intersecte pas une RTA/FSA ; `code_postal` reste
   1 830 / 1 831 (99,95 %), sans inventer de code.
-- `montreal`, `laval`, `longueuil`, `quebec`, `trois-rivieres`, `gatineau`,
+- `montreal` : interrompue à 360 s sans ligne `OK` ni dépôt vérifié ; non
+  comptée, conformément au plafond par ville.
+- `laval`, `longueuil`, `quebec`, `trois-rivieres`, `gatineau`,
   `thetford-mines`, `saint-constant`, `sainte-adele`,
   `saint-lin-laurentides` et `pointe-claire` : les runs groupés ont cessé avant
   de retourner une ligne `OK` et une vérification de dépôt par ville ; ils ne
