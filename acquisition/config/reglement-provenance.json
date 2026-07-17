@@ -3366,6 +3366,90 @@
       "reglement_page_source": null,
       "reglement_url": null,
       "_note": "ANTI-INVENTION => null: MAUVAIS DOCUMENT. work/zonage-norms/gallichan/grille.pdf (36 p) n'est PAS un reglement — c'est le BULLETIN MUNICIPAL. Verbatim p1: «MAI 2019 / MUNICIPALITÉ DE GALLICHAN / 168, chemin de Gallichan C.P. 38... / LE GALLICHAN Page 2 / VotreConseilMunicipal / Henri Bourque, maire». PISTE (NON stampee, source secondaire): un resume de seance p3 dit «Adopté le second projet de règlement #239 modifiant le règlement de zonage #93» — le reglement de zonage de Gallichan serait le #93, mais un compte rendu de bulletin n'est pas le document reglementaire et «#239» n'y est qu'un SECOND PROJET. A LEVER: ouvrir le corps du reglement de zonage #93 pour confirmer numero + millesime. ESCALADE: la grille normes de gallichan a ete derivee du bulletin => zonage a re-qualifier."
+    },
+    "princeville": {
+      "reglement_numero": "2017-316",
+      "reglement_millesime": "2017",
+      "reglement_page_source": 1,
+      "reglement_url": null,
+      "_note": "Numero verbatim couverture p1: «VILLE DE PRINCEVILLE / RÈGLEMENT DE ZONAGE NUMÉRO 2017-316», confirme p3 par l'entete proprietaire: «QUÉBEC, MRC DE L’ÉRABLE — RÈGLEMENT NUMÉRO 2017-316 / VILLE DE PRINCEVILLE — RÈGLEMENT DE ZONAGE». Millesime = ADOPTION verbatim p3: «ADOPTION : 12 juin 2017» (avis de motion 12 janvier 2017, «ENTRÉE EN VIGUEUR : 21 juillet 2017» — meme annee, pas d'ambiguite). PIEGE ECARTE (dates de REFONTE, pas du reglement): la p1 porte «VERSION REFONDUE / (Adopté le 9 juin 2025) / (Entrée en vigueur le 26 juin 2025)» — 2025 date la refonte du document, PAS l'adoption du 2017-316; le tableau «Modifications incluses dans ce document» de la p3 liste les amendements successifs (2018-330, 2019-347, ... ) qui sont refondus dedans. Retenir 2025 aurait donne un millesime faux de 8 ans. Le «2017» du numero N'EST PAS deduit du numero (piege stoneham/saint-albert): il est lu verbatim a la ligne ADOPTION. URL null: le manifest ne porte que le portail HTML https://princeville.quebec/urbanisme/ (page d'index, pas le document); doc lu depuis le corpus LOCAL work/zonage-norms/princeville/grille.pdf (294 p)."
+    },
+    "lascension-de-patapedia": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Le doc local (grille.pdf, 160 p, = le corps du reglement de zonage, pas une annexe) est un GABARIT NON REMPLI: p1 «MUNICIPALITÉ DE L’ASCENSION-DE-PATAPÉDIA / RÈGLEMENT DE ZONAGE / Règlement numéro xxxxxx» et p2 «PROVINCE DU QUÉBEC — RÈGLEMENT NUMÉRO xxxxx / MUNICIPALITÉ DE L’ASCENSION-DE-PATAPÉDIA — RÈGLEMENT DE ZONAGE». Les dates sont des pointilles vides: «AVIS DE MOTION : ……………….2021 / ADOPTION : ……………………… 2021 / ENTRÉE EN VIGUEUR : …………….2021». Le document NE PORTE donc AUCUN numero, verbatim: le champ est litteralement «xxxxxx». Ce n'est PAS un defaut de decouverte — le doc est bien le reglement de zonage, il est muet par construction. SIGNAL QUALITE (hors lane P0_1): les 26 zones servies pour ce slug proviennent de ce PROJET de reglement, pas d'un reglement adopte. RE-OUVRIR si la muni publie la version adoptee (le numero et les 3 dates y seront)."
+    },
+    "maskinonge": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "HOLD null: doc local PRESENT (94 p) mais ILLISIBLE a $0 — «NO-TEXT-LAYER (scan image)» sur p1-8: le PDF est un scan sans couche texte, pdftotext ne rend rien. Aucun numero n'a donc ete LU; ne rien stamper. Ce n'est PAS «le doc est muet» (on ignore ce qu'il porte) et ce n'est PAS un defaut de decouverte (le doc est la). ETAPE = route vision sur p1-3 (couverture + page d'adoption), ~$0.01; RE-OUVRIR avec --overwrite des qu'un OCR est passe."
+    },
+    "saint-alexis-de-matapedia": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: le seul doc local est «PlanZonage_StAlexis_LL_20210210.pdf» (2 pages) = le PLAN de zonage, pas le reglement. Sonde p1-8: «NO-CANDIDATE-LINE (aucun motif règlement/vigueur)» — un plan ne porte ni numero de reglement ni date d'adoption. Le corps du reglement n'a jamais ete telecharge. Le «20210210» du nom de fichier n'est PAS retenu (nom de fichier != foi, piege coaticook prouve). ETAPE = lane normes-discovery sur le corps."
+    },
+    "hemmingford--les-jardins-de-napierville": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE + PROVENANCE DU MANIFEST FAUSSE. (a) Aucun PDF local (work/zonage-norms/hemmingford--les-jardins-de-napierville/ vide). (b) Le source_url du manifest «https://www.mrcmatapedia.qc.ca/» est l'artefact du bug transposed-ingest (defaut stampe sans --source-url): Hemmingford est en MONTEREGIE (MRC Les Jardins-de-Napierville) et n'a AUCUN lien avec la MRC de La Matapedia (Bas-Saint-Laurent) — meme diagnostic et meme traitement que saint-barthelemy (D'Autray/Lanaudiere) deja cure. Discriminant mesure: les slugs authentiquement matapediens portent methode «native-text/grille-transposee», les 2 faux positifs portent la variante «-colonnes». => url null plutot que la fausse. ETAPE = lane normes-discovery sur le vrai site muni."
+    },
+    "farnham": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, PAS d'extraction: (a) aucun PDF local (work/zonage-norms/farnham/ vide), (b) le source_url du manifest est la SENTINELLE «https://non-disponible» — hote inexistant, aucune piste ouvrable. Le doc ayant servi a extraire les 173 zones (methode mistral-vision) n'a pas ete conserve et sa provenance n'a pas ete enregistree. Rien n'a donc ete LU: ne rien stamper. ETAPE = lane normes-discovery (re-telecharger le corps du reglement depuis le site muni)."
+    },
+    "franklin": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 87 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "lacolle": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 92 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "prevost": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 32 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "rougemont": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 75 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+    },
+    "saint-hyacinthe": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 1066 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. PRIORITE HAUTE pour la lane normes-discovery: 1066 zones = la plus grosse cible sans provenance du shard 1/2 (le doc existe forcement, il a ete OCRise une fois)."
+    },
+    "saint-jacques": {
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": null,
+      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + source_url = sentinelle «https://non-disponible». Le doc ayant servi aux 71 zones (mistral-vision) n'a pas ete conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
     }
   }
 }
