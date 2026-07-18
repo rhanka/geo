@@ -61,6 +61,17 @@ export interface ZoneCodeOptions {
    * whole guard: a join is recognised, never invented.
    */
   compositeDict?: Set<string>;
+  /**
+   * SAFE hierarchical-vocation relaxation (default OFF). The SCU/MRC-Memphrémagog
+   * family (austin, eastman, brome…) labels each zone with a hierarchical code
+   * `<geo-ref sector>.<sequence>[.<PAE subseq>]-<VOCATION>` — e.g. `1.1-RV`,
+   * `2.9-AF1`, `1.8.A-RUpe`, `4.4-AF2c`. The numeric-dotted prefix is a map-cadran
+   * index (NOT a zone id on its own; the token stays lettered via the VOCATION
+   * suffix, so the anti-#74 rule is never tripped). The whole token is admitted
+   * ONLY when its vocation suffix is a verbatim member of the plan legend's closed
+   * vocation set. That set is the whole guard: the code is recognised, never invented.
+   */
+  vocationDict?: Set<string>;
 }
 
 /** NUMBER-DOMINANCE, the composite shape (`17-R`, `502-AV`, `1-H`, `104-Adyn`).
@@ -76,6 +87,21 @@ export function isDictComposite(text: string, opts: ZoneCodeOptions = {}): boole
   return COMPOSITE_CODE_RE.test(t) && opts.compositeDict.has(t.toUpperCase());
 }
 
+/** Hierarchical map-cadran code joined to a VOCATION suffix (`1.1-RV`, `2.9-AF1`,
+ * `1.8.A-RUpe`, `4.4-AF2c`). The numeric-dotted prefix is a sheet/cadran index; only
+ * the trailing vocation carries regulatory meaning, so admission is gated on the
+ * vocation being VERBATIM in the plan legend's closed vocation set. */
+const HIER_VOCATION_RE = /^(\d{1,2}(?:\.\d{1,2}){0,3}(?:\.[A-Z])?)-([A-Za-z][A-Za-z0-9]{0,4})$/i;
+
+/** True when `text` is a hierarchical-vocation code whose vocation suffix is listed
+ * VERBATIM (case-insensitive) in the authoritative legend vocation set. */
+export function isHierVocationCode(text: string, opts: ZoneCodeOptions = {}): boolean {
+  if (!opts.vocationDict || opts.vocationDict.size === 0) return false;
+  const t = normalizeZoneCodeText(text);
+  const m = HIER_VOCATION_RE.exec(t);
+  return !!m && opts.vocationDict.has(m[2]!.toUpperCase());
+}
+
 export function looksLikeZoneCode(text: string, opts: ZoneCodeOptions = {}): boolean {
   const t = normalizeZoneCodeText(text);
   if (!t || t.length > 16) return false;
@@ -84,6 +110,8 @@ export function looksLikeZoneCode(text: string, opts: ZoneCodeOptions = {}): boo
   if (opts.numericDict && /^\d{1,4}$/.test(t) && opts.numericDict.has(t)) return true;
   // Composite relaxation: a dict-backed NUMBER-DOMINANCE code is a real zone code.
   if (isDictComposite(t, opts)) return true;
+  // Hierarchical-vocation relaxation: a legend-vocation-gated cadran code is real.
+  if (isHierVocationCode(t, opts)) return true;
   if (!/[A-Za-z]/.test(t) || !/\d/.test(t)) return false; // anti-#74
   if (/^REG(?:[-.]|\d)/i.test(t)) return false;
   return ZONE_CODE_RE.test(t);
@@ -142,6 +170,9 @@ export interface PdfTextOptions {
   numericDict?: Set<string>;
   /** SAFE composite relaxation (default OFF): dict-backed NUMBER-DOMINANCE codes. */
   compositeDict?: Set<string>;
+  /** SAFE hierarchical-vocation relaxation (default OFF): legend-vocation-gated
+   * cadran codes (`1.1-RV`, `1.8.A-RUpe`) for the SCU/MRC-Memphrémagog family. */
+  vocationDict?: Set<string>;
 }
 
 /** Run pdftotext -bbox-layout and return all words with their center. */
@@ -354,7 +385,8 @@ export function zoneLabelCandidatesFromWords(words: RawLabel[], opts: ZoneCodeOp
       // muni prints it as two tokens, so the join must be allowed explicitly —
       // and the dict bounds it to the real municipal code list.
       const composite = isDictComposite(code, { compositeDict: opts.compositeDict });
-      if ((looksLikeZoneCode(code) && safeMultiWordCode(parts, code)) || composite) {
+      const hierVoc = isHierVocationCode(code, { vocationDict: opts.vocationDict });
+      if ((looksLikeZoneCode(code) && safeMultiWordCode(parts, code)) || composite || hierVoc) {
         candidates.push(makeCandidate(words, [...indexes], code));
       }
       prev = next;
@@ -429,6 +461,7 @@ export function extractLabelsFromWords(
   const candidates = zoneLabelCandidatesFromWords(words, {
     numericDict: opts.numericDict,
     compositeDict: opts.compositeDict,
+    vocationDict: opts.vocationDict,
   });
   const hasSplitPrefixCompounds = candidates.some(
     (c) => (c.sourceWordCount ?? 1) > 1 && /^[A-Z]{1,4}\d{0,3}(?:-[A-Z])?-\d{2,4}(?:-[A-Z0-9]{1,4})?$/i.test(c.text),
@@ -453,7 +486,14 @@ export function extractLabelsFromWords(
   let nInside = 0;
   let rejectedOutside = 0;
   for (const w of candidates) {
-    if (!looksLikeZoneCode(w.text, { numericDict: opts.numericDict, compositeDict: opts.compositeDict })) continue;
+    if (
+      !looksLikeZoneCode(w.text, {
+        numericDict: opts.numericDict,
+        compositeDict: opts.compositeDict,
+        vocationDict: opts.vocationDict,
+      })
+    )
+      continue;
     if (isTinyCandidate(w)) continue;
     // A dict-listed composite is the muni's real code — never drop it as a stray
     // digit-leading fragment of some other lettered compound.
@@ -461,7 +501,8 @@ export function extractLabelsFromWords(
       hasSplitPrefixCompounds &&
       (w.sourceWordCount ?? 1) === 1 &&
       isDigitLeadingSingleLetter(w.text) &&
-      !isDictComposite(w.text, opts)
+      !isDictComposite(w.text, opts) &&
+      !isHierVocationCode(w.text, opts)
     ) {
       continue;
     }
