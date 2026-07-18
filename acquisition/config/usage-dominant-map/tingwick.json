@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "RU": null,
+    "A": "agricole",
+    "AF": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "M": null,
+    "REC": "environnemental"
+  },
+  "source": "https://www.tingwick.ca/fichiersUpload/fichiers/20240927142317-2023-zonage-2010-311.pdf",
+  "note": "Municipalité de Tingwick (MRC d'Arthabaska), Règlement de zonage numéro 2010-311. Énumération VERBATIM des catégories de zones (chap. 5, dispositions par zone): « a) Zones agricoles A » -> A=agricole; « b) Zones agro-forestières AF » -> AF=agricole (le contrat regroupe forestier/agroforestier en agricole); « c) Zones rurale RU » -> RU=null (rurale seule, aucune assignation au groupe Habitation); « d) Zones commerciales C » -> C=commercial; « e) Zones publiques P » -> P=null; « f) Zones résidentielles R » -> R=residentiel; « g) Zones industrielles I » -> I=industriel; « h) Zones récréatives REC » -> REC=environnemental; « i) Zones mixtes M » -> M=null (mixte, dualité). Corroboré dans le corps (« zones agricole A, rurale RU et agro-forestière AF »). RU et REC déclarés explicitement (anti-fall-through: RU-xx et REC-xx ne doivent pas tomber sur R). Recouvrement table<->SIG réels (R/RU/A/P/AF/M/I/C/REC): 9/9. Consulté le 2026-07-18."
+}
