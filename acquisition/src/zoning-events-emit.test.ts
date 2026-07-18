@@ -227,10 +227,12 @@ describe("serveZoningEvents", () => {
     expect(keys).toEqual(zoningEventsKeys("coaticook"));
     expect(keys).toHaveLength(2);
     expect(document).toEqual({
+      type: "FeatureCollection",
       as_of: "2026-07-18T00:00:00Z",
       complete: true,
       muni: "coaticook",
       events: [event],
+      features: [{ type: "Feature", geometry: null, properties: event }],
     });
     for (const key of keys) {
       expect(written[key]).toEqual(document);
