@@ -1,8 +1,8 @@
 {
   "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts. 2026-07-17: rééquilibrage vers les DONNÉES COMPLÉMENTAIRES immo (reglement/usage_dominant/immo-lots), qui n'avaient AUCUNE lane alors que la couverture en avait 8. engineFallback = engine de repli quand la lane bute sur une limite de dépense/quota.",
-  "$comment2": "2026-07-17b: bascule engine claude->codex (quota OpenAI revenu) pour economiser les credits Claude; fallback claude si Codex bute.",
-  "engine": "codex",
-  "engineFallback": "claude",
+  "$comment2": "2026-07-17c: RE-BASCULE codex->claude. Le compte Codex a tape sa limite d'usage hebdo (compte-entier, reset 2026-07-24): 5.5+5.3+terra tournaient A VIDE -> reglement/usage/effet stalles. Nouveau compte Claude. Fallback->codex pour quand le quota Codex revient.",
+  "engine": "claude",
+  "engineFallback": "codex",
   "lanes": [
     { "name": "geo-reglement", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/reglement-provenance-base.txt", "shards": 2, "note": "P0_1 Steve: reglement_numero 79/830. Gisement = 483 grilles avec URL source mais sans numéro extrait. Lecture PDF -> registre curé -> fold --all." },
     { "name": "geo-usage-dom", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/usage-dominant-base.txt", "shards": 2, "note": "usage_dominant 8/830. Lecture de la légende des préfixes du règlement -> config prefix_map -> fold. null explicite sur zone duale/publique." },
