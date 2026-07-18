@@ -1,0 +1,22 @@
+{
+  "prefix_map": {
+    "ADA": "agricole",
+    "ADB": "agricole",
+    "AGA": "agricole",
+    "AGB": "agricole",
+    "AFAA": "agricole",
+    "AFAB": "agricole",
+    "AFB": "agricole",
+    "AFC": "agricole",
+    "RURA": "agricole",
+    "RURB": "agricole",
+    "VA": "residentiel",
+    "IDAA": null,
+    "IDAB": null,
+    "IDANR": null,
+    "IDS": null,
+    "RUS": null
+  },
+  "source": "https://www.mrcdesappalaches.ca/fichiersUpload/fichiers/20210413111048-reglement-75-schema-revise-codification-administrative-25-fevrier-2021.pdf",
+  "note": "ATTENTION HOMONYME: le SIG servi = Municipalité de la PAROISSE de Disraeli (geocentralis evb:siadmin_pzon_99_s, id_municipalite=31020), PAS la Ville de Disraeli; le reglement_url 641 stampé (Ville) est le mauvais document et ne contient aucun code composite (0 hit verbatim). Le libellé de vocation VERBATIM par zone vit dans le champ WFS `etiquette_2` (écrasé en affectation:null par la normalisation), corroboré par le SADR MRC des Appalaches (règlement 75, §4.2-4.5). Libellés VERBATIM (etiquette_2): ADA « Aire d'affectation agricole dynamique », ADB « ...dynamique restrictive », AGA « Aire d'affectation agricole », AGB « ...restrictive », AFAA « agroforestière de type 1 », AFAB « ...type 1 restrictive », AFB « agroforestière de type 2 », AFC « type 3 » -> agricole; RURA « Aire d'affectation forestière », RURB « forestière restrictive » -> agricole (le préfixe RUR porte le libellé « forestière », PAS « rurale » — ne pas déduire de la lettre); VA « Aire d'affectation de villégiature » -> residentiel. Null explicite: IDAA/IDAB/IDANR/IDS « îlot déstructuré avec/sans morcellement » (poche LPTAA duale résidentielle-agricole, aucune dominante verbatim parmi les cinq); RUS « Aire d'affectation rurale de service » (« service » n'est pas une des cinq dominantes). WFS source: https://geoserver.geocentralis.com/geoserver/evb/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite=31020 (champ etiquette_2)."
+}
