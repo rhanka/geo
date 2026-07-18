@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "R": "residentiel",
+    "Ra/Ca": null,
+    "Ra/Cb": null,
+    "R/Cb": null,
+    "Ca": "commercial",
+    "Aa": "agricole",
+    "Ab": "agricole",
+    "Ax": "agricole",
+    "F": "agricole",
+    "Fa": "agricole",
+    "INST": null
+  },
+  "source": "Règlement de zonage n° 141 (harmonisé MRC de Témiscamingue), Municipalité de Nédélec — corpus local work/zonage-norms/nedelec/grille.pdf, chap. 5 SECTION I art. 5.2 « LES ZONES ».",
+  "note": "Art. 5.2 « LES ZONES » (verbatim par regroupement): « Le zonage résidentiel: Ra Résidentielle, Rh Résidentielle historique, Rm avec maisons mobiles. Le zonage mixte: Ra/Ca Résidentielle et commerciale petite superficie, Ra/Cb Résidentielle et commerciale avec garages/entrepôts/petites industries, R/Cb Résidentielle commerciale et industrielle. Le zonage institutionnel et public: Inst. Le zonage ressource: A Agricole, Aa sans restriction, Ab avec restriction, Ax sans construction, F Forestière, Fa sans restriction ». -> Ra « Résidentielle » et R (famille résidentielle) -> residentiel; Aa/Ab/Ax « Agricole » et F/Fa « Forestière » -> agricole; Ca -> commercial (racine C = commerciale, cf. la muni jumelle notre-dame-du-nord même règlement harmonisé qui liste « Le zonage commercial (C): Ca, Cb, Cc »). Null explicite: Inst/INST « Institutionnelle et publique »; les codes MIXTES Ra/Ca, Ra/Cb, R/Cb « Résidentielle ET commerciale (et industrielle) » (dominance déclarée MIXTE). Longest-prefix OBLIGATOIRE: « Ra/Cb » (null) bat « Ra » (residentiel) -> le composite Ra/Cb1 servi retombe en null, PAS residentiel. La matrice des usages permis n'est pas utilisée."
+}

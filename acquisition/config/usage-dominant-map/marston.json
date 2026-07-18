@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "VILL": "residentiel",
+    "CONS": "environnemental",
+    "REC": "environnemental",
+    "Af": "agricole",
+    "RU": null,
+    "RUx": null,
+    "M": null,
+    "P": null,
+    "IL": null
+  },
+  "source": "Règlement de zonage n° 2006-049 (adopté 2006-06-05), Municipalité de Marston, MRC Le Granit — https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=c8ae3b42-862d-41ea-8e6f-c557d7545ebc, art. 5.1 (table « ZONE | VOCATION DOMINANTE »).",
+  "note": "Art. 5.1 (verbatim, « lettres suffixes indiquant la vocation dominante »): « A Agricole; Af Agroforestière; Cons Conservation; I Industrielle; M Mixte; P Publique; R Résidentielle; Rec Récréative; Ru Rurale; Vill Villégiature ». -> R « Résidentielle » et VILL (Vill) « Villégiature » -> residentiel; CONS « Conservation » et REC (Rec) « Récréative » -> environnemental; Af « Agroforestière » -> agricole. Le préfixe servi « AFT » (16 zones, non listé littéralement) commence par « Af » = Agroforestière -> agricole via longest-prefix sur l'entrée verbatim (agroforestier = agricole = immo-neutre). Null explicite: Ru (RU) et RUx « Rurale »; M « Mixte »; P « Publique »; IL « ÎLOT » (numéroté à l'échelle MRC, ABSENT de la table = PAS « Industrielle »=« I »). Longest-prefix: RUx bat RU, REC/CONS autonomes. La matrice des usages permis n'est pas utilisée."
+}
