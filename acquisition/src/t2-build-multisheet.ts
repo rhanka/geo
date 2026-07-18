@@ -234,7 +234,7 @@ async function main(): Promise<void> {
   // the muni prints NUMBER ⊕ DOMINANCE as two tokens (matane "17 R"); the dict
   // both enables and bounds the join. See lib/t1-labels.ts.
   const compositeDict = dictCodes
-    ? new Set(dictCodes.map((c) => c.trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,3}$/.test(c)))
+    ? new Set(dictCodes.map((c) => c.trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,4}$/.test(c)))
     : undefined;
   if (compositeDict?.size) {
     console.error(`[t2-multisheet] composite relaxation ON: ${compositeDict.size} dict-backed NUMBER-DOMINANCE codes`);
