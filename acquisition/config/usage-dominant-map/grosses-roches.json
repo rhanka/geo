@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "F": "agricole",
+    "FA": "agricole",
+    "Il": "industriel",
+    "L": "environnemental",
+    "P": null,
+    "FC": null,
+    "FV": null,
+    "FP": null,
+    "FR": null
+  },
+  "source": "https://municipalite.grossesroches.ca/images/Upload/Reglements/Reglement_307_Zonage_.pdf",
+  "note": "Règlement de zonage 307 (Municipalité de Grosses-Roches), art. section « division en zones » p.12: « les zones sont désignées par un numéro qui leur est propre, suivi d'une lettre indiquant la dominance de zone telle qu'indiquée ci-dessous » (ex: « la zone \"1-R\" est la zone numéro 1 et sa dominance est résidentielle »). Table (verbatim): « R Résidentielle » -> residentiel; « C Commerciale » -> commercial; « F Forestière » -> agricole; « FA Forestière et agricole » -> agricole; « IL Industrielle légère » -> industriel (SIG: Il); « L Loisirs » -> environnemental (loisir/récréation). Null explicite: « P Communautaire » -> public; « FC Forestière et de conservation », « FV Forestière et de villégiature », « FP Forestière publique », « FR Forestière et récréative » sont des dominances COMPOSITES à vocations divergentes (agricole+autre) -> pas de dominante unique. Clé = suffixe-lettre (canon-réverse de N-XX); longest-prefix: F* composites priment sur F. Préfixes servis couverts: R, L, C, P, Il, FA, FC, FV, F, FP, FR. Consulté 2026-07-18."
+}
