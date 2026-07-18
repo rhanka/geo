@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "Habitation": "residentiel",
+    "Îlots": "residentiel",
+    "Commerciale": "commercial",
+    "Industrielle": "industriel",
+    "Agricole": "agricole",
+    "Conservation": "environnemental",
+    "Récréotouristique": "environnemental",
+    "Mixte": null,
+    "Publique": null,
+    "Réserve": null
+  },
+  "source": "https://langegardien.qc.ca/wp-content/uploads/2023/07/20230727_Plan-durbanisme-16-640-Codification-administrative.pdf",
+  "note": "Cas particulier: le champ zone_code du SIG porte VERBATIM le nom de la grande affectation du territoire (pas un préfixe alphanumérique). Les 10 valeurs servies (Agricole, Commerciale, Conservation, Habitation, Industrielle, Mixte, Publique, Récréotouristique, Réserve d'urbanisation, Îlots Déstructurés) sont les « grandes affectations » du Plan d'urbanisme 16-640 de la Municipalité de L'Ange-Gardien (MRC de La Côte-de-Beaupré), section 4.1.2 « Les grandes affectations » / Annexe A « Les grandes affectations du territoire ». Mapping direct label->catégorie (le label EST la vocation dominante, aucune inférence): Habitation -> residentiel; Commerciale -> commercial; Industrielle -> industriel; Agricole -> agricole; Conservation -> environnemental; Récréotouristique (fonction récréation/tourisme) -> environnemental. Îlots Déstructurés -> residentiel: le PU précise « L'habitation résidentielle au sein de la zone agricole est [...] reconnu en tant qu'îlot déstructuré » (enclaves où se concentre l'habitation résidentielle). Null explicite: Mixte -> affectation mixte (DUALE); Publique -> publique; Réserve (d'urbanisation) -> « Secteur mis en réserve pour des fins de développement ultérieur » (développement futur). Le tableau de compatibilité des usages (Annexe B) n'est pas utilisé. Clés préfixe = mots complets appariés par startsWith (Réserve->Réserve d'urbanisation; Îlots->Îlots Déstructurés)."
+}
