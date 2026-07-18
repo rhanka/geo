@@ -83,8 +83,12 @@ function expand(cfg: Config): Agent[] {
 }
 
 /** ALIVE iff the h2a/claude CLI shows its "esc to interrupt" working marker in the pane. */
+export function hasWorkingMarker(pane: string): boolean {
+  return pane.includes('esc to interrupt');
+}
+
 function isAlive(name: string): boolean {
-  return tmuxPane(`remote-${name}`).includes('esc to interrupt');
+  return hasWorkingMarker(tmuxPane(`remote-${name}`));
 }
 
 /** The pane exists at all — distinguishes "CLI still booting" from "never launched". */
@@ -121,22 +125,20 @@ function launch(engine: string, a: Agent): boolean {
  */
 function launchVerified(engine: string, fallback: string | undefined, a: Agent): 'up' | 'up-fallback' | 'failed' {
   if (!launch(engine, a)) return 'failed';
-  // A Claude/Codex CLI takes ~20-40s to boot to its "esc to interrupt" marker; a pane
-  // exists almost immediately but "alive" lags. Verify on the PANE existing + not showing a
-  // usage-limit banner, with a generous window, so a slow boot isn't a false FAILED that the
-  // next tick re-kills. (isAlive is the steady-state check the tick uses on subsequent passes.)
+  // A tmux pane exists almost immediately, including when the agent is idle or its prompt
+  // injection failed.  It is not evidence of a live lane: wait for the same working marker
+  // used by `status`, otherwise the timeline falsely reports a successful relaunch.
   for (let i = 0; i < 40; i++) {
-    if (hasPane(a.name)) {
-      if (!isLimited(a.name)) return 'up';
-      break; // usage-limited: fall through to the fallback engine
-    }
+    if (isAlive(a.name)) return 'up';
+    if (hasPane(a.name) && isLimited(a.name)) break; // usage-limited: try fallback
     sh('sleep', ['1'], 3_000);
   }
   if (fallback !== undefined && fallback !== engine) {
     console.log(`LIMIT    ${a.name} on ${engine} → retry on ${fallback}`);
     if (!launch(fallback, a)) return 'failed';
     for (let i = 0; i < 40; i++) {
-      if (hasPane(a.name) && !isLimited(a.name)) return 'up-fallback';
+      if (isAlive(a.name)) return 'up-fallback';
+      if (hasPane(a.name) && isLimited(a.name)) break;
       sh('sleep', ['1'], 3_000);
     }
   }
