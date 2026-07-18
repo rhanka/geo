@@ -269,3 +269,47 @@ colonnes `surface_m2` et `code_postal` sont déjà complètes au niveau lot. Auc
 Aucune des villes testées n'était sans parquet de normes ; les échecs viennent des
 zones absentes/inexploitables, de la couverture SIG ou de jeux de codes disjoints,
 pas d'une acquisition de normes manquante.
+
+## Passe shard 0/1 — audit 2026-07-18T00:24Z
+
+Tous les enrichissements ci-dessous ont conservé le rôle foncier actif : aucun
+`--no-role` ni `--enrich-no-role`.
+
+### Avant / après S3, par champ
+
+| Champ | Avant | Après |
+| --- | --- | --- |
+| `surface_m2` | 3 369 947 / 3 369 947 (100 %), 848 munis pleines | 3 371 619 / 3 371 619 (100 %), 849 munis pleines |
+| `adresse` | 2 544 149 / 3 369 947 (75,50 %), 613 munis pleines, 841 avec une valeur | 2 545 630 / 3 371 619 (75,50 %), 613 munis pleines, 842 avec une valeur |
+| `code_postal` | 3 369 946 / 3 369 947 (100 %), 848 munis pleines | 3 371 618 / 3 371 619 (100 %), 849 munis pleines |
+| `folded-normes` | 862 611 / 3 369 947 (25,60 %), 211 munis pleines, 575 avec une valeur | 862 745 / 3 371 619 (25,59 %), 211 munis pleines, 576 avec une valeur |
+| `in_tod` | 28 431 / 28 431 (100 % scoped), 4 munis | 28 431 / 28 431 (100 % scoped), 4 munis |
+
+Le dénominateur a changé avec des dépôts partagés ; aucun delta global n’est
+attribué à cette passe seule.
+
+### Villes traitées et skips
+
+- Ré-enrichissement rôle/FSA : `aguanish`, `caniapiscau`,
+  `cote-nord-du-golfe-du-saint-laurent`, `franquelin`,
+  `havre-saint-pierre`, `lile-danticosti`, `metis-sur-mer`, `remigny`,
+  `saint-eugene-de-ladriere`, `saint-felix-de-dalquier`,
+  `saint-gabriel-de-valcartier`,
+  `saint-louis-de-gonzague-du-cap-tourmente`, `saint-pierre`. Les 13 restent
+  à 0 % adresse : six n’ont aucun lot cadastre ; les sept autres n’ont aucune
+  jointure rôle sûre ou donnée source exploitable.
+- Résidus surface/RTA : les six communes vides ci-dessus restent nulles.
+  `pierreville` a été ré-enrichie, 1 830 / 1 831 code postal (99,95 %) ; le
+  dernier lot reste hors RTA source.
+- Chaîne lot→zone→normes puis enrichissement : `remigny`,
+  `saint-eugene-de-ladriere`, `saint-gabriel-de-valcartier`, `franquelin`,
+  `bearn`, `mont-carmel`, `riviere-au-tonnerre`, `lac-superieur`,
+  `ferme-neuve`, `val-dor`, `kingsbury`, `les-escoumins`, `duhamel`,
+  `temiscaming`, `leclercville`, `hatley-township-municipality`,
+  `belleterre`, `saint-roch-ouest`.
+- Jointures normes confirmées : Ferme-Neuve 9 / 116, Val-d’Or 18 / 129,
+  Kingsbury 161 / 165, Les Escoumins 1 / 165 et Duhamel 57 / 218. Les
+  jointures sans correspondance norme-zone conservent `null`.
+- 174 communes `normesStatus=to-research` sont skippées (aucune norme
+  déposée : lane normes). Il reste 630 communes `normesStatus=done` avec
+  `folded-normes<100`, non déclarées faites.
