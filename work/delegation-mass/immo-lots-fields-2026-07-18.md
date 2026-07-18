@@ -1,48 +1,70 @@
-# WP9 — champs LOT immo, shard 0/1
+# WP9 — champs lots immo, shard 0/1
 
-Mesure S3 avant : `2026-07-18T09:44:49.364Z`.
-Mesure S3 après : `2026-07-18T09:59:43.925Z`.
+Date d'audit S3 de référence : 2026-07-18T11:13:33Z.  Audit final S3 :
+2026-07-18T11:23:45Z.  Les chiffres ci-dessous proviennent exclusivement de
+`immo-lots-audit.ts`; les valeurs non résolues sont restées `null`.
 
-Les deux mesures portent sur 863 produits `qc-lots` servis et leurs sidecars S3. Les chiffres ci-dessous sont rapportés champ par champ ; aucun avancement total agrégé n'est déduit.
+## Historique conservé — passe antérieure du 18 juillet
 
-| Champ | Avant (lots renseignés / périmètre) | Avant | Après (lots renseignés / périmètre) | Après | Écart confirmé S3 |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `surface_m2` | 3 386 747 / 3 386 747 | 100% | 3 386 747 / 3 386 747 | 100% | 0 lot |
-| `adresse` | 2 559 983 / 3 386 747 | 75,59% | 2 559 983 / 3 386 747 | 75,59% | 0 lot |
-| `code_postal` | 3 386 746 / 3 386 747 | 100% | 3 386 746 / 3 386 747 | 100% | 0 lot |
-| `folded-normes` | 871 805 / 3 386 747 | 25,74% | 871 805 / 3 386 747 | 25,74% | 0 lot |
-| `in_tod` (périmètre TOD) | 28 431 / 28 431 | 100% | 28 431 / 28 431 | 100% | 0 lot |
+Le rapport versionné contenait déjà une passe S3 de 09:44:49Z à 09:59:43Z,
+sans variation pour `surface_m2`, `adresse`, `code_postal` et `in_tod`; elle
+avait mesuré `folded-normes` à 871 805 / 3 386 747 (25,74 %). Cette passe avait
+vérifié les dépôts pour `val-des-monts`, `disraeli--les-appalaches`,
+`berthier-sur-mer`, `saint-leon-de-standon` et `saint-fabien-de-panet`, sans
+gain S3, et avait écarté `saint-come` après dépassement de son budget de six
+minutes. Les villes `normesStatus=to-research` y étaient déjà laissées à la
+lane normes. Les sept villes adresse de la passe courante avaient également
+été validées sans rôle fiable; elles sont re-mesurées ci-dessous, sans
+contradiction ni effacement de ce constat.
 
-## Villes traitées et dépôts vérifiés
+| Champ | Avant (S3) | Après (S3) | Résultat |
+| --- | --- | --- | --- |
+| `surface_m2` | 3 386 747 / 3 386 747 (100 %) | 3 386 747 / 3 386 747 (100 %) | Aucun résidu dans l'audit courant; aucune écriture nécessaire. |
+| `adresse` | 2 559 983 / 3 386 747 (75,59 %) | 2 559 983 / 3 386 747 (75,59 %) | Sept réenrichissements avec rôle foncier activé; les gardes de chevauchement ont tous rejeté la jointure, donc aucune adresse n'a été inventée. |
+| `code_postal` | 3 386 746 / 3 386 747 (100 % arrondi) | 3 386 746 / 3 386 747 (100 % arrondi) | Pierreville recalculée; son unique lot non résolu ne recoupe aucun polygone FSA ouvert et reste `null`. |
+| `folded-normes` | 872 229 / 3 386 747 (25,75 %) | 872 229 / 3 386 747 (25,75 %) | Seize villes ont été rejouées zone → normes → lots. Les taux observés sont les taux réellement joignables de leurs sources S3; aucun gain non confirmé n'est revendiqué. |
+| `in_tod` (scopé) | 28 431 / 28 431 (100 %) | 28 431 / 28 431 (100 %) | Déjà complet; aucune écriture nécessaire. |
 
-### Adresse — relance avec rôle foncier, sans `--no-role`
+## Villes traitées
 
-- `saint-pierre` (21 322 lots) : dépôt vérifié ; adresse reste 0%. La garde de recouvrement a refusé le meilleur rôle (`61020`, 238 lots appariés, minimum 639).
-- `saint-louis-de-gonzague-du-cap-tourmente` (3 284) : dépôt vérifié ; adresse reste 0%. Recouvrement rôle insuffisant (1 appariement, minimum 98).
-- `saint-felix-de-dalquier` (936) : dépôt vérifié ; adresse reste 0%. Aucun candidat `code_geo` pour le slug.
-- `franquelin` (43) : dépôt vérifié ; adresse reste 0%. Recouvrement rôle insuffisant (22, minimum 30).
-- `saint-gabriel-de-valcartier` (23) : dépôt vérifié ; adresse reste 0%. Recouvrement rôle insuffisant (21, minimum 30).
-- `saint-eugene-de-ladriere` (5) : dépôt vérifié ; adresse reste 0%. Recouvrement rôle insuffisant (4, minimum 30).
-- `remigny` (1) : dépôt vérifié ; adresse reste 0%. Recouvrement rôle insuffisant (1, minimum 30).
+- Adresse (rôle activé, sans `--no-role`) : `franquelin`, `remigny`,
+  `saint-eugene-de-ladriere`, `saint-felix-de-dalquier`,
+  `saint-gabriel-de-valcartier`, `saint-louis-de-gonzague-du-cap-tourmente`,
+  `saint-pierre`.
+- Normes (jointure puis enrichissement) : `bearn`, `mont-carmel`,
+  `riviere-au-tonnerre`, `lac-superieur`, `hatley-township-municipality`,
+  `saint-roch-ouest`, `la-corne`, `val-des-bois`, `ferme-neuve`, `val-dor`,
+  `kingsbury`, `les-escoumins`, `duhamel`, `temiscaming`, `leclercville`,
+  `belleterre`.
+- Code postal : `pierreville`.
 
-Ces sept relances confirment que le résidu ne vient pas de l'ancien mode sans rôle : aucune adresse n'a été créée sans jointure rôle/cadastre validée.
+## Villes skippées ou sans gain, avec raison vérifiée
 
-### Normes foldées — jointure lot → zone → normes, puis enrichissement avec rôle
+- Adresse : `franquelin` (22 correspondances rôle < seuil 30), `remigny`
+  (1 < 30), `saint-eugene-de-ladriere` (4 < 30),
+  `saint-gabriel-de-valcartier` (21 < 30),
+  `saint-louis-de-gonzague-du-cap-tourmente` (1 < seuil 98) et
+  `saint-pierre` (238 < seuil 639) : chevauchement cadastre/rôle insuffisant.
+  `saint-felix-de-dalquier` : aucun candidat `code_geo`. Ces sept villes
+  restent à 0 % adresse afin d'éviter une attribution erronée.
+- Normes : `bearn`, `mont-carmel`, `lac-superieur`, `la-corne` et
+  `val-des-bois` ont une assignation de zone mais 0 % de match de codes vers
+  les normes; `riviere-au-tonnerre` a 0 % de lots assignés;
+  `hatley-township-municipality` a 0,72 % de lots assignés. Il n'existe donc
+  pas de norme source joignable à replier pour ces villes dans cette lane.
+- Normes : `ferme-neuve` (7,76 %), `val-dor` (13,95 %), `kingsbury` (97,58 %),
+  `les-escoumins` (0,61 %), `duhamel` (26,15 %), `temiscaming` (96,39 %),
+  `leclercville` (97,62 %) et `belleterre` (1,36 %) ont été rejouées avec le
+  même taux que l'audit de départ : la jointure S3 confirme le résidu, sans
+  source additionnelle à acquérir dans cette mission.
+- Normes : `acton-vale` et `adstock` n'ont pas été comptées comme traitées :
+  le runner local a été interrompu avant sortie `DONE` et avant dépôt vérifié.
+  Les autres villes `normesStatus=to-research` n'ont pas été touchées, car
+  l'acquisition de normes est explicitement hors de cette lane.
+- Code postal : `pierreville`, un lot hors polygone FSA ouvert après recalcul;
+  il reste `null` conformément au contrat anti-invention.
 
-- `val-des-monts` (5 342 lots) : jointure et dépôt vérifiés ; 78,38% de lots zonés mais 0% de correspondance code-zone/normes, donc `folded-normes` reste 0%.
-- `disraeli--les-appalaches` (1 482) : jointure et dépôt vérifiés ; 2,43% zonés, 0% de correspondance normes, donc reste 0%.
-- `berthier-sur-mer` (1 469) : jointure et dépôt vérifiés ; 99,86% zonés, mais 0% de correspondance normes, donc reste 0%.
-- `saint-leon-de-standon` (1 468) : jointure et dépôt vérifiés ; correspondance normes de 4,29%, inchangée.
-- `saint-fabien-de-panet` (1 378) : jointure et dépôt vérifiés ; 100% zonés, mais 0% de correspondance normes, donc reste 0%.
+## Exécution
 
-## Villes skippées
-
-- `saint-come` (5 301 lots) : calcul `lot-zone-join-run` interrompu après dépassement de la limite de six minutes ; aucun dépôt ni progrès n'est attribué.
-- Les villes non sélectionnées dont `normesStatus` est `to-research` ne sont pas traitées ici : l'absence ou l'indisponibilité de normes relève de la lane normes. Aucune valeur n'a été produite pour elles.
-
-## Preuve et garde-fous
-
-- Audit initial : `work/delegation-mass/immo-lots-fields-before-20260718T000000Z.json`.
-- Audit final : `work/delegation-mass/immo-lots-fields-after-20260718T000000Z.json`.
-- `lots-enriched-run.ts` a été lu avant les relances : `--no-role` remet effectivement `adresse` à `null`; ce drapeau n'a jamais été utilisé ici.
-- Toutes les valeurs absentes à la source ou refusées par la garde de recouvrement restent `null`.
+Les enrichissements adresse ont tous utilisé le rôle foncier. Aucun appel
+`--enrich-no-role` ni `--no-role` n'a été exécuté.
