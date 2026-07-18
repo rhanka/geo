@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "RU": "residentiel",
+    "CR": null,
+    "I": "industriel",
+    "P": null,
+    "A": "agricole",
+    "AF": "agricole",
+    "ZR": null
+  },
+  "source": "https://st-maurice.ca/file-15240",
+  "note": "Règlement de zonage no 2009-489 de la Municipalité de Saint-Maurice, art. 4.1: « Chaque zone est identifiée sur le plan par un numéro distinct et une abréviation indiquant la fonction dominante de la zone, comme suit », tableau « Abréviation | Fonction dominante » VERBATIM: R « Résidentielle » -> residentiel; RU « Résidentielle en milieu rural » -> residentiel; I « Industrielle » -> industriel; A « Agricole » et AF « Agroforestière » -> agricole. Null explicite: CR « Commerciale et résidentielle » est une fonction DUALE; P « Publique »; ZR « Zone en réserve » n'énonce pas une dominante parmi les cinq catégories. Le code SIG servi est numéro-suffixe (ex « 302-RU »); le pilote fold teste la forme canonique lettre-num (« RU-302 »), d'où le map par préfixe d'abréviation. NOTE: une zone « 122-C » (suffixe « C » seul) existe au SIG mais n'apparaît PAS au tableau des abréviations de l'art. 4.1 (qui ne définit que « CR »); elle n'est donc pas mappée et reste null (anti-invention). La matrice des usages permis des grilles n'est pas utilisée. Corps consulté le 2026-07-18."
+}
