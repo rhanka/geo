@@ -1,83 +1,54 @@
-# WP9 — champs lots immo — shard 0/1
+# IMMO lots — champs WP9, shard 0/1
 
-Date : 2026-07-17 (America/Toronto). Le shard `0/1` couvre tous les slugs
-triés. Tous les ré-enrichissements ont été lancés **avec** le rôle foncier ;
-`--no-role` / `--enrich-no-role` n'a jamais été utilisé.
+Audit S3 de départ : `2026-07-18T01:00:55.083Z`.
+Audit S3 final : `2026-07-18T01:16:09.602Z`.
 
-## Audit S3 avant / après
+## Avant / après, par champ
 
-Les deux mesures proviennent de `npx tsx acquisition/src/immo-lots-audit.ts`.
-Les chiffres ci-dessous sont présentés champ par champ ; la différence de
-nombre de dépôts/lots entre les deux instantanés est partagée avec les autres
-travaux actifs et n'est pas attribuée à cette exécution.
-
-| Champ | Avant | Après |
-| --- | --- | --- |
-| `surface_m2` | 3 369 947 / 3 369 947 (100 %), 848 munis pleines | 3 371 619 / 3 371 619 (100 %), 849 munis pleines |
-| `adresse` | 2 544 149 / 3 369 947 (75,50 %), 613 munis pleines, 841 avec une valeur | 2 545 630 / 3 371 619 (75,50 %), 613 munis pleines, 842 avec une valeur |
-| `code_postal` | 3 369 946 / 3 369 947 (100 %), 848 munis pleines | 3 371 618 / 3 371 619 (100 %), 849 munis pleines |
-| `folded-normes` | 862 611 / 3 369 947 (25,60 %), 211 munis pleines, 575 avec une valeur | 862 745 / 3 371 619 (25,59 %), 211 munis pleines, 576 avec une valeur |
-| `in_tod` | 28 431 / 28 431 (100 % scoped), 4 munis | 28 431 / 28 431 (100 % scoped), 4 munis |
+| Champ | Avant S3 | Après S3 | Constat |
+| --- | --- | --- | --- |
+| `surface_m2` | 3 374 404 / 3 374 404 lots (100%) | 3 374 404 / 3 374 404 lots (100%) | Aucun résidu sur une ville ayant des lots. Les six villes à 0% dans le décompte municipal ont chacune 0 lot. |
+| `adresse` | 2 548 225 / 3 374 404 lots (75,52%) | 2 548 225 / 3 374 404 lots (75,52%) | Les réenrichissements avec le rôle actif n'ont produit aucune adresse supplémentaire : les jointures non fiables restent nulles. |
+| `code_postal` | 3 374 403 / 3 374 404 lots (100% arrondi) | 3 374 403 / 3 374 404 lots (100% arrondi) | Le seul lot sans RTA/FSA, à `pierreville`, reste sans polygone RTA au centroïde; il n'a pas été comblé. |
+| `folded-normes` | 862 745 / 3 374 404 lots (25,57%) | 862 745 / 3 374 404 lots (25,57%) | Les jointures recalculées confirment les taux existants; les résidus viennent des couches de zones absentes ou des codes zones/normes non appariés. |
+| `in_tod` (périmètre TOD) | 28 431 / 28 431 lots (100%) | 28 431 / 28 431 lots (100%) | Déjà complet dans les quatre municipalités avec produit TOD. |
 
 ## Villes traitées
 
-### Adresse, surface et code postal
+### Adresse, rôle foncier conservé
 
-Ré-enrichissement avec rôle + FSA :
+- `franquelin`, `remigny`, `saint-eugene-de-ladriere`, `saint-felix-de-dalquier`, `saint-gabriel-de-valcartier`, `saint-louis-de-gonzague-du-cap-tourmente`, `saint-pierre`.
+- Commande exécutée sans `--no-role` ni `--enrich-no-role`, avec `--time-box 360`.
+- Chaque dépôt `qc-lots` a été vérifié par le runner. Aucune adresse n'a été ajoutée, car la validation cadastre↔rôle a refusé les candidats insuffisamment recouvrants (détails ci-dessous).
 
-`aguanish`, `caniapiscau`, `cote-nord-du-golfe-du-saint-laurent`,
-`franquelin`, `havre-saint-pierre`, `lile-danticosti`, `metis-sur-mer`,
-`remigny`, `saint-eugene-de-ladriere`, `saint-felix-de-dalquier`,
-`saint-gabriel-de-valcartier`,
-`saint-louis-de-gonzague-du-cap-tourmente`, `saint-pierre`.
+### Normes foldées, jointure puis enrichissement
 
-Après audit, les 13 restent à `adresse=0`. Les six communes
-`aguanish`, `caniapiscau`, `cote-nord-du-golfe-du-saint-laurent`,
-`havre-saint-pierre`, `lile-danticosti` et `metis-sur-mer` ont 0 lot cadastre :
-aucune valeur ne peut être calculée. Pour les autres, la jointure rôle ne
-franchit pas la garde d'overlap ou ne produit pas d'adresse source ; les nulls
-sont donc conservés.
+- `amos` : jointure exécutée, 2,52% de lots assignés et 0% de codes appariés aux normes; réenrichi, résultat 0% normes.
+- `amqui` : jointure 100% assignée, 99,64% de codes appariés; réenrichi, résultat 99,64% normes.
+- `ange-gardien` : jointure 84,76% assignée, 3,03% de codes appariés; réenrichi, résultat 2,57% normes.
+- `armagh` : jointure 100% assignée, 0,45% de codes appariés; réenrichi, résultat 0,45% normes.
+- `arundel` : jointure 97,17% assignée, 75,24% de codes appariés; réenrichi, résultat 73,11% normes.
+- `ascot-corner` : jointure 97,20% assignée, 20,20% de codes appariés; réenrichi, résultat 19,63% normes.
 
-Les résidus `surface_m2` sont ces mêmes six communes vides. Les six premiers
-résidus `code_postal` sont également vides. `pierreville` a été ré-enrichie :
-l'audit confirme 1 830 / 1 831 (99,95 %) ; le dernier lot reste null car le
-géocodage RTA/FSA source ne le couvre pas.
+### Code postal
 
-### Folded normes
+- `pierreville` : réenrichie avec l'index RTA/FSA; 1 830 / 1 831 lots restent renseignés (99,95%).
 
-Jointure `lot-zone-join-run.ts`, puis enrichissement avec rôle, pour :
+## Villes skippées ou résidus confirmés
 
-- `remigny`, `saint-eugene-de-ladriere`, `saint-gabriel-de-valcartier`,
-  `franquelin`, `bearn`, `mont-carmel`, `riviere-au-tonnerre`,
-  `lac-superieur`;
-- `ferme-neuve`, `val-dor`, `kingsbury`, `les-escoumins`, `duhamel`,
-  `temiscaming`, `leclercville`, `hatley-township-municipality`,
-  `belleterre`, `saint-roch-ouest`.
+- `amherst` : skip de `lot-zone-join-run.ts`, aucune couche de zones sous `normalized/ca-qc-zonage/`; les normes déposées ne peuvent donc pas être foldées dans les lots.
+- `franquelin` : rôle candidat `96015`, 22 lots appariés, sous le seuil 30.
+- `remigny` : rôle candidat `85105`, 1 lot apparié, sous le seuil 30.
+- `saint-eugene-de-ladriere` : rôle candidat `10075`, 4 lots appariés, sous le seuil 30.
+- `saint-felix-de-dalquier` : aucun `code_geo` candidat pour le slug.
+- `saint-gabriel-de-valcartier` : rôle candidat `22025`, 21 lots appariés, sous le seuil 30.
+- `saint-louis-de-gonzague-du-cap-tourmente` : rôle candidat `21015`, 1 lot apparié, sous le seuil 98.
+- `saint-pierre` : rôle candidat `61020`, 238 lots appariés, sous le seuil 639.
+- `amos`, `ange-gardien`, `armagh`, `arundel` et `ascot-corner` : normes déposées mais taux de correspondance codes zone↔normes sous 95%; c'est un résidu de la lane normes/couches zones, pas une valeur à déduire dans la lane lots.
+- `pierreville` : centroïde du seul lot résiduel hors couverture RTA/FSA; `code_postal` reste null.
 
-Les sorties de jointure confirment notamment : Ferme-Neuve 9 / 116,
-Val-d'Or 18 / 129, Kingsbury 161 / 165, Les Escoumins 1 / 165 et Duhamel
-57 / 218 lots avec normes. Les communes du premier lot ont produit des taux
-de correspondance norme-zone de 0 % lorsqu'ils ont été signalés par le runner
-(`remigny`, `saint-eugene-de-ladriere`, `saint-gabriel-de-valcartier`,
-`franquelin`, `bearn`) : aucune norme n'a été fabriquée.
+## Garde-fous appliqués
 
-## Villes skippées / reste
-
-- `aguanish`, `caniapiscau`, `cote-nord-du-golfe-du-saint-laurent`,
-  `havre-saint-pierre`, `lile-danticosti`, `metis-sur-mer` : données cadastre
-  vides, donc `surface_m2`, adresse et RTA ne sont pas calculables.
-- `pierreville` : un lot hors polygone RTA, `code_postal` laissé null.
-- Les 174 communes dont l'audit donne `normesStatus=to-research` et
-  `folded-normes<100` sont skippées : aucune norme déposée, donc elles relèvent
-  de la lane normes. La liste exacte est lue dans
-  `work/coverage/immo-lots.json` au moment de l'audit.
-- 630 communes `normesStatus=done` ont encore `folded-normes<100`. Elles ne
-  sont pas déclarées faites : la boucle doit continuer dans un prochain lot
-  borné, après cette exécution.
-
-## Garde appliquée
-
-Le runner confirme que `--no-role` désactive la jointure et écrit
-`adresse=null`. Cette option n'a pas été employée. Chaque valeur conservée
-provient donc d'une jointure rôle, géométrie ou RTA/FSA effectivement mesurée
-sur S3 ; aucune valeur n'a été inférée.
+- Vérification préalable de `lots-enriched-run.ts` : `--no-role` saute la jointure rôle foncier et force effectivement les adresses à null; cette option n'a jamais été employée.
+- Les champs absents de la source, les rôles non validés et les géocodages RTA absents restent nulls.
+- Les chiffres ci-dessus proviennent exclusivement des audits S3 `immo-lots-audit.ts`.
