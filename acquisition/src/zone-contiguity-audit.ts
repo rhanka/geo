@@ -36,9 +36,15 @@ const ROOT = resolve(HERE, "..", "..");
 const REPORT = join(ROOT, "work", "coverage", "zone-contiguity.json");
 const PREFIX = "normalized/ca-qc-zonage/";
 
-/** Zone-code prefixes whose scatter is legitimate (rural/agricultural land). */
-const AGRICULTURAL_PREFIXES = new Set([
-  "A", "AF", "AD", "AV", "AG", "AH", "AR", "F", "FA", "FO", "ZA", "AA", "AC", "REC", "CONS", "CN", "REC",
+/**
+ * Letter-tokens whose scatter is legitimate (rural/agricultural/forest/conservation land is
+ * genuinely spread across many parcels — NOT a dissolve bug). Matched against ANY letter run
+ * in the code, not just a leading prefix, so `35-A`, `EAF-1`, `2A` are all recognised as rural.
+ */
+const RURAL_TOKENS = new Set([
+  "A", "AF", "AD", "AV", "AG", "AH", "AR", "AA", "AC", "AP", "EAF", "EA", "EX",
+  "F", "FA", "FO", "FR", "RF", "ZA", "ZAD",
+  "REC", "CONS", "CN", "CO", "V", "VR", "VIL", "T", "RU", "RUR",
 ]);
 
 type ZoneGeometryStatus = "clean" | "suspect" | "dispersed";
@@ -67,9 +73,11 @@ function zonageKeys(slug: string): string[] {
   return [`${PREFIX}qc-zonage-${slug}.geojson`, `${PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`];
 }
 
-function prefixOf(zoneCode: string): string {
-  const m = /^([A-Za-z]+)/.exec(zoneCode.trim());
-  return (m ? m[1] : "").toUpperCase();
+/** True if ANY letter-run in the code is a rural/agricultural/forest/villégiature token. */
+function isRuralCode(zoneCode: string): boolean {
+  const runs = zoneCode.toUpperCase().match(/[A-Z]+/g) ?? [];
+  if (runs.length === 0) return false; // purely numeric code — cannot vouch, treat as urban
+  return runs.some((r) => RURAL_TOKENS.has(r));
 }
 
 /** Shoelace area (in deg², absolute) of a linear ring [[x,y],…]. */
@@ -139,7 +147,7 @@ function auditCity(slug: string, features: Feature[]): CityReport {
 
   const zoneMetrics: ZoneMetric[] = [];
   for (const z of perZone) {
-    const agricultural = AGRICULTURAL_PREFIXES.has(prefixOf(z.code));
+    const agricultural = isRuralCode(z.code);
     const centroids = z.rings.map(ringCentroid);
     let sliver = 0;
     for (const r of z.rings) if (ringArea(r) < sliverThreshold) sliver++;
