@@ -37,14 +37,28 @@ const REPORT = join(ROOT, "work", "coverage", "zone-contiguity.json");
 const PREFIX = "normalized/ca-qc-zonage/";
 
 /**
- * Letter-tokens whose scatter is legitimate (rural/agricultural/forest/conservation land is
- * genuinely spread across many parcels — NOT a dissolve bug). Matched against ANY letter run
- * in the code, not just a leading prefix, so `35-A`, `EAF-1`, `2A` are all recognised as rural.
+ * Letter-tokens whose scatter is legitimate — not just rural/agricultural/forest/conservation
+ * land (genuinely spread across many parcels), but any zone family that is SCATTERED BY DESIGN
+ * rather than by dissolve accident. Matched against ANY letter run in the code, not just a
+ * leading prefix, so `35-A`, `EAF-1`, `2A` are all recognised as rural.
+ *
+ * `P` (publique/institutionnelle) and `PI` (protection intégrale) were added after the
+ * 2026-07-18 zone-contiguity-verif triage (work/delegation-mass/zone-contiguity-verif-*.md):
+ * ascot-corner's P1 (6 parts, `kind:"institutional"`, `confidence:"contour-manual-gcp"` —
+ * a trustworthy source, not contour noise) and saint-andre-de-kamouraska's 2PI (17 parts,
+ * `usage_dominant:"environnemental"`, art. 3.2 codification verbatim "Pi — Protection
+ * intégrale") both read as REAL, parcel-scale, multi-site facilities on S3 — public/civic
+ * buildings (school, church, cemetery, fire hall, town hall…) and full-protection/conservation
+ * areas (wetlands, steep slopes, watercourse buffers) are inherently distributed across a
+ * municipality by administrative/ecological design, exactly like agricultural land. `CO`/`CONS`
+ * were already exempt for the conservation family; `PI` is the same family under a different
+ * municipal nomenclature (art. 3.2 legend: "Co Conservation; Pi Protection intégrale").
  */
 const RURAL_TOKENS = new Set([
   "A", "AF", "AD", "AV", "AG", "AH", "AR", "AA", "AC", "AP", "EAF", "EA", "EX",
   "F", "FA", "FO", "FR", "RF", "ZA", "ZAD",
   "REC", "CONS", "CN", "CO", "V", "VR", "VIL", "T", "RU", "RUR",
+  "P", "PI",
 ]);
 
 type ZoneGeometryStatus = "clean" | "suspect" | "dispersed";
