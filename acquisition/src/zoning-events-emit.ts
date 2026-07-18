@@ -115,12 +115,23 @@ export interface ZoningEvent {
   provenance: Provenance;
 }
 
-/** Collection-level envelope written whole-object, atomically, per slug (spec A2). */
+/**
+ * Collection-level envelope written whole-object, atomically, per slug (spec A2).
+ *
+ * It is ALSO a valid GeoJSON FeatureCollection so geo-api's OGC /items endpoint can
+ * serve it (geo-api lists any file it scans but returns "Unknown collection" on /items
+ * unless the object is a FeatureCollection with `features[]`). Each event is a Feature
+ * with null geometry (the event's spatial anchor is `zone_codes_resolus`, resolved
+ * against qc-zonage-<slug>, not carried here). immo reads the event from `.properties`;
+ * the flat `events[]` is kept as a convenience mirror for direct-S3 consumers.
+ */
 export interface ZoningEventsDocument {
+  type: "FeatureCollection";
   as_of: string;
   complete: boolean;
   muni: string;
   events: ZoningEvent[];
+  features: { type: "Feature"; geometry: null; properties: ZoningEvent }[];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -403,10 +414,12 @@ export async function serveZoningEvents(
   }
 
   const document: ZoningEventsDocument = {
+    type: "FeatureCollection",
     as_of: options.asOf,
     complete: options.complete,
     muni: slug,
     events,
+    features: events.map((event) => ({ type: "Feature", geometry: null, properties: event })),
   };
   const body = Buffer.from(JSON.stringify(document));
 
