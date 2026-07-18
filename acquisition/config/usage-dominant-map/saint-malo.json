@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "V": "residentiel",
+    "A": "agricole",
+    "F": "agricole",
+    "C": "environnemental",
+    "Ci": null,
+    "Rc": null,
+    "P": null
+  },
+  "source": "https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/St-Malo/STM_reg_zonage_grilles_specifications_admin_juin_2024.pdf",
+  "note": "Saint-Malo (MRC de Coaticook). La catégorie N'est PAS devinée à partir de la lettre: chaque zone du SIG municipal servi porte un attribut `DESCRIPTION` VERBATIM qui EST la fonction dominante de la zone (équivalent de la table « Abréviation / Fonction dominante » du règlement). Valeurs relevées VERBATIM par préfixe SIG servi (1 valeur distincte par préfixe, correspondance préfixe↔DESCRIPTION = 1:1): Ra « Résidentielle » -> residentiel; V « Villégiature » -> residentiel (habitations de villégiature, cf. précédents saint-raymond FV / saint-michel-de-bellechasse V); A « Agricole » et F « Forestière » -> agricole; C « Conservation » -> environnemental. Null explicite: Ci « Mixte (commerciale et industrielle) » et Rc « Mixte (résidentielle et commerciale) » sont des affectations DUALES; P « Publique » est publique — aucune dominante parmi les cinq n'y est forcée. Longest-prefix: Ci gagne sur C, Rc/Ra gagnent (aucune clé « R »). La matrice des usages permis de la grille des spécifications (Annexe C) n'est PAS utilisée; seule l'affectation SIG (DESCRIPTION) fait foi."
+}
