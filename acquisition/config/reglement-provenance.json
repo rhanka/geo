@@ -1576,11 +1576,11 @@
       "_note": "REFUTATION du HOLD precedent, dont la premisse centrale est FAUSSE. Le _note precedent concluait: «Recherche plein texte «zonage (no|num|#)|reglement (no|num|#)» = 0 match [...] Le «2021-02» de base n'est jamais ecrit seul dans le doc (il n'existe que dans le nom de fichier; le deduire d'un numero d'amendement est exclu par le gate) => null». Or la COUVERTURE (p1) de `work/zonage-norms/rawdon/grille.pdf` PORTE le numero de base, ecrit SEUL, verbatim: «RÈGLEMENT DE ZONAGE N° 2021-02» puis, en sous-titre, «ANNEXE 2 : Grilles des spécifications» (filigrane «VERSION ADMINISTRATIVE»). Le numero n'est donc PAS deduit du nom de fichier ni d'un amendement: il est lu dans le document. POURQUOI LE PLEIN-TEXTE A RENDU 0 MATCH: cette couverture est GRAPHIQUE — son texte n'est pas dans la couche texte (la sonde `_reglement-local-probe` rend NO-NUM-IN-ANY-PDF sur p1-6 alors que la page est parfaitement lisible en vision a $0). Un «0 match plein texte» sur un doc a couverture rendue est donc un FAUX NEGATIF, pas une preuve d'absence ([[normes-scan-nest-pas-grille]]: «TEXT-LAYER: 0» est AVEUGLE, rendre la page en image avant de conclure). PROPRIETAIRE OK et double: logo-cartouche officiel «Rawdon — Forte de sa diversité» sur la couverture + `_reglement-owner-gate` OWNER-OK (237 occurrences «Rawdon» dans la couche texte des grilles). COHERENCE: les amendements releves par le _note precedent («2021-02-05», «2021-02-8», «2021-02-11», «2021-02-03») sont tous des SUFFIXES de 2021-02 — ils corroborent que le reglement de base est bien 2021-02, au lieu de le contredire. MILLESIME null ASSUME: aucune date d'adoption/entree en vigueur verbatim dans ce doc (c'est l'annexe des grilles); le «2021» du numero n'est PAS retenu (piege stoneham: [[reglement-annee-du-numero-fausse]], `2007-08` adopte en 2008) et les dates des cases d'amendement (2024-2026) sont celles des MODIFIANTS. ETAPE (millesime seul): corps du 2021-02 ou avis d'entree en vigueur. Corpus LOCAL => url null."
     },
     "saint-ambroise-de-kildare": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET TOTAL: PDF = «ANNEXE - GRILLE DES USAGES» zones H1.. (148 p, texte natif OK, 254213 car.). Recherche plein texte = 0 occurrence de «reglement» ET 0 de «841» sur tout le document: l'annexe ne se rattache a AUCUN numero. Le «841-2023» n'existe que dans le nom de fichier (gate: jamais deduire de l'URL) => null."
+      "reglement_numero": "841-2023",
+      "reglement_millesime": 2024,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.saintambroise.ca/wp-content/uploads/2024/03/841-2023-REGLEMENT-DE-ZONAGE_VERSION_WEB_.pdf",
+      "_note": "CORPS (texte natif). Numero + proprietaire verbatim p1: «MUNICIPALITÉ DE SAINT-AMBROISE-DE-KILDARE / Règlement de zonage numéro 841-2023 / Règlement adopté le : 15 janvier 2024 / Entrée en vigueur le : 8 mars 2024». Millesime=2024 (adoption 15 janvier 2024). RE-QUALIFIE l'ancien HOLD-NULL «DOC MUET»: l'ANNEXE-grille lue avant (0 occurrence de «841») n'etait pas le corps; le corps nomme le règlement. Owner-OK."
     },
     "saint-anselme": {
       "reglement_numero": null,
@@ -1772,11 +1772,11 @@
       "_note": "p1 verbatim (page de titre): «Municipalite de SAINT-AIME-DU-LAC-DES-ILES / Reglement numero 330 / relatif au zonage»; confirme p2 «Table des matieres du reglement # 330 relatif au zonage». Millesime null: le doc ne date JAMAIS le 330 de base -- la liste p1 ne date que ses amendements («Reglement numero 330-1 Adopte le 9 septembre 2003 / Entre en vigueur le 24 novembre 2003» ... jusqu'a 330-11, 2014). Le 330 est donc anterieur a 2003, mais l'annee exacte n'est pas portee => null (la deduire serait une invention)."
     },
     "saint-aime": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. _source_url = «393-2023-annexeB-grilles-usages-normes.pdf» (Annexe B grilles). «393» = 0 occurrence verbatim (piege nom de fichier). Grille pure sans cartouche de base."
+      "reglement_numero": "393-2023",
+      "reglement_millesime": 2023,
+      "reglement_page_source": 1,
+      "reglement_url": "https://saintaime.qc.ca/pdf/urbanisme/393-2023-reglement-zonage.pdf",
+      "_note": "CORPS (texte natif). Numero + proprietaire verbatim: p1 «Règlement no. 393-2023 / Règlement de zonage / Saint-Aimé», p2 «Municipalité de Saint-Aimé ... Règlement numéro 393-2023 ... 9 mars 2023 ... 26 avril 2023». Millesime=2023 (adoption 9 mars 2023). RE-QUALIFIE l'ancien HOLD-NULL (l'annexe grille «393-2023-annexeB» ne portait pas 393 verbatim; le corps l'affiche). Owner-OK."
     },
     "saint-georges": {
       "reglement_numero": "150-2005",
@@ -1996,11 +1996,11 @@
       "_note": "REFUTATION du null precedent, qui etait une CIBLE: «LIEN MORT: le source_url du manifest «...20240517-Annexe-3-Grilles-zonage.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1).» — la re-decouverte a ete faite a $0 par l'API REST WordPress (1942 medias): le fichier mort a simplement ete RENOMME («20240517-Annexe-3-LAnge-Gardien-Grilles-de-zonage-finale.pdf»), et le portail publie en prime le CORPS, jamais lu. NUMERO verbatim p1 (cartouche): «MUNICIPALITE DE L'ANGE-GARDIEN / REGLEMENT DE ZONAGE / REGLEMENT NUMERO 2025-008». MILLESIME verbatim p1: «ENTRE EN VIGUEUR LE 23 mai 2025» => 2025. NB: la clause de titre («Le present reglement est intitule « Reglement de zonage ».») ne numerote PAS le reglement; le numero vient du cartouche. Ce n'est PAS un projet: le portail publie aussi «Reglement-de-zonage_Deuxieme-projet.pdf» (mars 2025), document DISTINCT et ecarte; celui retenu porte la mention d'entree en vigueur. GATE HOMONYME (il existe deux L'Ange-Gardien au QC: MRC Les Collines-de-l'Outaouais et MRC La Cote-de-Beaupre): le DOCUMENT ne discrimine pas — il ne nomme ni MRC ni toponyme — donc le gate est leve par le PORTAIL et non par le doc, a dire honnetement: municipalitedelangegardien.com est le hostname que le manifest attribue deja a ce slug (le source_url mort en venait), et il publie «MRC des Collines», «Defi des Collines sans tondeuse», «AFF_11x17_Collinessanstondeuse_Les Collines» => c'est bien L'Ange-Gardien des Collines-de-l'Outaouais. Preuve indirecte mais concordante; si un doute surgit, le point faible est ici."
     },
     "lisle-aux-coudres": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://www.municipaliteiac.ca/lile-aux-coudres-grille-des-usages.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "2022-15",
+      "reglement_millesime": 2024,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.municipaliteiac.ca/fichiersUpload/fichiers/20250604132028-iac-reg-2022-15-zonage-grilles-eev29052025.pdf",
+      "_note": "CORPS (texte natif). Numero + proprietaire verbatim p1: «Municipalité de L'Isle-aux-Coudres / RÈGLEMENT DE ZONAGE No 2022-15 / Adoption du règlement : 15 janvier 2024 / Entrée en vigueur : 20 février 2024». Millesime=2024 (adoption). RE-QUALIFIE l'ancien HOLD-NULL (grille «lile-aux-coudres-grille-des-usages» sans numero). Owner-OK."
     },
     "mille-isles": {
       "reglement_numero": "RU.02.2011",
@@ -2381,11 +2381,11 @@
       "_note": "HOLD null — OWNER MISMATCH (contamination homonyme). Le _source_url servi sous ce slug (sfxb.qc.ca/.../Reglement_zonage_2010-116_maj-2020-02.pdf, 204 p) est le RÈGLEMENT DE ZONAGE #2010-116 de la MUNICIPALITE DE SAINT-FRANÇOIS-XAVIER-DE-BROMPTON (MRC Le Val-Saint-François), PAS de Saint-François-du-Lac (MRC Nicolet-Yamaska). Verbatim couverture p1: «RÈGLEMENT DE ZONAGE #2010-116 / MUNICIPALITE DE SAINT‐FRANÇOIS‐XAVIER‐DE‐BROMPTON» et en-tete de chaque page «RÈGLEMENT DE ZONAGE NUMÉRO 2010-116». OWNER-CHECK: 0 occurrence de «du-Lac» dans le doc, «XAVIER-DE-BROMPTON» present. => NE PAS stamper 2010-116 sur saint-francois-du-lac. 2010-116 est un GAIN pour le slug saint-francois-xavier-de-brompton (autre agent)."
     },
     "saint-gabriel-de-brandon": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le PDF local (80 pages) ne NOMME NI son reglement NI sa municipalite: gate proprietaire OWNER-ABSENT (nom-complet=0, jeton «gabriel»=0) et FIND-0 sur «règlement (de zonage) numéro N» dans le plein texte. Defaut de DECOUVERTE."
+      "reglement_numero": "620-1",
+      "reglement_millesime": 2026,
+      "reglement_page_source": 1,
+      "reglement_url": "https://saintgabrieldebrandon.com/storage/app/media/municipalite/R%C3%A8glements/R%C3%A8glement%20620-1%20-%20Zonage.pdf",
+      "_note": "CORPS refonte (texte natif). Numero + proprietaire verbatim p1: «MRC D'AUTRAY / MUNICIPALITÉ DE SAINT-GABRIEL-DE-BRANDON / Règlement de zonage numéro 620-1 / Règlement adopté le : 12 janvier 2026 / Entrée en vigueur le : 26 janvier 2026». Refonte EN VIGUEUR (dep. 26 jan 2026) remplaçant l'ancien règlement 297. Millesime=2026. Spot-vérifié par le conducteur. RE-QUALIFIE l'ancien HOLD-NULL (l'ancien PDF local 80 p ne nommait ni muni ni numero). Owner-OK."
     },
     "saint-gilles": {
       "reglement_numero": "363-08",
@@ -2535,11 +2535,11 @@
       "_note": "CORPS (texte natif OK). Numero + proprietaire verbatim p1-2: «PROVINCE DE QUÉBEC / MRC DE JOLIETTE / MUNICIPALITÉ DE SAINT-PAUL / Règlement de zonage numéro 606-2023» (OWNER-OK: Saint-Paul, MRC de Joliette/Lanaudière — pas Baie-Saint-Paul ni St-Paul-d'Abbotsford). Millesime=2023 verbatim «Règlement adopté le : 20 mars 2023 / Entrée en vigueur le : 27 avril 2023». Les 606-01-2023...606-08-2026 (table «règlements d'amendement») sont les AMENDEMENTS. Re-qualifie l'ancien HOLD-NULL. url = codification live saintpaul.quebec (l'ancienne URL 606-07-2024 est 404)."
     },
     "saint-mathias-sur-richelieu": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Cahier de grilles SANS numero, meme gabarit que saint-damien / sainte-lucie-des-laurentides: p1 «GRILLE DES SPÉCIFICATIONS / Annexe 2 du Règlement de zonage / Zone A-1 / Municipalité de Saint-Mathias-sur-Richelieu» — «Annexe 2 du Règlement de zonage» = faux positif de motif (nomme sans numeroter). FIND-0 sur «règlement (de zonage) numéro N» dans les 88 pages. Gate proprietaire OWNER-OK (nom-complet=86). Defaut de DECOUVERTE: il manque le corps."
+      "reglement_numero": "1026",
+      "reglement_millesime": 2024,
+      "reglement_page_source": 1,
+      "reglement_url": "https://irp.cdn-website.com/391cee6d/files/uploaded/R%C3%A8glement+1026+-+Zonage+%28codifi%C3%A9%29.pdf",
+      "_note": "CORPS codifié (mars 2024, texte natif). Numero + proprietaire verbatim p1: «PROVINCE DE QUÉBEC / MUNICIPALITÉ DE SAINT-MATHIAS-SUR-RICHELIEU / RÈGLEMENT Nº 1026 / RÈGLEMENT DE ZONAGE» avec «AVIS DE MOTION 11 MARS 2024 / ADOPTION 10 JUIN 2024 / ENTRÉE EN VIGUEUR 3 SEPTEMBRE 2024» (OWNER-OK). Millesime=2024 (adoption verbatim 10 juin 2024). Les 1037/1059 de la table «Modifications au règlement» sont les AMENDEMENTS. Lu par le conducteur. Re-qualifie l'ancien HOLD-NULL (grille servie sans numero)."
     },
     "saint-severin--beauce-centre": {
       "reglement_numero": null,
@@ -2549,11 +2549,11 @@
       "_note": "DOC MUET (type boisbriand: date sans numero): PDF = «Annexe B [...] / Grille des spécifications des usages» (2 p, texte natif OK), en-tete p1 verbatim «Annexe B Adopté à Saint-Séverin, ce 2 jour de mai 2022». L'annexe porte donc une DATE d'adoption (2 mai 2022) mais AUCUN numero de reglement (0 motif). Le gate exige le numero: une date seule ne suffit pas => null."
     },
     "saint-thomas": {
-      "reglement_numero": null,
+      "reglement_numero": "2021-05",
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Cahier de grilles SANS numero: p1 «Saint-Thomas / Grilles des usages et des normes» + «Règlement de zonage - ANNEXE \"B\"» — le renvoi «Règlement de zonage - ANNEXE B» nomme le reglement sans le NUMEROTER (faux positif de motif). FIND-0 sur «règlement (de zonage) numéro N» dans les 62 pages. Gate proprietaire OWNER-OK (nom-complet=62). Defaut de DECOUVERTE: il manque le corps."
+      "reglement_url": "https://www.saintthomas.qc.ca/storage/app/media/uploaded-files/2021-05.05%20-%20modif.%20zonage%20-%20cr%C3%A9ation%20de%20la%20zone%20C-04.1.pdf",
+      "_note": "Base lue VERBATIM dans l'AMENDEMENT adopté 2021-05.05 (Municipalité de Saint-Thomas): «Le plan de zonage en annexe A du Règlement de zonage 2021-05, est modifié» et «L'article 209 du Règlement de zonage 2021-05». Le corps publié en ligne est un PROJET à placeholder «Règlement de zonage numéro 2021-xx». Les 2021-05.NN sont les AMENDEMENTS. Millesime=null (aucune date d'adoption verbatim de la base 2021-05). Même schéma que repentigny 438 (base lue dans un amendement adopté). RE-QUALIFIE l'ancien HOLD-NULL (cahier grille «ANNEXE B» sans numero). Owner-OK."
     },
     "saint-damien-de-buckland": {
       "reglement_numero": "09-2022",
@@ -2591,11 +2591,11 @@
       "_note": "RE-QUALIFIE (le _note precedent «DOC MUET ... L'annexe se declare annexe DU reglement de zonage mais ne le NUMEROTE nulle part» est REFUTE: le verdict a ete rendu sur le MAUVAIS des deux PDF locaux — `grille-specifications-officielle.pdf` (95 p) EST bien l'annexe muette decrite, mais `grille.pdf` (383 p) est le CORPS du reglement et porte le numero). Numero verbatim p1 (couverture): «Règlement de zonage / n° 722-2023 / (VERSION ADMINISTRATIVE CODIFIÉE)», p2 «RÈGLEMENT DE ZONAGE N° 722-2023 / MUNICIPALITÉ DE SAINT-CALIXTE», p3 «PROVINCE DE QUÉBEC / MUNICIPALITÉ DE SAINT-CALIXTE / RÈGLEMENT Nº 722-2023 / RÈGLEMENT DE ZONAGE». Coherence interne: art. 1.1.2 «Le présent règlement abroge le règlement n° 345-A-88, intitulé « Règlement de zonage »» (345-A-88 = l'ancien, ECARTE). Gate proprietaire: 394 occurrences, toutes «Saint-Calixte» = le slug. Millesime = ADOPTION verbatim p3: «AVIS DE MOTION : 13 FÉVIRER 2023 [sic] / ADOPTION : 17 AVRIL 2023 / ADOPTION AVEC MODIFICATION : 10 JUILLET 2023 / ENTRÉE EN VIGUEUR : 16 AOÛT 2023» => 2023 (toutes les etapes tombent en 2023, aucune ambiguite). URL null: le source_url du manifest est opaque (679110f34217c622473876.pdf) et pointe l'annexe, pas le corps."
     },
     "saint-christophe-darthabaska": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET (type montreal-ouest / saint-calixte, meme gabarit): PDF = «Annexe 2 du Règlement de zonage   Zone P-1» (76 p, texte natif OK). Recherche plein texte «règlement de zonage[^,;.]{0,35}» = uniquement «règlement de zonage» / «Règlement de zonage», jamais suivi d'un numero. Le nom de fichier «20260515091835-annexe-2-grilles-des-specifications.pdf» ne porte aucun numero non plus => null."
+      "reglement_numero": "003-2013",
+      "reglement_millesime": 2013,
+      "reglement_page_source": 3,
+      "reglement_url": "https://www.saint-christophe-darthabaska.ca/fichiersUpload/fichiers/20230526102724-reglement-003-3013-zonage-amendements-102-2023-et-ant.pdf",
+      "_note": "CORPS (codification 2023 intégrant les amendements, texte natif). Numero + proprietaire verbatim p3: «PROVINCE DE QUÉBEC / RÈGLEMENT NUMÉRO 003-2013 / MUNICIPALITÉ DE SAINT-CHRISTOPHE-D'ARTHABASKA / RÈGLEMENT DE ZONAGE / ADOPTION : 4 mars 2013 / ENTRÉE EN VIGUEUR : 23 avril 2013». Millesime=2013. RE-QUALIFIE l'ancien HOLD-NULL. Owner-OK. (NB: le nom de fichier porte une coquille «003-3013»; le doc dit 003-2013.)"
     },
     "saint-cyrille-de-wendover": {
       "reglement_numero": "437",
@@ -2829,11 +2829,11 @@
       "_note": "ANTI-INVENTION => null. _source_url = «601-18.-Annexe-3-juillet-2025.pdf» (Annexe 3, grilles par zone, en-tete «Ville de Shannon Zone H-2»). «601-18» = 0 occurrence verbatim (piege nom de fichier). Base non porte par l'annexe."
     },
     "stanbridge-east": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. _source_url = «399-2011- Annexe B - Grilles des usages et des normes 27-01-16.pdf» (annexe B seule, cartouche «Annexe B»). Le base «399-2011» n'apparait PAS verbatim; seules des cellules citent l'AMENDEMENT «399-2011-3» (=3e modif du base) et «399-11-2». Regle: pas un numero d'amendement isole, et le base 399-2011 = deduit du nom de fichier + de l'amendement => refuse. Corps requis pour confirmer 399-2011 verbatim."
+      "reglement_numero": "399-2011",
+      "reglement_millesime": 2011,
+      "reglement_page_source": 1,
+      "reglement_url": "https://stanbridgeeast.ca/fichiers_edition/file/pdf_fr/399-2011%20-%20Reglement%20de%20zonage%20%2013-02-2017.pdf",
+      "_note": "CORPS (codification 2017, texte natif). Numero + proprietaire verbatim p1: «Municipalité de Stanbridge East / Règlement de zonage numéro 399-2011»; tableau «399-2011 Règlement de zonage 20 septembre 2011». Millesime=2011. RE-QUALIFIE l'ancien HOLD-NULL: la _note precedente lisait l'ANNEXE B seule (base 399-2011 absente verbatim, seuls les amendements 399-2011-3 y figuraient); le CORPS confirme la base. Owner-OK."
     },
     "temiscouata-sur-le-lac": {
       "reglement_numero": null,
@@ -2843,11 +2843,11 @@
       "_note": "HOLD null — le seul doc connu (_source_url vplus: Rg 329-24 (Projet) - ZONAGE (REFONTE).pdf, 247 p) est un PROJET, pas un reglement OFFICIEL adopte. Verbatim couverture p1: «VILLE DE TÉMISCOUATA-SUR-LE-LAC / RÈGLEMENT NUMÉRO 329-24 / (Projet) / ZONAGE», preambule «ATTENDU QUE le Conseil peut adopter un projet de règlement de zonage...» et «...que le projet de règlement 329-24 soit adopté et qu'il soit statué et décrété...» (dispositif au conditionnel). En-tete de chaque page «Règlement de zonage numéro 329-24». Gate viole: numero OFFICIEL requis + millesime coherent — un projet n'a pas de date d'adoption. NE PAS stamper 329-24 tant que la version ADOPTEE (numero/date fermes) n'est pas lue."
     },
     "tingwick": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. _source_url = «2010-311-grilles-usages-normes.pdf», en-tete «MUNICIPALITÉ DE TINGWICK / Règlement de zonage» SANS numero. «2010-311» / «311» = 0 occurrence verbatim (piege nom de fichier); le doc ne date que des usages adoptes par amendement (ex «Garde de poules (adopté le 3 octobre 2016)»). Base non porte par l'annexe."
+      "reglement_numero": "2010-311",
+      "reglement_millesime": 2010,
+      "reglement_page_source": 3,
+      "reglement_url": "https://www.tingwick.ca/fichiersUpload/fichiers/20240927142317-2023-zonage-2010-311.pdf",
+      "_note": "CORPS (codification 2023, texte natif). Numero verbatim: «Règlement de zonage n°2010-311» et «RÈGLEMENT NUMÉRO : 2010-311», en-tête «Municipalité de Tingwick / Règlement de zonage», date «12 juillet 2010». Millesime=2010. Spot-vérifié par le conducteur. RE-QUALIFIE l'ancien HOLD-NULL: la _note precedente («2010-311 = 0 occurrence verbatim») lisait l'ANNEXE grille (qui ne portait pas le numero); le CORPS l'affiche. Owner-OK."
     },
     "val-des-sources": {
       "reglement_numero": "2006-116",
@@ -3193,11 +3193,11 @@
       "_note": "ANTI-INVENTION => null. _source_url (gestionweblex handler document.ashx) sert 2 pages = «Grille des spécifications des usages (1 de 2 / 2 de 2)». Pied de chaque page: «MUNICIPALITÉ DE TRING-JONCTION / RÈGLEMENT DE ZONAGE / PAGE B-I» — SANS numero (le mot «Règlement de zonage» = faux positif de motif). Base non lisible (annexe grilles seule)."
     },
     "val-des-monts": {
-      "reglement_numero": null,
+      "reglement_numero": "436-99",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "DOC MUET (faux positif «Numero» type sainte-melanie): PDF = «Reglement de zonage - ANNEXE B / Grilles des specifications» (120 p, texte natif OK). L'en-tete de chaque page porte «Numero de zone : 45» -- le seul «Numero» est celui de la ZONE; l'annexe ne numerote jamais son reglement de zonage. ECARTE «940-24»: c'est le LOTISSEMENT, lu p1 verbatim «Les dimensions des lots sont identifiees au reglement de lotissement 940-24» (le zonage, lui, n'est nomme nulle part) => null."
+      "reglement_page_source": 1,
+      "reglement_url": "https://valdesmonts-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2024/04/436-99-ca-v34-23-08-22.pdf",
+      "_note": "COMPILATION ADMINISTRATIVE (texte natif). Numero + proprietaire verbatim (pied de page): «RÈGLEMENT DE ZONAGE NO : 436-99   COMPILATION ADMINISTRATIVE (V34-23-08-22) / Municipalité de Val-des-Monts». Millesime=null (aucune date d'adoption/EEV verbatim en p1-3 de la compilation). RE-QUALIFIE l'ancien HOLD-NULL. Owner-OK."
     },
     "val-dor": {
       "reglement_numero": null,
@@ -5311,7 +5311,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-patrice-de-beaurivage: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-patrice-de-beaurivage/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+      "_note": "ANTI-INVENTION => null (DOC ≠ ZONAGE MUNICIPAL). Note précédente «HTTP 404 / aucun PDF local» PÉRIMÉE par dépôt amont: la lane normes a déposé work/zonage-norms/saint-patrice-de-beaurivage/grille.pdf (9 p, texte natif). Le doc porte en en-tête répété (p2-9) «RÈGLEMENT NUMÉRO 324-2022», MAIS son OBJET verbatim p1/p2 est «RÈGLEMENT NUMÉRO 324-2022 / MODIFICATIONS DE ZONES D'AMÉNAGEMENT PRIORITAIRE ET DES LIMITES DU PÉRIMÈTRE URBAIN DE SAINT-PATRICE-DE-BEAURIVAGE», cartouche «MRC de Lotbinière – 18 mai 2022», «ATTENDU QUE la MRC de Lotbinière a adopté son SADR en février 2005 (règlement 172-2005) et qu'il est entré en vigueur le 22 juin 2005». 324-2022 est donc un règlement de CONCORDANCE au schéma d'aménagement (SADR) de la MRC de Lotbinière — PAS le règlement de zonage de la municipalité — ÉCARTÉ. 172-2005 est le SADR de la MRC (tiers). Le zonage municipal (nom/numéro) n'est nommé NULLE PART dans ce doc. => pas de stamp. Défaut de DÉCOUVERTE (il manque le corps du zonage municipal)."
     },
     "saint-philippe-de-neri": {
       "reglement_numero": "160",
@@ -5920,7 +5920,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. NO-GRILLE (absent du manifest) ET aucun PDF local (NO-LOCAL-DOC dans work/zonage-norms/saint-casimir/). Rien à lire à $0. Défaut de DÉCOUVERTE."
+      "_note": "ANTI-INVENTION => null (NUMÉRO BLANKI). Note précédente «NO-LOCAL-DOC / rien à lire» PÉRIMÉE par dépôt amont: la lane normes a déposé work/zonage-norms/saint-casimir/grille.pdf (345 p, corps codifié natif, gabarit MRC DE PORTNEUF, cover verbatim «Réalisation : Mars 2015»). Le CORPS existe mais son numéro n'est PAS porté: page-titre verbatim «RÈGLEMENT DE ZONAGE NUMÉRO ______» et «Adopté le 9 mars 2015 par la résolution numéro ____________» (placeholders jamais remplis); pied de page «Règlement de zonage ... MRC DE PORTNEUF» sans numéro (p5-17). Millésime lisible verbatim p4: «Adoption du projet de règlement le : 8 décembre 2014 / Règlement adopté le : 9 mars 2015». La liste p2 donne 20 AMENDEMENTS (n°1 «144-2015, adopté le 8 février 2016» ... n°20 «237-2025, adopté le 10 mars 2025»); le PLUS BAS (144-2015) POSTdate la base (9 mars 2015), donc la base n'est aucun d'eux. Owner-gate NON CONFIRMÉ: «Saint-Casimir» n'est nommé NULLE PART (cover/p1-30/annexe II = 0). => pas de stamp (ni numéro verbatim, ni preuve muni). Gabarit Portneuf identique à deschambault=125-11 / donnacona=V-539 / saint-alban=URB-05, mais ici le champ numéro est VIDE. ÉTAPE = source externe nommant «règlement de zonage numéro X de Saint-Casimir»."
     }
   }
 }
