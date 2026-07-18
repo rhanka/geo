@@ -1,16 +1,16 @@
 {
   "$comment": "Fleet de supervision geo — DATA, pas du code. Change les shards ici (ou via --lane <name>=<n>), jamais dans un script. Piloté par acquisition/src/geo-fleet.ts. 2026-07-17: rééquilibrage vers les DONNÉES COMPLÉMENTAIRES immo (reglement/usage_dominant/immo-lots), qui n'avaient AUCUNE lane alors que la couverture en avait 8. engineFallback = engine de repli quand la lane bute sur une limite de dépense/quota.",
   "$comment2": "2026-07-17c: RE-BASCULE codex->claude. Le compte Codex a tape sa limite d'usage hebdo (compte-entier, reset 2026-07-24): 5.5+5.3+terra tournaient A VIDE -> reglement/usage/effet stalles. Nouveau compte Claude. Fallback->codex pour quand le quota Codex revient.",
-  "$comment3": "2026-07-18: quota Codex REVENU -> re-bascule claude->codex (economise credits Claude) + ELARGISSEMENT shards (bombardement, le principal veut progresser TOUTES les lanes). Fallback->claude si Codex re-bute.",
+  "$comment3": "2026-07-18: quota Codex revenu -> codex, mais plafond explicite du principal = 10 shards TOTAUX. Repartition: reglement=2, usage=2, immo=1, 4a=2, normes=2, recalage=1. Fallback->claude si Codex re-bute.",
   "engine": "codex",
   "engineFallback": "claude",
   "lanes": [
-    { "name": "geo-reglement", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/reglement-provenance-base.txt", "shards": 3, "note": "P0_1 Steve: reglement_numero 79/830. Gisement = 483 grilles avec URL source mais sans numéro extrait. Lecture PDF -> registre curé -> fold --all." },
-    { "name": "geo-usage-dom", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/usage-dominant-base.txt", "shards": 3, "note": "usage_dominant 8/830. Lecture de la légende des préfixes du règlement -> config prefix_map -> fold. null explicite sur zone duale/publique." },
+    { "name": "geo-reglement", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/reglement-provenance-base.txt", "shards": 2, "note": "P0_1 Steve: reglement_numero 79/830. Gisement = 483 grilles avec URL source mais sans numéro extrait. Lecture PDF -> registre curé -> fold --all." },
+    { "name": "geo-usage-dom", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/usage-dominant-base.txt", "shards": 2, "note": "usage_dominant 8/830. Lecture de la légende des préfixes du règlement -> config prefix_map -> fold. null explicite sur zone duale/publique." },
     { "name": "geo-immo-lots", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/immo-lots-fields-base.txt", "shards": 1, "note": "WP9: adresse 2% (cause = --enrich-no-role qui null l'adresse) + folded-normes 3%. Le rôle est servi à 100%, aucune acquisition." },
-    { "name": "geo-4a", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/effet-densifiant-4a-base.txt", "shards": 3, "note": "effet_densifiant 4/860 = critère CENTRAL Steve, N'AVAIT AUCUNE LANE (les 4 faits main). Grind le diff avant/apres sur les ~24 focus villes restantes; verrou fold = filet anti-invention. Plus petit par nature (exige un changement de zonage + 2 grilles)." },
-    { "name": "geo-nm", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 3, "note": "broad normes 733/1106 — goulot = découverte de sources; extraction Mistral. Réduit de 5 à 2: la couverture ne doit plus manger toute la flotte." },
-    { "name": "geo-zn-recal", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 2, "note": "broad zones 830/1106; lever PDF épuisé (cf mémoire), gisement = SIG/JMap." }
+    { "name": "geo-4a", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/effet-densifiant-4a-base.txt", "shards": 2, "note": "effet_densifiant 4/860 = critère CENTRAL Steve, N'AVAIT AUCUNE LANE (les 4 faits main). Grind le diff avant/apres sur les ~24 focus villes restantes; verrou fold = filet anti-invention. Plus petit par nature (exige un changement de zonage + 2 grilles)." },
+    { "name": "geo-nm", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/normes-mistral-base.txt", "shards": 2, "note": "broad normes 733/1106 — goulot = découverte de sources; extraction Mistral. Réduit de 5 à 2: la couverture ne doit plus manger toute la flotte." },
+    { "name": "geo-zn-recal", "engine": "codex", "prompt": "work/delegation-mass/agent-prompts/zones-recalage-base.txt", "shards": 1, "note": "broad zones 830/1106; lever PDF épuisé (cf mémoire), gisement = SIG/JMap." }
   ],
   "singletons": [],
   "backfill": {
