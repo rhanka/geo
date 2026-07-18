@@ -226,11 +226,11 @@
       "_note": "ANTI-INVENTION => null. Le doc local (grille-original.pdf, 550 p) est un recueil de grilles nues: p1 = «#A) Zones agricoles « A-1 » / GRILLE DE SPECIFICATIONS / ZONE A-1 / Numéro de colonne...». Aucun numero de reglement, ni en entete, ni en pied, ni en note, sur toute l'etendue sondee. Defaut de DECOUVERTE (il manque le corps du reglement), pas d'extraction."
     },
     "drummondville": {
-      "reglement_numero": null,
+      "reglement_numero": "4300",
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local (16 p) est un extrait de grilles: p1 = «ZONE : H-0005 / GRILLE DES USAGES ET DES NORMES». Aucun numero de reglement nulle part. Defaut de DECOUVERTE (il manque le corps)."
+      "reglement_url": "https://www.drummondville.ca/citoyens/reglements-municipaux/reglements-durbanisme/4300-zonage/",
+      "_note": "CORPS multi-chapitres (texte natif OK). Numero + proprietaire verbatim en en-tete de CHAQUE page de chaque chapitre: «Ville de Drummondville / Règlement de zonage No 4300» (OWNER-OK). Note de codification p bas: «version administrative ... intégrées les modifications ... depuis son adoption jusqu'au 11 avril 2025 inclusivement». MILLESIME null: la date d'ADOPTION de la base 4300 n'est pas lue verbatim (les cellules citent des amendements 4462-1/2014.02.05, 4707-1/2016.05.11, 5159/2020.03.11... = base anterieure a 2014, mais millesime exact non verbatim). Re-qualifie l'ancien HOLD-NULL (grille sans numero). url = page officielle du reglement 4300."
     },
     "sorel-tracy": {
       "reglement_numero": "2222",
@@ -2290,11 +2290,11 @@
       "_note": "REFUTE la _note precedente («ANTI-INVENTION => null ... le 476 du nom de fichier est ABSENT du PLEIN TEXTE du doc local (2 pages, FIND-0) ... Defaut de DECOUVERTE: il manque le corps»): elle avait raison de refuser de deduire 476 de l'URL sur la seule foi de la GRILLE (2 p), et elle nommait elle-meme sa voie — le corps MANQUAIT. Le corps EXISTE et confirme le candidat par lecture directe. CORPS codifie (263 p, natif) decouvert via l'API REST WordPress (www.saint-fabien.ca/wp-json/wp/v2/media, x-wp-total=2433). Numero + proprietaire verbatim p1: «Municipalité de Saint-Fabien / Règlement de zonage / Règlement no 476 / Version codifiée», repris p2 «QUÉBEC / MUNICIPALITÉ DE SAINT-FABIEN / RÈGLEMENT NUMÉRO 476 / RÈGLEMENT DE ZONAGE» et en entete de chaque page «Règlement de zonage no 476». MILLESIME 2014 = dates verbatim p2: «AVIS DE MOTION : 7 AVRIL 2014 / ADOPTION : 2 JUIN 2014 / ENTRÉE EN VIGUEUR : 5 SEPTEMBRE 2014». 476 est bien la BASE: la table p2 «Modifications incluses dans ce document» liste #494-16 (16 aout 2016) etc., et les amendements freres publies s'intitulent tous «modifiant le règlement de zonage 476 pour la municipalité de Saint-Fabien» (578-R, 579-R, 585-P1/P2, 573-R, 568-R). ⛔ PIEGE D'URL NFD: le source_url rendu par l'API porte un «é» DECOMPOSE (e + U+0301); l'encoder en NFC (%C3%A9) rend 404, il faut %CC%81 — meme famille que le piege de TIRET de boucherville."
     },
     "saint-felicien": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le _source_url (ville.stfelicien.qc.ca/.../cahier_des_specifications_accompagnant_le_reglement_de_zonage_18-943_2022-07-14.pdf, 235 p) est le CAHIER de notes + grilles, PAS le corps. Le numero du nom de fichier «18-943» est un PIEGE URL: 0 occurrence verbatim de «18-943» sur les 235 p. Le doc ne cite que des AMENDEMENTS verbatim dans les cellules: «2019-04-15 18-969», «2019-01-16 18-965», «Règlement 18-967 (2019-02-15)», «Règlement 18-950» (usages conditionnels), «#16-896» (PPCMOI) — jamais le base 18-943. Base non deposable sans le corps (defaut de DECOUVERTE)."
+      "reglement_numero": "18-943",
+      "reglement_millesime": 2018,
+      "reglement_page_source": 1,
+      "reglement_url": "https://ville.stfelicien.qc.ca/app/uploads/2025/09/regl_18-943_zonage_maj_2025-02-17.pdf",
+      "_note": "CORPS (codification administrative, texte natif OK). Numero verbatim page-titre: «RÈGLEMENT DE ZONAGE / Numéro 18-943» et «codification administrative du Règlement de zonage numéro 18-943 adopté par le conseil municipal de la Ville de Saint-Félicien» (OWNER-OK: Ville de Saint-Félicien nommée). Millesime=2018 (couverture verbatim «Règlement 18-943 / Mars 2018»). Re-qualifie l'ancien HOLD-NULL: le _source_url servi (cahier des specifications) ne portait pas le numero verbatim; le CORPS lui l'affiche. URL=corps live stfelicien.qc.ca."
     },
     "saint-flavien": {
       "reglement_numero": null,
@@ -2528,11 +2528,11 @@
       "_note": "RE-QUALIFICATION d'un HOLD-NULL. Numero + proprietaire verbatim couverture p1: «RÈGLEMENT DE ZONAGE NUMÉRO 197 / DE LA MUNICIPALITÉ DE / SAINT-THARCISIUS / MODIFIÉ PAR :» (liste jusqu'a «RÈGLEMENT 437-2022») — 197 = BASE. Gate proprietaire: nom-complet=204, «Saint-Tharcisius décrète le présent règlement». MILLESIME null ASSUME: FIND-0 sur «adopté à|adopté le <date>|en vigueur le <date>» dans les 208 pages du PLEIN TEXTE. Corpus LOCAL (manifest = domaine nu mrcmatapedia.qc.ca) => url null."
     },
     "saint-paul": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
+      "reglement_numero": "606-2023",
+      "reglement_millesime": 2023,
+      "reglement_page_source": 2,
+      "reglement_url": "https://saintpaul.quebec/storage/app/media/services/urbanisme/reglements-durbanisme/606-08-2026-reglement-de-zonage.pdf",
+      "_note": "CORPS (texte natif OK). Numero + proprietaire verbatim p1-2: «PROVINCE DE QUÉBEC / MRC DE JOLIETTE / MUNICIPALITÉ DE SAINT-PAUL / Règlement de zonage numéro 606-2023» (OWNER-OK: Saint-Paul, MRC de Joliette/Lanaudière — pas Baie-Saint-Paul ni St-Paul-d'Abbotsford). Millesime=2023 verbatim «Règlement adopté le : 20 mars 2023 / Entrée en vigueur le : 27 avril 2023». Les 606-01-2023...606-08-2026 (table «règlements d'amendement») sont les AMENDEMENTS. Re-qualifie l'ancien HOLD-NULL. url = codification live saintpaul.quebec (l'ancienne URL 606-07-2024 est 404)."
     },
     "saint-mathias-sur-richelieu": {
       "reglement_numero": null,
@@ -2696,11 +2696,11 @@
       "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
     },
     "sainte-sophie": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "AUCUNE SOURCE (type baie-trinite): le source_url du manifest vaut litteralement «https://non-disponible» (grille deposee sans URL). Aucun document a lire => null."
+      "reglement_numero": "1297-2020",
+      "reglement_millesime": 2020,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.stesophie.ca/storage/app/media/services/amenagement-et-urbanisme/reglements-durbanisme/zonage-et-annexes/ss-reglement-zonage-ev-2020-09-16.pdf",
+      "_note": "CORPS (codification administrative, texte natif OK). Numero + proprietaire verbatim page-titre p1: «MUNICIPALITÉ DE SAINTE-SOPHIE / Règlement de zonage numéro 1297-2020» (OWNER-OK, Sainte-Sophie/Laurentides). Millesime=2020 verbatim «Entrée en vigueur le 16 septembre 2020». Les 1313-2021...1335-2022 de l'«Historique règlementaire» sont les AMENDEMENTS (pas la base). Re-qualifie l'ancien HOLD-NULL."
     },
     "sainte-marguerite-marie": {
       "reglement_numero": "03-2003",
