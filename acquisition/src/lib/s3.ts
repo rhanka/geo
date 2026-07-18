@@ -198,11 +198,27 @@ export async function exists(
   key: string,
   bucket: string = BUCKET,
 ): Promise<boolean> {
+  return (await objectHead(s3, key, bucket)).exists;
+}
+
+/** Read only the existence metadata needed by bounded refresh planners. */
+function isMissingObjectError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const detail = error as { name?: unknown; $metadata?: { httpStatusCode?: unknown } };
+  return detail.name === "NotFound" || detail.name === "NoSuchKey" || detail.$metadata?.httpStatusCode === 404;
+}
+
+export async function objectHead(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<{ exists: boolean; lastModified?: Date }> {
   try {
-    await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
-    return true;
-  } catch {
-    return false;
+    const result = await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
+    return { exists: true, ...(result.LastModified ? { lastModified: result.LastModified } : {}) };
+  } catch (error) {
+    if (isMissingObjectError(error)) return { exists: false };
+    throw error;
   }
 }
 
