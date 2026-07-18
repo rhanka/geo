@@ -122,11 +122,16 @@ function parseArgs(argv: string[]): Args {
   };
 }
 
-function loadDict(path: string): { codes: string[] } {
+function loadDict(path: string): { codes: string[]; vocations: string[] } {
   const j = JSON.parse(readFileSync(path, "utf8")) as unknown;
   const codes = Array.isArray(j) ? j : (j as { codes?: unknown }).codes;
-  if (!Array.isArray(codes)) throw new Error("--dict must be a JSON array of codes or { codes: [...] }");
-  return { codes: codes.map(String) };
+  const vocations = Array.isArray(j) ? [] : (j as { vocations?: unknown }).vocations;
+  const codesArr = Array.isArray(codes) ? codes.map(String) : [];
+  const vocArr = Array.isArray(vocations) ? vocations.map(String) : [];
+  if (!codesArr.length && !vocArr.length) {
+    throw new Error("--dict must be a JSON array of codes, { codes: [...] }, or { vocations: [...] }");
+  }
+  return { codes: codesArr, vocations: vocArr };
 }
 
 async function resolvePdf(pdf: string): Promise<string> {
@@ -202,7 +207,15 @@ async function main(): Promise<void> {
   // Dict + numeric relaxation (default OFF; requires --dict). Hoisted so both the
   // text and gpt55 paths admit dict-backed pure-numeric codes when enabled.
   let dictCodes: string[] | undefined;
-  if (args.dict) dictCodes = loadDict(args.dict).codes;
+  let vocationDict: Set<string> | undefined;
+  if (args.dict) {
+    const d = loadDict(args.dict);
+    if (d.codes.length) dictCodes = d.codes;
+    if (d.vocations.length) {
+      vocationDict = new Set(d.vocations.map((v) => v.trim().toUpperCase()).filter(Boolean));
+      console.error(`[t1-build] hierarchical-vocation relaxation ON: ${vocationDict.size} legend vocations`);
+    }
+  }
   if (args.allowNumericCodes && !dictCodes) fail("--allow-numeric-codes requires --dict <authoritative-zone-codes.json>");
   const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
   if (numericDict) console.error(`[t1-build] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
@@ -324,6 +337,7 @@ async function main(): Promise<void> {
     lab = extractLabels(pdfPath, geo, {
       ...(args.page ? { page: args.page } : {}),
       ...(numericDict ? { numericDict } : {}),
+      ...(vocationDict ? { vocationDict } : {}),
     });
     if (dictCodes) {
       const filtered = filterExtractedLabelsByDict(lab, dictCodes);
