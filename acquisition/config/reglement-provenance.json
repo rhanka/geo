@@ -3893,11 +3893,11 @@
       "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local (work/zonage-norms/champneuf/ vide) et aucune grille de normes servie (donc aucune URL au manifest). Rien n'a ete LU => aucun stamp. ETAPE = lane normes-discovery."
     },
     "cloridorme": {
-      "reglement_numero": null,
+      "reglement_numero": "2007-05",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Prémisse «aucun PDF local (vide)» périmée: `websearch-grille.pdf` (23k, 1 page) est maintenant déposé, mais c'est un SCAN sans couche texte (NO-TEXT-LAYER, pdftotext=0 caractère) — une grille image, PAS le corps codifié du règlement. Aucun numéro extractible à $0; base non déposable sans le corps. Vérifié 2026-07-18 via _reglement-corps-read. ETAPE = lane normes-discovery (corps codifié absent)."
+      "_note": "RE-QUALIFIE via ROUTE VISION $0 (pdftoppm -r 150 -png p1 + vision de l'agent, PAS d'OCR paye). CORRIGE le _note precedent («websearch-grille.pdf = grille image sans numero»): ce PDF (23k, 1 page) N'EST PAS une grille image, c'est un CERTIFICAT DE CONFORMITE de la MRC de La Cote-de-Gaspe (greffier-tresorier Bruno Bernatchez) qui nomme le reglement de zonage de base VERBATIM: «RÈGLEMENT 2007-05-2025-10 : RÈGLEMENT MODIFIANT LA GRILLE DES SPÉCIFICATIONS DU RÈGLEMENT DE ZONAGE 2007-05 DE LA MUNICIPALITÉ DE CLORIDORME.» OWNER-OK (Municipalite de Cloridorme, verbatim). Le 2007-05-2025-10 est l'AMENDEMENT 2025 (resolution MRC 26-111 adoptee le 8 juillet 2026); la BASE zonage = 2007-05. MILLESIME null: aucune date d'adoption/EEV verbatim du 2007-05 dans ce certificat (le seul millesime date, 2026, est celui de l'amendement); le «2007» du numero n'est pas une date verbatim (memoire reglement-annee-du-numero-fausse). URL null: [NO-URL] au manifest, doc lu = scan local websearch-grille.pdf."
     },
     "notre-dame-de-stanbridge": {
       "reglement_numero": "315-08",
@@ -4117,11 +4117,11 @@
       "_note": "ANTI-INVENTION => null. Le doc local (grille.pdf, 17 p) est un cahier de grilles nues: entete verbatim de chaque page «Cahier des spécifications Municipalité de Pointe-Lebel». Aucun numero de reglement nulle part; les 2 seuls motifs captes sont des renvois de prose sans numero («...au moment de l'entrée en vigueur de ce règlement.», «...applicables à l'égard de l'utilisation projetée au moment de l'entrée en vigueur du...»). Defaut de DECOUVERTE (il manque le corps du reglement). Aucune source_url au manifest. Cf. le _note de price: ce meme cahier est aussi le seul PDF local de price."
     },
     "notre-dame-de-la-paix": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "1015",
+      "reglement_millesime": 2021,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local (grille.pdf, 102 p) est un SCAN IMAGE sans couche texte: pdftotext rend <40 caracteres sur tout le doc. Aucune lecture verbatim possible a $0 => on ne stampe rien. Route vision requise (hors gate $0 de cette lane); relancer le probe apres OCR. Aucune source_url au manifest."
+      "_note": "RE-QUALIFIE via ROUTE VISION $0 (pdftoppm -r 150 -png p1 + vision de l'agent, PAS d'OCR paye). Le doc local grille.pdf (102 p) est un SCAN sans couche texte, mais la PAGE-TITRE (p1) est lisible et porte VERBATIM: «PROVINCE DE QUÉBEC / MUNICIPALITÉ DE NOTRE-DAME-DE-LA-PAIX / Règlement n° 1015 / RÈGLEMENT DE ZONAGE», avec le bloc de dates: «Adoption du Règlement : 2021-09-07#14 / Entrée en vigueur : 2022-02-09». OWNER-OK (Notre-Dame-de-la-Paix = slug, verbatim). MILLESIME=2021 (annee d'adoption verbatim 2021-09-07). URL null: aucune source_url au manifest, doc lu = scan local."
     },
     "lavenir": {
       "reglement_numero": null,
@@ -4362,11 +4362,11 @@
       "_note": "ANTI-INVENTION => null. Le doc local (grille.pdf, 13 p) est un SCAN IMAGE sans couche texte: pdftotext rend <40 caracteres sur tout le doc. Aucune lecture verbatim possible a $0 => on ne stampe rien. Route vision requise (hors gate $0 de cette lane); relancer le probe apres OCR. Cible NO-GRILLE (aucune entree au manifest)."
     },
     "namur": {
-      "reglement_numero": null,
+      "reglement_numero": "2020-212",
       "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local (grille.pdf, 27 p) est un SCAN IMAGE sans couche texte: pdftotext rend <40 caracteres sur tout le doc. Aucune lecture verbatim possible a $0 => on ne stampe rien. Route vision requise (hors gate $0 de cette lane); relancer le probe apres OCR. Cible NO-GRILLE."
+      "_note": "RE-QUALIFIE via ROUTE VISION $0 (pdftoppm -r 150 -png p1 + vision de l'agent, PAS d'OCR paye). Le doc local grille.pdf (27 p) est un SCAN sans couche texte (pdftotext<40 car), mais l'en-tete haut-droite de la grille (p1) est parfaitement lisible et porte VERBATIM: «MUNICIPALITÉ DE NAMUR / Règlement de zonage no. 2020-212 / Annexe - B - Grilles des usages et normes». OWNER-OK (Namur = slug, verbatim). 2020-212 est bien le numero DU reglement de zonage (cette page en est l'Annexe B). MILLESIME null: aucune date d'adoption/EEV verbatim sur l'en-tete de grille; le «2020» du numero n'est pas une date verbatim (memoire reglement-annee-du-numero-fausse). URL null: [NO-URL] au manifest, doc lu = scan local."
     },
     "lac-des-plages": {
       "reglement_numero": null,
