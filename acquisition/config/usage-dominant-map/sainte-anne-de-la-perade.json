@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "RU": "residentiel",
+    "CR": null,
+    "C": "commercial",
+    "A": "agricole",
+    "AF": "agricole",
+    "F": "agricole",
+    "I": "industriel",
+    "E": "environnemental",
+    "ZR": null,
+    "P": null
+  },
+  "source": "work/zonage-norms/sainte-anne-de-la-perade/grille.pdf (Règlement de zonage — grille des spécifications locale; chaque zone porte son affectation dominante en en-tête)",
+  "note": "L'en-tête « GRILLE DE SPÉCIFICATIONS  ZONE : <n>  <AFFECTATION> » de chaque zone énonce VERBATIM la fonction dominante (ce n'est pas la matrice d'usages permis mais l'étiquette d'affectation de la zone). Correspondances lues: RÉSIDENTIELLE=R et RÉSIDENTIELLE RURALE=RU -> residentiel; COMMERCIALE=C -> commercial; COMMERCIALE ET RÉSIDENTIELLE=CR -> null (DUALE); AGRICOLE=A, AGROFORESTIÈRE=AF, FORESTIÈRE=F -> agricole; INDUSTRIELLE=I -> industriel; ÉCOLOGIQUE=E -> environnemental. Null explicite: PUBLIQUE=P; ZONE EN RÉSERVE=ZR (développement futur). Codes SIG servis numéro-en-tête (« 155-R », « 214-AF », « 153-ZR »): reversés par canonZoneCodeServe et mappés à la lettre; longest-prefix (CR>C, RU>R, AF>A, ZR). Les 11 préfixes servis couverts."
+}
