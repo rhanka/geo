@@ -50,6 +50,16 @@ and effort are a conscious, documented decision.
 | 2026-07-17 | fable (Fable 5) | n/a | forfait | design-review | graphify typed-linking capability | ~5min | 126.7k | ⭐ excellent — caught partition-scoping hole, cite-grounding precedent, occurrences.json empty stub |
 | 2026-07-17 | codex gpt-5.6-sol | xhigh | token | design-review | graphify capability (4th, find-what-others-missed) | froze @18s | — | ⛔ NO OUTPUT — log froze 18s in (mid file-read), companion later lost the job. Same failure class as 5.5. |
 
+## ⛔ Codex account usage limit HIT (2026-07-17, reset 2026-07-24)
+Both `gpt-5.5` AND `gpt-5.3-codex-spark` failed with "You've hit your usage limit … try again
+Jul 24th" — the cap is **account-wide** (Codex Pro weekly), not per-model. Consequence: ALL
+Codex delegation (the fleet flipped to terra, the design agents) is blocked until the reset or
+until credits are purchased. Symptom: fleet agents on terra go "Wandering… still thinking" and
+produce nothing → this is why reglement/usage/effet stalled after the claude→codex flip.
+Options: (a) buy Codex credits, (b) flip the fleet back to Claude (spends Claude credits), (c)
+pause delegation until Jul 24. For LOW-volume design/review, Fable 5 / Opus (Claude, separate
+quota) work now.
+
 ## Reliability insight (2026-07-17)
 The **Codex-companion detached path failed 2 of 3 recent long reviews** (5.5 stalled 22min; sol
 froze 18s in + job lost). luna succeeded once. The **Claude Agent path delivered 2/2** (Opus,
