@@ -313,3 +313,38 @@ attribué à cette passe seule.
 - 174 communes `normesStatus=to-research` sont skippées (aucune norme
   déposée : lane normes). Il reste 630 communes `normesStatus=done` avec
   `folded-normes<100`, non déclarées faites.
+
+## Passe de confirmation — audit S3 2026-07-18T01:00–01:16Z
+
+Mesures S3 : `2026-07-18T01:00:55.083Z` avant, puis
+`2026-07-18T01:16:09.602Z` après. Les deux audits portent 856 produits
+`qc-lots` et 3 374 404 lots. Cette passe confirme les résidus sans leur
+attribuer de gain : les valeurs absentes restent nulles.
+
+| Champ | Avant S3 | Après S3 | Verdict |
+| --- | --- | --- | --- |
+| `surface_m2` | 3 374 404 / 3 374 404 (100%) | 3 374 404 / 3 374 404 (100%) | aucun résidu avec lots; les six villes municipales à 0% ont 0 lot |
+| `adresse` | 2 548 225 / 3 374 404 (75,52%) | 2 548 225 / 3 374 404 (75,52%) | aucune adresse additionnelle sûre |
+| `code_postal` | 3 374 403 / 3 374 404 (100% arrondi) | 3 374 403 / 3 374 404 (100% arrondi) | seul résidu : un lot de `pierreville` hors RTA/FSA |
+| `folded-normes` | 862 745 / 3 374 404 (25,57%) | 862 745 / 3 374 404 (25,57%) | les jointures re-matérialisées confirment les taux existants |
+| `in_tod` (périmètre TOD) | 28 431 / 28 431 (100%) | 28 431 / 28 431 (100%) | fait |
+
+Villes repassées avec le rôle foncier actif, sans `--no-role` ni
+`--enrich-no-role` : `franquelin`, `remigny`,
+`saint-eugene-de-ladriere`, `saint-felix-de-dalquier`,
+`saint-gabriel-de-valcartier`, `saint-louis-de-gonzague-du-cap-tourmente`,
+`saint-pierre`, `amos`, `amqui`, `ange-gardien`, `armagh`, `arundel`,
+`ascot-corner` et `pierreville`.
+
+- La chaîne lot→zone→normes a été exécutée avant l'enrichissement pour
+  `amos`, `amqui`, `ange-gardien`, `armagh`, `arundel` et `ascot-corner`.
+  Les taux de normes finaux sont respectivement 0%, 99,64%, 2,57%, 0,45%,
+  73,11% et 19,63%.
+- `amherst` est skip : aucune couche de zones servie sous
+  `normalized/ca-qc-zonage/`.
+- Les sept villes d'adresse à 0% restent protégées par les gardes de rôle :
+  overlap trop faible pour `franquelin` (22 < 30), `remigny` (1 < 30),
+  `saint-eugene-de-ladriere` (4 < 30), `saint-gabriel-de-valcartier`
+  (21 < 30), `saint-louis-de-gonzague-du-cap-tourmente` (1 < 98) et
+  `saint-pierre` (238 < 639); `saint-felix-de-dalquier` n'a aucun candidat
+  `code_geo`. Aucune valeur n'a été inférée.
