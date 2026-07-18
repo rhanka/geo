@@ -91,3 +91,17 @@ Toutes les distributions sont vérifiées sur l’API OGC après fold. Les lége
 | preissac | `REC` | « Récréotouristique » rangée par le règlement sous la dominante communautaire, hors catégories servies. |
 
 La Sarre est laissée hors lot: 340 de ses 570 polygones n'ont pas de code SIG. Aucun `null` de dominante n'est créé pour masquer cette absence de code.
+
+## Shard 1/2 — Mont-Carmel et Métis-sur-Mer
+
+Les deux configurations ont été pliées et contrôlées sur l’API OGC publique. Mont-Carmel s’appuie sur la légende « Dominantes » de l’Annexe A du règlement 340-2025. Métis-sur-Mer est un `null` servi légitime : l’art. 4.1 définit les dominantes par des lettres suffixes, alors que le SIG ne sert que les numéros `01` à `65`, sans lien réglementaire entre un numéro et son suffixe.
+
+| Ville | résidentiel | commercial | industriel | agricole | environnemental | null |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mont-Carmel | 4 | 1 | 0 | 10 | 2 | 33 |
+| Métis-sur-Mer | 0 | 0 | 0 | 0 | 0 | 67 |
+
+### Préfixes explicitement `null`
+
+- Mont-Carmel : `M` est « Mixte », `P` « Publique et institutionnelle », `RZ`/`RZI` des « Résidentielle[s] de réserve », `ID` un « Îlot déstructuré » et `V` « Villégiature ».
+- Métis-sur-Mer : chacun des codes numériques `01` à `65` reste `null`; le règlement ne permet pas de les raccorder à AGC/AGF/AIC/FRT/RCT/VLG/CSV/HBF/HMD/MTF/CMC/ILD/LSR.
