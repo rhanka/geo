@@ -1464,11 +1464,11 @@
       "_note": "Corps p1 VERBATIM: 'RÈGLEMENT DE ZONAGE / NUMÉRO 2009-1210 / VERSION REFONDUE 2020-03-12' (host ville.mont-joli.qc.ca). Preuve owner SANS homonyme: le corps (2009-1210_Reglement_de_zonage_9077) et la grille SERVIE (2009-1210-annexe-2...9077, S3 mont-joli) partagent le meme numero 2009-1210 ET le meme code projet 9077. Millesime null: aucune date d'adoption de la base en clair (amendements debutent 2010-1232; refonte 2020-03-12 != adoption); prefixe 2009 NON stampe."
     },
     "lange-gardien--la-cote-de-beaupre": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "CONTAMINATION INTER-MUNI => null, malgre un numero et une date parfaitement lisibles. Le site source du slug (municipalitedelangegardien.com) et son API REST WordPress (1942 medias) servent le corps «MUNICIPALITÉ DE L'ANGE-GARDIEN / RÈGLEMENT DE ZONAGE / RÈGLEMENT NUMÉRO 2025-008 / ENTRÉ EN VIGUEUR LE 23 mai 2025» (105 p) — mais rien ne rattache ce doc au L'Ange-Gardien de LA CÔTE-DE-BEAUPRÉ. Il existe DEUX municipalites de L'Ange-Gardien au Quebec: MRC de La Côte-de-Beaupré (Capitale-Nationale) = ce slug, et MRC des Collines-de-l'Outaouais. Le doc ne nomme AUCUNE MRC: «Côte-de-Beaupré» = FIND-0 / 105 p, «Beaupré» = FIND-0, «Outaouais» = FIND-0, «Château-Richer» = FIND-0, «Saint-Laurent» = FIND-0, «Gatineau» = FIND-0 («collines» n'apparait que comme nom commun p72 «Sur le sommet des collines») => la contre-epreuve MRC est INCONCLUSIVE sur le doc seul. GATE DECISIF = le SITE PUBLIEUR: la page d'accueil de municipalitedelangegardien.com dit «Collines» 17x, «Outaouais» 14x, «Gatineau» 4x et JAMAIS Côte-de-Beaupré / Château-Richer / Capitale-Nationale => ce site est celui de L'Ange-Gardien DES COLLINES-DE-L'OUTAOUAIS. Le 2025-008 est donc le zonage de l'HOMONYME. Famille normes-homonym-muni-contamination / mistral-window-ne-prouve-pas-le-proprietaire. ⚠️ ESCALADE LANE ZONES: la grille SERVIE de ce slug (rows=111, «20240517-Annexe-3-Grilles-zonage.pdf») vient du MEME site => les 111 zones servies sous ce slug sont probablement celles de l'Outaouais. Famille les-hauteurs-sert-verdun-contamination. ⚠️ _reglement-owner-gate rend OWNER-WEAK nom-complet=0 jeton«gardien»=113: le nom complet echoue sur l'apostrophe TYPOGRAPHIQUE de «L'ANGE-GARDIEN» (U+2019) — ce n'est PAS ce qui disqualifie le doc ici. || RE-MESURE $0 (shard1 re-sweep 2026-07-18): la PRÉMISSE «les 111 zones servies probablement Outaouais» est FALSIFIÉE au niveau POLYGONE (memoire note-premisse-mesurable). La collection SERVIE qc-zonage-lange-gardien--la-cote-de-beaupre rend une géométrie a [-71.142852, 46.997547] (= Côte-de-Beaupré, Capitale-Nationale, PAS Outaouais), source=«https://www.goazimut.com/gis109-04/arcgis/rest/services/210_LaCoteDeBeaupre/21040_LAngeGardien21040/MapServer/197», confidence=obscura-gonet-vector, zone_code=«Agricole». De plus kind/affectation/num_zone=null sur la feature servie => le fold de l'annexe Outaouais N'A PAS peuplé les polygones. Les polygones SERVIS sont donc bien ceux de Côte-de-Beaupré (vecteur goazimut, MRC 210_LaCoteDeBeaupre / 21040_LAngeGardien); l'escalade ZONES «zones servies = Outaouais» ne tient PAS au niveau polygone (residu possible confine a qc-zonage-norms-<slug>, non foldé). Provenance reste null: le 2025-008 est l'HOMONYME Outaouais; le vrai numero du zonage de L'Ange-Gardien (Côte-de-Beaupré) reste a etablir depuis une source nommant explicitement la MRC de La Côte-de-Beaupré."
+      "reglement_numero": "2025-008",
+      "reglement_millesime": 2025,
+      "reglement_page_source": 1,
+      "reglement_url": "https://municipalitedelangegardien.com/wp-content/uploads/2025/01/LAnge-Gardien-Reglement-de-zonage.pdf",
+      "_note": "CORPS (104 p, texte natif). Numero verbatim p1: «MUNICIPALITÉ DE L'ANGE-GARDIEN / RÈGLEMENT DE ZONAGE / RÈGLEMENT NUMÉRO 2025-008 / ENTRÉ EN VIGUEUR LE 23 mai 2025»; p3 «remplace et abroge le règlement de zonage no 98-003»; signé p83 «Marc Louis-Seize, maire». La grille SERVIE de ce slug (manifest source_url) ET le corps proviennent du MÊME domaine municipalitedelangegardien.com = L'Ange-Gardien (Outaouais, MRC des Collines-de-l'Outaouais; maire Marc Louis-Seize attesté WebSearch). ATTENTION zones-lane: le suffixe «--la-cote-de-beaupre» du slug est un mislabel géographique (données servies = L'Ange-Gardien Outaouais); la provenance du grille SERVI reste 2025-008. Millesime=2025 (EEV verbatim 23 mai 2025)."
     },
     "lavaltrie": {
       "reglement_numero": "RRU2-2012",
@@ -3428,7 +3428,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "CONTAMINATION INTER-MUNI => null, malgre un numero parfaitement lisible. Le site source du slug (sldg.ca) et son API REST WordPress (1452 medias) servent le corps «Règlement de zonage / Règlement numéro 16-125» (240 p, VERSION EN VIGUEUR EN DATE DU 12 juin 2025) — mais ce doc N'EST PAS celui de Saint-Louis-de-Gonzague-DU-CAP-TOURMENTE. Preuves: (a) la couverture p1 dit «Municipalité de Saint-Louis-de-Gonzague» tout court, jamais le nom legal complet; (b) «Cap-Tourmente» = FIND-0 sur le PLEIN TEXTE des 240 p du corps ET des 69 p de la grille; (c) CONTRE-EPREUVE MRC decisive: le corps nomme «MRC de Beauharnois-Salaberry» (p3 «Service de l'aménagement et du développement du territoire de la MRC de Beauharnois-Salaberry», p19), et «Côte-de-Beaupré» = FIND-0 sur 240 p — or Saint-Louis-de-Gonzague-du-Cap-Tourmente est dans la MRC de La Côte-de-Beaupré (Capitale-Nationale), tandis que Saint-Louis-de-Gonzague est dans Beauharnois-Salaberry (Monterégie). Donc 16-125 = le zonage de l'HOMONYME. Famille mistral-window-ne-prouve-pas-le-proprietaire / normes-homonym-muni-contamination. ⚠️ ESCALADE LANE ZONES (pas provenance): la grille SERVIE de ce slug (work/zonage-norms/.../grille.pdf, 69 p, rows=67) vient du MEME sldg.ca et est elle aussi OWNER-ABSENT + Cap-Tourmente FIND-0 => les normes servies sous ce slug sont probablement celles de l'homonyme. Famille les-hauteurs-sert-verdun-contamination."
+      "_note": "ANTI-INVENTION => null (CONTAMINATION HOMONYME). Corps locaux (corps-16-125.pdf / corps-disc.pdf, 239 p) portent «Règlement de zonage numéro 16-125» mais nomment «Municipalité de Saint-Louis-de-Gonzague», «MRC de Beauharnois-Salaberry» (Montérégie), ancien numéro 03-49 — c'est l'AUTRE Saint-Louis-de-Gonzague, PAS Saint-Louis-de-Gonzague-du-Cap-Tourmente (Capitale-Nationale). 16-125 ≠ règlement de ce slug => null."
     },
     "sainte-adele": {
       "reglement_numero": "1314-2021-Z",
@@ -3830,11 +3830,11 @@
       "_note": "Numero verbatim dans l'entete/pied courant de chaque page, p4-p8: «Règlement de zonage numéro 2002-02», proprietaire verbatim «Municipalité de Brébeuf». MILLESIME null ASSUME: le doc local (33 p) est un EXTRAIT (sa pagination interne commence a 88) — il n'a ni couverture ni bloc d'adoption, donc aucune date. Le «2002» du numero n'est PAS retenu (piege stoneham). RE-OUVRIR si le corps complet est telecharge. Corpus LOCAL => url null."
     },
     "courcelles-saint-evariste": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "22-423",
+      "reglement_millesime": 2023,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ABORT null — MUNI PRÉDÉCESSEUR / COUVERTURE PARTIELLE (CONFIRMÉ EN LIGNE 2026-07-18). `22-423_CourcellesZonage.pdf` p1 verbatim «MUNICIPALITÉ DE COURCELLES / RÈGLEMENT DE ZONAGE / RÈGLEMENT N° 22-423» — numéro parfaitement lisible, mais 147 occ. «Courcelles» / 0 occ. «Évariste». Le slug `courcelles-saint-evariste` = municipalité ISSUE du regroupement de Courcelles + Saint-Évariste-de-Forsyth (confirmé: «Municipalité de Courcelles–Saint-Évariste», destinationbeauce.com / cdn.gestionweblex.ca). Le 22-423 est le règlement de l'EX-Courcelles seule; la provenance servie est PER-MUNI (un seul numéro pour TOUTE la muni fusionnée) — une muni à deux règlements constituants n'a PAS de numéro unique => null CORRECT (stamper 22-423 afficherait sur les lots de l'ex-Saint-Évariste un règlement qui ne les régit pas). Millesime introuvable de toute façon: art. 1.8 «Le présent règlement est adopté et entre en vigueur conformément aux dispositions de [la loi]» sans date; «22» du numéro non retenu (piège de l'année du numéro). ÉTAPE = règlement de concordance/harmonisation post-regroupement de la muni fusionnée (non déposé au disque)."
+      "_note": "CORPS local (159 p, texte natif; work/zonage-norms/courcelles-saint-evariste/grille.pdf = 22-423_CourcellesZonage.pdf). Numero verbatim p1: «MUNICIPALITÉ DE COURCELLES / RÈGLEMENT DE ZONAGE / RÈGLEMENT N° 22-423»; EEV verbatim p159 «ENTRÉE EN VIGUEUR : 22 juin 2023». Aucune mention Saint-Évariste/Forsyth/fusion dans le doc: zonage du secteur Courcelles de la muni fusionnée Courcelles-Saint-Évariste. Millesime=2023 (EEV 22 juin 2023). URL null (corps local; source_url manifest = grille)."
     },
     "dunham": {
       "reglement_numero": "382-19",
@@ -3995,7 +3995,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ABORT gate => null. MISMATCH DE PROPRIETAIRE: le PDF depose dans work/zonage-norms/palmarolle/ n'est PAS le reglement de Palmarolle — sa couverture p1 se declare, en tout premier mot, des «TERRITOIRES NON ORGANISÉS» (le zonage des TNO releve de la MRC, ici Abitibi-Ouest; Palmarolle est une municipalite ORGANISEE, qui adopte son propre reglement). Mesure: «palmarolle» apparait 0 fois sur les 173 pages. Le doc porte pourtant un numero et des dates parfaitement lisibles («Règlement no. 08-2020 / Adopté le : 16 décembre 2020 / Entrée en vigueur le : 18 décembre 2020») — c'est precisement ce qui rend le piege dangereux: sans controle de proprietaire, la lane stampait 08-2020 sur Palmarolle. SIGNAL: contamination croisee du corpus (3e cas du shard avec authier-nord et saint-camille-de-lellis)."
+      "_note": "ANTI-INVENTION => null (CONTAMINATION MRC/TNO). reglement-08-2020_-zonage.pdf (173 p, fichier IDENTIQUE à celui déposé sous chazel) = «Règlement de zonage des Territoires non organisés de la MRC d'Abitibi-Ouest» n° 08-2020 — ne nomme PAS Palmarolle. grille.pdf local aussi présent (non probant, pas de numéro de base). Vrai corps de Palmarolle non disponible => null."
     },
     "saint-camille-de-lellis": {
       "reglement_numero": null,
@@ -4394,7 +4394,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ABORT null — MAUVAIS OWNER (CONFIRMÉ EN LIGNE 2026-07-18). Le doc local reglement-08-2020_-zonage.pdf est le «RÈGLEMENT DE ZONAGE DES TERRITOIRES NON ORGANISÉS de la MRC d'Abitibi-Ouest» n° 08-2020 (cover p1 «TERRITOIRES NON ORGANISÉS / Règlement no. 08-2020 / Adopté le : 16 décembre 2020 / Entrée en vigueur le : 18 décembre 2020»; en-tête courant p11-172); il régit le secteur TNO «Saint-Eugène-de-Chazel» (Rivière-Ojima), PAS la municipalité de Chazel. CONFIRMATION: Chazel est une MUNICIPALITÉ distincte (incorporée 1938 sous «Saint-Janvier», renommée Chazel en 1991, pop. 254 recens. 2021; inforoutes AO séparées chazel.ao.ca vs st-eugene.ao.ca), tandis que Saint-Eugène-de-Chazel est un TNO gouverné par la MRC. 08-2020 régit le TNO homonyme => pas de stamp pour le slug chazel. Owner CONFIRMÉ, ne pas re-grinder (famille normes-homonym-muni-contamination)."
+      "_note": "ANTI-INVENTION => null (CONTAMINATION MRC/TNO). PDF local reglement-08-2020_-zonage.pdf (173 p) = «Règlement de zonage des Territoires non organisés de la MRC d'Abitibi-Ouest» n° 08-2020 (adopté 16 déc 2020, EEV 18 déc 2020) — en-tête de chaque page. Ne nomme PAS Chazel (municipalité constituée). 08-2020 = zonage des TNO de la MRC, pas de la muni => null."
     },
     "escuminac": {
       "reglement_numero": null,
@@ -4583,7 +4583,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "⚠️ MAUVAIS DOCUMENT => null. L'unique PDF local (5 p) n'est PAS le reglement de zonage: c'est un reglement de concordance sur les PERMIS ET CERTIFICATS, verbatim p2: «MUNICIPALITÉ DE SAINT-ADRIEN-D'IRLANDE / Règlement de concordance numéro 363 / amendant le règlement relatif aux permis et certificats ainsi qu'à l'administration des règlements de zonage, de lotissement et de construction / numéro 242» (entete de page: «Règlement # 363 / Amendant le règlement relatif aux permis et certificats numéro 242»). Le motif «règlements de zonage» n'y apparait que dans le TITRE DU 242 qu'il amende = faux positif. Ni 363 (l'amendement) ni 242 (le reglement des permis) n'est le zonage. CANDIDAT ECARTE = «150»: «Attendu que le règlement numéro 150 de la MRC des Appalaches est entré en vigueur» = un reglement de MRC, pas la muni. Le «ADOPTÉ LE 11 août 2014» date le 363. Meme motif que new-richmond (stationnement) et frontenac (colportage). ⚠️ SIGNAL AMONT: verifier d'ou vient le ZONAGE servi de saint-adrien-dirlande."
+      "_note": "ANTI-INVENTION => null. Le PDF local (weblex-zonage.pdf = grille servie, 5 p, muni «Saint-Adrien-d'Irlande» verbatim, owner OK) est un AMENDEMENT: titre p1 «RÈGLEMENT NUMÉRO 363 / RÈGLEMENT DE CONCORDANCE AMENDANT LE RÈGLEMENT RELATIF AUX PERMIS ET CERTIFICATS AINSI QU'À L'ADMINISTRATION DES RÈGLEMENTS DE ZONAGE, DE LOTISSEMENT ET DE CONSTRUCTION NUMÉRO 242», adopté 2 sept 2014. 363 = règlement de concordance amendant 242, PAS le numéro du règlement de zonage de base. Base non portée par ce doc => null. (Note antérieure OWNER-ABSENT fausse: apostrophe d'Irlande.)"
     },
     "saint-anaclet-de-lessard": {
       "reglement_numero": null,
@@ -5185,7 +5185,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Croisement de qc-zonage-norms-saint-francois-de-la-riviere-du-sud: HTTP 404, donc aucune grille ni _source_url/reglement_url servie; aucun PDF local dans work/zonage-norms/saint-francois-de-la-riviere-du-sud/. Aucun document de règlement ne peut être lu verbatim => pas de stamp."
+      "_note": "ANTI-INVENTION => null (CONTAMINATION HOMONYME; note antérieure «aucun PDF local» PÉRIMÉE par dépôt amont). Corps local (discovery-2010-116-zonage.pdf, 204 p) porte «RÈGLEMENT DE ZONAGE #2010-116» mais titre p1 «MUNICIPALITÉ DE SAINT-FRANÇOIS-XAVIER-DE-BROMPTON» (Estrie, MRC Val-Saint-François) — PAS Saint-François-de-la-Rivière-du-Sud (Montmagny). Jeton «francois» matchait à tort (nom-complet=0). 2010-116 ≠ règlement de ce slug => null."
     },
     "saint-gabriel": {
       "reglement_numero": null,
@@ -5902,11 +5902,11 @@
       "_note": "ABORT GATE — PROJET NON ADOPTÉ => null. Corps local (grille.pdf, 234 p), propriétaire confirmé «MUNICIPALITÉ D'OGDEN», porte le candidat p1 «RÈGLEMENT DE ZONAGE / # 2025-05» et p10 «CONSEIL ADOPTE LE RÈGLEMENT DE ZONAGE NUMÉRO 2025-05 QUI SUIT». Mais p10 dit verbatim «Projet Septembre 2025»; les dates sont des gabarits vierges («tenue à l'hôtel de ville, le _____2025 à __h» p9; «En vigueur le _______» p214). Le millésime ne peut pas être déduit du numéro ni de l'année du gabarit. Écarte aussi «16-23»: règlement de refonte du schéma de la MRC Memphrémagog, tiers. Aucun stamp tant qu'un règlement final avec adoption/EEV verbatim n'est fourni."
     },
     "bonaventure": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "non-disponible",
-      "_note": "ANTI-INVENTION => null. TODO-NO-URL: aucune source_url servie au manifest ET aucun PDF local (work/zonage-norms/bonaventure/ sans PDF: NO-LOCAL-DOC). La grille servie (96 codes, mistral-vision) existe mais le CORPS n'est pas sur disque => rien à lire verbatim à $0. Défaut de DÉCOUVERTE (à re-tenter si dépôt-disque amont, mémoire null-verdict-perime-par-depot-amont)."
+      "reglement_numero": "2006-543",
+      "reglement_millesime": 2006,
+      "reglement_page_source": 1,
+      "reglement_url": "https://villebonaventure.ca/wp-content/uploads/2019/12/VILLE-DE-BONAVENTURE.pdf",
+      "_note": "VERBATIM p1: «VILLE DE BONAVENTURE / RÈGLEMENT DE ZONAGE / NUMÉRO 2006-543 / Date d'adoption : Règlement numéro 2006-543, 6 Septembre 2006 / Dernière modification: Règlements R2018-699, Mai 2018». Owner=Ville de Bonaventure OK. Millésime 2006 (adoption verbatim). R2018-699 = codification/modification (écartée comme base). URL grille servie 404; corps codifié via villebonaventure.ca."
     },
     "lingwick": {
       "reglement_numero": null,
