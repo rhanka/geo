@@ -144,6 +144,37 @@ describe("t1-labels zone-code parser", () => {
     expect(got).not.toContain("841-X");
   });
 
+  it("rejects hierarchical-vocation cadran codes without a vocation dict", () => {
+    // Austin prints `1.1-RV`, `2.9-AF1`, `1.8.A-RUpe`. Digit-leading with a dotted
+    // cadran prefix → ZONE_CODE_RE alone must NOT read them as zone codes.
+    const got = codes([
+      word("1.1-RV", 100, 100, 150, 116, 1, 1),
+      word("2.9-AF1", 200, 100, 250, 116, 2, 2),
+      word("1.8.A-RUpe", 300, 100, 360, 116, 3, 3),
+    ]);
+    expect(got).toEqual([]);
+  });
+
+  it("admits legend-vocation-gated hierarchical cadran codes (austin family)", () => {
+    const vocationDict = new Set(["RV", "AF1", "RUPE", "CON", "AF2C", "A"]);
+    const got = codes(
+      [
+        word("1.1-RV", 100, 100, 150, 116, 1, 1),
+        word("2.9-AF1", 200, 100, 250, 116, 2, 2),
+        word("1.8.A-RUpe", 300, 100, 360, 116, 3, 3), // PAE subseq letter in prefix
+        word("4.4-AF2c", 400, 100, 450, 116, 4, 4), // vocation with trailing digit+attr
+        word("2.1-CON", 500, 100, 550, 116, 5, 5),
+        word("4.3-A", 600, 100, 640, 116, 6, 6), // single-letter vocation
+        word("1.5-ZZ", 700, 100, 740, 116, 7, 7), // vocation NOT in legend → dropped
+        word("5848029", 800, 100, 860, 116, 8, 8), // cadastral lot number → dropped
+      ],
+      { vocationDict },
+    );
+    expect(got.sort()).toEqual(["1.1-RV", "1.8.A-RUpe", "2.1-CON", "2.9-AF1", "4.3-A", "4.4-AF2c"]);
+    expect(got).not.toContain("1.5-ZZ");
+    expect(got).not.toContain("5848029");
+  });
+
   it("masks Saint-Lambert title-box revision pseudo-codes", () => {
     const revisionRows = Array.from({ length: 12 }, (_, i) =>
       word(`V${i + 1}`, 520, 235 + i * 12, 535, 247 + i * 12, 1, i + 1),
