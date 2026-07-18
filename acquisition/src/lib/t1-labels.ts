@@ -63,8 +63,11 @@ export interface ZoneCodeOptions {
   compositeDict?: Set<string>;
 }
 
-/** NUMBER-DOMINANCE, the composite shape (`17-R`, `502-AV`, `1-H`). */
-const COMPOSITE_CODE_RE = /^\d{1,3}-[A-Z]{1,3}$/i;
+/** NUMBER-DOMINANCE, the composite shape (`17-R`, `502-AV`, `1-H`, `104-Adyn`).
+ * Up to 4 dominance letters covers density-qualified affectations printed as one
+ * token (`Adyn` = agricole dynamique, `Avia`); the join stays dict-gated, so the
+ * authoritative code list — never the regex — bounds what is admitted. */
+const COMPOSITE_CODE_RE = /^\d{1,3}-[A-Z]{1,4}$/i;
 
 /** True when `text` is a composite code listed VERBATIM in the authoritative dict. */
 export function isDictComposite(text: string, opts: ZoneCodeOptions = {}): boolean {
