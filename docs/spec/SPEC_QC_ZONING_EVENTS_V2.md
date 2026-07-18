@@ -1,14 +1,27 @@
-# SPEC — qc-zoning-events (served collection) v2
+# SPEC — qc-zoning-events (served collection) v2.1
 
-Status: FROZEN v2 for immo validation. This is the JOINTLY-VERSIONED interface between geo
-(producer) and immo (consumer). immo gave GO on v1 + 3 amendments (adversarial review codex
-5.6-sol); this folds them in. geo serves OGC, immo reads. geo NEVER writes immo's graph
-(graph_nodes / geo_resolutions) — immo's `upsertGraphAtomic` is destructive per-muni, single
-writer = immo.
+Status: v2.1 — immo VALIDATED v2 under 3 adjustments (A1/A2/A3, immo conductor Opus,
+2026-07-18); this folds them in. JOINTLY-VERSIONED interface geo (producer) / immo (consumer).
+geo serves OGC, immo reads. geo NEVER writes immo's graph (graph_nodes / geo_resolutions) —
+immo's `upsertGraphAtomic` is destructive per-muni, single writer = immo.
 
 ## What it replaces
-immo's `run-geo-mapper` → tables `geo_resolutions` + `geo_unresolved`. immo joins on the
-NATURAL KEY, not on any graphify node_id.
+immo's `run-geo-mapper` → tables `geo_resolutions` + `geo_unresolved`.
+
+## Identity: event_id is STABLE-AT-DETECTION (A1 — the crux)
+immo's destructive projector (delete-not-in-set per ville) means a CHANGING id orphans the old
+event, breaks the supersedes chain, and drops the Steve marks attached to it. So the identity
+must NOT contain any field that moves after first detection. `bylaw_numero` MOVES (absent in
+`detection_incomplete`, resolved later) → it is FORBIDDEN in the identity.
+- `event_id = sha256(muni | source_ref | detection_anchor)` where `source_ref` = the stable
+  source document identity (notice URL / PV doc id / CPTAQ dossier url / YouTube video id) and
+  `detection_anchor` = a stable within-document locator (notice id, PV item ordinal, transcript
+  timecode). This is knowable AT first detection and never changes.
+- **immo joins on `event_id`** (deterministic, stable), NOT on the moving `bylaw_numero`.
+- Resolving `bylaw_numero` later = `version++` on the SAME `event_id`, never a new id.
+- An event whose identity cannot be stably anchored is EXCLUDED from the ingestable set (served
+  with `detection_state=detection_incomplete` and no stable-set membership), never given a
+  volatile id.
 
 ## Source scope (owner decision, mutualist principle — geo owns ALL acquisition)
 Events are detected from the FULL source, not just avis-publics:
@@ -18,11 +31,30 @@ Events are detected from the FULL source, not just avis-publics:
 - YouTube council sessions via graphify transcription → detect zoning events in transcript
 immo keeps ONLY the Steve relevance filtering on these events.
 
-## Natural key (stable, immo joins on this)
-`{ muni, bylaw_numero, type, date_iso }`
+## Dossier grouping vs revision (A3 — confirmed)
+- `bylaw_numero` is a RESOLVED PAYLOAD attribute (with provenance), NOT identity. It is the
+  DOSSIER grouping key: it groups the steps of one file (avis-motion → projet → adoption), each
+  step being its OWN event (own `type`,`date_iso` → own `event_id`). immo timelines a dossier
+  by `bylaw_numero`.
+- `event_id` + `supersedes` = REVISION/correction of ONE step (same `event_id`, version++).
+- So: different steps of a dossier = different `event_id`s sharing the same resolved
+  `bylaw_numero`; a correction of one step = same `event_id`, higher `version`, `supersedes`
+  the prior version. `supersedes` NEVER crosses steps.
 - `bylaw_numero`: verbatim from the bylaw BODY art.1.1 — NEVER the title/URL/filename number
-  (wrong ~1/4, memory reglement-numero-url-trap). May be null (some events carry no number).
+  (wrong ~1/4, memory reglement-numero-url-trap). May be null until resolved.
 - `date_iso`: YYYY-MM-DD.
+
+## Collection completeness + tombstones (A2 — serving contract, not just schema)
+Because immo's projector deletes-per-ville what is not in the served set, a partial snapshot
+would mass-delete still-valid events. So the SERVED collection carries a completeness contract:
+- Collection-level metadata: `as_of` (ISO) + `complete: true|false`. immo projects a ville ONLY
+  when `complete: true`; a `false` (mid-refresh partial) is skipped, not applied.
+- Per-ville emit is ATOMIC: the whole `qc-zonage-events-<slug>` object is written in one put
+  (mirrors the fold-effet-densifiant whole-object write), never feature-by-feature.
+- Retracted events stay SERVED as TOMBSTONES (`state=retracted`), never silently absent — so
+  immo can distinguish "retracted" (remove cleanly, keep Steve marks) from "temporarily not
+  emitted" (a partial/failed refresh). An event that vanishes from the feed while
+  `complete:true` is a bug, not a signal.
 
 ## Identity + revision (amendment 2 — makes idempotent ingestion possible)
 - `event_id`: canonical deterministic = `sha256(muni | bylaw_numero | type | date_iso)`.
@@ -66,10 +98,15 @@ DISCOVERY gap from a counts-not-extractable case.
   densite_avant/apres). NORMES/VALUES stay on qc-zonage / qc-zonage-norms, NOT in the event.
 - `url_pdf`, `extrait_brut` (proof span), `confidence` (global).
 
-## Full served shape (per event)
+## Full served shape
+Collection metadata (A2):
+```json
+{ "as_of": "2026-07-18T02:30:00Z", "complete": true, "muni": "coaticook", "events": [ … ] }
+```
+Per event:
 ```json
 {
-  "event_id": "sha256(...)",
+  "event_id": "sha256(coaticook | <ppcmoi-notice-url> | <notice-anchor>)",
   "version": 1,
   "supersedes": null,
   "state": "active",
