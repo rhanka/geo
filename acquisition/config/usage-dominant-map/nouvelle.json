@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "Ha": "residentiel",
+    "Hc": "residentiel",
+    "V": "residentiel",
+    "A": "agricole",
+    "F": "agricole",
+    "Ia": "industriel",
+    "Ib": "industriel",
+    "Ic": "industriel",
+    "Cn": "environnemental",
+    "M": null,
+    "P": null
+  },
+  "source": "https://nouvellegaspesie.com/download/114/service-urbanisme/5889/reglement-325-1-zonage.pdf (Règlement de zonage 325.1, Municipalité de Nouvelle)",
+  "note": "Article 2.2.2 « Identification des zones », p.19-21, verbatim: « les zones sont désignées par un numéro et par une ou plusieurs lettre(s) qui réfère(nt) à la dominante de la zone » — 1° Ha « Habitation de basse densité » ; 2° Hb « moyenne densité » ; 3° Hc « haute densité » ; 4° Hm « Maison mobile ou unimodulaire » ; 5° C « Commerce et services » ; 6° Ia « Industrie peu ou non contraignante » ; 7° Ib « Industrie contraignante » ; 8° Ic « Industrie extractive » ; 9° M « Mixte » ; 10° P « Public et communautaire » ; 11° R « Récréotouristique » ; 12° A « Agriculture » ; 13° F « Forêt et sylviculture » ; 14° V « Villégiature » ; 15° Cn « Conservation ». Mapping des préfixes RÉELLEMENT servis au SIG: Ha/Hc « Habitation » et V « Villégiature » -> residentiel ; A « Agriculture » et F « Forêt et sylviculture » -> agricole ; Ia/Ib/Ic « Industrie » (dont extractive) -> industriel ; Cn « Conservation » -> environnemental. Null explicite: M « Mixte » (DUALE) ; P « Public et communautaire ». Non servis (donc non mappés per gate): Hb, Hm (résidentiel), C (commercial), R (récréotouristique). Codes SIG numéro-en-tête (« 108-Ha », « 40-Cn ») reversés par canonZoneCodeServe. La grille des spécifications n'est PAS utilisée."
+}
