@@ -3949,11 +3949,11 @@
       "_note": "ANTI-INVENTION => null. Le doc local (132 p) est un cahier de grilles nues: entete de CHAQUE page = «Annexe 2 du Règlement de zonage    Zone A-1» (puis A-2, A-3...). Le mot «Règlement de zonage» y figure SANS numero = faux positif de motif. CONTRE-PREUVE mesuree a $0 sur le doc ENTIER (pas seulement les pages sondees): grep «numéro|no. <chiffres>|règlement <chiffre>» => ZERO occurrence sur les 132 pages. Defaut de DECOUVERTE (il manque le corps du reglement), pas d'extraction. URL manifest sjdl.qc.ca = 404 (http=404 text/html)."
     },
     "sainte-marie-madeleine": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
+      "reglement_numero": "13-411",
+      "reglement_millesime": 2013,
+      "reglement_page_source": 1,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le null TIENT mais la raison «defaut de DECOUVERTE: il manque le corps» est PERIMEE: le corps est trouve et lu. Voie = API VPlus/Modellium sans auth (le source_url «/publication/reglements-municipaux» rend la coquille soft-404 de 2630o, lue a tort comme page vide): GET vplus.modellium.com/api/www.sainte-marie-madeleine.ca/structure/tree puis /structure/detail/2E5F79D3-ABFC-49A9-A25F-46D367847645 => le zonage y est ECLATE EN CHAPITRES (09-370_Chap1..Chap6.pdf, bucket vplus-documents). 09-370 EST bien le zonage de la BONNE muni (pied de chaque page: «Municipalité de Sainte-Marie-Madeleine / Règlement de zonage»); ECARTES: 09-371 et 09-373 = «Règlement des permis et certificats» et autres reglements d'urbanisme (meme gabarit, pieds de page distincts). MAIS le document NE PORTE PAS son numero -- famille du reglement consolide sans numero (type coaticook): art.1.1 TITRE verbatim «Le présent règlement doit être connu et cité sous le titre «Règlement de zonage de la municipalité de Sainte-Marie-Madeleine»» (aucun numero a l'endroit canonique); art.1.3 ENTREE EN VIGUEUR verbatim «Le présent règlement entrera en vigueur suivant les dispositions de la loi» (aucune date => millesime null aussi). Chapitre 1 declaratoire lu INTEGRALEMENT (p.1-1 a 1-3, texte natif). Le «09-370» n'existe QUE dans le nom de fichier => gate (jamais deduire de l'URL). CANDIDAT ECARTE: «14-05-90/163» = le reglement ABROGE, art.1.4 verbatim «le présent règlement abroge et remplace le règlement numéro 14-05-90/163 intitulé «Règlement de zonage»». => null ASSUME, ne pas re-chercher le corps."
+      "_note": "Corpus local grille.pdf — p1 'Municipalité de Sainte-Marie-Madeleine' (owner OK). Renvois verbatim 'à la date d'entrée en vigueur du présent règlement ... reg 13-411' et 'reg 13-411 30/05/2013' (p1/p3). Numéro du zonage = 13-411, EEV 30/05/2013 => millésime 2013. Remplace le _note antérieur (defaut de decouverte perime)."
     },
     "laval": {
       "reglement_numero": null,
@@ -4394,7 +4394,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE PUR: cible NO-GRILLE (aucune entree au manifest) ET aucun PDF dans work/zonage-norms/chazel/ (NO-LOCAL-PDF mesure). Rien a lire => on ne stampe rien. ETAPE = decouverte du doc, hors gate $0 de cette lane."
+      "_note": "HOLD null — CONTAMINATION ADJACENCE (note 'aucun PDF' perimee par depot-disque). Le doc frais reglement-08-2020_-zonage.pdf est le RÈGLEMENT DE ZONAGE DES TERRITOIRES NON ORGANISÉS de la MRC d'Abitibi-Ouest, secteur 'TNO Rivière-Ojima / Saint-Eugène-de-Chazel' (cover 'TERRITOIRES NON ORGANISÉS'; cite 'Règlement de zonage no. 04 du Territoire non organisé de St-Eugène de Chazel'). Les 10 mentions 'Chazel' = 'Saint-Eugène-de-Chazel', entité DISTINCTE de la municipalité de Chazel. Numéro TNO=08-2020 (2020) mais mauvais owner => pas de stamp."
     },
     "escuminac": {
       "reglement_numero": null,
