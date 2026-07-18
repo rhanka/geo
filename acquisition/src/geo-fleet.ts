@@ -121,17 +121,21 @@ function launch(engine: string, a: Agent): boolean {
  */
 function launchVerified(engine: string, fallback: string | undefined, a: Agent): 'up' | 'up-fallback' | 'failed' {
   if (!launch(engine, a)) return 'failed';
-  for (let i = 0; i < 12; i++) {
+  // A Claude/Codex CLI takes ~20-40s to boot to its "esc to interrupt" marker; a pane
+  // exists almost immediately but "alive" lags. Verify on the PANE existing + not showing a
+  // usage-limit banner, with a generous window, so a slow boot isn't a false FAILED that the
+  // next tick re-kills. (isAlive is the steady-state check the tick uses on subsequent passes.)
+  for (let i = 0; i < 40; i++) {
     if (hasPane(a.name)) {
       if (!isLimited(a.name)) return 'up';
-      break; // limited: fall through to the fallback engine
+      break; // usage-limited: fall through to the fallback engine
     }
     sh('sleep', ['1'], 3_000);
   }
   if (fallback !== undefined && fallback !== engine) {
     console.log(`LIMIT    ${a.name} on ${engine} → retry on ${fallback}`);
     if (!launch(fallback, a)) return 'failed';
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 40; i++) {
       if (hasPane(a.name) && !isLimited(a.name)) return 'up-fallback';
       sh('sleep', ['1'], 3_000);
     }
