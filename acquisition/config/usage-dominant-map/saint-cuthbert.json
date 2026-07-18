@@ -1,13 +1,11 @@
 {
   "prefix_map": {
-    "10H1": "residentiel",
-    "5H1": "residentiel",
     "A": "agricole",
     "ACI": null,
     "AH": null,
-    "C": "commercial",
+    "C": null,
     "F": "agricole",
-    "H": "residentiel",
+    "H": null,
     "HC": null,
     "I": "industriel",
     "P": null,
@@ -18,5 +16,5 @@
     "VR": null
   },
   "source": "https://st-cuthbert.qc.ca/wp-content/uploads/2024/07/352-reglementzonage-st-cuthbert.pdf",
-  "note": "Règlement de zonage n° 352, art. 12 « Délimitation des zones sur le plan de zonage » : « une lettre suffixe indiquant le groupe dominant soit : a) R Habitation; b) M Mixte; c) I Industrielle; d) P Publique et institutionnelle; e) A Agricole; f) F Forestière; g) V Villégiature ». Les articles 25 à 30 donnent aussi verbatim « Classe du groupe Habitation (H) », « Classe du groupe Commerce et service (C) », « Classe du groupe Industrie (I) », « Classe du groupe Public et institutionnel (P) », « Classe du groupe Récréatif (R) » et « Classe du groupe Agricole (A) ». Pour les codes SIG digit-first, le fold les canonise vers ce suffixe; les deux codes avec un chiffre terminal, 10H1 et 5H1, sont repris textuellement. H et R -> résidentiel; C -> commercial; I -> industriel; A et F « Forestière » -> agricole. Null explicite: P est public; ACI, AH, HC, VH, VHC, VI et VR sont des suffixes composites sans dominante unique explicitée par l'art. 12, donc ne sont pas décomposés ni forcés. La matrice des usages permis n'est pas utilisée."
+  "note": "Règlement de zonage 352 de la Municipalité de Saint-Cuthbert, art. 12 « Délimitation des zones sur le plan de zonage », p. 3: « une lettre suffixe indiquant le groupe dominant soit : a) R Habitation; b) M Mixte; c) I Industrielle; d) P Publique et institutionnelle; e) A Agricole; f) F Forestière; g) V Villégiature. » Les préfixes SIG simples réellement servis A, F, I et R sont donc respectivement agricole, agricole (forestière) industriel et résidentiel. Null explicite: P est « Publique et institutionnelle »; ACI, AH, C, H, HC, VH, VHC, VI et VR sont des préfixes composés ou non énumérés par l'art. 12, donc aucune dominante parmi les cinq ne peut être établie verbatim. La matrice des usages de l'annexe B n'est pas utilisée."
 }
