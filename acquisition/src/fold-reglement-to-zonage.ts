@@ -34,12 +34,27 @@ const NORMS_PREFIX = "normalized/qc-zonage-norms/";
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
 const FIELDS = ["reglement_numero", "reglement_millesime", "reglement_page_source", "reglement_url"] as const;
 
-/** Registre curé committé = source de vérité DURABLE (la lane norms // écrase les
- *  champs sur qc-zonage-norms, donc on préfère le registre). */
-function registryReglement(slug: string): Record<string, unknown> | null {
+/** Verdict du registre curé pour un slug.
+ *  - `null`     : slug ABSENT du registre => non instruit, on peut retomber sur la
+ *                 grille de normes.
+ *  - `"VETO"`   : slug PRÉSENT avec `reglement_numero` null => un curateur a LU le
+ *                 document et conclu qu'il n'y a pas de numéro servable. On ne
+ *                 stampe rien ET on ne retombe PAS sur qc-zonage-norms.
+ *  - objet      : les 4 champs verbatim à stamper.
+ *
+ *  Le VETO n'est pas cosmétique: la grille de normes peut porter le numéro d'une
+ *  AUTRE municipalité (contamination homonyme mesurée sur
+ *  notre-dame-de-lourdes--lerable, qui servait le 02-2023 de la muni homonyme de la
+ *  MRC de Joliette sur ses 38 polygones). Sans veto, `--strip` est annulé au
+ *  prochain `--all` par le repli, et la mauvaise provenance revient sur les fiches
+ *  lots. Le registre est la source de vérité DURABLE: son null doit primer. */
+const VETO = "VETO" as const;
+
+function registryReglement(slug: string): Record<string, unknown> | typeof VETO | null {
   const cfg = JSON.parse(readFileSync(REGISTRY, "utf8")) as { slugs: Record<string, Record<string, unknown>> };
   const e = cfg.slugs[slug];
-  if (!e || !e["reglement_numero"]) return null;
+  if (!e) return null;
+  if (!e["reglement_numero"]) return VETO;
   const out: Record<string, unknown> = {};
   for (const f of FIELDS) out[f] = e[f] ?? null;
   return out;
@@ -101,7 +116,12 @@ async function main(): Promise<void> {
   let ok = 0;
   const skipped: string[] = [];
   for (const slug of slugs) {
-    const regl = strip ? null : (registryReglement(slug) ?? (await normsReglement(s3, slug)));
+    const verdict = strip ? null : registryReglement(slug);
+    if (verdict === VETO) {
+      skipped.push(`${slug} (VETO registre: null curé — repli qc-zonage-norms interdit)`);
+      continue;
+    }
+    const regl = strip ? null : (verdict ?? (await normsReglement(s3, slug)));
     if (!strip && !regl) {
       skipped.push(`${slug} (pas de reglement_numero: ni registre ni qc-zonage-norms)`);
       continue;
