@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "A": "agricole",
+    "AF": "agricole",
+    "R": "environnemental",
+    "CE": "environnemental",
+    "CH": null,
+    "P": null,
+    "V": null
+  },
+  "source": "work/zonage-norms/saint-stanislas--maria-chapdelaine/zonage.pdf",
+  "note": "Municipalité de Saint-Stanislas (MRC de Maria-Chapdelaine, Saguenay–Lac-Saint-Jean), « Règlement numéro 404.2011 » de zonage, 310 p., texte natif — lu au CORPUS LOCAL (aucune URL publique vérifiée, d'où le chemin de dépôt en `source`). GATE PROPRIÉTAIRE FRANCHI ET DÉSAMBIGUÏSÉ face à l'homonyme Saint-Stanislas de la MRC des Chenaux : pied de chaque page « Municipalité de Saint-Stanislas », p. 7 « en conformité avec les objectifs du schéma d'aménagement de la MRC Maria-Chapdelaine », p. 64 « Signifie la Municipalité régionale de comté de Maria-Chapdelaine », p. 59 « la rivière Mistassibi » (Lac-Saint-Jean). CHAPITRE IV « ZONAGE », art. 4.2 « CODIFICATION ET DOMINANCE DE LA ZONE » (p. 113), verbatim : « La dominance définit la vocation principale de la zone auquel correspondent certaines dispositions de ce règlement. La dominance est indiquée aux plans de zonage immédiatement au-dessous ou à côté de l'identification numérique de la zone au moyen d'une lettre tel que défini dans le tableau suivant : Tableau 1 : Codification des Zones — Codification | Vocation dominante — H Habitation (ou résidentielle) ; CH Commerciale, de service et habitation ; C Commerciale et de service ; P Publique et institutionnelle ; R Récréative ; CE Conservation environnementale ; A Agricole ; A (1) Agricole : Îlot déstructuré de type 1 ; A (2) Agricole : Îlot déstructuré de type 2 ; A (3) Agricole : Îlot déstructuré de type 3 [les trois ajoutés par le règl. 433-2017] ; AF Agro forestière ; V Villégiature ». Mapping : H « Habitation (ou résidentielle) » -> residentiel ; C « Commerciale et de service » -> commercial ; A « Agricole » et AF « Agro forestière » -> agricole ; R « Récréative » et CE « Conservation environnementale » -> environnemental (ligne Conservation/Récréative/Faunique du contrat). Null EXPLICITE : CH « Commerciale, de service ET habitation » (DUALE, deux catégories différentes) ; P « Publique et institutionnelle » (vocation PUBLIQUE) ; V « Villégiature » (villégiature SEULE — balayage plein texte des 310 p. : AUCUN article ne la définit exclusivement par l'habitation ou le logement ; précédents committés baie-comeau et lac-beauport). Longest-prefix vérifié : `CH` bat `C`, `AF` bat `A`, `CE` bat `C`. Les codes A(1)/A(2)/A(3) « Îlot déstructuré » de la table ne sont PAS servis par le SIG (qui code `A10`..`A16` sans parenthèses) : rien à mapper. `CE` figure à la table mais n'est pas servi. La grille des spécifications (matrice des usages) n'a PAS été utilisée. Consulté le 2026-07-19."
+}
