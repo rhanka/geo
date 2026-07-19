@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "Zba": "agricole",
+    "H": "residentiel",
+    "Rd": "residentiel",
+    "I": "industriel",
+    "Bc": "environnemental",
+    "HC": null,
+    "P": null
+  },
+  "source": "ca-qc-zonage-geomatiquecn-arcgis (couche de zonage servie de Saint-Charles-sur-Richelieu, attribut `Affectation`)",
+  "note": "Saint-Charles-sur-Richelieu (MRC de La Vallee-du-Richelieu). La vocation est portee VERBATIM par l'attribut `Affectation` de la couche SIG servie elle-meme (normalized/ca-qc-zonage/qc-zonage-saint-charles-sur-richelieu/), un libelle par prefixe, 63/63 polygones renseignes — releve par `_ud-affectation-sweep.ts`. Libelles verbatim : A=« Agricole » ; Zba=« Agricole (beneficiant d'un droit acquis - LPTAAQ) » ; H=« Residentielle » ; Rd=« Residentielle (ilot destructure) » ; I=« Industrielle » ; Bc=« Conservation » ; HC=« Residentielle et commerciale » ; P=« Publique ». A et Zba -> agricole (le complement entre parentheses est un statut juridique LPTAAQ, pas une seconde vocation). H et Rd -> residentiel : contrairement au cas general de l'ilot destructure, l'attribut le QUALIFIE positivement de « Residentielle », l'ilot destructure n'etant que la precision entre parentheses. I -> industriel. Bc « Conservation » -> environnemental. Null explicite : HC « Residentielle ET commerciale » est DUALE (deux des cinq categories) ; P « Publique ». Le corps du reglement 2011-11-008 ne porte AUCUNE table de dominance (verdict anterieur de la lane) : c'est l'attribut SIG, et non un PDF, qui fait foi ici. La matrice des usages permis des grilles n'a pas ete utilisee."
+}
