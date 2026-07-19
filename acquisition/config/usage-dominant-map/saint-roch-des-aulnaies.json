@@ -1,0 +1,9 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "E": "environnemental",
+    "Rv": null
+  },
+  "source": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=d9491463-b3eb-4370-bc69-cd8329d148f8",
+  "note": "Règlement de zonage 315-2016 (version administrative février 2025), Municipalité de Saint-Roch-des-Aulnaies (millésime SIG = 2016). Art. 3.2 « Description des zones »: « Le territoire est divisé en zones regroupées de la façon suivante : Zones résidentielles / Ra : Unifamilial et bifamiliale — Zones mixtes / Mi : [...] — Zones commerciales / Ca : Commercial lourd — Zone publique / P : Public — Zones agricoles / A : Agriculture, Ad1 : Îlots déstructurés de type 1, Ad2 : Îlots déstructurés de type 2 — Zones récréatives / Rt : Récréotouristique, Rv : Villégiature — Zones de conservations / E : Conservation ». Mapping restreint aux préfixes RÉELLEMENT présents au SIG: A « Agriculture » -> agricole; E « Conservation » -> environnemental. Null explicite: Rv est libellé « Villégiature » MAIS regroupé par le règlement sous « Zones récréatives » — les deux lectures (résidentiel de villégiature vs récréatif/environnemental) s'opposent, aucune dominante n'est forcée. Ra, Mi, Ca, P, Rt, Ad1 et Ad2 ne sont pas mappés: absents du SIG en tant que préfixe (les zones Ad1/Ad2 y sont codées « 36Ad1 », chiffre en tête, hors portée du fold par préfixe). La grille des spécifications (matrice des usages permis) n'est pas utilisée."
+}
