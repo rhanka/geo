@@ -86,6 +86,15 @@ export function buildAnnotationSchema(): Record<string, unknown> {
       type: ["string", "null"],
       description: `${spec.label} — valeur EXACTE de la cellule, VERBATIM (unité incluse), sinon null`,
     };
+    // ROUND-TRIP anchor (design §6b): the VERBATIM printed label the value was
+    // read from. A label naming another object ("Dimension minimum (façade)" for
+    // a LOT width) lets the mapper refuse a plausible-but-misrowed value.
+    props[`${spec.id}__libelle`] = {
+      type: ["string", "null"],
+      description:
+        `Libellé EXACT, VERBATIM, de la LIGNE (ou de l'en-tête) d'où provient "${spec.id}" ` +
+        `— recopie l'intitulé imprimé tel quel ; null si la valeur est null.`,
+    };
   }
   return {
     type: "object",
@@ -100,7 +109,10 @@ export function buildAnnotationSchema(): Record<string, unknown> {
           type: "object",
           additionalProperties: false,
           properties: props,
-          required: ["zone_code", ...FIELD_SPECS.map((f) => f.id)],
+          required: [
+            "zone_code",
+            ...FIELD_SPECS.flatMap((f) => [f.id, `${f.id}__libelle`]),
+          ],
         },
       },
     },
@@ -128,11 +140,14 @@ export function extractionFromAnnotationZones(raw: unknown): ClaudeRawExtraction
     const code =
       typeof codeRaw === "string" && codeRaw.trim() ? codeRaw.trim() : null;
     const fields: Partial<Record<FieldId, string | null>> = {};
+    const labels: Partial<Record<FieldId, string | null>> = {};
     for (const spec of FIELD_SPECS) {
       const v = z[spec.id];
       fields[spec.id] = typeof v === "string" && v.trim() ? v : null;
+      const l = z[`${spec.id}__libelle`];
+      labels[spec.id] = typeof l === "string" && l.trim() ? l : null;
     }
-    zones.push({ zone_code: code, fields });
+    zones.push({ zone_code: code, fields, labels });
   }
   return { zones };
 }
