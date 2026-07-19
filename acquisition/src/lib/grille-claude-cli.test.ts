@@ -71,6 +71,85 @@ describe("mapClaudeExtractionToZones — frozen guard reuse, anti-invention", ()
     expect(zones[0]!.marges.avant_min!._provenance.methode).toBe("claude-cli/opus-4-8");
   });
 
+  // ── Régression famille "fiche par zone" (Saint-Justin, 1 zone/page, métrique
+  // suivi de l'équivalent impérial). Deux défauts observés en production sur le
+  // dépôt purgé du 2026-07-18 :
+  //   (a) "Nombre d'étage (min./max.) : 1 / 2" publiait hauteur_max = 1 (le MIN),
+  //       une valeur plausible mais FAUSSE qui passait tous les gates ;
+  //   (b) "9,2 m (30,1 pi)" était refusé (garde anti-prose mordant sur "pi"),
+  //       donc les 3 marges réelles ressortaient null sur toutes les zones.
+  it("fiche-par-zone: publishes the MAX bound of an étage range and the metric of an imperial echo", () => {
+    const ext: ClaudeRawExtraction = {
+      zones: [
+        {
+          zone_code: "704 Af2",
+          fields: {
+            hauteur_etages: "1 / 2",
+            hauteur_metres: null,
+            marge_avant_min: "9,2 m (30,1 pi)",
+            marge_laterale_min: "2,0 m (6,6 pi)",
+            marge_arriere_min: "2,0 m (6,6 pi)",
+          },
+        },
+      ],
+    };
+    const [zn] = mapClaudeExtractionToZones(ext, 45, OPTS);
+    // (a) MAX bound published, verbatim cell kept — never the minimum.
+    expect(zn!.hauteur_max!.value).toBe(2);
+    expect(zn!.hauteur_max!.raw).toBe("1 / 2");
+    expect(zn!.hauteur_max!.unit).toBe("etages");
+    // (b) the three marges publish their METRIC reading.
+    expect(zn!.marges.avant_min!.value).toBe(9.2);
+    expect(zn!.marges.avant_min!.unit).toBe("m");
+    expect(zn!.marges.laterale_min!.value).toBe(2);
+    expect(zn!.marges.arriere_min!.value).toBe(2);
+  });
+
+  // ── Garde ROUND-TRIP (design §6b). Sur la fiche-par-zone, Mistral lit
+  // "Dimension minimum (façade) : 7,6 m" — une dimension du BÂTIMENT — et la
+  // range dans frontage_min (largeur du LOT). 7,6 m est une largeur de lot
+  // plausible : aucun gate numérique ne peut la refuser. Seul le LIBELLÉ imprimé
+  // trahit la mauvaise ligne.
+  it("refuses a numerically-plausible cell whose PRINTED LABEL names another object", () => {
+    const ext: ClaudeRawExtraction = {
+      zones: [
+        {
+          zone_code: "704 Af2",
+          fields: { frontage_min: "7,6 m (24,9 pi)", marge_avant_min: "9,2 m (30,1 pi)" },
+          labels: {
+            frontage_min: "Dimension minimum (façade)",
+            marge_avant_min: "Marge de recul avant",
+          },
+        },
+      ],
+    };
+    const [zn] = mapClaudeExtractionToZones(ext, 45, OPTS);
+    expect(zn!.frontage_min!.value).toBeNull();
+    expect(zn!.frontage_min!.flag).toBe("libelle-hors-champ");
+    expect(zn!.frontage_min!.raw).toBe("7,6 m (24,9 pi)"); // verbatim gardé
+    // le champ dont le libellé concorde publie normalement
+    expect(zn!.marges.avant_min!.value).toBe(9.2);
+  });
+
+  it("an ABSENT label is not a rejection (engines that cannot report labels keep publishing)", () => {
+    const ext: ClaudeRawExtraction = {
+      zones: [{ zone_code: "A-1", fields: { frontage_min: "45 m" } }],
+    };
+    const [zn] = mapClaudeExtractionToZones(ext, 1, OPTS);
+    expect(zn!.frontage_min!.value).toBe(45);
+  });
+
+  it("fiche-par-zone: a cross-reference height cell stays null (never a digit lifted from prose)", () => {
+    const ext: ClaudeRawExtraction = {
+      zones: [
+        { zone_code: "704 Af2", fields: { hauteur_metres: "article 28.4", hauteur_etages: null } },
+      ],
+    };
+    const [zn] = mapClaudeExtractionToZones(ext, 45, OPTS);
+    expect(zn!.hauteur_max!.value).toBeNull();
+    expect(zn!.hauteur_max!.raw).toBe("article 28.4");
+  });
+
   it("refuses an OUT-OF-RANGE value (plausibility window) → value null", () => {
     const ext: ClaudeRawExtraction = {
       zones: [{ zone_code: "Z1", fields: { marge_avant_min: "999" } }],

@@ -50,7 +50,9 @@ import { promisify } from "node:util";
 
 import {
   FIELD_SPECS,
+  buildRangeMaxField,
   buildVisionField,
+  labelContradictsField,
   type FieldId,
 } from "../../../packages/qc-sources/src/sources/grille-vision-extractor.js";
 import {
@@ -81,6 +83,13 @@ export interface ClaudeRawExtraction {
     zone_code: string | null;
     /** Per-field VERBATIM cell text, or null when empty/illegible/ambiguous. */
     fields: Partial<Record<FieldId, string | null>>;
+    /**
+     * Per-field VERBATIM PRINTED LABEL the cell was read from, when the engine can
+     * report it (Mistral `document_annotation` does). Feeds the round-trip guard:
+     * a label naming another object ("Dimension minimum (façade)" for a LOT width)
+     * refuses the cell. Absent → no rejection.
+     */
+    labels?: Partial<Record<FieldId, string | null>>;
   }>;
 }
 
@@ -205,15 +214,47 @@ export function mapClaudeExtractionToZones(
       snapshot: opts.snapshot,
       page: `PAGE ${page} ZONE ${code}`,
     });
-    const field = (id: FieldId): NormFieldT => {
+    const fieldFrom = (id: FieldId, raw: string | null | undefined): NormFieldT => {
       const spec = FIELD_SPECS.find((s) => s.id === id)!;
-      const raw = z.fields[id] ?? null;
+      // ROUND-TRIP guard: the printed label must not name another object.
+      const label = z.labels?.[id] ?? null;
+      if (labelContradictsField(spec, label)) {
+        return {
+          value: null,
+          raw: (raw ?? "").toString(),
+          unit: null,
+          confidence: 0,
+          flag: "libelle-hors-champ",
+          _provenance: provenance(),
+        };
+      }
       // Single read → feed as both passes (concordance auto-holds; rest gates).
       return buildVisionField(spec, raw, raw, provenance());
     };
-    const hauteurMetres = field("hauteur_metres");
-    const hauteurEtages = field("hauteur_etages");
-    const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
+    const field = (id: FieldId): NormFieldT => fieldFrom(id, z.fields[id] ?? null);
+    // Hauteur reads the MAX bound of a printed min/max range ("1 / 2" → 2, raw
+    // kept verbatim): taking the first number published the MINIMUM as hauteur_max.
+    const fieldMax = (id: FieldId): NormFieldT => {
+      const spec = FIELD_SPECS.find((s) => s.id === id)!;
+      const raw = z.fields[id] ?? null;
+      if (labelContradictsField(spec, z.labels?.[id] ?? null)) {
+        return fieldFrom(id, raw); // same refusal path (libelle-hors-champ)
+      }
+      return buildRangeMaxField(spec, raw, raw, provenance());
+    };
+    const hauteurMetres = fieldMax("hauteur_metres");
+    const hauteurEtages = fieldMax("hauteur_etages");
+    // Prefer a published métres value, else a published étages value; when NEITHER
+    // publishes, keep the refused field that still carries a verbatim cell (e.g. a
+    // "article 28.4" cross-reference) so the refusal stays traceable.
+    const hauteurMax =
+      hauteurMetres.value !== null
+        ? hauteurMetres
+        : hauteurEtages.value !== null
+          ? hauteurEtages
+          : hauteurMetres.raw
+            ? hauteurMetres
+            : hauteurEtages;
     const zn: ZoneNormsT = {
       zone_code: code,
       zone_page: `PAGE ${page} ZONE ${code}`,
