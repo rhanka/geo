@@ -33,9 +33,13 @@ for (const d of dirs) {
   }
 }
 
-// Report: on-disk artifacts whose base slug is still not done
+// Report: on-disk artifacts whose base slug is still not done.
+// --all lists EVERY on-disk artifact (a slug already flagged `done` in the matrix
+// can still be unserved or partially served — cf. "done ≠ servi"), --slug filters.
+const all = process.argv.includes('--all');
+const only = process.argv.includes('--slug') ? process.argv[process.argv.indexOf('--slug') + 1] : undefined;
 const leads = Object.entries(bySlug)
-  .filter(([slug]) => notDone.has(slug))
+  .filter(([slug]) => (all || notDone.has(slug)) && (!only || slug.includes(only)))
   .sort((a, b) => a[0].localeCompare(b[0]));
 
 console.log('zones!=done total', notDone.size);
