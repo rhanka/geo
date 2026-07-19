@@ -6,8 +6,10 @@
  * of a large file.
  *
  *   npx tsx acquisition/src/_src-grep.ts --file <path> --re "<js regex>" [--ctx 0]
+ *   npx tsx acquisition/src/_src-grep.ts --dir <dir> --re "<js regex>" [--ext .ts] [--ctx 0]
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 
 function parseArgs(argv: string[]): Record<string, string> {
   const a: Record<string, string> = {};
@@ -20,21 +22,41 @@ function parseArgs(argv: string[]): Record<string, string> {
   return a;
 }
 
-function main(): void {
-  const a = parseArgs(process.argv.slice(2));
-  const file = a["file"];
-  const re = a["re"];
-  if (!file || !re) throw new Error('required: --file <path> --re "<regex>"');
-  const ctx = a["ctx"] ? Number(a["ctx"]) : 0;
-  const rx = new RegExp(re);
+function walk(dir: string, ext: string, out: string[]): void {
+  for (const e of readdirSync(dir)) {
+    if (e === "node_modules" || e.startsWith(".")) continue;
+    const p = join(dir, e);
+    if (statSync(p).isDirectory()) walk(p, ext, out);
+    else if (p.endsWith(ext)) out.push(p);
+  }
+}
+
+function grepFile(file: string, rx: RegExp, ctx: number, prefix: boolean): void {
   const lines = readFileSync(file, "utf8").split("\n");
   lines.forEach((line, i) => {
     if (!rx.test(line)) return;
     const from = Math.max(0, i - ctx);
     const to = Math.min(lines.length - 1, i + ctx);
-    for (let j = from; j <= to; j++) console.log(`${j + 1}: ${lines[j]}`);
+    for (let j = from; j <= to; j++) console.log(`${prefix ? `${file}:` : ""}${j + 1}: ${lines[j]}`);
     if (ctx > 0) console.log("--");
   });
+}
+
+function main(): void {
+  const a = parseArgs(process.argv.slice(2));
+  const file = a["file"];
+  const dir = a["dir"];
+  const re = a["re"];
+  if ((!file && !dir) || !re) throw new Error('required: (--file <path> | --dir <dir>) --re "<regex>"');
+  const ctx = a["ctx"] ? Number(a["ctx"]) : 0;
+  const rx = new RegExp(re);
+  if (dir) {
+    const files: string[] = [];
+    walk(dir, a["ext"] ?? ".ts", files);
+    for (const f of files.sort()) grepFile(f, rx, ctx, true);
+    return;
+  }
+  grepFile(file!, rx, ctx, false);
 }
 
 main();
