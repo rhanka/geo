@@ -131,6 +131,34 @@ describe("mapClaudeExtractionToZones — frozen guard reuse, anti-invention", ()
     expect(zn!.marges.avant_min!.value).toBe(9.2);
   });
 
+  // ── Garde MULTI-COLONNES. Grille « 1 zone / page » dont les colonnes sont des
+  // CLASSES D'USAGES (saint-andre-avellin, Annexe B du 353-21) : marge avant 6 m
+  // pour l'habitation, 10 m pour l'agricole. Aucune valeur unique n'est « la norme
+  // de la zone » ; servir la 1re colonne serait faux pour l'autre classe.
+  it("refuses a norm whose per-column readings diverge, keeps the concordant ones", () => {
+    const ext: ClaudeRawExtraction = {
+      zones: [
+        {
+          zone_code: "AD-102",
+          fields: { marge_avant_min: "6", superficie_min: "2786", marge_laterale_min: "2" },
+          columns: {
+            marge_avant_min: "6 | 10",
+            superficie_min: "2786 | 2786",
+            marge_laterale_min: "2 | ",
+          },
+        },
+      ],
+    };
+    const [zn] = mapClaudeExtractionToZones(ext, 3, OPTS);
+    expect(zn!.marges.avant_min!.value).toBeNull();
+    expect(zn!.marges.avant_min!.flag).toBe("divergence-colonnes");
+    expect(zn!.marges.avant_min!.raw).toBe("6 | 10"); // les deux lectures gardées
+    // colonnes concordantes → publiées
+    expect(zn!.superficie_min!.value).toBe(2786);
+    // colonne vide ≠ norme concurrente
+    expect(zn!.marges.laterale_min!.value).toBe(2);
+  });
+
   it("an ABSENT label is not a rejection (engines that cannot report labels keep publishing)", () => {
     const ext: ClaudeRawExtraction = {
       zones: [{ zone_code: "A-1", fields: { frontage_min: "45 m" } }],
