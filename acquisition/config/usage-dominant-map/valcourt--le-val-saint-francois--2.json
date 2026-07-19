@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "AF": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "CV": null
+  },
+  "source": "https://www.valcourt.ca/app/uploads/2019/10/05-08-2017_reg-560-zonage-inclut-571-575-586-589-560-4-560-5-560-6-et-602-08-mai-2017-3610.pdf",
+  "note": "DOUBLON DE COLLECTION — ce slug sert EXACTEMENT la même donnée que `valcourt--le-val-saint-francois` : gate $0 `fold --list-prefixes` sur les deux clés S3, polygones=20 des deux côtés, 9 préfixes identiques et MÊMES codes (R 8 « R-13, R-11, R-37, R-10, R-38, R-8 » ; A 3 « A-4, A-5, A-1 » ; VALV 2 « VALV-010, VALV-010-Z01 » ; AF 2 ; P 1 ; no 1 « no.560 » ; I 1 ; CV 1 ; C 1). Le prefix_map est donc REPRIS À L'IDENTIQUE de la config committée `valcourt--le-val-saint-francois.json` (même municipalité, le suffixe `--2` désigne une seconde clé de collection, PAS une autre muni). Ville de Valcourt, Règlement 560 « Règlement de zonage » (inclut 571-575-586-589-560-4, 560-5, 560-6 et 602), 235 p. L'art. 1.8 « SUBDIVISION DU TERRITOIRE EN ZONES » est un ARTICLE-CROUPION, verbatim : « Aux fins d'application du présent règlement, le territoire de la Ville est divisé en zones. Chaque zone comporte une identification de base formée par une lettre ou une combinaison de lettres. L'identification de base correspond au caractère général de la zone » — SANS table. La nomenclature est donnée par les INTITULÉS des familles de zones du chapitre des grilles, verbatim avec les codes qu'ils énumèrent : « a) Zones agricoles » -> A-1..A-5 ; « b) Zones agro-forestières » -> AF-1..AF-3 ; « c) Zones commerciales » -> C-1 ; « d) Zones de centre-ville » -> CV-1..CV-4 ; « e) Zones industrielles » -> I-1, I-2 ; « f) Zones publiques » -> P-1..P-8 ; « g) Zones résidentielles » -> R-1..R-10. Mapping : R -> residentiel ; A et AF -> agricole ; C -> commercial ; I -> industriel. Null EXPLICITE : CV « Zones de centre-ville » (DUALE par nature) ; P « Zones publiques » (vocation PUBLIQUE). Longest-prefix vérifié : CV bat C, AF est agricole comme A. Non mappés volontairement (fall-through null honnête) : « VALV-010 » / « VALV-010-Z01 » ne sont pas des zones mais le numéro du PLAN DE ZONAGE (art. 1.8 : « Le plan n° VALV-010-Z01 daté du 7 mai 2012 »), et « no.560 » est le numéro du règlement — 3 polygones de bruit SIG. La matrice des usages permis des grilles n'a PAS été utilisée. Consulté le 2026-07-19."
+}
