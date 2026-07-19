@@ -149,6 +149,40 @@ function stopAll(agents: Agent[]) {
   for (const a of agents) sh('bash', [WORKER, 'stop', a.name]);
 }
 
+/**
+ * Kill fleet worker sessions that are NOT in the configured set — enforces the
+ * exact shard count so the fleet cannot drift above its cap.
+ *
+ * The tick only ever ADDED shards (relaunch the missing ones); it never removed
+ * any. So when a lane is shrunk (3→2 shards) or the engine is flipped
+ * (codex→claude, leaving the old codex sessions alive), the surplus sessions —
+ * `geo-<lane>-3`, an orphaned terra pane — linger forever, invisible to the tick
+ * because they are outside `expand()`. Measured 2026-07-19: config = 10 shards
+ * but 12–13 `remote-geo-*` sessions alive, the extras all leftover gpt-5.6-terra
+ * from the codex phase, wandering lane-to-lane every tick. This closes that leak:
+ * any `remote-geo-*` session whose base name is not a configured shard is stopped.
+ *
+ * Scope is deliberately `remote-geo-*` only: h2a worker panes carry the `remote-`
+ * prefix, while the supervisor loop (`geo-fleet-loop`) and the deterministic
+ * backfill (`geo-immo-gap-loop`) are plain bg sessions with no such prefix, so
+ * they are never matched. Singletons live in `expected` and are kept.
+ */
+function pruneOrphans(agents: Agent[]): string[] {
+  const expected = new Set(agents.map((a) => `remote-${a.name}`));
+  const sessions = sh('tmux', ['list-sessions', '-F', '#{session_name}'])
+    .split('\n')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const killed: string[] = [];
+  for (const s of sessions) {
+    if (!s.startsWith('remote-geo-')) continue; // only fleet worker panes
+    if (expected.has(s)) continue; // a configured shard — leave it alone
+    sh('bash', [WORKER, 'stop', s.replace(/^remote-/, '')]);
+    killed.push(s);
+  }
+  return killed;
+}
+
 /** Reconcile coverage and parse the 5+1 key numbers from the SCOREBOARD line. */
 function reconcile(): { line: string; sb: Scoreboard } {
   const out = sh('npx', ['tsx', 'acquisition/src/coverage-reconcile.ts'], 300_000);
@@ -240,6 +274,8 @@ function parseOverrides(argv: string[]): Map<string, number> {
 function tick(cfg: Config) {
   console.log(`=== geo-fleet tick ${iso()} ===`);
   const agents = expand(cfg);
+  const pruned = pruneOrphans(agents);
+  if (pruned.length) console.log(`PRUNE    ${pruned.length} orphan session(s) over cap: ${pruned.join(', ')}`);
   let relaunched = 0;
   let failed = 0;
   const dead: string[] = [];
@@ -285,7 +321,7 @@ function tick(cfg: Config) {
   // `alive` is measured BEFORE relaunching, `up` AFTER and verified: the pair is what
   // tells a stalled fleet (up=0 tick after tick) from a working one.
   const up = agents.filter((a) => isAlive(a.name)).length;
-  const row = { ts: iso(), sb, relaunched, failed, alive: agents.length - dead.length, up, total: agents.length, dead, backfill: bf };
+  const row = { ts: iso(), sb, relaunched, failed, pruned: pruned.length, alive: agents.length - dead.length, up, total: agents.length, dead, backfill: bf };
   appendTimeline(cfg.timeline, row);
   console.log(`=== tick done (relaunched=${relaunched}, failed=${failed}, UP=${up}/${agents.length}, timeline ${cfg.timeline}) ===`);
 }
