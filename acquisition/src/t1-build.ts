@@ -74,6 +74,10 @@ interface Args {
   labelRegion?: [number, number, number, number];
   /** SAFE, dict-gated relaxation of the anti-#74 rule for numeric zone codes. */
   allowNumericCodes: boolean;
+  /** Re-open a viewport whose /BBox overflows the MediaBox because the ArcGIS
+   * data frame is ROTATED on the sheet (lib/t1-georef.isPageAnchoredFrame).
+   * Default OFF — the strict containment gate is unchanged for every served slug. */
+  allowOverflowFrame: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -119,6 +123,7 @@ function parseArgs(argv: string[]): Args {
     ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
     labelRegion,
     allowNumericCodes: Boolean(a["allow-numeric-codes"]),
+    allowOverflowFrame: Boolean(a["allow-overflow-frame"]),
   };
 }
 
@@ -181,7 +186,12 @@ async function main(): Promise<void> {
   // 1. PDF + embedded georef -------------------------------------------------
   const pdfPath = await resolvePdf(args.pdf);
   const pdfBuf = readFileSync(pdfPath);
-  const geo = extractGeoRef(pdfBuf, pdfPath);
+  const geo = extractGeoRef(pdfBuf, pdfPath, {
+    ...(args.allowOverflowFrame ? { allowOverflowFrame: true } : {}),
+  });
+  if (args.allowOverflowFrame) {
+    console.error("[t1-build] overflow-frame relaxation ON: a page-ANCHORED rotated data frame is admitted");
+  }
   if (!geo) {
     fail(
       "no /VP /Measure /GEO georeferencing found — not a parseable T1 GeoPDF " +
