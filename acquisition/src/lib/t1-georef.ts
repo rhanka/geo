@@ -574,7 +574,66 @@ function geoMeasures(hay: string): GeoMeasure[] {
 // ---------------------------------------------------------------------------
 // Extract georeferencing from a GeoPDF buffer.
 // ---------------------------------------------------------------------------
+/**
+ * Is `bbox` a PAGE-ANCHORED map frame that merely OVERFLOWS the page?
+ *
+ * The default `inPage` gate requires the viewport /BBox to sit inside the
+ * MediaBox (±5 %). That gate exists to reject a giant `/Form` XObject BBox —
+ * the map's INTERNAL drawing space, a different coordinate system whose numbers
+ * are meaningless as a page-space neatline. But it also rejects a perfectly
+ * real registration: an ArcGIS export whose data frame is ROTATED on the page.
+ * A rotated rectangle's axis-aligned bounding box is necessarily LARGER than the
+ * rectangle, so a frame that fills the sheet bleeds past every edge (gaspe:
+ * /BBox [-1186 4590 5088 -1569] vs /MediaBox [0 0 4320 3024], the /Bounds quad
+ * being a ~4400×4700 rectangle centred within 10 pt of the page centre).
+ *
+ * The falsifiable discriminator is ANCHORING, not containment: a page-space
+ * frame CLIPPED by the sheet still covers the sheet and stays the same order of
+ * magnitude as it, whereas a drawing-space BBox lives at another scale/origin.
+ * Two bounded conditions, both required:
+ *   1. the bbox ∩ page area covers ≥ `minPageCoverage` of the PAGE (the frame
+ *      really is what the sheet shows), and
+ *   2. the bbox area is ≤ `maxAreaRatio` × the page area (a drawing space is
+ *      orders of magnitude off; a rotated sheet-filling frame is ≤ ~2× at 45°,
+ *      the worst case, so 9× is generous and still discriminating).
+ *
+ * This function DECIDES NOTHING on its own: it only re-opens a candidate that
+ * the strict gate drops. The registration it yields is still arbitrated by the
+ * downstream anti-invention gates (affine corner residual, ≥min distinct
+ * lettered codes, and above all the SPATIAL gate — a drawing-space BBox that
+ * slipped through would project labels nowhere near the municipality).
+ */
+export function isPageAnchoredFrame(
+  bbox: number[],
+  pageW: number,
+  pageH: number,
+  opts: { minPageCoverage?: number; maxAreaRatio?: number } = {},
+): boolean {
+  if (bbox.length < 4 || !pageW || !pageH) return false;
+  const minPageCoverage = opts.minPageCoverage ?? 0.5;
+  const maxAreaRatio = opts.maxAreaRatio ?? 9;
+  const x0 = Math.min(bbox[0]!, bbox[2]!);
+  const x1 = Math.max(bbox[0]!, bbox[2]!);
+  const y0 = Math.min(bbox[1]!, bbox[3]!);
+  const y1 = Math.max(bbox[1]!, bbox[3]!);
+  const area = (x1 - x0) * (y1 - y0);
+  if (!(area > 0)) return false;
+  const pageArea = pageW * pageH;
+  if (area > maxAreaRatio * pageArea) return false;
+  const ix = Math.max(0, Math.min(x1, pageW) - Math.max(x0, 0));
+  const iy = Math.max(0, Math.min(y1, pageH) - Math.max(y0, 0));
+  return ix * iy >= minPageCoverage * pageArea;
+}
+
 export interface ExtractGeoRefOptions {
+  /**
+   * Re-open a viewport whose /BBox OVERFLOWS the MediaBox when that bbox is a
+   * page-ANCHORED frame (`isPageAnchoredFrame`) — the ROTATED-data-frame case.
+   * Default OFF: the strict containment gate is preserved bit-for-bit for every
+   * slug already served through it. Opt in per-run (`t1-build
+   * --allow-overflow-frame`) and let the spatial/residual gates arbitrate.
+   */
+  allowOverflowFrame?: boolean;
   /**
    * Index du CADRE géoréférencé à retenir, cadres triés par aire-page DÉCROISSANTE.
    * `0` (défaut) = la carte principale — comportement historique, inchangé.
@@ -630,7 +689,9 @@ export function extractGeoRef(
     const maxX = Math.max(Math.abs(b[0]!), Math.abs(b[2]!));
     const maxY = Math.max(Math.abs(b[1]!), Math.abs(b[3]!));
     const area = Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
-    return maxX <= pageW * lim && maxY <= pageH * lim && area > 0.05 * pageW * pageH;
+    if (maxX <= pageW * lim && maxY <= pageH * lim && area > 0.05 * pageW * pageH) return true;
+    // Opt-in only: a ROTATED data frame overflows the sheet by construction.
+    return opts.allowOverflowFrame === true && isPageAnchoredFrame(b, pageW, pageH);
   };
   const bboxArea = (b: number[]): number => Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
 
