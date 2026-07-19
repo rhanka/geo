@@ -13,7 +13,7 @@ import zlib from "node:zlib";
 
 import { describe, it, expect } from "vitest";
 
-import { inflatePdfText, extractGeoRef, viewportGeoRefs } from "./t1-georef.js";
+import { inflatePdfText, extractGeoRef, isPageAnchoredFrame, viewportGeoRefs } from "./t1-georef.js";
 
 function pdfWithStream(payload: Buffer, tail = ""): Buffer {
   const z = zlib.deflateSync(payload);
@@ -241,5 +241,37 @@ describe("inflatePdfText — objects compressed in an /ObjStm are re-emitted", (
     ]);
     expect(() => inflatePdfText(buf)).not.toThrow();
     expect(inflatePdfText(buf)).toContain("/GPTS");
+  });
+});
+
+describe("isPageAnchoredFrame — a ROTATED data frame overflows the sheet by construction", () => {
+  // gaspe: /VP /BBox [-1186 4590 5088 -1569] vs /MediaBox [0 0 4320 3024]. The
+  // /Bounds quad is a ~4400x4700 rectangle centred within ~10 pt of the page
+  // centre, i.e. a real page-space frame the sheet CLIPS — not a drawing space.
+  const GASPE_BBOX = [-1186, 4590, 5088, -1569];
+  const PAGE_W = 4320;
+  const PAGE_H = 3024;
+
+  it("admits the gaspe rotated frame (covers the whole page, ~3x its area)", () => {
+    expect(isPageAnchoredFrame(GASPE_BBOX, PAGE_W, PAGE_H)).toBe(true);
+  });
+
+  it("still rejects a giant /Form drawing-space BBox (orders of magnitude off)", () => {
+    expect(isPageAnchoredFrame([0, 0, 500000, 400000], PAGE_W, PAGE_H)).toBe(false);
+  });
+
+  it("rejects a frame that lies mostly OFF the page (not page-anchored)", () => {
+    // Same size as the page but shifted so only a sliver overlaps.
+    expect(isPageAnchoredFrame([4000, 2800, 8320, 5824], PAGE_W, PAGE_H)).toBe(false);
+  });
+
+  it("rejects a degenerate/empty bbox and a missing page size", () => {
+    expect(isPageAnchoredFrame([10, 10, 10, 10], PAGE_W, PAGE_H)).toBe(false);
+    expect(isPageAnchoredFrame(GASPE_BBOX, 0, 0)).toBe(false);
+    expect(isPageAnchoredFrame([1, 2, 3], PAGE_W, PAGE_H)).toBe(false);
+  });
+
+  it("admits an ordinary fully-contained frame (the historical in-page case)", () => {
+    expect(isPageAnchoredFrame([0, 0, PAGE_W, PAGE_H], PAGE_W, PAGE_H)).toBe(true);
   });
 });
