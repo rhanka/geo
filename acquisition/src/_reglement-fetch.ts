@@ -4,7 +4,14 @@
  * lecture VERBATIM par pdftotext. Ne garde que les URL .pdf directes (les pages
  * de portail / non-disponible sont ignorées: pas de découverte à l'aveugle).
  *
- * Usage: npx tsx src/_reglement-fetch.ts --in <actionable.json> --out <dir> [--slugs a,b,c]
+ * ⛔ ANGLE MORT CORRIGÉ: le filtre `.pdf` écartait SILENCIEUSEMENT les gabarits
+ * «centre documentaire» à URL opaque (saint-casimir.com/file-23022,
+ * saint-lucien.ca/file-19067, cdn.gestionweblex.ca/files/<id>) qui répondent
+ * pourtant `200 application/pdf`. Désormais les écartés sont TOUJOURS listés
+ * (SKIP), et `--allow-non-pdf` les télécharge — la signature `%PDF-` reste le
+ * juge (les soft-404 HTML ressortent en `NOT-PDF!`).
+ *
+ * Usage: npx tsx src/_reglement-fetch.ts --in <actionable.json> --out <dir> [--slugs a,b,c] [--allow-non-pdf]
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -21,11 +28,12 @@ async function main(): Promise<void> {
   const only = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   mkdirSync(outDir, { recursive: true });
   const items = JSON.parse(readFileSync(inPath, "utf8")) as Array<{ slug: string; url: string }>;
-  const targets = items.filter((it) => {
-    if (only.length && !only.includes(it.slug)) return false;
-    const u = it.url.split("?")[0].toLowerCase();
-    return u.endsWith(".pdf");
-  });
+  const allowNonPdf = argv.includes("--allow-non-pdf");
+  const scoped = items.filter((it) => !only.length || only.includes(it.slug));
+  const targets = scoped.filter((it) => allowNonPdf || it.url.split("?")[0].toLowerCase().endsWith(".pdf"));
+  for (const it of scoped) {
+    if (!targets.includes(it)) console.log(`SKIP ${it.slug} (URL sans .pdf) ${it.url} — relancer avec --allow-non-pdf`);
+  }
   console.log(`fetch ${targets.length} PDF -> ${outDir}`);
   for (const { slug, url } of targets) {
     const dest = resolve(outDir, `${slug}.pdf`);
