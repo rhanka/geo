@@ -31,7 +31,13 @@ async function main(): Promise<void> {
   const dict = Array.isArray(dictJson) ? dictJson : dictJson.codes;
   if (!dict || dict.length < 3) fail("dictionary has fewer than 3 codes");
 
-  const geo = extractGeoRef(readFileSync(pdf), pdf);
+  // Same opt-in as t1-build: an ArcGIS data frame ROTATED on the sheet has a /VP
+  // /BBox larger than the /MediaBox by construction (lib/t1-georef
+  // isPageAnchoredFrame). Default OFF — the strict containment gate is unchanged.
+  const allowOverflowFrame = process.argv.includes("--allow-overflow-frame");
+  const geo = extractGeoRef(readFileSync(pdf), pdf, {
+    ...(allowOverflowFrame ? { allowOverflowFrame: true } : {}),
+  });
   if (!geo) fail("no embedded /VP /Measure /GEO georeferencing");
   if (geo.maxResidualM > 50) fail(`georef residual ${geo.maxResidualM.toFixed(1)}m > 50m`);
 
@@ -71,7 +77,12 @@ async function main(): Promise<void> {
   });
   const served = mergeByZoneCode(featureCollection);
   const lotPct = 100 * stats.n_lots_assigned / stats.n_lots_total;
-  if (lotPct < 70) fail(`lot assignment ${lotPct.toFixed(2)}% < 70%`);
+  const minLotPct = arg("min-lot-pct") ? Number(arg("min-lot-pct")) : 70;
+  console.error(
+    `[t1-multisheet-text] pooled: ${pooled.length} labels / ${distinct.size} codes -> ` +
+      `${served.features.length} features, ${stats.n_lots_assigned}/${stats.n_lots_total} lots (${lotPct.toFixed(2)}%)`,
+  );
+  if (lotPct < minLotPct) fail(`lot assignment ${lotPct.toFixed(2)}% < ${minLotPct}%`);
   const report = {
     slug,
     source: "geopdf-esri-multisheet-text-dict",

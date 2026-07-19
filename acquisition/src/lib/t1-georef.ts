@@ -657,6 +657,14 @@ export function extractGeoRef(
   // the map's internal drawing space, not the page-space neatline).
   let pageW = 0;
   let pageH = 0;
+  // Page COUNT gates the overflow relaxation below: `pageW/pageH` is page ONE's
+  // MediaBox, but a multi-page bylaw carries viewports belonging to OTHER pages
+  // (sainte-justine-de-newton: 275 pages, 7 georeferenced frames, the largest
+  // living on a fold-out sheet 2603 pt wide while page 1 is 1224 pt). Deciding
+  // "does this bbox overflow the page?" is then meaningless — and worse, it would
+  // pair one page's registration with another page's geometry. Overflow is only
+  // decidable on a STANDALONE plan sheet.
+  let nPages = 0;
   if (pdfPath) {
     try {
       const info = execSync(`pdfinfo ${JSON.stringify(pdfPath)}`, { encoding: "utf8" });
@@ -665,6 +673,8 @@ export function extractGeoRef(
         pageW = Number(pm[1]);
         pageH = Number(pm[2]);
       }
+      const pc = info.match(/^Pages:\s*(\d+)/m);
+      if (pc) nPages = Number(pc[1]);
     } catch {
       /* fall through */
     }
@@ -690,8 +700,10 @@ export function extractGeoRef(
     const maxY = Math.max(Math.abs(b[1]!), Math.abs(b[3]!));
     const area = Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
     if (maxX <= pageW * lim && maxY <= pageH * lim && area > 0.05 * pageW * pageH) return true;
-    // Opt-in only: a ROTATED data frame overflows the sheet by construction.
-    return opts.allowOverflowFrame === true && isPageAnchoredFrame(b, pageW, pageH);
+    // Opt-in only, and ONLY on a standalone single-page sheet: on a multi-page
+    // bylaw "overflow" is undecidable (see the nPages note above) and admitting it
+    // would pair one page's registration with another page's geometry.
+    return opts.allowOverflowFrame === true && nPages === 1 && isPageAnchoredFrame(b, pageW, pageH);
   };
   const bboxArea = (b: number[]): number => Math.abs((b[2]! - b[0]!) * (b[3]! - b[1]!));
 
