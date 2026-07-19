@@ -2403,11 +2403,11 @@
       "_note": "CORPS EN LIGNE (saint-hippolyte.ca, WordPress), 239 p, natif. LEVE le source_url «non-disponible» du manifest = FAUX NEGATIF: la muni diffuse le corps complet sur son propre site. Numero verbatim p19 art.1.1.1: «Le présent règlement porte le titre de « Règlement de zonage » et le numéro 1171-19.» — l'article de titre nomme AUSSI la muni («territoire de la Municipalité de Saint-Hippolyte»), donc gate proprietaire satisfait par la meme ligne. Millesime 2019: p3 «MUNICIPALITÉ DE SAINT-HIPPOLYTE / RÈGLEMENT Nº 1171-19 / ADOPTION : 9 AVRIL 2019». Gate proprietaire aussi en en-tete de chaque page p7-p239. NB: le doc est une «CODIFICATION ADMISTRATIVE» (sic p1) mais l'article de titre porte le numero de BASE 1171-19, pas un numero de codification. Remplace l'ancien 863-01."
     },
     "saint-hugues": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "LIEN MORT: le source_url du manifest «https://saint-hugues.com/fichiersUpload/fichiers/annexeA.pdf» repond HTTP 404. Aucun document a lire => null. Voie = re-decouverte de l'URL (hors lane P0_1)."
+      "reglement_numero": "269-06",
+      "reglement_millesime": 2006,
+      "reglement_page_source": 1,
+      "reglement_url": "https://saint-hugues.com/pdf/urbanisme/zonage/nos-de-reglement-zonage.pdf",
+      "_note": "CORPS EN LIGNE (saint-hugues.com), version refondue. L'ancien servi etait «annexeA.pdf», nom sans aucun numero. Numero ET gate proprietaire dans la MEME phrase, p1: «Cette édition du règlement de zonage de la municipalité de Saint-Hugues est une version refondue du règlement numéro 269-06 et des amendements qui lui ont été apportés en date du 23 mars 2022.»; page-titre «RÈGLEMENT DE ZONAGE NUMÉRO 269-06 / VERSION REFONDUE ADMINISTRATIVE». Millesime 2006: p1, tableau «Numéro du règlement | Date d'entrée en vigueur» -> «269-06   27 juin 2006»; les lignes suivantes (269-1-06, 269-2-07 … 269-17-19) sont les AMENDEMENTS, ecartes. ⚠ PIEGE: le chapitre 1 du corps (chap1-zonage.pdf, art.1.1) porte un titre SANS numero («Le présent règlement doit être connu et cité sous le titre «Règlement de zonage de la municipalité de Saint-Hugues».») — c'est la PAGE-TITRE de la refonte qui porte le numero. ⚠ Le chemin /images/Services/Urbanisme/… remonte par les moteurs est 404; le chemin vivant est /pdf/urbanisme/zonage/."
     },
     "saint-jean-de-matha": {
       "reglement_numero": null,
@@ -3946,8 +3946,8 @@
       "reglement_numero": null,
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local (132 p) est un cahier de grilles nues: entete de CHAQUE page = «Annexe 2 du Règlement de zonage    Zone A-1» (puis A-2, A-3...). Le mot «Règlement de zonage» y figure SANS numero = faux positif de motif. CONTRE-PREUVE mesuree a $0 sur le doc ENTIER (pas seulement les pages sondees): grep «numéro|no. <chiffres>|règlement <chiffre>» => ZERO occurrence sur les 132 pages. Defaut de DECOUVERTE (il manque le corps du reglement), pas d'extraction. URL manifest sjdl.qc.ca = 404 (http=404 text/html)."
+      "reglement_url": "null",
+      "_note": "⛔ CONTAMINATION HOMONYME DANS LA DONNEE SERVIE (3e cas de la passe) + defaut de DIFFUSION. (1) L'URL SERVIE N'APPARTIENT PAS A CETTE MUNI: le domaine sjdl.qc.ca est celui de SAINT-JOSEPH-DU-LAC — il sert /reglements-municipaux/ sous l'intitule «Municipalité de Saint-Joseph-du-Lac» et les PDF «saint-joseph-du-lac_-_reglement_de_zonage_4-91…» et «reglement_de_zonage_15-2024.pdf». La grille servie «grilles_de_specification_des_usages_(mise a jour 28 aout 2025).pdf» est donc LA GRILLE DE SAINT-JOSEPH-DU-LAC attachee au mauvais slug (famille crawler-attache-le-site-de-lhomonyme) => ESCALADE LANE ZONES/NORMES, et verifier si le slug saint-joseph-du-lac est lui aussi affecte. Le vrai site est saintjustdebretenieres.com (205 rue Principale, MRC de Montmagny). (2) Ce site officiel ne diffuse AUCUN corps de reglement de zonage: seuls 2 PROJETS d'amendement scannes sans couche texte (grep matches=0 sur 69 p et 64 p). (3) Le second projet a ete LU EN VISION a 0 dollar (PNG p1-p2): p1 «MUNICIPALITÉ DE SAINT-JUST-DE-BRETENIÈRES / MRC DE MONTMAGNY» puis «SECOND PROJET DE RÈGLEMENT / RÈGLEMENT N° 140-2021 / MODIFIANT LES RÈGLEMENTS DE ZONAGE, DE CONSTRUCTION ET DE LOTISSEMENT» — DOUBLE disqualification: c'est un AMENDEMENT qui ne cite nulle part le numero de la base, ET un PROJET aux dates VIDES («Avis de motion : / Adoption : / Approbation de la MRC : / Entrée en vigueur :» tous vierges; «IL EST PROPOSÉ PAR : ______»). PISTE RESIDUELLE: la MRC de Montmagny applique l'urbanisme de Saint-Just par entente intermunicipale — le corps pourrait etre cote MRC ou papier seulement."
     },
     "sainte-marie-madeleine": {
       "reglement_numero": "13-411",
@@ -5490,11 +5490,11 @@
       "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE, pas d'extraction. Le manifest porte la SENTINELLE schemee «https://non-disponible» comme source_url (hote sans FQDN, injoignable: curl echoue meme en --insecure) — ce n'est pas une piste, c'est l'absence de piste deguisee. Et aucun PDF local: `work/zonage-norms/saint-jerome/` est vide (NO-LOCAL-DOC). La grille est pourtant servie (108 zones, methode=mistral-vision), donc un doc a existe en amont sans que son URL soit conservee. ETAPE = re-decouvrir le reglement de zonage sur le site de la Ville de Saint-Jerome. (NB: sans rapport avec le recalage zonage de saint-jerome, servi a 99,69%.)"
     },
     "lac-sergent": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null MAINTENU (2026-07-17: la RAISON precedente «NO-GRILLE / aucun source_url a ouvrir» est PERIMEE — le manifest qc-zonage-norms sert desormais une URL). Le source_url «https://www.villelacsergent.com/assets/pdf/reglements/Reglement_314-14_grilles_usages_et_normes-VF.pdf» repond HTTP 200 (455 ko, application/pdf natif genere Excel, 27 p). LU: cahier de grilles pur — p1 verbatim «VILLE DE LAC-SERGENT / Grille des usages et normes / Annexe B» (OWNER-OK: nomme la ville). FIND-0 sur «314» et sur toute date d'adoption / «entrée en vigueur du règlement no N» dans les 27 pages. Le «314-14» du nom de fichier est un candidat NON RETENU (gate: jamais deduire de l'URL). => grille annexe SANS numero verbatim; le corps n'est pas servi. Voie restante = decouverte du CORPS (hors lane P0_1 URL-connue)."
+      "reglement_numero": "314-14",
+      "reglement_millesime": 2014,
+      "reglement_page_source": 12,
+      "reglement_url": "https://villelacsergent.com/assets/pdf/reglements/Reglement-314-14_zonage-VF.pdf",
+      "_note": "CORPS EN LIGNE (villelacsergent.com), 186 p, natif. ⛔ FALSIFIE le verdict HOLD-NULL «terminal» anterieur, rendu sur la seule GRILLE. Le candidat «314-14» du nom de fichier est PROUVE INDEPENDAMMENT dans le corps. Numero verbatim p12 art.1.1: «Le présent règlement porte le titre de « Règlement de zonage », identifié sous le numéro 314-14.»; aussi p1 «VILLE DE LAC-SERGENT / Règlement de zonage / Numéro 314-14» et p10 «RÈGLEMENT NUMÉRO 314-14 / RÈGLEMENT DE ZONAGE». Millesime 2014: p10 «Séance extraordinaire du Conseil municipal de la Ville de Lac Sergent tenue le 26 juin 2014, à 16h30 […] Il fut adopté ce qui suit :»; corrobore p11 «avis de motion […] séance du conseil tenue le 17 mars 2014» et «assemblée publique de consultation […] le 14 avril 2014». Gate proprietaire p1/p10 + en-tete des 186 p «Ville de Lac-Sergent   Règlement de zonage numéro 314-14». PAS un projet: dates remplies, quorum et conseillers nommes. Existe aussi une version -ADM.pdf, non retenue."
     },
     "oka": {
       "reglement_numero": "2016-149",
@@ -5840,11 +5840,11 @@
       "_note": "GRILLE servie (73 p, scan sans couche texte). Lecture visuelle p1: pied de page verbatim «RÈGLEMENT NUMÉRO 2023-04 SUR LE ZONAGE DE LA MUNICIPALITÉ DE DUHAMEL»; le numéro est porté par le document, non déduit du nom de fichier. MILLESIME null: aucune date d'adoption ou d'entrée en vigueur n'est visible p1; «2023» ne peut pas être déduit du numéro."
     },
     "sainte-marie-salome": {
-      "reglement_numero": null,
+      "reglement_numero": "316-2024",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "https://sainte-marie-salome.ca/storage/app/media/administration-et-information/R%C3%A8glements/316-2024_annexe-A.pdf",
-      "_note": "ANTI-INVENTION => null. Doc servi = «Annexe A - Grilles des spécifications» (source_url manifest 316-2024_annexe-A.pdf, 15 p). Le corps ne NOMME jamais le numéro du règlement de zonage: grep 0 sur «316» et «règlement no» dans les 15 pages; les seules mentions sont des renvois génériques («Voir section 5.4 relative aux maisons mobiles du règlement de zonage»). «316-2024» n'existe QUE dans le nom de fichier (piège URL) => pas de stamp."
+      "reglement_page_source": 6,
+      "reglement_url": "https://sainte-marie-salome.ca/storage/app/media/administration-et-information/R%C3%A8glements/316-2024-zonage.pdf",
+      "_note": "CORPS EN LIGNE (sainte-marie-salome.ca, OctoberCMS), 183 p, natif. Le candidat «316-2024» du nom de fichier est PROUVE INDEPENDAMMENT dans le corps: p6 art. de titre «Le présent règlement est intitulé « Règlement de zonage numéro 316-2024 ».», et page-titre p1 «MUNICIPALITÉ DE SAINTE-MARIE-SALOMÉ / RÈGLEMENT DE ZONAGE / NUMÉRO 316-2024». Gate proprietaire p1, p2 et p7. MILLESIME NULL: aucune date d'adoption ni d'EEV verbatim; la seule mention est p7 «Le présent règlement entre en vigueur conformément à la loi.», et un balayage plein document sur 2024|2025|seance|greffi|maire ne rend AUCUNE date d'adoption. INDICE ECARTE: «Mars 2024» p2 est sur la page de CREDITS = date d'edition du document, pas de la resolution. Aucun avis public d'adoption/EEV trouve en ligne."
     },
     "sainte-brigide-diberville": {
       "reglement_numero": "2025-474",
