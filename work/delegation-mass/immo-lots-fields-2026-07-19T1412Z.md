@@ -78,7 +78,8 @@ parseur XML *streaming*, hors périmètre de ce lot).
 |---|---|---|---|---|---|---|
 | 1 | 90 plus grosses (≥200 lots) | **1 (`laval` +34.81)** | 70 | 15 | 3 | 1 |
 | 2 | 120 munis 1 858–4 208 lots | **0** | 84 | 31 | 5 | 0 |
-| 3 | munis 150–1 857 lots (en cours à la clôture) | 0 à date | — | — | — | — |
+| 3 | 200 munis 734–1 857 lots | **0** | 140 | 53 | 4 | 3 |
+| **total** | **410 munis** | **1** | **294** | **99** | **12** | **4** |
 
 - `STERILE` = le dépôt servi porte DÉJÀ tout ce que la grille matche (re-fold = 0 gain).
 - `REGRESSIF` = le dépôt porte PLUS de normes que la grille courante ne matche
@@ -102,6 +103,9 @@ parseur XML *streaming*, hors périmètre de ce lot).
   1 lot hors de tout polygone RTA StatCan 2021 ⇒ `null` structurel (anti-invention).
 
 ## Conclusion
+
+**410 munis** passés au gate $0, **1 seul actionnable**, servi. Le shard est épuisé pour
+ce tour : tout gain futur sur `folded-normes` exige un dépôt AMONT (normes ou zonage).
 
 Le lot est **1 mutation, +139 794 lots foldés, +4.11 pt** sur `folded-normes` — la plus
 grosse avancée disponible dans la lane, obtenue en réfutant une prémisse de la mémoire
