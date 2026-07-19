@@ -529,10 +529,11 @@
       "reglement_url": "https://www.st-frederic.com/wp-content/uploads/Zonage_297-15_amende-5.pdf"
     },
     "notre-dame-de-lourdes--lerable": {
-      "reglement_numero": "02-2023",
-      "reglement_millesime": "2023",
+      "reglement_numero": null,
+      "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250225103027-grilles-des-usages-maj-2024-11-27.pdf"
+      "reglement_url": "null",
+      "_note": "⛔ CONTAMINATION HOMONYME CORRIGEE (l'entree precedente etait FAUSSE et SERVIE): ce slug portait «02-2023» + une URL sur notredamedelourdes.ca, SANS _note ni page_source. Or ce domaine est celui de l'AUTRE Notre-Dame-de-Lourdes, MRC DE JOLIETTE (Lanaudiere), dont le corps dit p2 «MRC DE JOLIETTE / MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES». 38 polygones de L'Erable ont donc servi le reglement d'une autre ville; champs EFFACES par fold --strip. PREUVES: (a) le PDF stampe est l'annexe de Joliette — en-tete de chaque page «Règlement de zonage 02-2023   Annexe C – Grilles de spécifications», et sa note 3 dit «autorisées uniquement le long de la route 131» (route de LANAUDIERE, inexistante dans L'Erable); il ne nomme aucune muni (gate proprietaire non franchi). (b) qc-municipal-directory.json: --lerable mamh 32080 designation «Paroisse» site municipalitelourdes.com; --joliette mamh 61045 designation «Municipalité» site notredamedelourdes.ca. (c) le vrai doc de L'Erable dit «PAROISSE DE NOTRE-DAME-DE-LOURDES» et «MRC : Municipalité régionale de comté de L'Érable» (p60) = designations alignees des deux cotes. LEAD NON STAMPABLE: municipalitelourdes.com sert «300-2017» («portant le numéro 300-2017 intitulé « Règlement de zonage de la Paroisse de Notre-Dame-de-Lourdes » remplaçant le règlement numéro 140-89», p3) mais c'est un 1er PROJET (pied «Règlement de zonage 1er projet 9 décembre 2016», dates d'adoption EN BLANC) => gate projet, pas de stamp. ETAPE: corps ADOPTE de 300-2017."
     },
     "saint-charles-borromee": {
       "reglement_numero": "2207-2022",
@@ -796,7 +797,7 @@
       "reglement_millesime": null,
       "reglement_page_source": 1,
       "reglement_url": "https://www.ville-cheneville.com/_files/ugd/dcb271_49ddd678f4b94633807db3af82c0a41f.pdf",
-      "_note": "CORPS EN LIGNE (ville-cheneville.com), 99 p, texte natif. SUPERSEDE l'ancien HOLD-NULL «DOC MUET: 2 pages de grille, 0 occurrence de reglement». Numero verbatim p1: «Règlement nº 2016-061» immediatement suivi de «RÈGLEMENT DE ZONAGE»; confirme p6 «Règlement de zonage nº 2016-061». Objet confirme p7 art.1: «Le présent règlement porte le titre de règlement de zonage.». Gate proprietaire p1 «CANADA / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE CHÉNÉVILLE» et p6 «LE CONSEIL MUNICIPAL DE CHÉNÉVILLE DÉCRÈTE CE QUI SUIT, À SAVOIR :». MILLESIME NULL par prudence: la page couverture est un GABARIT ENTIEREMENT VIDE («Adoption du règlement :», «Entrée en vigueur :» suivis de RIEN) et art.99 dit «Le présent règlement entrera en vigueur conformément à la Loi.». Le seul «2016» est le PRE-IMPRIME de la clause d'edicte p99 «FAIT ET PASSÉ À CHÉNÉVILLE, ce _____________ 2016.» — jour et mois blancs; insuffisant pour un millesime, et l'annee du numero ne fait pas foi. ECARTE: art.98 «Le présent règlement abroge et remplace toutes les dispositions du règlement de zonage nº 2000-005, tel qu'amendé.» = l'abroge."
+      "_note": "SERVI. L'ancien null «DOC MUET, grille 2 pages» est PERIME: le CORPS est diffuse publiquement. VERBATIM p1: «CANADA / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE CHÉNÉVILLE» + «RÈGLEMENT DE ZONAGE» + «Règlement nº 2016-061». BASE confirmee p99 (art.98 REMPLACEMENT): «Le présent règlement abroge et remplace toutes les dispositions du règlement de zonage nº 2000-005, tel qu'amendé.» => 2016-061 n'est pas un amendement, et 2000-005 est ABROGE (ne pas stamper). Owner-gate OK p1. MILLESIME null ASSUME: TOUS les champs de date de la couverture sont VIDES («Avis de motion :», «Adoption du règlement :», «Entrée en vigueur :» sans valeur) et la clause finale p99 est «FAIT ET PASSÉ À CHÉNÉVILLE, ce _____________ 2016.» — jour en blanc, PDF non signe. L'annee «2016» est imprimee mais NON ATTESTEE par une date complete => null strict ([[reglement-annee-du-numero-fausse]]). Voie ouverte: trouver la version signee."
     },
     "delson": {
       "reglement_numero": "901",
@@ -2035,7 +2036,7 @@
       "reglement_millesime": 2023,
       "reglement_page_source": 2,
       "reglement_url": "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250312154803-02-2023-reglement-de-zonage-maj-2024-11-27.pdf",
-      "_note": "CORPS EN LIGNE (notredamedelourdes.ca), 364 p / 54 Mo, texte natif. SUPERSEDE l'ancien HOLD-NULL «AUCUN DOC A LIRE: le source_url du manifest est une page HTML de proces-verbaux» — le vrai corps existe, il fallait le decouvrir. Numero verbatim p2: «Règlement de zonage numéro 02-2023». Millesime 2023: p2 «Avis de motion le : 18 janvier 2023 / Règlement adopté le : 13 février 2023 / Entrée en vigueur le : 13 avril 2023». Gate proprietaire p2: «PROVINCE DE QUÉBEC / MRC DE JOLIETTE / MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES» (bonne MRC: Joliette, PAS notre-dame-de-lourdes--lerable qui est deja cure 02-2023 sur son propre corps — homonymie a surveiller). RESERVE DE FORME: le doc est une CODIFICATION ADMINISTRATIVE et le dit p1 «MISE EN GARDE : Cette codification a été préparé uniquement pour la commodité du lecteur et n'a aucune valeur officielle.»; cela n'affecte ni le numero ni les dates d'origine du reglement de base. Mise a jour au 27 novembre 2024; amendements listes p2: 19-2023 (EEV 10-09-2024), 01-2024 (EEV 18-06-2024), 02-2024 (EEV 12-11-2024)."
+      "_note": "CORPS EN LIGNE (notredamedelourdes.ca), 364 p, texte natif. SUPERSEDE l'ancien HOLD-NULL «AUCUN DOC A LIRE: le source_url du manifest est une page HTML de proces-verbaux» — le vrai corps existe. Numero verbatim p2: «Règlement de zonage numéro 02-2023». Millesime 2023: p2 «Avis de motion le : 18 janvier 2023 / Règlement adopté le : 13 février 2023 / Entrée en vigueur le : 13 avril 2023». Gate proprietaire p2: «PROVINCE DE QUÉBEC / MRC DE JOLIETTE / MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES» — c'est bien la MRC de Joliette, et la designation «Municipalité» correspond au repertoire MAMH de ce slug (mamh 61045). RESERVE DE FORME: le doc est une CODIFICATION ADMINISTRATIVE et le dit p1 «MISE EN GARDE : Cette codification a été préparé uniquement pour la commodité du lecteur et n'a aucune valeur officielle.»; cela n'affecte ni le numero ni les dates d'origine. MAJ au 27 nov 2024; amendements p2: 19-2023, 01-2024, 02-2024. ⛔ CORRIGE UNE PREMISSE FAUSSE d'une note anterieure qui disait que notre-dame-de-lourdes--lerable etait «deja cure 02-2023 sur son propre corps»: c'etait faux et mesurable (aucun _note, aucune page_source, et son URL etait sur CE domaine-ci). --lerable a ete de-cure et strippe: il servait CE reglement-ci sur ses 38 polygones."
     },
     "belleterre": {
       "reglement_numero": "75",
@@ -3676,11 +3677,11 @@
       "_note": "REFUTE le _note precedent («defaut de DECOUVERTE: aucune URL ouvrable»): _wp-media-enum sur compton.ca (REST media ouvert) a trouve le CORPS complet du reglement de zonage, publie «2020-166-Zonage-EEV-11-juin-2024.pdf» (EEV = entree en vigueur, PAS un projet). NUMERO verbatim, cartouche p3: «Municipalite de Compton / RÈGLEMENT DE ZONAGE N° 2020-166», repris p4 «Reglement de zonage n° 2020-166» et p6 (resolution) «RÈGLEMENT DE ZONAGE No 2020-166 / ATTENDU QUE la Municipalite a le pouvoir...». OWNER-OK: «Municipalite de Compton» partout. MILLESIME 2020 verbatim: p167 «Adopte a la seance de ce conseil tenue le 14 juillet 2020» + cartouche p4 «Entree en vigueur : 3 novembre 2020». Le «EEV 11 juin 2024» du nom de fichier est la date de la CODIFICATION consolidee (integre les amendements jusqu'a 2024), pas l'adoption de la base. ECARTE 2002-35 = l'ancien zonage abroge, art. 1.2 verbatim p17: «Le reglement de zonage numero 2002-35 de la municipalite de Compton, ainsi que tous les amendements [...]». Numero LU dans le document, jamais derive d'une URL."
     },
     "huberdeau": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + aucune URL ouvrable (manifest et grille servie muets). Doc des 28 zones (mistral-vision) non conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+      "reglement_numero": "199-02",
+      "reglement_millesime": 2002,
+      "reglement_page_source": 174,
+      "reglement_url": "https://web.archive.org/web/20250713234334if_/http://municipalite.huberdeau.qc.ca/fr/documents/Reglement199-02zonageajouraout2024.pdf",
+      "_note": "SERVI. L'ancien null «aucun PDF + aucune URL ouvrable» est PERIME. VERBATIM p1: «PROVINCE DE QUÉBEC / MRC DES LAURENTIDES / MUNICIPALITÉ D'HUBERDEAU» + «RÈGLEMENT 199-02» + «RÈGLEMENT DE ZONAGE». Millesime 2002 verbatim p174 (art.14.3): «FAIT ET PASSÉ À HUBERDEAU, ce 28 juin 2002.» et «ENTRÉE EN VIGUEUR : 11 SEPTEMBRE 2002.» BASE: art.14.2 abroge «le numéro 135, tel qu'amendé»; la table des modifications p175 (228-06 ... 373-24) confirme le statut de reglement de base. Owner-gate OK p1. ACCES: l'URL vivante municipalite.huberdeau.qc.ca fait un 301 vers le nouveau site huberdeau.ca qui NE SERT PLUS le corps => URL = instantane Wayback (verifie %PDF)."
     },
     "lemieux": {
       "reglement_numero": null,
@@ -3760,11 +3761,11 @@
       "_note": "VERBATIM p1: «RÈGLEMENT 2162 / concernant le zonage» adopté «À UNE SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE LA VILLE DE RIVIÈRE-DU-LOUP ... LE LUNDI 16 SEPTEMBRE 2024». Refonte de la réglementation d'urbanisme adoptée le 21 mai 2024; cette version modifiée (conformité SADR, art. 109.11/137.7 LAU) adoptée le 16 septembre 2024. Owner=Ville de Rivière-du-Loup OK. Doc ADOPTÉ (non projet). Millésime 2024 (adoption verbatim)."
     },
     "saint-aime-des-lacs": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "non-disponible",
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: aucun PDF local + aucune URL ouvrable (manifest et grille servie muets). Doc des 35 zones (mistral-vision) non conserve. Rien n'a ete lu => aucun stamp. ETAPE = lane normes-discovery."
+      "reglement_numero": "260",
+      "reglement_millesime": 2007,
+      "reglement_page_source": 2,
+      "reglement_url": "https://www.saintaimedeslacs.ca/_files/ugd/0c9500_d62dfcbc77714faebcf43d44165b87e6.pdf",
+      "_note": "SERVI. Defaut de DECOUVERTE leve (site municipal). VERBATIM p1: «Municipalité de Saint-Aimé-des-Lacs / Règlement de zonage numéro 260 / Compilation administrative mise à jour le 25 juin 2019»; p2: «CANADA / PROVINCE DE QUÉBEC / MUNICIPALITÉ DE SAINT-AIMÉ-DES-LACS» + «RÈGLEMENT DE ZONAGE / NUMÉRO 260». Millesime 2007 verbatim p2: «À une séance régulière du Conseil de la Municipalité de Saint-Aimé-des-Lacs, tenue aux lieu et heure ordinaires des sessions de ce Conseil, ce 3e jour du mois d'octobre 2007» (avis de motion «le 1er août 2007»). BASE: «la Municipalité de Saint-Aimé-des-Lacs procède à la refonte globale de sa planification et de sa réglementation d'urbanisme»; corrobore par 4 amendements publies (367, 378, 379, 387) tous intitules «Modification du règlement de zonage no 260». Owner-gate OK p1+p2."
     },
     "saint-benoit-labre": {
       "reglement_numero": null,
