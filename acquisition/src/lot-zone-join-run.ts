@@ -208,8 +208,16 @@ async function resolveZonesKey(s3: S3Client, slug: string): Promise<string> {
   return key;
 }
 
+/** Le registre normes suit la MÊME table d'alias que le cadastre : une muni dont
+ *  le cadastre vit sous la graphie plate ("lassomption") est aussi servie sous le
+ *  slug à tirets ("l-assomption"), et son registre normes n'est déposé que sous la
+ *  graphie plate. Sans ce repli, la jointure du doublon à tirets trouve zone_code
+ *  mais AUCUNE norme → `folded-normes=0%` sur un dépôt pourtant servi. */
 async function resolveNormsKey(s3: S3Client, slug: string): Promise<string | null> {
-  return resolveFirstExisting(s3, [`${NORMS_PREFIX}qc-zonage-norms-${slug}.parquet`]);
+  return resolveFirstExisting(
+    s3,
+    [slug, ...(CADASTRE_SLUG_ALIASES[slug] ?? [])].map((c) => `${NORMS_PREFIX}qc-zonage-norms-${c}.parquet`),
+  );
 }
 
 async function resolveRecalageStatsKey(s3: S3Client, slug: string): Promise<string | null> {
