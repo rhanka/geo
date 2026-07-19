@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "Cons": "environnemental",
+    "P": null,
+    "PAE": null
+  },
+  "source": "https://www.sadl.qc.ca/fichiersUpload/fichiers/20250401111821-chapitre-1-dispositions-declaratoires-interpretatives-administratives-version-amendee.pdf",
+  "note": "Municipalité de Sainte-Anne-des-Lacs (MRC des Pays-d'en-Haut), « Règlement de zonage numéro 1001 », Chapitre 1 « Dispositions déclaratoires, interprétatives et administratives » (version amendée ; en-tête « Municipalité de Sainte-Anne-des-Lacs » sur chaque page ⇒ gate propriétaire franchi ; le règlement est ÉCLATÉ en chapitres-PDF, la table vit dans le chapitre 1 INTERPRÉTATIF). Sous-section 2 « RÈGLES D'INTERPRÉTATION DU PLAN DE ZONAGE », ARTICLE 25 « IDENTIFICATION DES ZONES », verbatim : « Le territoire de la Municipalité de Sainte-Anne-des-Lacs est divisé en zones sur le plan de zonage. Ces zones sont identifiées séparément par un code composé d'une lettre ou de plusieurs lettres indiquant la dominance d'usage de la zone, suivie d'une série de chiffres servant à la numérotation de la zone. Les lettres identifiant la dominance d'usage correspondent aux groupes d'usages identifiés dans la classification des usages et ont la signification suivante : H : Habitation ; C : Commerce ; I : Industrie ; P : Public et institutionnel ; Cons : Conservation ». (⚠️ Ici — et SEULEMENT ici — la lettre de zone EST la lettre du groupe d'usages, parce que le règlement l'ÉCRIT : « correspondent aux groupes d'usages identifiés dans la classification des usages ».) Mapping : H « Habitation » -> residentiel ; C « Commerce » -> commercial ; I « Industrie » -> industriel ; Cons « Conservation » -> environnemental. Null EXPLICITE : P « Public et institutionnel » (vocation PUBLIQUE). Null EXPLICITE ANTI-FALL-THROUGH : PAE (3 pol., `PAE-01/02/03`) est ABSENT de l'article 25 — ce n'est pas une dominance mais un secteur de « plan d'aménagement d'ensemble », désigné par le « Règlement sur les plans d'aménagement d'ensemble (PAE) n° 1006 » de la MÊME municipalité (section 3.3 verbatim : « Dispositions applicables au PAE-03 : développement du secteur « Rivière du Nord » ») ; sans ce null, le longest-prefix le rabattrait sur `P` « Public », ce qui serait un faux motif. `I` figure à la table mais n'est PAS servi par le SIG (non compté). La matrice des usages permis des grilles n'a PAS été utilisée. Consulté le 2026-07-19."
+}
