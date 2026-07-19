@@ -85,7 +85,9 @@ function inventory(): void {
  * «règlement de zonage numéro 123-45», «règlement de zonage no 123», «règlement de zonage 123-45».
  * ⛔ La classe d'accent DOIT couvrir è/È (grave): les couvertures crient «RÈGLEMENT DE ZONAGE
  * NUMÉRO ...» et un `[eé]` naïf les rate en bloc — faux FIND-0 massif (mesuré sur
- * saint-francois-du-lac: 204 occurrences ratées).
+ * saint-francois-du-lac: 204 occurrences ratées). C'est un piège de CE fichier, corrigé
+ * ici: les autres sondes du lane (_reglement-corps-read, _reglement-local-probe,
+ * _reglprov-fulltext-grep) utilisent déjà `r[eè]glement` et n'ont jamais eu ce défaut.
  */
 const RE_ZONAGE_NUM =
   /r[eéèêë]glement\s+(?:de\s+)?zonage\s*(?:num[eéèêë]ro|no\.?|n[°os]\.?|#)?\s*([0-9][0-9A-Za-z‐-―.\-\/]{1,20})/i;
