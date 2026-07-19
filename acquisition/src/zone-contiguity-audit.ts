@@ -53,12 +53,47 @@ const PREFIX = "normalized/ca-qc-zonage/";
  * municipality by administrative/ecological design, exactly like agricultural land. `CO`/`CONS`
  * were already exempt for the conservation family; `PI` is the same family under a different
  * municipal nomenclature (art. 3.2 legend: "Co Conservation; Pi Protection intégrale").
+ *
+ * `VC`/`VD`/`VILL`/`AFT`/`AIRE`/`RECB`/`RURA`/`CON`/`PE`/`AGV`/`DESC` were added after the
+ * 2026-07-19 zone-contiguity `fragmented`-status triage (10 cities, work/coverage/zone-
+ * contiguity.json): the FRAG_PARTS gate ignores agricultural prefixes but its exact-token
+ * match missed several municipal nomenclatures for the SAME scattered-by-design families —
+ * verbatim legend proof per city (acquisition/config/usage-dominant-map/<slug>.json):
+ *   - preissac VC-1..VC-7/VD-1: règl. 239-2014 §3.2 "VC : Villégiature (consolidation) ;
+ *     VD : Villégiature (développement)", explicitly grouped under "dominante résidentielle"
+ *     — lakeside cottage lots, scattered by design like agricultural land (same exemption
+ *     logic as A/AF/CO), NOT a contour-auto artefact.
+ *   - stratford AFT1-3/AFT1-6 & VILL-4/6/14: règl. 1035 art.5.1 table "Af Agroforestière" /
+ *     "Vill Villégiature" (règl. modif. 1098 verbatim: zone AFT1 = usages "à L'AGRICULTURE ET
+ *     À LA FORÊT"); `AF` was already exempt but `AFT` (with its numeral-1 type suffix) is a
+ *     distinct exact token, as is `VILL` (vs. the already-exempt `VIL`).
+ *   - cowansville AIRE-2/25/26, RECB-3/8, RURA-1: règl. 1841 art.138 legend (p.200) "AIRE ->
+ *     CONSERVATION", "RECt, RECb -> RÉCRÉATIVE" (the `REC` family under a 4-letter form),
+ *     "RURA -> RURALE / AGRICOLE".
+ *   - mont-saint-hilaire CON-1..4, PE-5/14: règl. 1235 art.14 legend "PE : Parc et espace
+ *     vert"; `CON` (not the legend's typo'd `CN`) confirmed via art.58 "CON-1 Conservation"
+ *     — civic parks/green-space and conservation land, same distributed-by-design family as
+ *     `P`/`PI`/`CO`/`CONS` above.
+ *   - chelsea AGV-1: règl. 1215-22 ch.1 legend "AGV : Agricole viable" — agricultural family.
+ *   - cowansville DESC-1 (10 parts): règl. 1841 legend "DESH, DESC, DESI -> ÎLOT
+ *     DESTRUCTURÉS" — CPTAQ "îlots déstructurés" are a PROVINCE-WIDE mechanism for pockets of
+ *     non-agricultural use inside a dynamic agricultural zone, inherently non-contiguous BY
+ *     DEFINITION (confirmed independently on a CPTAQ "Îlots déstructurés" map rendered while
+ *     investigating notre-dame-de-lourdes--joliette: discrete numbered islets 01.1/01.2/01.4
+ *     scattered across the farmland, not a single parcel) — same scattered-by-design logic as
+ *     agricultural land, even though the local usage_dominant mapping declines to name one of
+ *     the five served categories for it.
+ * NOT added (insufficient verbatim proof of scattered-by-design, left as genuine défaut-franc
+ * or undetermined candidates): chelsea REF (`Réserve foncière` — plausible but not proven
+ * inherently multi-site), chelsea MIX1-CV/MIX2-CV/RES-CV, cowansville CBC/RA/RAA/RB/RC/RD,
+ * hemmingford HA/HB/HC (habitation density classes, genuinely urban).
  */
 const RURAL_TOKENS = new Set([
-  "A", "AF", "AD", "AV", "AG", "AH", "AR", "AA", "AC", "AP", "EAF", "EA", "EX",
+  "A", "AF", "AFT", "AD", "AV", "AG", "AGV", "AH", "AR", "AA", "AC", "AP", "EAF", "EA", "EX",
   "F", "FA", "FO", "FR", "RF", "ZA", "ZAD",
-  "REC", "CONS", "CN", "CO", "V", "VR", "VIL", "T", "RU", "RUR",
-  "P", "PI",
+  "REC", "RECB", "RURA", "AIRE", "CONS", "CON", "CN", "CO", "V", "VR", "VIL", "VILL", "VC", "VD",
+  "T", "RU", "RUR",
+  "P", "PI", "PE", "DESC",
 ]);
 
 type ZoneGeometryStatus = "clean" | "suspect" | "fragmented" | "dispersed";
