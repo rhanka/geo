@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AG": "agricole",
+    "AG-D": "agricole",
+    "AG-R": "agricole",
+    "AG-C": null,
+    "MF": null,
+    "P": null,
+    "Q": null,
+    "R": "environnemental",
+    "R-AG": null,
+    "REQ": null
+  },
+  "source": "https://www.st-etiennedebeauharnois.qc.ca/wp-content/uploads/2021/10/R%C3%A8glement-zonage-2021-224_.pdf",
+  "note": "Municipalité de Saint-Étienne-de-Beauharnois, Règlement de zonage #2021-224 (en-tête de page VERBATIM « Municipalité de Saint-Étienne-de-Beauharnois — Règlement de zonage #2021-224 »), article 13 « Répartition du territoire municipal en zones »: « Les zones y sont présentées sous cette forme : » puis la table VERBATIM « Zone / Vocation »: AG=Agricole; AG-D=Agricole déstructurée; AG-R=Agricole riveraine; MF=Multifonctionnelle; P=Public et Institutionnelle; Q=Quartier; R=Récréative; R-AG=Récréative agricole; REQ=À requalifier. Le même article précise « Les lettres majuscules font référence à la vocation générale de la zone » et « Exemple : AG-101 / AG : principale vocation ». Mapping: AG, AG-D « Agricole déstructurée » et AG-R « Agricole riveraine » -> agricole (les trois sont libellés Agricole par la table); R « Récréative » -> environnemental. Null explicite: MF « Multifonctionnelle » est mixte; Q « Quartier » désigne un MILIEU (secteur villageois) et non une vocation d'usage; P « Public et Institutionnelle » est public; REQ « À requalifier » n'énonce aucune dominante; R-AG « Récréative agricole » est DUALE (récréative ET agricole) et sa clé est requise pour bloquer le repli longest-prefix vers R; AG-C (zone servie AG-C-231) N'EST PAS définie par la table de l'article 13 — clé présente à null explicite pour éviter que le repli longest-prefix ne la rabatte sur AG. La matrice des usages permis de l'Annexe « B » (grilles des usages et normes) n'a pas été utilisée comme autorité. Note d'accès: l'URL officielle du PDF est servie avec des en-têtes HTTP malformés (curl/WebFetch échouent); le corps a été lu via la copie Wayback https://web.archive.org/web/2024id_/https://www.st-etiennedebeauharnois.qc.ca/wp-content/uploads/2021/10/R%C3%A8glement-zonage-2021-224_.pdf"
+}
