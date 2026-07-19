@@ -1283,11 +1283,11 @@
       "_note": "En-tete p1 verbatim: «Reglement de zonage Numero 203-2015-2021 | Annexe D - Grille des specifications | Municipalite de Herouxville». NB: le nom de fichier porte «203-2023-01» -- DIVERGENT du doc; on retient le doc (gate). Millesime null: le numero porte DEUX annees (2015 et 2021) et le doc ne dit pas laquelle est l'adoption -- en choisir une serait une deduction."
     },
     "franquelin": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "null",
-      "_note": "RETRY-HOST-DOWN, PAS un HOLD-NULL terminal. Aucune lecture verbatim possible: l'origine municipalites-du-quebec.ca (208.69.79.54) est injoignable. Mesures: _reglement-fetch «ERR fetch failed» (2 encodages), WebFetch «connect ECONNREFUSED 208.69.79.54:443», port 80 «curl: (28) Connection timed out after 30002 ms». ⭐ NOUVEAUTE vs la memoire hebergeur-208-69-79-54-bloque-cette-box: ce n'est PAS qu'un blocage local — deux proxys tiers HORS BOX echouent aussi cote ORIGINE (api.allorigins.win HTTP 520, api.codetabs.com HTTP 522 = erreurs upstream) et r.jina.ai rend 200 avec un corps VIDE (145 o). L'origine semble globalement HORS LIGNE, pas seulement filtree. Wayback: available=429, web/2024/<url>=404, CDX sur /franquelin/pdf_reglements/*=0 ligne — aucun instantane. INDICE NON RETENU (ne passe pas le gate verbatim): le titre d'indexation moteur du PDF est «Municipalité de Franquelin RÈGLEMENT NUMÉRO 2025-03 RELATIF AU ZONAGE» et un resume dit qu'il remplace le zonage 39-91 — c'est du contenu indexe par un TIERS, pas notre lecture. ETAPE: relire le PDF servi des que l'hote repond (c'est tres probablement deja le CORPS: 138+ p, titre de reglement, pas une grille)."
+      "reglement_numero": "2025-03",
+      "reglement_millesime": 2026,
+      "reglement_page_source": 5,
+      "reglement_url": "https://www.mrcmanicouagan.qc.ca/images/Upload/pv_18_fevrier_2026.pdf",
+      "_note": "SUBSTITUT MRC (l hote municipalites-du-quebec.ca 208.69.79.54 est MORT cote SERVEUR, pas filtre cote client: WebFetch depuis l infra Anthropic rend aussi ECONNREFUSED; CDX Wayback du prefixe /franquelin = 233 entrees, AUCUN pdf_reglements). PV de la MRC de Manicouagan 18 fev 2026 verbatim: Res. 2026-42 Certificat de conformite au SADR Reglement 2025-03 relatif au zonage Municipalite de Franquelin ... CONSIDERANT qu en date du 16 fevrier 2026, la municipalite de Franquelin a, par la resolution 2026-017, adopte le Reglement 2025-03 relatif au zonage. MILLESIME 2026 = date d adoption verbatim, PAS le 2025 du numero. Le titre indexe par Google n a PAS servi de preuve."
     },
     "grand-metis": {
       "reglement_numero": "2011-0145",
@@ -3873,11 +3873,11 @@
       "_note": "MAUVAIS REGLEMENT (bonne muni) => null. CORRIGE le _note precedent, qui tenait null sur «scan illisible / route vision requise» et renvoyait donc a une depense OCR: cette depense serait PERDUE, car le doc ne portera JAMAIS le numero de zonage. Le scan a ete LU A $0 (`pdftoppm -r 120 -png` p1-p2 + vision de l'agent, sans OCR payant). CE QU'IL EST, verbatim: p1 = page-titre «RÈGLEMENT DE CONSTRUCTION / NUMÉRO 84» (foliotage imprime «32»); p2 = «CHAPITRE NO 3 / RÈGLEMENT DE CONSTRUCTION / SECTION NUMÉRO 1 DISPOSITIONS DÉCLARATOIRES», art. 3.1.1 TITRE verbatim: «Le titre du présent règlement est \"Règlement concernant la construction dans la municipalité de Clerval\" et peut être cité sous le nom de \"Règlement de construction\" ou \"Règlement numéro 84\".» (foliotage imprime «33»). => 84 est le reglement de CONSTRUCTION, a ECARTER pour la provenance ZONAGE (meme famille que saint-hilaire-de-dorset/229-2018 = comite consultatif d'urbanisme, et saint-pierre-de-lamy/2022-005 = plan d'urbanisme: un numero parfaitement lisible mais du MAUVAIS reglement). GATE PROPRIETAIRE: PASSE (art. 3.1.1 + art. 3.1.4 «l'ensemble du territoire soumis à la juridiction de la municipalité de Clerval»); le blocage n'est ni la lisibilite ni le proprietaire. CE QUI MANQUE: le doc local (7 p) n'est qu'un FRAGMENT — le «CHAPITRE NO 3» d'une codification d'urbanisme dont le foliotage imprime commence a 32; le reglement de ZONAGE est un AUTRE chapitre de cette codification, absent du dossier. art. 3.1.3 confirme que 84 n'abroge que du construction: «Le présent règlement abroge et remplace en entier, tous les règlements ou dispositions antérieurs ayant trait à la construction, ainsi que le règlement numéro 50.» ETAPE = chapitre ZONAGE de la codification de Clerval (defaut de DECOUVERTE); NE PAS OCRiser ce PDF."
     },
     "fermont": {
-      "reglement_numero": null,
+      "reglement_numero": "165",
       "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE: le seul doc local (grille.pdf, 2 pages) est un extrait de grille — sonde p1-8 «NO-CANDIDATE-LINE (aucun motif règlement/vigueur)». Le corps du reglement n'a jamais ete telecharge. ETAPE = lane normes-discovery."
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.villedefermont.qc.ca/wp-content/uploads/2025/02/Reglement-numero-495.pdf",
+      "_note": "BASE NOMMEE PAR AMENDEMENT (supersede le null defaut de decouverte). Verbatim: REGLEMENT NUMERO 495 AMENDANT LE REGLEMENT DE ZONAGE NUMERO 165 DE FACON A MODIFIER LA GRILLE DES USAGES ET NORMES DE LA ZONE H01-80; art. 2: faisant partie integrante du reglement de zonage numero 165, tel que prescrit par l article 1.1.5b). Owner: CANADA, PROVINCE DE QUEBEC, VILLE DE FERMONT, COMTE DUPLESSIS. Millesime null: le CORPS du 165 n est pas diffuse (l archive /reglements/ ne sert que les amendements 494, 495, 485); les dates du 495 (ADOPTION 12 NOVEMBRE 2024) sont celles de l AMENDEMENT."
     },
     "cascapedia-saint-jules": {
       "reglement_numero": "10-06",
@@ -4132,11 +4132,11 @@
       "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE PUR: aucune source_url au manifest ET aucun PDF dans work/zonage-norms/lavenir/ (NO-LOCAL-DOC mesure). Rien a lire, ni en ligne ni sur disque => on ne stampe rien. Le zonage est servi (methode=mistral-vision, rows=1) mais son doc source n'est pas dans le corpus. ETAPE = decouverte du doc (crawler muni), hors gate $0 de cette lane."
     },
     "mulgrave-et-derry": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": "non-disponible",
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE PUR: aucune source_url au manifest ET aucun PDF dans work/zonage-norms/mulgrave-et-derry/ (NO-LOCAL-DOC mesure). Rien a lire => on ne stampe rien. ETAPE = decouverte du doc, hors gate $0 de cette lane."
+      "reglement_numero": "2017-012",
+      "reglement_millesime": 2018,
+      "reglement_page_source": 1,
+      "reglement_url": "http://www.mulgrave-derry.ca/fichiersUpload/fichiers/20251103130758-2017-012-reglement-de-zonage.pdf",
+      "_note": "CORPS EN LIGNE (supersede le null defaut de decouverte). Verbatim p1 (couche texte native): Reglement no 2017-012 / REGLEMENT DE ZONAGE; owner CANADA, PROVINCE DE QUEBEC, MUNICIPALITE DE MULGRAVE-ET-DERRY. Art. 86 confirme la filiation: abroge et remplace toutes les dispositions du reglement de zonage no 2000-04. MILLESIME: la page-titre du corps est un GABARIT NON REMPLI (dates vides) et l art. 87 dit seulement entrera en vigueur conformement a la Loi, suivi de FAIT ET PASSE A MULGRAVE-ET-DERRY, ce (date) (2017) = placeholder, NON retenu. 2018 vient de l amendement ADOPTE 2019-004 p1: la municipalite dispose d un reglement de zonage (no. 2017-012) en vigueur depuis le 29 mars 2018; en-tete MRC DE PAPINEAU."
     },
     "notre-dame-auxiliatrice-de-buckland": {
       "reglement_numero": "06-2021",
@@ -4370,11 +4370,11 @@
       "_note": "RE-QUALIFIE via ROUTE VISION $0 (pdftoppm -r 150 -png p1 + vision de l'agent, PAS d'OCR paye). Le doc local grille.pdf (27 p) est un SCAN sans couche texte (pdftotext<40 car), mais l'en-tete haut-droite de la grille (p1) est parfaitement lisible et porte VERBATIM: «MUNICIPALITÉ DE NAMUR / Règlement de zonage no. 2020-212 / Annexe - B - Grilles des usages et normes». OWNER-OK (Namur = slug, verbatim). 2020-212 est bien le numero DU reglement de zonage (cette page en est l'Annexe B). MILLESIME null: aucune date d'adoption/EEV verbatim sur l'en-tete de grille; le «2020» du numero n'est pas une date verbatim (memoire reglement-annee-du-numero-fausse). URL null: [NO-URL] au manifest, doc lu = scan local."
     },
     "lac-des-plages": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local est une page UNIQUE, sans aucun motif de reglement ni de date (NO-CANDIDATE-LINE mesure sur la seule page). Ni numero, ni clause d'adoption, ni entree en vigueur. Defaut de DECOUVERTE (il manque le corps du reglement). Cible NO-GRILLE."
+      "reglement_numero": "134-2019",
+      "reglement_millesime": 2020,
+      "reglement_page_source": 1,
+      "reglement_url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/lac-des-plages/_publication/fichiers/Rglement%20134-2019_sign.pdf",
+      "_note": "CORPS VPlus _publication + ROUTE VISION (supersede le null page-unique-sans-motif). PDF SCANNE: p1 rendue en PNG puis lue en vision. Verbatim: REGLEMENT NUMERO 134-2019, REGLEMENT DE ZONAGE; owner MUNICIPALITE DE LAC-DES-PLAGES. MILLESIME 2020 verbatim: Adoption 2020-02-14, EEV 2020-06-09; le numero dit 2019, l adoption est 2020. Portail SPA VPlus debloque par l API structure/tree sur lacdesplages.com."
     },
     "baie-des-sables": {
       "reglement_numero": "2008-06",
@@ -4415,8 +4415,8 @@
       "reglement_numero": null,
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Defaut de DECOUVERTE PUR: cible NO-GRILLE (aucune entree au manifest) ET aucun PDF dans work/zonage-norms/la-reine/ (NO-LOCAL-PDF mesure). Rien a lire => on ne stampe rien. ETAPE = decouverte du doc, hors gate $0 de cette lane."
+      "reglement_url": "null",
+      "_note": "ANTI-INVENTION => null, TERMINAL sur les voies en ligne. La muni ne diffuse AUCUN reglement d urbanisme. Site lareine.ao.ca (CMS Radium de l inforoute MRC AO): la page Urbanisme (PageID=620) ne sert que 2 formulaires; la page Reglements municipaux (PageID=612) sert 9 PDF tous non urbanistiques (155 piscines, 207 horaire, 217 circulation, 220 cannabis, 233 nuisances, 241 animaux, 242 brulage, 244 paix et bon ordre, 245 renovation). CDX Wayback sur tout le domaine rend la MEME liste plus 212, 222, 234, 248: aucun zonage jamais publie. PIEGE ECARTE: mrcao.qc.ca/documents/pages/reglement-08-2020_-zonage.pdf remonte en tete de recherche mais son titre est TERRITOIRES NON ORGANISES, REGLEMENT DE ZONAGE, Reglement no. 08-2020 = zonage des TNO de la MRC, owner-gate ECHOUE."
     },
     "launay": {
       "reglement_numero": null,
@@ -4545,11 +4545,11 @@
       "_note": "REFUTE le _note precedent («recueil d'annexes 47 p, motif reglement FIND-0»): un DEPOT AMONT cdx-* est arrive depuis (famille null-verdict-perime-par-depot-amont). Le CORPS est desormais sur le disque: work/zonage-norms/new-carlisle/cdx-new-carlisle-reglement-zonage-2013-344_reg-2021-407_septembre-2021.pdf (163 p, texte natif). NUMERO verbatim p1: «RÈGLEMENT NUMÉRO 2013-344», confirme p2 «...« Règlement de zonage » et portant le numéro 2013-344 soit adopté...» et titre p3 «TITRE 2 - RÈGLEMENT DE ZONAGE / MUNICIPALITÉ DE NEW CARLISLE». MILLESIME verbatim p1 «Date d'entrée en vigueur : Avril 2013» => 2013 (EEV de la BASE; le «Règlement numéro 2021-407, Septembre 2021» du meme cartouche est la «Dernière modification et/ou mise à jour», ECARTE). Owner OK (New Carlisle, MRC Bonaventure; un seul homonyme au QC). page_source=1. reglement_url null: depot local cdx-*, pas d'URL source connue."
     },
     "saint-emile-de-suffolk": {
-      "reglement_numero": null,
-      "reglement_millesime": null,
-      "reglement_page_source": null,
-      "reglement_url": null,
-      "_note": "ANTI-INVENTION => null. Le doc local est une grille NUE d'une seule page: aucun motif «reglement/vigueur» sur toute son etendue (NO-CANDIDATE-LINE). Proprietaire faiblement atteste (1 occ. «Suffolk»). Defaut de DECOUVERTE (il manque le corps du reglement)."
+      "reglement_numero": "17-004",
+      "reglement_millesime": 2018,
+      "reglement_page_source": 1,
+      "reglement_url": "https://st-emile-de-suffolk.com/_files/ugd/18ea91_acc155efd822498883eeccfde91c5285.pdf",
+      "_note": "CORPS EN LIGNE (supersede le null defaut de decouverte). Verbatim p1: Reglement no 17-004 / REGLEMENT DE ZONAGE, confirme p5: Reglement de zonage no 17-004. Owner: MUNICIPALITE DE SAINT-EMILE-DE-SUFFOLK. MILLESIME 2018 verbatim: Adoption du reglement 13 AVRIL 2018, Entree en vigueur 29 AOUT 2018. PIEGE ECARTE: le site sert aussi un 25-005, lu en vision (scan), c est un AMENDEMENT (REGLEMENT NUMERO 25-005 ... MODIFIANT LE REGLEMENT DE ZONAGE NUMERO 17-004)."
     },
     "saint-augustin-de-desmaures": {
       "reglement_numero": "480-85",
