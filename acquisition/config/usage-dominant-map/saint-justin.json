@@ -1,0 +1,27 @@
+{
+  "prefix_map": {
+    "Aa": "agricole",
+    "701 Af": "agricole",
+    "702 Af": "agricole",
+    "703 Af": "agricole",
+    "704 Af": "agricole",
+    "705 Af": "agricole",
+    "709 Af": "agricole",
+    "801 Af": "agricole",
+    "802 Af": "agricole",
+    "804 Af": "agricole",
+    "805 Af": "agricole",
+    "806 Af": "agricole",
+    "807 Af": "agricole",
+    "808 Af": "agricole",
+    "809 Af": "agricole",
+    "810 Af": "agricole",
+    "811 Af": "agricole",
+    "812 Af": "agricole",
+    "813 Af": "agricole",
+    "814 Af": "agricole",
+    "Ar": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-justin/_publication/fichiers/SAINT-JUSTIN%20ZONAGE.pdf (Règlement de zonage n° 454, article 19 « Répartitions du territoire municipal en zone », p. 21)",
+  "note": "Légende VERBATIM lue dans le CORPS du règlement de zonage de la municipalité, article 19 (p. 21) : « Les zones apparaissant aux plans de zonage sont regroupées en différents types, selon les usages qui y sont autorisés. Elles sont identifiées par un code composé de deux éléments, soit de trois chiffres suivis d'une lettre ou deux lettres. » puis « Les différents types de zones se répartissent comme suit: - ZONES RÉSIDENTIELLES Ra / - ZONES COMMERCIALES Ca / - ZONES INSTITUTIONNELLES P / ZONES INDUSTRIELLES I / ZONES AGRICOLES A / - ZONES AGRICOLES ACTIVES Aa / - ZONES AGROFORESTIERES Af / - ZONE RÉCRÉATIVE R / - ZONES AGRICOLES ET RÉSIDENTIELLES AR ». Seuls les types RÉELLEMENT servis sont mappés. Aa = « ZONES AGRICOLES ACTIVES » -> agricole. Af (servi sous les sous-familles Af1 et Af2) = « ZONES AGROFORESTIERES » -> agricole. Null explicite et SERVI : Ar = « ZONES AGRICOLES ET RÉSIDENTIELLES » est DUALE (agricole + résidentiel), corroboré par l'article 132 « Compatibilité des usages dans les secteurs mixtes » (p. 127) : « Dans les secteurs mixtes (zone 801 Ar, 802 Ar, 803 Ar et 804 Ar, plan de zonage 3A), ne sont autorisés que les usages résidentiels de faible densité et les seuls commerces et services de première nécessité » — mixte, donc null. FORME DES CLÉS Af : le fold matche le code BRUT et sa forme `canonZoneCodeServe`. Pour un code à sous-index comme « 813 Af1 », canonZoneCodeServe est un no-op (sa regex digit-first `^(\\d+)[-\\s]?([A-Za-z]+)$` exige un run alphabétique PUR, or « Af1 » finit par un chiffre) : le code reste digit-first et AUCUNE clé alphabétique ne peut le préfixer. Les clés Af sont donc les 19 préfixes digit-first RÉELLEMENT servis, énumérés exhaustivement depuis la collection (Af2 : 701, 702, 703, 704, 705, 709 ; Af1 : 801, 802, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814), chacun 1:1 avec une seule zone agroforestière et sans collision avec les codes Aa (601-615, servis en « Aa-601 » après canon) ni avec Ar (901). NON MAPPÉ VOLONTAIREMENT : les 15 codes `SJU-1` à `SJU-16` (30 % des polygones) ne respectent PAS la codification décrétée à l'article 19 (« trois chiffres suivis d'une lettre ou deux lettres ») et la chaîne « SJU » n'apparaît NULLE PART dans le règlement 454 (0 occurrence sur 201 pages) : ils proviennent d'une autre source que ce règlement et restent donc null de non-match plutôt que devinés. Gate propriétaire : le document NOMME sa municipalité — en-tête p. 1 « Municipalité de Saint-Justin / RÈGLEMENT DE ZONAGE », article 1 « Le présent règlement est intitulé : \" Règlement de zonage \" de la municipalité de Saint-Justin et porte le numéro 454 », article 6 « Le présent règlement s'applique sur l'ensemble du territoire soumis à la juridiction de la municipalité de Saint-Justin » — et il est servi depuis le bucket VPlus du slug (`vplus-documents/saint-justin/`). ⚠ ÉCART CONSTATÉ, sans effet sur ce mapping : l'article 132 désigne les zones mixtes par « 801 Ar … 804 Ar » alors que le SIG servi porte 801/802/804 en Af1 et un seul Ar en 901 — la numérotation a bougé entre le texte et le plan servi. L'article 19 précise que les chiffres ne sont qu'un identifiant d'unicité (« la numérotation à l'aide de chiffres leur conférant un caractère unique et distinct ») : la catégorie est portée par la ou les LETTRES, qui sont ici lues verbatim ; les clés numériques ci-dessus sont prises sur les codes SERVIS eux-mêmes, pas sur ceux du texte. Couverture : 35/50 polygones (70 %) — Af 19, Aa 15, Ar 1 ; les 15 SJU restent null."
+}
