@@ -61,7 +61,19 @@ const RURAL_TOKENS = new Set([
   "P", "PI",
 ]);
 
-type ZoneGeometryStatus = "clean" | "suspect" | "dispersed";
+type ZoneGeometryStatus = "clean" | "suspect" | "fragmented" | "dispersed";
+
+/**
+ * An urban (non-rural) zone with this many parts or more is SHATTERED, not merely
+ * multi-part. saint-stanislas-de-kostka (contour-auto) served each code as one
+ * MultiPolygon of 25–38 fragments — an artefact of auto-deriving contours from a
+ * georeferenced raster, not real parcels. A genuine urban zone is one or a few
+ * compact polygons; ≥8 disjoint parts for the same urban code is the contour-auto
+ * signature. Requiring several such zones (FRAG_MIN_ZONES) before flagging the city
+ * avoids tripping on a single oddly-drawn zone.
+ */
+const FRAG_PARTS = 8;
+const FRAG_MIN_ZONES = 3;
 
 interface ZoneMetric {
   zone_code: string;
@@ -77,8 +89,12 @@ interface CityReport {
   features: number;
   multipart_zones: number;
   max_parts: number;
+  mean_parts: number; // total parts / zones — the city-wide fragmentation level
   sliver_zones: number;
   dispersed_urban_zones: string[]; // the offending non-agricultural zone_codes
+  over_fragmented_zones: string[]; // non-rural codes shattered into ≥FRAG_PARTS parts
+  confidence?: string; // dominant `confidence` property (contour-auto = approximate)
+  contour_auto?: boolean; // geometry auto-derived from raster (rectifiable via official vector)
   source?: string;
   note?: string;
 }
@@ -140,10 +156,13 @@ function auditCity(slug: string, features: Feature[]): CityReport {
   // City bbox for the diagonal (dispersion normaliser).
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   const perZone: { code: string; rings: number[][][] }[] = [];
+  const confidences: string[] = [];
   for (const f of features) {
     const code = typeof f.properties?.["zone_code"] === "string" ? (f.properties!["zone_code"] as string) : "";
     const rings = outerRings(f.geometry ?? {});
     if (!code || rings.length === 0) continue;
+    const conf = f.properties?.["confidence"];
+    if (typeof conf === "string" && conf) confidences.push(conf);
     for (const r of rings) for (const [x, y] of r) {
       if (x < minX) minX = x; if (x > maxX) maxX = x;
       if (y < minY) minY = y; if (y > maxY) maxY = y;
@@ -182,12 +201,30 @@ function auditCity(slug: string, features: Feature[]): CityReport {
     .filter((z) => !z.agricultural && z.parts >= 3 && z.dispersion > 0.6)
     .map((z) => z.zone_code)
     .sort();
+  // Fragmentation = an urban zone shattered into many disjoint parts (contour-auto
+  // artefact), ORTHOGONAL to dispersion: saint-stanislas read "clean" on dispersion
+  // (its fragments were not spread city-wide) yet was severely fragmented.
+  const overFragmented = zoneMetrics
+    .filter((z) => !z.agricultural && z.parts >= FRAG_PARTS)
+    .map((z) => z.zone_code)
+    .sort();
   const sliverZones = zoneMetrics.filter((z) => z.sliver_parts >= 2).length;
   const multipart = zoneMetrics.filter((z) => z.parts > 1).length;
   const maxParts = zoneMetrics.reduce((m, z) => Math.max(m, z.parts), 0);
+  const totalParts = zoneMetrics.reduce((s, z) => s + z.parts, 0);
+  const meanParts = zoneMetrics.length ? Math.round((totalParts / zoneMetrics.length) * 100) / 100 : 0;
+
+  // Dominant `confidence` — the mode across the city's features.
+  const confCount = new Map<string, number>();
+  for (const c of confidences) confCount.set(c, (confCount.get(c) ?? 0) + 1);
+  let confidence: string | undefined;
+  let best = 0;
+  for (const [c, n] of confCount) if (n > best) { best = n; confidence = c; }
+  const contourAuto = !!confidence && /contour[-_]?auto/i.test(confidence);
 
   let status: ZoneGeometryStatus = "clean";
   if (dispersedUrban.length > 0) status = "dispersed";
+  else if (contourAuto && overFragmented.length >= FRAG_MIN_ZONES) status = "fragmented";
   else if (sliverZones >= 3) status = "suspect";
 
   return {
@@ -196,8 +233,12 @@ function auditCity(slug: string, features: Feature[]): CityReport {
     features: perZone.length,
     multipart_zones: multipart,
     max_parts: maxParts,
+    mean_parts: meanParts,
     sliver_zones: sliverZones,
     dispersed_urban_zones: dispersedUrban,
+    over_fragmented_zones: overFragmented,
+    confidence,
+    contour_auto: contourAuto,
   };
 }
 
@@ -226,29 +267,31 @@ async function main(argv: readonly string[]): Promise<void> {
 
   const s3 = s3Client();
   const reports: CityReport[] = [];
-  let dispersed = 0, suspect = 0, clean = 0, missing = 0;
+  let dispersed = 0, fragmented = 0, suspect = 0, clean = 0, missing = 0;
   for (const slug of slugs) {
     let city: Awaited<ReturnType<typeof loadCity>> = null;
     try {
       city = await loadCity(s3, slug);
     } catch (e) {
-      reports.push({ slug, status: "clean", features: 0, multipart_zones: 0, max_parts: 0, sliver_zones: 0, dispersed_urban_zones: [], note: `read-error: ${e instanceof Error ? e.message : String(e)}` });
+      reports.push({ slug, status: "clean", features: 0, multipart_zones: 0, max_parts: 0, mean_parts: 0, sliver_zones: 0, dispersed_urban_zones: [], over_fragmented_zones: [], note: `read-error: ${e instanceof Error ? e.message : String(e)}` });
       continue;
     }
     if (!city) { missing++; continue; }
     const r = auditCity(slug, city.features);
     r.source = city.source;
     reports.push(r);
-    if (r.status === "dispersed") { dispersed++; if (verbose) console.log(`DISPERSED ${slug}: ${r.dispersed_urban_zones.join(", ")}`); }
+    if (r.status === "dispersed") { dispersed++; if (verbose) console.log(`DISPERSED  ${slug}: ${r.dispersed_urban_zones.join(", ")}`); }
+    else if (r.status === "fragmented") { fragmented++; if (verbose) console.log(`FRAGMENTED ${slug}: max=${r.max_parts} mean=${r.mean_parts} conf=${r.confidence} zones=${r.over_fragmented_zones.join(", ")}`); }
     else if (r.status === "suspect") suspect++;
     else clean++;
   }
 
-  reports.sort((a, b) => (a.status === b.status ? a.slug.localeCompare(b.slug) : a.status === "dispersed" ? -1 : b.status === "dispersed" ? 1 : a.status === "suspect" ? -1 : 1));
-  const out = { generatedAt: "AUDIT", universe: slugs.length, dispersed, suspect, clean, missing, cities: reports };
+  const rank = (s: ZoneGeometryStatus) => (s === "dispersed" ? 0 : s === "fragmented" ? 1 : s === "suspect" ? 2 : 3);
+  reports.sort((a, b) => (a.status === b.status ? a.slug.localeCompare(b.slug) : rank(a.status) - rank(b.status)));
+  const out = { generatedAt: "AUDIT", universe: slugs.length, dispersed, fragmented, suspect, clean, missing, cities: reports };
   mkdirSync(dirname(REPORT), { recursive: true });
   writeFileSync(REPORT, JSON.stringify(out, null, 2) + "\n", "utf8");
-  console.log(`zone-contiguity: universe=${slugs.length} dispersed=${dispersed} suspect=${suspect} clean=${clean} missing=${missing} -> ${REPORT}`);
+  console.log(`zone-contiguity: universe=${slugs.length} dispersed=${dispersed} fragmented=${fragmented} suspect=${suspect} clean=${clean} missing=${missing} -> ${REPORT}`);
 }
 
 const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
