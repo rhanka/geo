@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AD": "agricole",
+    "CH": null,
+    "Cons": "environnemental",
+    "H": "residentiel",
+    "I": "industriel",
+    "P": null
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33025_Publique/MapServer/16",
+  "note": "Règlement de zonage n° 400-2023 de la Municipalité de Saint-Patrice-de-Beaurivage (adopté le 2023-11-14; certificat de conformité MRC de Lotbinière 2024-12, PV du conseil du 14 février 2024). Le corps du règlement n'est pas diffusé en ligne (spdb.ca ne publie aucun règlement d'urbanisme), mais la couche officielle de zonage municipal de la MRC de Lotbinière porte la vocation VERBATIM par zone dans les attributs `Dominante` et `cl_zonage`, avec `nom_mun = \"Saint-Patrice-de-Beaurivage\"` et `Numero_reglement = \"400-2023\"` sur les 32 entités (gate propriétaire passé). Libellés verbatim relevés: 01-A/02-A/03-A « Agricole »; 01-AD, 03-AD à 09-AD « Agricole déstructuré » et 02-AD « Agricole et forestier »; 01-CH à 09-CH « Commercial et résidentiel »; 01-Cons « Conservation »; 01-H à 05-H, 05-1-H, 05-2-H « Résidentiel »; 01-I/02-I « Industriel »; 01-P « Public et institutionnel ». Mapping: A et AD -> agricole (les deux libellés AD, « Agricole déstructuré » et « Agricole et forestier », restent de la famille agricole/forestière; même traitement que AID « Zones agricoles destructurées » -> agricole retenu pour saint-raymond); Cons « Conservation » -> environnemental; H « Résidentiel » -> residentiel; I « Industriel » -> industriel. Null explicite: CH « Commercial et résidentiel » est une vocation DUALE; P « Public et institutionnel » est public. Les zones 05-1-H et 05-2-H ne portent pas de préfixe alphabétique en tête et restent hors du fold. La matrice des usages permis de la grille n'a pas été utilisée. Vérifié le 2026-07-19."
+}
