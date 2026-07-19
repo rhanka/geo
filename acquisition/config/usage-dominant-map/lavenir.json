@@ -1,0 +1,19 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "HR": null,
+    "C": "commercial",
+    "I": "industriel",
+    "ID": "residentiel",
+    "P": null,
+    "A": "agricole",
+    "AP": "agricole",
+    "AV": "agricole",
+    "AVP": "agricole",
+    "RU": null,
+    "RUC": "residentiel",
+    "SA": null
+  },
+  "source": "https://www.municipalitelavenir.qc.ca/images/pdf/Urbanisme/654-12-zonage-l-avenir-2012-mj-mai-2019.pdf",
+  "note": "Règlement de zonage numéro 654-12 de la Municipalité de L'Avenir (version administrative intégrant l'amendement 727-18), article 3.2 « IDENTIFICATION DES ZONES », p. 8 : « Chacune des zones montrées au plan de zonage et à la grille des usages et des normes est identifiée à ce plan par une lettre d'appellation indiquant l'affectation principale de la zone aux fins de compréhension seulement, selon le tableau suivant : | Affectation principale / Lettre d'appellation | Habitation Résidentielle H | Commerciale C | Industrielle I | Communautaire Publique et communautaire P | Agricole A | Agro-forestière AF | Agricole dynamique A | Agricole dynamique de protection AP | Agricole viable AV | Agricole viable de protection AVP | Résidentielle de réserve HR | Îlots déstructurés ID | Rurale RU | Rurale de consolidation RUC | Services autoroutiers SA. » (Ces textes ont été remplacés et ajoutés — Amendement 727-18). MAPPING: H « Habitation Résidentielle » -> residentiel ; C « Commerciale » -> commercial ; I « Industrielle » -> industriel ; A « Agricole »/« Agricole dynamique », AP « Agricole dynamique de protection », AV « Agricole viable », AVP « Agricole viable de protection » -> agricole. ID -> residentiel sur définition AFFIRMATIVE du chapitre 10 (index terminologique) : « ÎLOT DÉSTRUCTURÉ : Concentration d'usages résidentiels non reliés à un usage agricole qui a été établi selon la demande à portée collective en vertu de l'article 59 de la LPTAA [...] La délimitation des îlots déstructurés sur le territoire de la municipalité est représentée sur le plan de zonage par des zones dont l'appellation débute par ID. » RUC -> residentiel sur l'article 9.8.1 « DISPOSITIONS APPLICABLES AUX ZONES RUC » (p. 176) : « Dans les zones RUC (zones rurales de consolidation résidentielle en zone blanche hors périmètre d'urbanisation) [...] c) Seuls les commerces et services complémentaires à l'habitation sont autorisés. » NULL EXPLICITES (bloquent le repli longest-prefix) : P « Communautaire Publique et communautaire » = publique/communautaire, pas une des cinq dominantes ; HR « Résidentielle de réserve » = réserve (bloque le repli sur H) ; RU « Rurale » seule, sans dominante énoncée ; SA « Services autoroutiers », affectation hors des cinq catégories. AF « Agro-forestière » figure à la légende mais AUCUNE zone SIG servie ne porte ce préfixe : omis. La matrice des usages permis des grilles n'a pas été utilisée."
+}
