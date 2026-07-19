@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "CO": "environnemental",
+    "CN": "environnemental",
+    "REC-302": "environnemental",
+    "REC-303": "environnemental",
+    "REC": null,
+    "R": null,
+    "CM": null,
+    "V": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-francois-de-lile-dorleans/_publication/fichiers/Reg_021_173_Annexe-5_grilles_zonage.pdf",
+  "note": "Municipalité de Saint-François-de-l'Île-d'Orléans, « Règlement de zonage » numéro 021-173. Le CORPS est un ARTICLE-CROUPION — art. 1.2.5 « Subdivision du territoire en zones » verbatim : « Chaque zone comporte une identification de base formée par une lettre ou par une combinaison de lettres. L'identification de base correspond au caractère général de la zone. Les zones présentant un même caractère général se distinguent l'une de l'autre par un chiffre séparé de l'identification de base par un tiret. » — aucune table lettre/vocation dans les 210 p. La légende est portée par les INTITULÉS DE FAMILLES des grilles de spécifications (Annexe 5, faisant partie intégrante du règlement ; pied de chaque page « Saint-François-de-l'Île-d'Orléans » ⇒ gate propriétaire franchi), VERBATIM avec les codes qu'ils regroupent : « Zones à dominance mixte » -> R-300..R-307, CM-300, CM-301, REC-300, REC-301 ; « Zones de villégiature » -> V-300..V-303 ; « Zones à dominance agricole » -> A-301..A-316 ; « Zones de conservation » -> CO-300..CO-313 et CN-302, CN-306, CN-309 ; « Zones récréotouristiques » -> REC-302, REC-303. Même gabarit et même méthode que la config committée saint-jean-de-lile-dorleans (île d'Orléans). Mapping : A -> agricole (la TOTALITÉ des A-* est sous « Zones à dominance agricole ») ; CO et CN -> environnemental (la TOTALITÉ des CO-* et CN-* est sous « Zones de conservation »). EXCEPTION PAR ENTITÉ (précédent committé saint-apollinaire) : REC-302 et REC-303 -> environnemental, car ces DEUX codes précis sont les seuls rangés sous « Zones récréotouristiques » (la ligne « Récréative -> environnemental » du contrat), tandis que REC-300 et REC-301 sont rangés sous « Zones à dominance mixte » ; le null porté par la clé courte `REC` bloque le fall-through de ces deux-là. Null EXPLICITE : R (R-300..R-307) et CM (CM-300, CM-301) figurent TOUS sous « Zones à dominance mixte » — le règlement les déclare mixtes, aucune dominante unique ; V « Zones de villégiature » — villégiature SEULE, aucune des cinq et aucun alinéa ne la définit par l'habitation. ⛔ Piège écarté (identique à saint-jean-de-lile-dorleans) : le chapitre 4.1 définit les GROUPES D'USAGES (« Résidentiel (R) », « Communautaire (CM) », colonne « Groupes d'usages » de la grille) et le règlement n'écrit NULLE PART que la lettre de zone reprend celle du groupe d'usages — non transposé. ⚠️ Réserve assumée : un intitulé de famille n'est PAS une table lettre/vocation ; il ne fait foi ici que là où il regroupe la TOTALITÉ des codes d'un préfixe (A, CO, CN, V) ou un code nommément (REC-302/303). La matrice des usages permis n'a PAS été utilisée. Consulté le 2026-07-19."
+}
