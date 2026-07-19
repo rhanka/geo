@@ -78,7 +78,9 @@ export function buildAnnotationSchema(): Record<string, unknown> {
     zone_code: {
       type: "string",
       description:
-        "code de zone VERBATIM lu dans l'en-tête de colonne de la grille transposée (ex: COM-01, FOR-12)",
+        "code de zone VERBATIM. Grille TRANSPOSÉE : l'en-tête de colonne (ex: COM-01, FOR-12). " +
+        "Grille d'UNE SEULE ZONE PAR PAGE : la boîte de titre « Zone : XXX » (ex: AD-102). " +
+        "JAMAIS un numéro de colonne de classe d'usages (1, 2, 3, 4) ni un numéro de ligne.",
     },
   };
   for (const spec of FIELD_SPECS) {
@@ -95,6 +97,18 @@ export function buildAnnotationSchema(): Record<string, unknown> {
         `Libellé EXACT, VERBATIM, de la LIGNE (ou de l'en-tête) d'où provient "${spec.id}" ` +
         `— recopie l'intitulé imprimé tel quel ; null si la valeur est null.`,
     };
+    // MULTI-COLONNES (design §6a). Quand une grille « 1 zone par page » range ses
+    // normes en COLONNES DE CLASSES D'USAGES, la norme n'est pas une propriété de
+    // la zone seule : marge avant 6 m (habitation) vs 10 m (agricole). Ce canal
+    // rend la divergence VISIBLE pour que le mapper la refuse au lieu de servir
+    // silencieusement la première colonne.
+    props[`${spec.id}__colonnes`] = {
+      type: ["string", "null"],
+      description:
+        `Toutes les valeurs imprimées de la ligne "${spec.id}", UNE PAR COLONNE NON VIDE, ` +
+        `VERBATIM, séparées par " | " (ex: "6 | 10"). Une seule colonne remplie → une seule ` +
+        `valeur. Aucune valeur → null. N'harmonise pas, ne choisis pas.`,
+    };
   }
   return {
     type: "object",
@@ -104,14 +118,19 @@ export function buildAnnotationSchema(): Record<string, unknown> {
         type: "array",
         description:
           "Une entrée par CODE DE ZONE lu dans les EN-TÊTES DE COLONNE de la grille transposée. " +
-          "Descends CHAQUE colonne indépendamment ; n'invente jamais, ne déduis jamais depuis une autre colonne.",
+          "Descends CHAQUE colonne indépendamment ; n'invente jamais, ne déduis jamais depuis une autre colonne. " +
+          "CAS PARTICULIER — grille d'UNE seule zone dont les colonnes sont des CLASSES D'USAGES " +
+          "(colonnes numérotées 1, 2, 3…) : émets UNE ENTRÉE PAR COLONNE NON VIDE, toutes portant " +
+          "le MÊME zone_code — celui de la boîte « Zone : XXX », JAMAIS le numéro de colonne. " +
+          "Ne fusionne pas les colonnes toi-même (le lecteur refuse les normes qui divergent " +
+          "d'une classe à l'autre).",
         items: {
           type: "object",
           additionalProperties: false,
           properties: props,
           required: [
             "zone_code",
-            ...FIELD_SPECS.flatMap((f) => [f.id, `${f.id}__libelle`]),
+            ...FIELD_SPECS.flatMap((f) => [f.id, `${f.id}__libelle`, `${f.id}__colonnes`]),
           ],
         },
       },
@@ -141,13 +160,16 @@ export function extractionFromAnnotationZones(raw: unknown): ClaudeRawExtraction
       typeof codeRaw === "string" && codeRaw.trim() ? codeRaw.trim() : null;
     const fields: Partial<Record<FieldId, string | null>> = {};
     const labels: Partial<Record<FieldId, string | null>> = {};
+    const columns: Partial<Record<FieldId, string | null>> = {};
     for (const spec of FIELD_SPECS) {
       const v = z[spec.id];
       fields[spec.id] = typeof v === "string" && v.trim() ? v : null;
       const l = z[`${spec.id}__libelle`];
       labels[spec.id] = typeof l === "string" && l.trim() ? l : null;
+      const c = z[`${spec.id}__colonnes`];
+      columns[spec.id] = typeof c === "string" && c.trim() ? c : null;
     }
-    zones.push({ zone_code: code, fields, labels });
+    zones.push({ zone_code: code, fields, labels, columns });
   }
   return { zones };
 }

@@ -122,6 +122,42 @@ function pdfPageCount(pdfPath: string): number {
   return m ? Number(m[1]) : 0;
 }
 
+type NormFieldLike = ZoneNormsT["hauteur_max"];
+
+/**
+ * Reconcile ONE norm field seen twice for the same zone_code (repeated zone, or —
+ * the dangerous case — one COLUMN PER CLASSE D'USAGES within a single-zone grille).
+ *   - only one side published  → keep it (the other side simply did not read it)
+ *   - both published, SAME value → keep it
+ *   - both published, DIFFERENT  → REFUSE (value null, `divergence-colonnes`), raw kept
+ * Never averages, never prefers a side: a divergence means the norm is not a
+ * property of the zone alone, so no single value can be served as certain.
+ */
+export function mergeNormField(a: NormFieldLike, b: NormFieldLike): NormFieldLike {
+  if (!a || a.value === null) return b && b.value !== null ? b : (a ?? b);
+  if (!b || b.value === null) return a;
+  if (a.value === b.value && a.unit === b.unit) return a;
+  return { ...a, value: null, confidence: 0, flag: "divergence-colonnes" };
+}
+
+/** Field-wise reconciliation of two readings of the SAME zone_code. */
+export function mergeZonesFieldWise(a: ZoneNormsT, b: ZoneNormsT): ZoneNormsT {
+  return {
+    ...a,
+    usages: a.usages.length >= b.usages.length ? a.usages : b.usages,
+    densite: mergeNormField(a.densite, b.densite),
+    hauteur_min: mergeNormField(a.hauteur_min, b.hauteur_min),
+    hauteur_max: mergeNormField(a.hauteur_max, b.hauteur_max),
+    marges: {
+      avant_min: mergeNormField(a.marges.avant_min, b.marges.avant_min),
+      laterale_min: mergeNormField(a.marges.laterale_min, b.marges.laterale_min),
+      arriere_min: mergeNormField(a.marges.arriere_min, b.marges.arriere_min),
+    },
+    frontage_min: mergeNormField(a.frontage_min, b.frontage_min),
+    superficie_min: mergeNormField(a.superficie_min, b.superficie_min),
+  };
+}
+
 /** Count the published (non-null) norm fields of a zone. */
 function publishedCount(z: ZoneNormsT): number {
   return [
@@ -239,12 +275,18 @@ async function ingestSlug(
     methode: SCHEMA_METHODE,
   });
 
-  // Merge by canon zone key (more published fields wins) — cross-chunk reconciliation.
+  // Merge by canon zone key — FIELD-WISE CONCORDANCE, not "more published wins".
+  // Two entries can carry the same zone_code for two reasons: the zone repeats
+  // across chunks, or the grille gives ONE COLUMN PER CLASSE D'USAGES for a single
+  // zone (marge avant 6 m for column 1, 10 m for column 2 — saint-andre-avellin
+  // Annexe B). Keeping the "richer" entry would silently serve ONE class's norm as
+  // the zone's norm. So: a field published by only one side is kept; two DIFFERENT
+  // published values refuse the field (`divergence-colonnes`, raw kept).
   const byZone = new Map<string, ZoneNormsT>();
   for (const zn of extract.zones) {
     const key = canonZone(zn.zone_code);
     const prev = byZone.get(key);
-    if (!prev || publishedCount(zn) > publishedCount(prev)) byZone.set(key, zn);
+    byZone.set(key, prev ? mergeZonesFieldWise(prev, zn) : zn);
   }
   const zones = [...byZone.values()];
   const fieldPct = publishedFieldPct(zones);
@@ -408,8 +450,14 @@ async function main(): Promise<void> {
   );
 }
 
-main().catch((e) => {
-  // eslint-disable-next-line no-console
-  console.error(e instanceof Error ? e.stack : String(e));
-  process.exit(1);
-});
+// Run only when invoked as a script — importing this module (tests of the merge
+// helpers below) must not fire the CLI and its "--slug is required" throw.
+const INVOKED_DIRECTLY =
+  !!process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (INVOKED_DIRECTLY) {
+  main().catch((e) => {
+    // eslint-disable-next-line no-console
+    console.error(e instanceof Error ? e.stack : String(e));
+    process.exit(1);
+  });
+}
