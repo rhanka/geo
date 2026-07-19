@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AV": "agricole",
+    "AGF": "agricole",
+    "AID": "agricole",
+    "C": "commercial",
+    "CONS": "environnemental",
+    "H": "residentiel",
+    "I": "industriel",
+    "M": null,
+    "P": null
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33080_Publique/MapServer/16/query?where=1%3D1&outFields=nom_mun,Zonage,Dominante,Description,Numero_reglement&returnGeometry=false&f=json",
+  "note": "Saint-Édouard-de-Lotbinière (MRC de Lotbinière). La catégorie n'est PAS déduite de la lettre: la couche SIG AMONT « Zonage municipal » (Altus, MRC330/33080_Publique/MapServer/16 — c'est la couche citée en `source` des polygones servis) porte pour CHAQUE zone un champ **`Dominante`** VERBATIM qui EST la fonction dominante, doublé d'un champ `Description`. Gate propriétaire: les 34 entités retournées portent toutes `nom_mun` = « Saint-Édouard-de-Lotbinière » VERBATIM, et le compte (34) comme la distribution (H 11, AID 5, P 4, CONS 4, I 3, A 2, C 2, AV 1, AGF 1, M 1) coïncident EXACTEMENT avec les 34 polygones servis (sansCode=0). ⚠ Ce gate est indispensable ici: le corpus local `work/zonage-norms/saint-edouard-de-lotbiniere/grille.pdf` est CONTAMINÉ — c'est le règlement 2015-258/259 de la Municipalité de **Saint-Édouard** (MRC Les Jardins-de-Napierville), qui ne comporte d'ailleurs aucune table de codification (art. 13 « Division du territoire en zones » renvoie au plan sans énumérer de lettres). Table VERBATIM relevée (Zonage -> Dominante | Description), 1:1 sans exception: A-1, A-2 -> « Agricole » | « Agricole dynamique »; AV-1 -> « Agricole » | « Agricole viable »; AGF-1 -> « Agricole et forestier » | « Agro-forestier »; AID-1..AID-5 -> « Agricole déstructuré » | « Agricole déstructuré »; C-1, C-2 -> « Commercial » | « Commercial »; CONS-1..CONS-4 -> « Conservation » | « Conservation »; H-1 -> « Résidentiel » | « Consolidation urbaine », H-2..H-11 -> « Résidentiel » | « Habitation »; I-1..I-3 -> « Industriel » | « Industriel »; M-1 -> « Mixte » | « Mixte »; P-1..P-4 -> « Public et institutionnel » | « Public ». Mapping: A/AV « Agricole », AGF « Agricole et forestier » et AID « Agricole déstructuré » -> agricole; C « Commercial » -> commercial; CONS « Conservation » -> environnemental; H « Résidentiel » -> residentiel; I « Industriel » -> industriel. Null explicites et DOCUMENTÉS: M « Mixte » est une dominante DUALE; P « Public et institutionnel » est une vocation publique — aucune des cinq catégories n'y est forcée. ⚠ ARBITRAGE ASSUMÉ sur AID: la dominante ÉCRITE est « Agricole déstructuré » (le champ s'appelle littéralement `Dominante` et son mot de tête est « Agricole »), donc agricole — à la différence d'un « Îlot déstructuré » nu, qui ne nomme aucune dominante et reste null (cf. val-joli `ID`, saint-adrien `IM`, saint-andre-de-restigouche `AC`/`AD`). Longest-prefix: AID/AGF/AV gagnent sur A, CONS gagne sur C. Couverture: 34/34 polygones (100%)."
+}
