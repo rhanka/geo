@@ -65,6 +65,16 @@ const ZONE_NOCOLON_AFFECTATION = new RegExp(
 /** A bare "ZONE :" at the END of a line — the code sits on the FOLLOWING non-blank line
  *  (durham-sud "Dispositions applicables à la zone :\n\n H-11"). */
 const ZONE_COLON_EOL = /\bZONE\b\s*[:°]\s*$/i;
+/** A bare "Zone" (NO colon) at the END of a line, code on the FOLLOWING line — the
+ *  saint-lazare gabarit, where the banner is a two-line right-aligned corner box:
+ *    "Règlement de zonage numéro 771                                    Zone"
+ *    "                                                                  AE-003"
+ *  The plural "Zones" is accepted too (L'Assomption's per-zone grille prints "Zones"
+ *  as the column banner over a single code).
+ *  Deliberately stricter than the colon form: the next non-blank line must be the
+ *  code and NOTHING else (whole-line token), so a prose line ending in "…de la zone"
+ *  cannot pull a code out of the sentence that follows. */
+const ZONE_NOCOLON_EOL_BARE = /\bZONES?\s*$/i;
 /** A leading code at the START of a trimmed token (used for the next-line lookahead). */
 const CODE_AT_START = new RegExp(`^(${CODE_BODY})`);
 /** A whole-line code token (used for "Numéro de zone" one-zone pages). */
@@ -146,6 +156,18 @@ export function readZoneHeaderCode(pageText: string): string | null {
         const m = t.match(CODE_AT_START);
         if (m?.[1]) return normalizeHeaderCode(m[1]);
         break; // first non-blank line after the colon decides (else fall through)
+      }
+    }
+    // A3 — a bare "Zone" (no colon) at line end; the next non-blank line must be the
+    // code ALONE (saint-lazare's two-line corner banner). Whole-line only: a prose
+    // line ending in "…de la zone" is followed by a sentence, never by a lone token.
+    if (ZONE_NOCOLON_EOL_BARE.test(line)) {
+      for (let j = i + 1; j < Math.min(lines.length, i + 5); j++) {
+        const t = lines[j]!.trim();
+        if (!t) continue;
+        const m = t.match(CODE_WHOLE_LINE);
+        if (m?.[1]) return normalizeHeaderCode(m[1]);
+        break; // first non-blank line after the banner decides
       }
     }
   }
