@@ -36,7 +36,7 @@ function pluck(features: FeatureLike[], prop: string): (string | number | null)[
   return [...vals];
 }
 
-async function triageSlug(s3: ReturnType<typeof s3Client>, slug: string) {
+async function triageSlug(s3: ReturnType<typeof s3Client>, slug: string, listCodes = false) {
   const keys = [
     `${PREFIX}qc-zonage-${slug}.geojson`,
     `${PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
@@ -56,6 +56,10 @@ async function triageSlug(s3: ReturnType<typeof s3Client>, slug: string) {
       key: key.includes("/qc-zonage-" + slug + "/") ? "subfolder" : "flat",
       features: features.length,
       zone_code_count: codes.size,
+      // --list-codes feeds SPEC_GEO_4A Stage 2 resolution: an amendment's zone
+      // tokens must resolve by EXACT match to this served set, never fuzzily
+      // (the class of bug that mis-resolved HC-14 -> Compton at conf 0.45).
+      ...(listCodes ? { zone_codes: [...codes].sort() } : {}),
       reglement_numero: pluck(features, "reglement_numero"),
       reglement_millesime: pluck(features, "reglement_millesime"),
       reglement_url: pluck(features, "reglement_url").slice(0, 3),
@@ -67,13 +71,15 @@ async function triageSlug(s3: ReturnType<typeof s3Client>, slug: string) {
 }
 
 async function main(): Promise<void> {
-  const slugs = (arg(process.argv.slice(2), "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const argv = process.argv.slice(2);
+  const slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (slugs.length === 0) throw new Error("--slugs a,b,c required");
+  const listCodes = argv.includes("--list-codes");
   const s3 = s3Client();
   const out: unknown[] = [];
   for (const slug of slugs) {
     try {
-      out.push(await triageSlug(s3, slug));
+      out.push(await triageSlug(s3, slug, listCodes));
     } catch (e) {
       out.push({ slug, error: e instanceof Error ? e.message : String(e) });
     }
