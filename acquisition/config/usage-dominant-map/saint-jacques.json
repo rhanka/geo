@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AE": null,
+    "R": "residentiel",
+    "C": "commercial",
+    "M": null,
+    "P": null,
+    "CN": "environnemental",
+    "ID": null,
+    "I": "industriel"
+  },
+  "source": "https://www.st-jacques.org/storage/app/media/municipalite/urbanisme/reglement-de-zonage.pdf",
+  "note": "Municipalité de Saint-Jacques (MRC de Montcalm), « Règlement de zonage numéro 011-2022 » (pied de page de chaque page : « Règlement de zonage numéro 011-2022 — Municipalité de Saint-Jacques » ; art. 17 : « le territoire de la Municipalité de Saint-Jacques est divisé en zones »). Section 1.4, ARTICLE 19 « IDENTIFICATION DES ZONES », p. 5, verbatim : « Chacune des zones montrées au plan de zonage, et dont les groupes d'usages et prescriptions sont décrits à la grille de spécifications, est identifiée à ce plan par une ou deux lettres d'appellation et un chiffre indiquant l'affectation principale de la zone, selon le tableau suivant : Tableau 1 – Identification des zones / Lettre(s) d'appellation | Affectation principale — A Agricole ; AE Agricole extraction ; R Résidentielle ; C Commerciale ; M Mixte ; P Publique ; CN Conservation ; ID Îlot déstructuré ; I Industrielle ». Mapping : A « Agricole » -> agricole ; R « Résidentielle » -> residentiel ; C « Commerciale » -> commercial ; I « Industrielle » -> industriel ; CN « Conservation » -> environnemental. Null EXPLICITE : AE « Agricole extraction » accole deux catégories du contrat (agricole + extraction=industriel) sans en désigner une dominante — clé indispensable aussi pour bloquer le repli longest-prefix de `AE-21` sur `A` ; M « Mixte » est duale par son libellé même ; P « Publique » est publique ; ID « Îlot déstructuré » n'énonce aucune des cinq catégories et le règlement ne le définit pas par la résidence. CN est listé explicitement pour ne pas hériter de C. OMIS volontairement : le préfixe `D` (7 polygones servis, `D-24` à `D-30`) n'existe NULLE PART dans le règlement 011-2022 — ni au Tableau 1 ni ailleurs — et son libellé est donc inconnu ; le déclarer null AFFIRMERAIT que le règlement lui refuse une dominante, ce qui n'est pas mesuré (le fold sert déjà null pour un code non matché). La grille de spécifications (matrice des usages permis) n'a PAS été utilisée. Document consulté le 2026-07-19."
+}
