@@ -28,9 +28,11 @@
 import type { FeatureCollection } from "geojson";
 
 import { extractLabels } from "./t1-labels.js";
+import { extractLabelsClaude } from "./t1-labels-claude.js";
 import { buildZones } from "./t1-zones.js";
 import { buildGeoRefFromGcpsCrs } from "./t2-georef.js";
 import type { OrientationCandidate } from "./t2-autogcp.js";
+import type { Gpt55LabelRead } from "./t2-labels-gpt55.js";
 import { bboxCenter, haversineKm, mergeByZoneCode } from "./zone-serve.js";
 
 /** Per-rotation lot-assignment measurement (the disambiguation evidence). */
@@ -106,6 +108,35 @@ export interface MeasureContext {
    * Admits a composite IFF verbatim in the dict; RELAXES NOTHING ELSE.
    */
   compositeDict?: Set<string>;
+  /**
+   * GLYPH plans — the same "don't measure blind" argument as `numericDict` /
+   * `compositeDict` above, one step stronger.
+   *
+   * `extractLabels` is `pdftotext` ONLY. On a plan whose zone codes are DRAWN as
+   * glyphs (no selectable word), it reads ZERO code, so `coverage_pct` measures
+   * 0 % on EVERY rotation and `decideRotation` can never find a margin: a plan
+   * with a geometrically perfect fit is SKIPped BY CONSTRUCTION, never on merit
+   * (eastman: 39-46 GCPs, residual 10.3 m, holdout 7.1 m, anisotropy 1.098 — and
+   * 0 % measured coverage on all 9 candidates).
+   *
+   * When set, the labels come from the agent's dict-VALIDATED vision reads
+   * (`lib/t1-labels-claude.extractLabelsClaude`) instead. The reads are taken ONCE
+   * from the rendered page crop and are the SAME for every candidate — only the
+   * page→WGS84 transform differs, which is precisely the orientation signal being
+   * measured. RELAXES NOTHING ELSE: a read is kept only if it is verbatim and
+   * unambiguously in the by-law dict, the coverage must still be earned by labels
+   * landing on real cadastral lots, and every floor/margin/min-code gate and every
+   * downstream build gate is unchanged. Absent → pdftotext behaviour, bit-for-bit.
+   */
+  visionReads?: {
+    reads: Gpt55LabelRead[];
+    /** Authoritative by-law zone codes; a read outside it is REJECTED, never snapped-in. */
+    dict: string[];
+    /** Page-point crop the reads' normalized x/y refer to (default = full page). */
+    region?: [number, number, number, number];
+    /** Mirror of `numericDict`: admit pure-numeric reads that are verbatim in the dict. */
+    allowNumeric?: boolean;
+  };
 }
 
 export const DEFAULT_DISCRIMINATION_CUTOFF_M = 300;
@@ -120,12 +151,20 @@ export const DEFAULT_DISCRIMINATION_CUTOFF_M = 300;
 export function measureRotationLotAssignment(cand: OrientationCandidate, ctx: MeasureContext): MeasuredRotation {
   const gf = cand.gcp_file;
   const { geo } = buildGeoRefFromGcpsCrs(gf.gcps, ctx.pageW, ctx.pageH, gf.crs, gf.neatline);
-  const lab = extractLabels(ctx.pdfPath, geo, {
-    page: ctx.page,
-    excludeRegions: gf.excludeRegions,
-    numericDict: ctx.numericDict,
-    compositeDict: ctx.compositeDict,
-  });
+  // GLYPH plans: read the codes by dict-validated vision instead of pdftotext.
+  // Same reads for every candidate — only `geo` (the orientation under test)
+  // changes, so the lot-attachment difference IS the orientation signal.
+  const lab = ctx.visionReads
+    ? extractLabelsClaude(ctx.visionReads.reads, geo, ctx.visionReads.dict, {
+        ...(ctx.visionReads.region ? { region: ctx.visionReads.region } : {}),
+        ...(ctx.visionReads.allowNumeric ? { allowNumeric: true } : {}),
+      })
+    : extractLabels(ctx.pdfPath, geo, {
+        page: ctx.page,
+        excludeRegions: gf.excludeRegions,
+        numericDict: ctx.numericDict,
+        compositeDict: ctx.compositeDict,
+      });
 
   const { center: cadCenter, bbox: cadBbox } = bboxCenter(ctx.cadastre);
   const lat0 = (cadBbox[1] + cadBbox[3]) / 2;

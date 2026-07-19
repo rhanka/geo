@@ -14,10 +14,12 @@ import type { FeatureCollection } from "geojson";
 import { getBytes, s3Client } from "./lib/s3.js";
 import { isTrivialContiguousSequence, numericDictSet } from "./lib/numeric-codes.js";
 import { deriveAutoSeedGcps, deriveAutonomousGcps, type FitMode } from "./lib/t2-autogcp.js";
+import { loadClaudeReads } from "./lib/t1-labels-claude.js";
 import {
   decideAnisoArbitration,
   decideRotation,
   measureRotationLotAssignment,
+  type MeasureContext,
   type MeasuredRotation,
 } from "./lib/t2-rotation-disambig.js";
 import type { GcpFile } from "./lib/t2-georef.js";
@@ -55,6 +57,14 @@ interface Args {
   dict?: string;
   /** SAFE, dict-gated relaxation (§7.5) applied to the lot-coverage MEASUREMENT. */
   allowNumericCodes: boolean;
+  /**
+   * GLYPH plans: agent vision reads ({labels:[{code,x,y}]}, x/y normalized in the
+   * crop) feeding the lot-coverage MEASUREMENT instead of pdftotext. REQUIRES
+   * --dict (anti-invention: a read outside the by-law dict is rejected).
+   */
+  visionReads?: string;
+  /** Page-point crop the vision reads' normalized x/y refer to: "x0,y0,x1,y1". Default = full page. */
+  visionRegion?: [number, number, number, number];
 }
 
 function parseArgs(argv: string[]): Args {
@@ -77,6 +87,18 @@ function parseArgs(argv: string[]): Args {
   // dictionary. Fail loudly rather than silently measuring lettered-only.
   if (Boolean(a["allow-numeric-codes"]) && !a["dict"]) {
     throw new Error("--allow-numeric-codes REQUIRES --dict <codes.json> (anti-#74: no dict, no numeric codes)");
+  }
+  // Same contract for the glyph/vision measurement lane: no dict, no vision reads.
+  if (a["vision-reads"] && !a["dict"]) {
+    throw new Error("--vision-reads REQUIRES --dict <codes.json> (anti-invention: reads are validated verbatim, never snapped-in)");
+  }
+  let visionRegion: [number, number, number, number] | undefined;
+  if (a["vision-region"]) {
+    const parts = String(a["vision-region"]).split(",").map(Number);
+    if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n))) {
+      throw new Error(`--vision-region must be "x0,y0,x1,y1" in PDF points, got "${String(a["vision-region"])}"`);
+    }
+    visionRegion = parts as [number, number, number, number];
   }
   if (a["fit"] !== undefined && a["fit"] !== "affine" && a["fit"] !== "similarity") {
     throw new Error(`--fit must be "affine" or "similarity", got "${String(a["fit"])}"`);
@@ -110,6 +132,31 @@ function parseArgs(argv: string[]): Args {
     anisoMinDistinctCodes: a["aniso-min-distinct-codes"] ? Number(a["aniso-min-distinct-codes"]) : 3,
     dict: a["dict"] ? String(a["dict"]) : undefined,
     allowNumericCodes: Boolean(a["allow-numeric-codes"]),
+    visionReads: a["vision-reads"] ? String(a["vision-reads"]) : undefined,
+    ...(visionRegion ? { visionRegion } : {}),
+  };
+}
+
+/**
+ * GLYPH lane: the agent's positioned vision reads + the authoritative dict that
+ * validates them, for the lot-coverage MEASUREMENT (lib/t2-rotation-disambig
+ * `visionReads`). Absent → pdftotext measurement, bit-for-bit.
+ */
+function loadVisionReads(args: Args): MeasureContext["visionReads"] {
+  if (!args.visionReads) return undefined;
+  const raw = JSON.parse(readFileSync(args.dict!, "utf8")) as unknown;
+  if (!Array.isArray(raw)) throw new Error(`--dict must be a JSON array of codes: ${args.dict}`);
+  const dict = raw.map((c) => String(c));
+  const reads = loadClaudeReads(args.visionReads);
+  console.error(
+    `[t2-autogcp] GLYPH measurement lane ON: ${reads.length} agent vision reads from ${args.visionReads}, ` +
+      `validated against ${dict.length} dict codes from ${args.dict}`,
+  );
+  return {
+    reads,
+    dict,
+    ...(args.visionRegion ? { region: args.visionRegion } : {}),
+    ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
   };
 }
 
@@ -180,6 +227,7 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const numericDict = loadNumericDict(args);
   const compositeDict = loadCompositeDict(args);
+  const visionReads = loadVisionReads(args);
 
   if (args.autoSeed) {
     const pdfPath = args.pdf!;
@@ -231,6 +279,7 @@ async function main(): Promise<void> {
           discriminationCutoffM: args.disambigCutoffM,
           numericDict,
           compositeDict,
+          visionReads,
         });
         console.error(
           `[t2-autogcp]   rot${m.rotation}° (bearing ${m.bearing_right_deg}°, ${m.selected_gcps} GCPs, ` +
@@ -253,6 +302,12 @@ async function main(): Promise<void> {
         coverage_floor_pct: args.disambigCoverageFloor,
         margin_pct: args.disambigMarginPct,
         coverage_margin_pct: decision.coverage_margin_pct,
+        // Provenance of the GLYPH lane: which reads/dict fed the measurement
+        // (null = historical pdftotext-only extraction).
+        label_source: visionReads ? "claude-4.8-vision-dict-validated" : "pdftotext",
+        vision_reads: args.visionReads ?? null,
+        vision_reads_count: visionReads ? visionReads.reads.length : null,
+        vision_dict: visionReads ? args.dict : null,
         winner: decision.winner ? { rotation: decision.winner.rotation, extent: decision.winner.extent } : undefined,
         ranking: decision.ranking.map((r) => ({ ...r, gcp_file: undefined })),
       };
@@ -294,6 +349,7 @@ async function main(): Promise<void> {
           discriminationCutoffM: args.disambigCutoffM,
           numericDict,
           compositeDict,
+          visionReads,
         });
         console.error(
           `[t2-autogcp]   ${cand.extent}/rot${m.rotation}° (${m.selected_gcps} GCPs, residual ${m.residual_max_m}m): ` +
