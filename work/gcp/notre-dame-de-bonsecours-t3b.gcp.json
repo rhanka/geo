@@ -1,6 +1,7 @@
 {
   "slug": "notre-dame-de-bonsecours",
-  "pdf": "work/zonage-plans/notre-dame-de-bonsecours-plan.pdf",
+  "pdf": "work/zonage-plans/notre-dame-de-bonsecours-2026.pdf",
+  "_pdf_note": "plan.pdf (source original de ce calage) est desormais CORROMPU sur disque -- coquille HTML du portail VPlus (SPA vide), pas un PDF (voir _diag-fetch-lenient/_plan-identity : header %PDF- absent). 2026.pdf est retenu comme remplacement mesure : rendu a 120dpi -> 4320x2880px -> EXACTEMENT 2592x1728pt, identique a pageW/pageH ci-dessous ; residu de calage 15 GCP reste sous le gate 50m applique a ce fichier (max 29.81m, rms 17.31m).",
   "page": 1,
   "pageW": 2592,
   "pageH": 1728,
@@ -146,5 +147,9 @@
     "fy0": 0.047,
     "fx1": 0.826,
     "fy1": 0.969
-  }
+  },
+  "excludeRegions": [
+    { "_note": "encart zoom haut-droit 1-R (duplicat, position deformee)", "fx0": 0.53, "fy0": 0.02, "fx1": 0.84, "fy1": 0.32 },
+    { "_note": "encart note PARTIE RETIREE DE LA ZONE 11-CA ET INCLUSE DANS LA ZONE 14-V (texte d'annotation, pas une position de zone)", "fx0": 0.03, "fy0": 0.33, "fx1": 0.17, "fy1": 0.40 }
+  ]
 }
