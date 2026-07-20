@@ -100,6 +100,15 @@ const NO_DE_ZONE_CAPTURE = /\bn[o°]\s*\.?\s*de\s+zone\b(.*)$/i;
  *  "10A", "21CO", "3REC", "58R". Accepted ONLY as a WHOLE trimmed line right after a
  *  zone banner (anti-invention: never mid-prose, never a partial token). */
 const BARE_CODE_WHOLE_LINE = /^(\d{1,4}[A-Za-zÉÈ]{1,4})$/;
+/**
+ * Gabarit C — an UNDERSCORE-DELIMITED corner code on the grille's own header line
+ * (Gaspé annexe 2 : "GRILLE DE SPÉCIFICATIONS                       _M-239_"). The
+ * word "ZONE" never appears, and the code shares its line with the title, so
+ * gabarits A (need "ZONE") and B (need the code ALONE on the line) both miss it.
+ * The paired underscores are the anti-invention anchor: a body token ("H-1  x")
+ * is never underscore-wrapped, so this cannot pull a usage-class symbol.
+ */
+const UNDERSCORE_WRAPPED_CODE = /(?:^|\s)_([A-Za-zÉÈ]{1,4}[-–—]\d{1,4}[A-Za-z]?)_(?=\s|$)/;
 
 /**
  * Normalise a captured code: long dashes → "-", drop inner spaces, uppercase.
@@ -148,6 +157,10 @@ export function readZoneHeaderCode(pageText: string): string | null {
     // A2c — "ZONE <code> (Affectation …)" on a one-zone grille header line.
     const affectation = line.match(ZONE_NOCOLON_AFFECTATION);
     if (affectation?.[1]) return normalizeHeaderCode(affectation[1]);
+    // C — "_<code>_" underscore-wrapped corner code sharing the title line
+    // ("GRILLE DE SPÉCIFICATIONS            _M-239_").
+    const wrapped = line.match(UNDERSCORE_WRAPPED_CODE);
+    if (wrapped?.[1]) return normalizeHeaderCode(wrapped[1]);
     // A1 — a bare "ZONE :" at line end; the code is on the next non-blank line.
     if (ZONE_COLON_EOL.test(line)) {
       for (let j = i + 1; j < Math.min(lines.length, i + 5); j++) {

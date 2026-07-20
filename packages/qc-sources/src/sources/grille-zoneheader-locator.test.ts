@@ -40,6 +40,20 @@ const LACHUTE_PAGE = (zone: string): string => `
                      Avant minimum                    (m)        15       15       15
 `;
 
+/** gaspe (annexe 2 du 1156-11): le code est encadré d'UNDERSCORES, sur la ligne du
+ *  titre, et le mot "ZONE" n'apparaît nulle part → gabarit C. */
+const GASPE_PAGE = (zone: string): string => `
+                          ANNEXE 2 : GRILLES DE SPECIFICATIONS
+                                Règlement de zonage no 1156-11
+
+ GRILLE DE SPÉCIFICATIONS                                                _${zone}_
+   GROUPE                CLASSE                  SYMBOLE
+   Habitation            Unifamiliale isolée       H-1
+   Commerce              Accommodation             C-1
+                     Hauteur maximale (m)          10
+                     Marge avant minimale (m)      6
+`;
+
 /** champlain: numeric-only "ZONE : 101" header; prefix stays for SIG numeric bridge. */
 const CHAMPLAIN_PAGE = (zone: string): string => `
 GRILLE DE SPÉCIFICATIONS                         ZONE : ${zone}                    RÉSIDENTIELLE
@@ -126,6 +140,18 @@ describe("readZoneHeaderCode", () => {
     expect(
       readZoneHeaderCode("Grille de spécifications ZONE 5-P (Affectation Habitation, mixte)\nUSAGES AUTORISÉS"),
     ).toBe("5-P");
+  });
+
+  it("reads gaspe's UNDERSCORE-WRAPPED corner code on the title line (gabarit C)", () => {
+    expect(readZoneHeaderCode(GASPE_PAGE("M-239"))).toBe("M-239");
+    expect(readZoneHeaderCode(GASPE_PAGE("A-172"))).toBe("A-172");
+  });
+
+  it("gabarit C never pulls a usage-class symbol: the underscores are required", () => {
+    // Same page WITHOUT the wrapping underscores → no header code (H-1/C-1 are
+    // usage-class symbols in the body, never a zone code).
+    const noUnderscores = GASPE_PAGE("M-239").replace(/_/g, " ");
+    expect(readZoneHeaderCode(noUnderscores)).toBeNull();
   });
 
   it("EXCLUDES the transposed 'Numéro de zone:' family (not one-zone-per-page)", () => {
