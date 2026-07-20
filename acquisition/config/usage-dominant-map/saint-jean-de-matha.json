@@ -1,0 +1,30 @@
+{
+  "prefix_map": {
+    "P1-": "environnemental",
+    "P-1-": "environnemental",
+    "P10": null,
+    "P-10": null,
+    "P2": "environnemental",
+    "P-2": "environnemental",
+    "P3": "agricole",
+    "P-3": "agricole",
+    "P4": "residentiel",
+    "P-4": "residentiel",
+    "P5": null,
+    "P-5": null,
+    "P6": "agricole",
+    "P-6": "agricole",
+    "P7": "agricole",
+    "P-7": "agricole",
+    "P8": null,
+    "P-8": null,
+    "P9": null,
+    "P-9": null,
+    "SP1": null,
+    "SP-1": null,
+    "SP2": "environnemental",
+    "SP-2": "environnemental"
+  },
+  "source": "https://municipalitestjeandematha.qc.ca/storage/app/media/services/Services%20aux%20citoyens/Refonte%20-%20Urbanisme/R%C3%A8glements/2025-08-11sjmplan-durbanisme-603version-finale.pdf",
+  "note": "Municipalité de Saint-Jean-de-Matha (MRC de Matawinie). Les codes SERVIS (« P-4-32 », « P-1-7 », « SP-2-10 »…) ne sont PAS ceux du règlement de zonage 502 en vigueur: ils viennent de la REFONTE D'URBANISME 2025 (plan d'urbanisme n° 603 + règlement de zonage n° 604), et seul le 603 les explique. Gate propriétaire (603, page de garde): « PROVINCE DE QUÉBEC / MRC DE MATAWINIE / MUNICIPALITÉ DE SAINT-JEAN-DE-MATHA — Plan d'urbanisme numéro 603 ». La codification est posée VERBATIM par le règlement 604 art. 16 « IDENTIFICATION DES AIRES DE PAYSAGE ET DES ZONES »: « Chaque zone délimitée au plan de zonage est d'abord identifiée par une appellation réduite indiquant l'aire de paysage dans laquelle elle se situe, laquelle est suivie d'un tiret et d'un chiffre. Exemple : P4 = Aire de paysage / P4-3 = Zone ». La LÉGENDE est au plan d'urbanisme 603 § 4.2.1 (p. 77), VERBATIM: « Le découpage du territoire est basé sur douze aires de paysage, soit dix grandes aires séquentielles et deux secteurs spéciaux (Carte 20) : P1 – Conservation / P2 – Récréative Extensive / P3 – Forestière Mixte [NATURELLE] ; P4 – Rurale Résidentielle / P5 – Rurale Artérielle / P6 – Agroforestière / P7 – Agricole Dynamique [RURALE] ; P8 – Villageoise Artérielle ; P9 – Villageoise Péricentrale [PÉRICENTRALE] ; P10 – Villageoise Centrale [CENTRALE] ; SP1 – Agricole résidentielle / SP2 – Récréative Intensive [SECTEURS SPÉCIAUX] ». Mapping: P1 « Conservation » et SP2 « Récréative Intensive » et P2 « Récréative Extensive » -> environnemental; P3 « Forestière Mixte », P6 « Agroforestière », P7 « Agricole Dynamique » -> agricole; P4 « Rurale Résidentielle » -> residentiel (44 pol., la plus grande aire). NULLS EXPLICITES: P5 « Rurale Artérielle », P8 « Villageoise Artérielle », P9 « Villageoise Péricentrale », P10 « Villageoise Centrale » — aucun de ces libellés n'énonce une des cinq catégories (une aire « artérielle »/« villageoise » est un TYPE DE MILIEU, pas une dominante d'usage, et « Centrale » est un centre-village = mixte par construction); SP1 « Agricole résidentielle » est DUAL (l'art. 194 du 604 le confirme: « îlots déstructurés représentés par les zones situées dans les aires de paysage SP1 ») -> null. FORME DES CLÉS: le code circule sous DEUX formes selon l'outil qui le lit (« P-4-32 » au dump SIG brut, « P4-32 » à la forme canonisée que le fold teste aussi), donc chaque aire porte SES DEUX clés. Et comme le match est longest-prefix, l'aire 1 est écrite « P1- » / « P-1- » (avec tiret final) et l'aire 10 « P10 » / « P-10 », faute de quoi « P1 » capterait à tort les zones de l'aire 10 (mesuré: P-10-2 existe). ⚠️ RÉSERVE DE MILLÉSIME assumée et documentée: la page de garde du 604 (version 2025-11-12) porte « Avis de motion : 12 novembre 2025 / Adoption du 1er projet de Règlement : 12 novembre 2025 / Adoption du 2e projet de Règlement : [vide] » — la refonte était au stade PROJET à cette date. Le règlement 502 EN VIGUEUR a une table de dominance (art. 2.5) totalement incompatible avec les codes servis (AG, AGT, RT, RTC, RF, RA, RB, RV, RVCr, CON, PRO, COM, CM, CMP, CS, CSC, CS1, IN, UP, PI — aucun P/SP). La légende retenue est donc celle qui EXPLIQUE LES CODES RÉELLEMENT SERVIS; à re-vérifier si l'amont re-acquiert le découpage du 502. Couverture: 119/119 polygones servis."
+}
