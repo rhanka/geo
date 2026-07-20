@@ -27,9 +27,17 @@
  * VIVANT d'abord (non tronqué), et Wayback seulement en repli — l'inverse ferait tomber
  * dans la troncature à 1 MiB ([[wayback-1mib-truncation-range-fix]]).
  *
+ * ⛔⭐ MODE `--depth 2` — FAUX NÉGATIF DE FAMILLE, mesuré sur la MRC de Pontiac: sa page
+ * « Procès-verbaux du conseil » (plugin WordPress **Events Manager**) ne porte AUCUN lien
+ * PDF — elle ne liste que des pages `/events/<slug>/`, et c'est LA PAGE D'ÉVÉNEMENT qui
+ * porte le PV. Un `--index` à un seul saut y rapporte « 0 PDF », d'où l'on conclurait
+ * « la MRC ne diffuse pas ses PV » alors qu'il y en a 110. `--depth 2` fait le deuxième
+ * saut (liens HTML du même hôte), ce qui rattrape toute la famille index → fiche → PDF.
+ *
  * Usage:
  *   npx tsx acquisition/src/_reglprov-mrc-pv-sweep.ts --index <url-page-PV> [--index <url2> ...] \
- *       [--munis "Chazel,Roquemaure"] [--re "zonage"] [--max 60] [--ctx 1]
+ *       [--munis "Chazel,Roquemaure"] [--re "zonage"] [--max 60] [--ctx 1] \
+ *       [--depth 2] [--follow-max 60] [--follow-re "events|seance"]
  *   npx tsx acquisition/src/_reglprov-mrc-pv-sweep.ts --cdx "mrcao.qc.ca/documents/pages/*" \
  *       --cdx-match "minutes" --munis "Chazel" --re "zonage"
  */
@@ -75,10 +83,32 @@ function pdfUrls(html: string, base: string): string[] {
   for (const m of html.matchAll(/[^"'\s<>()]+\.pdf\b/gi)) {
     const raw = decode(m[0]);
     try {
+      // Les endpoints WP REST rendent des chemins accentués en `è`; sans
+      // percent-encoding le GET rate. `new URL` normalise, encodeURI ne suffit pas.
       out.add(new URL(raw, base).href);
     } catch {
       /* ignore */
     }
+  }
+  return [...out];
+}
+
+/** Liens de PAGE du même hôte (pour le 2e saut d'un index sans PDF). */
+function pageLinks(html: string, base: string, filter?: RegExp): string[] {
+  const host = new URL(base).host;
+  const out = new Set<string>();
+  for (const m of html.matchAll(/href\s*=\s*["']([^"'#]+)/gi)) {
+    const raw = decode(m[1]);
+    if (/\.(pdf|jpe?g|png|gif|css|js|zip|docx?|xlsx?)$/i.test(raw)) continue;
+    let u: URL;
+    try {
+      u = new URL(raw, base);
+    } catch {
+      continue;
+    }
+    if (u.host !== host) continue;
+    if (filter && !filter.test(u.href)) continue;
+    out.add(u.href);
   }
   return [...out];
 }
@@ -169,12 +199,35 @@ async function main(): Promise<void> {
 
   // 1) énumérer les PDF de tous les index (+ des motifs CDX)
   const urls = new Map<string, string | undefined>(); // url -> timestamp Wayback
+  const depth = Number(arg("depth") ?? "1");
+  const followMax = Number(arg("follow-max") ?? "60");
+  const followReRaw = arg("follow-re");
+  const followRe = followReRaw ? new RegExp(followReRaw, "i") : undefined;
   for (const idx of indexes) {
     try {
       const html = await fetchText(idx);
       const found = pdfUrls(html, idx);
       console.log(`# index ${idx} -> ${found.length} PDF`);
       for (const u of found) if (!urls.has(u)) urls.set(u, undefined);
+      if (depth >= 2) {
+        const links = pageLinks(html, idx, followRe).slice(0, followMax);
+        console.log(`#   depth2: ${links.length} pages suivies`);
+        let gained = 0;
+        for (const link of links) {
+          try {
+            const sub = await fetchText(link);
+            for (const u of pdfUrls(sub, link)) {
+              if (!urls.has(u)) {
+                urls.set(u, undefined);
+                gained++;
+              }
+            }
+          } catch {
+            /* une fiche morte ne condamne pas l'index */
+          }
+        }
+        console.log(`#   depth2: +${gained} PDF que le 1er saut ne voyait PAS`);
+      }
     } catch (e) {
       console.log(`# index ${idx} -> ERREUR ${(e as Error).message}`);
     }
