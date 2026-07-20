@@ -99,6 +99,18 @@ function alphaPrefix(code: string): string {
   return m ? m[0] : "";
 }
 
+/** Forme servie d'un code dont le séparateur digit-first est ESPACÉ (« 48 - R »).
+ *  `canonZoneCodeServe` ne réverse le digit-first qu'avec UN SEUL caractère de
+ *  séparation (`/^(\d+)[-\s]?([A-Za-z]+)$/`), donc « 48 - R » lui échappe et le
+ *  code passe pour NUMÉRIQUE PUR — à la fois au `categoryFor` (aucun préfixe ne
+ *  matche) et au gate `--list-prefixes` (rangé sous « (numérique) », ce qui fait
+ *  RENONCER à une muni pourtant mappable: mesuré sur la Ville de Disraeli, 83 pol.).
+ *  On resserre les espaces autour du tiret AVANT de passer à la canonisation.
+ *  Additif: un code sans espace autour d'un tiret ressort identique. */
+export function tightenedServeForm(code: string): string {
+  return canonZoneCodeServe(code.replace(/\s*-\s*/g, "-"));
+}
+
 /** Catégorie du PLUS LONG préfixe du map qui préfixe le code (case-insensible).
  *  Un préfixe mappé à null gagne quand même s'il est le plus long => il BLOQUE
  *  le fallthrough vers un préfixe plus court (voir MapValue). Aucun match => null. */
@@ -122,7 +134,7 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // espaces autour du tiret AVANT de le lui passer, comme forme candidate de plus.
   // Additif: un code sans espace autour d'un tiret est inchangé, donc aucun map
   // existant ne bouge.
-  const tightened = canonZoneCodeServe(code.replace(/\s*-\s*/g, "-"));
+  const tightened = tightenedServeForm(code);
   const forms = [code, canonZoneCodeServe(code), tightened, paren?.[1] ?? paren?.[2] ?? ""].filter(
     (v, i, a) => v && a.indexOf(v) === i,
   );
@@ -198,7 +210,9 @@ async function listPrefixesKey(s3: S3, slug: string, key: string): Promise<void>
       noCode++;
       continue;
     }
-    const pref = alphaPrefix(canonZoneCodeServe(code) || code) || "(numérique)";
+    // MÊME forme que `categoryFor`, sinon le gate mentirait: un « 48 - R » rangé
+    // sous « (numérique) » fait renoncer à une muni que le fold sait pourtant mapper.
+    const pref = alphaPrefix(tightenedServeForm(code) || canonZoneCodeServe(code) || code) || "(numérique)";
     let e = byPrefix.get(pref);
     if (!e) {
       e = { count: 0, samples: new Set() };
