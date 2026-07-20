@@ -55,6 +55,15 @@ async function main(): Promise<void> {
   if (url && (!existsSync(file) || process.argv.includes("--force"))) await download(url, file);
   if (!existsSync(file)) throw new Error(`no file: passer --url la 1re fois (cache=${file})`);
 
+  // Wayback rend une PAGE HTML (redirection/erreur) quand le snapshot demandé n'existe
+  // pas: sans ce garde, pdftotext plante en « Couldn't read xref table » et le vrai
+  // diagnostic (mauvais timestamp -> passer par l'index CDX) est masqué.
+  const head = readFileSync(file).subarray(0, 5).toString("latin1");
+  if (head !== "%PDF-") {
+    console.log(`# PAS UN PDF (entête=${JSON.stringify(head)}) — le snapshot demandé n'existe probablement pas.`);
+    console.log(`# Chercher un timestamp réel: https://web.archive.org/cdx/search/cdx?url=<url>&output=text&fl=timestamp,statuscode`);
+    return;
+  }
   const txt = resolve(SCRATCH, `${name}.txt`);
   execFileSync("pdftotext", ["-layout", "-enc", "UTF-8", file, txt], { stdio: "inherit" });
   const lines = readFileSync(txt, "utf8").split("\n");
