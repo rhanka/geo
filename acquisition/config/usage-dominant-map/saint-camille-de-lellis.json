@@ -1,0 +1,7 @@
+{
+  "prefix_map": {
+    "Fc": "agricole"
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2728070%27",
+  "note": "Saint-Camille-de-Lellis (Paroisse, MRC des Etchemins), code MAMH 28070. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche geocentralis « evb:siadmin_pzon_99_s » qui SERT ces polygones (provenance du geojson servi: « …#evb:siadmin_pzon_99_s[id_municipalite=28070] ») porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2`. Gate propriétaire: le filtre `id_municipalite='28070'` est EXACTEMENT celui de la provenance du polygone servi, et 28070 = « Saint-Camille-de-Lellis (Paroisse) » au répertoire MAMH committé. Dump vérifié (`_ud-geocentralis-etiquette.ts --muni 28070`, 4 features = les 4 polygones servis): etiquette_2 « Forêt » pour Fc, Fc, Fc.8, Fc.10 — une seule valeur, uniforme. Mapping: Fc « Forêt » -> agricole (famille forestière). ⛔ PIÈGE ÉCARTÉ: le `reglement_url` de provenance (WebLex documentid=c3bcf742-…) n'est pas un règlement du tout, mais le PROCÈS-VERBAL de la séance du 7 avril 2015. Couverture: 4/4 polygones servis."
+}
