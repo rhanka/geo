@@ -42,6 +42,13 @@ const ZONES_WP_TITLE = "couche: zones";
 const INDICATOR_TITLE =
   "zones-reacquire · _indicateur — qualité géométrique zone_geometry_status détecté (dispersed/fragmented/suspect) + servi à immo sur qc-zonage-<slug>";
 
+/** Consistance lot↔zone — 2e classe de bug (mis-assignment spatial), complément WP8.
+ *  Le détecteur est livré (done) ; le re-fold des villes rectifiées est en cours (agent délégué). */
+const LOT_ZONE_DETECTOR_TITLE =
+  "zones-reacquire · _indicateur — consistance lot↔zone (lot-zone-consistency-audit: code_zone du lot vs polygone qc-zonage servi) détecté";
+const LOT_ZONE_REFOLD_TITLE =
+  "zones-reacquire · _chantier — re-fold lot↔zone sur villes rectifiées (code_zone re-dérivé du qc-zonage servi ; saint-stanislas 74,3% mismatch mesuré)";
+
 /** Défauts francs contour-auto détectés (zone-contiguity `fragmented`) + état de rectification.
  *  Curé main : exclut les faux positifs de tokenisation (preissac, stratford) et les
  *  `dispersed` triés légitimes (clarenceville/denholm/low) — non ré-acquérables. */
@@ -97,6 +104,8 @@ function main(): void {
   const targets: Array<{ title: string; done: boolean; note: string }> = [
     { title: INDICATOR_TITLE, done: true, note: "détection + serving 44 villes flaguées" },
     ...FRAG_CITIES.map((c) => ({ title: childTitle(c.slug), done: c.done, note: c.note })),
+    { title: LOT_ZONE_DETECTOR_TITLE, done: true, note: "lot-zone-consistency-audit committé + confirmé (saint-stanislas 74,3%)" },
+    { title: LOT_ZONE_REFOLD_TITLE, done: false, note: "re-fold délégué (scope systémique-vs-rectifiées + fix par recouvrement d'aire)" },
   ];
   const toCreate = targets.filter((t) => !byTitle.has(t.title));
 
