@@ -95,9 +95,17 @@ async function main(): Promise<void> {
   if (!anyFlux) console.log("  (aucune) — le HTML rendu porte vraisemblablement ses liens en clair");
 
   // TOUTES les URL du HTML brut, d'où qu'elles viennent (href, src, data-*, JS).
+  // ⛔ ANGLE MORT CORRIGÉ: exiger `https?://` ou `/` en tête ratait les liens
+  // RELATIFS SANS SLASH (`index.cfm?PageID=332`, `documents/pages/x.pdf`) — c'est
+  // la forme qu'emploient les portails ColdFusion/Radium des inforoutes de MRC,
+  // donc la navigation ET des PDF y devenaient invisibles. Mesuré sur lareine.ao.ca.
   const urls = [
     ...new Set(
-      [...html.matchAll(/(?:https?:\/\/|\/)[^"'\s<>()]{3,200}/gi)].map((m) => decode(m[0])),
+      [
+        ...html.matchAll(/(?:https?:\/\/|\/)[^"'\s<>()]{3,200}/gi),
+        ...html.matchAll(/[\w][\w./-]{2,150}\.pdf(?:\?[^"'\s<>]{0,60})?/gi),
+        ...html.matchAll(/[\w-]+\.(?:cfm|aspx|php)\?[^"'\s<>]{1,120}/gi),
+      ].map((m) => decode(m[0])),
     ),
   ];
   const pdfs = urls.filter((u) => /\.pdf(\?|$)/i.test(u));
