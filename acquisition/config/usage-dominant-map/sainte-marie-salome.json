@@ -1,0 +1,9 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AC": null,
+    "ID": null
+  },
+  "source": "https://sainte-marie-salome.ca/storage/app/media/administration-et-information/R%C3%A8glements/316-2024-zonage.pdf",
+  "note": "Règlement de zonage numéro 316-2024 de la Municipalité de Sainte-Marie-Salomé (MRC de Montcalm). Le règlement énonce la dominance des zones VERBATIM dans le corps: art. 139 « Dans les zones à dominance agricole (A), dans les zones à dominance agricole-conservation (AC) et dans les îlots déstructurés (Id), un élevage d'animaux complémentaire à l'habitation (fermette) est autorisé… »; art. 258 « La construction d'un abri forestier est permise dans les zones à dominance agricole (A) »; art. 308/309/310 et p.171 reprennent la même triade « zone à dominance agricole (A), agricole-conservation (AC) ou … îlot déstructuré (Id) ». Mapping: A « dominance agricole » -> agricole. NULL EXPLICITES: AC « dominance agricole-conservation » nomme DEUX vocations (agricole + conservation) sans en désigner une dominante — le null explicite bloque aussi le fallthrough longest-prefix vers « A »; ID/Id « îlot déstructuré » est une enclave d'habitations existantes en zone agricole dont le règlement n'énonce aucune dominante parmi les cinq catégories. ⛔ LIMITE ASSUMÉE: l'art. 21 « Identification des zones » dit seulement « Chaque zone délimitée au plan de zonage est identifiée par un code composé de lettres et d'un nombre. La lettre identifie l'affectation de la zone » SANS fournir de tableau des lettres. Les préfixes SIG I, P, PA et R ne sont donc PAS mappés: aucune dominante ne leur est écrite dans le règlement, et les déduire de la lettre serait une invention (ils ressortent null par absence de match). Codes SIG servis (28): A-1-1/1-3/1-6/1-8/2-2/2-9, AC-10/31, I-4/5, ID-21..30, P-2-14/3-7, PA-17/18/20, R-1-12/2-19/3-11."
+}
