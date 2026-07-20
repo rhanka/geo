@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "1": "environnemental",
+    "2": null,
+    "3": "residentiel",
+    "4": "environnemental",
+    "5": "environnemental",
+    "6": null,
+    "7": "industriel",
+    "8": null,
+    "9": null
+  },
+  "source": "https://www.stcomelanaudiere.ca/storage/app/media/citoyens/environnement-et-urbanisme/Grille%20des%20usages/206-1990_%20Zonage%20_Juillet_2025.pdf",
+  "note": "Municipalité de Saint-Côme (MRC de Matawinie), « Règlement de zonage 206-1990 » (compilation administrative à jour au 6 mai 2024), Chapitre 5 « Répartition en zones », ARTICLE 18, page imprimée 53. Gate propriétaire VERBATIM: le pied de page de la page qui PORTE la table dit « Municipalité de Saint-Côme » et son en-tête « Règlement de zonage 206-1990 / Chapitre 5 : Répartition en zones ». ⭐ LA VOCATION EST DANS LA CENTAINE, et le règlement l'écrit: « La classification par centaine réfère aux affectations prévues au plan d'urbanisme de la Municipalité. » Table VERBATIM: « 100 Conservation / 200 Faunique et forestière / 300 Villégiature / 400 Récréo-touristlque extensive / 500 Récréo-tourlstlque intensive / 600 Rurale / 700 Industrielle / 800 Urbaine / 900 Agro-touristique » (les graphies « touristlque »/« tourlstlque » sont des coquilles du PDF, recopiées telles quelles). Mapping: 1xx « Conservation » -> environnemental; 3xx « Villégiature » -> residentiel; 4xx et 5xx « Récréo-touristique extensive/intensive » -> environnemental (la lane sert déjà « Récréation et tourisme » en environnemental); 7xx « Industrielle » -> industriel. NULLS EXPLICITES: 2xx « Faunique ET forestière » est DUAL (le faunique relève de l'environnemental, le forestier de l'agricole — même conflit que « Récréoforestière », déjà servi null par la lane); 6xx « Rurale » et 8xx « Urbaine » sont des TYPES DE MILIEU, pas des dominantes d'usage, et n'énoncent aucune des cinq catégories; 9xx « Agro-touristique » est DUAL (agricole ⊕ touristique) — aucun polygone servi n'est en 9xx, la clé est écrite pour fermer la plage. ⭐ SUFFIXES RÉFUTÉS comme porteurs de sens: le même art. 18 dit VERBATIM « Les zones sont identifiées par un (1) ou des chiffres et / ou une (1) ou des lettres. L'ensemble de ces chiffres et / ou lettres constitue l'identification de la zone proprement dite et chaque partie du territoire ainsi identifiée constitue une zone distincte. » — le règlement n'attribue AUCUNE signification à -A/-B/-C/-D ni à -1/-2: ce sont de purs distinctifs. Donc « 406-A », « 406-B », « 406-C », « 406-D » sont quatre zones de la centaine 400, « 828-A » de la centaine 800, « 105-1 » de la centaine 100. FORME DES CLÉS: le chiffre des centaines, sûr ici parce que les 89 codes servis commencent TOUS par trois chiffres (relevé exhaustif `_dump-sig-codes --slug saint-come`: 103 à 829, aucun code à un ou deux chiffres). Les 8 codes à suffixe alphabétique sont servis sous forme canonisée « A-308 », « B-406 » mais le fold teste AUSSI la forme brute « 308-A » / « 406-B », que la clé du chiffre capte. Couverture: 89/89 polygones."
+}
