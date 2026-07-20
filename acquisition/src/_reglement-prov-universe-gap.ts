@@ -25,7 +25,11 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const ENRICH = resolve(ROOT, 'work', 'coverage', 'zonage-enrichment.json');
 const REGISTRY = resolve(ROOT, 'acquisition', 'config', 'reglement-provenance.json');
-const MANIFEST = resolve(ROOT, 'registry', 'qc-zonage-norms', 'manifest.json');
+/** Le manifest des grilles de normes ne vit PAS sous `registry/` (ce dossier n'existe
+ *  pas dans ce dépôt) : c'est `work/zonage-norms/manifest-current.json`, un TABLEAU
+ *  d'entrées `{slug, present, source_url, reglement, …}`. L'ancien chemin rendait
+ *  silencieusement `entrées=0`, donc « B∩A = 0 » était un FAUX ZÉRO. */
+const MANIFEST = resolve(ROOT, 'work', 'zonage-norms', 'manifest-current.json');
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -64,7 +68,10 @@ for (const m of perMuni) {
 }
 
 const registry = readJson(REGISTRY) ?? {};
-const regEntries: Record<string, any> = registry.munis ?? registry;
+// Le registre curé est `{ slugs: { <slug>: {...} } }` (cf. fold-reglement-to-zonage.ts,
+// `cfg.slugs[slug]`). Lire `registry.munis ?? registry` itérait la clé `slugs` elle-même
+// => curedNum=0 / curedNull=1, donc le filtre `actionable` ne retirait AUCUN slug déjà tranché.
+const regEntries: Record<string, any> = registry.slugs ?? registry.munis ?? registry;
 const curedNum = new Set<string>();
 const curedNull = new Set<string>();
 for (const [slug, e] of Object.entries(regEntries)) {
@@ -92,12 +99,17 @@ console.log(`# registre: numéro=${curedNum.size} null-curé=${curedNull.size}`)
 
 // B \ A : URL de grille connue, aucun polygone servi -> registre durable, fold muet.
 const bNotServed = [...manUrl.keys()].filter((s) => !served.has(s)).sort();
+// … dont ceux qu'AUCUN curateur n'a encore tranchés : le seul travail NEUF de la lane
+// quand `B∩A` est vide. L'entrée de registre y est durable (le fold la servira dès que
+// le polygone de zonage arrivera), mais elle ne change rien aujourd'hui.
+const bNotServedUntriaged = bNotServed.filter((s) => !curedNum.has(s) && !curedNull.has(s));
 // B ∩ A sans numéro ni verdict : le vrai gisement servable.
 const actionable = [...manUrl.keys()]
   .filter((s) => served.has(s) && !withRegl.has(s) && !curedNum.has(s) && !curedNull.has(s))
   .sort();
 
 console.log(`# B\\A (URL connue, NON servi -> goulot ZONES) = ${bNotServed.length}`);
+console.log(`#    dont JAMAIS tranchés (travail neuf, durable mais non servable) = ${bNotServedUntriaged.length}`);
 console.log(`# B∩A non tranché (gisement servable) = ${actionable.length}`);
 
 const sh = arg('shard');
@@ -110,6 +122,6 @@ function shardOf(list: string[]): string[] {
 if (LIST) {
   console.log('\n## gisement servable non tranché');
   for (const s of shardOf(actionable)) console.log(`${s}\t${manUrl.get(s)}`);
-  console.log('\n## B\\A (registre durable, fold muet)');
-  for (const s of shardOf(bNotServed)) console.log(`${s}\t${manUrl.get(s)}`);
+  console.log('\n## B\\A JAMAIS tranchés (registre durable, fold muet)');
+  for (const s of shardOf(bNotServedUntriaged)) console.log(`${s}\t${manUrl.get(s)}`);
 }
