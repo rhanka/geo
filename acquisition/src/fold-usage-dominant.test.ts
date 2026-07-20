@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { categoryFor, zoneCodeOf } from "./fold-usage-dominant.js";
+import { categoryFor, parenSigle, zoneCodeOf } from "./fold-usage-dominant.js";
 
 describe("fold-usage-dominant zone-code selection", () => {
   it("matches a regulatory prefix on a digit-first SIG code", () => {
@@ -37,5 +37,19 @@ describe("fold-usage-dominant zone-code selection", () => {
     expect(categoryFor("ZR-74", prefixes)).toBe(null);
     // un code sans lettre reste sans catégorie
     expect(categoryFor("515", prefixes)).toBe(null);
+  });
+
+  it("expose le sigle parenthésé, pour que le gate --list-prefixes ne le range plus sous « (numérique) »", () => {
+    // Famille MRC de La Mitis: la vocation est en SUFFIXE PARENTHÉSÉ. `categoryFor`
+    // la lisait déjà, mais le gate la comptait comme numérique pure => on renonçait
+    // à des munis mappables (sainte-luce 104 pol., sainte-angele 76, price 45…).
+    expect(parenSigle("18 (AGF)")).toBe("AGF");
+    expect(parenSigle("104 (AGF)")).toBe("AGF");
+    expect(parenSigle("137 (MTF")).toBe("MTF"); // parenthèse fermante manquante à la source
+    expect(parenSigle("83 AGC)")).toBe("AGC"); // parenthèse ouvrante manquante
+    // pas de sigle: ni sur un code numérique pur, ni sur un code letter-first
+    expect(parenSigle("515")).toBe("");
+    expect(parenSigle("48 - R")).toBe("");
+    expect(parenSigle("R-103")).toBe("");
   });
 });
