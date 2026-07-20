@@ -111,6 +111,17 @@ export function tightenedServeForm(code: string): string {
   return canonZoneCodeServe(code.replace(/\s*-\s*/g, "-"));
 }
 
+/** Motif du SIGLE de vocation en SUFFIXE PARENTHÉSÉ (« 624 (AGC) », « 104 (AGF) »,
+ *  famille MRC de La Mitis). La source laisse parfois une parenthèse manquante
+ *  (« 137 (MTF », « 83 AGC) ») — les deux moitiés couvrent ces deux cas. */
+const PAREN_SIGLE = /(?:\(\s*([A-Za-z]{2,5})\s*\)?|\s([A-Za-z]{2,5})\s*\))\s*$/;
+
+/** Sigle parenthésé d'un code, ou `""`. */
+export function parenSigle(code: string): string {
+  const m = code.match(PAREN_SIGLE);
+  return m?.[1] ?? m?.[2] ?? "";
+}
+
 /** Catégorie du PLUS LONG préfixe du map qui préfixe le code (case-insensible).
  *  Un préfixe mappé à null gagne quand même s'il est le plus long => il BLOQUE
  *  le fallthrough vers un préfixe plus court (voir MapValue). Aucun match => null. */
@@ -126,7 +137,7 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // source laisse parfois une parenthèse manquante (« 137 (MTF », « 83 AGC) ») — les
   // deux moitiés du motif couvrent ces deux cas. Additif: sans parenthèse dans le
   // code, rien ne change pour les maps existants.
-  const paren = code.match(/(?:\(\s*([A-Za-z]{2,5})\s*\)?|\s([A-Za-z]{2,5})\s*\))\s*$/);
+  const sigle = parenSigle(code);
   // Forme « NUMÉRO ESPACE-TIRET-ESPACE LETTRE » (« 48 - R », « 33 - RC », Ville de
   // Disraeli) : `canonZoneCodeServe` ne réverse le digit-first qu'avec UN SEUL
   // caractère de séparation (`/^(\d+)[-\s]?([A-Za-z]+)$/`), donc « 48 - R » lui
@@ -135,7 +146,7 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // Additif: un code sans espace autour d'un tiret est inchangé, donc aucun map
   // existant ne bouge.
   const tightened = tightenedServeForm(code);
-  const forms = [code, canonZoneCodeServe(code), tightened, paren?.[1] ?? paren?.[2] ?? ""].filter(
+  const forms = [code, canonZoneCodeServe(code), tightened, sigle].filter(
     (v, i, a) => v && a.indexOf(v) === i,
   );
   for (const form of forms) {
@@ -210,9 +221,15 @@ async function listPrefixesKey(s3: S3, slug: string, key: string): Promise<void>
       noCode++;
       continue;
     }
-    // MÊME forme que `categoryFor`, sinon le gate mentirait: un « 48 - R » rangé
-    // sous « (numérique) » fait renoncer à une muni que le fold sait pourtant mapper.
-    const pref = alphaPrefix(tightenedServeForm(code) || canonZoneCodeServe(code) || code) || "(numérique)";
+    // MÊMES formes que `categoryFor`, sinon le gate MENT: un « 48 - R » ou un
+    // « 18 (AGF) » rangés sous « (numérique) » font renoncer à une muni que le fold
+    // sait pourtant mapper. Mesuré: la Ville de Disraeli (83 pol.) et TOUTE la famille
+    // MRC de La Mitis (sainte-luce 104, sainte-angele 76, saint-gabriel-de-rimouski 66,
+    // saint-donat 62, sainte-flavie 46, price 45, padoue 33…) étaient classées
+    // « NUMERIC-ONLY » — verdict FAUX, `categoryFor` lit le sigle parenthésé depuis
+    // le lot MRC de La Mitis.
+    const pref =
+      parenSigle(code) || alphaPrefix(tightenedServeForm(code) || canonZoneCodeServe(code) || code) || "(numérique)";
     let e = byPrefix.get(pref);
     if (!e) {
       e = { count: 0, samples: new Set() };
