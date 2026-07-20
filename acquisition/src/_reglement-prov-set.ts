@@ -59,12 +59,33 @@ function main(): void {
   // `fold` recopiait "null" (chaîne, donc truthy) sur chaque polygone et qu'immo
   // recevait un lien source bidon. Mesuré sur lac-frontiere 2026-07-20.
   const urlValue = url && url !== "null" ? url : null;
+  // `--note-append` : les notes des HOLD-NULL sont des JOURNAUX (chaque passe y ajoute
+  // un fait DATÉ et mesuré). Les ré-envoyer en entier à chaque ajout coûtait 2 000+
+  // caractères recopiés à la main — et un caractère fautif RÉÉCRIT silencieusement
+  // l'historique d'une enquête. On append, les champs restent ceux de l'entrée existante
+  // sauf mention explicite.
+  const appendRaw = arg("note-append");
+  const prev = obj.slugs[slug!] as Record<string, unknown> | undefined;
+  let finalNote = note ?? "";
+  if (appendRaw) {
+    if (note) {
+      console.error("REFUS: --note et --note-append sont exclusifs.");
+      process.exit(2);
+    }
+    const old = typeof prev?._note === "string" ? prev._note : "";
+    finalNote = old ? `${old} ${appendRaw}` : appendRaw;
+  }
+  // Le report des champs existants n'est actif QU'EN mode append: en mode normal, un
+  // flag omis vaut toujours null, comme avant. Changer ce défaut casserait en silence
+  // les autres agents qui écrivent dans ce même registre.
+  const keep = <T>(cli: string | undefined, val: T, key: string): T =>
+    appendRaw && cli === undefined && prev && key in prev ? (prev[key] as T) : val;
   const entry = {
-    reglement_numero: numero,
-    reglement_millesime: millesime,
-    reglement_page_source: page,
-    reglement_url: urlValue,
-    _note: note ?? "",
+    reglement_numero: keep(numeroRaw, numero, "reglement_numero"),
+    reglement_millesime: keep(milRaw, millesime, "reglement_millesime"),
+    reglement_page_source: keep(pageRaw, page, "reglement_page_source"),
+    reglement_url: keep(url, urlValue, "reglement_url"),
+    _note: finalNote,
   };
   obj.slugs[slug!] = entry;
   const out = JSON.stringify(obj, null, 2) + "\n";
