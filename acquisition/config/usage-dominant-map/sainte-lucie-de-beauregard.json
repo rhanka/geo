@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "RdM": "residentiel",
+    "Fb": "agricole",
+    "Fc": "agricole",
+    "Ac": "agricole",
+    "CbM": "commercial",
+    "Cc": "commercial",
+    "IcM": "industriel",
+    "Fa": null,
+    "V": null,
+    "Sc": null,
+    "ScM": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2718020%27",
+  "note": "Sainte-Lucie-de-Beauregard (Municipalité, MRC de Montmagny), code MAMH 18020. LA LÉGENDE EST DANS LE SIG: la couche geocentralis « evb:siadmin_pzon_99_s » qui sert ces polygones porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2`, ici en libellés TRÈS détaillés. Gate propriétaire: 18020 = « Sainte-Lucie-de-Beauregard (Municipalité) » au répertoire MAMH committé, et le dump rend exactement les 41 codes servis. Dump vérifié (`_ud-geocentralis-etiquette.ts --slugs sainte-lucie-de-beauregard`, 41 features), VERBATIM: « Unifamiliale à multifamiliale (max: 2 étages) » pour RdM.1-RdM.10 (10 pol.); « Forêt » pour Fc.1-Fc.17 (9 pol.); « Équipement ou espace public » pour Sc.1, Sc.4, ScM.2, ScM.3, ScM.5 (5 pol.); « Forêt et conservation faunique avec restriction particulière » pour Fa.1-Fa.4 (5 pol.); « Villégiature et espace récréatif » pour V.1-V.3 (3 pol.); « Commerce local et régional (sans nuisance) » pour CbM.1-CbM.3 (3 pol.); « Industrie à nuisance élevée » pour IcM.1-IcM.2 (2 pol.); « Agriculture à nuisance » pour Ac.1-Ac.2 (2 pol.); « Exploitation forestière limitée » pour Fb.1; « Commerce régional de grande superficie (à nuisance) » pour Cc.1. Chaque préfixe a un libellé uniforme. Mapping: RdM « Unifamiliale à multifamiliale » -> residentiel; Fc « Forêt », Fb « Exploitation forestière limitée », Ac « Agriculture à nuisance » -> agricole; CbM et Cc « Commerce … » -> commercial; IcM « Industrie à nuisance élevée » -> industriel. NULLS EXPLICITES: Sc et ScM « Équipement ou espace public » (public, hors des cinq catégories); V « Villégiature ET espace récréatif » est DUAL (habitation ⊕ récréatif), exactement comme chez saint-marcel qui porte le même libellé; Fa « Forêt ET conservation faunique avec restriction particulière » est DUAL AUSSI — la forêt relève de l'agricole et la conservation faunique de l'environnemental, les deux sont nommées dans la même étiquette et rien ne permet de trancher (même raisonnement que le « RF Récréoforestière » déjà servi null par la lane). Longest-prefix: ScM est écrit bien que Sc le couvre (même catégorie), Fa/Fb/Fc sont distincts et Fa BLOQUE tout rabattement. Couverture: 41/41 polygones servis, dont 13 en null documenté."
+}
