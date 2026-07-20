@@ -1,0 +1,506 @@
+{
+  "slug": "saint-alexandre",
+  "verdict": "DEPOSIT",
+  "source": "t2-gcp-claude48-vision-multisheet",
+  "confidence": "contour-autogcp-multisheet",
+  "label_mode": "claude-multisheet",
+  "crs": "manual 47-GCP affine (WGS84)",
+  "n_sheets_input": 2,
+  "n_sheets_included": 2,
+  "n_pooled_labels": 47,
+  "n_distinct_codes_fused": 46,
+  "distinct_codes": [
+    "A-1",
+    "A-2",
+    "A-3",
+    "A-4",
+    "A-5",
+    "A-6",
+    "A-7",
+    "A-8",
+    "A-9",
+    "AC-1",
+    "AC-2",
+    "AI-1",
+    "AP-1",
+    "AP-2",
+    "AP-3",
+    "AR-1",
+    "AR-2",
+    "AR-3",
+    "C-1",
+    "I-1",
+    "MXT-1",
+    "MXT-2",
+    "MXT-3",
+    "MXT-4",
+    "P-1",
+    "P-2",
+    "P-3",
+    "P-4",
+    "R-1",
+    "R-2",
+    "R-3",
+    "R-4",
+    "R-5",
+    "R-6",
+    "R-7",
+    "R-8",
+    "R-9",
+    "R-10",
+    "R-11",
+    "R-12",
+    "R-13",
+    "R-14",
+    "R-15",
+    "R-16",
+    "R-17",
+    "R-18"
+  ],
+  "n_served_features": 42,
+  "fused_spatial_km_from_cadastre": 0.716,
+  "lot_to_zone_pct": 94.68,
+  "min_cadastre_pct_gate": 50,
+  "compute_seconds": 0.5,
+  "sheets": [
+    {
+      "gcp": "work/gcp/saint-alexandre.s0of1-20260720-t3.gcp.json",
+      "reads": "work/reads/saint-alexandre-general.reads.json",
+      "included": true,
+      "n_gcps": 47,
+      "independent": 47,
+      "residual_max_m": 13.25,
+      "n_reads": 16,
+      "n_validated": 16,
+      "n_rejected": 0,
+      "n_distinct": 16,
+      "spatial_km_from_cadastre": 0.38
+    },
+    {
+      "gcp": "work/gcp/saint-alexandre-pu.t3.gcp.json",
+      "reads": "work/reads/saint-alexandre-pu.reads.json",
+      "included": true,
+      "n_gcps": 11,
+      "independent": 11,
+      "residual_max_m": 24.66,
+      "n_reads": 31,
+      "n_validated": 31,
+      "n_rejected": 0,
+      "n_distinct": 31,
+      "spatial_km_from_cadastre": 0.9
+    }
+  ],
+  "n_lots_total": 1485,
+  "n_lots_invalid_fixed": 0,
+  "n_code_points": 47,
+  "n_distinct_codes": 46,
+  "n_multi_spot_codes": 1,
+  "multi_spot_codes": {
+    "AC-1": 2
+  },
+  "cutoff_m": 1500,
+  "n_lots_unassigned_1000m": 208,
+  "n_lots_unassigned_1500m": 79,
+  "n_lots_assigned": 1406,
+  "n_lots_unassigned": 79,
+  "dist_m": {
+    "min": 12.147199327275533,
+    "median": 452.02538543705043,
+    "mean": 561.6880205328625,
+    "p90": 1187.4008821755053,
+    "max": 3118.6056140457235
+  },
+  "n_zone_features": 43,
+  "n_empty_labels": 4,
+  "total_zoned_area_km2": 62.0419,
+  "total_cadastre_area_km2": 75.2685,
+  "pct_area_covered": 82.43,
+  "cadastre_bbox": [
+    -73.19094339220885,
+    45.171293828729674,
+    -73.0582430115771,
+    45.28968670858253
+  ],
+  "zone_union_bbox": [
+    -73.18382232478075,
+    45.17699312324357,
+    -73.0582430115771,
+    45.27881773751114
+  ],
+  "n_fragmented_zones_gt5_parts": 0,
+  "per_kind": {
+    "agricultural": {
+      "n_features": 9,
+      "total_area_km2": 32.3465,
+      "n_lots": 216,
+      "mean_area_km2": 3.5941,
+      "mean_lots_per_feature": 24
+    },
+    "unknown": {
+      "n_features": 14,
+      "total_area_km2": 10.9993,
+      "n_lots": 741,
+      "mean_area_km2": 0.7857,
+      "mean_lots_per_feature": 52.9
+    },
+    "residential": {
+      "n_features": 16,
+      "total_area_km2": 16.4746,
+      "n_lots": 370,
+      "mean_area_km2": 1.0297,
+      "mean_lots_per_feature": 23.1
+    },
+    "institutional": {
+      "n_features": 4,
+      "total_area_km2": 2.2214,
+      "n_lots": 79,
+      "mean_area_km2": 0.5554,
+      "mean_lots_per_feature": 19.8
+    }
+  },
+  "per_prefix": {
+    "A": {
+      "n_features": 9,
+      "total_area_km2": 32.3465,
+      "n_lots": 216
+    },
+    "AC": {
+      "n_features": 3,
+      "total_area_km2": 3.9058,
+      "n_lots": 173
+    },
+    "AR": {
+      "n_features": 3,
+      "total_area_km2": 2.8774,
+      "n_lots": 149
+    },
+    "AP": {
+      "n_features": 3,
+      "total_area_km2": 0.3832,
+      "n_lots": 33
+    },
+    "R": {
+      "n_features": 16,
+      "total_area_km2": 16.4746,
+      "n_lots": 370
+    },
+    "P": {
+      "n_features": 4,
+      "total_area_km2": 2.2214,
+      "n_lots": 79
+    },
+    "MXT": {
+      "n_features": 4,
+      "total_area_km2": 3.0174,
+      "n_lots": 379
+    },
+    "AI": {
+      "n_features": 1,
+      "total_area_km2": 0.8155,
+      "n_lots": 7
+    }
+  },
+  "per_feature": [
+    {
+      "zone_code": "A-1",
+      "kind": "agricultural",
+      "n_lots": 15,
+      "area_km2": 3.2036,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "A-2",
+      "kind": "agricultural",
+      "n_lots": 58,
+      "area_km2": 5.294,
+      "n_parts": 3
+    },
+    {
+      "zone_code": "A-3",
+      "kind": "agricultural",
+      "n_lots": 2,
+      "area_km2": 0.0704,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "A-5",
+      "kind": "agricultural",
+      "n_lots": 13,
+      "area_km2": 2.5779,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AC-1",
+      "kind": "unknown",
+      "n_lots": 108,
+      "area_km2": 0.1379,
+      "n_parts": 3
+    },
+    {
+      "zone_code": "AR-3",
+      "kind": "unknown",
+      "n_lots": 38,
+      "area_km2": 0.569,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "AR-2",
+      "kind": "unknown",
+      "n_lots": 25,
+      "area_km2": 1.4499,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "A-4",
+      "kind": "agricultural",
+      "n_lots": 18,
+      "area_km2": 2.7515,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "AR-1",
+      "kind": "unknown",
+      "n_lots": 86,
+      "area_km2": 0.8585,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AP-2",
+      "kind": "unknown",
+      "n_lots": 18,
+      "area_km2": 0.1313,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "A-7",
+      "kind": "agricultural",
+      "n_lots": 25,
+      "area_km2": 5.8589,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AP-1",
+      "kind": "unknown",
+      "n_lots": 14,
+      "area_km2": 0.2501,
+      "n_parts": 5
+    },
+    {
+      "zone_code": "A-8",
+      "kind": "agricultural",
+      "n_lots": 18,
+      "area_km2": 2.3617,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "A-6",
+      "kind": "agricultural",
+      "n_lots": 25,
+      "area_km2": 2.9279,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AC-2",
+      "kind": "unknown",
+      "n_lots": 35,
+      "area_km2": 2.8181,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "A-9",
+      "kind": "agricultural",
+      "n_lots": 42,
+      "area_km2": 7.3007,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-1",
+      "kind": "residential",
+      "n_lots": 8,
+      "area_km2": 0.0515,
+      "n_parts": 4
+    },
+    {
+      "zone_code": "R-18",
+      "kind": "residential",
+      "n_lots": 14,
+      "area_km2": 1.6816,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "R-2",
+      "kind": "residential",
+      "n_lots": 12,
+      "area_km2": 0.9346,
+      "n_parts": 5
+    },
+    {
+      "zone_code": "R-3",
+      "kind": "residential",
+      "n_lots": 5,
+      "area_km2": 0.195,
+      "n_parts": 4
+    },
+    {
+      "zone_code": "P-1",
+      "kind": "institutional",
+      "n_lots": 1,
+      "area_km2": 0.0312,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AP-3",
+      "kind": "unknown",
+      "n_lots": 1,
+      "area_km2": 0.0018,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "MXT-1",
+      "kind": "unknown",
+      "n_lots": 131,
+      "area_km2": 0.5618,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-4",
+      "kind": "residential",
+      "n_lots": 41,
+      "area_km2": 1.6634,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-5",
+      "kind": "residential",
+      "n_lots": 12,
+      "area_km2": 1.8452,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "MXT-2",
+      "kind": "unknown",
+      "n_lots": 186,
+      "area_km2": 0.3125,
+      "n_parts": 4
+    },
+    {
+      "zone_code": "P-2",
+      "kind": "institutional",
+      "n_lots": 49,
+      "area_km2": 0.132,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "P-3",
+      "kind": "institutional",
+      "n_lots": 18,
+      "area_km2": 1.3234,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-6",
+      "kind": "residential",
+      "n_lots": 18,
+      "area_km2": 3.1707,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-7",
+      "kind": "residential",
+      "n_lots": 10,
+      "area_km2": 0.8991,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "MXT-3",
+      "kind": "unknown",
+      "n_lots": 38,
+      "area_km2": 1.4134,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "R-8",
+      "kind": "residential",
+      "n_lots": 30,
+      "area_km2": 0.3956,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-9",
+      "kind": "residential",
+      "n_lots": 165,
+      "area_km2": 0.3149,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "P-4",
+      "kind": "institutional",
+      "n_lots": 11,
+      "area_km2": 0.7348,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "MXT-4",
+      "kind": "unknown",
+      "n_lots": 24,
+      "area_km2": 0.7297,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "AC-1",
+      "kind": "unknown",
+      "n_lots": 30,
+      "area_km2": 0.9498,
+      "n_parts": 3
+    },
+    {
+      "zone_code": "R-11",
+      "kind": "residential",
+      "n_lots": 6,
+      "area_km2": 1.2003,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "R-12",
+      "kind": "residential",
+      "n_lots": 3,
+      "area_km2": 0.0083,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-13",
+      "kind": "residential",
+      "n_lots": 26,
+      "area_km2": 0.1603,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-14",
+      "kind": "residential",
+      "n_lots": 11,
+      "area_km2": 1.5553,
+      "n_parts": 1
+    },
+    {
+      "zone_code": "R-15",
+      "kind": "residential",
+      "n_lots": 7,
+      "area_km2": 0.8445,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "AI-1",
+      "kind": "unknown",
+      "n_lots": 7,
+      "area_km2": 0.8155,
+      "n_parts": 2
+    },
+    {
+      "zone_code": "R-16",
+      "kind": "residential",
+      "n_lots": 2,
+      "area_km2": 1.5544,
+      "n_parts": 1
+    }
+  ]
+}
