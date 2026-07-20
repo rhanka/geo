@@ -3505,8 +3505,8 @@
       "reglement_numero": null,
       "reglement_millesime": null,
       "reglement_page_source": null,
-      "reglement_url": "null",
-      "_note": "NULL MOTIVE, STRUCTUREL: le zonage de la Ville de Quebec est REELLEMENT ECLATE PAR ARRONDISSEMENT — il n'existe aucun numero unique applicable aux 4786 zones servies. PREUVE 1: R.V.Q. 1400 n'est PAS un reglement de zonage mais le «Règlement d'harmonisation sur l'urbanisme»; art.2 verbatim «Le présent règlement harmonise entre eux les règlements des conseils d'arrondissement sur l'urbanisme. […] Un règlement d'un conseil d'arrondissement sur l'urbanisme doit être conforme au présent règlement.». PREUVE 2: la norme de zonage vit dans SIX reglements d'arrondissement, listes sur la page officielle «Règlements d'urbanisme harmonisés», chacun contenant «le texte, les annexes, les plans de zonage (annexe 1) […] et les grilles de spécification (annexe 2)»: R.C.A.1V.Q. 4 (La Cite-Limoilou, titre verbatim «Règlement de l'Arrondissement de La Cité-Limoilou sur l'urbanisme»), R.C.A.2V.Q. 4 (Les Rivieres), R.C.A.3V.Q. 4 (Sainte-Foy-Sillery-Cap-Rouge), R.C.A.4V.Q. 4 (Charlesbourg), R.C.A.5V.Q. 4 (Beauport), R.C.A.6V.Q. 4 (La Haute-Saint-Charles). PREUVE 3: R.V.Q. 1400 art.6 — le 1er element de la reference alphanumerique d'une zone est «le numéro de l'arrondissement». Le jeu open data servi (vdq-zonage-grille.xlsx) ne cite aucun numero de reglement. ⭐ VOIE D'ENRICHISSEMENT (hors modele per-muni actuel): la provenance de Quebec est derivable PAR ARRONDISSEMENT, 6 valeurs, a partir du 1er chiffre du code de zone. 4786 zones en jeu = le plus gros gisement unitaire du corpus."
+      "reglement_url": "https://carte.ville.quebec.qc.ca/DonneesOuvertes/vdq-zonage-grille.xlsx",
+      "_note": "NULL MOTIVÉ STRUCTUREL (mesuré, _probe-vdq-reglement-col.ts) : la Ville de Québec n a PAS un règlement de zonage unique. La seule colonne réglementaire de la grille officielle XLSX open data est intitulée VERBATIM 'Dernier règlement ayant modifié la zone' (colonne 1, en-tête ligne 4) : 4786/4786 lignes renseignées, 408 valeurs DISTINCTES (R.V.Q. 2910 sur 892 zones, R.V.Q. 3068 sur 562, R.C.A.3V.Q. 341 sur 101 = régime par ARRONDISSEMENT). Double disqualification : (a) stamp per-muni interdit — fold-reglement-to-zonage copie features[0] sur tous les polygones, ce qui donnerait une provenance FAUSSE sur 3894 des 4786 zones ; (b) la colonne porte le dernier AMENDEMENT, pas le règlement de zonage de base. ESCALADE OUTIL (hors lane) : servir Québec demande un fold PAR ZONE (jointure zone_code -> colonne 1), pas un stamp per-muni. Aucune clé S3 normalized/qc-zonage-norms/qc-zonage-norms-quebec.geojson n existe, donc le repli normsReglement ne peut pas contaminer ; ce null curé pose en plus le VETO."
     },
     "wotton": {
       "reglement_numero": "249-23",
@@ -3709,7 +3709,7 @@
       "reglement_millesime": null,
       "reglement_page_source": null,
       "reglement_url": "null",
-      "_note": "ANTI-INVENTION => null MAINTENU (defaut de DECOUVERTE). Passe corps-en-ligne 2026-07-19: le site officiel est municipalite-lotbiniere.com (7440 route Marie-Victorin); ses pages /pages/urbanisme et /pages/reglements-municipaux ne publient AUCUN PDF de reglement (navigation seule, renvoi au bureau municipal 418-796-2103). LEAD DURABLE NON STAMPE: une actualite du site datee du 18 juin 2026 mentionne «Reglement 351-2026 modifiant le reglement de zonage» — c'est un AMENDEMENT et son PDF n'est pas diffuse, donc il ne nomme pas la base a notre lecture; ne PAS stamper 351-2026. ETAPE = obtenir le PDF du 351-2026 (il devrait nommer la base verbatim) ou le corps aupres de la muni / MRC de Lotbiniere."
+      "_note": "ANTI-INVENTION => null MAINTENU (defaut de DECOUVERTE). Passe corps-en-ligne 2026-07-19: le site officiel municipalite-lotbiniere.com ne publie AUCUN PDF de reglement; ses pages /pages/urbanisme, /pages/reglements-municipaux, /pages/avis-publics et /pages/enregistrement-des-seances rendent la MEME coquille SPA (108 ancres identiques = le seul menu de navigation, 66 Ko), signature de faux-negatif de crawler. LEAD 351-2026 (actualite du 18 juin 2026, amendement) toujours non diffuse: ne PAS le stamper. AJOUT 2026-07-19 lot B\\A: un moteur de recherche indexe encore le chemin WordPress /wp-content/uploads/downloads/2015/05/182-2008-Reglement-de-zonage.pdf, mais l hote y sert aujourd hui la coquille SPA (62790 o, NOT-PDF) et Wayback n en a AUCUNE capture (404 sur web/2020id_ et web/2018id_). Le 182-2008 reste donc un NOM DE FICHIER non lu: le stamper violerait le gate URL. Portail NON VPlus (vplus.modellium.com/api/<host>/structure/tree = 404). ETAPE = capture Wayback plus ancienne du chemin wp-content, ou demande a la muni / MRC de Lotbiniere."
     },
     "murdochville": {
       "reglement_numero": "12-352",
@@ -6293,6 +6293,20 @@
       "reglement_page_source": null,
       "reglement_url": "https://www.kazabazua.ca/images/Projet_de_r%C3%A8glements_durbanisme/7-_KAZABAZUA_ZONAGE_Pour_adoption_2025-07-01.pdf",
       "_note": "NULL MOTIVÉ : GABARIT NON REMPLI + PROJET. p1 'MUNICIPALITÉ DE KAZABAZUA / RÈGLEMENT NUMÉRO __________ / ENTRÉE EN VIGUEUR __________' et l en-tête de chaque page dit 'RÈGLEMENT DE ZONAGE NO. ___________'. Document servi depuis le dossier 'Projet_de_reglements_durbanisme', nommé 'Pour adoption 2025-07-01'. Même famille que lascension-de-patapedia et denholm."
+    },
+    "sainte-justine-de-newton": {
+      "reglement_numero": "414",
+      "reglement_millesime": null,
+      "reglement_page_source": 13,
+      "reglement_url": "https://sainte-justine-de-newton.ca/wp-content/uploads/2025/12/Reg.414_Zonage.pdf",
+      "_note": "Corps local 275 p (work/zonage-norms/sainte-justine-de-newton/grille.pdf). P1 VERBATIM: MUNICIPALITE DE SAINTE-JUSTINE-DE-NEWTON / REGLEMENT DE ZONAGE N 414 / Reglement numero 414. Gate proprietaire art.1.1 p13 VERBATIM: Le present reglement est intitule Reglement de zonage numero 414 de la ... ; il remplace le Reglement de zonage numero 314 ainsi que tous ses amendements a ce jour (le 314 est le PIEGE a ne pas stamper). Pied de page Reglement de zonage numero 414 sur les 275 pages. Millesime NULL STRUCTUREL: p2 la table de codification est VIDE (colonnes Reglement / Avis de motion / Adoption / Entree en vigueur sans aucune ligne) et Date de la derniere mise a jour du document est en blanc. Corroboration en ligne: le site officiel publie /wp-content/uploads/2025/12/Reg.414_Zonage.pdf et un avis du 12 juin 2026 Projet de reglement no 414-1. Gate homonyme OK (annuaire MAMH 71115, distinct de sainte-justine 28045)."
+    },
+    "lantier": {
+      "reglement_numero": "154-2014",
+      "reglement_millesime": null,
+      "reglement_page_source": 3,
+      "reglement_url": "https://lantier.quebec/wp-content/uploads/2026/07/Regl-154-2014-Zonage.pdf",
+      "_note": "Corps en ligne (site officiel lantier.quebec, page Reglements d urbanisme, libelle Reglement 154-2014 Zonage). P1 et p3 VERBATIM: CANADA / PROVINCE DE QUEBEC / MRC DES LAURENTIDES / MUNICIPALITE LANTIER / REGLEMENT DE ZONAGE NUMERO 154-2014 ; p3 CONSIDERANT QUE le Conseil de la municipalite de Lantier juge opportun d adopter un nouveau reglement relatif au zonage ... A CES CAUSES, LE CONSEIL MUNICIPAL DE LANTIER ORDONNE CE QUI SUIT. Gate proprietaire OK (muni + MRC nommees). PIEGES ECARTES: 2002-06-005 est le PLAN D URBANISME, 152-2014 est le plan, 153-2014 les permis, 155-2014 le lotissement, 156-2014 la construction. Millesime NULL: aucune date d adoption ni d entree en vigueur du 154-2014 dans le document (seulement VERSION DU 12 janvier 2015 = date du second projet, et depot du certificat le 9 fevrier 2015) ; le 2014 du numero ne fait pas foi. La table Modifications incluses commence a 174-2016 (24 novembre 2016). Le grille.pdf local du corpus est OWNER-ABSENT et ne portait aucun numero."
     }
   }
 }
