@@ -45,6 +45,18 @@ async function main(): Promise<void> {
   const rows = await getJson(q);
   const feats = (rows?.features ?? []) as { attributes?: Record<string, unknown> }[];
   console.log(`# échantillon: ${feats.length} entités`);
+  // --pair <abr>,<libellé> : la table « abréviation -> vocation » telle que le SIG la porte.
+  const pair = arg("pair");
+  if (pair) {
+    const [ka, kb] = pair.split(",");
+    const seen = new Map<string, number>();
+    for (const f of feats) {
+      const k = `${String(f.attributes?.[ka] ?? "(vide)")} = ${String(f.attributes?.[kb] ?? "(vide)")}`;
+      seen.set(k, (seen.get(k) ?? 0) + 1);
+    }
+    for (const [k, n] of [...seen].sort((a, b) => b[1] - a[1])) console.log(`  ${k}  n=${n}`);
+    return;
+  }
   const only = arg("field");
   if (only) {
     const seen = new Map<string, number>();
