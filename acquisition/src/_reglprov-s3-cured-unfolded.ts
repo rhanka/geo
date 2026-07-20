@@ -124,19 +124,43 @@ if (sh) {
 console.log(`# S3 couches=${best.size} · registre à numéro=${curedNum.size} · enrichment served=${enrichServed.size}`);
 console.log(`# population sondée = ${pop.length}${all ? " (--all)" : " (absents d'enrichment = l'angle mort)"}`);
 
+/**
+ * Lit le stamp d'une clé S3. ⚠️ Sur `--all` (420 objets, dont saguenay ~11 Mo) une socket
+ * peut rester PENDANTE : ni résolue ni rejetée. L'event loop se vide et node meurt sur
+ * « Detected unsettled top-level await » — la passe entière est perdue SANS résumé, et
+ * comme la boucle n'imprime que les anomalies, on ne sait même pas où elle s'est arrêtée.
+ * D'où le timeout explicite + retry : un `await` S3 nu n'est pas fiable à cette échelle.
+ */
+async function stampOf(key: string, tries = 3): Promise<string | null> {
+  for (let t = 1; ; t++) {
+    try {
+      const body = await Promise.race([
+        (async () => {
+          const r = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+          return await r.Body!.transformToString();
+        })(),
+        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("TIMEOUT-60s")), 60_000).unref()),
+      ]);
+      return JSON.parse(body)?.features?.[0]?.properties?.reglement_numero ?? null;
+    } catch (e) {
+      if (t >= tries) throw e;
+    }
+  }
+}
+
 const todo: string[] = [];
 const orphan: string[] = [];
+let done = 0;
 for (const slug of pop) {
   const want = curedNum.get(slug)!;
   const keys = keysOf.get(slug)!.filter((k) => k.size > EMPTY_MAX_BYTES);
   let anyMissing = false;
   let anyPresent = false;
+  if (++done % 50 === 0) console.error(`# … ${done}/${pop.length} sondés`);
   for (const { key } of keys) {
     let stamped: string | null = null;
     try {
-      const r = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
-      const fc = JSON.parse(await r.Body!.transformToString());
-      stamped = fc?.features?.[0]?.properties?.reglement_numero ?? null;
+      stamped = await stampOf(key);
     } catch (e) {
       console.log(`${slug}\tERREUR-S3\t${key}\t${(e as Error).message}`);
       continue;
