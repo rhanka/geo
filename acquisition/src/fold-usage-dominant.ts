@@ -384,7 +384,16 @@ async function foldKey(
     }
     const code = zoneCodeOf(f.properties);
     if (!code) noCode++;
-    const cat: Category | null = code ? categoryFor(code, map!.prefix_map) : null;
+    // Le mode ATTRIBUT prime quand il est déclaré: ces couches n'ont PAS de
+    // zone_code (`sansCode` = 100%), la vocation est servie EN CLAIR par un
+    // attribut du SIG. Sans ce branchement, `categoryForAttribute` n'était
+    // JAMAIS appelée et un config `attribute_map` rendait couvert=0 en
+    // rapportant « OK » — écrire n'est pas servir.
+    const cat: Category | null = map!.attribute_map
+      ? categoryForAttribute(f.properties, map!.attribute_field!, map!.attribute_map)
+      : code
+        ? categoryFor(code, map!.prefix_map ?? {})
+        : null;
     catCount.set(cat ?? "null", (catCount.get(cat ?? "null") ?? 0) + 1);
     if (f.properties["usage_dominant"] !== cat) {
       f.properties["usage_dominant"] = cat;
