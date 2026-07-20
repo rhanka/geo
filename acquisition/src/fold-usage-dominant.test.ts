@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { categoryFor, parenSigle, zoneCodeOf } from "./fold-usage-dominant.js";
+import { carroyageVocation, categoryFor, parenSigle, zoneCodeOf } from "./fold-usage-dominant.js";
 
 describe("fold-usage-dominant zone-code selection", () => {
   it("matches a regulatory prefix on a digit-first SIG code", () => {
@@ -37,6 +37,46 @@ describe("fold-usage-dominant zone-code selection", () => {
     expect(categoryFor("ZR-74", prefixes)).toBe(null);
     // un code sans lettre reste sans catégorie
     expect(categoryFor("515", prefixes)).toBe(null);
+  });
+
+  it("lit la vocation en LETTRE FINALE d'un code de carroyage (« GJ06R », Ville de Granby)", () => {
+    // Règl. 0663-2016 art. 14: les 2 lettres de tête sont une coordonnée cartésienne,
+    // « la lettre qui suit le nombre séquentiel indique la vocation dominante ». Un map
+    // par préfixe y voyait 110 « préfixes » sans aucun sens (`GJ32C` et `GJ06R` cohabitent).
+    const prefixes = { R: "residentiel", C: "commercial", I: "industriel", A: "agricole", P: null } as const;
+
+    expect(carroyageVocation("GJ06R")).toBe("R");
+    expect(categoryFor("GJ06R", prefixes)).toBe("residentiel");
+    expect(categoryFor("GJ32C", prefixes)).toBe("commercial");
+    expect(categoryFor("HH13I", prefixes)).toBe("industriel");
+    expect(categoryFor("KO01A", prefixes)).toBe("agricole");
+    expect(categoryFor("GK04P", prefixes)).toBe(null);
+    // ⛔ ANTI-FALL-THROUGH: la COORDONNÉE de tête a la forme d'un préfixe et gagnait
+    // le longest-prefix à égalité de longueur — `IJ21R` était servi « industriel »
+    // par la clé « I », `CK05R` « commercial » par la clé « C » (122 industriels et
+    // 132 commerciaux FAUX mesurés au dry-run Granby avant correction).
+    expect(categoryFor("IJ21R", prefixes)).toBe("residentiel");
+    expect(categoryFor("CK05R", prefixes)).toBe("residentiel");
+    expect(categoryFor("AF01A", prefixes)).toBe("agricole");
+    expect(categoryFor("RG02C", prefixes)).toBe("commercial");
+    expect(categoryFor("PL03I", prefixes)).toBe("industriel");
+    // vocation ABSENTE du map => on retombe sur les formes ordinaires (legacy intact)
+    expect(categoryFor("AB12Z", { AB: "agricole" })).toBe("agricole");
+    // les artefacts « no.0966-2020 » du même SIG ne sont PAS des codes de zone
+    expect(carroyageVocation("no.0966-2020")).toBe("");
+    expect(categoryFor("no.0966-2020", prefixes)).toBe(null);
+  });
+
+  it("n'active PAS le carroyage sur les autres familles de codes", () => {
+    // Additif: le motif exige 2 lettres + 2 chiffres + 1-3 lettres.
+    expect(carroyageVocation("R-13")).toBe("");
+    expect(carroyageVocation("22 H")).toBe("");
+    expect(carroyageVocation("624 (AGC)")).toBe("");
+    expect(carroyageVocation("515")).toBe("");
+    expect(carroyageVocation("Ra5")).toBe("");
+    // un letter-first à 2 lettres + 2 chiffres SANS lettre finale reste un préfixe
+    expect(carroyageVocation("AF01")).toBe("");
+    expect(categoryFor("AF01", { AF: "agricole" })).toBe("agricole");
   });
 
   it("expose le sigle parenthésé, pour que le gate --list-prefixes ne le range plus sous « (numérique) »", () => {
