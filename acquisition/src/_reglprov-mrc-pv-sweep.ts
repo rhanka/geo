@@ -21,9 +21,17 @@
  * fichier et la PAGE, pour que l'opérateur applique lui-même l'owner-gate et écarte
  * les amendements ([[reglement-numero-url-trap]]).
  *
+ * ⭐ MODE `--cdx`: une MRC ne LIE souvent que les 2-3 dernières années de PV, alors que
+ * les fichiers plus anciens restent SERVIS à leur URL (ils sont juste orphelins de
+ * navigation). Le CDX de Wayback rend la LISTE de ces URL; on retente alors le site
+ * VIVANT d'abord (non tronqué), et Wayback seulement en repli — l'inverse ferait tomber
+ * dans la troncature à 1 MiB ([[wayback-1mib-truncation-range-fix]]).
+ *
  * Usage:
  *   npx tsx acquisition/src/_reglprov-mrc-pv-sweep.ts --index <url-page-PV> [--index <url2> ...] \
  *       [--munis "Chazel,Roquemaure"] [--re "zonage"] [--max 60] [--ctx 1]
+ *   npx tsx acquisition/src/_reglprov-mrc-pv-sweep.ts --cdx "mrcao.qc.ca/documents/pages/*" \
+ *       --cdx-match "minutes" --munis "Chazel" --re "zonage"
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -75,20 +83,56 @@ function pdfUrls(html: string, base: string): string[] {
   return [...out];
 }
 
-async function download(url: string, dir: string): Promise<string | null> {
+async function tryPdf(url: string, path: string): Promise<boolean> {
+  try {
+    const r = await fetch(url, { redirect: "follow", headers: { "User-Agent": UA } });
+    if (!r.ok) return false;
+    const buf = Buffer.from(await r.arrayBuffer());
+    if (buf.subarray(0, 5).toString("latin1") !== "%PDF-") return false;
+    writeFileSync(path, buf);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Le site VIVANT d'abord (non tronqué), Wayback seulement en repli: Wayback coupe à
+ * 1 MiB, et un PV tronqué se grep sans erreur — donc silencieusement à faux.
+ */
+async function download(url: string, dir: string, waybackTs?: string): Promise<string | null> {
   const name = url.split("/").pop()!.replace(/[^\w.-]/g, "_");
   const path = join(dir, name);
   if (existsSync(path)) return path;
-  try {
-    const r = await fetch(url, { redirect: "follow", headers: { "User-Agent": UA } });
-    if (!r.ok) return null;
-    const buf = Buffer.from(await r.arrayBuffer());
-    if (buf.subarray(0, 5).toString("latin1") !== "%PDF-") return null;
-    writeFileSync(path, buf);
-    return path;
-  } catch {
-    return null;
+  if (await tryPdf(url, path)) return path;
+  if (waybackTs) {
+    // `id_` = contenu ORIGINAL, sans la barre de navigation réécrite par Wayback.
+    const wb = `https://web.archive.org/web/${waybackTs}id_/${url}`;
+    if (await tryPdf(wb, path)) return path;
   }
+  return null;
+}
+
+/** URL + timestamp des captures Wayback correspondant à un motif. */
+async function cdxList(
+  pattern: string,
+  match: string | undefined,
+): Promise<Array<{ url: string; ts: string }>> {
+  const api =
+    `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(pattern)}` +
+    `&output=json&collapse=urlkey&fl=original,timestamp&filter=statuscode:200&limit=4000`;
+  const r = await fetch(api, { headers: { "User-Agent": UA } });
+  if (!r.ok) throw new Error(`CDX HTTP ${r.status}`);
+  const rows = (await r.json()) as string[][];
+  const re = match ? new RegExp(match, "i") : null;
+  const out: Array<{ url: string; ts: string }> = [];
+  for (const row of rows.slice(1)) {
+    const [orig, ts] = row;
+    if (!/\.pdf$/i.test(orig)) continue;
+    if (re && !re.test(orig)) continue;
+    out.push({ url: orig, ts });
+  }
+  return out;
 }
 
 /** Texte natif page par page (pdftotext -layout). Vide => scan sans couche texte. */
@@ -107,9 +151,11 @@ function pagesOf(path: string): string[] {
 
 async function main(): Promise<void> {
   const indexes = args("index");
-  if (!indexes.length) {
+  const cdxPatterns = args("cdx");
+  if (!indexes.length && !cdxPatterns.length) {
     console.error(
-      'usage: --index <url> [--index <url2>...] [--munis "A,B"] [--re "zonage"] [--max 60] [--ctx 1]',
+      'usage: --index <url> [--index <url2>...] | --cdx "host/path/*" [--cdx-match re]\n' +
+        '       [--munis "A,B"] [--re "zonage"] [--max 60] [--ctx 1]',
     );
     process.exit(2);
   }
@@ -121,19 +167,29 @@ async function main(): Promise<void> {
   const max = Number(arg("max") ?? "60");
   const ctx = Number(arg("ctx") ?? "1");
 
-  // 1) énumérer les PDF de tous les index
-  const urls = new Set<string>();
+  // 1) énumérer les PDF de tous les index (+ des motifs CDX)
+  const urls = new Map<string, string | undefined>(); // url -> timestamp Wayback
   for (const idx of indexes) {
     try {
       const html = await fetchText(idx);
       const found = pdfUrls(html, idx);
       console.log(`# index ${idx} -> ${found.length} PDF`);
-      for (const u of found) urls.add(u);
+      for (const u of found) if (!urls.has(u)) urls.set(u, undefined);
     } catch (e) {
       console.log(`# index ${idx} -> ERREUR ${(e as Error).message}`);
     }
   }
-  const list = [...urls].slice(0, max);
+  const cdxMatch = arg("cdx-match");
+  for (const pat of cdxPatterns) {
+    try {
+      const found = await cdxList(pat, cdxMatch);
+      console.log(`# cdx ${pat} -> ${found.length} PDF archivés`);
+      for (const f of found) urls.set(f.url, f.ts);
+    } catch (e) {
+      console.log(`# cdx ${pat} -> ERREUR ${(e as Error).message}`);
+    }
+  }
+  const list = [...urls.entries()].slice(0, max);
   console.log(`# ${urls.size} PDF distincts, ${list.length} balayés (--max ${max})\n`);
 
   const dir = join(tmpdir(), "reglprov-mrc-pv");
@@ -142,8 +198,8 @@ async function main(): Promise<void> {
   let scanned = 0;
   let noText = 0;
   let hits = 0;
-  for (const url of list) {
-    const path = await download(url, dir);
+  for (const [url, ts] of list) {
+    const path = await download(url, dir, ts);
     if (!path) {
       console.log(`## ${url}  -> NON TÉLÉCHARGEABLE (ou pas un PDF)`);
       continue;
