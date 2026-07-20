@@ -53,7 +53,11 @@ type Category = (typeof CATEGORIES)[number];
 type MapValue = Category | null;
 
 interface UsageMap {
-  prefix_map: Record<string, MapValue>;
+  prefix_map?: Record<string, MapValue>;
+  /** Nom EXACT de l'attribut SIG qui porte la vocation en clair (ex « Affectatio »). */
+  attribute_field?: string;
+  /** Libellé VERBATIM servi par cet attribut -> catégorie (ou null explicite). */
+  attribute_map?: Record<string, MapValue>;
   source: string;
   note?: string;
 }
@@ -71,12 +75,22 @@ function loadMap(slug: string): UsageMap | null {
   const path = resolve(MAP_DIR, `${slug}.json`);
   if (!existsSync(path)) return null;
   const raw = JSON.parse(readFileSync(path, "utf8")) as UsageMap;
-  if (!raw.prefix_map || typeof raw.prefix_map !== "object") {
-    throw new Error(`${slug}: prefix_map manquant/invalide dans ${path}`);
+  const hasPrefix = !!raw.prefix_map && typeof raw.prefix_map === "object";
+  const hasAttr = !!raw.attribute_map && typeof raw.attribute_map === "object";
+  if (!hasPrefix && !hasAttr) {
+    throw new Error(`${slug}: ni prefix_map ni attribute_map dans ${path}`);
   }
-  for (const [k, v] of Object.entries(raw.prefix_map)) {
+  if (hasAttr && !raw.attribute_field) {
+    throw new Error(`${slug}: attribute_map sans attribute_field dans ${path}`);
+  }
+  for (const [k, v] of Object.entries(raw.prefix_map ?? {})) {
     if (v !== null && !(CATEGORIES as readonly string[]).includes(v)) {
       throw new Error(`${slug}: categorie invalide "${v}" pour prefixe "${k}" (attendu ${CATEGORIES.join("|")}|null)`);
+    }
+  }
+  for (const [k, v] of Object.entries(raw.attribute_map ?? {})) {
+    if (v !== null && !(CATEGORIES as readonly string[]).includes(v)) {
+      throw new Error(`${slug}: categorie invalide "${v}" pour libelle "${k}" (attendu ${CATEGORIES.join("|")}|null)`);
     }
   }
   return raw;
@@ -122,6 +136,43 @@ export function parenSigle(code: string): string {
   return m?.[1] ?? m?.[2] ?? "";
 }
 
+/** Motif du code de CARROYAGE cartésien dont la vocation est la lettre FINALE
+ *  (« GJ06R », « HH13I », « KO02C » — Ville de Granby, règl. 0663-2016 art. 14
+ *  « CODIFICATION DES ZONES »: « Deux lettres servent à repérer, de façon
+ *  cartésienne, les zones sur le plan […]; Les deux chiffres qui suivent […]
+ *  identifient spécifiquement et séquentiellement la zone dans une cellule […];
+ *  La lettre qui suit le nombre séquentiel indique la vocation dominante de la
+ *  zone. »). Les 2 lettres de tête sont une COORDONNÉE, pas une vocation: un map
+ *  par préfixe y voit 110 « préfixes » sans aucun sens (`GJ32C` et `GJ06R`
+ *  cohabitent). `canonZoneCodeServe` ne réverse que le digit-first, donc ces
+ *  codes sont invisibles d'un map réglementaire à la lettre. */
+const CARROYAGE_VOCATION = /^[A-Za-z]{2}\d{2}([A-Za-z]{1,3})$/;
+
+/** Lettre(s) de vocation finale d'un code de carroyage, ou `""`. */
+export function carroyageVocation(code: string): string {
+  return code.match(CARROYAGE_VOCATION)?.[1] ?? "";
+}
+
+/** Plus long préfixe du map qui préfixe `form` (case-insensible). `len` vaut -1
+ *  quand aucune clé ne matche — un map peut légitimement rendre `null` pour une
+ *  clé qui matche, d'où la distinction entre « pas de match » et « match à null ». */
+function longestPrefixMatch(
+  form: string,
+  prefixMap: Record<string, MapValue>,
+): { cat: MapValue; len: number } {
+  let cat: MapValue = null;
+  let len = -1;
+  const up = form.toUpperCase();
+  for (const [prefix, value] of Object.entries(prefixMap)) {
+    const p = prefix.toUpperCase();
+    if (up.startsWith(p) && p.length > len) {
+      cat = value;
+      len = p.length;
+    }
+  }
+  return { cat, len };
+}
+
 /** Catégorie du PLUS LONG préfixe du map qui préfixe le code (case-insensible).
  *  Un préfixe mappé à null gagne quand même s'il est le plus long => il BLOQUE
  *  le fallthrough vers un préfixe plus court (voir MapValue). Aucun match => null. */
@@ -145,6 +196,23 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // espaces autour du tiret AVANT de le lui passer, comme forme candidate de plus.
   // Additif: un code sans espace autour d'un tiret est inchangé, donc aucun map
   // existant ne bouge.
+  // Forme « CARROYAGE + VOCATION FINALE » (« GJ06R », Ville de Granby): les deux
+  // lettres de tête sont une COORDONNÉE cartésienne, la vocation est la lettre
+  // FINALE. Additif: le motif exige exactement 2 lettres + 2 chiffres + 1-3
+  // lettres, donc aucun code letter-first (`R-13`), digit-first (`22 H`) ni
+  // parenthésé (`624 (AGC)`) ne l'active.
+  // ⛔ ANTI-FALL-THROUGH OBLIGATOIRE: la coordonnée de tête n'est PAS un préfixe,
+  // mais elle en a la forme, et elle GAGNE le longest-prefix à égalité de longueur
+  // (`IJ21R` capté par la clé « I » => industriel au lieu de résidentiel; mesuré au
+  // dry-run: 122 industriels et 132 commerciaux FAUX sur Granby). Donc quand le code
+  // EST un carroyage et que le map connaît sa lettre de vocation, cette lecture est
+  // AUTORITAIRE. À défaut de clé pour la vocation, on retombe sur les formes
+  // ordinaires: aucun map existant ne change de comportement.
+  const carroyage = carroyageVocation(code);
+  if (carroyage) {
+    const only = longestPrefixMatch(carroyage, prefixMap);
+    if (only.len >= 0) return only.cat;
+  }
   const tightened = tightenedServeForm(code);
   const forms = [code, canonZoneCodeServe(code), tightened, sigle].filter(
     (v, i, a) => v && a.indexOf(v) === i,
@@ -160,6 +228,31 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
     }
   }
   return best;
+}
+
+/** Catégorie d'une feature qui ne sert AUCUN zone_code mais sert la vocation EN CLAIR
+ *  dans un attribut du SIG (« Affectatio » = « Affectation » tronqué à 10 caractères par
+ *  le shapefile; mesuré sur saint-joachim 22/22 et sainte-anne-de-beaupre 33/33, couche
+ *  `ca-qc-zonage-claudialarrotamrccdb-arcgis` de la MRC de La Côte-de-Beaupré, dont les
+ *  libellés sont « Agricole dynamique », « Agroforestier », « Conservation »,
+ *  « Forêt et récréation », « Périmètre d'urbanisation »…).
+ *  Ces couches sont INFOLDABLES par `prefix_map`: il n'y a pas de code à préfixer.
+ *  Le match est sur le LIBELLÉ VERBATIM (trim + insensible à la casse), jamais sur un
+ *  fragment: un libellé absent du map => null honnête, comme pour un préfixe inconnu. */
+export function categoryForAttribute(
+  props: Record<string, unknown>,
+  field: string,
+  attributeMap: Record<string, MapValue>,
+): MapValue {
+  const raw = props[field];
+  if (raw === null || raw === undefined) return null;
+  const val = String(raw).trim();
+  if (!val) return null;
+  const up = val.toUpperCase();
+  for (const [label, cat] of Object.entries(attributeMap)) {
+    if (label.trim().toUpperCase() === up) return cat;
+  }
+  return null;
 }
 
 /** Clés S3 du polygone zonage: layout plat ET sous-dossier — les DEUX quand elles
@@ -228,8 +321,14 @@ async function listPrefixesKey(s3: S3, slug: string, key: string): Promise<void>
     // saint-donat 62, sainte-flavie 46, price 45, padoue 33…) étaient classées
     // « NUMERIC-ONLY » — verdict FAUX, `categoryFor` lit le sigle parenthésé depuis
     // le lot MRC de La Mitis.
+    // Idem pour le CARROYAGE (« GJ06R »): l'alphaPrefix rend la COORDONNÉE (`GJ`),
+    // ce qui fait voir 110 « préfixes » sans aucun sens et fait renoncer à la muni,
+    // alors que `categoryFor` sait lire la lettre de vocation FINALE.
     const pref =
-      parenSigle(code) || alphaPrefix(tightenedServeForm(code) || canonZoneCodeServe(code) || code) || "(numérique)";
+      carroyageVocation(code) ||
+      parenSigle(code) ||
+      alphaPrefix(tightenedServeForm(code) || canonZoneCodeServe(code) || code) ||
+      "(numérique)";
     let e = byPrefix.get(pref);
     if (!e) {
       e = { count: 0, samples: new Set() };
