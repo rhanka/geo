@@ -81,6 +81,21 @@ const rows = [...plansBySlug.entries()]
   })
   .sort((a, b) => a.slug.localeCompare(b.slug));
 
+// `--missing` : le COMPLÉMENT — les non-done qui n'ont AUCUN plan sur disque. C'est le
+// gros du résidu et il relève de la DÉCOUVERTE, pas du recalage.
+if (has("missing")) {
+  const missing = nonDone.filter((s) => !plansBySlug.has(s)).sort();
+  const shard = Number(process.argv[process.argv.indexOf("--shard") + 1]);
+  const nShards = Number(process.argv[process.argv.indexOf("--shards") + 1]);
+  const out =
+    Number.isFinite(shard) && Number.isFinite(nShards)
+      ? missing.filter((_, i) => i % nShards === shard)
+      : missing;
+  for (const s of out) console.log(s);
+  console.log(`# non-done SANS plan sur disque : ${out.length}/${missing.length}`);
+  process.exit(0);
+}
+
 if (has("json")) {
   console.log(JSON.stringify(rows, null, 2));
 } else {
