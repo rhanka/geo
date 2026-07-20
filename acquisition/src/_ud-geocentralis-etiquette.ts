@@ -72,9 +72,22 @@ async function dumpOne(muni: string): Promise<void> {
   }
 }
 
+/** Code MAMH d'un slug (le répertoire committé est indexé PAR slug). */
+function codeOfSlug(slug: string): string | null {
+  const raw = JSON.parse(readFileSync(DIRECTORY, "utf8")) as {
+    entries: Record<string, { mamhCode?: string }>;
+  };
+  return raw.entries?.[slug]?.mamhCode ?? null;
+}
+
 async function main(): Promise<void> {
   const munis = (arg("muni") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-  if (!munis.length) throw new Error("usage: --muni <codeMAMH>[,<codeMAMH>...]");
+  for (const slug of (arg("slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean)) {
+    const code = codeOfSlug(slug);
+    if (!code) console.log(`### ${slug} — slug absent du répertoire MAMH committé`);
+    else munis.push(code);
+  }
+  if (!munis.length) throw new Error("usage: --muni <codeMAMH>[,…] | --slugs <slug>[,…]");
   for (const m of munis) await dumpOne(m);
 }
 
