@@ -115,7 +115,15 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // deux moitiés du motif couvrent ces deux cas. Additif: sans parenthèse dans le
   // code, rien ne change pour les maps existants.
   const paren = code.match(/(?:\(\s*([A-Za-z]{2,5})\s*\)?|\s([A-Za-z]{2,5})\s*\))\s*$/);
-  const forms = [code, canonZoneCodeServe(code), paren?.[1] ?? paren?.[2] ?? ""].filter(
+  // Forme « NUMÉRO ESPACE-TIRET-ESPACE LETTRE » (« 48 - R », « 33 - RC », Ville de
+  // Disraeli) : `canonZoneCodeServe` ne réverse le digit-first qu'avec UN SEUL
+  // caractère de séparation (`/^(\d+)[-\s]?([A-Za-z]+)$/`), donc « 48 - R » lui
+  // échappe et le code reste invisible d'un map par préfixe. On resserre les
+  // espaces autour du tiret AVANT de le lui passer, comme forme candidate de plus.
+  // Additif: un code sans espace autour d'un tiret est inchangé, donc aucun map
+  // existant ne bouge.
+  const tightened = canonZoneCodeServe(code.replace(/\s*-\s*/g, "-"));
+  const forms = [code, canonZoneCodeServe(code), tightened, paren?.[1] ?? paren?.[2] ?? ""].filter(
     (v, i, a) => v && a.indexOf(v) === i,
   );
   for (const form of forms) {
