@@ -54,11 +54,16 @@ function main(): void {
   const numero = numeroRaw && numeroRaw !== "null" ? numeroRaw : null;
   const millesime = milRaw && milRaw !== "null" ? Number(milRaw) : null;
   const page = pageRaw && pageRaw !== "null" ? Number(pageRaw) : null;
+  // `--url null` doit produire le JSON null, PAS la chaîne "null": les 3 autres
+  // champs neutralisaient déjà le littéral, celui-ci ne le faisait pas, si bien que
+  // `fold` recopiait "null" (chaîne, donc truthy) sur chaque polygone et qu'immo
+  // recevait un lien source bidon. Mesuré sur lac-frontiere 2026-07-20.
+  const urlValue = url && url !== "null" ? url : null;
   const entry = {
     reglement_numero: numero,
     reglement_millesime: millesime,
     reglement_page_source: page,
-    reglement_url: url ?? null,
+    reglement_url: urlValue,
     _note: note ?? "",
   };
   obj.slugs[slug!] = entry;
