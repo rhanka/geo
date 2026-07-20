@@ -23,10 +23,24 @@ const ENRICH = resolve(ROOT, "work", "coverage", "zonage-enrichment.json");
 const MAP_DIR = resolve(ROOT, "acquisition", "config", "usage-dominant-map");
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
 
+// ⛔ ANGLE MORT CORRIGÉ (2026-07-19): la sonde ne connaissait que `affectation`/`Description`/
+// `Usages`/`vocation`/`nom_zone`/`TYPE_ZONE` et rendait donc `(vide)` sur des munis dont la vocation
+// VERBATIM était bel et bien servie, sous un AUTRE nom de champ: `Dominante` (couches Altus
+// `gis.altusquebec.com/.../MRC330/*_Publique/MapServer`, qui a servi saint-apollinaire 173 pol.),
+// `Dominance` (couches SIGALE `*_Publique/MapServer`, qui a servi hope) et `etiquette_2`
+// (couche geocentralis `evb:siadmin_pzon_99_s`, qui a servi franquelin/launay/saint-marcel).
 const VOCATION_FIELDS = [
   "affectation",
   "AFFECTATION",
   "Affectation",
+  "Dominante",
+  "DOMINANTE",
+  "dominante",
+  "Dominance",
+  "DOMINANCE",
+  "dominance",
+  "etiquette_2",
+  "ETIQUETTE_2",
   "Description",
   "DESCRIPTION",
   "description",
