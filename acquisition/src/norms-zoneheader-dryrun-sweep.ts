@@ -103,6 +103,12 @@ function main(): void {
   const shards = Number(arg("shards", "2"));
   const limit = arg("limit") ? Number(arg("limit")) : undefined;
   const timeoutS = Number(arg("timeout-s", "240"));
+  // ⛔ NE PAS remettre 0 par défaut. `--budget-usd 0` plafonne le nombre de pages à
+  // `max(1, floor(budget / coûtParPage))` = 1 — y compris sur le chemin NATIF, qui ne
+  // coûte pourtant rien : une sonde « $0 » sur un document multi-pages rend alors
+  // « 0 zone » qui est un FAUX NÉGATIF. Mesuré : la même sonde passe de 6 à 55 zones
+  // avec 0.05. On garde donc un plancher symbolique ; la vision reste bornée par lui.
+  const budgetUsd = arg("budget-usd", "0.05")!;
 
   // --pairs "slug=chemin.pdf,…" : PDF imposé, pickPdf court-circuité.
   const forced = new Map<string, string>();
@@ -146,7 +152,7 @@ function main(): void {
         "--source-url", "https://placeholder.invalid/dryrun",
         "--route", "zoneheader",
         "--dry-run",
-        "--budget-usd", "0",
+        "--budget-usd", budgetUsd,
       ],
       { encoding: "utf8", timeout: timeoutS * 1000, maxBuffer: 64 * 1024 * 1024 },
     );
