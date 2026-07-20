@@ -182,9 +182,11 @@ function pagesOf(path: string): string[] {
 async function main(): Promise<void> {
   const indexes = args("index");
   const cdxPatterns = args("cdx");
-  if (!indexes.length && !cdxPatterns.length) {
+  const directUrls = args("url");
+  if (!indexes.length && !cdxPatterns.length && !directUrls.length) {
     console.error(
       'usage: --index <url> [--index <url2>...] | --cdx "host/path/*" [--cdx-match re]\n' +
+        "       | --url <pdf-url> [--url <pdf-url2>...]\n" +
         '       [--munis "A,B"] [--re "zonage"] [--max 60] [--ctx 1]',
     );
     process.exit(2);
@@ -199,6 +201,13 @@ async function main(): Promise<void> {
 
   // 1) énumérer les PDF de tous les index (+ des motifs CDX)
   const urls = new Map<string, string | undefined>(); // url -> timestamp Wayback
+  // ⭐ `--url`: quand l'index par année N'EXISTE PLUS (les PDF restent servis mais
+  // orphelins de navigation) ET que `cdxList` échoue, la liste vient d'ailleurs —
+  // typiquement du CDX interrogé en `http://` par `_diag-fetch-lenient.ts`, qui passe
+  // là où le `fetch` strict d'ici rend un « fetch failed » OPAQUE (mémoire
+  // undici-fetch-failed-parseur-strict-faux-negatif) ou un 504 Wayback transitoire.
+  // Sans ce mode, un CDX momentanément indisponible se lit « 0 PDF » = faux négatif.
+  for (const u of directUrls) urls.set(u, undefined);
   const depth = Number(arg("depth") ?? "1");
   const followMax = Number(arg("follow-max") ?? "60");
   const followReRaw = arg("follow-re");
