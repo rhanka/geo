@@ -38,6 +38,14 @@ function main(): void {
   }
   const slug = arg("slug");
   if (!slug) { console.error("--slug requis"); process.exit(2); }
+  // --show: relit l'entrée EXISTANTE. Indispensable quand plusieurs agents écrivent
+  // dans le même arbre: le `DRY` ci-dessous n'affiche que ce qu'on VA écrire, jamais
+  // ce que le registre porte déjà, donc il ne prouve rien sur l'état courant.
+  if (process.argv.includes("--show")) {
+    const cur = obj.slugs[slug];
+    console.log(cur ? `${slug}: ${JSON.stringify(cur)}` : `${slug}: ABSENT du registre`);
+    return;
+  }
   const numeroRaw = arg("numero");
   const milRaw = arg("millesime");
   const pageRaw = arg("page");
