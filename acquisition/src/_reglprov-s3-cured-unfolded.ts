@@ -64,9 +64,13 @@ const enrichServed = new Set<string>(
   (enrich.perMuni ?? enrich.munis ?? []).filter((m: any) => m?.served).map((m: any) => m.slug),
 );
 
-// --- univers S3 : garder la PLUS GROSSE des deux clés (plate / sous-dossier) -------
+// --- univers S3 : garder TOUTES les clés du slug (plate ET sous-dossier) -----------
+// Ne PAS se contenter de la plus grosse : un slug peut porter deux objets et
+// `fold` n'en écrit qu'un. Or geo-api résout vers le SOUS-DOSSIER quand il existe
+// (mémoire fold-double-key-s3-serving), donc une clé plate stampée ne prouve RIEN
+// sur ce qui est réellement servi. Mesuré sur sainte-cecile-de-milton.
 const s3 = s3Client();
-const best = new Map<string, { key: string; size: number }>();
+const keysOf = new Map<string, { key: string; size: number }[]>();
 let token: string | undefined;
 do {
   const r = await s3.send(
@@ -78,12 +82,28 @@ do {
     const base = k.slice(k.lastIndexOf("/") + 1).replace(/\.geojson$/, "");
     if (!base.startsWith("qc-zonage-")) continue;
     const slug = base.slice("qc-zonage-".length);
-    const size = Number(o.Size ?? 0);
-    const cur = best.get(slug);
-    if (!cur || size > cur.size) best.set(slug, { key: k, size });
+    // Seules DEUX formes sont réellement servies (fold-double-key-s3-serving):
+    //   à plat        normalized/ca-qc-zonage/qc-zonage-<slug>.geojson
+    //   sous-dossier  normalized/ca-qc-zonage/qc-zonage-<slug>/qc-zonage-<slug>.geojson
+    // Tout autre dossier est un ARTEFACT de pipeline (ex.
+    // `ca-qc-zonage-<slug>-boundary-georef/`) : le compter ferait crier « double clé
+    // incohérente » sur une couche que l'API sert parfaitement. Mesuré sur
+    // sainte-cecile-de-milton (API rend bien 560-2017 malgré l'artefact nu).
+    const flat = `${PREFIX}qc-zonage-${slug}.geojson`;
+    const nested = `${PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+    if (k !== flat && k !== nested) continue;
+    const list = keysOf.get(slug) ?? [];
+    list.push({ key: k, size: Number(o.Size ?? 0) });
+    keysOf.set(slug, list);
   }
   token = r.IsTruncated ? r.NextContinuationToken : undefined;
 } while (token);
+
+/** Taille de la plus grosse clé du slug — sert à écarter les couches vides. */
+const best = new Map<string, { key: string; size: number }>();
+for (const [slug, list] of keysOf) {
+  best.set(slug, list.reduce((a, b) => (b.size > a.size ? b : a)));
+}
 
 const sh = arg("shard");
 const all = process.argv.includes("--all");
@@ -105,25 +125,40 @@ console.log(`# S3 couches=${best.size} · registre à numéro=${curedNum.size} �
 console.log(`# population sondée = ${pop.length}${all ? " (--all)" : " (absents d'enrichment = l'angle mort)"}`);
 
 const todo: string[] = [];
+const orphan: string[] = [];
 for (const slug of pop) {
-  const { key } = best.get(slug)!;
-  let stamped: string | null = null;
-  try {
-    const r = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
-    const fc = JSON.parse(await r.Body!.transformToString());
-    stamped = fc?.features?.[0]?.properties?.reglement_numero ?? null;
-  } catch (e) {
-    console.log(`${slug}\tERREUR-S3\t${(e as Error).message}`);
-    continue;
-  }
   const want = curedNum.get(slug)!;
-  if (!stamped) {
-    todo.push(slug);
-    console.log(`${slug}\tÀ-FOLDER\tregistre=${want}\tS3=∅`);
-  } else if (stamped !== want) {
-    console.log(`${slug}\tDIVERGENT\tregistre=${want}\tS3=${stamped}`);
+  const keys = keysOf.get(slug)!.filter((k) => k.size > EMPTY_MAX_BYTES);
+  let anyMissing = false;
+  let anyPresent = false;
+  for (const { key } of keys) {
+    let stamped: string | null = null;
+    try {
+      const r = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+      const fc = JSON.parse(await r.Body!.transformToString());
+      stamped = fc?.features?.[0]?.properties?.reglement_numero ?? null;
+    } catch (e) {
+      console.log(`${slug}\tERREUR-S3\t${key}\t${(e as Error).message}`);
+      continue;
+    }
+    if (!stamped) {
+      anyMissing = true;
+      console.log(`${slug}\tÀ-FOLDER\tregistre=${want}\tS3=∅\t${key}`);
+    } else {
+      anyPresent = true;
+      if (stamped !== want) console.log(`${slug}\tDIVERGENT\tregistre=${want}\tS3=${stamped}\t${key}`);
+    }
   }
+  if (anyMissing) todo.push(slug);
+  // Une clé stampée + une clé nue = `fold` n'écrit QUE l'une des deux. Comme geo-api
+  // résout vers le sous-dossier, re-folder ne suffit pas: c'est une escalade SERVING.
+  if (anyMissing && anyPresent) orphan.push(slug);
 }
 
 console.log(`\n# À FOLDER = ${todo.length}`);
 if (todo.length) console.log(`npx tsx acquisition/src/fold-reglement-to-zonage.ts --slugs ${todo.join(",")}`);
+if (orphan.length) {
+  console.log(`\n# ⛔ DOUBLE CLÉ INCOHÉRENTE = ${orphan.length} (une clé stampée, une clé nue)`);
+  console.log(`#   fold n'en écrit qu'une; geo-api sert le SOUS-DOSSIER => escalade serving.`);
+  for (const s of orphan) console.log(`${s}`);
+}
