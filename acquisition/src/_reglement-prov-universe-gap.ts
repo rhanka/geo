@@ -119,9 +119,20 @@ function shardOf(list: string[]): string[] {
   return list.filter((_, idx) => idx % n === i);
 }
 
+// B\A AVEC numéro déjà curé : rien à LIRE, tout à SERVIR le jour où ZONES livre.
+// `served` vient de zonage-enrichment.json, un cache qui ment PAR RETARD
+// (cf. zonage-enrichment-cache-gisement-fantome) : ces slugs sont donc les
+// candidats à re-passer au `fold --dry-run`, seul juge qui interroge le servi.
+const bNotServedCured = bNotServed.filter((s) => curedNum.has(s));
+console.log(`#    dont numéro DÉJÀ curé (attente ZONES -> re-tester au fold) = ${bNotServedCured.length}`);
+
 if (LIST) {
   console.log('\n## gisement servable non tranché');
   for (const s of shardOf(actionable)) console.log(`${s}\t${manUrl.get(s)}`);
   console.log('\n## B\\A JAMAIS tranchés (registre durable, fold muet)');
   for (const s of shardOf(bNotServedUntriaged)) console.log(`${s}\t${manUrl.get(s)}`);
+  console.log('\n## B\\A numéro curé (re-tester au fold: ZONES a pu livrer depuis)');
+  for (const s of shardOf(bNotServedCured)) {
+    console.log(`${s}\t${(regEntries as any)[s]?.reglement_numero ?? '?'}`);
+  }
 }
