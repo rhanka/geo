@@ -1,6 +1,39 @@
 import { describe, expect, it } from "vitest";
 
-import { carroyageVocation, categoryFor, parenSigle, zoneCodeOf } from "./fold-usage-dominant.js";
+import {
+  carroyageVocation,
+  categoryFor,
+  categoryForAttribute,
+  parenSigle,
+  zoneCodeOf,
+} from "./fold-usage-dominant.js";
+
+describe("fold-usage-dominant attribute mode", () => {
+  // Couches SANS zone_code (sansCode = 100%) dont la vocation est servie EN CLAIR
+  // par un attribut du SIG — « Affectatio » = « Affectation » tronqué à 10 car. par
+  // l'export shapefile (MRC de La Côte-de-Beaupré).
+  const attrs = {
+    "Agricole dynamique": "agricole",
+    Conservation: "environnemental",
+    "secteur déstru": null,
+    "Périmètre d'urbanisation": null,
+  } as const;
+
+  it("matche le LIBELLÉ VERBATIM COMPLET, trim et casse-insensible", () => {
+    expect(categoryForAttribute({ Affectatio: "Agricole dynamique" }, "Affectatio", attrs)).toBe("agricole");
+    expect(categoryForAttribute({ Affectatio: "  conservation " }, "Affectatio", attrs)).toBe("environnemental");
+    expect(categoryForAttribute({ Affectatio: "secteur déstru" }, "Affectatio", attrs)).toBe(null);
+  });
+
+  it("ne matche JAMAIS sur un fragment: un libellé absent du map rend null", () => {
+    // « Agricole viable » ne doit pas être capté par la clé « Agricole dynamique »,
+    // ni « Conservation » par un préfixe: le mode attribut n'est pas un startsWith.
+    expect(categoryForAttribute({ Affectatio: "Agricole viable" }, "Affectatio", attrs)).toBe(null);
+    expect(categoryForAttribute({ Affectatio: "Conservation intégrale" }, "Affectatio", attrs)).toBe(null);
+    expect(categoryForAttribute({ Affectatio: "" }, "Affectatio", attrs)).toBe(null);
+    expect(categoryForAttribute({}, "Affectatio", attrs)).toBe(null);
+  });
+});
 
 describe("fold-usage-dominant zone-code selection", () => {
   it("matches a regulatory prefix on a digit-first SIG code", () => {
