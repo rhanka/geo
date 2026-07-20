@@ -108,7 +108,16 @@ export function categoryFor(code: string, prefixMap: Record<string, MapValue>): 
   // Keep the raw form for existing maps whose verified SIG codes are digit-first
   // (for example "22 H"), then also test the reversible served form ("H-22") so
   // regulatory prefix maps (H, P, Rec…) work on the same feature.
-  const forms = [code, canonZoneCodeServe(code)].filter((v, i, a) => v && a.indexOf(v) === i);
+  // Forme « NUMÉRO (SIGLE) » de la MRC de La Mitis (« 624 (AGC) », « 104 (AGF) ») : la
+  // vocation est en SUFFIXE PARENTHÉSÉ, donc invisible d'un map par préfixe et non
+  // réversée par canonZoneCodeServe. On ajoute le sigle comme forme candidate. La
+  // source laisse parfois une parenthèse manquante (« 137 (MTF », « 83 AGC) ») — les
+  // deux moitiés du motif couvrent ces deux cas. Additif: sans parenthèse dans le
+  // code, rien ne change pour les maps existants.
+  const paren = code.match(/(?:\(\s*([A-Za-z]{2,5})\s*\)?|\s([A-Za-z]{2,5})\s*\))\s*$/);
+  const forms = [code, canonZoneCodeServe(code), paren?.[1] ?? paren?.[2] ?? ""].filter(
+    (v, i, a) => v && a.indexOf(v) === i,
+  );
   for (const form of forms) {
     const up = form.toUpperCase();
     for (const [prefix, cat] of Object.entries(prefixMap)) {
