@@ -46,7 +46,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
 import { positionsOf, haversineKm } from "./zones-wfs-run.js";
 
@@ -348,6 +349,10 @@ async function processSlug(args: Args, muni: MuniEntry | undefined, s3: S3Client
 
   const detail = `${norm.length} zones (${nonNull} avec zone_code, ${distinctCodes.size} distincts, champ '${zoneField}', codeLike=${(st.codeLikeRatio * 100).toFixed(0)}%) via ${base.sourceUrl}${relaxNote}`;
   if (args.deposit && s3) {
+    const fc = attachGeometryProof(
+      { type: "FeatureCollection" as const, features: norm },
+      proofFromFetched({ url: base.sourceUrl!, type: "jmap", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }),
+    );
     const ts = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
     if (await exists(s3, subKey)) {
       const backup = `${S3_PREFIX}_replaced/qc-zonage-${args.slug}__subdir.${ts}.geojson`;
@@ -355,8 +360,7 @@ async function processSlug(args: Args, muni: MuniEntry | undefined, s3: S3Client
       await deleteObject(s3, subKey);
       console.error(`[jmap] ${args.slug}: ancienne variante sous-dossier sauvegardée → s3://${backup} + SUPPRIMÉE`);
     }
-    const fc: GeoFC = { type: "FeatureCollection", features: norm };
-    await putBytes(s3, flatKey, JSON.stringify(fc), "application/geo+json");
+    await putServedZoneGeojson(s3, flatKey, fc);
     return { ...base, deposited: true, status: "deposited", detail: `${base.wasServed ? "[REMPLACE] " : "[NOUVEAU] "}${detail}` };
   }
   return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${detail}` };

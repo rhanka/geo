@@ -31,6 +31,7 @@ import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
 import { buildZones } from "./lib/t1-zones.js";
 import { buildGeoRefFromGcps, type Gcp, type NeatlineFrac } from "./lib/t2-georef.js";
 import { s3Client, getBytes, putBytes, exists, BUCKET } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
 import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
 
 // ---------------------------------------------------------------------------
@@ -339,6 +340,17 @@ function main(): void {
             sendJson(res, 422, { ok: false, error: "OCR labels need human code QA before S3; tick OCR reviewed after checking verbatim codes" });
             return;
           }
+          if (body.toS3 && !/^https?:\/\//i.test(body.pdf)) {
+            sendJson(res, 422, { ok: false, error: "served zoning requires the real HTTP(S) zoning-plan PDF URL; a local path is not proof" });
+            return;
+          }
+          if (/^https?:\/\//i.test(body.pdf)) {
+            const pdfBytes = readFileSync(resolvePdf(body.slug, body.pdf));
+            attachGeometryProof(
+              r.zones as ServedZoneGeoJson,
+              proofFromFetched({ url: body.pdf, type: "pdf-zonage", method: "georeference", reliability: "georeferencee", bytes: pdfBytes }),
+            );
+          }
           const localPath = join(opts.outDir, `qc-zonage-${body.slug}.geojson`);
           writeFileSync(localPath, JSON.stringify(r.zones));
           writeFileSync(join(opts.outDir, `qc-zonage-${body.slug}.stats.json`), JSON.stringify(r.report, null, 2));
@@ -347,7 +359,7 @@ function main(): void {
             if (!opts.allowS3) { sendJson(res, 403, { ok: false, error: "server started without --allow-s3" }); return; }
             const s3 = s3Client();
             s3Key = `normalized/ca-qc-zonage/qc-zonage-${body.slug}.geojson`;
-            await putBytes(s3, s3Key, JSON.stringify(r.zones), "application/geo+json");
+            await putServedZoneGeojson(s3, s3Key, r.zones as ServedZoneGeoJson);
             await putBytes(s3, `normalized/ca-qc-zonage/qc-zonage-${body.slug}.stats.json`, JSON.stringify(r.report, null, 2), "application/json");
           }
           sendJson(res, 200, { ok: true, localPath, s3: s3Key ? `s3://${BUCKET}/${s3Key}` : null, report: r.report });
