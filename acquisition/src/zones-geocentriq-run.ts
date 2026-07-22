@@ -51,7 +51,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 // Anti-invention value-based (agnostique du NOM de champ) — le MÊME gate que le
 // dépôt obscura --service, opendata, sigale et wfs.
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
@@ -260,6 +261,15 @@ async function fetchFeatures(node: string, layer: ZonageLayer): Promise<GeoFeatu
   return features;
 }
 
+function sourceUrl(node: string, layer: ZonageLayer): string {
+  const params = new URLSearchParams({
+    service: "WFS", version: "2.0.0", request: "GetFeature",
+    typeNames: layer.typeName, outputFormat: "application/json",
+    srsName: "EPSG:4326", count: String(PAGE), startIndex: "0",
+  });
+  return `${node}/${layer.workspace}/ows?${params.toString()}`;
+}
+
 /** Normalise au schéma de serving (zone_code = valeur RÉELLE du champ choisi). */
 function normalize(features: GeoFeature[], zoneField: string, source: string): GeoFeature[] {
   return features.map((f) => {
@@ -288,7 +298,7 @@ async function processMuni(
 
   const layer = layers.get(mamhCode);
   if (!layer) return { ...base, status: "no-zonage-layer", detail: `aucun FeatureType de zonage pour le workspace M${mamhCode}_… (node ${node})` };
-  const layerUrl = `${node}/${layer.workspace}/ows?…typeNames=${layer.typeName}`;
+  const layerUrl = sourceUrl(node, layer);
   base.typeName = layer.typeName;
   base.layerUrl = layerUrl;
 
@@ -342,6 +352,10 @@ async function processMuni(
 
   const detail = `${norm.length} zones (${nonNull} avec zone_code, ${distinctCodes.size} distincts, champ '${zoneField}', codeLike=${(st.codeLikeRatio * 100).toFixed(0)}%) via ${layer.typeName}`;
   if (args.deposit && s3) {
+    const fc = attachGeometryProof(
+      { type: "FeatureCollection" as const, features: norm },
+      proofFromFetched({ url: layerUrl, type: "wfs", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }),
+    );
     // Dépôt PLAT (layout préféré par resolveZonesKey). On sauvegarde puis SUPPRIME
     // une éventuelle variante sous-dossier pour éviter le double-service.
     const ts = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
@@ -351,8 +365,7 @@ async function processMuni(
       await deleteObject(s3, subKey);
       console.error(`[geocentriq] ${slug}: ancienne variante sous-dossier sauvegardée → s3://${backup} + SUPPRIMÉE`);
     }
-    const fc: GeoFC = { type: "FeatureCollection", features: norm };
-    await putBytes(s3, flatKey, JSON.stringify(fc), "application/geo+json");
+    await putServedZoneGeojson(s3, flatKey, fc);
     return { ...base, deposited: true, status: "deposited", detail: `${base.wasServed ? "[REMPLACE] " : "[NOUVEAU] "}${detail}` };
   }
   return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${detail}` };
