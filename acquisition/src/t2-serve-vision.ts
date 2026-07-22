@@ -29,6 +29,7 @@ import { kindForPrefix, looksLikeZoneCode, splitCode } from "./lib/t1-labels.js"
 import { buildZones, type CodePoint } from "./lib/t1-zones.js";
 import { buildGeoRefFromGcpsCrs, type GcpFile, type NeatlineFrac } from "./lib/t2-georef.js";
 import { BUCKET, getBytes, putBytes, s3Client } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { bboxCenter, haversineKm, mergeByZoneCode } from "./lib/zone-serve.js";
 
 interface VisionPoint {
@@ -100,6 +101,15 @@ function inNeatline(fx: number, fy: number, n?: NeatlineFrac): boolean {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const t0 = Date.now();
+  const geometryUrl = args.pdf && /^https?:\/\//i.test(args.pdf) ? args.pdf : null;
+  let pdfBytes: Buffer | null = null;
+  if (geometryUrl) {
+    const proofResponse = await fetch(geometryUrl);
+    if (!proofResponse.ok) fail(`cannot fetch geometry PDF proof: HTTP ${proofResponse.status}`);
+    pdfBytes = Buffer.from(await proofResponse.arrayBuffer());
+  } else if (!args.dryRun) {
+    fail("served output requires --pdf to be the real HTTP(S) zoning-plan artefact URL; local/S3/method labels are not proof");
+  }
 
   const gcpFile = JSON.parse(readFileSync(args.gcp, "utf8")) as GcpFile;
   const pageW = gcpFile.pageW!;
@@ -216,6 +226,8 @@ async function main(): Promise<void> {
     ...stats,
   };
 
+  if (pdfBytes && geometryUrl) attachGeometryProof(served, proofFromFetched({ url: geometryUrl, type: "pdf-zonage", method: "georeference", reliability: "georeferencee", bytes: pdfBytes }));
+
   const outDir = args.out ?? join(tmpdir(), `t2v-${args.slug}`);
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, `qc-zonage-${args.slug}.geojson`), JSON.stringify(served));
@@ -226,7 +238,7 @@ async function main(): Promise<void> {
     console.error("[t2-serve-vision] --dry-run: NOT uploading to S3.");
   } else {
     const s3Key = `normalized/ca-qc-zonage/qc-zonage-${args.slug}.geojson`;
-    await putBytes(s3, s3Key, JSON.stringify(served), "application/geo+json");
+    await putServedZoneGeojson(s3, s3Key, served);
     await putBytes(s3, `normalized/ca-qc-zonage/qc-zonage-${args.slug}.stats.json`, JSON.stringify(report, null, 2), "application/json");
     console.error(`[t2-serve-vision] uploaded s3://${BUCKET}/${s3Key}`);
   }
