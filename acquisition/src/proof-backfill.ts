@@ -3,12 +3,13 @@
  * qc-lots and qc-zonage FeatureCollection.  It never guesses: missing evidence
  * remains a null field plus an explicit gap.
  *
- * Default is audit-only. Add --upload only after approval to write the served
- * objects. `--all` is required so a partial run cannot claim global coverage.
+ * Legacy v1 diagnostic only. Upload is permanently refused: v1 cannot establish
+ * the exact v2 geometry-source hash required by the served-zone gate. Use
+ * served-proof-registry-audit.ts for the current global read-only audit.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { getGeoJsonFeatureCollection, listSlugs, putBytes, s3Client } from "./lib/s3.js";
+import { getGeoJsonFeatureCollection, listSlugs, s3Client } from "./lib/s3.js";
 import { lotProof, zoneProof, urlOrNull } from "./lib/proof-contract.js";
 
 const ZONES = "normalized/ca-qc-zonage/";
@@ -21,9 +22,9 @@ type Regulation = Record<string, { reglement_url?: unknown }>;
 
 function args(argv: string[]) {
   if (!argv.includes("--all")) throw new Error("proof backfill is global only: pass --all");
-  const upload = argv.includes("--upload");
+  if (argv.includes("--upload")) throw new Error("proof backfill upload retired: exact v2 source evidence cannot be inferred; run the read-only served proof audit");
   const out = argv.includes("--out") ? String(argv[argv.indexOf("--out") + 1]) : REPORT;
-  return { upload, out };
+  return { out };
 }
 function zoneSlugFromKey(s: string): string { return s.replace(/^qc-zonage-/, ""); }
 function lotSlugFromKey(s: string): string { return s.replace(/^qc-lots-/, ""); }
@@ -56,7 +57,7 @@ async function main(): Promise<void> {
   const zoneSlugs = zoneNames.filter((x) => x.startsWith("qc-zonage-")).map(zoneSlugFromKey).sort();
   const lotSlugs = lotNames.filter((x) => x.startsWith("qc-lots-")).map(lotSlugFromKey).sort();
   if (!zoneSlugs.length || !lotSlugs.length) throw new Error(`served corpus incomplete: zones=${zoneSlugs.length}, lots=${lotSlugs.length}`);
-  const report = { contract: "immo-feature-proof/v1", generated_at: new Date().toISOString(), mode: a.upload ? "upload" : "audit", collections: { zones: zoneSlugs.length, lots: lotSlugs.length }, features: { zones: 0, lots: 0, proof_valid: 0, complete: 0, partial: 0 }, gaps: {} as Record<string, number>, missing_collections: [] as string[] };
+  const report = { contract: "immo-feature-proof/v1", generated_at: new Date().toISOString(), mode: "audit", collections: { zones: zoneSlugs.length, lots: lotSlugs.length }, features: { zones: 0, lots: 0, proof_valid: 0, complete: 0, partial: 0 }, gaps: {} as Record<string, number>, missing_collections: [] as string[] };
   const zoneRefs = new Map<string, Map<string, string | null>>();
 
   await pooled(zoneSlugs, 8, async (slug) => {
@@ -65,7 +66,6 @@ async function main(): Promise<void> {
     const refs = new Map<string, string | null>(); const regulationUrl = regulations.slugs[slug]?.reglement_url ?? null;
     fc.features.forEach((f) => { const p = f.properties ?? (f.properties = {}); const code = codeOf(p); if (code) refs.set(code, refs.has(code) ? null : featureRef(collection, code)); const proof = zoneProof({ geometryArtifact: `s3://sentropic-geo/${key}`, geometryUpstream: upstreamGeometry(p), regulationArtifact: null, regulationUpstream: regulationUrl }); p.proof = proof; if (proof.status === "complete") report.features.complete++; else report.features.partial++; for (const gap of proof.gaps) report.gaps[gap] = (report.gaps[gap] ?? 0) + 1; });
     zoneRefs.set(slug, refs); report.features.zones += fc.features.length;
-    if (a.upload) await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
   });
   await pooled(lotSlugs, 8, async (slug) => {
     const collection = `qc-lots-${slug}`, key = `${LOTS}${collection}.geojson`, zoneCollection = zoneRefs.has(slug) ? `qc-zonage-${slug}` : null;
@@ -73,7 +73,6 @@ async function main(): Promise<void> {
     const refs = zoneRefs.get(slug); const regulationUrl = regulations.slugs[slug]?.reglement_url ?? null;
     fc.features.forEach((f) => { const p = f.properties ?? (f.properties = {}); const code = codeOf(p); const proof = lotProof({ geometryArtifact: `s3://sentropic-geo/${key}`, zoneCollection, zoneCode: code, zoneFeatureRef: code ? refs?.get(code) ?? null : null, assignmentMethod: p.assignment_method, regulationArtifact: null, regulationUpstream: regulationUrl }); p.proof = proof; if (proof.status === "complete") report.features.complete++; else report.features.partial++; for (const gap of proof.gaps) report.gaps[gap] = (report.gaps[gap] ?? 0) + 1; });
     report.features.lots += fc.features.length;
-    if (a.upload) await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
   });
   // Every fetched feature was deterministically given and checked against the versioned
   // contract above; gaps are coverage data, not a reason to fabricate a source.

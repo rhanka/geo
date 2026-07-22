@@ -37,7 +37,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes } from "./lib/s3.js";
+import { s3Client } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -282,8 +283,8 @@ export async function processWfsMuni(
   const result: WfsResult = { ...base, layerUrl, featureCount: norm.length, nonNullZoneCode: nonNull, ...(distanceKm !== undefined ? { distanceKm } : {}) };
   if (deposit && s3) {
     const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-    const fc: GeoFC = { type: "FeatureCollection", features: norm };
-    await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: buildGetFeatureUrl(cfg, code, 0, PAGE), type: "wfs", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }));
+    await putServedZoneGeojson(s3, key, fc);
     return { ...result, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, ${codeVerdict.stats.distinct} codes distincts, champ ${cfg.zoneField}) via WFS` };
   }
   return { ...result, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (${nonNull} avec zone_code, ${codeVerdict.stats.distinct} codes distincts) via WFS` };
