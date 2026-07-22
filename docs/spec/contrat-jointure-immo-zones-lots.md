@@ -166,3 +166,58 @@ réelle ou `null`, jamais devinée) :
 
 immo consomme `properties.code_postal` en passthrough (chaîne 3 car.) et peut afficher/agréger
 au niveau RTA ; ne PAS présenter la valeur comme un code postal complet.
+
+---
+
+## 7. Preuve uniforme par feature (MàJ 2026-07-22)
+
+Chaque feature servie par les collections `qc-lots-<slug>` et
+`qc-zonage-<slug>` porte désormais le champ additif `properties.proof`, contrat
+`immo-feature-proof/v1`. Il est conservé tel quel par un consommateur OGC :
+
+```ts
+interface FeatureProofV1 {
+  schema_version: "1.0";
+  status: "complete" | "partial"; // partial est une lacune déclarée, jamais une preuve inventée
+  sources: {
+    geometry: { status: "available" | "unavailable"; artifact_uri: string | null; upstream_uri: string | null };
+    regulation: { status: "available" | "unavailable"; artifact_uri: string | null; upstream_uri: string | null };
+  };
+  // null pour une zone; pour un lot, lien précis par code unique dans la couche zone.
+  zone: { collection: string | null; zone_code: string | null; feature_ref: string | null; assignment_method: string | null } | null;
+  gaps: string[];
+}
+```
+
+- Une **zone** fournit son artefact géométrique servi et, quand le registre
+  `reglement-provenance` l'atteste, l'URL réglementaire. L'absence est explicite
+  dans `gaps` (`regulation_source_unavailable`).
+- Un **lot** fournit son artefact, `qc-zonage-<slug>`, son `zone_code`, la
+  référence stable `collection#zone_code=<code>` de la zone exacte quand le code est unique,
+  et la méthode d'assignation existante. Les cas non assignés, code ambigu ou
+  méthode non matérialisée restent explicitement null/`gaps`.
+
+### Build/audit global
+
+```bash
+cd acquisition && npm run proof:backfill -- --all --out ../work/coverage/immo-proof-coverage.json
+```
+
+La commande couvre l'intégralité des collections servies découvertes dans S3,
+échoue si elle ne peut pas les énumérer ou si le nombre de preuves comptabilisées
+n'est pas exactement le nombre de features. Par défaut elle est **audit-only**:
+elle produit le rapport Immo sans écrire S3. Après approbation explicite de
+publication seulement, ajouter `--upload` pour réécrire les objets servis avec
+le champ.
+
+### API / déploiement
+
+Ce dépôt ne contient pas l'implémentation de `geo-api`: la seule référence est
+le manifeste `deploy/k8s/geo-api-deployment.yaml`, qui tire l'image externe
+`rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.4`; aucune source de route OGC,
+Dockerfile ou hook de build API n'est versionné ici. La preuve est un champ de
+propriété GeoJSON, donc l'API OGC qui sert déjà les objets
+`normalized/qc-lots`/`normalized/ca-qc-zonage` l'expose sans nouveau mapping.
+Un propriétaire externe doit seulement publier l'image/configuration API si
+celle-ci filtre les propriétés, puis faire le déploiement Kubernetes; aucune
+publication S3 ni opération Kubernetes n'est faite par cette évolution.
