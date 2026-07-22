@@ -46,7 +46,8 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes, exists } from "./lib/s3.js";
+import { s3Client, exists } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 // Réutilise le validateur de codes-zone value-based (agnostique du NOM de champ)
 // déjà éprouvé côté WFS : signature code (CODE_PATTERN_RE), ratio non-null, rejet
@@ -977,8 +978,8 @@ async function processGonetZonage(
 
     if (args.deposit && s3) {
       const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc: GeoFC = { type: "FeatureCollection", features: norm };
-      await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
+      const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: layerUrl, type: "geonet", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }));
+      await putServedZoneGeojson(s3, key, fc);
       return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
     }
     return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${best.zoneField}) via GoNet ${layerUrl}` };
@@ -1168,8 +1169,8 @@ async function depositFromServices(
 
     if (args.deposit && s3) {
       const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc: GeoFC = { type: "FeatureCollection", features: norm };
-      await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
+      const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: probe.layerUrl, type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }));
+      await putServedZoneGeojson(s3, key, fc);
       return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${probe.zoneField}) via ${probe.layerUrl}${isAggregate ? " [MRC filtré]" : ""}` };
     }
     return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${probe.zoneField}) via ${probe.layerUrl}` };
