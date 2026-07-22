@@ -221,3 +221,40 @@ propriété GeoJSON, donc l'API OGC qui sert déjà les objets
 Un propriétaire externe doit seulement publier l'image/configuration API si
 celle-ci filtre les propriétés, puis faire le déploiement Kubernetes; aucune
 publication S3 ni opération Kubernetes n'est faite par cette évolution.
+
+---
+
+## 8. Admission des zones par source géométrique (normatif)
+
+Une zone n'est servie à Immo que si sa géométrie porte une source d'acquisition
+réelle, non nulle. Le règlement reste une provenance distincte et ne peut jamais
+remplacer cette source.
+
+```json
+{
+  "proof": {
+    "schema_version": "2.0",
+    "geometry_source": {
+      "url": "https://source-reelle.example/zonage.geojson",
+      "type": "geonet | arcgis | wfs | pdf-zonage | geojson-officiel",
+      "method": "natif | georeference",
+      "reliability": "directe | georeferencee",
+      "retrieved_at": "2026-07-22T00:00:00Z",
+      "sha256": "sha256:..."
+    }
+  }
+}
+```
+
+- `geometry_source.url` est une URL HTTP(S) de l'artefact ou endpoint ayant
+  produit les polygones : elle est obligatoire, jamais `null`.
+- Le record est défini dans un registre revu par collection `qc-zonage-<slug>`;
+  toutes les features de cette collection reçoivent le même record. Aucune
+  heuristique par feature ne peut inventer une URL.
+- S3, un chemin local, `t2-gcp3`, un libellé de pipeline, une page d'accueil et
+  un PDF de règlement ne satisfont pas cette règle à moins que le PDF soit bien
+  l'artefact géométrique exact qui a été géoréférencé.
+- Une collection sans record exact est hors du catalogue public; ses lots peuvent
+  rester cadastraux mais ne présentent ni zone ni norme dérivée.
+- Toute acquisition nouvelle doit enregistrer cette preuve au moment du fetch,
+  avant tout dépôt servi.
