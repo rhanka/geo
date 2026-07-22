@@ -24,7 +24,8 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { s3Client, putBytes, exists } from "./lib/s3.js";
+import { s3Client, exists } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REG = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
@@ -119,18 +120,20 @@ async function main(): Promise<void> {
 
   // normalisation schéma serving
   const out = {
-    type: "FeatureCollection",
+    type: "FeatureCollection" as const,
     features: feats.map((f) => ({
       type: "Feature",
       geometry: f.geometry,
       properties: { zone_code: zoneCode(f.properties, a.zoneField, a.zonePrefixField), kind: null, affectation: null, num_zone: null, source: a.layer, confidence: "arcgis-zone-vector" },
     })),
   };
+  const proof = proofFromFetched({ url: `${a.layer}/query?where=1%3D1&outFields=${encodeURIComponent([...new Set([a.zoneField, ...(a.zonePrefixField ? [a.zonePrefixField] : [])])].join(","))}&outSR=4326&f=geojson`, type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(feats) });
+  attachGeometryProof(out, proof);
   const key = `${PREFIX}qc-zonage-${a.slug}.geojson`;
   if (a.dryRun) { console.error(`[serve] DRY-RUN ok: aurait écrit ${key} (${out.features.length} zones)`); return; }
   const s3 = s3Client();
   if (await exists(s3, key)) { console.error(`[serve] ATTENTION: ${key} existe déjà — abandon (pas d'écrasement)`); process.exit(1); }
-  await putBytes(s3, key, JSON.stringify(out), "application/geo+json");
+  await putServedZoneGeojson(s3, key, out);
   console.error(`[serve] DÉPOSÉ ${key} (${out.features.length} zones, ${distinct.size} codes distincts)`);
 }
 main().catch((e) => { console.error("[serve] FATAL:", e instanceof Error ? e.message : String(e)); process.exit(1); });
