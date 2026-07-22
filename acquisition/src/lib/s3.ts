@@ -28,6 +28,12 @@ export const S3ENV =
   process.env["S3_ENV_FILE"] ?? "/home/antoinefa/src/_acquisition-shared/s3.env";
 export const BUCKET = "sentropic-geo";
 
+/** Exact public qc-zonage objects (legacy flat and mirrored nested layouts). */
+export function isServedZoneKey(key: string): boolean {
+  const match = key.match(/^normalized\/ca-qc-zonage\/qc-zonage-([a-z0-9-]+)(?:\.geojson|\/qc-zonage-([a-z0-9-]+)\.geojson)$/);
+  return !!match && (!match[2] || match[1] === match[2]);
+}
+
 /**
  * Parse an `.env`-style file into a flat record (ignores comments/blank).
  * Tolerates a leading `export ` (shell-sourced files like `sentropic/.env`)
@@ -230,6 +236,9 @@ export async function putBytes(
   contentType?: string,
   bucket: string = BUCKET,
 ): Promise<void> {
+  if (isServedZoneKey(key)) {
+    throw new Error(`direct served qc-zonage write refused: use putServedZoneGeojson with exact geometry proof (${key})`);
+  }
   await s3.send(
     new PutObjectCommand({
       Bucket: bucket,
@@ -256,6 +265,9 @@ export async function copyObject(
   destKey: string,
   bucket: string = BUCKET,
 ): Promise<void> {
+  if (isServedZoneKey(destKey)) {
+    throw new Error(`direct served qc-zonage copy refused: destination proof must be validated before write (${destKey})`);
+  }
   await s3.send(
     new CopyObjectCommand({
       Bucket: bucket,

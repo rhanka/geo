@@ -35,7 +35,8 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { s3Client, putBytes, copyObject, deleteObject, exists } from "./lib/s3.js";
+import { s3Client, copyObject, deleteObject, exists } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
 // MÊME canon que la JOINTURE runtime lot⋈zone⋈norms et que le gate de dépôt des
 // normes (lib/zonage-norms.canonZone délègue à ceci) : l'overlap qu'on MESURE ici
@@ -102,7 +103,7 @@ function normCode(raw: unknown): string | null {
   return s === "" ? null : s;
 }
 
-async function loadFeatures(args: Args): Promise<GeoFeature[]> {
+async function loadFeatures(args: Args): Promise<{ features: GeoFeature[]; bytes: Buffer }> {
   let text: string;
   if (args.file) {
     text = readFileSync(args.file, "utf8");
@@ -119,7 +120,7 @@ async function loadFeatures(args: Args): Promise<GeoFeature[]> {
   }
   const fc = JSON.parse(text) as GeoFC;
   if (fc.type !== "FeatureCollection" || !Array.isArray(fc.features)) throw new Error("pas un FeatureCollection GeoJSON");
-  return fc.features.filter((f) => f && f.geometry && f.properties);
+  return { features: fc.features.filter((f) => f && f.geometry && f.properties), bytes: Buffer.from(text) };
 }
 
 /**
@@ -161,7 +162,9 @@ async function main(): Promise<void> {
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const muni = munis.find((m) => m.slug === args.slug);
 
-  const features = await loadFeatures(args);
+  if (args.deposit && !args.url) throw new Error("served deposit requires --url: a local file alone is not geometry proof");
+  const loaded = await loadFeatures(args);
+  const features = loaded.features;
   console.error(`[opendata] slug=${args.slug} champ='${args.zoneField}' features=${features.length} source=${source}`);
 
   // 1) Anti-invention (champ opérateur) : valeurs = vrais codes-zone.
@@ -225,6 +228,7 @@ async function main(): Promise<void> {
   const allGatesOk = verdict.ok && (distanceKm === undefined || distanceKm <= Math.max(args.spatialKm, 35)) && (overlap === undefined || overlap > 0);
 
   if (args.deposit && allGatesOk) {
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: args.url!, type: "geojson-officiel", method: "natif", reliability: "directe", bytes: loaded.bytes }));
     const s3 = s3Client();
     // On dépose au layout PLAT `qc-zonage-<slug>.geojson` que resolveGridKey PRÉFÈRE
     // (lib/zonage-norms.resolveGridKey : plat d'abord, puis sous-dossier). L'ancien
@@ -241,8 +245,7 @@ async function main(): Promise<void> {
       if (oldKey === subKey) { await deleteObject(s3, oldKey); console.error(`[opendata] ancien dépôt (sous-dossier) sauvegardé → s3://${backup} + SUPPRIMÉ`); }
       else console.error(`[opendata] ancien dépôt (plat) sauvegardé → s3://${backup} (sera écrasé)`);
     }
-    const fc: GeoFC = { type: "FeatureCollection", features: norm };
-    await putBytes(s3, flatKey, JSON.stringify(fc), "application/geo+json");
+    await putServedZoneGeojson(s3, flatKey, fc);
     report.deposited = true;
     report.key = flatKey;
     console.error(`[opendata] DÉPOSÉ → s3://${flatKey} (${norm.length} zones, ${distinctCodes.size} codes distincts)`);

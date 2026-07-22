@@ -48,7 +48,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 // Anti-invention value-based (agnostique du NOM de champ) — le MÊME gate que le
 // dépôt obscura --service et opendata : rejette affectation/numérique-nu/séquentiel.
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
@@ -283,7 +284,10 @@ async function processMuni(
   }
 
   const outFields = muniField ? `${zoneField},${muniField}` : zoneField;
-  const raw = await fetchFeatures(layerUrl, outFields, where, li?.maxRecordCount ?? 1000);
+  const batch = Math.max(1, Math.min(li?.maxRecordCount ?? 1000, 2000));
+  const sourceUrl = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}` +
+    `&outSR=4326&geometryPrecision=6&resultOffset=0&resultRecordCount=${batch}&f=geojson`;
+  const raw = await fetchFeatures(layerUrl, outFields, where, batch);
   if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `couche '${layer.name}' téléchargée vide (where=${where})` };
 
   // Anti-invention (valeur-par-valeur) : REJET si le champ ne porte pas de vrais codes.
@@ -321,6 +325,10 @@ async function processMuni(
 
   const detail = `${norm.length} zones (${nonNull} avec zone_code, ${distinctCodes.size} distincts, champ '${zoneField}', codeLike=${(st.codeLikeRatio * 100).toFixed(0)}%) via ${layerUrl}`;
   if (args.deposit && s3) {
+    const fc = attachGeometryProof(
+      { type: "FeatureCollection" as const, features: norm },
+      proofFromFetched({ url: sourceUrl, type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }),
+    );
     // Dépôt PLAT (layout préféré par resolveGridKey/resolveZonesKey). On sauvegarde
     // puis SUPPRIME une éventuelle variante sous-dossier pour éviter le double-service.
     const ts = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
@@ -330,8 +338,7 @@ async function processMuni(
       await deleteObject(s3, subKey);
       console.error(`[sigale] ${slug}: ancienne variante sous-dossier sauvegardée → s3://${backup} + SUPPRIMÉE`);
     }
-    const fc: GeoFC = { type: "FeatureCollection", features: norm };
-    await putBytes(s3, flatKey, JSON.stringify(fc), "application/geo+json");
+    await putServedZoneGeojson(s3, flatKey, fc);
     return { ...base, deposited: true, status: "deposited", detail: `${base.wasServed ? "[REMPLACE] " : "[NOUVEAU] "}${detail}` };
   }
   return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${detail}` };
