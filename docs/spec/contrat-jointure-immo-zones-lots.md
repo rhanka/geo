@@ -197,18 +197,16 @@ interface FeatureProofV1 {
   et la méthode d'assignation existante. Les cas non assignés, code ambigu ou
   méthode non matérialisée restent explicitement null/`gaps`.
 
-### Build/audit global
+### Diagnostic v1 historique
 
 ```bash
 cd acquisition && npm run proof:backfill -- --all --out ../work/coverage/immo-proof-coverage.json
 ```
 
-La commande couvre l'intégralité des collections servies découvertes dans S3,
-échoue si elle ne peut pas les énumérer ou si le nombre de preuves comptabilisées
-n'est pas exactement le nombre de features. Par défaut elle est **audit-only**:
-elle produit le rapport Immo sans écrire S3. Après approbation explicite de
-publication seulement, ajouter `--upload` pour réécrire les objets servis avec
-le champ.
+Cette commande reste un diagnostic v1 **strictement audit-only**. Son ancien mode
+`--upload` est retiré : une URL exacte et un hash v2 ne peuvent pas être déduits
+d'un artefact S3 ou d'un champ générique. Le recensement normatif courant est le
+registre v2 décrit ci-dessous.
 
 ### API / déploiement
 
@@ -236,7 +234,7 @@ remplacer cette source.
     "schema_version": "2.0",
     "geometry_source": {
       "url": "https://source-reelle.example/zonage.geojson",
-      "type": "geonet | arcgis | wfs | pdf-zonage | geojson-officiel",
+      "type": "geonet | arcgis | agol | wfs | jmap | pdf-zonage | geojson-officiel",
       "method": "natif | georeference",
       "reliability": "directe | georeferencee",
       "retrieved_at": "2026-07-22T00:00:00Z",
@@ -258,3 +256,27 @@ remplacer cette source.
   rester cadastraux mais ne présentent ni zone ni norme dérivée.
 - Toute acquisition nouvelle doit enregistrer cette preuve au moment du fetch,
   avant tout dépôt servi.
+
+### Audit global v2, sans écriture S3
+
+```bash
+cd acquisition
+npm run proof:audit -- \
+  --out ../work/coverage/served-proof-registry.json \
+  --summary-out ../work/coverage/served-proof-summary.json
+```
+
+L'audit énumère et lit les deux layouts canoniques, plat et imbriqué. Il publie
+séparément l'audit de toutes les clés physiques et la vue logique effectivement
+servie (priorité au plat). Le registre de sources n'admet que les preuves v2
+exactes et éligibles. L'ancien champ explicitement géométrique
+`proof.sources.geometry.upstream_uri` peut classer une feature comme
+**recoverable**, mais n'entre jamais au registre sans récupération et hash v2.
+Les champs génériques `url`/`source`, pages d'accueil, règlements et clés S3 sont
+exclus. Toute erreur List/Get reste une erreur comptabilisée et rend la commande
+non-zéro.
+
+Le helper S3 générique refuse toute écriture ou copie directe vers une clé
+canonique `qc-zonage`. Le seul chemin d'écriture est
+`putServedZoneGeojson`, qui exige une collection non vide, une preuve v2 valide
+et exactement la même preuve sur chaque feature avant d'envoyer l'objet.
