@@ -1,0 +1,527 @@
+{
+  "contract": "geo-completion-1-summary/v1",
+  "analysis_as_of": "2026-07-23",
+  "execution": {
+    "mode": "local-cpu-only",
+    "network": false,
+    "s3": false,
+    "deployment": false,
+    "track_edits": false
+  },
+  "sources": [
+    {
+      "id": "coverage_matrix",
+      "path": "work/coverage/coverage-matrix.json",
+      "sha256": "0e6e1a37d8f9ad45b4c1b8ff5e99bb1d7a85550c905d39ae0a666f2bff5991ca",
+      "declared_as_of": "2026-06-23T18:41:02.519Z",
+      "status_research_range": {
+        "zones": {
+          "min": "2026-06-23T04:59:58.196Z",
+          "max": "2026-06-23T19:04:29.467Z"
+        },
+        "normes": {
+          "min": "2026-06-23T04:59:58.196Z",
+          "max": "2026-06-23T11:27:03.282Z"
+        }
+      },
+      "role": "portfolio denominator and base completion status"
+    },
+    {
+      "id": "zones_provenance_manifest",
+      "path": "work/coverage/zone-provenance-status-manifest-20260722.json",
+      "sha256": "74345365b898d65ff05b08bc897f62f0c7052bd5917b7203f8afe57afce828aa",
+      "declared_as_of": "2026-07-22",
+      "role": "local served-zone collection corroboration and provenance caveats"
+    },
+    {
+      "id": "normes_manifest_current",
+      "path": "work/zonage-norms/manifest-current.json",
+      "sha256": "067fc474bc0a3689496722e71556670d8cf3f65a7a658e48956081bb47821c2a",
+      "declared_as_of": {
+        "min": "2026-06-22",
+        "max": "2026-07-07"
+      },
+      "role": "local norms extraction manifest corroboration"
+    },
+    {
+      "id": "normes_provenance",
+      "path": "work/coverage/normes-provenance.json",
+      "sha256": "6e5f8f94e52bf4132f183a189cd4e7c511030be036bc5107eb9f3014c276e3c6",
+      "declared_as_of": {
+        "min": "2026-06-29T11:17:37.309Z",
+        "max": "2026-07-04T21:33:39.124Z"
+      },
+      "role": "local two-engine retest outcome; an error prevents a complete claim"
+    }
+  ],
+  "validation": {
+    "city_universe": {
+      "target": 1106,
+      "actual": 1106,
+      "exact": true
+    },
+    "zones_rows": 1106,
+    "normes_rows": 1106,
+    "zones_and_normes_city_sets_match": true,
+    "allowed_states_only": true,
+    "unknown_never_complete": true
+  },
+  "lanes": {
+    "zones": {
+      "state_counts": {
+        "complete": 868,
+        "incomplete": 195,
+        "unknown": 43,
+        "N-A": 0
+      },
+      "base_status_counts": {
+        "done": 911,
+        "to-research": 195
+      },
+      "local_manifest_matches": 868,
+      "source_rows_not_matched_to_city_universe": [
+        "l-assomption",
+        "l-epiphanie",
+        "sainte-christine-d-auvergne"
+      ],
+      "quality_caveat_counts": {
+        "not-assessed": 868
+      },
+      "top_deficits": [
+        {
+          "slug": "baie-durfe",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "beaconsfield",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "beauharnois",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "beloeil",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "blainville",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "bois-des-filion",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "calixa-lavallee",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "lery",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "lile-cadieux",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "lile-dorval",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "lile-perrot",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "lorraine",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "marieville",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "mascouche",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "mcmasterville",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "mercier",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "mont-saint-gregoire",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "napierville",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "pincourt",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "pointe-calumet",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "pointe-des-cascades",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "richelieu",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "saint-blaise-sur-richelieu",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "saint-cyprien-de-napierville",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        },
+        {
+          "slug": "saint-edouard",
+          "state": "unknown",
+          "reconciliation": "matrix_done_but_unconfirmed_by_local_served_collection",
+          "matrix_status": "done",
+          "source_url_available": null,
+          "retest_winner": null
+        }
+      ]
+    },
+    "normes": {
+      "state_counts": {
+        "complete": 501,
+        "incomplete": 290,
+        "unknown": 315,
+        "N-A": 0
+      },
+      "base_status_counts": {
+        "done": 816,
+        "to-research": 290
+      },
+      "local_manifest_matches": 549,
+      "source_rows_not_matched_to_city_universe": [
+        "bedford",
+        "hemmingford",
+        "valcourt",
+        "valcourt-normes"
+      ],
+      "provenance_rows_not_matched_to_city_universe": [
+        "hemmingford",
+        "valcourt"
+      ],
+      "local_retest_error_count": 48,
+      "source_url_unavailable_count": 91,
+      "top_deficits": [
+        {
+          "slug": "chelsea",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "farnham",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "franklin",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "hemmingford--les-jardins-de-napierville--2",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "hudson",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "kingsey-falls",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "la-peche",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lac-beauport",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lac-des-ecorces",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lac-etchemin",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lac-sainte-marie",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lacolle",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lange-gardien--la-cote-de-beaupre",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lange-gardien--les-collines-de-loutaouais",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "lisle-aux-coudres",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "mont-laurier",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "mont-saint-hilaire",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "mont-saint-michel",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "nominingue",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "notre-dame-de-lourdes--joliette",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "notre-dame-du-sacre-coeur-dissoudun",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "orford",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "potton",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "preissac",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        },
+        {
+          "slug": "prevost",
+          "state": "unknown",
+          "reconciliation": "local_retest_error_prevents_complete_claim",
+          "matrix_status": "done",
+          "source_url_available": true,
+          "retest_winner": "error"
+        }
+      ]
+    }
+  },
+  "deliverables": {
+    "zonesMatrix": "work/coverage/completion-1-zones-matrix-20260723.json",
+    "normesMatrix": "work/coverage/completion-1-normes-matrix-20260723.json",
+    "summaryJson": "work/coverage/completion-1-zones-normes-summary-20260723.json",
+    "summaryMarkdown": "work/coverage/completion-1-zones-normes-summary-20260723.md"
+  }
+}
