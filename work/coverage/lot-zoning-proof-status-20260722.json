@@ -1,0 +1,224 @@
+{
+  "contract": "lot-zoning-proof-status/v1",
+  "generated_at": "2026-07-23T00:43:25Z",
+  "source_snapshot_at": "2026-07-22T23:43:37.049Z",
+  "read_only": true,
+  "network_activity": "none; no S3 or network refetch",
+  "s3_writes": 0,
+  "deployments": 0,
+  "scope": {
+    "product": "served qc-lots logical collections",
+    "serving_precedence": "flat canonical key, then mirrored nested canonical key",
+    "lot_collections": 897,
+    "lot_features": 3429863,
+    "zone_collections": 871,
+    "zone_features": 95551
+  },
+  "inputs": [
+    {
+      "path": "work/coverage/served-proof-registry-20260722.json",
+      "contract": "served-proof-registry/v2",
+      "generated_at": "2026-07-22T23:43:37.049Z",
+      "sha256": "4ccdf46a7f76d26e74bcf9bdfc8f147e6eb54322092b134c171a776b39afab17",
+      "role": "authoritative logical serving view, assignment gate result, and zone collection provenance status",
+      "failed_s3_calls": 0
+    },
+    {
+      "path": "work/coverage/immo-proof-coverage.json",
+      "contract": "immo-feature-proof/v1",
+      "generated_at": "2026-07-22T17:16:56.425Z",
+      "sha256": "41f8ae69d1e64fb89e632edd9525aa1fb7e3da26590598a2162ef445d86ad210",
+      "role": "corroborating lot-property audit for missing zone_code and missing assignment_method only; not used to classify zone geometry provenance",
+      "compatibility": "same 897 lot collections, 3429863 lot features, and 1153807 zone_assignment_unavailable as the authoritative registry"
+    }
+  ],
+  "corrected_conclusion": "Absence of exact v2 zone geometry proof makes zero lots geometry-verified, but it does not erase 2276056 recorded spatial assignments. Assignment/join evidence and zone geometry provenance are separate axes.",
+  "assignment_join_evidence": {
+    "lot_features_total": 3429863,
+    "recorded_spatial_assignment": {
+      "lots": 2276056,
+      "percent_of_lots": 66.359968,
+      "evidence_rule": "The authoritative registry reached zone_collection_not_exact_source_eligible only after finding a non-empty zone code and validating assignment_method as area-majority or centroid-fallback.",
+      "accepted_methods": [
+        {
+          "assignment_method": "area-majority",
+          "meaning": "zone selected from measured positive lot-zone intersection area"
+        },
+        {
+          "assignment_method": "centroid-fallback",
+          "meaning": "point-in-polygon fallback recorded when exact intersection-area computation failed"
+        }
+      ],
+      "exact_method_total": 2276056,
+      "exact_per_method_counts": {
+        "area-majority": null,
+        "centroid-fallback": null
+      },
+      "per_method_split_reason": "The retained served-proof registry validates the two accepted values but aggregates both after validation into zone_collection_not_exact_source_eligible. An exact individual split would require a prohibited refetch of served lot features, so no split is invented."
+    },
+    "no_zone_assignment": {
+      "lots": 1153807,
+      "percent_of_lots": 33.640032,
+      "authoritative_reason": "zone_assignment_unavailable",
+      "registry_rule": "zone code absent or assignment_method equals unassigned",
+      "corroborating_v1_zone_code_missing": 1153807,
+      "corroborating_v1_assignment_method_missing": 109961,
+      "derived_assignment_method_present": 1043846,
+      "method_presence_note": "The v1 audit's 109961 missing-method cases are a subset of the no-assignment population because the authoritative registry contains no assignment_method_unavailable or assignment_method_invalid reason after its no-assignment check. The retained reports do not preserve the value distribution for the remaining 1043846 cases."
+    },
+    "collection_shape": {
+      "logical_collections": 897,
+      "with_any_recorded_assignment": 837,
+      "entirely_without_assignment": 60,
+      "with_any_unassigned_lot": 548,
+      "fully_assigned": 349,
+      "note": "with_any_recorded_assignment and with_any_unassigned_lot overlap for mixed collections"
+    },
+    "authoritative_reason_accounting": {
+      "zone_collection_not_exact_source_eligible": 2276056,
+      "zone_assignment_unavailable": 1153807,
+      "assignment_method_unavailable": 0,
+      "assignment_method_invalid": 0,
+      "zone_collection_unavailable_after_assignment": 0,
+      "total": 3429863
+    }
+  },
+  "zone_geometry_provenance": {
+    "status_basis": "served-proof-registry logical qc-zonage collection status, joined by exact slug to each logical qc-lots collection",
+    "global_zone_registry": {
+      "exact_source_eligible": {
+        "collections": 0,
+        "features": 0,
+        "interpretation": "no collection has the exact matching valid v2 collection-and-feature geometry proof required for geometry-verified"
+      },
+      "recoverable": {
+        "collections": 515,
+        "features": 57269,
+        "interpretation": "dedicated geometry evidence URL is recorded, but exact v2 eligibility is not established"
+      },
+      "quarantine": {
+        "collections": 356,
+        "features": 38282,
+        "interpretation": "collection is not fully traceable under the dedicated geometry-evidence policy"
+      }
+    },
+    "lot_collection_join": {
+      "recoverable_zone_collection": {
+        "lot_collections": 514,
+        "lot_collections_with_assignment": 495,
+        "lot_collections_entirely_without_assignment": 19,
+        "lots": 2167082,
+        "lots_with_recorded_assignment": 1164678,
+        "lots_without_assignment": 1002404,
+        "collections_with_dedicated_evidence_url": 514
+      },
+      "quarantine_zone_collection": {
+        "lot_collections": 353,
+        "lot_collections_with_assignment": 342,
+        "lot_collections_entirely_without_assignment": 11,
+        "lots": 1204857,
+        "lots_with_recorded_assignment": 1111378,
+        "lots_without_assignment": 93479,
+        "collections_with_dedicated_evidence_url": 0
+      },
+      "zone_collection_unavailable": {
+        "lot_collections": 30,
+        "lot_collections_with_assignment": 0,
+        "lot_collections_entirely_without_assignment": 30,
+        "lots": 57924,
+        "lots_with_recorded_assignment": 0,
+        "lots_without_assignment": 57924,
+        "causality_note": "The registry evaluates no-assignment before zone-collection availability, so this is an association, not proof that collection absence caused every unassigned lot."
+      }
+    }
+  },
+  "migration_statuses": {
+    "mutually_exclusive_at_lot_level": true,
+    "precedence": "no-zone-assignment when no recorded assignment; otherwise classify the assigned lot from its joined zone collection provenance",
+    "totals": [
+      {
+        "status": "geometry-verified",
+        "lots": 0,
+        "percent_of_lots": 0,
+        "collections_with_lots_in_status": 0,
+        "reason": "No logical zone collection is exact_source_eligible v2. Legacy or merely recoverable evidence is never promoted to verified."
+      },
+      {
+        "status": "geometry-legacy-traceable/recoverable",
+        "lots": 1164678,
+        "percent_of_lots": 33.956983,
+        "percent_of_assigned_lots": 51.170885,
+        "collections_with_lots_in_status": 495,
+        "reason": "Recorded spatial assignment to a zone collection classified recoverable with dedicated geometry evidence, without exact v2 verification."
+      },
+      {
+        "status": "geometry-quarantine",
+        "lots": 1111378,
+        "percent_of_lots": 32.402985,
+        "percent_of_assigned_lots": 48.829115,
+        "collections_with_lots_in_status": 342,
+        "reason": "Recorded spatial assignment exists, but the joined zone collection is quarantine under the dedicated geometry-evidence policy."
+      },
+      {
+        "status": "no-zone-assignment",
+        "lots": 1153807,
+        "percent_of_lots": 33.640032,
+        "collections_with_any_lots_in_status": 548,
+        "collections_entirely_in_status": 60,
+        "reason": "No recorded zone assignment; the registry reports zone_assignment_unavailable. Zone provenance does not substitute for a missing assignment."
+      }
+    ],
+    "collection_count_note": "Collection memberships are not mutually exclusive because one collection can contain both assigned and unassigned lots."
+  },
+  "zone_collection_unavailable_slugs": {
+    "collections": 30,
+    "lots": 57924,
+    "slugs": [
+      "aguanish",
+      "alleyn-et-cawood",
+      "aumond",
+      "baie-durfe",
+      "baie-johan-beetz",
+      "beaconsfield",
+      "beauharnois",
+      "begin",
+      "blainville",
+      "blanc-sablon",
+      "bois-des-filion",
+      "bois-franc",
+      "bonne-esperance",
+      "bouchette",
+      "brome",
+      "bryson",
+      "cacouna",
+      "calixa-lavallee",
+      "campbells-bay",
+      "caniapiscau",
+      "cap-chat",
+      "cayamant",
+      "chapais",
+      "chartierville",
+      "chibougamau",
+      "chichester",
+      "clarendon",
+      "colombier",
+      "cote-nord-du-golfe-du-saint-laurent",
+      "sainte-anne-de-bellevue"
+    ]
+  },
+  "arithmetic_checks": {
+    "assignment_partition": "2276056 + 1153807 = 3429863",
+    "assigned_provenance_partition": "1164678 + 1111378 + 0 = 2276056",
+    "migration_partition": "0 + 1164678 + 1111378 + 1153807 = 3429863",
+    "no_assignment_by_zone_status": "1002404 + 93479 + 57924 = 1153807",
+    "lot_collections_by_zone_status": "514 + 353 + 30 = 897",
+    "all_checks_pass": true
+  },
+  "interpretation_limits": [
+    "A recorded assignment is evidence that the served lot carries a zone code and an accepted spatial assignment method; it is not independent re-execution of the geometry operation.",
+    "Recoverable means traceable under the registry's dedicated evidence policy, not v2 verified and not necessarily current geometry.",
+    "Quarantine applies to zone geometry provenance only; it does not negate the existence of the recorded lot-zone join.",
+    "The retained registry does not preserve exact area-majority versus centroid-fallback counts, so only their exact combined validated total is reported.",
+    "No S3 object or network endpoint was fetched again for this report."
+  ]
+}
