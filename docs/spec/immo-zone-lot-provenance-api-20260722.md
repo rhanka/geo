@@ -1,8 +1,19 @@
 # Contrat Immo — évidence lot→zone et provenance de géométrie (recovery r2)
 
-**Statut :** proposition normative additive v1.
+**Statut :** proposition normative additive v1. L'enveloppe
+`immo_zone_lot_provenance` décrite ici n'est **pas encore implémentée** sur
+les collections servies (2026-07-24).
 **Date :** 2026-07-22.
 **Producteur :** geo. **Consommateur :** immo.
+
+**Mise à jour 2026-07-24 :** une paire de champs plus simple, inspirée de
+`zone_geometry_provenance` ci-dessous, est **déjà servie en production** :
+`zone_source_url` / `zone_source_level`, posés directement sur
+`properties` des features `qc-zonage` réellement déployées. Voir
+[`immo-zone-lot-provenance-api-20260724.md`](./immo-zone-lot-provenance-api-20260724.md)
+pour ce qui est consommable *maintenant*. Ce document-ci reste la référence
+normative pour l'enveloppe complète à trois axes, cible d'une itération
+ultérieure.
 
 ## 1. Objet et règle fondamentale
 
