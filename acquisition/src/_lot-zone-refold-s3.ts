@@ -126,6 +126,91 @@ async function sizeOf(s3: S3Client, key: string): Promise<number | null> {
   }
 }
 
+/** Taille via HEAD qui PROPAGE l'erreur réseau (pour que withRetry puisse rejouer). */
+async function sizeOfStrict(s3: S3Client, key: string): Promise<number | null> {
+  const { HeadObjectCommand } = await import("@aws-sdk/client-s3");
+  const r = await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }));
+  return typeof r.ContentLength === "number" ? r.ContentLength : null;
+}
+
+/** Rejoue une opération S3 sur erreur réseau transitoire (ETIMEDOUT & co). */
+async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 3): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= tries; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      const msg = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      const transient = /ETIMEDOUT|ECONNRESET|EAI_AGAIN|EPIPE|socket hang up|timeout|TimeoutError|NetworkingError/i.test(msg);
+      if (!transient || attempt === tries) throw e;
+      console.log(`  RETRY(${attempt}/${tries}) ${label}: ${msg}`);
+      await new Promise((r) => setTimeout(r, 1500 * attempt));
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * RESTORE : recopie chaque backup horodaté (`_replaced/<base>.<ts>`) vers sa clé
+ * SERVIE d'origine (ROLLBACK d'un re-fold). GARDE-FOU : si l'un des 4 backups CŒUR
+ * (qc-lots geojson+stats plats, qc-lot-zonage parquet+stats) est absent pour ce ts,
+ * on n'écrit RIEN pour ce slug (pas de restauration partielle, pas de fabrication).
+ * Les 2 layouts sous-dossier qc-lots sont restaurés en plus SI un backup existe.
+ */
+async function restore(s3: S3Client, slug: string): Promise<void> {
+  const ts = arg("ts");
+  if (!ts) {
+    console.error("restore exige --ts <timestamp-du-backup>");
+    process.exit(2);
+  }
+  const ks = keySet(slug);
+  const core: KeySpec[] = [ks.lotsFlat, ks.lotsStatsFlat, ks.zonageParquet, ks.zonageStats];
+  const optional: KeySpec[] = [ks.lotsSubdir, ks.lotsStatsSubdir];
+  console.log(`# RESTORE (rollback) ts=${ts} — ${slug}`);
+
+  // Phase 1 : PROUVER que les 4 backups cœur existent AVANT toute écriture.
+  const missingCore: string[] = [];
+  for (const spec of core) {
+    const src = backupKeyFor(spec.key, ts);
+    const present = await withRetry(`exists ${src}`, () => exists(s3, src));
+    console.log(`  probe backup   ${present ? "PRESENT" : "ABSENT "}  ${src}`);
+    if (!present) missingCore.push(src);
+  }
+  if (missingCore.length) {
+    console.log(`# RESTORE ABORT — ${missingCore.length} backup(s) cœur introuvable(s) pour ts=${ts} : AUCUNE écriture.`);
+    console.log(`# ROLLBACK: ECHEC(backup-manquant) ${slug}`);
+    return;
+  }
+
+  // Phase 2 : restaurer cœur (tous présents) + sous-dossier (si backup présent).
+  let restored = 0, failed = 0, skipped = 0;
+  for (const spec of [...core, ...optional]) {
+    const src = backupKeyFor(spec.key, ts);
+    try {
+      if (!(await withRetry(`exists ${src}`, () => exists(s3, src)))) {
+        console.log(`  SKIP(no-backup) ${spec.label.padEnd(34)} ${src}`);
+        skipped++;
+        continue;
+      }
+      const srcSize = await withRetry(`size ${src}`, () => sizeOfStrict(s3, src));
+      await withRetry(`copy ${src}`, () => copyObject(s3, src, spec.key));
+      const dstSize = await withRetry(`size ${spec.key}`, () => sizeOfStrict(s3, spec.key));
+      const sizeOk = srcSize !== null && dstSize !== null && srcSize === dstSize;
+      console.log(
+        `  ${sizeOk ? "RESTORE ok    " : "RESTORE ⚠SIZE "} ${spec.key}  <-  ${src}  (backup=${srcSize} restauré=${dstSize})`,
+      );
+      restored++;
+    } catch (e) {
+      console.log(`  FAIL           ${spec.label.padEnd(34)} ${src}  ${e instanceof Error ? `${e.name}: ${e.message}` : String(e)}`);
+      failed++;
+    }
+  }
+  const ok = failed === 0 && restored >= core.length;
+  console.log(`# RESTORE terminé : restauré=${restored} skip=${skipped} échec=${failed}`);
+  console.log(`# ROLLBACK: ${ok ? "OK" : "ECHEC"} ${slug}`);
+}
+
 async function report(s3: S3Client, slug: string): Promise<void> {
   const ks = keySet(slug);
   console.log(`# REPORT layout S3 — ${slug}`);
@@ -226,7 +311,7 @@ async function main(): Promise<void> {
   const slug = arg("slug");
   const mode = arg("mode");
   if (!slug || !mode) {
-    console.error("usage: --slug <slug> --mode <report|backup|mirror|verify> [--lots a,b,c] [--ts <ts>]");
+    console.error("usage: --slug <slug> --mode <report|backup|restore|mirror|verify> [--lots a,b,c] [--ts <ts>]");
     process.exit(2);
   }
   const s3 = s3Client();
@@ -236,6 +321,9 @@ async function main(): Promise<void> {
       break;
     case "backup":
       await backup(s3, slug);
+      break;
+    case "restore":
+      await restore(s3, slug);
       break;
     case "mirror":
       await mirror(s3, slug);
