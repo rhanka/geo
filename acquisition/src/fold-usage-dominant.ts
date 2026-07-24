@@ -34,7 +34,8 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
+import { getBytes, exists, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 import { canonZoneCodeServe, SIG_ZONE_CODE_FIELDS } from "./lib/zonage-norms.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -418,7 +419,9 @@ async function foldKey(
     console.log(`     dist: ${dist} null=${nullN}`);
   }
   if (!opts.dryRun && (changed > 0 || repaired)) {
-    await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+    // Additive provenance write: geometry proven byte-identical, only usage_dominant
+    // + its source tag may differ (see putServedZoneAdditive).
+    await putServedZoneAdditive(s3, key, fc, { allowedProps: ["usage_dominant", "usage_dominant_source"] });
     if (repaired) console.log(`     RÉPARÉ type:"FeatureCollection" (objet cassé par l'ancien bug loadFeatures)`);
   }
 }

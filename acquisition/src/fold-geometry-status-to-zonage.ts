@@ -30,7 +30,8 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
+import { getBytes, exists, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const REPORT = resolve(ROOT, "work", "coverage", "zone-contiguity.json");
@@ -102,7 +103,9 @@ async function main(): Promise<void> {
           if (f.properties[FLAG_FIELD] !== isFlagged) { f.properties[FLAG_FIELD] = isFlagged; changed++; }
         }
       }
-      if (changed > 0 && !dryRun) await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+      // Additive provenance write: geometry proven byte-identical, only the two
+      // zone_geometry_* keys may differ (see putServedZoneAdditive).
+      if (changed > 0 && !dryRun) await putServedZoneAdditive(s3, key, fc, { allowedProps: [STATUS_FIELD, FLAG_FIELD] });
       console.log(`${dryRun ? "DRY " : "OK  "}${city.slug} status=${city.status} flaggedZones=${flagged.size} features=${feats.length} changed=${changed} key=${key}`);
     }
     byStatus[city.status] = (byStatus[city.status] ?? 0) + 1;

@@ -26,7 +26,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { loadMatrix, MATRIX_PATH } from "./coverage-matrix.js";
-import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
+import { getBytes, exists, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const REGISTRY = resolve(ROOT, "acquisition", "config", "reglement-provenance.json");
@@ -149,7 +150,10 @@ async function main(): Promise<void> {
       }
       console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} cellsChanged=${changed} reglement=${numero} key=${key}`);
       if (!dryRun && changed > 0) {
-        await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+        // Additive provenance write: geometry proven byte-identical, only the 4
+        // reglement_* keys may differ (see putServedZoneAdditive). The geometry
+        // proof gate stays strict for any real geometry change.
+        await putServedZoneAdditive(s3, key, fc, { allowedProps: FIELDS });
       }
     }
     ok++;
