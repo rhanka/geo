@@ -25,11 +25,17 @@ describe("grille-vision-zoneheader — scan fallback wiring", () => {
       render: async () => "/nonexistent/fake.png",
     });
     expect(zn.zone_code).toBe("H-11");
-    expect(zn.marges.avant_min.value).toBe(10);
-    expect(zn.superficie_min.value).toBe(1500);
-    expect(zn.hauteur_max.value).toBe(9);
+    // A NormField is `NormFieldT | null` by contract (null = never emitted). The
+    // guarded pipeline must PUBLISH each cell it was fed, so assert the field
+    // objects first — a missing field fails here — then read the guarded values.
+    expect(zn.marges.avant_min).not.toBeNull();
+    expect(zn.superficie_min).not.toBeNull();
+    expect(zn.hauteur_max).not.toBeNull();
+    expect(zn.marges.avant_min!.value).toBe(10);
+    expect(zn.superficie_min!.value).toBe(1500);
+    expect(zn.hauteur_max!.value).toBe(9);
     // Provenance stamped by the frozen single-zone pipeline (mistral-vision).
-    expect(zn.superficie_min._provenance.methode).toBe("mistral-vision");
+    expect(zn.superficie_min!._provenance.methode).toBe("mistral-vision");
   });
 
   it("still guards the cell values when the model code is present (concordant read)", async () => {
@@ -46,7 +52,8 @@ describe("grille-vision-zoneheader — scan fallback wiring", () => {
       render: async () => "/nonexistent/fake.png",
     });
     expect(zn.zone_code).toBe("H-11");
-    expect(zn.marges.avant_min.value).toBe(10);
+    expect(zn.marges.avant_min).not.toBeNull();
+    expect(zn.marges.avant_min!.value).toBe(10);
   });
 
   it("exposes a VisionCallImpl-shaped extract on the production class", () => {
