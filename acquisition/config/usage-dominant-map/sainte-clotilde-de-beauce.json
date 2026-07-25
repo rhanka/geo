@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "AG": "agricole",
+    "AFA": "agricole",
+    "AFB": "agricole",
+    "I": "industriel",
+    "ID": null,
+    "IDS": null,
+    "C": null,
+    "M": null,
+    "MA": null,
+    "Pr": null
+  },
+  "source": "https://apps.gestionweblex.ca/ (corps WebLex local: work/zonage-norms/sainte-clotilde-de-beauce/zonage-weblex.pdf, 123 p.)",
+  "note": "Règlement de zonage de la Municipalité de Sainte-Clotilde-de-Beauce, CHAPITRE 3 « DIVISION DU TERRITOIRE », sous-section 3.1 « Division du territoire en zones », page 40 (corps WebLex, OWNER-OK: nom-complet=6). Table VERBATIM « les zones sont désignées par les lettres d'appellation ci-indiquées »: « Agricole dynamique AD; Agricole AG; Agroforestière de type 1 AFA; Agroforestière de type 2 AFB; Îlot déstructuré avec morcellement ID; Îlot déstructuré sans morcellement IDS; Urbaine centrale C; Urbaine mixte M, MA; Urbaine industrielle I; Urbaine périphérique Pr ». Mapping: AD « Agricole dynamique », AG « Agricole », AFA « Agroforestière de type 1 » et AFB « Agroforestière de type 2 » -> agricole (famille agricole/agroforestière regroupée par le règlement); I « Urbaine industrielle » -> industriel. Null explicite: ID « Îlot déstructuré avec morcellement » et IDS « Îlot déstructuré sans morcellement » -> null (l'îlot déstructuré est l'enclave résidentielle tolérée au sein de la zone agricole (art. 59 LPTAA); « déstructuré » n'énonce aucune des cinq dominantes — même verdict que baie-saint-paul.json « HA Îlot déstructuré »); C « Urbaine centrale » (noyau urbain mixte/centre-ville), M et MA « Urbaine mixte » (mixte explicite), Pr « Urbaine périphérique » -> null (« urbaine centrale/mixte/périphérique » ne nomme aucune des cinq catégories; verbatim-or-null). Les nulls explicites sont ANTI-FALL-THROUGH (le match est longest-prefix: sans « ID »/« IDS » -> null, « ID 8 » tomberait sur « I » -> industriel à tort; « MA » avant « M » sont co-null). La matrice des usages permis (classes h1-h10) n'est pas utilisée. Préfixes SIG réellement servis (37 polygones): ID(8), AFB(7), AG(5), AFA(3), AD(3), M(3), C(2), I(2), Pr(2), IDS(1), MA(1) — les 11 sont couverts par la table p.40, aucun préfixe mappé absent du SIG."
+}

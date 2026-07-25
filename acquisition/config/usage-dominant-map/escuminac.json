@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "PU": null,
+    "AA": "agricole",
+    "AC": null,
+    "AF": "agricole",
+    "FA": "agricole",
+    "FB": "agricole",
+    "CO": "environnemental"
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/escuminac/_publication/fichiers/2022-04-14%20Mun%20Esc%20Rglement%202022-003%20Rglement%20de%20zonage%20adopt.pdf",
+  "note": "Municipalité d'Escuminac (MRC d'Avignon), « Règlement de zonage » numéro 2022-003 adopté le 2022-04-14 (pied de page de chaque page : « Municipalité d'Escuminac — Règlement de zonage »). CHAPITRE 3 « PLAN DE ZONAGE », art. 3.2 « CODIFICATION DES ZONES » (p. 36), verbatim : « Le territoire de la municipalité est divisé en zones. Chacune des zones illustrées sur le plan de zonage est identifiée par une référence alphanumérique. En plus de l'identification numérique, chacune des zones identifiées au plan de zonage est caractérisée par une lettre d'appellation indiquant la dominante de la zone quant aux usages exercés et ce, aux fins de compréhension seulement. Ces dominantes sont les suivantes : Lettre d'appellation | Dominante — Pu Périurbaine ; AA Agricole dynamique ; AC Ilot déstructuré de type 1 ; AF Agroforestière ; F1 Forêt privée ; F2 Forêt publique ; CO Conservation ». Mapping : AA « Agricole dynamique » et AF « Agroforestière » -> agricole ; CO « Conservation » -> environnemental. Null EXPLICITE : PU « Périurbaine » désigne un MILIEU et n'énonce aucune des cinq catégories ; AC « Îlot déstructuré de type 1 » n'est défini par la résidence nulle part dans ce règlement (convention de la lane : îlot déstructuré -> null sauf définition affirmativement résidentielle) — AC est en outre indispensable pour ne pas retomber sur `A` par longest-prefix. ÉCART DE NOTATION ASSUMÉ ET DOCUMENTÉ : le SIG sert `FA-*` (11 pol.) et `FB-*` (5 pol.) là où la table écrit `F1 Forêt privée` et `F2 Forêt publique` ; l'appariement fin FA<->F1 / FB<->F2 n'est PAS établi, mais les DEUX libellés de la table sont « Forêt » (famille agricole/forestière du contrat), de sorte que le mapping agricole est valide quel que soit l'appariement. La grille de spécifications (annexe 2, matrice des usages autorisés) n'a PAS été utilisée. Consulté le 2026-07-19."
+}

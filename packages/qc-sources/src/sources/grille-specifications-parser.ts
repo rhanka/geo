@@ -181,11 +181,23 @@ export function normalizeUnit(
   }
   if (cellUnit !== null) unit = cellUnit;
 
+  // IMPERIAL ECHO. The "fiche par zone" family (Saint-Justin & co) prints the
+  // METRIC value followed by its imperial equivalent in parentheses:
+  // "9,2 m (30,1 pi)", "55,7 m² (600,0 pi²)", "4,0 m (13,1 pi)". The trailing
+  // "pi"/"pied"/"po" letters used to trip the PROSE guard below, so a perfectly
+  // measured cell was refused. Drop the parenthetical ONLY when its content is
+  // numbers + an imperial unit (never a note like "(voir art. 5)"), and read the
+  // metric value that precedes it. Verbatim `raw` is untouched — this selects a
+  // printed reading, it never converts or infers.
+  const IMPERIAL_ECHO =
+    /\(\s*[\d\s.,/]+\s*(?:pi|pieds?|po|pouces?)\s*(?:²|2|carr[ée]s?)?\s*\)/gi;
+  const deImperial = lower.replace(IMPERIAL_ECHO, " ");
+
   // A cell carrying alphabetic PROSE (other than a recognised unit word) is a
   // cross-reference / note, not a measured value ("voir art. 73", "Note 5").
   // Strip recognised unit words, then if any letters remain, refuse the number
   // (anti-invention: never lift a digit out of prose). Keep raw.
-  const deUnit = lower
+  const deUnit = deImperial
     .replace(/m²|m2|étages?|etages?|\bm\b|%/gi, " ")
     .replace(/[\d.,/()-]/g, " ")
     .trim();
@@ -195,7 +207,7 @@ export function normalizeUnit(
 
   // Pull the FIRST number out of the cell. FR decimal comma; collapse a single
   // space used as a thousands separator only when it sits between digit groups.
-  const numMatch = lower
+  const numMatch = deImperial
     .replace(/(\d)\s+(\d{3}\b)/g, "$1$2") // "1 200" → "1200"
     .match(/-?\d+(?:[.,]\d+)?/);
   if (!numMatch) {

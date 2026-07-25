@@ -9,23 +9,36 @@
 - une **librairie réutilisable** (`@sentropic/geo-*`) pour télécharger, normaliser et servir des données géographiques ;
 - une **CLI** `geo` pour piloter l'acquisition (`geo fetch ca-qc/regions`) ;
 - une **API** conforme aux standards (OGC API – Features) réutilisable par d'autres projets (ex. [radar-immobilier](https://github.com/rhanka/radar-immobilier)) ;
-- un **site public** [geo.sent-tech.ca](https://geo.sent-tech.ca) pour parcourir et visualiser les jeux de données disponibles, suivant le format réutilisable du [design-system.sent-tech.ca](https://design-system.sent-tech.ca).
+- un **site public** [geo.sent-tech.ca](https://geo.sent-tech.ca) pour parcourir et visualiser les jeux de données disponibles, suivant le format réutilisable du [design-system.sent-tech.ca](https://design-system.sent-tech.ca) ;
+- une **chaîne d'acquisition QC** (`acquisition/`) : zonage, normes, rôle foncier, procès-verbaux, cadastre.
 
 **Principe de licence** : chaque source déclare sa licence dans un *Source Manifest*. La lib ne (re)télécharge et ne republie que ce que la licence autorise — l'attribution amont est toujours préservée. Les fichiers bruts ne sont jamais commités ; ils restent **re-téléchargeables** à la demande.
+
+## Principe de provenance — obligatoire
+
+Toute donnée acquise ou servie par ce dépôt doit être fetchée avec sa preuve de
+source : URL HTTP(S) d'origine, type de source, date de récupération et, quand
+un fichier est téléchargé, son hash. Une copie S3 interne, un chemin local, un
+libellé de méthode ou une URL de règlement ne sont pas une preuve de la
+**géométrie** de zonage. Une zone sans URL de sa source géométrique réelle n'est
+pas publiable dans le catalogue Immo ; elle est mise en quarantaine jusqu'à ce
+que cette source soit établie sans inférence.
 
 ## Packages
 
 | Package | Rôle |
 | --- | --- |
 | [`@sentropic/geo-core`](packages/geo-core) | Modèle de domaine & standards : hiérarchie administrative (ISO 3166), GeoJSON (RFC 7946), CRS, **Source Manifest** + modèle de licence. Zéro dépendance runtime. |
-| [`@sentropic/geo-acquire`](packages/geo-acquire) | Moteur d'acquisition : download, **gate licence**, cache + checksum, normalisation vers le modèle core. |
-| [`@sentropic/geo-source-ca-qc`](packages/geo-source-ca-qc) | Sources **Québec** (Données Québec — Découpages administratifs, CC-BY 4.0). |
-| [`@sentropic/geo-cli`](packages/geo-cli) | CLI `geo` : `sources`, `fetch`, `serve`, `build`. |
-| [`@sentropic/geo-api`](packages/geo-api) | Serveur **Hono** implémentant **OGC API – Features** (GeoJSON), backend fichier ou PostGIS. |
-| [`@sentropic/geo-ui-svelte`](packages/geo-ui-svelte) | Composants Svelte (carte MapLibre + catalogue) stylés par les tokens du design-system. Ports React/Vue à venir. |
+| [`@sentropic/geo`](packages/geo) | Moteur Node : acquisition (download/GDAL/CSV/arcgis), stockage (S3/fs, ADR-0012), API OGC API – Features, catalogue, normalisation, géoréférencement et CLI `geo` (ADR-0017). |
+| [`@sentropic/geo-sources-americas`](packages/geo-sources-americas) | Manifestes + recettes des sources des Amériques (StatCan, Québec : SDA, cadastre, contraintes, civique). |
+| [`@sentropic/geo-sources-europe`](packages/geo-sources-europe) | Manifestes + recettes des sources européennes. |
+| [`@sentropic/geo-ui-svelte`](packages/geo-ui-svelte) | Composants Svelte (carte MapLibre + catalogue) stylés par les tokens du design-system. |
+| [`@sentropic/geo-qc-sources`](packages/qc-sources) | Adaptateurs de sources québécoises + parseurs règlements/zonage/grilles (PV, normes, OCR/vision). |
+| [`@sentropic/geo-qc-status-report`](packages/qc-status-report) | Générateur du rapport de statut QC (markdown + DOCX) depuis la couverture LIVE S3. |
+| [`acquisition`](acquisition) | Scripts d'acquisition province-wide QC (cadastre, rôle foncier, zonage, normes, PV). 100 % TypeScript/Node. |
 | [`apps/site`](apps/site) | Site SvelteKit `geo.sent-tech.ca`. |
 
-> Convention d'extension géographique : `geo-source-<cc>[-<subdiv>]` (ISO 3166) → `geo-source-ca-qc`, puis `geo-source-ca`, `geo-source-fr`, …
+> Convention d'extension géographique : `geo-sources-<continent>` (ADR-0017) ; les sources sont déclarées par pays/subdivision ISO 3166 (`ca-qc`, `fr`, …).
 
 ## Quickstart
 

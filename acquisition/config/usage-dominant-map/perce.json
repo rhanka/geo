@@ -1,0 +1,19 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "C": "commercial",
+    "CN": "environnemental",
+    "CT": "commercial",
+    "F": "agricole",
+    "HA": "residentiel",
+    "HC": "residentiel",
+    "HX": null,
+    "I": "industriel",
+    "M": null,
+    "P": null,
+    "REC": "environnemental"
+  },
+  "source": "https://ville.perce.qc.ca/wp-content/uploads/2022/05/Zonage_436-2011_Perce_codification-admin_20220428.pdf — Règlement de zonage no 436-2011 de la Ville de Percé, codification administrative",
+  "note": "Règlement de zonage no 436-2011, chapitre 2, section 1, article 16 « Identification des zones », lu VERBATIM : « chacune des zones identifiées au plan de zonage est caractérisée par une lettre d'appellation indiquant la dominante de la zone et les densités quant aux usages exercés ». La table « Lettre d'appellation / Dominante » donne Ha « Habitation de basse densité », Hb « Habitation de moyenne densité », Hc « Habitation de forte densité », Hm « Maison mobile ou unimodulaire », C « Commerciale », Ct « Commerciale touristique », M « Mixte », I « Industrielle », P « Publique et institutionnelle », Rec « Récréo-touristique », A « Agricole », Af « Agro-forestière », F « Forêt » et Cn « Conservation ». Parmi les préfixes alphabétiques réellement présents au SIG : HA/HC -> residentiel; C/CT -> commercial; I -> industriel; A/AF/F -> agricole; CN/REC -> environnemental. Null explicite : M « Mixte » est dual; P « Publique et institutionnelle » est public; HX est réellement servi mais absent de cette table, donc null plutôt qu’inféré. Les codes qui commencent par un numéro (par exemple 001.1-CN) ne peuvent pas être appariés par le fold fondé sur un préfixe initial et restent légitimement null. La matrice des grilles n’est pas utilisée."
+}

@@ -1,0 +1,27 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "residentiel",
+    "RD": "residentiel",
+    "RE": "residentiel",
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "CA": "commercial",
+    "IA": "industriel",
+    "IB": "industriel",
+    "MA": null,
+    "MB": null,
+    "MC": null,
+    "PA": null,
+    "PB": null,
+    "VA": null,
+    "VB": null,
+    "T": null,
+    "ID": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/pohenegamook/_publication/fichiers/P-413%20-%20Zonage_VA_Avril%202024(2).pdf",
+  "note": "Règlement de zonage numéro P.-413 de la Ville de Pohénégamook (version administrative avril 2024), ART. 1.3.2 « IDENTIFICATION DES ZONES », verbatim: « Chacune des zones est identifiée par un code alphanumérique, composé d'initiales suivies d'un chiffre. Les lettres qualifient la zone de la manière suivante, selon le groupe d'usages dominant : 1° Ca : commerciale; 2° EA : agricole (qui comprend EAA et EAB); 3° EAF : agroforestière; 4° EF : forestière; 5° I : industrielle (qui comprend Ia et Ib); 6° M : mixte (qui comprend Ma, Mb, Mc et Md); 7° P : publique (qui comprend Pa et Pb); 8° R : résidentielle (qui comprend Ra, Rb, Rc, Rd, Re et Rf); 9° T : transport, communications et services publics; 10° V : villégiature (qui comprend Va et Vb); » -> Ra..Re « résidentielle » -> residentiel; EAA/EAB « agricole », EAF « agroforestière », EF « forestière » -> agricole; Ca « commerciale » -> commercial; Ia/Ib « industrielle » -> industriel. Null explicite: Ma..Mc « mixte »; Pa/Pb « publique »; Va/Vb « villégiature » SEULE; T « transport, communications et services publics » n'est aucune des cinq (l'hypothèse « T = Touristique » est RÉFUTÉE par l'art. 1.4.7 « Le groupe Transport, communications et services publics (T) »). ID (1 pol.): ABSENT de l'art. 1.3.2 — ce n'est pas un code de zone du règlement (l'art. 6.10.5 dit « dans les zones EA, un usage principal résidentiel est autorisé à l'intérieur des îlots déstructurés »: l'îlot déstructuré est un SOUS-SECTEUR dans EA); sa définition en terminologie est de surcroît NÉGATIVE (« occupé majoritairement par des usages non agricoles ») donc elle ne fonde aucune dominante -> null. ⚠ Piège homonyme écarté: les grilles exposent des codes de CLASSES D'USAGES « Id » (« Industries à incidence moyenne ») homonymes de la zone « ID » — mapper depuis cette matrice aurait rendu ID=industriel, plausible et FAUX. ⚠ Le titre des métadonnées du PDF dit « Projet de règlement de lotissement » (résidu de gabarit, FAUX): le numéro P.-413 est lu verbatim sur la page titre et l'ATTENDU. Les préfixes « EA », « I », « M », « P », « R », « V » (génériques) et « Md »/« Rf » sont définis au règlement mais ABSENTS du SIG -> non mappés. ⚠ Le gabarit d'MRC (Témiscouata) NE se transporte PAS: la table de Dégelis (règl. 656) diffère réellement (C vs Ca, REC et IA chez Dégelis seulement, T et Ib ici seulement) — les deux tables ont été lues séparément dans leur propre source."
+}
