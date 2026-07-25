@@ -38,3 +38,5 @@ async function j(u: string): Promise<{ ok: boolean; status: number; body: string
     console.log(`== ${f} status=${fr.status} services: ${names.join(", ").slice(0, 400)}${flag}`);
   }
 })();
+
+export {};

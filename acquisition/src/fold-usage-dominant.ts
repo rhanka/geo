@@ -284,14 +284,16 @@ async function loadFeatures(
   // PRÉSERVE la FeatureCollection COMPLÈTE (type, crs, name, …) — on mute .features
   // en place puis on réécrit l'objet entier. NE JAMAIS reconstruire { features } seul:
   // ça droppe `type:"FeatureCollection"` et geo-api rend alors 404 Unknown collection.
-  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as Record<string, unknown> & {
+  const parsed = JSON.parse((await getBytes(s3, key)).toString("utf8")) as Record<string, unknown> & {
     type?: string;
     features?: Feature[];
   };
-  const feats = (fc.features ?? []) as Feature[];
-  fc.features = feats;
-  const repaired = typeof fc.type !== "string"; // objet déjà cassé par l'ancien bug
-  if (repaired) fc.type = "FeatureCollection";
+  const feats = parsed.features ?? [];
+  const repaired = typeof parsed.type !== "string"; // objet déjà cassé par l'ancien bug
+  if (repaired) parsed.type = "FeatureCollection";
+  // Object.assign MUTE `parsed` en place (identité conservée, cf. commentaire ci-dessus)
+  // et porte au type le fait que `features` est désormais présent.
+  const fc = Object.assign(parsed, { features: feats });
   return { fc, feats, repaired };
 }
 

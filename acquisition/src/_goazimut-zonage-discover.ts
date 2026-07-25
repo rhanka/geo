@@ -344,3 +344,5 @@ main().catch((e: unknown) => {
   console.error(e instanceof Error ? e.stack : String(e));
   process.exit(1);
 });
+
+export {};

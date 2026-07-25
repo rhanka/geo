@@ -45,8 +45,8 @@ describe("t1-labels-claude", () => {
       ["4-V", "1-AF", "11-R"],
     );
     expect(res.codePoints.map((p) => p.code).sort()).toEqual(["1-AF", "4-V"]);
-    expect(res.nValidated).toBe(2);
-    expect(res.nRejected).toBe(0);
+    expect(res.n_validated).toBe(2);
+    expect(res.n_rejected).toBe(0);
     expect(res.ocr_engine).toBe("claude-4.8-vision");
   });
 
