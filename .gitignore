@@ -64,6 +64,16 @@ work/zonage-norms/delegated-discovered-*.json
 # Aire de travail de la campagne mass-delegation (logs, état, scripts, statuts — scratch régénérable)
 work/delegation-mass/
 
+# Sorties de recalage et extraits cadastre : la SOURCE DE VÉRITÉ est S3.
+# Les couches `qc-zonage-<slug>.geojson` d'ici sont les objets SERVIS, et les
+# extraits cadastre sont re-téléchargeables — les committer duplique la
+# production dans le contrôle de version (38,8 + 11,0 Mio purgés le 2026-07-25,
+# cf. scripts/purge-data-history.sh). `work/gcp/` et `work/reads/` restent
+# versionnés à dessein : points de calage et lectures par vision sont du travail
+# distillé coûteux, sans source pérenne ailleurs.
+work/zones-recalage/
+work/cadastre/
+
 # Coverage: outputs intermédiaires (régénérables via coverage-cli)
 work/coverage/track-events/
 
