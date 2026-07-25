@@ -154,32 +154,46 @@ describe("parseSpanHeaderGrillePage — saint-louis-du-ha-ha proof", () => {
   });
 
   it("position-maps the 2-column norms (EA = left, A = right)", () => {
-    expect(ea.hauteur_max.value).toBe(6.5);
-    expect(ea.hauteur_max.unit).toBe("m");
-    expect(a.hauteur_max.value).toBe(4);
+    // A NormField is `NormFieldT | null` by contract: null = never emitted,
+    // published-with-`.value === null` = read but refused. Assert the field OBJECT
+    // exists first (the test fails here if one goes missing), then read `.value`.
+    expect(ea.hauteur_max).not.toBeNull();
+    expect(a.hauteur_max).not.toBeNull();
+    expect(ea.hauteur_max!.value).toBe(6.5);
+    expect(ea.hauteur_max!.unit).toBe("m");
+    expect(a.hauteur_max!.value).toBe(4);
   });
 
   it("shares a value from an all-equal margin row across both zones", () => {
-    expect(ea.marges.avant_min.value).toBe(9);
-    expect(a.marges.avant_min.value).toBe(9);
-    expect(ea.marges.arriere_min.value).toBe(7.5);
-    expect(a.marges.arriere_min.value).toBe(7.5);
+    expect(ea.marges.avant_min).not.toBeNull();
+    expect(a.marges.avant_min).not.toBeNull();
+    expect(ea.marges.arriere_min).not.toBeNull();
+    expect(a.marges.arriere_min).not.toBeNull();
+    expect(ea.marges.avant_min!.value).toBe(9);
+    expect(a.marges.avant_min!.value).toBe(9);
+    expect(ea.marges.arriere_min!.value).toBe(7.5);
+    expect(a.marges.arriere_min!.value).toBe(7.5);
   });
 
   it("REFUSES the ambiguous 5-vs-2 latérale row (null, not a guess)", () => {
-    expect(ea.marges.laterale_min.value).toBeNull();
-    expect(a.marges.laterale_min.value).toBeNull();
+    // The refusal is a PUBLISHED field carrying a null value, not a missing field.
+    expect(ea.marges.laterale_min).not.toBeNull();
+    expect(a.marges.laterale_min).not.toBeNull();
+    expect(ea.marges.laterale_min!.value).toBeNull();
+    expect(a.marges.laterale_min!.value).toBeNull();
   });
 
   it("NULLs a below-floor 'superficie au sol' (45 m² < 150 m² lot-area window)", () => {
     // "Superficie minimale au sol" is a building footprint, not a lot area; the
     // frozen plausibility guard rejects 45 m² → null (never a fabricated lot area).
-    expect(ea.superficie_min.value).toBeNull();
+    expect(ea.superficie_min).not.toBeNull();
+    expect(ea.superficie_min!.value).toBeNull();
   });
 
   it("does NOT let a 'Latérale combinée' sum populate a marge minimum", () => {
     // Latérale minimale is refused (ambiguous) and combinée never maps → laterale null.
-    expect(ea.marges.laterale_min.value).toBeNull();
+    expect(ea.marges.laterale_min).not.toBeNull();
+    expect(ea.marges.laterale_min!.value).toBeNull();
   });
 
   it("publishes a non-zero field count for each zone (defeats the fieldPct gate)", () => {
@@ -210,7 +224,9 @@ describe("parseSpanHeaderGrilleDocument — merge by zone across pages", () => {
     const zs = parseSpanHeaderGrilleDocument([usagesFeuillet, normesFeuillet], OPTS);
     expect(zs).toHaveLength(1);
     expect(zs[0]!.zone_code).toBe("RU");
-    expect(zs[0]!.hauteur_max.value).toBe(8);
-    expect(zs[0]!.marges.avant_min.value).toBe(6);
+    expect(zs[0]!.hauteur_max).not.toBeNull();
+    expect(zs[0]!.marges.avant_min).not.toBeNull();
+    expect(zs[0]!.hauteur_max!.value).toBe(8);
+    expect(zs[0]!.marges.avant_min!.value).toBe(6);
   });
 });
