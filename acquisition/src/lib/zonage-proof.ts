@@ -20,6 +20,24 @@ export interface GeometrySourceProof {
 }
 export interface ServedZoneGeoJson { type: "FeatureCollection"; features: Array<{ properties?: Record<string, unknown> | null }>; proof?: { schema_version: "2.0"; geometry_source: GeometrySourceProof } }
 
+/**
+ * SOURCE UNIQUE DE VÉRITÉ du vocabulaire des niveaux de preuve portés sur la donnée
+ * servie (`zone_source_level`). Déclaré ICI parce que c'est ici qu'il est OPPOSÉ au
+ * dépôt ; `fold-zone-source-to-zonage.ts` le ré-exporte (il importe déjà ce module,
+ * donc aucun cycle). Les 5 niveaux dérivés du ledger + "documented", produit quand la
+ * source est une source officielle re-téléchargeable et LIVE réellement fetchée.
+ */
+export type ZoneSourceLevel =
+  | "historical-verified" | "documented" | "legacy-traceable" | "candidate" | "orphan" | "unknown";
+export const ZONE_SOURCE_LEVELS: ReadonlySet<ZoneSourceLevel> = new Set<ZoneSourceLevel>([
+  "historical-verified", "documented", "legacy-traceable", "candidate", "orphan", "unknown",
+]);
+/** Estampille de source portée par CHAQUE feature servie. `url: null` = null HONNÊTE
+ *  (aucune source re-téléchargeable) — jamais une URL fabriquée. */
+export interface ZoneSourceStamp { url: string | null; level: ZoneSourceLevel }
+export const ZONE_SOURCE_URL_FIELD = "zone_source_url";
+export const ZONE_SOURCE_LEVEL_FIELD = "zone_source_level";
+
 const SOURCE_TYPES = new Set<GeometrySourceType>(["wfs", "arcgis", "agol", "geonet", "jmap", "geojson-officiel", "pdf-zonage"]);
 const METHODS = new Set<GeometryMethod>(["natif", "georeference"]);
 const RELIABILITIES = new Set<GeometryReliability>(["directe", "georeferencee"]);
@@ -81,11 +99,37 @@ export function sameGeometryProof(a: unknown, b: unknown): boolean {
 
 export { isServedZoneKey } from "./s3.js";
 
-/** Attach the exact same reviewed acquisition proof to collection and each feature. */
-export function attachGeometryProof<T extends ServedZoneGeoJson>(fc: T, geometrySource: GeometrySourceProof): T {
+/**
+ * Attach the exact same reviewed acquisition proof to collection and each feature,
+ * AND stamp the served source identity (`zone_source_url` / `zone_source_level`) that
+ * {@link assertServedZoneGeojson} now demands on every feature.
+ *
+ * ANTI-INVENTION: the default stamp is NOT fabricated — it is the very URL the
+ * producer proved it fetched (`geometrySource.url`, hashed in the proof), at level
+ * `documented` (official artefact, re-downloadable, human-reviewed acquisition path).
+ * A producer that knows better passes an explicit `zoneSource`; a producer with no
+ * re-obtainable source must pass `{ url: null, level: … }` — an honest null, never a
+ * made-up URL. Values already present on a feature WIN over the default, so an
+ * upstream stamp is never silently overwritten.
+ */
+export function attachGeometryProof<T extends ServedZoneGeoJson>(fc: T, geometrySource: GeometrySourceProof, zoneSource?: ZoneSourceStamp): T {
   assertGeometryProof(geometrySource);
   if (fc.type !== "FeatureCollection" || !Array.isArray(fc.features)) throw new Error("served qc-zonage deposit refused: not a FeatureCollection");
-  for (const feature of fc.features) feature.properties = { ...(feature.properties ?? {}), proof: { schema_version: "2.0", geometry_source: { ...geometrySource } } };
+  const stamp: ZoneSourceStamp = zoneSource ?? { url: geometrySource.url, level: "documented" };
+  if (stamp.url !== null && !isRealGeometryUrl(stamp.url)) {
+    throw new Error(`served qc-zonage deposit refused: zone_source_url must be a real http(s) URL or an explicit null, got ${JSON.stringify(stamp.url)}`);
+  }
+  if (!ZONE_SOURCE_LEVELS.has(stamp.level)) {
+    throw new Error(`served qc-zonage deposit refused: zone_source_level ${JSON.stringify(stamp.level)} is outside the served vocabulary (${[...ZONE_SOURCE_LEVELS].join(" | ")})`);
+  }
+  for (const feature of fc.features) {
+    feature.properties = {
+      [ZONE_SOURCE_URL_FIELD]: stamp.url,
+      [ZONE_SOURCE_LEVEL_FIELD]: stamp.level,
+      ...(feature.properties ?? {}),
+      proof: { schema_version: "2.0", geometry_source: { ...geometrySource } },
+    };
+  }
   fc.proof = { schema_version: "2.0", geometry_source: { ...geometrySource } };
   return fc;
 }
@@ -98,10 +142,37 @@ export function assertServedZoneGeojson(key: string, fc: ServedZoneGeoJson): voi
   }
   if (fc.proof?.schema_version !== "2.0") throw new Error("served qc-zonage deposit refused: invalid collection proof schema");
   assertGeometryProof(fc.proof?.geometry_source);
-  for (const f of fc.features) {
+  for (let i = 0; i < fc.features.length; i++) {
+    const f = fc.features[i]!;
     const proof = f.properties?.proof as { schema_version?: unknown; geometry_source?: unknown } | undefined;
     if (proof?.schema_version !== "2.0" || !sameGeometryProof(fc.proof.geometry_source, proof.geometry_source)) {
       throw new Error("served qc-zonage deposit refused: feature proof differs from collection proof");
+    }
+    // Toute donnée servie porte SA SOURCE. Le v2 proof prouve l'ACQUISITION de la
+    // géométrie ; ces deux champs sont ce que le consommateur lit. L'ABSENCE du
+    // champ est refusée ; un `null` EXPLICITE est permis (null honnête).
+    const props = (f.properties ?? {}) as Record<string, unknown>;
+    if (!(ZONE_SOURCE_URL_FIELD in props)) {
+      throw new Error(
+        `served qc-zonage deposit refused: feature ${i} carries no "${ZONE_SOURCE_URL_FIELD}" — every served feature must state its geometry source (a real http(s) URL, or an EXPLICIT null when there is genuinely none; never fabricate one). Stamp it via attachGeometryProof(fc, proof[, { url, level }]).`,
+      );
+    }
+    const url = props[ZONE_SOURCE_URL_FIELD];
+    if (url !== null && !isRealGeometryUrl(url)) {
+      throw new Error(
+        `served qc-zonage deposit refused: feature ${i} "${ZONE_SOURCE_URL_FIELD}" must be a real http(s) URL or an explicit null, got ${JSON.stringify(url)}`,
+      );
+    }
+    if (!(ZONE_SOURCE_LEVEL_FIELD in props)) {
+      throw new Error(
+        `served qc-zonage deposit refused: feature ${i} carries no "${ZONE_SOURCE_LEVEL_FIELD}" — required vocabulary: ${[...ZONE_SOURCE_LEVELS].join(" | ")}. Stamp it via attachGeometryProof(fc, proof[, { url, level }]).`,
+      );
+    }
+    const level = props[ZONE_SOURCE_LEVEL_FIELD];
+    if (typeof level !== "string" || !ZONE_SOURCE_LEVELS.has(level as ZoneSourceLevel)) {
+      throw new Error(
+        `served qc-zonage deposit refused: feature ${i} "${ZONE_SOURCE_LEVEL_FIELD}" ${JSON.stringify(level)} is outside the served vocabulary (${[...ZONE_SOURCE_LEVELS].join(" | ")})`,
+      );
     }
   }
 }
@@ -144,11 +215,29 @@ export interface AdditiveOptions {
   backup?: boolean;
 }
 
-/** Order-tolerant-per-key deep equality via canonical JSON. Both operands here are
- *  parsed from the SAME served bytes (geometry) or scalar provenance values, so a
- *  stringify compare is exact and cheap; it never treats a real change as equal. */
+/** Canonical JSON: object keys sorted, array order preserved (arrays ARE ordered —
+ *  coordinate rings must never be treated as sets). Undefined normalises to null. */
+function canonicalJson(value: unknown): string {
+  const walk = (v: unknown): unknown => {
+    if (v === undefined || v === null) return null;
+    if (Array.isArray(v)) return v.map(walk);
+    if (typeof v === "object") {
+      const src = v as Record<string, unknown>;
+      const out: Record<string, unknown> = {};
+      for (const k of Object.keys(src).sort()) out[k] = walk(src[k]);
+      return out;
+    }
+    return v;
+  };
+  return JSON.stringify(walk(value));
+}
+
+/** Key-order-tolerant deep equality via canonical JSON. Both operands here are parsed
+ *  from the SAME served bytes (geometry), collection members, or scalar provenance
+ *  values; the compare is exact and never treats a real change as equal — only a
+ *  different SERIALISATION ORDER of the same content is accepted as unchanged. */
 function jsonEqual(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  return canonicalJson(a) === canonicalJson(b);
 }
 
 interface AdditiveFeature { geometry?: unknown; properties?: Record<string, unknown> | null }
@@ -195,6 +284,21 @@ export async function putServedZoneAdditive(
   // Re-read the authoritative served object as the geometry baseline; never trust
   // the caller's in-memory copy for what is currently served.
   const current = JSON.parse((await getBytes(s3, key)).toString("utf8")) as AdditiveFC;
+  // (b0) EVERY top-level member except `features` must be byte-identical to the
+  // served object — `proof` FIRST AND FOREMOST. Without this, the "safe" additive
+  // door lets a caller rewrite fc.proof.geometry_source.url (a forged collection
+  // proof) while keeping the genuine per-feature proof. Collection-level members are
+  // immutable on this path: changing them means re-proving via putServedZoneGeojson.
+  {
+    const cur = current as unknown as Record<string, unknown>;
+    const nxt = fc as unknown as Record<string, unknown>;
+    for (const member of new Set([...Object.keys(cur), ...Object.keys(nxt)])) {
+      if (member === "features" || jsonEqual(cur[member], nxt[member])) continue;
+      throw new Error(
+        `putServedZoneAdditive: top-level collection member "${member}" differs from the served object; refused (the additive path may only change whitelisted feature provenance properties — a different collection proof/metadata requires putServedZoneGeojson with a real acquisition proof)`,
+      );
+    }
+  }
   const curFeats = Array.isArray(current.features) ? current.features : [];
   const nxtFeats = fc.features as AdditiveFeature[];
   // (b) same count and order.
