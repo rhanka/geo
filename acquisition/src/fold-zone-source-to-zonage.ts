@@ -65,28 +65,79 @@
  *   npx tsx src/fold-zone-source-to-zonage.ts --all
  *   npx tsx src/fold-zone-source-to-zonage.ts --all --strip
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
 import { exists, getBytes, s3Client } from "./lib/s3.js";
-import { putServedZoneAdditive } from "./lib/zonage-proof.js";
+import { putServedZoneAdditive, ZONE_SOURCE_LEVELS, type ZoneSourceLevel } from "./lib/zonage-proof.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const COVERAGE_DIR = resolve(ROOT, "work", "coverage");
 const LEGACY_PATH = resolve(COVERAGE_DIR, "proof-legacy-515-historical-20260722.json");
 const ORPHAN_PATH = resolve(COVERAGE_DIR, "proof-orphan-356-reconciliation-20260722.json");
 const MANIFEST_PATH = resolve(COVERAGE_DIR, "zone-provenance-status-manifest-20260722.json");
+// Registre AUTORITAIRE de corrections manuelles, lu EN PRIORITE (override du ledger
+// date immuable ci-dessus). Le ledger re-derive orphan/null a chaque --all; sans cet
+// override, toute correction manuelle stampee sur S3 (ex. chelsea) serait REVERTEE au
+// prochain fold --all. Anti-invention: ce fichier ne contient QUE des URLs officielles
+// reellement sourcees et verifiees; il n'invente jamais une URL/niveau.
+const CORRECTIONS_PATH = resolve(ROOT, "acquisition", "config", "zone-source-corrections.json");
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
 const URL_FIELD = "zone_source_url";
 const LEVEL_FIELD = "zone_source_level";
 
-export type ZoneSourceLevel = "historical-verified" | "legacy-traceable" | "candidate" | "orphan" | "unknown";
+// Vocabulaire des niveaux de preuve portes sur la donnee servie. Les 5 "ledger" sont
+// derives de mapProvenanceState. "documented": une source OFFICIELLE re-telechargeable
+// et LIVE qui recoupe les codes/zones servis (ex. couche open-data GeoJSON, ArcGIS/WFS
+// verifie). Plus fort que "candidate" (revue humaine faite, source re-obtenable), mais
+// PAS "historical-verified" — on ne conserve pas l'octet source historique exact.
+// SOURCE UNIQUE DE VERITE: lib/zonage-proof.ts (c'est la que le vocabulaire est OPPOSE
+// au depot). On le RE-EXPORTE ici pour les consommateurs historiques de ce module.
+export { ZONE_SOURCE_LEVELS, type ZoneSourceLevel };
 export interface ZoneSourceLink { url: string | null; level: ZoneSourceLevel }
 
 const HTTP_URL = /^https?:\/\//;
+
+interface CorrectionEntry {
+  zone_source_url?: unknown;
+  zone_source_level?: unknown;
+  [k: string]: unknown;
+}
+
+/**
+ * Charge le registre AUTORITAIRE de corrections manuelles (override du ledger).
+ * Strict / fail-closed / anti-invention: chaque correction retenue DOIT porter une
+ * `zone_source_url` http(s) reelle et un `zone_source_level` du vocabulaire servi.
+ * Une entree malformee est IGNOREE avec un avertissement (jamais devinee/normalisee),
+ * de sorte qu'une faute de frappe ne peut ni corrompre la donnee servie ni faire
+ * echouer tout le fold. Fichier absent -> aucune correction (le fold reste operant).
+ */
+function loadCorrections(): Map<string, ZoneSourceLink> {
+  const out = new Map<string, ZoneSourceLink>();
+  if (!existsSync(CORRECTIONS_PATH)) {
+    console.warn(`corrections: ${CORRECTIONS_PATH} absent — aucune correction appliquee`);
+    return out;
+  }
+  const raw = JSON.parse(readFileSync(CORRECTIONS_PATH, "utf8")) as { corrections?: Record<string, CorrectionEntry> };
+  const corrections = raw.corrections ?? {};
+  for (const [slug, entry] of Object.entries(corrections)) {
+    const url = entry?.zone_source_url;
+    const level = entry?.zone_source_level;
+    if (typeof url !== "string" || !HTTP_URL.test(url)) {
+      console.warn(`corrections: ${slug} ignore — zone_source_url absente ou non http(s) (anti-invention)`);
+      continue;
+    }
+    if (typeof level !== "string" || !ZONE_SOURCE_LEVELS.has(level as ZoneSourceLevel)) {
+      console.warn(`corrections: ${slug} ignore — zone_source_level "${String(level)}" hors vocabulaire servi`);
+      continue;
+    }
+    out.set(slug, { url, level: level as ZoneSourceLevel });
+  }
+  return out;
+}
 
 function mapProvenanceState(state: unknown): ZoneSourceLevel {
   switch (state) {
@@ -141,6 +192,19 @@ function buildLinks(): Map<string, ZoneSourceLink> {
     }
     links.set(slug, { url, level });
   }
+
+  // Override AUTORITAIRE: le registre de corrections manuelles est lu EN PRIORITE et
+  // ecrase la derivation du ledger date immuable. C'est ce qui rend les corrections
+  // DURABLES — sans lui, un `--all` reverterait chaque slug corrige a orphan/null.
+  // Une correction pour un slug absent du manifeste est neanmoins enregistree (pour
+  // que `--slugs <slug>` et `--all` puissent la stamper). Aucune URL n'est reinventee.
+  const corrections = loadCorrections();
+  for (const [slug, link] of corrections) {
+    links.set(slug, link);
+  }
+  if (corrections.size > 0) {
+    console.log(`CORRECTIONS override=${corrections.size} slugs=${[...corrections.keys()].sort().join(",")}`);
+  }
   return links;
 }
 
@@ -175,6 +239,7 @@ interface Distribution {
 function distribution(links: Iterable<ZoneSourceLink>): Distribution {
   const byLevel: Record<ZoneSourceLevel, number> = {
     "historical-verified": 0,
+    documented: 0,
     "legacy-traceable": 0,
     candidate: 0,
     orphan: 0,
@@ -288,7 +353,8 @@ async function main(): Promise<void> {
 function distributionLine(label: string, d: Distribution): string {
   return (
     `${label} collections=${d.total} nonNullUrl=${d.nonNullUrl} ` +
-    `historical-verified=${d.byLevel["historical-verified"]} legacy-traceable=${d.byLevel["legacy-traceable"]} ` +
+    `historical-verified=${d.byLevel["historical-verified"]} documented=${d.byLevel.documented} ` +
+    `legacy-traceable=${d.byLevel["legacy-traceable"]} ` +
     `candidate=${d.byLevel.candidate} orphan=${d.byLevel.orphan} unknown=${d.byLevel.unknown}`
   );
 }
