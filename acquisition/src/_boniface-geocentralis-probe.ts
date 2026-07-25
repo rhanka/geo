@@ -35,3 +35,5 @@ async function hits(typeName: string, idMuni: string): Promise<string> {
     }
   }
 })();
+
+export {};

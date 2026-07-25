@@ -90,8 +90,8 @@ async function main(): Promise<void> {
     pages: perPage,
     georef_residual_m: Number(geo.maxResidualM.toFixed(3)),
     dict_codes: dict.length,
-    n_code_points: pooled.length,
-    n_distinct_codes: distinct.size,
+    // `n_code_points` / `n_distinct_codes` viennent de `stats` (buildZones les calcule sur
+    // le MÊME tableau `pooled`) : les redéclarer ici les faisait écraser par le spread.
     n_served_features: served.features.length,
     label_spatial_km_from_cadastre: Number(spatialKm.toFixed(3)),
     lot_to_zone_pct: Number(lotPct.toFixed(2)),
