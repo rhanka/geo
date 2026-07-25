@@ -22,6 +22,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # poppler-utils fournit `pdftotext`, que l'image de scrape embarque
+      # (api/Dockerfile) et dont dépend l'extraction des PDF de PV : sans lui,
+      # l'extraction rend du vide EN SILENCE. Le runner GitHub ne l'a pas par
+      # défaut, alors qu'un test le vérifie explicitement — le CI doit donc
+      # offrir la même chaîne d'outils que la production, plutôt que d'affaiblir
+      # le test qui garde ce contrat.
+      - name: Install poppler-utils (pdftotext)
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends poppler-utils
       - name: Install
         run: npm ci
       - name: Build
