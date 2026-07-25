@@ -1,0 +1,30 @@
+# Artefacts GÉNÉRÉS — comptés comme du code, ils faussent toute mesure d'activité.
+#
+# Mesure du 2026-07-25 sur la semaine écoulée (hors merges) : 755 644 lignes
+# ajoutées, dont 734 253 sous `work/**` (97,2 %) et seulement 14 299 de code
+# source réel (1,9 %). Un tableau de bord qui compte ces fichiers annonce un
+# demi-million de « lignes écrites » pour une semaine de travail qui en contient
+# ~14 000. Ces marqueurs disent la vérité aux outils : `linguist-generated`
+# exclut le fichier des statistiques de langage ET le replie dans les diffs.
+#
+# Ce n'est PAS une réécriture d'historique : aucun commit n'est touché, seule
+# l'interprétation change. La correction de fond est ailleurs — une sortie de
+# pipeline régénérable a vocation à vivre sur le stockage objet, pas dans git
+# (cf. CLAUDE.md, principe fondateur, et docs/spec/SPEC_CAPTURE_ON_CLUSTER.md).
+
+# Sorties de pipeline : matrices de couverture, rapports, audits, triages.
+work/** linguist-generated=true
+
+# Données normalisées / brutes versionnées (legacy : leur place est sur S3).
+data/** linguist-generated=true
+
+# Registres et instantanés de preuve lus par les folds — ce sont des ENTRÉES,
+# donc committés à dessein (sans eux le fold est inexécutable sur un checkout
+# propre), mais ils restent de la donnée, pas du code.
+acquisition/config/*.json linguist-generated=true
+
+# Journal append-only de track : machine, jamais relu par un humain en diff.
+.track/** linguist-generated=true
+
+# Lockfiles : générés par npm.
+package-lock.json linguist-generated=true
