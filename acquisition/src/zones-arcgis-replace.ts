@@ -50,15 +50,25 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import {
+  capturedFetch,
+  capturedText,
+  CapturedFetchError,
+  type CaptureManifestLine,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { attachGeometryProof, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REG = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
 const S3_PREFIX = "normalized/ca-qc-zonage/";
-const UA = "sentropic-geo/0.1";
+const UA = CAPTURE_USER_AGENT;
 const MAX_FEATURES = 20_000;
 const PAGE = 1000;
+/** `<source>` de la clé CAS : identifiant de lane-source, JAMAIS un slug (SPEC §2.1). */
+const CAPTURE_SOURCE = "zones-arcgis";
 
 interface MuniEntry { slug: string; name: string; lat: number; lon: number }
 interface GeoFeature { type: "Feature"; geometry: { type?: string; coordinates?: unknown } | null; properties: Record<string, unknown> }
@@ -105,13 +115,30 @@ async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 4): Pro
   throw last;
 }
 
-async function jget(u: string, ms = 30000): Promise<GeoFC | null> {
-  const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
-  try {
-    const r = await fetch(u, { signal: c.signal, headers: { "User-Agent": UA, Accept: "application/json" } });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return JSON.parse(await r.text()) as GeoFC;
-  } finally { clearTimeout(t); }
+/**
+ * CHOKEPOINT DE CAPTURE (SPEC_CAPTURE_ON_CLUSTER.md §5.1, règle C-0) : plus aucun
+ * `fetch()` nu ici. Chaque tentative — succès, 404, timeout — produit une ligne de
+ * `capture/_runs/<run-id>/manifest.jsonl`, et les octets reçus partent en
+ * content-addressed sous `raw/zones-arcgis/cas/<sha256>.json`. C'est cette ligne,
+ * et elle seule, qui fait la preuve v2 plus bas.
+ */
+async function jget(
+  run: CaptureRun,
+  u: string,
+  slug: string,
+  attempt: number,
+  ms = 30000,
+): Promise<{ fc: GeoFC; line: CaptureManifestLine }> {
+  const res = await capturedFetch(u, { headers: { "User-Agent": UA, Accept: "application/json" } }, {
+    run,
+    source: CAPTURE_SOURCE,
+    slugs: [slug],
+    attempt,
+    timeoutMs: ms,
+    version: "zones-arcgis-replace/1",
+  });
+  if (!res.ok) throw new CapturedFetchError(res.line);
+  return { fc: JSON.parse(capturedText(res)) as GeoFC, line: res.line };
 }
 
 function haversineKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
@@ -132,19 +159,26 @@ function queryUrl(layer: string, fields: string[]): string {
   return `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&f=geojson`;
 }
 
-async function fetchAll(layer: string, fields: string[]): Promise<GeoFeature[]> {
-  const feats: GeoFeature[] = []; let offset = 0;
+async function fetchAll(
+  run: CaptureRun,
+  slug: string,
+  layer: string,
+  fields: string[],
+): Promise<{ feats: GeoFeature[]; entries: CaptureManifestLine[] }> {
+  const feats: GeoFeature[] = []; const entries: CaptureManifestLine[] = []; let offset = 0;
   const outFields = [...new Set(fields)].join(",");
   while (feats.length < MAX_FEATURES) {
     const u = `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${PAGE}&f=geojson`;
-    const d = await withRetry(`GetFeature offset=${offset}`, () => jget(u));
-    const fs = d?.features ?? [];
+    let attempt = 0;
+    const r = await withRetry(`GetFeature offset=${offset}`, () => { attempt += 1; return jget(run, u, slug, attempt); });
+    entries.push(r.line);
+    const fs = r.fc.features ?? [];
     if (fs.length === 0) break;
     feats.push(...fs); offset += fs.length;
     if (fs.length < PAGE) break;
     await sleep(120);
   }
-  return feats;
+  return { feats, entries };
 }
 
 function zoneCode(props: Record<string, unknown> | undefined, zoneField: string, zonePrefixField?: string): string | null {
@@ -183,6 +217,9 @@ async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | nul
   return Array.isArray(fc.features) ? fc.features : [];
 }
 
+/** Le run de capture courant (clôturé par `main`, y compris en ABORT). */
+let CAPTURE: CaptureRun | null = null;
+
 async function main(): Promise<void> {
   const a = parseArgs(process.argv.slice(2));
   const reg = JSON.parse(readFileSync(REG, "utf8")) as MuniEntry[];
@@ -191,10 +228,15 @@ async function main(): Promise<void> {
   const s3 = s3Client();
   const fields = [a.zoneField, ...(a.zonePrefixField ? [a.zonePrefixField] : [])];
 
+  // ── 0. Ouverture du run de capture (journalise MÊME en --inspect) ───────────
+  const run = openCaptureRun({ lane: "zones", s3 });
+  CAPTURE = run;
   console.error(`[arcgis-replace] slug=${a.slug} layer=${a.layer} field=${a.zoneField} mode=${a.deposit ? "DEPOSIT" : "INSPECT"}`);
+  console.error(`[arcgis-replace] capture run=${run.runId} manifest=s3://${run.keys.manifest}`);
+  run.log(`[arcgis-replace] slug=${a.slug} layer=${a.layer} field=${a.zoneField} mode=${a.deposit ? "DEPOSIT" : "INSPECT"}`);
 
-  // ── 1. Fetch ArcGIS ─────────────────────────────────────────────────────────
-  const rawFeats = await fetchAll(a.layer, fields);
+  // ── 1. Fetch ArcGIS (via le chokepoint) ─────────────────────────────────────
+  const { feats: rawFeats, entries: captureEntries } = await fetchAll(run, a.slug, a.layer, fields);
   if (rawFeats.length === 0) { console.error(`ABORT: 0 feature téléchargée`); process.exit(1); }
 
   // schéma serving (zone_code EXPLICITE, jamais deviné)
@@ -290,10 +332,12 @@ async function main(): Promise<void> {
   }
 
   if (!a.deposit) {
-    console.error(`\n=== INSPECT OK (aucune écriture) ===`);
+    console.error(`\n=== INSPECT OK (aucune écriture servie) ===`);
     console.error(`  nouvelle couche: ${norm.length} features, ${newCodes.raw.size} codes distincts`);
     console.error(`  recoupement ${covered.length}/${servedCanon.size} des servis, couverture ${norm.length} ≥ ${maxServed}`);
     console.error(`  dépôt écrirait: plate=${flatServed ? "OUI" : "non"} sous-dossier=${subServed ? "OUI" : "non"}`);
+    console.error(`  CAPTURE: ${captureEntries.length} ligne(s) -> s3://${run.keys.manifest}`);
+    for (const e of captureEntries) console.error(`    ${e.http_status} ${e.bytes}B ${e.sha256} -> s3://${e.storage_key}`);
     return;
   }
 
@@ -309,7 +353,20 @@ async function main(): Promise<void> {
   }
 
   // ── 6. Dépôt v2 (layouts existants uniquement : REMPLACE, ne crée pas) ───────
-  const proof = proofFromFetched({ url: queryUrl(a.layer, fields), type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(rawFeats) });
+  // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : quand la couche tient en UNE page,
+  // l'entrée de manifeste EST la preuve — url appelée, instant mesuré et sha256 des
+  // octets REÇUS, tous trois relus de `manifest.jsonl`, aucun reconstruit.
+  // Multi-pages : les octets servis sont un AGRÉGAT qu'aucune URL unique ne rend ;
+  // on retombe alors sur l'agrégat historique et on le DIT (pas de fausse preuve).
+  const soleEntry = captureEntries.length === 1 ? captureEntries[0]! : null;
+  const proof = soleEntry && soleEntry.sha256 !== null
+    ? proofFromCaptureEntry(soleEntry, { type: "arcgis", method: "natif", reliability: "directe" })
+    : proofFromFetched({ url: queryUrl(a.layer, fields), type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(rawFeats) });
+  console.error(
+    soleEntry
+      ? `[arcgis-replace] PREUVE = entrée de capture (run=${run.runId}, cas=s3://${soleEntry.storage_key})`
+      : `[arcgis-replace] PREUVE = agrégat ${captureEntries.length} pages (aucune URL unique ne rend ces octets ; les ${captureEntries.length} pages restent journalisées)`,
+  );
   const targets: string[] = [];
   if (flatServed) targets.push(flatKey);
   if (subServed) targets.push(subKey);
@@ -355,6 +412,20 @@ async function main(): Promise<void> {
   console.error(`  proof:   url=${proof.url}`);
   console.error(`  sha256:  ${proof.sha256}`);
   console.error(`  retrieved_at=${proof.retrieved_at}`);
+  console.error(`  capture: run=${run.runId} manifest=s3://${run.keys.manifest} (${captureEntries.length} ligne(s))`);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.stack : String(e)); process.exit(1); });
+/** Clôture le run de capture (`run.json`) quel que soit le sort du runner. */
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[arcgis-replace] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.stack : String(e));
+    await closeCapture(1);
+    process.exit(1);
+  });
