@@ -33,3 +33,5 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => { console.error(e instanceof Error ? e.message : String(e)); process.exit(1); });
+
+export {};
