@@ -1,0 +1,554 @@
+{
+  "slug": "forestville",
+  "method": "auto-seed-cadastre-bbox-rotations",
+  "fit": "affine",
+  "pass": true,
+  "cadastre_features": 1989,
+  "cadastre_bbox_wgs84": [
+    -69.20348309718906,
+    48.69885792541528,
+    -69.02838944772029,
+    48.818081039745294
+  ],
+  "svg_points": 3906,
+  "extents": {
+    "density": {
+      "fx0": 0.08333333333333333,
+      "fy0": 0.12692307692307694,
+      "fx1": 0.625,
+      "fy1": 0.8538461538461539
+    },
+    "density+10%": {
+      "fx0": 0.02916666666666666,
+      "fy0": 0.054230769230769235,
+      "fx1": 0.6791666666666667,
+      "fy1": 0.9265384615384616
+    },
+    "density+20%": {
+      "fx0": 0,
+      "fy0": 0,
+      "fx1": 0.7333333333333334,
+      "fy1": 0.9992307692307694
+    },
+    "percentile": {
+      "fx0": 0.09229118441358025,
+      "fy0": 0.13080094818376067,
+      "fx1": 0.6160647546296296,
+      "fy1": 1
+    },
+    "full": {
+      "fx0": 0.04087999131944445,
+      "fy0": 0.07964827029914533,
+      "fx1": 0.6674081307870371,
+      "fy1": 1
+    }
+  },
+  "attempts": [
+    {
+      "extent": "density",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.08333333333333333,
+        "fy0": 0.12692307692307694,
+        "fx1": 0.625,
+        "fy1": 0.8538461538461539
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2049
+    },
+    {
+      "extent": "density",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.08333333333333333,
+        "fy0": 0.12692307692307694,
+        "fx1": 0.625,
+        "fy1": 0.8538461538461539
+      },
+      "pass": true,
+      "selected_gcps": 6,
+      "residual_max_m": 9.583,
+      "residual_rms_m": 5.699,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1930,
+      "anisotropy": 1.004,
+      "singular_ratio": 1.006,
+      "bearing_right_deg": -89.8,
+      "bearing_down_deg": 180,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right -89.8° (Δ89.8° from East), page-down 180.0° (Δ90.0° from South), tol 15°"
+    },
+    {
+      "extent": "density",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.08333333333333333,
+        "fy0": 0.12692307692307694,
+        "fx1": 0.625,
+        "fy1": 0.8538461538461539
+      },
+      "pass": false,
+      "reason": "only 4 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 4,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1576
+    },
+    {
+      "extent": "density",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.08333333333333333,
+        "fy0": 0.12692307692307694,
+        "fx1": 0.625,
+        "fy1": 0.8538461538461539
+      },
+      "pass": true,
+      "selected_gcps": 6,
+      "residual_max_m": 6.974,
+      "residual_rms_m": 5.792,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1689,
+      "anisotropy": 1.002,
+      "singular_ratio": 1.003,
+      "bearing_right_deg": 89.9,
+      "bearing_down_deg": 0,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right 89.9° (Δ89.9° from East), page-down 0.0° (Δ90.0° from South), tol 15°"
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.02916666666666666,
+        "fy0": 0.054230769230769235,
+        "fx1": 0.6791666666666667,
+        "fy1": 0.9265384615384616
+      },
+      "pass": false,
+      "reason": "only 4 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 4,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2476
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.02916666666666666,
+        "fy0": 0.054230769230769235,
+        "fx1": 0.6791666666666667,
+        "fy1": 0.9265384615384616
+      },
+      "pass": false,
+      "reason": "only 3 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 3,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1737
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.02916666666666666,
+        "fy0": 0.054230769230769235,
+        "fx1": 0.6791666666666667,
+        "fy1": 0.9265384615384616
+      },
+      "pass": false,
+      "reason": "only 3 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 3,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1658
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.02916666666666666,
+        "fy0": 0.054230769230769235,
+        "fx1": 0.6791666666666667,
+        "fy1": 0.9265384615384616
+      },
+      "pass": true,
+      "selected_gcps": 16,
+      "residual_max_m": 13.3,
+      "residual_rms_m": 6.41,
+      "holdout_max_m": 20.483,
+      "holdout_rms_m": 10.486,
+      "seed_candidate_matches": 1951,
+      "anisotropy": 1,
+      "singular_ratio": 1.001,
+      "bearing_right_deg": 90,
+      "bearing_down_deg": 0,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right 90.0° (Δ90.0° from East), page-down -0.0° (Δ90.0° from South), tol 15°"
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0,
+        "fx1": 0.7333333333333334,
+        "fy1": 0.9992307692307694
+      },
+      "pass": true,
+      "selected_gcps": 13,
+      "residual_max_m": 18.498,
+      "residual_rms_m": 13.068,
+      "holdout_max_m": 23.384,
+      "holdout_rms_m": 14.906,
+      "seed_candidate_matches": 2707,
+      "anisotropy": 1.046,
+      "singular_ratio": 1.046,
+      "bearing_right_deg": 0,
+      "bearing_down_deg": -89.8,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": true
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0,
+        "fx1": 0.7333333333333334,
+        "fy1": 0.9992307692307694
+      },
+      "pass": false,
+      "reason": "only 2 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 2,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1781
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0,
+        "fx1": 0.7333333333333334,
+        "fy1": 0.9992307692307694
+      },
+      "pass": true,
+      "selected_gcps": 16,
+      "residual_max_m": 12.474,
+      "residual_rms_m": 6.711,
+      "holdout_max_m": 15.332,
+      "holdout_rms_m": 8.352,
+      "seed_candidate_matches": 1745,
+      "anisotropy": 1.048,
+      "singular_ratio": 1.048,
+      "bearing_right_deg": 180,
+      "bearing_down_deg": 90,
+      "mirror": false,
+      "shear_deg": 0,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right 180.0° (Δ180.0° from East), page-down 90.0° (Δ180.0° from South), tol 15°"
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0,
+        "fx1": 0.7333333333333334,
+        "fy1": 0.9992307692307694
+      },
+      "pass": true,
+      "selected_gcps": 8,
+      "residual_max_m": 18.189,
+      "residual_rms_m": 11.476,
+      "holdout_max_m": 24.176,
+      "holdout_rms_m": 17.164,
+      "seed_candidate_matches": 2117,
+      "anisotropy": 1.001,
+      "singular_ratio": 1.002,
+      "bearing_right_deg": 90.3,
+      "bearing_down_deg": 0.2,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right 90.3° (Δ90.3° from East), page-down 0.2° (Δ90.2° from South), tol 15°"
+    },
+    {
+      "extent": "percentile",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.09229118441358025,
+        "fy0": 0.13080094818376067,
+        "fx1": 0.6160647546296296,
+        "fy1": 1
+      },
+      "pass": true,
+      "selected_gcps": 10,
+      "residual_max_m": 20.245,
+      "residual_rms_m": 9.372,
+      "holdout_max_m": 4.999,
+      "holdout_rms_m": 4.227,
+      "seed_candidate_matches": 2371,
+      "anisotropy": 1.158,
+      "singular_ratio": 1.158,
+      "bearing_right_deg": 0,
+      "bearing_down_deg": -89.9,
+      "mirror": false,
+      "shear_deg": 0,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.158 > 1.1; singular-value anisotropy 1.158 > 1.1"
+    },
+    {
+      "extent": "percentile",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.09229118441358025,
+        "fy0": 0.13080094818376067,
+        "fx1": 0.6160647546296296,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "only 3 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 3,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1451
+    },
+    {
+      "extent": "percentile",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.09229118441358025,
+        "fy0": 0.13080094818376067,
+        "fx1": 0.6160647546296296,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "matched parcel/linework residual 24.03m > 30m",
+      "selected_gcps": 11,
+      "residual_max_m": 24.032,
+      "residual_rms_m": 13.091,
+      "holdout_max_m": 44.221,
+      "holdout_rms_m": 26.894,
+      "seed_candidate_matches": 1813
+    },
+    {
+      "extent": "percentile",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.09229118441358025,
+        "fy0": 0.13080094818376067,
+        "fx1": 0.6160647546296296,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "only 4 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 4,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1913
+    },
+    {
+      "extent": "full",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.04087999131944445,
+        "fy0": 0.07964827029914533,
+        "fx1": 0.6674081307870371,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "only 4 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 4,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2962
+    },
+    {
+      "extent": "full",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.04087999131944445,
+        "fy0": 0.07964827029914533,
+        "fx1": 0.6674081307870371,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "matched parcel/linework residual 18.08m > 30m",
+      "selected_gcps": 12,
+      "residual_max_m": 18.079,
+      "residual_rms_m": 9.594,
+      "holdout_max_m": 32.691,
+      "holdout_rms_m": 19.054,
+      "seed_candidate_matches": 1737
+    },
+    {
+      "extent": "full",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.04087999131944445,
+        "fy0": 0.07964827029914533,
+        "fx1": 0.6674081307870371,
+        "fy1": 1
+      },
+      "pass": true,
+      "selected_gcps": 14,
+      "residual_max_m": 22.62,
+      "residual_rms_m": 10.58,
+      "holdout_max_m": 17.514,
+      "holdout_rms_m": 13.159,
+      "seed_candidate_matches": 2007,
+      "anisotropy": 1.025,
+      "singular_ratio": 1.025,
+      "bearing_right_deg": 179.8,
+      "bearing_down_deg": 90,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "orientation not north-up: page-right 179.8° (Δ179.8° from East), page-down 90.0° (Δ180.0° from South), tol 15°"
+    },
+    {
+      "extent": "full",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.04087999131944445,
+        "fy0": 0.07964827029914533,
+        "fx1": 0.6674081307870371,
+        "fy1": 1
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2154
+    }
+  ],
+  "residual_max_m": 20.245,
+  "holdout_max_m": 4.999,
+  "selected_gcps": 10,
+  "max_candidate_distance_m": 450,
+  "max_residual_gate_m": 30,
+  "best": {
+    "extent": "percentile",
+    "rotation": 0
+  },
+  "rotation_disambiguation": {
+    "method": "lot-assignment",
+    "decisive": false,
+    "reason": "winner 0° not decisive over runner-up 270°: tight-cutoff coverage gap 4.17pt (36.4% vs 32.23%) < 15pt — orientation ambiguous → SKIP",
+    "discrimination_cutoff_m": 300,
+    "coverage_floor_pct": 70,
+    "margin_pct": 15,
+    "coverage_margin_pct": 4.17,
+    "ranking": [
+      {
+        "extent": "density+20%",
+        "rotation": 0,
+        "bearing_right_deg": 0,
+        "selected_gcps": 13,
+        "residual_max_m": 18.498,
+        "holdout_max_m": 23.384,
+        "coverage_pct": 36.4,
+        "serving_coverage_pct": 97.13,
+        "n_distinct_codes": 91,
+        "n_empty_labels": 52,
+        "n_served_features": 44,
+        "spatial_km": 2.11
+      },
+      {
+        "extent": "density+10%",
+        "rotation": 270,
+        "bearing_right_deg": 90,
+        "selected_gcps": 16,
+        "residual_max_m": 13.3,
+        "holdout_max_m": 20.483,
+        "coverage_pct": 32.23,
+        "serving_coverage_pct": 95.68,
+        "n_distinct_codes": 91,
+        "n_empty_labels": 79,
+        "n_served_features": 33,
+        "spatial_km": 2.619
+      },
+      {
+        "extent": "density+20%",
+        "rotation": 180,
+        "bearing_right_deg": 180,
+        "selected_gcps": 16,
+        "residual_max_m": 12.474,
+        "holdout_max_m": 15.332,
+        "coverage_pct": 12.47,
+        "serving_coverage_pct": 96.68,
+        "n_distinct_codes": 91,
+        "n_empty_labels": 97,
+        "n_served_features": 15,
+        "spatial_km": 2.109
+      }
+    ]
+  },
+  "aniso_arbitration": {
+    "method": "moderate-anisotropy-lot-coverage",
+    "serve": true,
+    "reason": "moderate anisotropy CONFIRMED real by cadastre: percentile/rot0° serving coverage 98.84% (≥85%), tight-cutoff 19.41% (diagnostic), 85 codes, residual 20.245m / holdout 4.999m on real parcel corners",
+    "tight_diagnostic_cutoff_m": 300,
+    "aniso_arbitrate_max": 1.5,
+    "serving_coverage_floor_pct": 85,
+    "min_distinct_codes": 3,
+    "winner": {
+      "rotation": 0,
+      "extent": "percentile"
+    },
+    "ranking": [
+      {
+        "extent": "percentile",
+        "rotation": 0,
+        "bearing_right_deg": 0,
+        "selected_gcps": 10,
+        "residual_max_m": 20.245,
+        "holdout_max_m": 4.999,
+        "coverage_pct": 19.41,
+        "serving_coverage_pct": 98.84,
+        "n_distinct_codes": 85,
+        "n_empty_labels": 70,
+        "n_served_features": 31,
+        "spatial_km": 1.837
+      }
+    ]
+  }
+}

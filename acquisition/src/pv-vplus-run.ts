@@ -37,7 +37,7 @@ import { writeFileSync } from "node:fs";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 import { s3Client, putBytes, exists } from "./lib/s3.js";
-import { websiteForSlug } from "../../packages/geo-sources-americas/src/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import type { PvManifestEntry } from "./pv-gonet-run.js";
 
 const API = "https://vplus.modellium.com/api";

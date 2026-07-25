@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "F": "agricole",
+    "C": "commercial",
+    "CO": "environnemental",
+    "R": "environnemental",
+    "I": "industriel",
+    "M": null,
+    "RU": null,
+    "V": null,
+    "P": null
+  },
+  "source": "https://shannon.ca/wp-content/uploads/2019/07/Rgl.601-18.Zonage.complet.pdf",
+  "note": "Règlement de zonage numéro 601-18, Ville de Shannon (M.R.C. de La Jacques-Cartier), en vigueur le 20 juin 2019, art. 3.1 « Le plan de zonage », « Tableau 1 - Identification de la dominance des zones délimitées au plan de zonage », introduit verbatim par: « Chaque zone porte un code d'identification alphanumérique. La lettre confère à la zone sa dominance ou sa vocation principale, le tout tel que spécifié ci-après ». Lignes verbatim (colonnes « Dominance / Identification de la dominance »): « Zone Habitation | H » -> residentiel; « Zone forestière | F » -> agricole; « Zone Commerciale | C » -> commercial; « Zone Industrielle | I » -> industriel; « Zone Conservation | CO » et « Zone Récréative | R » -> environnemental. Null explicite: « Zone Militaire | M » (dominante affirmée par le règlement mais hors des cinq catégories — garnison Valcartier); « Zone Rurale | Ru » (Rurale SEULE); « Zone Villégiature | V » (Villégiature SEULE); « Zone Publique et communautaire | P » (publique). ⚠ La table lève un piège que l'inférence par la lettre aurait manqué: H = « Habitation » (36 pol.) et R = « Récréative » (5 pol.) — R n'est PAS résidentiel ici. CO et RU sont déclarés pour l'anti-fall-through (le match est longest-prefix: sans eux CO-69 tomberait sur C -> commercial et RU-63 sur R -> environnemental). « Zone Agricole | A » figure au Tableau 1 mais aucun code A n'est servi par le SIG -> non mappé. La matrice des usages permis des grilles n'est pas utilisée."
+}

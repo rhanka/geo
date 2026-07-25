@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "P": null,
+    "RE": null
+  },
+  "source": "http://www.municipalite.saint-armand.qc.ca/PDF_en_ligne/reglementation/Regl_96-10_Zonage.pdf",
+  "note": "Règlement de zonage numéro 96-10, Municipalité de Saint-Armand (MRC Brome-Missisquoi). Art. 14 « Identification des zones »: « Chacune des zones montrées au plan de zonage est identifiée à ce plan par une ou plusieurs lettres d'appellation. » Les lettres-groupes sont nommées verbatim au chapitre « Classification des usages »: « 32 Le groupe \"RÉSIDENTIEL\" (R); 33 Le groupe « commercial » (C); 34 Le groupe \"INDUSTRIE\" (I); 35 Le groupe \"COMMUNAUTAIRE\" (P); 36 Le groupe \"AGRICOLE\" (A). » -> R = residentiel; C = commercial; I = industriel; A = agricole. Null explicite: P « COMMUNAUTAIRE » est public (art. 167 « zones résidentielles (R) et zones institutionnelles et publiques (P) ») -> null. RE (zones RE-1..RE-6) n'appartient à AUCUN des groupes nommés dans la nomenclature (art. 32-36) et n'est défini verbatim nulle part dans le corps -> null explicite (anti-invention); ce null bloque aussi le longest-prefix qui rattacherait à tort « RE-3 » au préfixe « R » (residentiel). Légende lue dans le CORPS (nomenclature des groupes), pas dans la matrice des usages permis de la grille. Note: le SIG servi est dominé par les zones P (~120/143), cohérent avec le grand domaine public/protégé de Saint-Armand (baie Missisquoi); tous les P sont servis null (public), valeur légitime pour le filtre immo."
+}
