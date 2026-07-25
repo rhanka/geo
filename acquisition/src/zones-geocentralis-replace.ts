@@ -41,7 +41,7 @@ import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import {
   buildGetFeatureUrl,
   featuresBboxCenter,
@@ -259,9 +259,29 @@ async function main(): Promise<void> {
     console.error(`[replace] READBACK ${key}: features=${(fc.features ?? []).length} distinct=${rb.raw.size} proof_v2=${okProof ? "OUI" : "NON"} sha=${String(fc.proof?.geometry_source?.sha256 ?? "?").slice(0, 23)}…`);
   }
 
+  // ── 7. STAMP provenance additif — MÊME PASSE (atomicité) ─────────────────────
+  // Un re-dépôt géométrie v2 (putServedZoneGeojson) EFFACE zone_source_url /
+  // zone_source_level : il ne reporte pas le stamp additif. On les ré-écrit ICI,
+  // dans la même passe, sur CHAQUE clé servie, via le chemin additif sûr — la
+  // géométrie fraîchement déposée est prouvée octet-pour-octet inchangée par
+  // putServedZoneAdditive (seules les 2 clés whitelistées peuvent différer).
+  // Idempotent, et ne régresse pas la géométrie qui vient d'être posée.
+  const zoneSourceUrl = proof.url;      // URL source v2 exacte (== proof.geometry_source.url)
+  const zoneSourceLevel = "documented"; // source SIG officielle re-téléchargeable qui recoupe les codes servis
+  for (const key of targets) {
+    const buf = await withRetry(`get-for-stamp ${key}`, () => getBytes(s3, key));
+    const fc = JSON.parse(buf.toString("utf8")) as { type?: unknown; features?: Array<{ geometry?: unknown; properties?: Record<string, unknown> | null }> };
+    for (const f of fc.features ?? []) {
+      f.properties = { ...(f.properties ?? {}), zone_source_url: zoneSourceUrl, zone_source_level: zoneSourceLevel };
+    }
+    const res = await withRetry(`stamp ${key}`, () => putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] }));
+    console.error(`[replace] STAMP provenance url=${zoneSourceUrl} level=${zoneSourceLevel} key=${key} (features=${res.features})`);
+  }
+
   console.error(`\n=== DÉPÔT TERMINÉ ===`);
   console.error(`  backups: ${backups.map((b) => `s3://${b}`).join("  ")}`);
   console.error(`  déposé:  ${targets.map((k) => `s3://${k}`).join("  ")}`);
+  console.error(`  provenance: url=${zoneSourceUrl} level=${zoneSourceLevel} (re-stampée sur ${targets.length} clé(s))`);
   console.error(`  proof:   url=${proof.url}`);
   console.error(`  sha256:  ${proof.sha256}`);
   console.error(`  retrieved_at=${proof.retrieved_at}`);
