@@ -8,40 +8,68 @@
  * asserts it reproduces the golden stats — proving the anti-Python port is
  * faithful (the critical T1 recipe).
  *
- * Inputs are large (cadastre 41 MB); the test is skipped if the legacy fixtures
- * are absent (e.g. a checkout without work/legacy-geo-quebec).
+ * Inputs are large (cadastre 41 MB) and live under `work/legacy-geo-quebec/`,
+ * which is deliberately gitignored (.gitignore) — this is an INTEGRATION test
+ * that only runs on a checkout carrying the local legacy dataset. When a fixture
+ * is missing the whole suite is EXPLICITLY skipped (loud warning naming the
+ * missing files); it is never silently passed. Note that vitest still executes a
+ * `describe.skipIf` factory at collection time, so the fixtures are read LAZILY
+ * inside `beforeAll` — otherwise the skipped suite would still crash on ENOENT.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import type { FeatureCollection } from "geojson";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 
-import { buildZones, SAINT_MATHIEU_LAT0, type CodePoint } from "./t1-zones.js";
+import {
+  buildZones,
+  SAINT_MATHIEU_LAT0,
+  type CodePoint,
+  type T1Stats,
+} from "./t1-zones.js";
 
 const LEGACY = resolve(
   __dirname,
   "../../../work/legacy-geo-quebec/saint-mathieu",
 );
-const haveFixtures =
-  existsSync(`${LEGACY}/cadastre.geojson`) &&
-  existsSync(`${LEGACY}/code_points_wgs84.json`) &&
-  existsSync(`${LEGACY}/zones_stats.json`);
+const FIXTURES = [
+  `${LEGACY}/cadastre.geojson`,
+  `${LEGACY}/code_points_wgs84.json`,
+  `${LEGACY}/zones_stats.json`,
+];
+const missingFixtures = FIXTURES.filter((p) => !existsSync(p));
+const haveFixtures = missingFixtures.length === 0;
+
+if (!haveFixtures) {
+  console.warn(
+    `[SKIP] t1-zones.test.ts — integration test requiring the local legacy ` +
+      `dataset work/legacy-geo-quebec/ (gitignored, ~40 MB). Missing fixture(s): ` +
+      `${missingFixtures.join(", ")}.`,
+  );
+}
 
 describe.skipIf(!haveFixtures)("T1 cadastre-aggregation — saint-mathieu golden", () => {
-  const cadastre = JSON.parse(
-    readFileSync(`${LEGACY}/cadastre.geojson`, "utf8"),
-  ) as FeatureCollection;
-  const codePoints = JSON.parse(
-    readFileSync(`${LEGACY}/code_points_wgs84.json`, "utf8"),
-  ) as CodePoint[];
-  const golden = JSON.parse(readFileSync(`${LEGACY}/zones_stats.json`, "utf8"));
+  let stats: T1Stats;
+  let golden: T1Stats;
 
-  const { stats } = buildZones(cadastre, codePoints, {
-    lat0: SAINT_MATHIEU_LAT0,
-    cutoffM: 1500,
-    dissolve: false, // stats are union-free; geometry dissolve tested separately
-  });
+  beforeAll(() => {
+    const cadastre = JSON.parse(
+      readFileSync(`${LEGACY}/cadastre.geojson`, "utf8"),
+    ) as FeatureCollection;
+    const codePoints = JSON.parse(
+      readFileSync(`${LEGACY}/code_points_wgs84.json`, "utf8"),
+    ) as CodePoint[];
+    golden = JSON.parse(
+      readFileSync(`${LEGACY}/zones_stats.json`, "utf8"),
+    ) as T1Stats;
+
+    stats = buildZones(cadastre, codePoints, {
+      lat0: SAINT_MATHIEU_LAT0,
+      cutoffM: 1500,
+      dissolve: false, // stats are union-free; geometry dissolve tested separately
+    }).stats;
+  }, 600_000); // 41 MB de cadastre + agrégation : bien au-delà du timeout par défaut
 
   it("reproduces the code-point inventory exactly", () => {
     expect(stats.n_lots_total).toBe(golden.n_lots_total);
