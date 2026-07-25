@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "R/C": null,
+    "R/A": null,
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "A": "agricole",
+    "F": "agricole",
+    "V": null,
+    "REC": "environnemental",
+    "CONS": "environnemental"
+  },
+  "source": "work/zonage-norms/lyster/grille.pdf (Règlement de zonage, Municipalité de Lyster — corpus local)",
+  "note": "Règlement de zonage de la « Municipalité de Lyster » (le document nomme sa municipalité en pied de page de chaque page, ex. p.75), article 3.2 « IDENTIFICATION DES ZONES »: « Chacune des zones montrées au plan de zonage et à la Grille des spécifications est identifiée à ce plan par une lettre d'appellation indiquant l'affectation principale de la zone [...] selon le tableau suivant », Tableau 2 « Identification des zones » (colonnes « Affectation principale / Lettre d'appellation »): « Résidentielle » -> « R »; « Résidentiel/commerciale » -> « R/C »; « Résidentielle/agricole (ilot déstructuré) » -> « R/A »; « Commerciale » -> « C »; « Industriel » -> « I »; « Communautaire, institutionnelle » -> « P »; « Agricole » -> « A »; « Forestière » -> « F »; « Villégiature » -> « V »; « Récréo-touristique » -> « RT »; « Conservation » -> « Cv ». Mapping: R « Résidentielle » -> residentiel; C « Commerciale » -> commercial; I « Industriel » -> industriel; A « Agricole » et F « Forestière » -> agricole (famille agricole/forestière). Null explicite: R/C « Résidentiel/commerciale » et R/A « Résidentielle/agricole (ilot déstructuré) » sont des affectations DUALES (clés déclarées explicitement pour que le longest-prefix les capture avant « R »); P « Communautaire, institutionnelle » est publique/institutionnelle; V « Villégiature » n'est pas qualifié par le règlement (ni habitation ni conservation énoncée) donc sans dominante parmi les cinq catégories. CONS et REC: le SIG sert 11 préfixes (A, C, CONS, F, I, P, R, R/A, R/C, REC, V) et le Tableau 2 énumère exactement 11 affectations; les neuf autres correspondent verbatim, les deux restantes du tableau sont « Récréo-touristique » et « Conservation », et les deux préfixes SIG restants sont REC et CONS — l'appariement est bijectif et, quel que soit le sens de l'appariement, les deux libellés (« Conservation », « Récréo-touristique ») tombent dans la catégorie environnemental (conservation / récréative). La matrice des usages permis des grilles de spécifications n'a PAS été utilisée."
+}

@@ -1,0 +1,133 @@
+{
+  "report": "zones-recalage-2026-07-10T0935-shard4-lot2",
+  "shard": {
+    "mod": 6,
+    "remainder": 4
+  },
+  "processed": 12,
+  "deposited": 0,
+  "failed": 12,
+  "slugs": [
+    {
+      "slug": "lochaber",
+      "index": 346,
+      "status": "failed",
+      "reason": "No municipal website in local MAMH directory; no official zoning plan PDF found. Lochaber-Partie-Ouest traces ignored as different municipality."
+    },
+    {
+      "slug": "mansfield-et-pontefract",
+      "index": 364,
+      "status": "failed",
+      "sources": [
+        "https://www.mansfield-pontefract.com",
+        "https://mansfield-pontefract.com/residents/reglements/"
+      ],
+      "reason": "Official pages exposed general regulations and CCU regulation only; no zoning plan PDF found."
+    },
+    {
+      "slug": "metabetchouan-lac-a-la-croix",
+      "index": 382,
+      "status": "failed",
+      "sources": [
+        "https://ville.metabetchouan.qc.ca/wp-content/uploads/2025/02/Reglement-de-zonage-22-99.pdf",
+        "https://ville.metabetchouan.qc.ca/wp-content/uploads/2025/04/Grille-1-a-9-combinees.pdf"
+      ],
+      "reason": "Official regulation/grid and plan-urbanisme affectation maps found, but no zoning plan PDF found."
+    },
+    {
+      "slug": "montebello",
+      "index": 400,
+      "status": "failed",
+      "sources": [
+        "https://www.montebello.ca/fr/services-municipaux/urbanisme/",
+        "https://www.montebello.ca/fr/administration/reglements-municipaux/"
+      ],
+      "evidence": [
+        "work/gcp/montebello.autogcp.report.json"
+      ],
+      "reason": "No official zoning plan PDF found; existing autogcp report had svg_points=0."
+    },
+    {
+      "slug": "natashquan",
+      "index": 412,
+      "status": "failed",
+      "sources": [
+        "https://www.natashquan.org/app/uploads/2026/03/Reglement-de-zonage-90-2-Natashquan-maj-18-decembre-2025.pdf"
+      ],
+      "reason": "Official zoning regulation downloaded, but no separate georeferenceable zoning plan PDF exposed."
+    },
+    {
+      "slug": "notre-dame-de-bonsecours",
+      "index": 424,
+      "status": "failed",
+      "sources": [
+        "https://www.ndbonsecours.com"
+      ],
+      "reason": "Fetched official site as static app shell without zoning/PDF links."
+    },
+    {
+      "slug": "notre-dame-de-lorette",
+      "index": 430,
+      "status": "failed",
+      "reason": "No municipal website in local MAMH directory; no official zoning plan PDF found."
+    },
+    {
+      "slug": "notre-dame-des-anges",
+      "index": 436,
+      "status": "failed",
+      "reason": "No municipal website in local MAMH directory; no official zoning plan PDF found."
+    },
+    {
+      "slug": "notre-dame-des-sept-douleurs",
+      "index": 442,
+      "status": "failed",
+      "sources": [
+        "https://www.ileverte-municipalite.com",
+        "https://ileverte-municipalite.com/affaires_municipales/?id=ileverte-reglements_et_politiques",
+        "https://ileverte-municipalite.com/demande_de_permis/"
+      ],
+      "reason": "Official pages exposed general regulations/permitting but no zoning plan PDF."
+    },
+    {
+      "slug": "notre-dame-du-portage",
+      "index": 448,
+      "status": "failed",
+      "sources": [
+        "https://municipalite.notre-dame-du-portage.qc.ca/documents/pdf/2023/annexe_a_-_plan_de_zonage_-_550_dpi_--_avril_2023_-.pdf"
+      ],
+      "evidence": [
+        "work/gcp/notre-dame-du-portage.autogcp.shard4.report.json"
+      ],
+      "reason": "Official zoning plan is a raster/scan: no embedded georef and T2 autogcp found svg_points=0 with no seed passing residual/holdout."
+    },
+    {
+      "slug": "oka",
+      "index": 454,
+      "status": "failed",
+      "sources": [
+        "https://municipalite.oka.qc.ca/citoyen/refonte-plan-urbanisme/",
+        "https://www.calameo.com/oka/read/005443498422c7ad7db07"
+      ],
+      "reason": "Official page links Calameo zoning feuillets, but no direct official PDF was recoverable from the static page within the slug budget."
+    },
+    {
+      "slug": "peribonka",
+      "index": 466,
+      "status": "failed",
+      "sources": [
+        "https://peribonka.ca/app/uploads/2024/01/Carte-Plan-de-zonage.pdf",
+        "https://peribonka.ca/app/uploads/2024/01/Plan-zone-urbaine-1.pdf",
+        "https://peribonka.ca/app/uploads/2024/01/Plan-zone-urbaine-2.pdf",
+        "https://peribonka.ca/app/uploads/2026/07/2011-05_89027F_Peribonka_Zonage_MAJ_2026_finale.pdf",
+        "https://peribonka.ca/app/uploads/2024/01/Grilles-Reglement-durbanisme.pdf"
+      ],
+      "evidence": [
+        "work/zonage-dicts/peribonka.codes.json",
+        "work/zonage-dicts/peribonka.reads.json",
+        "work/zonage-dicts/peribonka-zone-urbaine-1.reads.json",
+        "work/zonage-recalage/peribonka-multisheet-t1-claude-shard4/qc-zonage-peribonka.stats.json"
+      ],
+      "reason": "Embedded GeoPDFs and dict-validated reads were available, but multisheet dry-run assigned only 526/952 lots and 40.26% of cadastre area; not deposited."
+    }
+  ]
+}

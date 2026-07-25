@@ -1,0 +1,2464 @@
+<!-- This store is provided by Commerscale (visit us at https://www.commerscale.com -->
+
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+    <!-- Start cookieyes banner -->
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/7f44dc90e05f7f91065372b6/script.js"></script>
+    <!-- End cookieyes banner -->
+    
+    <title>Accueil | Municipalité de Lac Poulin</title>
+    
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="charset" content="ISO-8859-1">
+    
+    <link rel="author" href="humans.txt" />
+    
+    <script type="text/javascript">
+        var page = {};
+    </script>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Favicon (if present) : https://realfavicongenerator.net/ -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <link rel="icon" href="/includes/favicon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/includes/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/includes/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/includes/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/includes/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/includes/favicon/safari-pinned-tab.svg" color="#5bbad5">
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Composant de base: jQuery -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+    
+        jQuery.fn.getPath = function()
+        {
+            var current = $(this);
+            var path = new Array();
+            var realpath = "BODY";
+            
+            while ($(current).prop("tagName") != "BODY") {
+                var index = $(current).parent().find($(current).prop("tagName")).index($(current));
+                var name = $(current).prop("tagName");
+                var selector = " " + name + ":eq(" + index + ") ";
+                path.push(selector);
+                current = $(current).parent();
+            }
+            
+            while (path.length != 0) {
+                realpath += path.pop();
+            }
+            
+            return realpath;
+        }
+    
+    </script>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Composant de base: Bootstrap -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Fonts -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    
+    <link type='text/css' rel='stylesheet' media='all' href="https://unicons.iconscout.com/release/v3.0.6/css/solid.css" />
+    <link type='text/css' rel='stylesheet' media='all' href="https://unicons.iconscout.com/release/v3.0.6/css/line.css" />
+    <link type='text/css' rel='stylesheet' media='all' href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Third-partiy libraries -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Ressources des applications externes -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/accordion/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/directory/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/doc-list/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/calendar/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/newsletter/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/marquee/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/photo-album/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/mini-forms/assets/scripts.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="https://apps.gestionweblex.ca/object-reservation/assets/scripts.js?v=2026071009_23"></script>
+    
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/accordion/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/directory/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/doc-list/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/calendar/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/newsletter/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/marquee/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/photo-album/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/mini-forms/assets/styles.css?v=2026071009_23" />
+    <link rel="StyleSheet" type="text/css" href="https://apps.gestionweblex.ca/object-reservation/assets/styles.css?v=2026071009_23" />
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Éléments du site web -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <link type='text/css' rel="stylesheet" href="/includes/styles/base.css?v=2026071009_23" />
+    <link type='text/css' rel="stylesheet" href="/includes/styles/controls.css?v=2026071009_23" />
+    <link type='text/css' rel="stylesheet" href="/includes/styles/texts.css?v=2026071009_23" />
+    <link type='text/css' rel="stylesheet" href="/includes/styles/blog.css?v=2026071009_23" />
+    <link type='text/css' rel="stylesheet" href="/includes/styles/override-apps.css?v=2026071009_23" />
+    <link type='text/css' rel="stylesheet" href="/includes/styles/responsive.css?v=2026071009_23" />
+    
+    <script type="text/javascript" src="/includes/scripts/jquery-youtube-background.js?v=2026071009_23"></script>
+    <script type="text/javascript" src="/includes/scripts/all.js?v=2026071009_23"></script>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Contenu du site web -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <script type="text/javascript">
+    
+        page.showNav = true;
+        page.overrideBackgroundImageUrl = "";
+    
+    </script>
+    
+    <style type="text/css">
+    
+        :root
+        {
+            --theme-font-family: 'Quicksand', sans-serif;
+            
+            --theme-black: #333333;
+            --theme-white: #ffffff;
+            --theme-red: #db360d;
+            
+            --theme-gray-light: #f1f2f8;
+            --theme-gray: #cccccc;
+            --theme-gray-dark: #555;
+            
+            --theme-primary-light: #6b64ad;
+            --theme-primary: #4b3f72;
+            --theme-primary-dark: #1f2041;
+            
+            --theme-secondary-light: #ffe1a4;
+            --theme-secondary: #ffc857;
+            --theme-secondary-dark: #e69d34;
+            
+            --theme-third-light: #44cfc7;
+            --theme-third: #119da4;
+            --theme-third-dark: #19647e;
+            
+            --theme-link: var(--theme-primary);
+            --theme-link-hover: var(--theme-primary-light);
+        }
+    
+    </style>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Fix pour les variables CSS dans IE 11 / Edge -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--script src="/includes/scripts/ie11CustomProperties.js"></script-->
+    <script src="https://unpkg.com/css-vars-ponyfill@2/dist/css-vars-ponyfill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-beautify@1/js/lib/beautify-css.min.js"></script>
+    <script type="text/javascript">
+        cssVars({ onlyLegacy: true, });
+    </script>
+
+</head>
+    <style type="text/css">
+    
+        .main-frame-container {
+            padding: 0;
+            width: 100% !important;
+        }
+        
+        .main-body-container {
+            display: flex;
+            width: 100% !important;
+        }
+        
+        /* Main body container - Responsiveness */
+        
+        @media screen and (max-width: 768px)
+        {
+            .main-frame-container {
+                padding: 0;
+            }
+            
+            .main-body-container {
+                margin-top: 0;
+            }
+        }
+    
+    </style>
+    <body style="padding-top: 100px;">
+    
+        <!-- Normal content for every page -->
+        
+        <div class="main-frame-container">
+            <style type="text/css">
+
+    header .search-box
+    {
+        display: none;
+    }
+
+</style>
+
+<!-- These 2 headers are present in HTML but CSS class will make only one visible at runtime -->
+
+<style type="text/css">
+    
+    header
+    {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        border-bottom: 4px solid var(--theme-secondary);
+        z-index: 2;
+        padding: 0;
+        font-family: var(--theme-font-family);
+        background-color: var(--theme-white);
+    }
+    
+    header .logo
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 175px;
+        width: 175px;
+        margin-top: 10px;
+        margin-bottom: -85px;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 15px;
+        border: 4px solid var(--theme-secondary);
+        background-color: var(--theme-white);
+        
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+        border-radius: 100px;
+        
+        transition: all 0.5s ease;
+    }
+    
+    body.scrolled header .logo
+    {
+        height: 96px;
+        width: 96px;
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        border: none;
+    }
+    
+    header .facebook
+    {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 36px;
+    }
+    
+    header .facebook a,
+    header .facebook i
+    {
+        display: block;
+        margin: -3px 0 0 0;
+        padding: 0;
+        color: var(--theme-gray);
+    }
+    
+    header .facebook a:hover,
+    header .facebook i:hover
+    {
+        color: #3b5998;
+    }
+    
+    header .menu
+    {
+        list-style-type: none;
+    }
+    
+    header .menu li
+    {
+        display: inline-block;
+        padding: 15px 0;
+    }
+    
+    header .menu li a
+    {
+        color: var(--theme-white);
+        font-size: 18px;
+        font-weight: bold;
+        padding: 0 10px;
+        text-transform: uppercase;
+        transition: all 0.2s ease;
+    }
+    
+    header .row
+    {
+        margin: 0 20px;
+    }
+    
+    header .logo-over
+    {
+        z-index: 20;
+    }
+    
+    /* Multi-level menu classes */
+    /* The classes are still here because it's centralized for index and individual pages */
+    
+    header .main-menus
+    {
+        height: 100%;
+        padding: 0;
+    }
+    
+    header .main-menus .submenu
+    {
+        display: none;
+    }
+    
+    header .main-menus .with-sub > ul
+    {
+        opacity: 0;
+        transition: all 0.5s ease;
+        top: 60px;
+    }
+    
+    header .main-menus .submenu .with-sub > .submenu
+    {
+        display: none;
+        opacity: 0;
+        transition: all 0.5s ease;
+        left: 90%;
+    }
+    
+    header .main-menus .dropped
+    {
+        background-color: var(--theme-secondary);
+    }
+    
+    header .main-menus .dropped > ul
+    {
+        display: block;
+        opacity: 1;
+        top: 60px;
+        z-index: 11;
+    }
+    
+    header .main-menus .submenu .dropped > .submenu
+    {
+        display: block;
+        opacity: 1;
+        z-index: 11;
+        left: 100%;
+    }
+    
+    header .main-menus .menu
+    {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    header .main-menus.right .menu
+    {
+        justify-content: flex-start;
+    }
+    
+    header .main-menus .menu ul
+    {
+        transition: all 0.3s ease;
+    }
+    
+    header .main-menus .submenu
+    {
+        display: none;
+        position: absolute;
+        left: 0;
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 10px;
+        z-index: -1;
+        background-color: var(--theme-primary);
+        min-width: 200px;
+    }
+    
+    header .main-menus .submenu .submenu
+    {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: -50px;
+        border-top: 0;
+    }
+    
+    header .main-menus .menu > li
+    {
+        list-style: none;
+        float: left;
+        margin: 0;
+        position: relative;
+        flex-grow: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    header .main-menus .menu > li > a
+    {
+        font-size: 17px;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+        height: 100%;
+        line-height: 40px;
+        transition: all 0.2s ease;
+    }
+    
+    header .main-menus .menu > li.with-sub > a:after
+    {
+        display: inline-block;
+        content: "\e81b";
+        font-family: unicons-solid;
+        margin-left: 7px;
+        transition: all 0.2s ease;
+        color: var(--theme-secondary);
+    }
+    
+    header .main-menus .menu > li.with-sub.dropped > a:after
+    {
+        transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        color: var(--theme-primary-dark);
+    }
+    
+    header .main-menus .menu > li > a:hover,
+    header .main-menus .menu > li.dropped > a
+    {
+        color: var(--theme-primary-dark);
+    }
+    
+    header .main-menus .menu a
+    {
+        text-decoration: none;
+        color: var(--theme-primary);
+        display: block;
+        padding: 10px;
+    }
+    
+    header .main-menus .menu > li ul li
+    {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: relative;
+    }
+    
+    header .main-menus .submenu
+    {
+        min-width: 100%;
+        padding: 10px 0;
+        margin-top: 40px;
+    }
+    
+    header .main-menus .submenu li
+    {
+        display: block;
+    }
+    
+    header .main-menus .submenu a
+    {
+        font-size: 15px;
+        color: var(--theme-gray-light);
+        font-weight: normal;
+        text-transform: none;
+        padding: 6px 20px 6px 20px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    header .main-menus .submenu a:hover
+    {
+        color: var(--theme-white);
+        background-color: rgba(0, 0, 0, 0.25) !important;
+    }
+    
+    header .main-menus .submenu li.dropped
+    {
+        background-color: transparent !important;
+    }
+    
+    /* Main menu - Responsiveness */
+    
+    @media screen and (max-width: 1200px)
+    {
+        header .logo
+        {
+            height: 140px;
+            width: 140px;
+            margin-top: 7px;
+            margin-bottom: -53px;
+        }
+    }
+    
+    @media screen and (max-width: 990px)
+    {
+        header .main-menus .menu > li:first-of-type
+        {
+            border-left: none;
+        }
+        
+        header .hidden-medium
+        {
+            display: none;
+        }
+    }
+    
+    @media screen and (max-width: 768px)
+    {
+        header .main-menus
+        {
+            display: none;
+        }
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    var menuDelay = 200;
+    var menuScrollTop = 300;
+    
+    $(function() {
+        $('.main-menus .menu li').hover(function()
+        {
+            var li = $(this);
+            var menuShow = li.parent().attr("show");
+            var menuHide = li.parent().attr("hide");
+            
+            li.parent().attr("showElement", li.getPath());
+            
+            var menuShowElement = li.parent().attr("showElement");
+            var menuHideElement = li.parent().attr("hideElement");
+            
+            if (menuShow != undefined)
+                clearTimeout(menuShow);
+            
+            if (menuShowElement == menuHideElement && menuHide != undefined)
+                clearTimeout(menuHide);
+            
+            li.parent().attr("show", setTimeout(function(){
+                li = li;
+                li.addClass("dropped");
+            }, menuDelay));
+        },
+        function()
+        {
+            var li = $(this);
+            var menuShow = li.parent().attr("show");
+            
+            if (menuShow != undefined)
+                clearTimeout(menuShow);
+            
+            li.parent().attr("hideElement", li.getPath());
+            li.parent().attr("hide", setTimeout(function(){
+                li.removeClass("dropped");
+            }, menuDelay));
+        });
+    });
+    
+    $(window).scroll(function (event)
+    {
+        var scrollTop = $(window).scrollTop();
+        var hasClass = $('body').hasClass("scrolled");
+        
+        if (scrollTop > menuScrollTop && !hasClass)
+        {
+            $('body').addClass("scrolled");
+        }
+        
+        if (scrollTop <= menuScrollTop && hasClass)
+        {
+            $('body').removeClass("scrolled");
+        }
+    });
+
+</script>
+
+<header class="mobile-hidden">
+    
+    <div class="main-navigation">
+        <div class="row">
+            <div class="col-xs-12 col-lg-1 hidden-medium">
+                &nbsp;
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-4">
+                <div class="main-menus">
+                    <ul class='menu'><li class='with-sub'><a style='cursor: pointer;'>Municipalité</a><ul class='submenu'><li><a href='https://www.lacpoulin.ca/pages/mot-du-maire'>Mot du maire</a></li><li><a href='https://www.lacpoulin.ca/pages/calendrier-des-seances'>Calendrier des séances</a></li><li><a href='https://www.lacpoulin.ca/pages/rapports-du-maire'>Rapports du Maire</a></li><li><a href='https://www.lacpoulin.ca/pages/conseil-municipal'>Conseil municipal</a></li><li><a href='https://www.lacpoulin.ca/pages/ordre-du-jour'>Ordre du jour</a></li><li><a href='https://www.lacpoulin.ca/pages/proces-verbaux'>Procès-verbaux</a></li><li><a href='https://www.lacpoulin.ca/pages/version-audio-des-seances'>Version audio des séances</a></li><li><a href='https://www.lacpoulin.ca/pages/reglements-municipaux'>Règlements municipaux</a></li><li><a href='https://www.lacpoulin.ca/pages/contrats-municipaux'>Contrats municipaux</a></li><li><a href='https://www.lacpoulin.ca/pages/politiques-municipales'>Politiques municipales</a></li><li><a href='https://www.lacpoulin.ca/pages/evaluation-municipale'>Évaluation municipale</a></li><li><a href='https://www.lacpoulin.ca/pages/urbanisme'>Urbanisme</a></li><li><a href='https://www.lacpoulin.ca/pages/matieres-residuelles'>Matières résiduelles</a></li><li><a href='https://www.lacpoulin.ca/pages/a-propos-de-nous'>À propos de nous</a></li><li><a href='https://www.lacpoulin.ca/pages/langue-francaise'>Langue française</a></li></ul></li><li class='with-sub'><a style='cursor: pointer;'>Citoyens</a><ul class='submenu'><li><a href='https://www.lacpoulin.ca/pages/avis-public'>Avis public</a></li><li><a href='https://www.lacpoulin.ca/pages/calendrier-des-collectes'>Calendrier des collectes</a></li><li><a href='https://www.lacpoulin.ca/pages/vidange-de-fausses-septiques'>Vidange de fosses septiques</a></li><li><a href='https://www.lacpoulin.ca/pages/le-ptit-beauceron'>Le p’tit Beauceron</a></li><li><a href='https://www.crebe.qc.ca/'>Centre de recherche d'emploi</a></li><li><a href='https://www.lacpoulin.ca/pages/sensibilisation-a-la-cause-des-chats-errants'>Sensibilisation à la cause des chats errants</a></li></ul></li></ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-lg-2 hidden-medium logo-over">
+                <a href="/" class="logo"><img src="/includes/images/logo.png?v=2026071009_23" /></a>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-4">
+                <div class="main-menus right">
+                    <ul class='menu'><li class='with-sub'><a style='cursor: pointer;'>Loisirs</a><ul class='submenu'><li><a href='https://www.lacpoulin.ca/pages/terrain-de-tennis'>Terrain de tennis</a></li><li><a href='https://www.lacpoulin.ca/pages/peche-sportive'>Pêche sportive</a></li><li><a href='https://www.lacpoulin.ca/pages/sentier-dhebertisme'>Sentier d’hébertisme</a></li></ul></li><li class='with-sub'><a style='cursor: pointer;'>Notre lac, notre richesse</a><ul class='submenu'><li><a href='https://www.lacpoulin.ca/pages/comite-citoyen-environnement'>Comité citoyen environnement</a></li><li><a href='https://www.lacpoulin.ca/pages/agir-pour-notre-lac'>Agir pour notre lac</a></li><li><a href='https://www.lacpoulin.ca/pages/code-dethique-et-de-navigation'>Code d'éthique et de navigation</a></li><li><a href='https://www.lacpoulin.ca/pages/liste-des-arbustes-autorises-dans-la-bande-riveraine'>Liste des arbustes autorisés dans la bande riveraine</a></li></ul></li></ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-lg-1 hidden-medium">
+                <div class="facebook">
+                    <a href="https://www.facebook.com/municipalitelacpoulin" target="_blank"><i class="uil uil-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+<style type="text/css">
+
+    header.mobile-only
+    {
+        height: 100px;
+        background-color: var(--theme-secondary);
+    }
+    
+    header.mobile-only .home
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    
+    header.mobile-only .home img
+    {
+        height: 50px;
+    }
+
+</style>
+
+<header class="mobile-only">
+    <div class="home">
+        <a href="/"><img src="/includes/images/logo.png?v=2026071009_23" /></a>
+    </div>
+</header>
+
+<script type="text/javascript">
+
+    page.toggleSearch = function() {
+        console.log("tog");
+        if ($('header .search-box').is(":visible")) {
+            $('header .search-box').slideUp({ duration: 1000, easing: "easeInOutQuart" });
+        } else {
+            $('header .search-box').slideDown({ duration: 1000, easing: "easeInOutQuart" });
+        }
+    };
+
+</script>
+            <div class="main-body-container">
+                <div style="display: block; width: 100%; position: relative;">
+                    <style type="text/css">
+
+    #slickCarousel .slick-slide
+    {
+        height: 700px;
+        width: 100%;
+        background-size: cover;
+        background-position: center center;
+        position: relative;
+    }
+    
+    /* Text and button displayed on the carousel (hidden state) */
+    /* ----------------------------------------------------------------- */
+    
+    #slickCarousel .slick-slide .carousel-text
+    {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        transition: all 0.7s ease;
+    }
+    
+    #slickCarousel .slick-slide .carousel-text > div
+    {
+        margin: auto 50px auto auto;
+        background-color: rgba(0, 0, 0, 0);
+        padding: 50px;
+        text-align: right;
+        
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        
+        opacity: 0;
+        transition: all 4s ease;
+    }
+    
+    #slickCarousel .slick-slide .carousel-text > div .title
+    {
+        display: block;
+        font-family: var(--theme-font-family);
+        color: var(--theme-secondary) !important;
+        font-size: 45px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: right;
+        
+        opacity: 0;
+        transition: all 4s ease;
+    }
+    
+    #slickCarousel .slick-slide .carousel-text > div .description
+    {
+        display: block;
+        font-family: var(--theme-font-family);
+        color: var(--theme-white) !important;
+        font-size: 30px;
+        font-weight: normal;
+        text-align: right;
+        margin-bottom: 15px;
+        
+        opacity: 0;
+        transition: all 4s ease;
+    }
+    
+    #slickCarousel .slick-slide .carousel-text > div .button
+    {
+        display: block;
+        font-family: var(--theme-font-family);
+        color: var(--theme-secondary) !important;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        
+        border: 2px solid var(--theme-white);
+        -webkit-border-radius: 2px;
+        -moz-border-radiust: 2px;
+        border-radius: 2px;
+        
+        margin-top: 25px;
+        padding: 8px 15px 8px 15px;
+        display: inline-block;
+        text-decoration: none;
+        
+        opacity: 0;
+        transition: all 4s ease, color 0.3s ease, background-color 0.3s ease;
+    }
+    
+    #slickCarousel .slick-slide .carousel-text > div .button:hover
+    {
+        background-color: var(--theme-white);
+        color: var(--theme-black) !important;
+    }
+    
+    
+    /* Text and button displayed on the carousel (active state) */
+    /* ----------------------------------------------------------------- */
+    
+    #slickCarousel .slick-slide.slick-active .carousel-text
+    {
+        opacity: 1;
+    }
+    
+    #slickCarousel .slick-slide.slick-active .carousel-text > div
+    {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    #slickCarousel .slick-slide.slick-active .carousel-text > div .title
+    {
+        opacity: 1;
+    }
+    
+    #slickCarousel .slick-slide.slick-active .carousel-text > div .description
+    {
+        opacity: 1;
+    }
+    
+    #slickCarousel .slick-slide.slick-active .carousel-text > div .button
+    {
+        margin-right: 0;
+        opacity: 1;
+    }
+    
+
+    /* Credits diplayed at the bottom */
+    /* ----------------------------------------------------------------- */
+    
+    #slickCarousel .slick-slide .carousel-credits
+    {
+        font-family: var(--theme-font-family);
+        position: absolute;
+        bottom: 80px;
+        right: 45px;
+        width: 100%;
+        text-align: right;
+        color: var(--theme-white);
+        text-shadow: 1px 1px 2px var(--theme-black);
+    }
+    
+    #slickCarousel .slick-slide .carousel-credits:before
+    {
+        content: "Crédit de photographie: ";
+        opacity: 0.8;
+        
+    }
+    
+    /* Credits diplayed at the bottom */
+    /* ----------------------------------------------------------------- */
+    
+    #slickCarousel .slick-dots
+    {
+        bottom: 40px;
+        right: 40px;
+        width: 100%;
+        text-align: right;
+    }
+    
+    #slickCarousel .slick-dots li button
+    {
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        border-radius: 50px;
+        background: #fff;
+    }
+    
+    #slickCarousel .slick-dots li button:before
+    {
+        font-size: 14px;
+        line-height: 23px;
+        width: 21px;
+        color: var(--theme-primary);
+    }
+    
+    /* Fixes */
+    /* ----------------------------------------------------------------- */
+    
+    .slick-dotted.slick-slider
+    {
+        margin-bottom: 0;
+    }
+    
+    /* Carousel - Responsiveness */
+    
+    @media screen and (max-width: 768px)
+    {
+        #slickCarousel .slick-slide .carousel-text > div
+        {
+            text-align: center;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+            margin: 0;
+            right: 0;
+        }
+        
+        #slickCarousel .slick-slide.slick-active .carousel-text > div .title
+        {
+            text-align: center;
+        }
+        
+        #slickCarousel .slick-slide.slick-active .carousel-text > div .description
+        {
+            text-align: center;
+        }
+        
+        #slickCarousel .slick-slide .carousel-credits
+        {
+            text-align: center;
+            right: 0;
+            margin: 0;
+        }
+        
+        #slickCarousel .slick-dots
+        {
+            right: 0;
+            text-align: center;
+            margin: 0;
+        }
+    }
+    
+</style>
+
+<div style="display: none;">
+    <div class='carousel carousel-cross-fade' interval='5000'><div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/4e3c0850-62c3-46fc-8960-183f213a2492')"><div class='carousel-text carousel-text-left'><div><label class='title' style='color: #ffffff'>MUNICIPALITÉ LAC-POULIN</label><label class='description' style='color: #ffffff'>BIENVENUE!</label></div></div></div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/5962454d-7bb5-403d-a130-fe81ecc78f47')"></div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/dc31c530-d1e1-49ea-8b88-7555146893de')"></div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/6ea9536f-d546-4fa9-937e-6bc1d1264268')"></div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/ac22000c-118e-44a5-b8e5-2a82219c81ee')"></div><div class='frame' style="background-image: url('https://www.lacpoulin.ca/carousel-image/466e233e-5758-4bcc-862a-c398b49de3a8')"></div></div><div class='carousel-bullets carousel-bullets-bottom-right'><span>g</span><span>g</span><span>g</span><span>g</span><span>g</span><span>g</span></div></div>
+</div>
+
+<div id="slickCarousel" class="slider single-item" style="display: none;"></div>
+
+<script type="text/javascript">
+
+    $('.carousel > div > div').each(function(i,e){
+        $(e).removeClass('frame');
+        $(e).appendTo('#slickCarousel');
+    });
+    $('.single-item').slick({
+        autoplay: true,
+        autoplaySpeed: $('.carousel').attr('interval'),
+        arrows: false,
+        easing: "ease-in-out",
+        dots: true
+    });
+    $('.carousel').parent().remove();
+    
+    var active = $('#slickCarousel .slick-active');
+    
+    active.removeClass("slick-active");
+    
+    $('#slickCarousel').show();
+    
+    active.addClass("slick-active");
+
+</script>
+
+<style type="text/css">
+
+    .alerte {
+        
+    }
+    
+    .alerte .alerte-container {
+        background-color: var(--theme-red);
+        box-shadow: inset 0 7px 9px -4px rgba(0,0,0,0.7);
+        color: #fff;
+        padding-top: 7px;
+        padding-bottom: 10px;
+    }
+    
+    .page-content .alerte {
+        margin-bottom: 50px;
+    }
+    
+    .page-content .alerte .alerte-container {
+        box-shadow: none;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+    
+    .page-content .alerte .alerte-container .container {
+        padding: 0 10px;
+    }
+    
+    .alerte .alerte-container a {
+        color: #fff;
+        text-decoration: underline;
+    }
+    
+    .alerte .alerte-container svg {
+        margin-bottom: 20px;
+    }
+    
+    .alerte .alerte-container .alerte-content {
+        padding-top: 13px;
+    }
+    
+    .alerte .alerte-container .alerte-content hr {
+        margin: 10px 0 5px 0;
+        border: none;
+        border-bottom: 1px solid rgb(255, 215, 100, 0.5);
+    }
+    
+    .alerte .alerte-toggle
+    {
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .alerte .alerte-toggle > * {
+        display: inline-block;
+        margin: 0 5px 0 0 !important;
+        vertical-align: middle;
+        line-height: 20px;
+    }
+    
+    #alerteContent
+    {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    
+    #alertIcon
+    {
+        padding-top: 20px;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    page.toggleAlert = function() {
+        $('.alerte').show();
+        if ($('.alerte-content').is(":visible")) {
+            $('.alerte-content').slideUp({ duration: 500, easing: "easeInOutQuart", complete: function() {
+                $('.alerte-content').hide();
+                $('.alerte-toggle-show').show();
+                $('.alerte-toggle-hide').hide();
+            }});
+        } else {
+            $('.alerte-content').slideDown({ duration: 500, easing: "easeInOutQuart", complete: function() {
+                $('.alerte-content').show();
+                $('.alerte-toggle-hide').show();
+                $('.alerte-toggle-show').hide();
+            }});
+        }
+    };
+    
+    page.showAlertIfNecessary = function(){
+        if ($('#alerteContent').html().trim().length > 10) {
+            $('.alerte').show();
+            if (page.isRootUrl()) {
+                page.toggleAlert();
+            }
+        } else {
+            $('.alerte').remove();
+        }
+    };
+    
+    $(document).ready(function(){
+        page.showAlertIfNecessary();
+    });
+
+</script>
+
+<div class="alerte" style="display: none;">
+    <div class="alerte-container">
+        <div class="container">
+        
+            <div class="alerte-content row" style="display: none;">
+                <div class="col-xl-1 col-lg-2 col-md-2 col-sm-12" id="alertIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><title>o-warning</title><g><path d="M45.707,14.6l-12.3-12.3A1,1,0,0,0,32.7,2H15.3a1,1,0,0,0-.707.293L2.293,14.6A1,1,0,0,0,2,15.3V32.7a1,1,0,0,0,.293.707l12.3,12.3A1,1,0,0,0,15.3,46H32.7a1,1,0,0,0,.707-.293l12.3-12.3A1,1,0,0,0,46,32.7V15.3A1,1,0,0,0,45.707,14.6Z" fill="#ffd764"></path><path d="M24,38a2,2,0,1,1,2-2A2,2,0,0,1,24,38Zm1.045-7.829H22.994L22,9.487h4.043Z" fill="#444"></path></g></svg>
+                </div>
+                <div class="col-xl-11 col-lg-10 col-md-10 col-sm-12">
+                    <div id="alerteContent">
+                        <p>Pour vous inscrire sur CITAM ou pour modifier votre inscription suivez ce lien :&nbsp;</p>
+<p><a href="https://portailcitoyen.cauca.ca/city/63dcd02fdb-4aac-8a68-7330cb0d9cc2">https://portailcitoyen.cauca.ca/city/63dcd02fdb-4aac-8a68-7330cb0d9cc2</a></p>
+<p>&nbsp;</p>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+            
+            <div class="alerte-toggle alerte-toggle-show">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><title>down-arrow</title><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><polyline fill="none" stroke="currentColor" stroke-miterlimit="10" points="2,7 12,17 22,7 " transform="translate(0, 0)"></polyline></g></svg>
+                <a href="#" onclick="page.toggleAlert();return false;">
+                    Afficher l'alerte
+                </a>
+            </div>
+            
+            <div class="alerte-toggle alerte-toggle-hide" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><title>up-arrow</title><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><polyline fill="none" stroke="currentColor" stroke-miterlimit="10" points="22,17 12,7 2,17 " transform="translate(0, 0)"></polyline></g></svg>
+                <a href="#" onclick="page.toggleAlert();return false;">
+                    Cacher l'alerte
+                </a>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+
+    .section-blog-calendrier
+    {
+        padding: 25px 0;
+        text-align: left;
+        background-color: var(--theme-gray-light);
+        box-shadow: inset 0 7px 9px -4px rgba(0,0,0,0.7);
+    }
+
+    .section-blog-calendrier .row,
+    .section-blog-calendrier .row > div
+    {
+        padding: 20px;
+        margin: 0;
+    }
+
+    .section-blog-calendrier h2
+    {
+        color: var(--theme-primary);
+        border-bottom: 2px solid var(--theme-primary);
+        margin: 0 0 25px 0;
+        padding: 0 0 10px 0;
+    }
+    
+    .section-blog-calendrier .title
+    {
+        margin-bottom: 45px;
+    }
+    
+    .section-blog-calendrier .title a
+    {
+        font-weight: bold;
+        color: var(--theme-gray-light);
+    }
+    
+    .section-blog-calendrier .title a:hover
+    {
+        text-decoration: none;
+        color: var(--theme-white);
+    }
+    
+    /* Blog Posts */
+    
+    .section-blog-calendrier .nouvelles .blog-post
+    {
+        margin: 20px 0 40px 0;
+        text-align: left;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post > a
+    {
+        display: inline-block;
+        margin: 0 auto 5px auto;
+        font-size: 20px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post a
+    {
+        color: var(--theme-primary);
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post a:hover
+    {
+        color: var(--theme-primary-light);
+        text-decoration: none;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post span
+    {
+        display: inline-block;
+        padding: 2px 0;
+        color: var(--theme-gray-dark);
+        font-size: 12px;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post span:before
+    {
+        content: "\f073";
+        font-family: "FontAwesome";
+        font-size: 12px;
+        margin-right: 10px;
+        position: relative;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post:after
+    {
+        content: " ";
+        width: 80%;
+        border-bottom: 1px solid var(--theme-gray);
+        position: absolute;
+        margin-top: 15px;
+    }
+    
+    .section-blog-calendrier .nouvelles .blog-post:last-of-type:after
+    {
+        content: " ";
+        width: 0;
+    }
+    
+    
+    
+    /* Calendrier - Overrides app */
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list
+    {
+        margin-top: 20px;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-month
+    {
+        display: none;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day { display: none; }
+    .section-blog-calendrier .calendrier .uts-calendar-list-day:nth-of-type(1) { display: block; }
+    .section-blog-calendrier .calendrier .uts-calendar-list-day:nth-of-type(2) { display: block; }
+    .section-blog-calendrier .calendrier .uts-calendar-list-day:nth-of-type(3) { display: block; }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day
+    {
+        padding: 0;
+        margin: 20px 0 40px 0;
+        background: none;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day:after
+    {
+        content: " ";
+        width: 80%;
+        border-bottom: 1px solid var(--theme-gray);
+        position: absolute;
+        margin-top: 15px;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day:last-of-type:after
+    {
+        content: " ";
+        width: 0;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day-date
+    {
+        display: inline-block;
+        padding: 2px 0;
+        color: var(--theme-gray-dark);
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day-date:before
+    {
+        content: "\f073";
+        font-family: "FontAwesome";
+        font-size: 12px;
+        margin-right: 10px;
+        position: relative;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day-time
+    {
+        background-color: var(--theme-gray);
+        font-weight: normal;
+    }
+    
+    .section-blog-calendrier .calendrier .uts-calendar-list-day-name
+    {
+        display: block;
+        margin: 0 auto 5px auto;
+        font-size: 20px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        color: var(--theme-primary);
+    }
+    
+    
+    
+
+</style>
+
+<section class="section-blog-calendrier">
+    <div class="row">
+        <div class="col-xs-12 col-md-6 nouvelles">
+        
+            <h2>Dernières nouvelles</h2>
+            <a href="/blog">Consulter toutes les nouvelles</a>
+            
+            
+                <div class="blog-post">
+                    <span>2023-04-25 10:51:59</span><br />
+                    <a href='/blog/post/procedure-pour-la-mise-a-leau-et-la-sortie-des-embarcations'>Procédure pour la mise à l’eau et la sortie des embarcations</a><br />
+                </div>
+            
+                <div class="blog-post">
+                    <span>2022-06-20 05:53:35</span><br />
+                    <a href='/blog/post/code-dethique-et-de-navigation-sur-le-lac-poulin'>Code d'éthique et de navigation sur le Lac-Poulin</a><br />
+                </div>
+            
+                <div class="blog-post">
+                    <span>2022-03-17 06:02:28</span><br />
+                    <a href='/blog/post/guide-de-la-bonne-gestion-des-dechets'>Guide de la bonne gestion des déchets</a><br />
+                </div>
+            
+        
+        </div>
+        <div class="col-xs-12 col-md-6 calendrier">
+        
+            <h2>Évènements à venir</h2>
+           
+            <p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+        
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+
+    $(".section-blog-calendrier .blog-post").each(function(i,e) {
+        $(e).html($(e).html().replace("<p>...</p>", ""));
+    });
+    
+    $(".section-blog-calendrier .calendrier .uts-calendar-list-month").remove();
+
+</script>
+<style type="text/css">
+
+    .section-pastilles
+    {
+        margin: 0 0;
+        text-align: center;
+        vertical-align: top;
+        color: var(--theme-white);
+        background-color: var(--theme-primary);
+        padding: 75px 20px;
+        box-shadow: inset 0 7px 9px -4px rgba(0,0,0,0.7);
+    }
+    
+    /* Pastilles */
+    
+    .section-pastilles .pastille
+    {
+        width: 200px;
+        height: 200px;
+        padding: 10px;
+        margin: 30px;
+        display: inline-block;
+        vertical-align: top;
+        
+        background-color: rgba(0, 0, 0, 0.25);
+        color: var(--theme-primary);
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        
+        -webkit-box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.3);
+        box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.3);
+        
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .section-pastilles .pastille .pastille-content
+    {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .section-pastilles .pastille .pastille-content svg
+    {
+        margin-left: auto;
+        margin-right: auto;
+        color: var(--theme-white);
+        color: var(--theme-secondary);
+        height: 30%;
+        width: 30%;
+        transition: all 0.2s ease;
+    }
+    
+    .section-pastilles .pastille .pastille-content label
+    {
+        /*display: block;*/
+        margin-top: 10px;
+        color: var(--theme-white);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    /* Pastilles Hover state */
+    
+    .section-pastilles .pastille:hover
+    {
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+
+        -webkit-box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.5);
+        -moz-box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.5);
+        box-shadow: 0px 0px 35px 0px rgba(0,0,0,0.5);
+    }
+    
+    .section-pastilles .pastille:hover .pastille-content svg
+    {
+        color: var(--theme-secondary);
+    }
+    
+    .section-pastilles .pastille:hover .pastille-content label
+    {
+        color: var(--theme-secondary);
+    }
+    
+    /* Pastilles - Responsiveness */
+    
+    @media screen and (max-width: 1268px)
+    {
+        
+    }
+    
+    @media screen and (max-width: 967px)
+    {
+        
+    }
+    
+    @media screen and (max-width: 768px)
+    {
+        
+    }
+
+</style>
+
+<script type="text/javascript">
+    page.redirectToPage = function(page) {
+        if (page.indexOf("http") > -1)
+            window.open(page);
+        else
+            window.location.href = page;
+    };
+</script>
+
+<section class="section-pastilles">
+    <div class="pastille" onclick="page.redirectToPage('/pages/proces-verbaux');">
+        <div class="pastille-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><polygon points="8 61 8 3 56 3 56 46.5 56 61 8 61" fill="none" stroke="currentColor" stroke-miterlimit="10"></polygon><polygon points="32.001 11 19 18 19 20 45 20 45 18 32.001 11" fill="none" stroke-miterlimit="10"></polygon><line x1="23" y1="35" x2="23" y2="25" fill="none" stroke-miterlimit="10"></line><line x1="32.001" y1="35" x2="32.001" y2="25" fill="none" stroke-miterlimit="10"></line><line x1="41" y1="35" x2="41" y2="25" fill="none" stroke-miterlimit="10"></line><line x1="19" y1="35" x2="45" y2="35" fill="none" stroke-miterlimit="10"></line><line x1="19" y1="43" x2="45" y2="43" fill="none" stroke-miterlimit="10"></line><line x1="19" y1="51" x2="32" y2="51" fill="none" stroke-miterlimit="10"></line></g></svg>
+            <label>Procès-verbaux</label>
+        </div>
+    </div>
+    <div class="pastille" onclick="page.redirectToPage('/pages/avis-public');">
+        <div class="pastille-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><line x1="24" y1="34" x2="52" y2="34" fill="none" stroke-miterlimit="10"></line><rect x="24" y="13" width="28" height="13" fill="none" stroke-miterlimit="10"></rect><line x1="52" y1="50" x2="24" y2="50" fill="none" stroke-miterlimit="10"></line><line x1="52" y1="42" x2="24" y2="42" fill="none" stroke-miterlimit="10"></line><path d="M11,36H4V54a6.018,6.018,0,0,0,6,6" fill="none" stroke="currentColor" stroke-miterlimit="10"></path><path d="M16,4V54a6.018,6.018,0,0,1-6,6H54a6.018,6.018,0,0,0,6-6V4Z" fill="none" stroke="currentColor" stroke-miterlimit="10"></path></g></svg>
+            <label>Avis publics</label>
+        </div>
+    </div>
+    <div class="pastille" onclick="page.redirectToPage('/pages/calendrier-municipal');">
+        <div class="pastille-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><path d="M54,19V56a5,5,0,0,1-5,5H15a5,5,0,0,1-5-5V19" fill="none" stroke="currentColor" stroke-miterlimit="10"></path><line x1="32" y1="27" x2="32" y2="49" fill="none" stroke-miterlimit="10"></line><line x1="22" y1="27" x2="22" y2="49" fill="none" stroke-miterlimit="10"></line><line x1="42" y1="27" x2="42" y2="49" fill="none" stroke-miterlimit="10"></line><polyline points="22 13 22 3 42 3 42 13" fill="none" stroke="currentColor" stroke-miterlimit="10"></polyline><line x1="60" y1="13" x2="4" y2="13" fill="none" stroke="currentColor" stroke-miterlimit="10"></line></g></svg>
+            <label>Calendrier des collectes</label>
+        </div>
+    </div>
+    <div class="pastille" onclick="page.redirectToPage('http://www.cibgm.ca/role/municipalite.php?id=29095');">
+        <div class="pastille-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><polyline points="2 28 32 4 62 28" fill="none" stroke-miterlimit="10" stroke-linecap="butt"></polyline><polyline points="26 60 26 43 38 43 38 60" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="butt"></polyline><polyline points="10 30 10 60 54 60 54 30" fill="none" stroke="currentColor" stroke-miterlimit="10"></polyline><rect x="27" y="25" width="10" height="10" fill="none" stroke="currentColor" stroke-miterlimit="10"></rect><line x1="14" y1="18.4" x2="14" y2="8" fill="none" stroke-miterlimit="10" stroke-linecap="butt"></line></g></svg>
+            <label>Rôle d'évaluation</label>
+        </div>
+    </div>
+    <div class="pastille" onclick="page.redirectToPage('/pages/permis-de-construction');">
+        <div class="pastille-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" fill="currentColor" stroke="currentColor"><path d="M44.438,34.531,56.352,45a8.034,8.034,0,0,1,.575,11.347c-.091.1-.184.2-.28.3h0a8.035,8.035,0,0,1-11.363,0c-.1-.1-.189-.2-.28-.3L34.8,45.23" fill="none" stroke-miterlimit="10"></path><polyline points="30.608 26.608 20 16 20 12 13 5 5 13 12 20 16 20 26.29 30.29" fill="none" stroke-miterlimit="10" stroke-linecap="butt"></polyline><path d="M60.9,23.1,45.1,7.3A11.468,11.468,0,0,0,29,7.3L52.8,31.1Z" fill="none" stroke="currentColor" stroke-miterlimit="10"></path><path d="M40.163,18.462,5.412,48.089a4,4,0,0,0-.24,5.879l4.86,4.86a4,4,0,0,0,5.879-.24L45.579,23.879" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="butt"></path></g></svg>
+            <label>Demande de permis</label>
+        </div>
+    </div>
+</section>
+<style type="text/css">
+
+    .section-recherche-infolettre
+    {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background-color: var(--theme-gray-light);
+    }
+    
+    .section-recherche-infolettre .row,
+    .section-recherche-infolettre .row > div
+    {
+        margin: 0;
+        padding: 10px;
+    }
+    
+    /* Newsletter app overrides */
+    
+    .section-recherche-infolettre .uts-newsletter-control
+    {
+        width: calc(100% - 65px);
+        display: inline-block;
+    }
+    
+    .section-recherche-infolettre .uts-newsletter
+    {
+        margin: 0;
+    }
+    
+    .section-recherche-infolettre .uts-newsletter,
+    .section-recherche-infolettre .uts-newsletter-control,
+    .section-recherche-infolettre .uts-newsletter #uts-newsletter-email,
+    .section-recherche-infolettre .uts-newsletter input[type=submit]
+    {
+        vertical-align: top;
+    }
+    
+    .section-recherche-infolettre .uts-newsletter-control div
+    {
+        display: block;
+    }
+    
+    .section-recherche-infolettre .uts-newsletter-control label
+    {
+        display: none;
+    }
+    
+    .section-recherche-infolettre .uts-newsletter input[type=text]
+    {
+        width: 400px;
+        height: 70px;
+        font-weight: bold;
+        vertical-align: top;
+        padding: 10px 40px 10px 40px;
+        background-color: var(--theme-white);
+        color: var(--theme-black);
+        margin: 0;
+        width: 100%;
+        border: 1px solid var(--theme-gray);
+    }
+    
+    .section-recherche-infolettre .uts-newsletter input[type=submit]
+    {
+        vertical-align: top;
+        width: 70px;
+        height: 70px;
+        padding: 17px 15px 17px 22px;
+        vertical-align: top;
+        margin-left: -5px;
+        
+        background-color: var(--theme-primary);
+        background-image: url(/includes/images/send.svg?vs) !important;
+        background-size: 28px 28px;
+        background-repeat: no-repeat;
+        background-position: 20px;
+        
+        color: var(--theme-white);
+        transition: all 0.3s ease;
+        
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+    }
+    
+    .section-recherche-infolettre input[type=submit],
+    .section-recherche-infolettre input[type=submit]:hover,
+    .section-recherche-infolettre input[type=submit]:active,
+    .section-recherche-infolettre input[type=submit]:focus
+    {
+        background-color: var(--theme-primary-dark);
+        color: var(--theme-primary-light);
+    }
+    
+    /* Infolettre - Responsiveness */
+    
+    @media screen and (max-width: 991px)
+    {
+        
+    }
+    
+    @media screen and (max-width: 768px)
+    {
+        
+    }
+
+</style>
+
+<section class="section-recherche-infolettre">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+        
+            <style type="text/css">
+
+    .search-box
+    {
+        text-align: center;
+        padding: 0;
+        display: block;
+    }
+    
+    .search-box button
+    {
+        width: 70px;
+        height: 70px;
+        padding: 17px 15px 17px 22px;
+        vertical-align: top;
+        margin-left: -5px;
+        background-color: var(--theme-primary);
+        color: var(--theme-white);
+        transition: all 0.3s ease;
+    }
+    
+    .search-box button svg
+    {
+        height: 26px;
+        line-height: 24px;
+        vertical-align: top;
+        margin-top: 5px;
+        margin-right: 5px;
+        width: 26px;
+        color: var(--theme-white);
+        transition: all 0.3s ease;
+    }
+    
+    .search-box button:hover
+    {
+        background-color: var(--theme-primary-dark);
+    }
+    
+    .search-box button:hover svg
+    {
+        
+    }
+    
+    .search-box input,
+    .search-box input:focus,
+    .search-box input:active
+    {
+        width: 400px;
+        height: 70px;
+        font-weight: bold;
+        vertical-align: top;
+        padding: 10px 40px 10px 40px;
+        background-color: var(--theme-white);
+        color: var(--theme-black);
+        margin: 0;
+        width: calc(100% - 70px);
+        border: 1px solid var(--theme-gray);
+    }
+
+</style>
+
+<div class='search-box'>
+    <form action='/search' method='get' target='_top'>
+        <input name='q' placeholder='Recherche : Entrez le terme recherché ici' type='text' />
+        <button type='submit'>
+            <svg onclick="$(this).parent().parent().submit();" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path fill="currentColor" d="M32,1C14.9,1,1,14.9,1,32s13.9,31,31,31s31-13.9,31-31S49.1,1,32,1z M50.6,32.8l-14,10 C36.4,42.9,36.2,43,36,43c-0.2,0-0.3,0-0.5-0.1C35.2,42.7,35,42.4,35,42v-9H14c-0.6,0-1-0.4-1-1s0.4-1,1-1h21v-9 c0-0.4,0.2-0.7,0.5-0.9c0.3-0.2,0.7-0.1,1,0.1l14,10c0.3,0.2,0.4,0.5,0.4,0.8S50.8,32.6,50.6,32.8z"></path></g></svg>
+        </button>
+    </form>
+</div>
+        
+        </div>
+        <div class="col-xs-12 col-md-6">
+        
+            <script type="text/javascript" src="https://apps.gestionweblex.ca/newsletter/assets/form.ashx?storeid=6b53ca4f-fd08-48e9-9ff0-a26df07c1370&culture=fr-CA"></script>
+            <script type="text/javascript">
+            
+                var sectionNewsletterInputSelector = ".section-recherche-infolettre #uts-newsletter-email";
+                var sectionNewsletterButtonSelector = ".section-recherche-infolettre .btn";
+                
+                uts.apps.newsletter.render();
+                
+                $(sectionNewsletterInputSelector).attr("placeholder", "Infolettre : Entrez votre adresse courriel ici");
+                setTimeout(function() { $(sectionNewsletterButtonSelector).val(""); }, 100);
+                setTimeout(function() { $(sectionNewsletterButtonSelector).val(""); }, 500);
+                setTimeout(function() { $(sectionNewsletterButtonSelector).val(""); }, 1000);
+            
+            </script>
+        
+        </div>
+    </div>
+</section>
+                    <style type="text/css">
+
+    /* Main footer */
+    
+    footer
+    {
+        background-color: var(--theme-black);
+        color: var(--theme-white);
+        padding: 60px 60px 30px 60px;
+        box-shadow: inset 0 7px 9px -4px rgba(0,0,0,0.7);
+    }
+    
+    footer .row
+    {
+        margin: 0;
+    }
+    
+    footer .logo
+    {
+        max-height: 100px;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    footer h3
+    {
+        font-size: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 20px;
+        margin-top: 0;
+    }
+    
+    footer label
+    {
+        display: block;
+    }
+    
+    footer label.heure
+    {
+        display: inline;
+        color: var(--theme-gray);
+    }
+    
+    footer .menu
+    {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    footer .menu li
+    {
+        
+    }
+    
+    footer a
+    {
+        color: var(--theme-gray);
+        transition: all 0.2s ease;
+    }
+    
+    footer a:hover,
+    footer .menu li a:hover
+    {
+        color: var(--theme-white);
+        text-decoration: none;
+    }
+    
+    /* Phone, email, location icons */
+    
+    footer .phone:before
+    {
+        content: "\e9e7";
+        font-family: unicons-line;
+        margin-right: 5px;
+    }
+    
+    footer .email:before
+    {
+        content: "\ea0f";
+        font-family: unicons-line;
+        margin-right: 5px;
+    }
+    
+    footer .location:before
+    {
+        content: "\e8ec";
+        font-family: unicons-line;
+        margin-right: 5px;
+    }
+    
+    /* Bottom credits */
+    
+    footer .credits
+    {
+        padding-top: 30px;
+        padding-left: 15px;
+        text-align: left;
+    }
+    
+    footer .credits span
+    {
+        font-size: 14px;
+        color: var(--theme-white);
+        display: block;
+    }
+    
+    footer .credits .smaller
+    {
+        font-size: 13px;
+    }
+    
+    footer .credits a
+    {
+        color: var(--theme-white);
+        font-weight: bold;
+    }
+    
+    footer .credits a:hover
+    {
+        text-decoration: none;
+    }
+    
+    /* Bottom - Responsiveness */
+    
+    @media screen and (max-width: 992px)
+    {
+        footer
+        {
+            padding: 30px 30px 30px 30px;
+        }
+        
+        footer h3
+        {
+            margin-top: 20px;
+        }
+        
+        footer .row > div:last-of-type
+        {
+            text-align: left !important;
+        }
+        
+        footer .logo
+        {
+            max-width: 100%;
+        }
+    }
+    
+    @media screen and (max-width: 768px)
+    {
+        footer
+        {
+            padding: 30px 0 30px 0;
+        }
+        
+        footer h3
+        {
+            margin-top: 20px;
+        }
+        
+        footer .row > div,
+        footer .row > div:last-of-type,
+        footer .credits
+        {
+            text-align: center !important;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        
+        footer .logo
+        {
+            max-width: 100%;
+        }
+    }
+    
+    /* Facebook Icon */
+    
+    footer .facebook,
+    footer .facebook a,
+    footer .facebook i
+    {
+        display: inline-block;
+        font-size: 30px;
+        line-height: 30px;
+        margin: 0;
+        padding: 0;
+        color: var(--theme-gray);
+    }
+    
+    footer .facebook a:hover,
+    footer .facebook i:hover
+    {
+        color: #3b5998;
+    }
+    
+    /* Facebook - Responsiveness */
+    
+    @media screen and (max-width: 992px)
+    {
+        
+    }
+    
+</style>
+
+<footer>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+            <h3>Lac-Poulin</h3>
+            <label class="phone"><a href="tel:+14182287585" style="text-decoration: none;">(418) 228-7585</a></label>
+            <label class="email"><a href="/cdn-cgi/l/email-protection#c8a1a6aea788a4a9abb8a7bda4a1a6e6aba9" style="text-decoration: none;"><span class="__cf_email__" data-cfemail="f891969e97b894999b88978d949196d69b99">[email&#160;protected]</span></a></label>
+            <label class="location"><a href="https://www.google.com/maps" target="_blank">165 Rue Vallée<br />Lac-Poulin (Québec) G0M 1P0</a></label>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-4">
+            <h3>Heures d'ouverture</h3>
+            <p><b>Mardi</b>: <label class="heure">9h00 à 16h00</label><br />
+            <b>Jeudi</b>: <label class="heure">9h00 à 12h00</label><br />
+            <b>Vendredi</b>: <label class="heure">09h00 à 12h00</label></p>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3">
+            <ul class='menu'><li><a href='https://www.lacpoulin.ca/pages/nous-joindre'>Nous joindre</a></li><li><a href='https://www.lacpoulin.ca/pages/le-ptit-beauceron'>Commerces et services</a></li><li><a href='https://www.lacpoulin.ca/pages/reglements-municipaux'>Règlements municipaux</a></li><li><a href='https://www.lacpoulin.ca/blog'>Dernière nouvelles</a></li><li><a href='/search'>Recherche</a></li></ul>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 col-xl-1 text-right">
+        
+            <img src="/includes/images/logo.png" class="logo" />
+            <p style="margin-bottom: 5px;">Nous suivre</p>
+            <div class="facebook">
+                <a href="https://www.facebook.com/municipalitelacpoulin/" target="_blank"><i class="uil uil-facebook"></i></a>
+            </div>
+        
+        </div>
+    </div>
+    
+    <div class="credits">
+        <span class="smaller">Une réalisation de <a href="https://www.weblexdesign.ca">Weblex Design</a></span>
+    </div>
+
+</footer>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Google tag (gtag.js) -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-VEKHF48DDC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VEKHF48DDC');
+</script>
+        
+        <!-- Plugins -->
+        
+        <style type="text/css">
+
+    /* The checkbox container */
+    .check-container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        padding-top: 2px;
+        padding-right: 20px;
+        margin-bottom: 0;
+        margin-left: 0 !important;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Hide the browser's default checkbox */
+    .check-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    /* Create a custom checkbox */
+    .check-checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: var(--theme-gray);
+    }
+    
+    /* On mouse-over, add a grey background color */
+    .check-container:hover input ~ .check-checkmark {
+        background-color: var(--theme-gray-dark);
+    }
+    
+    /* When the checkbox is checked, add a blue background */
+    .check-container input:checked ~ .check-checkmark {
+        background-color: var(--theme-primary);
+    }
+    
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .check-checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    /* Show the checkmark when checked */
+    .check-container input:checked ~ .check-checkmark:after {
+        display: block;
+    }
+    
+    /* Style the checkmark/indicator */
+    .check-container .check-checkmark:after {
+        left: 10px;
+        top: 5px;
+        width: 5px;
+        height: 14px;
+        border: solid var(--theme-white);
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    page.prettifyCheckboxes = function() {
+    
+        // Change the checkboxes in secure pages
+        $('.secured-page-login-form input[type=checkbox]').each(function(i,e){
+            var checkbox = $($(e)[0]);
+            var label = $('.secured-page-login-form label[for=' + checkbox.attr('id') + ']');
+            
+            $(label[0]).addClass('check-container').append(checkbox[0]).append($('<span>').addClass('check-checkmark'));
+        });
+        
+        // Change the checkboxes in forms
+        $('.uts-form .uts-form-control[type=CHECK] div input[type=checkbox]').each(function(i,e){
+            var checkbox = $($(e)[0]);
+            var label = checkbox.parent().parent().find('label');
+            
+            $(label[0]).addClass('check-container').append(checkbox[0]).append($('<span>').addClass('check-checkmark'));
+        });
+    };
+    
+    $(document).ready(function(){
+        page.prettifyCheckboxes();
+    })
+
+</script>
+        <style type="text/css">
+
+    /* The container */
+    .radio-container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        padding-top: 2px;
+        padding-right: 20px;
+        margin-bottom: 0;
+        margin-left: 0 !important;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Hide the browser's default radio button */
+    .radio-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    /* Create a custom radio button */
+    .radio-checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: var(--theme-gray);
+        border-radius: 50%;
+    }
+    
+    /* On mouse-over, add a grey background color */
+    .radio-container:hover input ~ .radio-checkmark {
+        background-color: var(--theme-gray-dark);
+    }
+    
+    /* When the radio button is checked, add a blue background */
+    .radio-container input:checked ~ .radio-checkmark {
+        background-color: var(--theme-primary);
+    }
+    
+    /* Create the indicator (the dot/circle - hidden when not checked) */
+    .radio-checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    /* Show the indicator (dot/circle) when checked */
+    .radio-container input:checked ~ .radio-checkmark:after {
+        display: block;
+    }
+    
+    /* Style the indicator (dot/circle) */
+    .radio-container .radio-checkmark:after {
+        top: 8px;
+        left: 8px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: white;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+    page.prettifyRadios = function() {
+    
+        // Change the radios in forms
+        $('.uts-form .uts-form-control[type=RADIO] div input[type=radio]').each(function(i,e){
+            var radio = $($(e)[0]);
+            var label = radio.next();
+            
+            $(label[0]).addClass('radio-container').append(radio[0]).append($('<span>').addClass('radio-checkmark'));
+        });
+    };
+    
+    $(document).ready(function(){
+        page.prettifyRadios();
+    })
+
+</script>
+        <style type="text/css">
+
+    /* Container */
+    
+    .floating-menu
+    {
+        width: 55px;
+        height: 100%;
+        top: 0;
+        z-index: 10;
+        position: fixed;
+        overflow: hidden;
+        background-color: var(--theme-primary);
+        transition: all 0.5s ease;
+    }
+    
+    .floating-menu:hover
+    {
+        width: 350px;
+        overflow-y: auto;
+    }
+    
+    .floating-menu
+    {
+        scrollbar-width: thin;
+        scrollbar-color: var(--theme-gray-light) var(--theme-gray-dark);
+    }
+    
+    /* Scrollbar */
+    
+    .floating-menu::-webkit-scrollbar
+    {
+        width: 12px;
+    }
+    
+    .floating-menu::-webkit-scrollbar-track
+    {
+        background: var(--theme-primary);
+    }
+    
+    .floating-menu::-webkit-scrollbar-thumb
+    {
+        background-color: var(--theme-gray-light);
+        border-radius: 20px;
+        border: 3px solid var(--theme-gray-dark);
+    }
+    
+    /* Items */
+    
+    .floating-menu .item
+    {
+        cursor: pointer;
+        white-space: nowrap;
+        vertical-align: top;
+        color: var(--theme-white);
+        transition: all 0.3s ease;
+        background-color: transparent;
+    }
+    
+    .floating-menu .item:hover
+    {
+        cursor: pointer;
+        color: var(--theme-secondary);
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+    
+    .floating-menu .item svg
+    {
+        vertical-align: top;
+        height: 25px;
+        width: 25px;
+        margin: 15px;
+        transition: all 0.1s ease;
+    }
+    
+    .floating-menu .item label
+    {
+        vertical-align: top;
+        cursor: pointer;
+        opacity: 0;
+        height: 40px;
+        margin: 13px 0 0 5px;
+        font-size: 19px;
+        display: inline-block;
+        transition: all 0.1s ease;
+    }
+    
+    .floating-menu:hover .item label
+    {
+        opacity: 1;
+    }
+    
+    /* Home icon */
+    
+    .floating-menu .home
+    {
+        background-color: var(--theme-secondary);
+        height: 100px;
+        padding-top: 20px;
+        margin-bottom: 5px;
+    }
+    
+    .floating-menu .home:hover
+    {
+        color: var(--theme-white);
+        background-color: var(--theme-secondary-dark);
+    }
+    
+    /* Sub menus - Right icons */
+    
+    .floating-menu .item.sub label
+    {
+        position: relative;
+        width: 270px;
+    }
+    
+    .floating-menu .item.sub label:after
+    {
+        position: absolute;
+        height: 28px;
+        line-height: 28px;
+        font-size: 28px;
+        font-family: unicons-line;
+        right: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .floating-menu .item.sub label:after
+    {
+        content: "\ebe9";
+        top: calc(50% - 18px);
+    }
+    
+    .floating-menu .item.sub.dropped label:after
+    {
+        transform: rotate(-180deg);
+    }
+    
+    /* Sub menus - Menu */
+    
+    .floating-menu .item.sub > ul
+    {
+        display: none;
+        list-style-type: none;
+        margin: 0;
+    }
+    
+    .floating-menu .item.sub ul
+    {
+        padding: 0 0 10px 0;
+    }
+    
+    .floating-menu .item.sub ul li
+    {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .floating-menu .item.sub ul li a
+    {
+        display: block;
+        padding: 10px 20px 10px 65px;
+        font-size: 20px;
+        color: var(--theme-gray-light);
+        transition: all 0.3s ease;
+    }
+    
+    .floating-menu .item.sub ul ul a
+    {
+        padding-left: 85px;
+    }
+    
+    .floating-menu .item.sub ul ul ul a
+    {
+        padding-left: 105px;
+    }
+    
+    .floating-menu .item.sub ul li:hover
+    {
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+    
+    .floating-menu .item.sub ul li a:hover
+    {
+        color: var(--theme-secondary);
+        text-decoration: none;
+    }
+    
+    .floating-menu:hover .item.sub.dropped > ul
+    {
+        display: block;
+    }
+    
+    /* Separator */
+    
+    hr
+    {
+        margin: 5px 15px;
+        padding: 0;
+        border: none;
+        border-top: 1px solid var(--theme-primary-light);
+    }
+    
+    /* Direction */
+    
+    .floating-menu-left
+    {
+        left: 0;
+    }
+    
+    .floating-menu-right
+    {
+        right: 0;
+    }
+
+</style>
+
+<div class="floating-menu floating-menu-left" onclick="page.handleMenuClick();">
+
+    <div class="item home" onClick="page.goto('/');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M62,29a1,1,0,0,1-.624-.219L32,5.281,2.625,28.781a1,1,0,0,1-1.25-1.562l30-24a1,1,0,0,1,1.25,0l30,24A1,1,0,0,1,62,29Z"></path><path d="M32,7.842,9,26.242V58a3,3,0,0,0,3,3H25V45a1,1,0,0,1,1-1H38a1,1,0,0,1,1,1V61H52a3,3,0,0,0,3-3V26.242ZM37,34a1,1,0,0,1-1,1H28a1,1,0,0,1-1-1V26a1,1,0,0,1,1-1h8a1,1,0,0,1,1,1Z" fill="currentColor"></path></g></svg>
+        <label>Accueil</label>
+    </div>
+    <div class="item" onClick="page.goto('/search');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M60.414,53.343,46.848,39.776a25.225,25.225,0,0,1-7.072,7.072L53.343,60.414a2,2,0,0,0,2.828,0l4.243-4.243A2,2,0,0,0,60.414,53.343Z"></path><path d="M26,49A23,23,0,1,1,49,26,23.026,23.026,0,0,1,26,49ZM26,5A21,21,0,1,0,47,26,21.023,21.023,0,0,0,26,5Z" fill="currentColor"></path></g></svg>
+        <label>Recherche</label>
+    </div>
+    
+    <hr />
+    
+    <div class="item" onClick="page.goto('/blog');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M59,3H17a2,2,0,0,0-2,2V54A5,5,0,1,1,5,54V37h6a1,1,0,0,0,0-2H4a1,1,0,0,0-1,1V54a7.034,7.034,0,0,0,7,7H54a7.035,7.035,0,0,0,7-7V5A2,2,0,0,0,59,3ZM52,51H24a1,1,0,0,1,0-2H52a1,1,0,0,1,0,2Zm0-8H24a1,1,0,0,1,0-2H52a1,1,0,0,1,0,2Zm0-8H24a1,1,0,0,1,0-2H52a1,1,0,0,1,0,2Zm1-9a1,1,0,0,1-1,1H24a1,1,0,0,1-1-1V13a1,1,0,0,1,1-1H52a1,1,0,0,1,1,1Z" fill="currentColor"></path></g></svg>
+        <label>Dernières nouvelles</label>
+    </div>
+    <div class="item" onClick="page.goto('/pages/avis-public');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M53.542,2.159a1,1,0,0,0-.956-.069L30.783,12H14a13,13,0,0,0,0,26H30.783l21.8,9.91A1,1,0,0,0,54,47V3A1,1,0,0,0,53.542,2.159Z" fill="currentColor"></path><path d="M26.717,40h-11.6l7.564,18.643a5.354,5.354,0,0,0,9.936-3.993Z"></path><path d="M56,18V32a7,7,0,0,0,0-14Z"></path></g></svg>
+        <label>Avis publics</label>
+    </div>
+    <div class="item" onClick="page.goto('/pages/proces-verbaux');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M53,2H11A4,4,0,0,0,7,6V58a4,4,0,0,0,4,4H53a4,4,0,0,0,4-4V6A4,4,0,0,0,53,2ZM32,53H17a1,1,0,0,1,0-2H32a1,1,0,0,1,0,2Zm15-7H17a1,1,0,0,1,0-2H47a1,1,0,0,1,0,2Zm0-7H17a1,1,0,0,1,0-2H47a1,1,0,0,1,0,2Zm0-8H25a1,1,0,0,1,0-2h1V21h2v8h4V21h2v8h4V21h2v8h4V21h2v8h1a1,1,0,0,1,0,2Zm1-13a1,1,0,0,1-1,1H25a1,1,0,0,1-1-1V17a1,1,0,0,1,.463-.843l11-7a1,1,0,0,1,1.074,0l11,7A1,1,0,0,1,48,17Z" fill="currentColor"></path></g></svg>
+        <label>Procès-verbaux</label>
+    </div>
+    <div class="item" onClick="page.goto('/pages/enregistrement-dun-chien');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M40.387,21.812l-.194.317A6.038,6.038,0,0,1,35.074,25H13a10.026,10.026,0,0,1-9.895-8.636,1,1,0,0,0-1.982,0A11.892,11.892,0,0,0,9.792,29.552,7.943,7.943,0,0,0,9,33V58.41A2.593,2.593,0,0,0,11.59,61h.046A2.574,2.574,0,0,0,14.2,58.8L15.95,47.4l5.461-7.28,20.684,4.7,1.739,13.912A2.593,2.593,0,0,0,49,58.41V44.1l3.394-16.289Z" fill="currentColor"></path><path d="M62.263,14.035,51.828,11.189,50.97,7.758a1,1,0,0,0-1.824-.279L41.434,20.1,52.816,25.79l1-4.79H57a6.006,6.006,0,0,0,6-6A1,1,0,0,0,62.263,14.035Z" fill="currentColor"></path><path d="M35,21A17.019,17.019,0,0,1,18,4a1,1,0,0,1,2,0A15.017,15.017,0,0,0,35,19a1,1,0,0,1,0,2Z"></path></g></svg>
+        <label>Enregistrement d'un chien</label>
+    </div>
+    
+    <div class="mobile-only">
+    
+        <hr />
+        
+        <div class="item sub" onClick="page.toggleSubMenu($(this));">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path fill="currentColor" d="M62,37H47v-9c0-0.323-0.156-0.626-0.419-0.814L33,17.485V11h10c0.553,0,1-0.448,1-1V2c0-0.552-0.447-1-1-1 H32c-0.553,0-1,0.448-1,1v15.485l-13.581,9.701C17.156,27.374,17,27.677,17,28v9H2c-0.553,0-1,0.448-1,1v24c0,0.552,0.447,1,1,1h25 V48c0-0.552,0.447-1,1-1h8c0.553,0,1,0.448,1,1v15h25c0.553,0,1-0.448,1-1V38C63,37.448,62.553,37,62,37z M18,53 c0,0.552-0.447,1-1,1h-7c-0.553,0-1-0.448-1-1v-5c0-0.552,0.447-1,1-1h7c0.553,0,1,0.448,1,1V53z M37,37c0,0.552-0.447,1-1,1h-8 c-0.553,0-1-0.448-1-1v-5c0-0.552,0.447-1,1-1h8c0.553,0,1,0.448,1,1V37z M55,53c0,0.552-0.447,1-1,1h-7c-0.553,0-1-0.448-1-1v-5 c0-0.552,0.447-1,1-1h7c0.553,0,1,0.448,1,1V53z"></path></g></svg>
+            <label>Municipalité</label>
+            <ul class='menu'><li><a href='https://www.lacpoulin.ca/pages/mot-du-maire'>Mot du maire</a></li><li><a href='https://www.lacpoulin.ca/pages/calendrier-des-seances'>Calendrier des séances</a></li><li><a href='https://www.lacpoulin.ca/pages/rapports-du-maire'>Rapports du Maire</a></li><li><a href='https://www.lacpoulin.ca/pages/conseil-municipal'>Conseil municipal</a></li><li><a href='https://www.lacpoulin.ca/pages/ordre-du-jour'>Ordre du jour</a></li><li><a href='https://www.lacpoulin.ca/pages/proces-verbaux'>Procès-verbaux</a></li><li><a href='https://www.lacpoulin.ca/pages/version-audio-des-seances'>Version audio des séances</a></li><li><a href='https://www.lacpoulin.ca/pages/reglements-municipaux'>Règlements municipaux</a></li><li><a href='https://www.lacpoulin.ca/pages/contrats-municipaux'>Contrats municipaux</a></li><li><a href='https://www.lacpoulin.ca/pages/politiques-municipales'>Politiques municipales</a></li><li><a href='https://www.lacpoulin.ca/pages/evaluation-municipale'>Évaluation municipale</a></li><li><a href='https://www.lacpoulin.ca/pages/urbanisme'>Urbanisme</a></li><li><a href='https://www.lacpoulin.ca/pages/matieres-residuelles'>Matières résiduelles</a></li><li><a href='https://www.lacpoulin.ca/pages/a-propos-de-nous'>À propos de nous</a></li><li><a href='https://www.lacpoulin.ca/pages/langue-francaise'>Langue française</a></li></ul>
+        </div>
+        <div class="item sub" onClick="page.toggleSubMenu($(this));">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M47,31c5.539,0,10-6.565,10-12c0-5.514-4.486-10-10-10s-10,4.486-10,10 C37,24.435,41.461,31,47,31z"></path> <path fill="currentColor" d="M21,33c6.758,0,12-7.526,12-14c0-6.617-5.383-12-12-12S9,12.383,9,19C9,25.474,14.242,33,21,33z"></path> <path d="M58.628,39.184C56.127,38.188,52.079,37,47,37s-9.127,1.188-11.628,2.184 c-0.25,0.1-0.488,0.222-0.723,0.349c0.806,0.32,1.555,0.644,2.199,0.958C40.585,42.312,43,46.189,43,50.37V51h19 c0.553,0,1-0.448,1-1v-4.324C63,42.791,61.284,40.242,58.628,39.184z"></path> <path fill="currentColor" d="M35.972,42.289C32.893,40.789,27.795,39,21,39S9.107,40.789,6.028,42.289C2.974,43.777,1,46.949,1,50.37V56 c0,0.552,0.447,1,1,1h38c0.553,0,1-0.448,1-1v-5.63C41,46.949,39.026,43.777,35.972,42.289z"></path></g></svg>
+            <label>Citoyens</label>
+            <ul class='menu'><li><a href='https://www.lacpoulin.ca/pages/avis-public'>Avis public</a></li><li><a href='https://www.lacpoulin.ca/pages/calendrier-des-collectes'>Calendrier des collectes</a></li><li><a href='https://www.lacpoulin.ca/pages/vidange-de-fausses-septiques'>Vidange de fosses septiques</a></li><li><a href='https://www.lacpoulin.ca/pages/le-ptit-beauceron'>Le p’tit Beauceron</a></li><li><a href='https://www.crebe.qc.ca/'>Centre de recherche d'emploi</a></li><li><a href='https://www.lacpoulin.ca/pages/sensibilisation-a-la-cause-des-chats-errants'>Sensibilisation à la cause des chats errants</a></li></ul>
+        </div>
+        <div class="item sub" onClick="page.toggleSubMenu($(this));">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M32,2A30,30,0,1,0,62,32,30.034,30.034,0,0,0,32,2ZM55.794,46.737,44.4,47.455l-3.75-4.21,4.34-13.356,6.244-3.006,8.682,7.184A27.814,27.814,0,0,1,55.794,46.737ZM19.6,47.455,8.206,46.737a27.81,27.81,0,0,1-4.122-12.67l8.682-7.184,6.244,3.006,4.34,13.356ZM53.366,13.932,50.525,25.005l-6.249,3.009L33,19.822V12.175L42.6,6.088A28.123,28.123,0,0,1,53.366,13.932ZM21.406,6.088,31,12.175v7.647L19.724,28.014l-6.249-3.009L10.634,13.932A28.119,28.119,0,0,1,21.406,6.088Zm3.936,53.106L21.18,48.688l3.746-4.207H39.073l3.747,4.207-4.161,10.5a27.89,27.89,0,0,1-13.317,0Z" fill="currentColor"></path></g></svg>
+            <label>Loisirs</label>
+            <ul class='menu'><li><a href='https://www.lacpoulin.ca/pages/terrain-de-tennis'>Terrain de tennis</a></li><li><a href='https://www.lacpoulin.ca/pages/peche-sportive'>Pêche sportive</a></li><li><a href='https://www.lacpoulin.ca/pages/sentier-dhebertisme'>Sentier d’hébertisme</a></li></ul>
+        </div>
+        <div class="item sub" onClick="page.toggleSubMenu($(this));">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M38,52H2a1,1,0,0,0-1,1v2a1,1,0,0,0,1,1H5v6a1,1,0,0,0,2,0V56H33v6a1,1,0,0,0,2,0V56h3a1,1,0,0,0,1-1V53A1,1,0,0,0,38,52Z" fill="currentColor"></path><path d="M35,50H5V37a1,1,0,0,1,1-1H34a1,1,0,0,1,1,1Z" fill="currentColor"></path><path d="M58.218,16.393A12.778,12.778,0,0,0,59,12c0-6.065-4.037-11-9-11s-9,4.935-9,11a12.778,12.778,0,0,0,.782,4.393A16.038,16.038,0,0,0,37,28c0,7.078,4.276,13.012,10,14.581V62a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V28a1,1,0,0,1,2,0V42.581c5.724-1.569,10-7.5,10-14.581A16.038,16.038,0,0,0,58.218,16.393Z"></path></g></svg>
+            <label>Notre lac, notre fierté</label>
+            <ul class='menu'><li><a href='https://www.lacpoulin.ca/pages/comite-citoyen-environnement'>Comité citoyen environnement</a></li><li><a href='https://www.lacpoulin.ca/pages/agir-pour-notre-lac'>Agir pour notre lac</a></li><li><a href='https://www.lacpoulin.ca/pages/code-dethique-et-de-navigation'>Code d'éthique et de navigation</a></li><li><a href='https://www.lacpoulin.ca/pages/liste-des-arbustes-autorises-dans-la-bande-riveraine'>Liste des arbustes autorisés dans la bande riveraine</a></li></ul>
+        </div>
+    
+    </div>
+    
+    <hr />
+    
+    <div class="item" onClick="page.goto('/pages/nous-joindre');">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="currentColor"><path d="M41.722,38.822l-4.727,5.9A49.889,49.889,0,0,1,19.27,27.007l5.909-4.727a4.016,4.016,0,0,0,1.16-4.764L20.953,5.387a4.017,4.017,0,0,0-4.681-2.258L6.018,5.789a4.04,4.04,0,0,0-2.98,4.461A59.576,59.576,0,0,0,53.75,60.962a4.039,4.039,0,0,0,4.461-2.98l2.66-10.253a4.021,4.021,0,0,0-2.257-4.682L46.487,37.661A4.014,4.014,0,0,0,41.722,38.822Z" fill="currentColor"></path></g></svg>
+        <label>Nous contacter</label>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    page.goto = function(page) {
+        var width = $(".floating-menu").width();
+        
+        if (width > 300)
+        {
+            if (page.toLowerCase().indexOf("http") == 0) {
+                window.open(page);
+            } else {
+                window.location.href = page;
+            }
+        }
+    };
+    
+    page.toggleSubMenu = function(item) {
+        //var menu = item.children("ul");
+        
+        if (item.hasClass("dropped")) {
+            item.removeClass("dropped");
+        } else {
+            item.addClass("dropped");
+        }
+    };
+    
+    page.pluginFloatingMenu = function()
+    {
+        var width = $(".floating-menu").width();
+        
+        // Adjust margins of HTML tag
+        if ($(".floating-menu").hasClass("floating-menu-right")) {
+            $("html").css("margin-right", width);
+        } else {
+            $("html").css("margin-left", width);
+        }
+        
+        // Adjust margins of HEADER tag
+        if ($("header").css("position") == "absolute" || $("header").css("position") == "fixed")
+        {
+            if ($(".floating-menu").hasClass("floating-menu-right")) {
+                $("header").css("padding-right", width);
+            } else {
+                $("header").css("padding-left", width);
+            }
+        }
+    };
+    
+    page.handleMenuClick = function(e)
+    {
+        var width = $(".floating-menu").width();
+        
+        // We cancel the action if the menu is not expanded
+        if (width < 300) {
+            var aBetterEventObject = jQuery.Event(e);
+            
+            aBetterEventObject.preventDefault();
+            aBetterEventObject.stopPropagation();
+            aBetterEventObject.stopImmediatePropagation();
+        }
+    };
+    
+    $(document).ready(function(){
+        page.pluginFloatingMenu();
+    })
+
+</script>
+    
+    </body>
+</html>

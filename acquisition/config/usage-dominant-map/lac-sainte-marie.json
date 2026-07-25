@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "AF": "agricole",
+    "CONS": "environnemental",
+    "REC": "environnemental",
+    "RFL": "environnemental",
+    "TR": "environnemental",
+    "R": "residentiel",
+    "RO": "residentiel",
+    "FB": null,
+    "MXT": null,
+    "MXTV": null,
+    "P": null,
+    "RF": null,
+    "RUR": null,
+    "TM": null,
+    "TV": null,
+    "VIL": null
+  },
+  "source": "https://www.lac-sainte-marie.com/images/reglements/reglement-2024-08-002-zonage.pdf",
+  "note": "Municipalité de Lac-Sainte-Marie, règlement de zonage numéro 2024-08-002, chapitre 1 sous-section 2 « Règles d'interprétation du plan de zonage », art. 1.24 « IDENTIFICATION DES ZONES »: « Chaque zone délimitée au plan de zonage est d'abord identifiée par une appellation réduite référant à l'affectation au plan d'urbanisme en vigueur, aux fins de compréhension du plan uniquement. » Table verbatim (colonnes « Lettre d'appellation » / « Dominance »): « AD | Agrodynamique » et « AF | Agrofluviale » -> agricole (« dynamique »/« fluviale » ne sont aucune des cinq: qualificatif et complément de lieu) ; « CONS | Conservation » et « REC | Récréative » -> environnemental ; « RFL | Récréofluviale » et « TR | Touristique – Récréatif » -> environnemental (une seule des cinq nommée, « fluviale » étant un complément de lieu et « touristique » n'étant aucune des cinq) ; « R | Résidentielle » et « RO | Résidentielle optimale » -> residentiel. Null explicite: « RUR | Rurale » n'est aucune des cinq — la table n'a que 2 colonnes (Lettre/Dominance) et aucune colonne « usages dominants » ne lui assigne d'Habitation, donc le précédent saint-felix-de-valois RUR->residentiel NE s'applique PAS ici ; null ANTI-FALL-THROUGH aussi (sans lui RUR-5 retomberait sur R -> residentiel: 19 polygones faux, le plus gros préfixe du slug). « RF | Récréoforestière » -> null: duale (Récréative -> environnemental + Forestière -> agricole = 2 catégories DIFFÉRENTES), null ANTI-FALL-THROUGH également (RF-8 retomberait sur R). « VIL | Villégiature » et « TV | Touristique - Villégiature » -> null (aucune des cinq). « MXT | Mixte », « MXTV | Mixte – Noyau villageois », « TM | Touristique - Mixte » -> null (le règlement refuse la dominance). « P | Publique » -> null (publique). « FB | Faubourgeoise » -> null: le règlement l'énonce comme dominance mais ce n'est aucune des cinq, et le terme n'apparaît nulle part ailleurs au règlement. L'alinéa qui SUIT la table ne la renverse pas: « Chaque zone est aussi identifiée par une série de chiffres qui suivent l'appellation réduite [...] À titre d'exemple : R-1 — « R » : Affectation au plan d'urbanisme ; « 1 » : Ordre numérique de la zone ». Recouvrement table<->SIG = 17/17 préfixes servis (100%); « AV | Agroviable » figure à la table mais n'est pas servi, donc non mappé. ⚠️ PIÈGE: le règlement porte une NOMENCLATURE CONCURRENTE au chapitre 10 et dans les grilles (« H : habitation, C : commerciale, R : récréative, P : publique et institutionnelle, CONS : Conservation, I : industrielle, A : agricole ») — ce sont les CATÉGORIES D'USAGES, PAS les préfixes de zone ; l'appliquer aux zones rendrait R-2 environnemental au lieu de residentiel (6 polygones faux). Seuls l'art. 1.24 et son exemple « R-1 » font foi. La matrice des usages permis n'est pas utilisée. Propriété du document attestée: le cartouche de chaque page nomme la municipalité."
+}

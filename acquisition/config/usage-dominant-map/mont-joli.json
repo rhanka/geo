@@ -1,0 +1,21 @@
+{
+  "prefix_map": {
+    "AGC": "agricole",
+    "AGF": "agricole",
+    "ADS": null,
+    "RCT": "environnemental",
+    "VLG": "residentiel",
+    "CSV": "environnemental",
+    "HBF": "residentiel",
+    "HMD": "residentiel",
+    "HFD": "residentiel",
+    "HMM": "residentiel",
+    "MTF": null,
+    "CMC": "commercial",
+    "ILG": "industriel",
+    "ILD": "industriel",
+    "LSR": "environnemental"
+  },
+  "source": "https://ville-mont-joli-qc-ca.s3.bhs.io.cloud.ovh.net/2025/10/2009-1210-reglement-de-zonage-9077-2021-10-14.pdf",
+  "note": "Ville de Mont-Joli (MRC de La Mitis), « Règlement de zonage » numéro 2009-1210 (modifié par 2019-1430), article 4.1 « PLAN DE ZONAGE », page 4-1. Gate propriétaire VERBATIM: « Afin de pouvoir réglementer les usages et les normes d'implantation sur tout le territoire de Ville de Mont-Joli, la municipalité est divisée en zones délimitées aux plans de zonage portant les numéros 9077-2009-D et 9077-2009-E qui font partie intégrante du présent règlement. » (9077 = code MAMH de Mont-Joli, celui-là même du filtre de provenance geocentralis « …#evb:siadmin_pzon_99_s[id_municipalite=09077] »). La règle de codification est posée VERBATIM: « Chaque zone porte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant le groupe d'usages dominant avec lequel la zone est associée. Ces groupes d'usages dominants sont en correspondance avec les grandes affectations du sol déterminées au plan d'urbanisme. » — la vocation est donc en SUFFIXE, pas en préfixe: le code servi est de la forme « 624 (AGC) ». Table VERBATIM de l'art. 4.1: AGC « Agricole », AGF « Agroforestière », ADS « Agricole déstructurée », RCT « Récréative », VLG « Villégiature », CSV « Conservation », HBF « Habitation de faible densité », HMD « Habitation de moyenne densité », HFD « Habitation de forte densité », HMM « Habitation de maisons mobiles », MTF « Multifonctionnelle », CMC « Commerciale », ILG « Industrielle légère », ILD « Industrielle lourde », LSR « Loisirs » (table identique dans les millésimes 2020-03-12 et 2021-10-14). Corroboration: l'ANNEXE 2 « LA GRILLE DES NORMES D'IMPLANTATION » intitule sa ligne d'en-tête « Affectation » et y porte AGC/CMC/ILG/ILD/HFD/HBF/MTF/HMD. Mapping: AGC + AGF -> agricole; HBF/HMD/HFD/HMM « Habitation … » -> residentiel; VLG « Villégiature » -> residentiel (cohérent avec les 13 munis déjà servies par la lane, et avec chertsey qui l'écrit verbatim); CMC -> commercial; ILG + ILD -> industriel; RCT « Récréative », CSV « Conservation », LSR « Loisirs » -> environnemental. NULLS EXPLICITES: MTF « Multifonctionnelle » (⚠️ PAS « multifamilial » — le règlement l'écrit en toutes lettres) est MULTIFONCTIONNELLE donc sans dominante unique; ADS « Agricole déstructurée » est un îlot déstructuré (enclave résidentielle en zone agricole, caractère DUAL) — la lane sert `ID`/îlot déstructuré en null sauf définition affirmative par la résidence, absente ici. NON ÉLUCIDÉS, laissés hors du map (null d'ignorance assumé, PAS un null documenté): les sigles « EXR », « EXC » et « EXI », ABSENTS de la table de l'art. 4.1 dans les DEUX millésimes du règlement et absents du reste du texte — aucune dominante ne leur est forcée (≈12 polygones). La matrice des usages permis (Annexe 1) n'est pas utilisée."
+}

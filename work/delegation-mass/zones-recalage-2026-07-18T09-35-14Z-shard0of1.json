@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-07-18T09:35:14.313Z",
+  "shard": "0/1",
+  "published": [
+    {
+      "slug": "saint-boniface",
+      "officialPdf": "https://saint-bo.ca/file-16589",
+      "method": "T3 GCP plus T2 text dictionary labels",
+      "gcp": { "independent": 36, "residualMaxM": 19.797, "rmsM": 10.489 },
+      "labels": { "mode": "text", "dictionaryCodes": 127, "validated": 34, "numericRelaxation": true },
+      "output": { "zones": 21, "lots": 1904, "lotsTotal": 3842, "lotCoveragePct": 49.56 },
+      "joins": { "lotZone": "completed", "lotsEnriched": "completed" }
+    },
+    {
+      "slug": "saint-michel-des-saints",
+      "officialPdf": "work/zonage-plans/saint-michel-des-saints-plan.pdf",
+      "method": "T3 GCP plus Claude vision dictionary labels",
+      "gcp": { "independent": 14, "residualMaxM": 16.642, "holdoutMaxM": 17.879 },
+      "labels": { "mode": "claude", "dictionaryCodes": 34, "reads": 14, "validated": 13, "exact": 13 },
+      "output": { "zones": 6, "lots": 856, "lotsTotal": 3547, "lotCoveragePct": 24.13, "coverageQualification": "partial; dictionary does not cover every plan family" },
+      "joins": { "lotZone": "completed", "lotsEnriched": "completed" }
+    }
+  ],
+  "rejected": [
+    { "slug": "amherst", "reason": "official by-law PDF has no embedded georeference and omits its two plan sheets" },
+    { "slug": "austin", "reason": "official plan found; required cadastre S3 object is missing" },
+    { "slug": "bethanie", "reason": "T3 seed degenerates at scale bound; no independent holdout" },
+    { "slug": "belcourt", "reason": "all residual/holdout candidates fail orientation or isotropy gate" },
+    { "slug": "chertsey", "reason": "official A0 raster plan has no independent GCP evidence" },
+    { "slug": "metabetchouan-lac-a-la-croix", "reason": "available prior GCP PDF is titled zonage shipshaw, so it is rejected as wrong municipality" }
+  ],
+  "supervisor": { "zonesAfter": 868, "focus30MissingZones": 0 }
+}

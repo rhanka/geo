@@ -1,0 +1,36 @@
+{
+  "run": "zones-recalage-3-20260709T1830Z",
+  "shard": "3/4 (index % 4 == 2)",
+  "mission": "servir de vrais zonages par recalage PDF officiel; pas d'AGOL owner harvest",
+  "conductor": "agent principal (Opus 4.8 1M) — 4 sous-agents paralleles, reconcile+commit centralises",
+  "shard_stats": { "munis": 276, "zones_non_done": 68, "bucket_pdf": 66, "slugs_attaques": 12 },
+  "bilan": { "depose": 1, "abort_gate": 5, "introuvable": 6 },
+  "deposits_s3_verifies": ["riviere-beaudette"],
+  "reconcile": { "zones_avant": 773, "zones_apres": 779, "note": "+6 total S3 (dont +1 riviere-beaudette imputable a ce shard; +5 shards paralleles)" },
+  "slugs": [
+    { "slug": "riviere-beaudette", "lot": "A", "verdict": "DEPOSE", "methode": "T2 auto-seed affine + aniso-arbitrate", "residual_m": 11.05, "holdout_m": 12.734, "coverage_serving_pct": 100, "n_features": 31, "n_codes": 33, "gcps": 26, "s3_present": true },
+    { "slug": "saint-telesphore", "lot": "A", "verdict": "ABORT", "raison": "serving 78.65% < 85% (aniso non confirmee); similarity 0 appariement", "s3_present": false },
+    { "slug": "sainte-justine-de-newton", "lot": "A", "verdict": "INTROUVABLE", "raison": "reglement texte seul, 0 planche carto vecteur", "s3_present": false },
+    { "slug": "lac-superieur", "lot": "B", "verdict": "ABORT", "raison": "cadastre S3 = 66 lots vs plan pleine muni; 0-2 GCP < 6", "s3_present": false },
+    { "slug": "montpellier", "lot": "B", "verdict": "ABORT", "raison": "plans raster (svg 315/853 pts), 5/0 GCP; releve de T3 raster", "s3_present": false },
+    { "slug": "boileau", "lot": "B", "verdict": "INTROUVABLE", "raison": "SPA morte; bylaw Wayback tronque; seul plan d'urbanisme (affectations)", "s3_present": false },
+    { "slug": "yamachiche", "lot": "C", "verdict": "INTROUVABLE", "raison": "fonds de plan sans codes; zonage en mairie", "s3_present": false },
+    { "slug": "sainte-elisabeth", "lot": "C", "verdict": "ABORT", "raison": "plan sans linework cadastral: svg 15023 vs 1119 parcelles, max 1 appariement", "s3_present": false },
+    { "slug": "saint-elie-de-caxton", "lot": "C", "verdict": "ABORT", "raison": "plan sans linework cadastral: svg 4702 vs 2368 parcelles, 0 coin appariable", "s3_present": false },
+    { "slug": "saint-casimir", "lot": "D", "verdict": "INTROUVABLE-PDF", "raison": "zonage en SHP MTM NAD83 z8 + DWG + web-GIS; aucun PDF carto (seul PDF = reglement texte 345p)", "piste": "SIG-vecteur cartographie.portneuf.com", "s3_present": false },
+    { "slug": "hebertville", "lot": "D", "verdict": "INTROUVABLE", "raison": "reglement texte seul; MRC LSJE = affectations (rejetees)", "s3_present": false },
+    { "slug": "saint-gedeon", "lot": "D", "verdict": "INTROUVABLE", "raison": "reglement texte seul; portail vplus SPA", "s3_present": false }
+  ],
+  "pistes_conducteur": [
+    "saint-casimir: SHP MTM NAD83 z8 (cartographie.portneuf.com) -> lane SIG-vecteur",
+    "montpellier: plans raster -> T3 raster-register seed manuel",
+    "lac-superieur: lacune couverture cadastre S3 (66 lots) a combler"
+  ],
+  "anti_invention": "aucun zone_code fabrique; 11 non-depots adosses a l'exit-code du code committe; seul depot (riviere-beaudette) = 33 codes lettres verbatim sur coins de lots reels",
+  "artefacts": {
+    "gcp_gagnant": ["work/gcp/riviere-beaudette.gcp.json", "work/gcp/riviere-beaudette.report.json"],
+    "preuves_echec": ["work/gcp/saint-telesphore.report.json", "work/gcp/lac-superieur.autogcp.report.json", "work/gcp/montpellier.autogcp.report.json", "work/gcp/montpellier-rural.autogcp.report.json"],
+    "selection": "acquisition/src/shard-zone-candidates.ts",
+    "lots": ["zones-recalage-3-20260709T1830Z-A.json", "zones-recalage-3-20260709T1830Z-B.json", "zones-recalage-3-20260709T1830Z-C.json", "zones-recalage-3-20260709T1830Z-D.json"]
+  }
+}

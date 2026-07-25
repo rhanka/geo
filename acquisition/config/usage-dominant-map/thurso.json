@@ -1,0 +1,11 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "CONS": "environnemental",
+    "COM": null
+  },
+  "source": "https://www.ville.thurso.qc.ca/wp-content/uploads/2026/04/Annexe_zonage-mod-2026.pdf",
+  "note": "Ville de Thurso, règlement de zonage no 14-2021 (PDF de 122 p. contenant l'Annexe 1 plan de zonage, l'Annexe 2 grilles de spécifications ET le corps ; page de titre : « RÈGLEMENT DE ZONAGE / NO : 14-2021 / ANNEXE 1 / Plan de zonage »). Le corps ne porte aucun article « division du territoire en zones » définissant les lettres : la légende qui fait foi est le cartouche « Légende / Vocation » du plan de zonage (Annexe 1, p. 2), verbatim : « Vocation — AGR(I): Agriculture ; C : Commerciale ; COM : Communautaire ; CONS : Conservation ; I: Industrielle ; MM : Maison mobile ; MX : Mixte ; P : Protection ; R : Résidentielle ; RC : Écotourisme ; W : Voie ferrée » (« Produit par : Service d'urbanisme de la Ville de Thurso, Date : 11 septembre 2021 »). Mappé : R « Résidentielle » -> residentiel ; C « Commerciale » -> commercial ; I « Industrielle » -> industriel ; CONS « Conservation » -> environnemental. Null explicite : COM « Communautaire » — ce n'est PAS « commerciale » (c'est C qui porte Commerciale) et la vocation communautaire/institutionnelle n'est aucune des cinq catégories. Non mappé (OMIS, pas null) : VV (1 polygone, zone `VV-a 123`) n'apparaît que comme colonne de grille et est ABSENT du cartouche « Vocation » — balayage `\\bVV\\b` sur les 122 pages : 1 seul hit, la grille ; le règlement ne le définit pas, donc on ignore son libellé. Les vocations AGR(I)/MM/MX/P/RC de la légende n'ont aucun polygone servi et ne sont pas mappées."
+}

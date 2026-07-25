@@ -1,0 +1,91 @@
+{
+  "generatedAt": "2026-07-12T03:35:25.096Z",
+  "branch": "feat/cadre-acquisition",
+  "shard": {
+    "rem": 0,
+    "mod": 2,
+    "rule": "sorted Object.keys(cities) index % 2 == 0"
+  },
+  "selection": {
+    "matrixCities": 1106,
+    "currentNonDoneAfterFreshDeposit": 148,
+    "currentPdfCandidatesAfterFreshDeposit": 140,
+    "priorTerminalAudit": "work/delegation-mass/zones-recalage-20260712T032414Z-shard0of2.json",
+    "priorTerminalAuditDetails": 149,
+    "currentMissingEvidence": 0,
+    "agolOwnerHarvest": false
+  },
+  "freshDeposit": {
+    "slug": "la-bostonnais",
+    "sourceOfficial": "https://labostonnais.ca/file-23876",
+    "method": "T1 GeoPDF + Claude vision + plan-visible dictionary",
+    "artifacts": [
+      "work/zones-recalage/shard0of2/la-bostonnais-t1-claude/qc-zonage-la-bostonnais.geojson",
+      "work/zones-recalage/shard0of2/la-bostonnais-t1-claude/qc-zonage-la-bostonnais.stats.json",
+      "work/zonage-dicts/la-bostonnais-plan-visible.codes.json",
+      "work/zonage-dicts/la-bostonnais-plan-visible.reads.json"
+    ],
+    "georefResidualM": 0.537,
+    "spatialDistanceKm": 1.962,
+    "distinctCodes": 14,
+    "claudeReads": 14,
+    "claudeValidated": 14,
+    "claudeRejected": 0,
+    "servedFeatures": 13,
+    "lotsAssigned": 693,
+    "lotsTotal": 707,
+    "lotsAssignedPct": 98.02,
+    "gate": "passed: embedded georef, spatial, 14 real lettered codes, cadastral geometry only",
+    "inline": {
+      "lotZoneJoin": "verified; 707 rows; 98.02% assigned",
+      "lotsEnriched": "deposited; 707 lots; surface 100%; postal 100%; address 89.82%"
+    }
+  },
+  "batchEvidence": {
+    "priorBatch": [
+      "alleyn-et-cawood",
+      "amherst",
+      "aumond",
+      "belcourt",
+      "bethanie",
+      "bonaventure",
+      "bouchette",
+      "charette",
+      "chartierville",
+      "chertsey",
+      "chibougamau",
+      "colombier"
+    ],
+    "nextBatchAudited": [
+      "cote-nord-du-golfe-du-saint-laurent",
+      "desbiens",
+      "duhamel",
+      "eeyou-istchee-james-bay",
+      "fassett",
+      "forestville",
+      "grand-remous",
+      "grandes-piles",
+      "hebertville",
+      "inverness",
+      "kipawa",
+      "la-bostonnais"
+    ],
+    "nextBatchDisposition": "all prior evidence retained except la-bostonnais, freshly deposited above",
+    "evidenceSources": [
+      "work/delegation-mass/zones-recalage-20260712T032414Z-shard0of2.json",
+      "work/delegation-mass/zones-recalage-20260710T232036Z-shard0of2.json",
+      "work/delegation-mass/zones-recalage-20260711T0355Z-shard0of2.json"
+    ]
+  },
+  "terminalAudit": {
+    "condition": "every current shard-0 non-done slug has a successful deposit or documented failure evidence",
+    "verifiedCurrentSlugs": 148,
+    "missingEvidence": 0,
+    "freshDepositsThisRun": 1,
+    "freshGateFailuresThisRun": 0,
+    "fabricatedGcp": false,
+    "fabricatedLabels": false,
+    "fabricatedZoneCodes": false,
+    "pythonUsed": false
+  }
+}

@@ -1,0 +1,46 @@
+[20260709T171930Z] Scope
+Repo: /home/antoinefa/src/geo
+Branch: feat/cadre-acquisition
+Lane: pv.status != done residual sorted by slug, index % 2 == 1
+Before PV count: 1050/1106 done, 56 non-done
+Lane total: 28 (configured: charette,waltham; to-research: 26)
+
+[configured] npm exec -- tsx src/pv-index-run.ts --slugs charette,waltham --window-days 3650 --delay-ms 500 --timeout-ms 12000
+Result: charette 0 PV; waltham 0 PV; deposited=0; skippedExisting=0; failures=0.
+
+[static] npm exec -- tsx src/pv-gonet-run.ts --static --city-timeout-ms 25000 --timeout-ms 8000 --max-pv-candidates 40 --verify-head 3
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.gonet.json
+Result: deposited=0; no-website=6; error=9; not-found=11.
+
+[livehost] npm exec -- tsx src/pv-livehost-run.ts --deposit --concurrency 4
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.livehost.json
+Result: deposited=1; no-pv=21; totalPV=8.
+Deposit: waltham, 8 PV, verified sample 6/6 live, s3://registry/qc-pv/waltham/index.json.
+
+[vplus] npm exec -- tsx src/pv-vplus-run.ts --deposit --concurrency 6
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.vplus.json
+Result: deposited=0; skip-existing=1 (waltham); not-vplus=20; no-pv=1.
+
+[obscura] npm exec -- tsx src/pv-obscura-run.ts --deposit --nav-ms 6000 --max-follow 4 --max-path-probes 6
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.obscura.json
+Targets: notre-dame-du-nord, sainte-sophie-de-levrard, riviere-eternite, tres-saint-sacrement, saint-pierre-de-la-riviere-du-sud, saint-andre-du-lac-saint-jean, saint-mathieu-de-rioux, saint-dominique-du-rosaire, saint-elphege.
+Result: deposited=0; no-pv-rendered=9.
+
+[wpmedia] npm exec -- tsx src/pv-wp-media-run.ts --deposit
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.wpmedia.json
+Result: deposited=0; no-wp-media=8; no-pv=1.
+
+[aoca] npm exec -- tsx src/pv-aoca-run.ts --slugs saint-lambert--abitibi-ouest=st-lambert.ao.ca --deposit
+Report: work/delegation-mass/pv-longshot-B-20260709T171930Z.aoca.json
+Result: deposited=0; no-pv=1.
+
+[verification] Read-only S3 check
+Key: registry/qc-pv/waltham/index.json
+Manifest: slug=waltham count=8 discoveryTrack=livehost-http-crawl verifiedSample=6/6.
+First entry: https://pontiacouest.ca/wp-content/uploads/2026/06/Minutes-Waltham-May-2026-Francais.pdf
+Last entry: https://pontiacouest.ca/wp-content/uploads/2026/01/Minutes-Waltham-March-2026-anglais.pdf
+
+[count]
+After PV count derived from validated deposits: 1051/1106 done, 55 non-done.
+coverage-reconcile.ts was not run because work/coverage/coverage-matrix.json was already dirty before this pass.
+No --force was used. No recenseur-manual was used. .track and .claude were not touched by this pass.

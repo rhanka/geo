@@ -1,0 +1,21 @@
+{
+  "prefix_map": {
+    "RBD": "residentiel",
+    "RHD": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "ADYN": "agricole",
+    "AVIA": "agricole",
+    "CO": "environnemental",
+    "RT": "environnemental",
+    "M": null,
+    "PI": null,
+    "PR": null,
+    "PU": null,
+    "V": null,
+    "ID": null,
+    "AT": null
+  },
+  "source": "work/zonage-norms/saint-gedeon/discovery-2018-464-zonage.pdf (Règlement de zonage no 2018-464, codification administrative, Municipalité de Saint-Gédéon) + work/zonage-norms/saint-gedeon/grillesurbain.pdf et grillesterritoire.pdf (cahier des spécifications, champ « Dominance »)",
+  "note": "Propriétaire vérifié: le document porte « MUNICIPALITÉ DE SAINT-GÉDÉON — Règlement 2018-464 » (p. de titre) et « codification administrative du règlement de zonage numéro 2018-464 adopté par le conseil municipal de la ville de Saint-Gédéon » — pas d'homonyme. La légende fait foi = article 2.11 « Identification des zones », 2.11.1 « Dispositions générales »: « les zones sont désignées par un numéro et par une ou plusieurs lettre(s) qui réfère(nt) à l'usage dominant autorisé. Cet usage dominant est identifié comme suit : • Résidentiel: → Basse densité / → Moyenne densité / → Haute densité ; • Commercial et de service: → Commerciale / → Mixte (commerciale et résidentielle) ; • Public ou communautaire: → À caractère institutionnel / → À caractère récréatif, de sport et loisirs / → D'utilité publique. ; • Industriel: ; • Agricole : → Viable / → Dynamique / → Dévitalisé ; • Forestier; • Récréotouristique; • De villégiature; • Conservation: ; • Îlot déstructuré ». Le code-lettre correspondant à chaque vocation est lu VERBATIM dans le champ « Dominance: » de l'en-tête de chaque feuillet du cahier des spécifications, en regard du « Numéro de zone: » (même numéro que le code SIG): zone 100 « Dominance: R bd » -> RBD = Résidentiel basse densité -> residentiel; zone 111 « Dominance: R hd » -> RHD = Résidentiel haute densité -> residentiel; zone 119/122/129 « Dominance: C » -> C = « Commerciale » -> commercial; zone 128 « Dominance: I » -> I = « Industriel » -> industriel; zones 20/22/26/37/39/40/41/45/115 « Dominance: A dyn » -> ADYN = « Agricole : → Dynamique » -> agricole; zones 1/14/21/23/24/27/44 « Dominance: A via » -> AVIA = « Agricole : → Viable » -> agricole; zones 3/30/43/104 « Dominance: Co » -> CO = « Conservation » -> environnemental; zones 2/7/8/32-35/46/47/114/125/130 « Dominance: Rt » -> RT = « Récréotouristique » -> environnemental (vocation récréative, même traitement que « Conservation/Récréative »). Null EXPLICITE, justifié un par un: M = « Mixte (commerciale et résidentielle) », et 2.11.1 précise « Une zone peut se prêter à deux ou plusieurs usages ci-haut mentionnés, sans que l'un de ceux-ci ne domine. On identifiera alors une telle zone par son numéro suivi de la lettre « M » faisant valoir le caractère mixte des usages qui y prévalent. » -> fonction DUALE, aucune dominante; PI = « Public ou communautaire: → À caractère institutionnel », PR = « → À caractère récréatif, de sport et loisirs » et PU = « → D'utilité publique » -> famille PUBLIQUE/institutionnelle (zones 105/112 « Pi », 102/106/118 « Pr », 38 « Pu »); V = « De villégiature » (zones 4/5/6/12/15/17/25/28/29/31/36), énoncé seul, sans qualification d'habitation ni de conservation -> null par défaut; ID = « Îlot déstructuré » (zones 9/10/13/16/18/19/42), libellé qui désigne une forme d'occupation en zone agricole et non une des cinq dominantes -> null; AT (zone 120 « Dominance: At ») n'apparaît NULLE PART dans la liste de l'article 2.11.1 — la légende ne lui donne aucune vocation -> null. « Forestier » (F) est bien dans la légende mais AUCUN code F n'existe dans le SIG servi (76 codes: ADYN-*, AT-120, AVIA-*, C-*, CO-*, I-128, ID-*, M-*, PI-*, PR-*, PU-38, RBD-*, RHD-111, RT-*, V-*) donc il n'est pas mappé. La matrice des usages permis des grilles n'a pas été utilisée."
+}
