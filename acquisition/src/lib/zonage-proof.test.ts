@@ -52,6 +52,61 @@ describe("served zonage geometry proof", () => {
     await putServedZoneGeojson(s3, key, fc);
     expect(sent).toHaveLength(1);
   });
+  // ── P0 regression: the "safe" deposit route used to accept a served collection
+  // whose features carried NO source stamp at all (proof v2 only). Every served
+  // feature must state its source; only an EXPLICIT null is an acceptable "none".
+  it("refuses a deposit whose feature has no zone_source_url field at all", async () => {
+    const { s3, sent } = fakeS3(null);
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_code: "R-1" } }] }, p);
+    delete fc.features[0].properties.zone_source_url;
+    expect(() => assertServedZoneGeojson(KEY, fc)).toThrow(/carries no "zone_source_url"/);
+    await expect(putServedZoneGeojson(s3, KEY, fc)).rejects.toThrow(/carries no "zone_source_url"/);
+    expect(sent.some((c) => c.name === PUT)).toBe(false);
+  });
+
+  it("accepts an EXPLICIT null zone_source_url with a valid level (honest null, never a fabricated URL)", async () => {
+    const { s3, sent } = fakeS3(null);
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: [{ properties: { zone_code: "R-1" } }] }, p, { url: null, level: "orphan" });
+    expect((fc.features[0]!.properties as any).zone_source_url).toBeNull();
+    await putServedZoneGeojson(s3, KEY, fc);
+    expect(sent.filter((c) => c.name === PUT)).toHaveLength(1);
+  });
+
+  it("refuses a zone_source_level outside the served vocabulary (and a missing one)", async () => {
+    const { s3, sent } = fakeS3(null);
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_code: "R-1" } }] }, p);
+    fc.features[0].properties.zone_source_level = "directe"; // proof reliability, NOT a source level
+    expect(() => assertServedZoneGeojson(KEY, fc)).toThrow(/outside the served vocabulary/);
+    await expect(putServedZoneGeojson(s3, KEY, fc)).rejects.toThrow(/outside the served vocabulary/);
+    delete fc.features[0].properties.zone_source_level;
+    expect(() => assertServedZoneGeojson(KEY, fc)).toThrow(/carries no "zone_source_level"/);
+    // the stamping helper itself fails closed on an invented level / fabricated URL
+    expect(() => attachGeometryProof({ type: "FeatureCollection" as const, features: [{ properties: {} }] }, p, { url: null, level: "invented" as any })).toThrow(/outside the served vocabulary/);
+    expect(() => attachGeometryProof({ type: "FeatureCollection" as const, features: [{ properties: {} }] }, p, { url: "s3://bucket/a", level: "documented" })).toThrow(/real http\(s\) URL or an explicit null/);
+    expect(sent.some((c) => c.name === PUT)).toBe(false);
+  });
+
+  it("refuses a zone_source_url that is not a real http(s) URL", () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: {} }] }, p);
+    fc.features[0].properties.zone_source_url = "method:t2-serve-vision";
+    expect(() => assertServedZoneGeojson(KEY, fc)).toThrow(/must be a real http\(s\) URL or an explicit null/);
+  });
+
+  it("stamps the proved acquisition URL by default so producers cannot deposit unsourced", () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_code: "R-1" } }] }, p);
+    expect(fc.features[0].properties.zone_source_url).toBe(p.url);
+    expect(fc.features[0].properties.zone_source_level).toBe("documented");
+    // an upstream explicit stamp is never silently overwritten
+    const kept: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_source_url: null, zone_source_level: "legacy-traceable" } }] }, p);
+    expect(kept.features[0].properties.zone_source_url).toBeNull();
+    expect(kept.features[0].properties.zone_source_level).toBe("legacy-traceable");
+  });
+
   it("keeps raw S3 object writes confined to the generic helper and proof gate", () => {
     const root = resolve(import.meta.dirname, "..");
     const token = ["PutObject", "Command"].join("");
@@ -162,6 +217,50 @@ describe("additive served-zone provenance write", () => {
     const served = twoFeatures();
     const { s3 } = fakeS3(served);
     await expect(putServedZoneAdditive(s3, "normalized/ca-qc-zonage/qc-zonage-alpha.contour-auto-preclip.geojson", clone(served))).rejects.toThrow(/not a served zonage key/);
+  });
+
+  // ── P0 regression: the additive path compared features only, so a caller could
+  // FORGE the collection-level proof (fc.proof.geometry_source.url) while keeping
+  // the genuine per-feature proof, through the door advertised as "safe".
+  it("refuses a forged collection proof on the additive path", async () => {
+    const served: any = clone(twoFeatures());
+    const geometrySource = { url: "https://sig.officiel.example/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", retrieved_at: "2026-07-22T12:00:00Z", sha256: `sha256:${"a".repeat(64)}` };
+    served.proof = { schema_version: "2.0", geometry_source: geometrySource };
+    for (const f of served.features) f.properties.proof = { schema_version: "2.0", geometry_source: { ...geometrySource } };
+    const { s3, sent } = fakeS3(served);
+    const forged: any = clone(served);
+    forged.proof.geometry_source.url = "https://forged.example/other.geojson";
+    forged.features[0].properties.zone_source_url = "https://sig.officiel.example/zones.geojson";
+    await expect(putServedZoneAdditive(s3, KEY, forged, { allowedProps: ["zone_source_url", "zone_source_level"] })).rejects.toThrow(/top-level collection member "proof" differs/);
+    expect(sent.some((c) => c.name === PUT)).toBe(false);
+    expect(sent.some((c) => c.name === COPY)).toBe(false);
+  });
+
+  it("refuses any other top-level member difference (added, removed or changed)", async () => {
+    const served: any = clone(twoFeatures());
+    served.name = "qc-zonage-alpha";
+    const { s3 } = fakeS3(served);
+    const dropped: any = clone(served);
+    delete dropped.name;
+    await expect(putServedZoneAdditive(s3, KEY, dropped)).rejects.toThrow(/top-level collection member "name" differs/);
+    const added: any = clone(served);
+    added.crs = { type: "name", properties: { name: "EPSG:4326" } };
+    await expect(putServedZoneAdditive(s3, KEY, added)).rejects.toThrow(/top-level collection member "crs" differs/);
+  });
+
+  it("still accepts a whitelisted provenance change when top-level members are identical", async () => {
+    const served: any = clone(twoFeatures());
+    served.proof = { schema_version: "2.0", geometry_source: { url: "https://sig.officiel.example/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", retrieved_at: "2026-07-22T12:00:00Z", sha256: `sha256:${"a".repeat(64)}` } };
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    // key order intentionally shuffled: the compare is canonical-JSON tolerant per key
+    incoming.proof = { geometry_source: { ...served.proof.geometry_source }, schema_version: "2.0" };
+    for (const f of incoming.features) f.properties.zone_source_level = "documented";
+    const r = await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_source_url", "zone_source_level"] });
+    expect(r.features).toBe(2);
+    const body = JSON.parse(sent.find((c) => c.name === PUT)!.input.Body);
+    expect(body.features[0].properties.zone_source_level).toBe("documented");
+    expect(body.proof.geometry_source.url).toBe("https://sig.officiel.example/zones.geojson");
   });
 
   it("can skip the backup when explicitly disabled", async () => {
