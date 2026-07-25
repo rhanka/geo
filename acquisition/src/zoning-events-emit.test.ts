@@ -243,10 +243,12 @@ describe("serveZoningEvents", () => {
     const oldEvent = baseEvent({ event_id: "aaaa", state: "active" });
     const keys = zoningEventsKeys("coaticook");
     const seedDoc: ZoningEventsDocument = {
+      type: "FeatureCollection",
       as_of: "2026-01-01T00:00:00Z",
       complete: true,
       muni: "coaticook",
       events: [oldEvent],
+      features: [{ type: "Feature", geometry: null, properties: oldEvent }],
     };
     const { store, written } = memoryStore({ [keys[0]!]: seedDoc, [keys[1]!]: seedDoc });
 

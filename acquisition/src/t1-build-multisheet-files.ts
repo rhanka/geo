@@ -230,8 +230,8 @@ async function main(): Promise<void> {
     n_sheets_total: sheets.length,
     allow_overflow_frame: allowOverflowFrame,
     dict_codes: dict ? dict.length : null,
-    n_code_points: pooled.length,
-    n_distinct_codes: distinct.size,
+    // `n_code_points` / `n_distinct_codes` viennent de `stats` (buildZones les calcule sur
+    // le MÊME tableau `pooled`) : les redéclarer ici les faisait écraser par le spread.
     n_served_features: served.features.length,
     pooled_spatial_km_from_footprint: Number(bboxDistanceKm(pooledCenter, footprint).toFixed(3)),
     pooled_spatial_km_from_centroid: Number(haversineKm(pooledCenter, center).toFixed(3)),

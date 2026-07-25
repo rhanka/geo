@@ -67,7 +67,8 @@ function main(): void {
   assert(Array.isArray(candidates.collections) && Array.isArray(orphans.collections), "invalid completed recovery rows");
   assert(coverage.municipalityCount === 1106 && coverage.cities && typeof coverage.cities === "object", "invalid city universe");
 
-  const baselineRows = baseline.rows.map((values: any[], index: number) => {
+  type BaselineRow = { slug: string; collection_key: string; layout: string; features: number; provenance_state: string };
+  const baselineRows: BaselineRow[] = baseline.rows.map((values: any[], index: number) => {
     assert(Array.isArray(values) && values.length === baseline.row_fields.length, "invalid baseline row " + index);
     const row = Object.fromEntries(baseline.row_fields.map((field: string, fieldIndex: number) => [field, values[fieldIndex]]));
     assert(typeof row.slug === "string" && typeof row.collection_key === "string" && typeof row.layout === "string" &&
