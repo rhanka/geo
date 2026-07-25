@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "R": "residentiel",
+    "I": "industriel",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "M": null,
+    "P": null,
+    "RU": null,
+    "VILL": null,
+    "AFT": null,
+    "Ax": null,
+    "IL": null
+  },
+  "source": "https://www.saint-romain.ca/",
+  "note": "Municipalité de Saint-Romain (MRC du Granit), règlement de zonage numéro 2012-257 codifié (amendements jusqu'au 2016-296), art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES »: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant la vocation dominante : » puis la table à colonne « VOCATION DOMINANTE »: A « Agricole », Af « Agroforestière », Cons « Conservation », I « Industrielle », M « Mixte », P « Publique », R « Résidentielle », Rec « Récréative », Ru « Rurale », Vill « Villégiature ». A -> agricole; R -> residentiel; I -> industriel; REC « Récréative » et CONS « Conservation » -> environnemental. Null explicite du règlement: M « Mixte » est duale; P « Publique » est publique; RU « Rurale » n'est aucune des cinq (le règlement la distingue de « Résidentielle » dans la même table, et l'art. 4197 les lie séparément « les zones A et Ru »); VILL « Villégiature » est distinguée de « Résidentielle » par la table elle-même. Null ANTI-FALL-THROUGH sur les codes SERVIS mais ORPHELINS du règlement (0 occurrence de « AFT », « Ax », « IL » dans tout le document, table 5.1 comprise): AFT (13 pol.), Ax (1), IL (1) — les omettre les ferait retomber sur A -> agricole (AFT1-8, Ax-1) et sur I -> industriel (IL-79), ce qui serait activement faux et silencieux; le null exprime ici « le règlement en vigueur ne fonde aucune dominante pour ce code ». Recouvrement table<->SIG = 9 codes / 13 (74 pol. / 100): écart PARTIEL de nomenclature, pas un millésime disjoint. RUx omis: il retombe sur RU -> null, repli inoffensif. La grille des spécifications (Annexe 2) et la matrice des usages permis ne sont pas utilisées. Corpus local work/zonage-norms/saint-romain/grille.pdf = le CORPS du règlement (170 p., titre interne « rom-zon »), lu à $0."
+}

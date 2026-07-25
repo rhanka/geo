@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AG": "agricole",
+    "FO": "agricole",
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "VC": "residentiel",
+    "MX": null,
+    "EV": null,
+    "PC": null,
+    "CO": "environnemental",
+    "VD": null
+  },
+  "source": "https://www.saint-marc-de-figuery.org/fichiersUpload/fichiers/20210211150115-r2015-216-zonage.pdf",
+  "note": "Municipalité de Saint-Marc-de-Figuery, « RÈGLEMENT DE ZONAGE — Règlement no. 216 » (adopté le 2 mars 2015, version codifiée mise en ligne par la municipalité). Chapitre 3 « DIVISION DU TERRITOIRE MUNICIPAL EN ZONES », article 3.2 « APPELLATION DES ZONES » (p. 27-28). Verbatim : « Les zones retenues dans la réglementation de zonage comprennent : / Les zones à dominante agricole ou forestière : / AG : Agricole ; / AF : Agroforestière ; / FO : Forestière ; / Les zones à dominante résidentielle : / Ra : Résidence de faible densité ; / Rb : Résidence de moyenne et haute densité ; / VC : Villégiature (consolidation) ; / Les zones à dominante commerciale ou mixte : / MX : Mixte ; / Les zones à dominante communautaire : / EV : Parc et espace vert ; / PC : Publique et communautaire / Les zones de conservation : / CO : Conservation ; / Les zones à développement différé : / VD : Villégiature (développement différé). » L'article 3.2 précise aussi que « la première séquence, composée d'une ou plusieurs lettres sert à identifier le caractère général de la zone en relation avec les grandes fonctions urbaines (ex: Ra: Résidentielle faible densité) ». Mapping : AG « Agricole » et FO « Forestière » sont rangés par le règlement sous « Les zones à dominante agricole ou forestière » -> agricole ; Ra, Rb et VC sont rangés sous « Les zones à dominante résidentielle » -> résidentiel (VC « Villégiature (consolidation) » est explicitement classée par le règlement dans la famille résidentielle, pas récréative) ; CO « Conservation » (« Les zones de conservation ») -> environnemental. Null explicite : MX « Mixte » (famille « dominante commerciale ou mixte ») est duale ; PC « Publique et communautaire » est publique ; EV « Parc et espace vert » est rangé par CE règlement sous « Les zones à dominante communautaire » — le libellé seul suggérerait l'environnemental mais la famille verbatim est communautaire, donc null (verbatim-or-null) ; VD « Villégiature (développement différé) », famille « Les zones à développement différé », est une réserve de développement sans dominante actuelle. Le préfixe SIG Ia (1 polygone) n'apparaît NULLE PART dans le règlement no. 216 (aucune zone industrielle codifiée dans l'appellation des zones ni dans les grilles) : il est OMIS, aucun repli longest-prefix possible (aucune clé ne commence par I). AF est dans la légende mais aucun polygone SIG AF n'est servi : omis. La matrice des usages permis des grilles (annexe) n'est pas utilisée."
+}

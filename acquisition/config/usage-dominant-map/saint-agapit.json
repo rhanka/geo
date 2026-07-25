@@ -1,0 +1,27 @@
+{
+  "prefix_map": {
+    "R-": "residentiel",
+    "A-": "agricole",
+    "C-": "commercial",
+    "I-": "industriel",
+    "REC": "environnemental",
+    "M": null,
+    "M-50": "residentiel",
+    "P-61": null,
+    "P-62": null,
+    "P-63": null,
+    "P-67": null,
+    "P-68": null,
+    "P-69": null,
+    "P-64": "environnemental",
+    "P-65": "environnemental",
+    "P-66": "environnemental",
+    "P-70": "environnemental",
+    "P-601": "environnemental",
+    "P-602": "environnemental",
+    "P-603": "environnemental",
+    "P-604": "environnemental"
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33045_Publique/MapServer/16",
+  "note": "Municipalité de Saint-Agapit (MRC de Lotbinière). LA LÉGENDE EST DANS LE SIG: la couche Altus « Zonage municipal » de la MRC de Lotbinière porte, PAR ENTITÉ, le champ `Dominante` = la vocation VERBATIM, à côté du champ `Zonage` (le code). Gate propriétaire porté par l'attribut lui-même: chaque entité porte `code_mun` = « 33045 » et `nom_mun` = « Saint-Agapit », avec `Numero_reglement` = « 591-07-25 », `Adopte` = « 2025-08-18 », `En_vigueur` = « 2025-09-10 » — la donnée servie est donc au millésime courant. Dump vérifié: 84 entités = les 84 polygones servis, tous couverts. ⚠️⚠️ L'ATTRIBUT EST NON UNIFORME SUR DEUX PRÉFIXES, ce qui interdit un map par lettre et impose des clés PAR CODE: (1) `P` porte « Public et institutionnel » sur P-61, P-62, P-63, P-67, P-68, P-69 mais « Loisir parc et escpace vert » (sic, la coquille « escpace » est dans la source) sur P-64, P-65, P-66, P-70, P-601, P-602, P-603, P-604; (2) `M` porte « Mixte » sur M-41, M-42, M-47, M-49, M-51, « Commercial et résidentiel » sur M-43, M-44, M-45, M-46, M-48, et « Résidentiel » sur le SEUL M-50. Mapping: R « Résidentiel » -> residentiel (30 pol.); A « Agricole » -> agricole (13); C « Commercial » -> commercial (9); I « Industriel » -> industriel (3); REC et les P « Loisir parc et escpace vert » -> environnemental; M-50 « Résidentiel » -> residentiel, EXCEPTION PAR ENTITÉ contre sa propre lettre — c'est exactement le cas que la lane a déjà rencontré (une zone forcée par son attribut contre la convention de lettre). NULLS EXPLICITES: les P « Public et institutionnel » (hors des cinq catégories); tous les autres M, soit « Mixte » (le SIG écrit mixte), soit « Commercial et résidentiel » (DUAL) — la clé courte « M » les capte par longest-prefix et « M-50 » la supplante. FORME DES CLÉS: « R- », « A- », « C- », « I- » portent le tiret pour ne pas capter REC (« R » nu aurait avalé REC-1) ni un futur code à lettre composée. Couverture: 84/84 polygones servis."
+}
