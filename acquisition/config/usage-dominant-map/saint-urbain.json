@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "AM": "agricole",
+    "AV": "agricole",
+    "AH": null,
+    "HAB": "residentiel",
+    "MIX": null,
+    "IND": "industriel",
+    "PUB": null,
+    "FOR": "agricole",
+    "FORH": "residentiel"
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-urbain/_publication/fichiers/SU_RAg385_Zonage_eev15082024_COMPLET_AVEC_GRILLES.pdf",
+  "note": "Règlement de zonage no 385 de la Municipalité de Saint-Urbain (en vigueur le 15-08-2024), art. 3.1.4 « CODIFICATION DES ZONES », p.64: « Chaque zone est identifiée par un code indiquant le ou les groupe(s) dominant(s) tel qu'il appert au tableau reproduit ci-après. » Table « GROUPE D'USAGE DOMINANT / CODE D'IDENTIFICATION » relevée VERBATIM: « Agricole dynamique AD », « Agricole marginal AM », « Agricole viable AV » -> agricole; « Forestier FOR » -> agricole; « Habitation HAB » -> residentiel; « Industriel IND » -> industriel. JUGEMENT SIGNALÉ: « Forestier à dominance Habitation FORH » -> residentiel — le libellé du règlement NOMME lui-même la dominance (« à dominance Habitation »), c'est donc la dominante énoncée, pas une déduction; mappé explicitement car le match est longest-prefix (sans cette entrée, FORH-* hériterait de « FOR » -> agricole, à tort; le SIG en sert 6). Null explicite: « Mixité d'usages MIX » est mixte par définition -> DUALE; « Public et institutionnel PUB » est public; « Îlot déstructuré AH » -> null — le libellé du groupe dominant n'énonce AUCUNE des cinq catégories servies (un îlot déstructuré est une enclave d'habitation à l'intérieur de la zone agricole permanente, d'où le code A+H: deux fonctions, aucune déclarée dominante par le règlement). Les 10 préfixes mappés sont EXACTEMENT les 10 présents au SIG servi (47 polygones, 0 sans code). La matrice des usages permis des grilles (Annexe F) n'est pas utilisée. Source consultée le 2026-07-17."
+}

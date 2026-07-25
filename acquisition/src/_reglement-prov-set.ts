@@ -1,0 +1,100 @@
+/**
+ * _reglement-prov-set.ts — lane P0_1 (provenance règlement).
+ *
+ * Écrit UNE entrée curée dans acquisition/config/reglement-provenance.json en
+ * préservant le formatage canonique du fichier (JSON 2-espaces). Refuse d'écrire
+ * si le fichier n'est PAS déjà en forme canonique (sinon le diff toucherait tout
+ * le registre) — dans ce cas, éditer à la main.
+ *
+ * Anti-invention: l'opérateur passe des valeurs VERBATIM relevées dans le document.
+ *
+ * Usage:
+ *   npx tsx acquisition/src/_reglement-prov-set.ts --check
+ *   npx tsx acquisition/src/_reglement-prov-set.ts --slug <s> --numero <n> \
+ *     --millesime <YYYY|null> --page <int|null> --url <url> --note "<verbatim>" --write
+ */
+import { readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const REGISTRY = resolve(ROOT, "acquisition", "config", "reglement-provenance.json");
+
+function arg(name: string, def?: string): string | undefined {
+  const i = process.argv.indexOf(`--${name}`);
+  return i >= 0 && i + 1 < process.argv.length ? process.argv[i + 1] : def;
+}
+
+function main(): void {
+  const before = readFileSync(REGISTRY, "utf8");
+  const obj = JSON.parse(before) as { $comment?: string; slugs: Record<string, Record<string, unknown>> };
+  const canonical = JSON.stringify(obj, null, 2) + "\n";
+  const isCanonical = before === canonical;
+  console.log(`canonical=${isCanonical} (before=${before.length}o roundtrip=${canonical.length}o)`);
+  if (process.argv.includes("--check")) return;
+  if (!isCanonical) {
+    console.error("REFUS: fichier non-canonique — éditer à la main pour un diff minimal.");
+    process.exit(3);
+  }
+  const slug = arg("slug");
+  if (!slug) { console.error("--slug requis"); process.exit(2); }
+  // --show: relit l'entrée EXISTANTE. Indispensable quand plusieurs agents écrivent
+  // dans le même arbre: le `DRY` ci-dessous n'affiche que ce qu'on VA écrire, jamais
+  // ce que le registre porte déjà, donc il ne prouve rien sur l'état courant.
+  if (process.argv.includes("--show")) {
+    const cur = obj.slugs[slug];
+    console.log(cur ? `${slug}: ${JSON.stringify(cur)}` : `${slug}: ABSENT du registre`);
+    return;
+  }
+  const numeroRaw = arg("numero");
+  const milRaw = arg("millesime");
+  const pageRaw = arg("page");
+  const url = arg("url");
+  const note = arg("note");
+  const numero = numeroRaw && numeroRaw !== "null" ? numeroRaw : null;
+  const millesime = milRaw && milRaw !== "null" ? Number(milRaw) : null;
+  const page = pageRaw && pageRaw !== "null" ? Number(pageRaw) : null;
+  // `--url null` doit produire le JSON null, PAS la chaîne "null": les 3 autres
+  // champs neutralisaient déjà le littéral, celui-ci ne le faisait pas, si bien que
+  // `fold` recopiait "null" (chaîne, donc truthy) sur chaque polygone et qu'immo
+  // recevait un lien source bidon. Mesuré sur lac-frontiere 2026-07-20.
+  const urlValue = url && url !== "null" ? url : null;
+  // `--note-append` : les notes des HOLD-NULL sont des JOURNAUX (chaque passe y ajoute
+  // un fait DATÉ et mesuré). Les ré-envoyer en entier à chaque ajout coûtait 2 000+
+  // caractères recopiés à la main — et un caractère fautif RÉÉCRIT silencieusement
+  // l'historique d'une enquête. On append, les champs restent ceux de l'entrée existante
+  // sauf mention explicite.
+  const appendRaw = arg("note-append");
+  const prev = obj.slugs[slug!] as Record<string, unknown> | undefined;
+  let finalNote = note ?? "";
+  if (appendRaw) {
+    if (note) {
+      console.error("REFUS: --note et --note-append sont exclusifs.");
+      process.exit(2);
+    }
+    const old = typeof prev?._note === "string" ? prev._note : "";
+    finalNote = old ? `${old} ${appendRaw}` : appendRaw;
+  }
+  // Le report des champs existants n'est actif QU'EN mode append: en mode normal, un
+  // flag omis vaut toujours null, comme avant. Changer ce défaut casserait en silence
+  // les autres agents qui écrivent dans ce même registre.
+  const keep = <T>(cli: string | undefined, val: T, key: string): T =>
+    appendRaw && cli === undefined && prev && key in prev ? (prev[key] as T) : val;
+  const entry = {
+    reglement_numero: keep(numeroRaw, numero, "reglement_numero"),
+    reglement_millesime: keep(milRaw, millesime, "reglement_millesime"),
+    reglement_page_source: keep(pageRaw, page, "reglement_page_source"),
+    reglement_url: keep(url, urlValue, "reglement_url"),
+    _note: finalNote,
+  };
+  obj.slugs[slug!] = entry;
+  const out = JSON.stringify(obj, null, 2) + "\n";
+  if (process.argv.includes("--write")) {
+    writeFileSync(REGISTRY, out, "utf8");
+    console.log(`ÉCRIT ${slug}: numero=${numero} millesime=${millesime} page=${page}`);
+  } else {
+    console.log(`DRY ${slug}: ${JSON.stringify(entry)}`);
+  }
+}
+
+main();

@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "Ta": null
+  },
+  "source": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=9f80119d-1947-41a4-b26e-e869b21539f7",
+  "note": "Règlement de zonage no 287-10 de la Municipalité de Saint-Janvier-de-Joly (MRC de Lotbinière). Article 3.2 « CODIFICATION DES ZONES » (verbatim): « Les types de zones et leurs classes respectives pouvant apparaître au plan de zonage sont identifiées par des lettres d'appellation : Zone résidentielle -> R, Ra, Re ; Zone agricole -> A, AF et AD ; Zone industrielle -> I ; Zone publique et institutionnelle -> P ; Zone commerciale -> C ; Zone de transport -> Ta ». Mapping des préfixes SIG réellement servis (A/AF/AD/Ra/Rc/Re/C/I/P/Ta): préfixe R -> residentiel (couvre toute la famille résidentielle R/Ra/Re, ainsi que la sous-classe Rc servie qui appartient à la même famille); préfixe A -> agricole (couvre A/AF/AD, verbatim « Zone agricole -> A, AF et AD »); C -> commercial; I -> industriel. Null explicite: P « Zone publique et institutionnelle » est public; Ta « Zone de transport » est de l'infrastructure (aucune des cinq dominantes). Les zones duales servies « 10-R/C », « 13-R/C » (résidentiel/commercial) et « 18-C/I » (commercial/industriel) conservent la forme numéro-tête et ne matchent aucun préfixe -> usage_dominant=null (honnête, jamais forcé). La grille des spécifications (usages permis, chapitre IV) n'est pas utilisée. Corps téléchargé et lu le 2026-07-18."
+}

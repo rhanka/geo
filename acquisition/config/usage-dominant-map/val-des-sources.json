@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "E": "environnemental",
+    "Me": "industriel",
+    "P": null,
+    "PAE": null,
+    "Ru": null,
+    "RM": null,
+    "Rec": null
+  },
+  "source": "https://ville.asbestos.qc.ca/wp-content/uploads/2019/03/2006-116-zonage.pdf (Règlement de zonage n° 2006-116, Ville d'Asbestos = Val-des-Sources, version révisée nov. 2011)",
+  "note": "Article 3.2 « Répartition du territoire municipal en zones de réglementation », p.5, verbatim: « Pour les fins d'identification et de référence, l'utilisation dominante d'une zone est désignée dans ce règlement et sur le plan de zonage par les lettres suivantes: R Résidentielle ; C Commerciale ; I Industrielle ; P Publique ; PAE Plan d'aménagement d'ensemble ; A Agricole ; E Écologie/environnement ; Ru Rurale ; Me Minière extractive ». Mapping: R -> residentiel ; C -> commercial ; I -> industriel ; A -> agricole ; E « Écologie/environnement » -> environnemental ; Me « Minière extractive » -> industriel (extraction). Null explicite: P « Publique » ; PAE « Plan d'aménagement d'ensemble » (secteur de développement d'ensemble, pas une dominante unique) ; Ru « Rurale » (affectation rurale, pas une des 5 dominantes). RM et Rec sont servis dans le SIG mais ABSENTS de la table de codification du corps -> null honnête (jamais deviné). Les clés RM/Rec/Ru/PAE/P sont mappées explicitement pour BLOQUER le fallthrough longest-prefix vers R/P (« 119-RM » ne doit pas tomber sur R). Codes SIG numéro-en-tête (« 37-R », « 264-PAE ») reversés par canonZoneCodeServe. La grille des spécifications n'est PAS utilisée."
+}

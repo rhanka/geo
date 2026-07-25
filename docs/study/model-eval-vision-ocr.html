@@ -1,0 +1,559 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Éval des modèles vision/OCR pour l'extraction des grilles de normes</title><style>
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1a1a1a;max-width:960px;margin:0 auto;padding:24px}
+h1{font-size:24px;border-bottom:2px solid #333;padding-bottom:6px;margin:0 0 8px}
+h2{font-size:18px;border-bottom:1px solid #ccc;padding-bottom:4px;margin:28px 0 10px;page-break-after:avoid}
+h3{font-size:15px;margin:18px 0 8px;page-break-after:avoid}
+h4{font-size:13.5px;margin:14px 0 6px;page-break-after:avoid}
+p{margin:8px 0}
+a{color:#0b5cad;text-decoration:none}
+code{font:11.5px/1.4 "SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#f2f2f4;padding:1px 4px;border-radius:3px}
+blockquote{margin:10px 0;padding:6px 12px;border-left:3px solid #c8c8d0;background:#f8f8fb;color:#444}
+hr{border:0;border-top:1px solid #ddd;margin:20px 0}
+ul,ol{margin:8px 0;padding-left:22px}
+li{margin:3px 0}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:11px;page-break-inside:avoid}
+th,td{border:1px solid #d0d0d6;padding:4px 7px;vertical-align:top;text-align:left}
+th{background:#ececf2;font-weight:600}
+tbody tr:nth-child(even){background:#fafafc}
+strong{font-weight:650}
+@page{size:A4;margin:16mm 14mm}
+@media print{body{max-width:none;padding:0}a{color:#1a1a1a}}
+</style></head><body><h1>Éval des modèles vision/OCR pour l'extraction des grilles de normes</h1>
+<p><em>Statut : rapport d'évaluation — <strong>5 moteurs benchés</strong>. Branche <code>feat/cadre-acquisition</code>, HEAD <code>2deb537</code>. Date 2026-07-04.</em></p>
+<p>Ce rapport évalue <strong>par modèle</strong> les moteurs de lecture de grilles de normes (<code>qc-zonage-norms-&lt;slug&gt;</code>), sur trois axes : <strong>correctness</strong> (recoupement SIG, champs publiés, hallucinations), <strong>consommation</strong> (tokens, coût API-équivalent, coût RÉEL sur le compte / les crédits-plan) et <strong>projection sur le résidu</strong> (~434 zones + ~632 normes ≈ 1066 tâches-muni).</p>
+<p>Les 5 moteurs couverts : <strong>Claude Opus 4.8</strong> (xhigh), <strong>GPT-5.5</strong> (xhigh, codex), <strong>GPT-5.4</strong> (xhigh), <strong>Mistral</strong> (OCR-nu <code>/v1/ocr</code> · <code>document_annotation</code> schéma · Pixtral-large) et <strong>Gemini 3.5 Flash High</strong> (<code>agy</code>).</p>
+<p>Le pendant « méthodes par cas » (quel parser/route pour quelle grille) est <a href="../spec/zonage-extraction-methods.md"><code>../spec/zonage-extraction-methods.md</code></a>. La règle transverse verbatim-ou-null (<code>buildVisionField</code>) est <strong>héritée par tous les moteurs</strong> : l'invention est structurellement impossible quel que soit le modèle — la comparaison ci-dessous ne porte donc PAS sur la sécurité (0 fausse valeur servie partout) mais sur le <strong>recall, la robustesse, le coût et la latence</strong>.</p>
+<hr>
+<h2>1. Méthodologie du bench</h2>
+<p><strong>Échantillon.</strong> <code>work/bench/sample-20.json</code> — 20 villes <strong>SIG-validées</strong> (la couche <code>zone_code</code> sert de vérité-terrain), layouts volontairement mixtes : <code>override</code> (grille transposée à couche texte), <code>multizone</code> (zones-en-colonnes denses), <code>zone-header</code>, <code>grille-grille</code>, <code>image-scan</code>. Les fenêtres de pages-grille sont <strong>pré-vérifiées</strong> dans <code>work/bench/windows.json</code> (page localisée par ville) — la localisation n'est donc <strong>pas</strong> mesurée ici (voir §2).</p>
+<p><strong>Vérité-terrain &amp; métriques.</strong> Chaque sortie est recoupée à la couche SIG (overlap canonique + pont numérique) :</p>
+<ul>
+<li><code>recoupExtracted</code> = overlap / codes-lus → <strong>précision</strong> (équitable-fenêtre, comparable entre modèles) ;</li>
+<li><code>recoupSig</code> = overlap / codes-SIG → <strong>rappel</strong>, <strong>borné par le nombre de pages lues</strong> (⚠️ <strong>non comparable entre modèles</strong> — voir la note de fenêtre §11) ;</li>
+<li><code>publishedFieldPct</code> = champs-normes publiés verbatim-ou-null → recall des valeurs (comparable) ;</li>
+<li><code>hallucination</code> = code lu absent du SIG ;</li>
+<li>+ tokens in/out (+reasoning), temps, coût.</li>
+</ul>
+<p><strong>Guard commun à TOUS les moteurs.</strong> <code>buildVisionField</code> (verbatim-ou-null, <code>VISION_PUBLISH_CONFIDENCE=0.92</code>, <code>grille-vision-extractor.ts</code>) est appliqué en aval de chaque moteur → <strong>0 valeur inventée servie</strong> quel que soit le modèle. Le <strong>dépôt</strong> est en plus filtré par le gate crossval (<code>shouldRejectForZeroOverlap</code>) : un code lu hors-SIG est compté en hallucination d'<strong>extraction</strong> mais <strong>jamais servi</strong> (done ≠ servi).</p>
+<p><strong>Harnais (producteurs).</strong></p>
+<table>
+<thead><tr>
+<th>Moteur</th>
+<th>Harnais</th>
+<th>Conditions</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Claude 4.8</td>
+<td><code>acquisition/src/bench/run-claude48-normes-bench.ts</code> + <code>analyze-claude48.ts</code></td>
+<td>dpi 200, fenêtre ≤ 6 p, 20 villes</td>
+</tr>
+<tr>
+<td>GPT-5.5 / 5.4 / Mistral-OCR</td>
+<td><code>acquisition/src/bench/run-qc-acquisition-model-bench.ts</code></td>
+<td>dpi défaut, <strong>1 page</strong> SIG-validée (baie-comeau)</td>
+</tr>
+<tr>
+<td>GPT-5.5 (élargi)</td>
+<td><code>work/bench/gpt55-mini-driver.ts</code></td>
+<td>dpi 150, <strong>1 p/ville</strong>, 5 villes à fenêtres vérifiées</td>
+</tr>
+<tr>
+<td>Gemini <code>agy</code></td>
+<td>bench agy (route <code>agy -p</code>) → <code>work/bench/agy-normes-bench.md</code></td>
+<td>dpi 150, fenêtre ≤ 6 p, 20 villes</td>
+</tr>
+<tr>
+<td>Mistral schéma / Pixtral</td>
+<td><code>acquisition/work/fn-bench/bench.ts</code></td>
+<td>ferme-neuve, variantes B (<code>document_annotation</code>) &amp; C (Pixtral)</td>
+</tr>
+</tbody></table>
+<p><strong>Conditions par modèle → limites de comparabilité.</strong> Les fenêtres diffèrent : 4.8 et Gemini lisent <strong>≤ 6 pages</strong>, GPT-5.5 est benché sur <strong>1 page/ville</strong>, Mistral-OCR sur des pages isolées. Le <strong>dénominateur SIG est identique</strong> par ville mais le <strong>numérateur overlap est borné par le nombre de pages lues</strong> → le <strong>rappel (<code>recoupSig</code>) n'est PAS comparable</strong> d'un modèle à l'autre. La <strong>précision (<code>recoupExtracted</code>)</strong> et le <strong><code>publishedFieldPct</code></strong> restent comparables. Ce rapport privilégie ces deux dernières métriques pour les jugements inter-modèles.</p>
+<hr>
+<h2>2. Scope d'évaluation</h2>
+<p><strong>Ce qui EST couvert.</strong> La <strong>lecture de grilles de NORMES</strong> sur quatre familles de layout — <strong>transposé</strong> (colonnes-zones), <strong>multizone dense</strong>, <strong>scan-image</strong>, <strong>zone-header / dense-glyphes</strong> — mesurée en correctness (précision/rappel/fieldPct/ hallucination) contre le SIG, en consommation (tokens/temps) et en <strong>coût réel vs API-équivalent</strong>.</p>
+<p><strong>Ce qui N'EST PAS couvert (hors-scope, à ne pas déduire de ce rapport).</strong></p>
+<ol>
+<li><strong>Localisation de la page-grille à l'échelle</strong> — ici les fenêtres sont <strong>pré-vérifiées</strong> (<code>windows.json</code>). Le vrai goulot production (<code>--auto-grid-page</code> sur un règlement codifié, annexe enterrée) n'est <strong>pas</strong> mesuré : un meilleur modèle sur la mauvaise page reste à 0 zone.</li>
+<li><strong>Calibration du quota réel</strong> — la fenêtre 5 h Claude, le plafond de session Gemini et les crédits-plan codex sont <strong>estimés</strong>, pas calibrés sur de vrais <code>rate_limit_event</code>.</li>
+<li><strong>Tâches ZONES</strong> (lecture de glyphes de plans) : seulement <strong>effleurées</strong> — le bench porte sur les NORMES. La projection 434 zones est une <strong>borne haute</strong> (tâche plus légère que les grilles denses).</li>
+<li><strong>Débit soutenu / lanes parallèles</strong> non stressé (latence par-muni mesurée, pas le throughput sous quota).</li>
+<li><strong>Runs non persistés</strong> : les chiffres GPT-5.5 5-villes (driver stdout) et Mistral-schéma / Pixtral (<code>fn-bench/bench.ts</code>, sans sortie fichier) sont <strong>relayés du run</strong> et <strong>à recommitter</strong> — voir la note de provenance §11.</li>
+</ol>
+<hr>
+<h2>3. Synthèse par modèle (tableau unique)</h2>
+<p>Précision = <code>recoupExtracted</code> · Rappel = <code>recoupSig</code> (†non comparable, borné-fenêtre) · fieldPct = champs publiés · Halluc. <strong>servie</strong> = codes hors-SIG effectivement déposés (0 partout, gate crossval). Tokens « /muni » = fenêtre ≤ 6 p ; « /page » = 1 page.</p>
+<table>
+<thead><tr>
+<th>Modèle (route code)</th>
+<th style="text-align:right">Précision recoupE</th>
+<th style="text-align:right">Rappel recoupSig †</th>
+<th style="text-align:right">fieldPct</th>
+<th style="text-align:center">Halluc. servie</th>
+<th>Lit dense/scan ?</th>
+<th>Fiabilité</th>
+<th>Tokens in / out</th>
+<th>Crédit RÉEL</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Claude Opus 4.8</strong> xhigh · <code>lib/grille-claude-cli.ts</code></td>
+<td style="text-align:right"><strong>0.866</strong> (0.976 hors raté-scan)</td>
+<td style="text-align:right">0.21 (≤6p)</td>
+<td style="text-align:right"><strong>45.2 %</strong></td>
+<td style="text-align:center"><strong>0</strong> (24 lus filtrés)</td>
+<td>oui / oui</td>
+<td>haute · <strong>déterministe</strong></td>
+<td>90,4k / 17,4k <strong>/muni</strong></td>
+<td><strong>0 $</strong> abonnement OAuth (≈ $0,88 API-éq)</td>
+</tr>
+<tr>
+<td><strong>GPT-5.5</strong> xhigh · <code>lib/grille-gpt55-codex.ts</code></td>
+<td style="text-align:right"><strong>1.00</strong></td>
+<td style="text-align:right">0.08\* (1p)</td>
+<td style="text-align:right">46,7 % / ~50 %‡</td>
+<td style="text-align:center"><strong>0</strong></td>
+<td>oui / oui</td>
+<td>haute · 0 raté</td>
+<td>13,8k / 1,0–2,0k <strong>/page</strong> (dont ~11k prompt-sys codex)</td>
+<td><strong>crédits-plan codex</strong> (0 $ / 0 quota-event → mesurable en tokens seuls)</td>
+</tr>
+<tr>
+<td><strong>GPT-5.4</strong> xhigh · <code>lib/grille-gpt55-codex.ts</code></td>
+<td style="text-align:right">1.00</td>
+<td style="text-align:right">0.08\* (1p)</td>
+<td style="text-align:right">47,4 %</td>
+<td style="text-align:center">0</td>
+<td>oui / oui</td>
+<td>haute mais <strong>LENT</strong></td>
+<td>12,9k / 10,1k <strong>/page</strong> (reason ×17)</td>
+<td>crédits-plan — <strong>dominé par 5.5</strong></td>
+</tr>
+<tr>
+<td><strong>Mistral OCR-nu</strong> · <code>lib/ocr.ts</code> + <code>grille-ocr-extractor.ts</code></td>
+<td style="text-align:right">bon multizone / <strong>0 transposé</strong></td>
+<td style="text-align:right">multizone bon</td>
+<td style="text-align:right"><strong>0 %</strong> transposé · bon multizone</td>
+<td style="text-align:center">0</td>
+<td>multizone oui / <strong>transposé non</strong></td>
+<td>robuste (0 crash JSON) · <strong>pas de canal prompt</strong></td>
+<td>~1–2 pages</td>
+<td><strong>$0,001/page</strong> (crédits Mistral)</td>
+</tr>
+<tr>
+<td><strong>Mistral schéma</strong> (<code>document_annotation</code>) · <code>fn-bench/bench.ts</code> var. B</td>
+<td style="text-align:right">codes ~0.97</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right"><strong>48,6 %</strong> transposé (= 4.8)</td>
+<td style="text-align:center">0</td>
+<td>transposé <strong>oui</strong></td>
+<td>déterministe</td>
+<td>schéma/page</td>
+<td><strong>$0,003/page</strong> ‡ (non persisté)</td>
+</tr>
+<tr>
+<td><strong>Pixtral-large + directive</strong> · <code>fn-bench/bench.ts</code> var. C</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">37,2 %</td>
+<td style="text-align:center">0</td>
+<td>—</td>
+<td>déterministe</td>
+<td>tokens $2/$6 /Mtok</td>
+<td><strong>~$0,010/page</strong> ‡ (non persisté)</td>
+</tr>
+<tr>
+<td><strong>Gemini 3.5 Flash High</strong> · <code>lib/grille-agy-cli.ts</code> (<code>agy</code>)</td>
+<td style="text-align:right"><strong>0.869</strong></td>
+<td style="text-align:right"><strong>0.064</strong> (≤6p)</td>
+<td style="text-align:right">35,6 %</td>
+<td style="text-align:center">0 (17 lus filtrés)</td>
+<td>oui / oui — mais <strong>FAIBLE + non-déterministe sur dense</strong></td>
+<td>timeouts / empty / SIGKILL</td>
+<td>~23–38k / var. <strong>/page</strong> (≈5× 4.8)</td>
+<td><strong>0 $</strong> abonnement · <strong>plafond session heurté</strong></td>
+</tr>
+</tbody></table>
+<p>† Les rappels <code>recoupSig</code> <strong>ne sont pas comparables</strong> entre modèles (fenêtres de pages différentes ; voir §1 et §11). · \* GPT benché sur 1 page → rappel structurellement bas. · ‡ Chiffres relayés d'un run <strong>non persisté</strong> (voir §11 provenance).</p>
+<p><strong>À retenir du tableau.</strong> (a) <strong>0 fausse valeur servie partout</strong> — la sécurité n'est pas un axe de choix. (b) <strong>Précision</strong> : GPT-5.5 = 1.00, Claude 4.8 = 0.866 (0.976 hors le raté-scan east-broughton), Gemini = 0.869. (c) <strong>Coût réel</strong> : Claude 0 $ (abonnement) et GPT-5.5 crédits-plan (0 $ facturé, 0 quota-event) sont les plus favorables ; Mistral-OCR est le seul <strong>$-mesuré</strong> (et le moins cher, $0,001/page) mais <strong>casse sur transposé</strong>.</p>
+<hr>
+<h2>4. Claude Opus 4.8 (xhigh) — chiffres RÉELS du bench</h2>
+<p>Source : <code>work/bench/claude48-normes-bench.md</code>, <code>work/bench/claude48-cost-projection.md</code>, <code>work/bench/claude48-results.json</code> (généré 2026-07-04, modèle <code>claude-opus-4-8</code>, effort <code>xhigh</code>, route Engine-B <code>claude -p</code> OAuth <code>apiKeySource:none</code>, fenêtre ≤6 pages/ville, DPI 200). Producteur : <code>acquisition/src/bench/run-claude48-normes-bench.ts</code> + <code>analyze-claude48.ts</code>. Échantillon : <code>sample-20.json</code>, fenêtres <code>windows.json</code>. Route : <code>extractGrilleClaudeFromPdf</code> (<code>CLAUDE_MODEL=claude-opus-4-8</code>).</p>
+<h3>4.1 Correctness</h3>
+<table>
+<thead><tr>
+<th>Agrégat (villes SIG ∧ zones lues = 11/20)</th>
+<th>Valeur</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>recoupExtracted moyen (<strong>précision</strong>)</td>
+<td><strong>0.866</strong></td>
+</tr>
+<tr>
+<td>recoupSig moyen (rappel, borné-fenêtre)</td>
+<td>0.21</td>
+</tr>
+<tr>
+<td>publishedFieldPct moyen</td>
+<td><strong>45.2 %</strong></td>
+</tr>
+<tr>
+<td>Overlap total / codes-SIG total</td>
+<td>281 / 5415</td>
+</tr>
+<tr>
+<td>Codes-lus total</td>
+<td>305</td>
+</tr>
+<tr>
+<td>Hallucinations (codes lus hors-SIG, <strong>extraction</strong>)</td>
+<td>24 / 305 (7.9 %)</td>
+</tr>
+<tr>
+<td>Hallucinations <strong>servies</strong> (post-gate)</td>
+<td><strong>0</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Lecture rigoureuse des 97.6 % / « 0 hallucination ».</strong> Les 24 codes hors-SIG se concentrent sur <strong>east-broughton</strong> (17/17), un <strong>scan-image</strong> où la lecture a échoué en bloc (overlap=0, fieldPct=0) : c'est une <strong>non-lecture</strong>, pas une invention. En écartant ce raté-scan, la précision <strong>pondérée par overlap</strong> est <strong>281/288 = 97.6 %</strong> ; il reste 7 codes hors-SIG (baie-comeau 4, ferme-neuve 1, levis 2) — plausiblement des codes réels absents de la couche SIG. Le <strong>dépôt</strong> est filtré par <code>shouldRejectForZeroOverlap</code> : <strong>aucun code hors-SIG servi</strong>, et tout champ publié passe <code>buildVisionField</code> → <strong>0 fausse valeur servie</strong>.</p>
+<p>Extrait par ville (les productives ; artefact complet dans <code>claude48-normes-bench.md</code>) :</p>
+<table>
+<thead><tr>
+<th>ville</th>
+<th>layout</th>
+<th style="text-align:right">overlap/SIG</th>
+<th style="text-align:right">recoupE</th>
+<th style="text-align:right">fieldPct</th>
+<th style="text-align:right">halluc</th>
+<th>dépôt (codes/pub%)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>baie-comeau</td>
+<td>override</td>
+<td style="text-align:right">80/237</td>
+<td style="text-align:right">0.952</td>
+<td style="text-align:right">37.9</td>
+<td style="text-align:right">4/84</td>
+<td>257 / 45.8</td>
+</tr>
+<tr>
+<td>ferme-neuve</td>
+<td>override (texte)</td>
+<td style="text-align:right">34/112</td>
+<td style="text-align:right">0.971</td>
+<td style="text-align:right">48.6</td>
+<td style="text-align:right">1/35</td>
+<td>—</td>
+</tr>
+<tr>
+<td>girardville</td>
+<td>override</td>
+<td style="text-align:right">48/105</td>
+<td style="text-align:right">1.0</td>
+<td style="text-align:right">62.5</td>
+<td style="text-align:right">0/48</td>
+<td>—</td>
+</tr>
+<tr>
+<td>saint-gabriel-de-rimouski</td>
+<td>override</td>
+<td style="text-align:right">65/66</td>
+<td style="text-align:right">1.0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0/65</td>
+<td>—</td>
+</tr>
+<tr>
+<td>sept-iles</td>
+<td>override</td>
+<td style="text-align:right">30/667</td>
+<td style="text-align:right">1.0</td>
+<td style="text-align:right">50</td>
+<td style="text-align:right">0/30</td>
+<td>640 / 55.4</td>
+</tr>
+<tr>
+<td>east-broughton</td>
+<td><strong>image-scan (raté)</strong></td>
+<td style="text-align:right">0/78</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">17/17</td>
+<td>0 / 0</td>
+</tr>
+</tbody></table>
+<h3>4.2 Consommation &amp; coût</h3>
+<p>Prix liste Opus 4.8 : <strong>$5.00 / 1M in · $25.00 / 1M out</strong>. <code>in total</code> inclut les tuiles image (<code>cache_creation</code> + <code>cache_read</code>). <code>API-$</code> = <code>total_cost_usd</code> rapporté par le CLI (fait foi, tarifie les tokens-image cachés).</p>
+<table>
+<thead><tr>
+<th>Métrique / muni (villes productives)</th>
+<th>Valeur</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Tokens in (incl. image)</td>
+<td><strong>90 429</strong></td>
+</tr>
+<tr>
+<td>Tokens out (gonflé par le raisonnement xhigh)</td>
+<td><strong>17 449</strong></td>
+</tr>
+<tr>
+<td><strong>API-$ / muni</strong> (équivalent-API)</td>
+<td><strong>$0.884</strong></td>
+</tr>
+<tr>
+<td>Temps / muni</td>
+<td>152 s (sur 20) · 249 s (sur 11 productives)</td>
+</tr>
+<tr>
+<td>Total 20 villes</td>
+<td>API-$ = $12.08 · out = 202 139 tok</td>
+</tr>
+</tbody></table>
+<p><strong>Coût RÉEL = 0 $.</strong> Engine-B est servi par l'<strong>abonnement Claude OAuth</strong> : le CLI rapporte <code>apiKeySource: none</code> et une fenêtre <code>five_hour</code> avec dépassement <strong>REJETÉ</strong> (jamais de facturation silencieuse) — vérifié dans <code>lib/grille-claude-cli.ts</code>. Le <code>total_cost_usd</code> est un <strong>équivalent-API « fantôme »</strong>, pas une dépense. Seule contrainte : la <strong>fenêtre glissante 5 h</strong> — ~<strong>114.6 munis/fenêtre</strong> (hypothèse 2 000 000 tokens-out/ fenêtre ÷ 17 449 out/muni — <strong>à calibrer sur un vrai <code>rate_limit_event</code></strong>).</p>
+<blockquote>Note : le <code>out</code> élevé (raisonnement xhigh) domine à la fois l'API-$ (×$25/1M) ET la conso d'abonnement. Baisser l'effort (<code>high</code>) réduirait fortement les deux, au prix d'un peu de qualité.</blockquote>
+<hr>
+<h2>5. GPT-5.5 (xhigh, codex) — précision parfaite, coût en crédits-plan</h2>
+<p>Route : <code>lib/grille-gpt55-codex.ts</code> → <code>extractGrilleGpt55FromPdf</code> (<code>GPT55_METHODE="codex/gpt-5.5-vision"</code>, <code>codex exec --json</code> headless).</p>
+<p><strong>Sources.</strong> (a) <strong>persisté</strong> : <code>work/bench-qc-zonage-models/report.md</code> + <code>raw.json</code> (harnais <code>run-qc-acquisition-model-bench.ts</code>) — 1 page baie-comeau. (b) <strong>non persisté</strong> (stdout du driver <code>work/bench/gpt55-mini-driver.ts</code>, 5 villes, dpi 150, 1 p/ville) — chiffres relayés du run, <strong>à recommitter</strong> (§11).</p>
+<h3>5.1 Correctness</h3>
+<ul>
+<li><strong>baie-comeau (persisté)</strong> : <code>recoupExtracted = 1.00</code>, <code>recoupSig = 0.080</code> (19/237, borné 1 page), <code>publishedFieldPct = 46.7 %</code>, <strong>0 hallucination</strong>, 0 fausse valeur.</li>
+<li><strong>5 villes (relayé)</strong> : <code>recoupExtracted = 1.00</code> et <strong>0 hallucination</strong> sur ferme-neuve / baie-comeau / east-broughton / saint-narcisse / saint-gabriel-de-rimouski ; <code>fieldPct ≈ 50 %</code>. Lit le <strong>transposé</strong>, le <strong>dense</strong> ET le <strong>scan</strong> (couvre les 3 familles où 4.8 est fort). <strong>0 raté</strong> attribuable au modèle sur les fenêtres vérifiées.</li>
+</ul>
+<p>→ correctness <strong>au niveau de 4.8</strong> (précision supérieure, 1.00 vs 0.866) sur les pages lues ; le rappel bas (0.08) est un <strong>artefact de la fenêtre 1 page</strong>, pas une faiblesse.</p>
+<h3>5.2 Consommation &amp; coût</h3>
+<ul>
+<li><strong>Tokens (baie-comeau, persisté)</strong> : in <strong>14 264</strong> / out <strong>1 955</strong> / reasoning <strong>516</strong>, 31 s.</li>
+<li><strong>Tokens (5 villes, relayé)</strong> : total in <strong>69 519</strong> / out <strong>5 152</strong> / reasoning <strong>2 092</strong>.</li>
+<li><strong>Décomposition de l'entrée</strong> : ~<strong>11k tokens/call = prompt système fixe injecté par codex</strong> (overhead d'orchestration) ; le <strong>marginal image+prompt réel ≈ 2,8k/page</strong> ; out ~0,7–2,1k ; reasoning ~0,3–0,5k. ~<strong>14–32 s/page</strong>.</li>
+<li><strong>Coût = crédits du PLAN codex.</strong> <code>codex exec --json</code> <strong>n'émet AUCUN $ ni quota-event</strong> : le coût est <strong>mesurable UNIQUEMENT en tokens</strong>. Le harnais QC <strong>hardcode <code>costUsd = 0</code></strong> pour les routes gpt (<code>run-qc-acquisition-model-bench.ts</code>, branche gpt55/gpt54) — d'où le <code>$0.0000</code> du report : le harnais compte les <strong>tokens mais pas les dollars</strong>.</li>
+</ul>
+<blockquote>⚠️ Le « hang codex 7 h » observé était une <strong>orchestration de l'ancienne tâche</strong>, PAS le modèle ; contourné par le driver headless <code>work/bench/gpt55-mini-driver.ts</code> (villes en parallèle, stdout-only).</blockquote>
+<hr>
+<h2>6. GPT-5.4 (xhigh) — même correctness que 5.5, mais dominé</h2>
+<p>Même route (<code>extractGrilleGpt55FromPdf</code>, effort 5.4). Source persistée : <code>report.md</code> + <code>raw.json</code>, baie-comeau.</p>
+<ul>
+<li><strong>Correctness IDENTIQUE à 5.5</strong> : mêmes zones (19), même overlap (19/237), <code>recoupExtracted = 1.00</code>, <code>recoupSig = 0.080</code>, <strong>0 hallucination</strong>, <code>fieldPct = 47.4 %</code> (+0.7 pt vs 5.5, dans le bruit).</li>
+<li><strong>Coût dominé</strong> : out <strong>10 122</strong> (×5.2 vs 5.5) · reasoning <strong>8 681</strong> (<strong>×16.8</strong> vs 5.5) · <strong>128 s</strong> (×4.1 vs 5.5). Sur la charge globale, le surcoût raisonnement/output atteint <strong>~5–10×</strong> et le wall-time <strong>jusqu'à ~7×</strong>.</li>
+</ul>
+<p><strong>Verdict : à écarter.</strong> Aucun gain de correctness pour un coût-token et une latence plusieurs fois supérieurs → <strong>GPT-5.5 ≫ GPT-5.4</strong> pour la lecture de grilles.</p>
+<hr>
+<h2>7. Mistral — OCR-nu, schéma (document_annotation), Pixtral</h2>
+<h3>7.1 OCR-nu (<code>/v1/ocr</code>) — fast-path des grilles simples, casse sur transposé</h3>
+<p>Source : <code>work/coverage/BENCH-OCR.md</code> (2026-06-23, 8 villes) + <code>report.md</code> (baie-comeau) + code (<code>lib/ocr.ts</code> → <code>resolveOcrCall</code> ; <code>packages/qc-sources/src/sources/grille-ocr-extractor.ts</code> → <code>extractGrilleOcrFromPdf</code>). Coût : <strong>~$0,001/page</strong> — <strong>5–10× moins cher</strong> et <strong>3–10× plus rapide</strong> que le chat-vision (5–9 s vs 12–79 s). <strong>0 fausse valeur</strong> (garde <code>buildVisionField</code>).</p>
+<p><strong>Là où il gagne — multizone dense (zones-en-colonnes).</strong> Recall ≥ chat-vision (saint-raymond 60 vs 44 champs ; sutton 6 zones vs 0 ; stratford 26 zones vs chat-vision <strong>en erreur JSON</strong>) et <strong>plus robuste</strong> : le chat-vision <code>mistral-medium</code> casse en JSON malformé sur 13 colonnes, l'OCR Document-AI non. → route <code>ocr</code> primaire pour N-h.</p>
+<p><strong>Là où il casse — grilles TRANSPOSÉES.</strong> La linéarisation markdown <strong>perd l'association colonne-zone ↔ valeur</strong> : le mapper lit la colonne d'USAGES comme codes de zone → overlap=0, fieldPct s'effondre. <strong>ferme-neuve</strong> : OCR-nu = 106 codes lus / ~88 % overlap <strong>mais fieldPct = 0</strong> (baie-comeau OCR-nu = <strong>0 %</strong> dans <code>report.md</code>), contre <strong>48.6 %</strong> publiés par 4.8 sur la même grille. Le vrai correctif est le <strong>parser natif $0</strong> quand une couche texte existe (ferme-neuve), pas un LLM.</p>
+<p><strong>Scan vertical 1-zone/page.</strong> L'OCR aplatit et sur-segmente : saint-stanislas <strong>3.6 %</strong> (2/56) contre <strong>100 %</strong> (14/14) au chat-vision. → route <code>vision</code> pour N-i.</p>
+<p><strong>Limite d'instruction.</strong> <code>/v1/ocr</code> <strong>n'a pas de canal de prompt</strong> : aucun schéma ni directive anti-invention en amont — toute la garde est <strong>en aval</strong>. C'est la différence structurelle avec un LLM instruit (§5) et avec le mode schéma (§7.2).</p>
+<h3>7.2 Mistral + <code>document_annotation</code> (schéma JSON) — corrige le transposé</h3>
+<p>Source : <code>acquisition/work/fn-bench/bench.ts</code> <strong>variante B</strong> (<code>document_annotation_format</code> = <code>{ type: "json_schema", json_schema: { name: "grille_transposee", strict: true } }</code> contre <code>mistral-ocr-latest</code>). <strong>Sortie non persistée</strong> — chiffres relayés du run (§11).</p>
+<ul>
+<li><strong>Le canal de schéma corrige la casse transposée</strong> : ferme-neuve passe de <strong>0 %</strong> (OCR-nu) à <strong>48,6 %</strong> de champs publiés — <strong>égale la cible Claude 4.8</strong> sur la même grille (la valeur 48,6 % est la référence 4.8 codée dans <code>bench.ts</code> comme objectif).</li>
+<li>Codes de zone <strong>~0.97</strong> de recall, <strong>déterministe</strong>.</li>
+<li><strong>Coût : $0,003/page</strong> (estimation littérale <code>bench.ts:213</code>) → une <strong>annexe complète de 25 pages ≈ $0,075</strong> ; <strong>105/112 codes SIG</strong> recouvrés.</li>
+</ul>
+<p>→ pour le <strong>transposé sans couche texte native</strong>, le mode schéma est le fast-path déterministe et quasi-gratuit — meilleur rapport correctness/$ que le chat-vision.</p>
+<h3>7.3 Pixtral-large + directive</h3>
+<p>Source : <code>fn-bench/bench.ts</code> <strong>variante C</strong> (<code>pixtral-large-latest</code>, rates $2/$6 par Mtoken). <strong>Sortie non persistée</strong> (§11). <strong>37,2 %</strong> de champs publiés à <strong>~$0,010/page</strong> — plus cher que le mode schéma pour un fieldPct inférieur → <strong>le schéma domine Pixtral</strong> sur le transposé.</p>
+<hr>
+<h2>8. Gemini 3.5 Flash High (<code>agy</code>) — gratuit mais non-déterministe sur dense</h2>
+<p>Source : <code>work/bench/agy-normes-bench.md</code> (+ <code>agy-results.json</code>), 20 villes, dpi 150, fenêtre ≤ 6 p, route Engine-C <code>agy -p @image --output-format json --dangerously-skip-permissions</code> (voie <strong>headless</strong> ; l'interactif h2a est non réactif). Route : <code>lib/grille-agy-cli.ts</code> → <code>extractGrilleAgyFromPdf</code> (<code>AGY_MODEL="Gemini 3.5 Flash (High)"</code>).</p>
+<h3>8.1 Correctness</h3>
+<table>
+<thead><tr>
+<th>Agrégat (villes SIG ∧ zones lues = 9/20)</th>
+<th>Valeur</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>recoupExtracted moyen (précision)</td>
+<td><strong>0.869</strong> (≈ 4.8)</td>
+</tr>
+<tr>
+<td>recoupSig moyen (rappel, ≤6p)</td>
+<td><strong>0.064</strong> (vs 4.8 : 0.21)</td>
+</tr>
+<tr>
+<td>publishedFieldPct moyen</td>
+<td><strong>35.6 %</strong></td>
+</tr>
+<tr>
+<td>Overlap total / codes-SIG</td>
+<td>77 / 5415</td>
+</tr>
+<tr>
+<td>Codes-lus total</td>
+<td>99</td>
+</tr>
+<tr>
+<td>Hallucinations servies</td>
+<td><strong>0</strong> (17 lus east-broughton filtrés)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Lit le transposé et le scan à parité</strong> de 4.8 sur les grilles simples (ferme-neuve 0.971 / fieldPct 47.1 %).</li>
+<li><strong>FAIBLE + non-déterministe sur le dense</strong> : <strong>0 zone</strong> sur <code>saint-gabriel-de-rimouski</code> (que 4.8 lit <strong>65/66</strong>, recoupSig 0.985) et <code>girardville</code> (que 4.8 lit <strong>48/105</strong>), <strong>timeouts SIGKILL / réponses vides</strong> (les lignes <code>0/0(+0)</code> tokens = appels tués ou vides). Même raté-scan qu'à 4.8 sur east-broughton (halluc 17/17).</li>
+</ul>
+<h3>8.2 Consommation &amp; coût</h3>
+<ul>
+<li><strong>Run 20 villes</strong> : in <strong>1 659 440</strong> / out <strong>230 065</strong> / thinking <strong>193 558</strong> · temps <strong>3808 s</strong> (190,4 s/ville).</li>
+<li><strong>Entrée par page lourde</strong> : ~<strong>23–38k tokens/page</strong> sur fenêtres pleines (ex. saint-pascal 37,5k/p, saint-narcisse 38,1k/p, east-broughton 37,4k/p) — <strong>≈ 5× l'entrée non-cachée de 4.8</strong> (7,5k/p) <strong>pour un rappel inférieur</strong>.</li>
+<li><strong>Coût : $0 marginal</strong> (abonnement), mais <strong>plafond de session heurté</strong> en cours de run.</li>
+</ul>
+<p><strong>Verdict</strong> : complément <strong>gratuit</strong> viable sur transposé/scan <strong>simples</strong>, mais <strong>non-déterministe sur le dense</strong> et <strong>plafond de session</strong> → <strong>pas un workhorse</strong>.</p>
+<hr>
+<h2>9. Projection sur le résidu (~632 normes) par modèle</h2>
+<p>Le bench mesure des grilles de NORMES → la projection <strong>632 normes</strong> est la plus fondée ; la colonne <strong>1066</strong> (632 normes + 434 zones) réutilise le même coût/muni comme <strong>borne haute</strong> (les tâches ZONES sont plus légères).</p>
+<table>
+<thead><tr>
+<th>modèle</th>
+<th>tokens/muni (in/out)</th>
+<th style="text-align:right">$ API-éq/muni</th>
+<th style="text-align:right">$ / 632 normes</th>
+<th style="text-align:right">$ / 1066 (borne haute)</th>
+<th>conso RÉELLE</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Claude Opus 4.8</strong></td>
+<td>90 429 / 17 449</td>
+<td style="text-align:right">$0.884</td>
+<td style="text-align:right"><strong>$559</strong></td>
+<td style="text-align:right">~$942</td>
+<td><strong>0 $</strong> ; ~5.5 fenêtres 5 h (~1.1 j @ 5 fen./j)</td>
+</tr>
+<tr>
+<td><strong>GPT-5.5</strong> (codex)</td>
+<td>~13,8k / ~1,5k <strong>/page</strong></td>
+<td style="text-align:right"><strong>n/a</strong> ($0 émis)</td>
+<td style="text-align:right"><strong>0 $ facturé</strong></td>
+<td style="text-align:right">0 $ facturé</td>
+<td><strong>crédits-plan</strong> ; ~632 pages × ~14k in ≈ 8,8M in ; wall ~14–32 s/page</td>
+</tr>
+<tr>
+<td>GPT-5.4 (codex)</td>
+<td>~12,9k / ~10,1k /page</td>
+<td style="text-align:right">n/a</td>
+<td style="text-align:right">0 $ facturé</td>
+<td style="text-align:right">0 $ facturé</td>
+<td><strong>dominé</strong> (×5–17 tokens, ×4–7 temps) → écarter</td>
+</tr>
+<tr>
+<td><strong>Mistral OCR-nu</strong></td>
+<td>~pages</td>
+<td style="text-align:right">$0.001/page</td>
+<td style="text-align:right"><strong>~$3.79</strong> (6p/muni)</td>
+<td style="text-align:right">~$6.4</td>
+<td>crédits Mistral ; <strong>casse transposé</strong></td>
+</tr>
+<tr>
+<td>Mistral schéma (annot.)</td>
+<td>schéma/page</td>
+<td style="text-align:right">$0.003/page</td>
+<td style="text-align:right">~$11.4 (6p/muni)</td>
+<td style="text-align:right">~$19</td>
+<td>crédits Mistral ; <strong>corrige transposé</strong>, déterministe</td>
+</tr>
+<tr>
+<td>Gemini <code>agy</code></td>
+<td>~23–38k / var. /page</td>
+<td style="text-align:right">$0</td>
+<td style="text-align:right"><strong>0 $</strong> marginal</td>
+<td style="text-align:right">0 $</td>
+<td>abonnement ; <strong>plafond session heurté</strong> → non tenable à l'échelle</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>10. Recommandation — stratégie de routage</h2>
+<p>Le choix se fait <strong>par famille de layout</strong> (correctness égale en sécurité ; on optimise recall × coût × déterminisme) :</p>
+<table>
+<thead><tr>
+<th>Cas de grille</th>
+<th>Route recommandée</th>
+<th>Pourquoi</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Multizone simple</strong> (zones-en-colonnes)</td>
+<td><strong>Mistral OCR-nu</strong></td>
+<td>$0,001/pg, robuste, pas de crash JSON ; la linéarisation ne casse pas l'association ici</td>
+</tr>
+<tr>
+<td><strong>Transposé</strong> (couche texte native)</td>
+<td><strong>parser natif $0</strong></td>
+<td>ferme-neuve : gratuit, exact, avant tout LLM</td>
+</tr>
+<tr>
+<td><strong>Transposé</strong> (sans texte, image)</td>
+<td><strong>Mistral schéma</strong> (<code>document_annotation</code>) ou <strong>GPT-5.5</strong></td>
+<td>schéma déterministe $0,003/pg (48,6 %, = 4.8) ; GPT-5.5 si crédits-plan disponibles</td>
+</tr>
+<tr>
+<td><strong>Dense</strong> (glyphes serrés)</td>
+<td><strong>Claude 4.8</strong> ou <strong>GPT-5.5</strong></td>
+<td>seuls déterministes sur dense ; Gemini y échoue (0 zone saint-gabriel)</td>
+</tr>
+<tr>
+<td><strong>Scan-image vertical</strong></td>
+<td><strong>Claude 4.8</strong> / <strong>GPT-5.5</strong></td>
+<td>LLM instruit &gt; OCR-nu (qui sur-segmente : 3.6 % vs 100 %)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Workhorse par défaut = Claude 4.8</strong> (abonnement, <strong>0 $</strong>, lit tout, déterministe). <strong>Second workhorse = GPT-5.5</strong> (précision 1.00, <strong>0 $ facturé</strong> en crédits-plan) — <strong>GPT-5.5 ≫ GPT-5.4</strong> (même correctness, fraction du coût/temps → 5.4 écarté).</li>
+<li><strong>Fast-path $ = Mistral</strong> : OCR-nu sur multizone simple, <strong>schéma</strong> sur transposé-image.</li>
+<li><strong>Gemini <code>agy</code></strong> = complément gratuit sur transposé/scan <strong>simples</strong> uniquement (pas workhorse : non-déterministe sur dense, plafond session).</li>
+<li><strong>Le goulot n'est PAS le modèle</strong> : c'est la <strong>localisation de la page-grille</strong> dans un règlement codifié (§2, hors-scope de ce bench) — traitée par <code>--auto-grid-page</code> + fenêtres vérifiées (<a href="../spec/zonage-extraction-methods.md"><code>../spec/zonage-extraction-methods.md</code></a> §3), pas par un changement de modèle.</li>
+</ul>
+<hr>
+<h2>11. Comparabilité, provenance &amp; limites</h2>
+<p><strong>Rappels non comparables.</strong> GPT-5.5/5.4 sont benchés sur <strong>1 page/ville</strong> ; 4.8 et Gemini sur <strong>≤ 6 pages</strong>. Le <code>recoupSig</code> (rappel) est <strong>borné par la fenêtre</strong> → il <strong>ne se compare pas</strong> d'un modèle à l'autre (le 0.08 de GPT n'est pas « moins bon » que le 0.21 de 4.8, c'est 1 page vs 6). <strong>Seuls <code>recoupExtracted</code> (précision) et <code>publishedFieldPct</code> sont comparables</strong> inter-modèles.</p>
+<p><strong>Provenance des chiffres.</strong></p>
+<table>
+<thead><tr>
+<th>Bloc</th>
+<th>Provenance</th>
+<th>Statut</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Claude 4.8 (20 villes)</td>
+<td><code>claude48-normes-bench.md/.json</code>, <code>claude48-cost-projection.md</code></td>
+<td><strong>persisté</strong></td>
+</tr>
+<tr>
+<td>Gemini <code>agy</code> (20 villes)</td>
+<td><code>work/bench/agy-normes-bench.md</code>, <code>agy-results.json</code></td>
+<td><strong>persisté</strong></td>
+</tr>
+<tr>
+<td>GPT-5.5 / 5.4 (baie-comeau, 1 p)</td>
+<td><code>bench-qc-zonage-models/report.md</code> + <code>raw.json</code></td>
+<td><strong>persisté</strong></td>
+</tr>
+<tr>
+<td>GPT-5.5 (5 villes)</td>
+<td><code>work/bench/gpt55-mini-driver.ts</code> — <strong>stdout only</strong></td>
+<td><strong>non persisté</strong> — à recommitter</td>
+</tr>
+<tr>
+<td>Mistral schéma / Pixtral</td>
+<td><code>acquisition/work/fn-bench/bench.ts</code> — <strong>aucune sortie fichier</strong></td>
+<td><strong>non persisté</strong> — à recommitter</td>
+</tr>
+</tbody></table>
+<p>Les figures « non persisté » (GPT-5.5 5-villes ; Mistral-schéma 48,6 % / 105-112 codes / $0,075 ; Pixtral 37,2 %) sont <strong>relayées du run</strong> et cohérentes avec les blocs persistés (GPT-5.5 baie-comeau confirme précision 1.00 / 0 halluc ; le 48,6 % est la cible-référence 4.8 mesurée). Pour une traçabilité complète, <strong>rejouer et committer</strong> ces deux harnais.</p>
+<p><strong>Autres limites</strong> : quotas estimés non calibrés (§2.2) ; localisation page-grille hors-scope (§2.1) ; tâches ZONES effleurées ; débit soutenu non stressé.</p>
+<blockquote>Rappel de rigueur : l'équivalence Claude 4.8 / Codex GPT-5.5 démontrée pour la <strong>génération de code</strong> T1/T2 (<a href="../spec/zonage-georeferencement-gcp.md"><code>../spec/zonage-georeferencement-gcp.md</code></a> §4) <strong>ne préjuge pas</strong> de la lecture OCR-vision ; les conclusions ci-dessus reposent sur le bench OCR-vision propre.</blockquote>
+<hr>
+<h2>12. Références</h2>
+<p><strong>Artefacts de bench</strong> (dans le checkout) : <code>work/bench/claude48-normes-bench.md</code>, <code>work/bench/claude48-cost-projection.md</code>, <code>work/bench/claude48-results.json</code>, <code>work/bench/agy-normes-bench.md</code>, <code>work/bench/agy-results.json</code>, <code>work/bench/sample-20.json</code>, <code>work/bench/windows.json</code>, <code>work/bench-qc-zonage-models/report.md</code> + <code>raw.json</code>, <code>work/coverage/BENCH-OCR.md</code> (Mistral-OCR vs chat-vision, suivi Git).</p>
+<p><strong>Harnais / code</strong> : <code>acquisition/src/bench/run-claude48-normes-bench.ts</code>, <code>analyze-claude48.ts</code>, <code>acquisition/src/bench/run-qc-acquisition-model-bench.ts</code>, <code>work/bench/gpt55-mini-driver.ts</code>, <code>acquisition/work/fn-bench/bench.ts</code> (schéma/Pixtral) · <code>acquisition/src/lib/grille-claude-cli.ts</code> (<code>extractGrilleClaudeFromPdf</code>, OAuth <code>apiKeySource:none</code>, <code>total_cost_usd</code>) · <code>acquisition/src/lib/grille-gpt55-codex.ts</code> (<code>extractGrilleGpt55FromPdf</code>) · <code>acquisition/src/lib/grille-agy-cli.ts</code> (<code>extractGrilleAgyFromPdf</code>) · <code>acquisition/src/lib/ocr.ts</code> (<code>resolveOcrCall</code>) · <code>packages/qc-sources/src/sources/grille-ocr-extractor.ts</code> (<code>extractGrilleOcrFromPdf</code>) · <code>packages/qc-sources/src/sources/grille-vision-extractor.ts</code> (<code>buildVisionField</code>, <code>VISION_PUBLISH_CONFIDENCE=0.92</code>) · <code>acquisition/src/zonage-norms-2engine-keepbest.ts</code>.</p>
+<p><strong>Documents liés</strong> : <a href="../spec/zonage-extraction-methods.md"><code>../spec/zonage-extraction-methods.md</code></a> (méthodes par cas) · <a href="../spec/methodes-acquisition.md"><code>../spec/methodes-acquisition.md</code></a> (§NORMES N4 bi-moteur) · <a href="../spec/normes-extraction-retenu.md"><code>../spec/normes-extraction-retenu.md</code></a>.</p>
+<p><strong>Export.</strong> <code>scripts/md-study-export.ts</code> valide les tableaux de ce document (cohérence du nombre de colonnes) puis génère un <strong>HTML autonome imprimable</strong> (<code>model-eval-vision-ocr.html</code>, CSS inline, sans dépendance externe) et, si un moteur headless (Playwright/Puppeteer) est disponible, un PDF (<code>model-eval-vision-ocr.pdf</code>). Sur cet environnement <strong>aucun moteur PDF n'est installé</strong> → l'export livré est le <strong>HTML</strong> (ouvrir dans un navigateur → Imprimer → Enregistrer en PDF). Commande : <code>npx tsx scripts/md-study-export.ts docs/study/model-eval-vision-ocr.md</code>.</p></body></html>

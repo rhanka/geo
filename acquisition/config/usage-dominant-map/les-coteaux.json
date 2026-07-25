@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "RB": "residentiel",
+    "RM": "residentiel",
+    "RH": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "REC": "environnemental",
+    "CS": null,
+    "M": null,
+    "P": null,
+    "X": null,
+    "lLE": null
+  },
+  "source": "https://les-coteaux.qc.ca/wp-content/uploads/2026/06/R317_Annexe-1_Grilles-de-specifications_codifie_20260611.pdf",
+  "note": "Municipalité Les Coteaux (MRC de Vaudreuil-Soulanges), règlement de zonage no 317. Le CORPS est muet: son art. 1.2.7 déclare que la lettre « correspond au caractère général de la zone » sans AUCUNE table (article-croupion). La légende vit dans les annexes, qui « font partie intégrante » du règlement (art. 1.1.7). Gisement retenu: les TITRES de grille de l'annexe 1, qui nomment la famille au-dessus de chaque code (1 grille par zone, 78 zones / 157 p.) — VERBATIM: « Zone agricole A-101 », « Zone Commerciale C-202 », « Zone Industrielle I-134 », « Zone Mixte M-112 », « Zone Publique P-111 », « Zone Récréative REC-225 », « Zone Résidentielle basse densité RB-103 », « Zone résidentielle moyenne densité RM-106 », « Zone résidentielle haute densité RH-125 », « Zone Réserve résidentielle X-104 », « Zone Canal de Soulanges CS-226 », « Zone Insulaire Ile-242 ». Corroboré par la légende textuelle du plan de zonage (annexe 2): « A -> Agricole | CS -> Canal de Soulanges | C -> Commerciale | I -> Industrielle | lLE -> Insulaire | M -> Mixte | P -> Publique | REC -> Récréative ». Propriétaire attesté par le CORPS: en-tête de CHAQUE page de l'annexe 1 « Municipalité de Les Coteaux — Annexe 1 – Grille de spécifications »; corps « MRC DE VAUDREUIL-SOULANGES / MUNICIPALITÉ LES COTEAUX ». ⛔ CS -> null est un ANTI-FALL-THROUGH OBLIGATOIRE: « Canal de Soulanges » est un TOPONYME et n'est aucune des cinq catégories — sans cette clé, les 2 polygones CS-* tomberaient sur « C » -> commercial, FAUX en silence. X « Réserve résidentielle » -> null par la règle RÉSERVE: le substantif est « Réserve », « résidentielle » n'en est que le qualificatif; hypothèse X -> residentiel falsifiée à charge — la grille de X-104 n'autorise AUCUN usage Habitation (H-1 à H-6 tous vides) là où A-101 porte « X(1) » sur H-1 (la matrice ne fonde rien mais elle réfute). ⭐ « lLE » n'est PAS une coquille du SIG: c'est la forme littérale de la légende de l'annexe 2 (l'annexe 1 écrit « Ile-242 »), et elle DOIT être déclarée telle quelle — le match étant un startsWith case-insensible, « lle-242 » ne commence PAS par « ile » ⇒ déclarer « ILE » donnerait 0 match. Libellé « Insulaire » = aucune des cinq -> null. Autres null explicites: M « Mixte » est dual; P « Publique » est public. « L » (« Zone Lac Saint-François L-240 ») existe au règlement mais n'est pas servi: non déclaré. Couverture 12/12 préfixes = 68/68 polygones."
+}

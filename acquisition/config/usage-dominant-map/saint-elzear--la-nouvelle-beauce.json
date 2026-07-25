@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "VIL": "residentiel",
+    "I": "industriel",
+    "A": "agricole",
+    "AF": "agricole",
+    "REC": "environnemental",
+    "M": null,
+    "PU": null
+  },
+  "source": "https://st-elzear.ca/wp-content/uploads/2025/09/2007-115-Zonage-Saint-Elzear-2025-316.pdf",
+  "note": "Règlement de zonage no 2007-115 (codifié 2025-316), art. 2.2 « Découpage du territoire en zones »: « chaque zone est identifiée par un numéro qui réfère à la classe d'usages prédominants ... Au total, le présent règlement comprend 9 types de zones: RA: Résidentielle (Faible densité); RB: Résidentielle (Moyenne densité); M: Mixte: résidentielle et commerciale/services; PU: Publique; I: Industrielle; A: Agricole; AF: Agroforestière; VIL: Villégiature; REC: Récréative ». RA/RB « Résidentielle » et VIL « Villégiature » -> residentiel; I « Industrielle » -> industriel; A « Agricole » et AF « Agroforestière » -> agricole; REC « Récréative » -> environnemental. Null explicite: M « Mixte: résidentielle et commerciale/services » = DUALE; PU « Publique » = publique. Préfixes servis (fold --list-prefixes): RA, M, PU, A, AF, I, RB, PZ, VIL, B, C. Les 3 préfixes PZ, B, C (1 zone chacun) ne figurent PAS parmi les 9 types de l'art. 2.2 -> laissés SANS clé => usage_dominant=null (honnête, non inventé); REC est un type de la légende non encore présent au SIG. Aucun préfixe mappé absent de la légende verbatim."
+}

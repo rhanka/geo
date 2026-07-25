@@ -1,0 +1,29 @@
+{
+  "prefix_map": {
+    "Ha": "residentiel",
+    "Hb": "residentiel",
+    "Hc": "residentiel",
+    "HRV": "residentiel",
+    "HRR": "residentiel",
+    "HU": "residentiel",
+    "P": "environnemental",
+    "Pa": null,
+    "Pb": null,
+    "Rec": "environnemental",
+    "REC": "environnemental",
+    "RN": null,
+    "Ca": "commercial",
+    "Cb": "commercial",
+    "CV": null,
+    "Ia": "industriel",
+    "Ib": "industriel",
+    "RU": null,
+    "Ag": "agricole",
+    "Agf": "agricole",
+    "Ad": null,
+    "PAE": null,
+    "DD": null
+  },
+  "source": "Règlement de zonage n° 2014-14, Ville de Val-d'Or, MRC de La Vallée-de-l'Or — https://www.ville.valdor.qc.ca/uploads/2_Services%20aux%20citoyens/Permis/Urbanisme/201414Zonage.pdf, chap. III §3.1 « CODIFICATION DES ZONES ».",
+  "note": "§3.1 (verbatim, « le ou les groupe(s) dominant(s) »; distinct du chap. II « Classification des usages » qui réutilise les mêmes lettres): « RN Ressource naturelle; Ag Agricole; Agf Agro-forestier; Ad Agricole déstructuré; P Protection; RU Rurale; HV Habitation de villégiature; HRV Habitation à faible densité riveraine; HU Maison unimodulaire; HRR Rurale résidentielle; Ha/Hb/Hc Habitation faible/moyenne/forte densité; Ca Commerce sans nuisances; Cb Commerce à incidence; CV centre-ville/centre-village; Ia commerce de gros et industrie contrainte faible/modérée; Ib industrie contrainte élevée et extractive; Pa/Pb Publique et Institutionnelle locale/régionale; Rec Récréation; DD Développement différé; PAE Plan d'aménagement d'ensemble ». -> Ha/Hb/Hc/HRV/HU -> residentiel; HRR « Rurale résidentielle » -> residentiel (H-famille + « résidentielle » nommée; cf. saint-joseph-de-beauce « Résidentielle rurale »); P (seul) « Protection » -> environnemental; Rec « Récréation » -> environnemental; Ca/Cb « Commerce » -> commercial; Ia/Ib « industrie » -> industriel; Ag « Agricole » et Agf « Agro-forestier » -> agricole. Null explicite: Pa/Pb « Publique et Institutionnelle »; CV « centre-ville »; RU « Rurale »; Ad « Agricole déstructuré » (enclave duale); RN « Ressource naturelle » (mêle foresterie et faune, non-agricole = pas de bucket unique); PAE (procédure) et DD « Développement différé » (réserve). Longest-prefix OBLIGATOIRE: Pa/Pb battent P (Publique ≠ Protection!), Agf/Ad battent Ag, REC autonome. Codes servis numéro-en-tête, réversés par canonZoneCodeServe. La matrice des usages permis n'est pas utilisée."
+}

@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 // ── S3 import via CommonJS fallback ──────────────────────────────────────────
-import { s3Client, putBytes, BUCKET } from "./lib/s3.js";
+import { s3Client } from "./lib/s3.js";
 import type { S3Client } from "@aws-sdk/client-s3";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -80,7 +80,6 @@ const DIRECTORY_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/qc-munic
 
 const TIMEOUT_MS = 5_000;
 const USER_AGENT = "sentropic-geo/0.1";
-const S3_PREFIX = "normalized/ca-qc-zonage/";
 const MAX_FEATURES_FETCH = 5000; // limite max features ArcGIS
 
 interface Args {
@@ -830,23 +829,21 @@ async function processCity(
     };
   }
 
-  // 7. Publication S3
-  const geojson: GeoFeatureCollection = {
-    type: "FeatureCollection",
-    features: normalized,
-  };
-
-  const s3Key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-  const body = JSON.stringify(geojson);
-
-  console.error(`  [${slug}] Publication S3: ${s3Key} (${normalized.length} features)`);
-  await putBytes(s3, s3Key, body, "application/geo+json");
-
-  console.error(`  [${slug}] PUBLIÉ: ${normalized.length} features, champ=${zoneCodeField}, dist=${distanceKm?.toFixed(1) ?? "?"}km`);
+  // 7. Publication REFUSÉE — pas de preuve géométrique v2 émettable.
+  // Ce runner ne conserve que des features PARSÉES et potentiellement PAGINÉES: il ne
+  // peut pas lier honnêtement une URL source unique aux octets qu'il servirait (le
+  // sha256 porterait sur des features re-sérialisées, pas sur la réponse HTTP exacte).
+  // Publier ici exigeait soit `putBytes` (refusé par le garde `isServedZoneKey` — le
+  // run mourrait en annonçant "published"), soit une preuve SYNTHÉTIQUE, c'est-à-dire
+  // fabriquée. On refuse explicitement plutôt que de mentir: utiliser un runner de
+  // remplacement qui conserve les octets vérifiés (`zones-arcgis-replace.ts`).
+  console.error(`  [${slug}] REFUS de publication: aucune preuve v2 vérifiable (${normalized.length} features détectées, champ=${zoneCodeField}, dist=${distanceKm?.toFixed(1) ?? "?"}km)`);
 
   return {
     slug,
-    status: "published",
+    status: "error",
+    reason:
+      "Publication refusée: la réponse FeatureServer paginée est analysée sans conserver les octets exacts de chaque réponse; aucune preuve géométrique v2 vérifiable ne peut être émise. Utiliser zones-arcgis-replace.ts.",
     layerUrl,
     zoneCodeField,
     featureCount: normalized.length,

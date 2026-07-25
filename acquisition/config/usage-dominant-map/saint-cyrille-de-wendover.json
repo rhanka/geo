@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "ADP": "agricole",
+    "ADPi": "agricole",
+    "ADPp": "agricole",
+    "ADPr": "agricole",
+    "AV": "agricole",
+    "C": "commercial",
+    "ID": "residentiel",
+    "IDa": "residentiel",
+    "IDp": "residentiel",
+    "IR": "industriel",
+    "P": null,
+    "R": "residentiel",
+    "Rr": "residentiel",
+    "RUC": null,
+    "RUR": null,
+    "SA": "commercial"
+  },
+  "source": "https://stcyrille.qc.ca/wp-content/uploads/bsk-pdf-manager/2025/12/Reglement-437-Grilles-usagesNotes-2025-12-04-AMENDEE.pdf",
+  "note": "Règlement de zonage 437, Municipalité de Saint-Cyrille-de-Wendover (MRC de Drummond), « Annexe VI, Règlement de zonage Saint-Cyrille-de-Wendover » / « Grille des usages et normes d'implantation par zone » (version amendée 2025-12-04). Le corps du règlement 437 n'est PAS publié (le site ne diffuse que 435-Construction et 436-Lotissement; aucune catégorie « Zonage »): la légende retenue est la RANGÉE D'EN-TÊTES DE FAMILLES de l'Annexe VI, qui nomme la dominante au-dessus des colonnes de zones. Libellés VERBATIM (rangée d'en-tête, y=35.0): « Agricole dynamique » -> AD; « Agricole dynamique de protection » -> ADP + ADPi + ADPp + ADPr; « Agricole viable » -> AV; « Îlot résidentiel déstructuré » -> ID + IDa + IDc + IDp; « Résidentielle » -> R + Rr; « Commerciale » -> C; « Publique » -> P; « Rurale » -> RUR; « Rur. Cons. » -> RUC; « Industielle régionale » [sic, coquille pour Industrielle] -> IR; « Serv. Auto. » -> SA. RATTACHEMENT DES VARIANTES PROUVÉ GÉOMÉTRIQUEMENT (et non deviné): chaque libellé est centré sur la course COMPLÈTE des colonnes de sa famille, toutes pages confondues; les centres mesurés (pdftotext -bbox) coïncident au demi-point près avec le centre prédit: AD1..AD10 (10 col.) -> 420 mesuré 420; ADP1..ADPr2 (15 col., médiane=ADP8) -> 313 mesuré 313; AV1..AV5 (médiane=AV3) -> 618 mesuré 618; ID1..IDp1 (13 col., médiane=ID7) -> 404,5 mesuré 404,5; R1..R33+Rr1+Rr2 (35 col., médiane=R18) -> 648 mesuré 648,5 (R1..R33 seul donnerait R17=618, soit une colonne entière d'écart: Rr EST donc dans « Résidentielle »); C1..C11 (médiane=C6) -> 374 mesuré 374; P1..P8 (médiane P4/P5) -> 663,5 mesuré 664; RUR1..RUR3 (médiane=RUR2) -> 343,5 mesuré 343,5; SA1 -> 498,5 mesuré 498,5. Les suffixes minuscules (i/p/r, a/c/p) sont donc des sous-variantes INTERNES à leur famille, déclarées explicitement car le fold matche au PLUS LONG préfixe. ADPi -> agricole malgré l'avis public 437-22.1 (« Zone ADPi-2 - ajout », adopté le 5 juillet 2021, objet: « ajouter une nouvelle zone pour réguler la situation de l'usine de transformation de chanvre et de cannabis La Feuille Verte inc. »): vérification faite dans la grille, ADPi-1 ET ADPi-2 autorisent « Culture du sol » (A1), et ADPi-2 autorise en plus « Élevage » (A3), « Restauration à la ferme » (AS3) et « Maison mobile pour fins agricoles » (AS5); l'industrie y est une exception gâchée par notes (I4 « Toute autre industrie » X8,21,51), pas la dominante — la famille « Agricole dynamique de protection » tient. ID -> residentiel: le sujet du libellé est « Îlot résidentiel », « déstructuré » qualifie l'îlot et le contexte agricole est un complément de LIEU qui ne transfère pas la dominance (précédent racine ID « autorisation pour la construction de résidence » -> residentiel). SA -> commercial: « Serv. Auto. » (services automobiles); dans la grille SA-1 n'autorise que C3.4a « Services véhicules vente - entretien de base » et C3.4b « Services entretien, reconditionnement », classes du groupe « Commercial \"C\" ». NULL EXPLICITES: P « Publique » (publique, hors des cinq catégories); RUR « Rurale » (Rurale SEULE, aucune colonne « usages dominants » n'assigne l'Habitation — la grille est une matrice d'usages permis, pas une colonne de dominance, donc pas d'override type saint-felix-de-valois); RUC « Rur. Cons. » (abréviation NON expansible avec certitude: « Rurale » retombe sur null et « Cons. » supposerait « Conservation » -> environnemental, soit deux catégories différentes = duale -> null; null est de plus REQUIS ici pour bloquer le repli longest-prefix de RUC vers R -> residentiel). OMIS: IDc (présent à l'Annexe VI mais AUCUN polygone IDc servi par le SIG). La matrice des usages permis des grilles n'est pas utilisée comme légende: elle n'a servi qu'à FALSIFIER la lecture d'ADPi et de SA. Source consultée le 2026-07-17 (HTTP 200, 624 806 octets, identique au grille.pdf local; = source_url du manifest qc-zonage-norms)."
+}

@@ -1,0 +1,11 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "F": "agricole",
+    "R": "residentiel",
+    "M": null,
+    "P": null
+  },
+  "source": "https://services3.arcgis.com/Kmm9fZ2zYEgElBCy/arcgis/rest/services/SiteWeb_AmenagementUrbanisme/FeatureServer/0/query?where=MuniTopo+LIKE+%27%25Edwidge%25%27&outFields=MuniTopo,MUNI,ZONE,ETIQUETTE,NUMERO,DESCRIPTION&returnGeometry=false&f=json",
+  "note": "Sainte-Edwidge-de-Clifton (MRC de Coaticook), règlement de zonage numéro 354-14 (version août 2022). La catégorie n'est PAS déduite de la lettre: la couche SIG AMONT de la MRC (« Zonage municipal », FeatureServer/0 du service SiteWeb_AmenagementUrbanisme) porte pour CHAQUE polygone un attribut `DESCRIPTION` VERBATIM qui EST la fonction dominante de la zone, comme pour saint-malo (même MRC, même gisement). Gate propriétaire SQL: `MuniTopo LIKE '%Edwidge%'` -> les 41 entités retournées portent toutes VERBATIM `MuniTopo` = « Municipalité de Sainte-Edwidge-de-Clifton » et `MUNI` = « STE »; le compte (41) et la distribution (F 22, A 9, M 4, P 3, R 3) coïncident exactement avec les 41 polygones servis. Correspondance préfixe (`ZONE`) -> `DESCRIPTION` relevée VERBATIM, 1:1 sans exception: A « Agricole » -> agricole; F « Forestière » -> agricole; R « Résidentielle » -> residentiel. Null explicite: M « Mixte » est une affectation DUALE (le règlement 354-14 traite d'ailleurs « M », « R » et « P » ensemble comme l'affectation urbaine, art. 14.1 « à l'extérieur de l'affectation urbaine (zones de type « M », « R » et « P ») »); P « Publique » est publique -> aucune dominante parmi les cinq n'y est forcée. Corroboration au corps du règlement (PDF de la MRC https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/St-Edwidge/STE_r%C3%A8glement%20zonage_no354-14(ao%C3%BBt%202022).pdf, pied de page « Municipalité du canton de Sainte-Edwidge-de-Clifton »): art. 8.9 al. 10 « exclusivement pour les zones agricoles (A) et forestières (F) ». La matrice des usages permis de la grille des spécifications (Annexe 2) n'est PAS utilisée. Couverture: 41/41 polygones (100%)."
+}

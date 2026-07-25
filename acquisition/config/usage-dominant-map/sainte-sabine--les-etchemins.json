@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "V": "residentiel",
+    "I": "industriel",
+    "A": "agricole",
+    "AF": "agricole",
+    "F": "agricole",
+    "CH": null,
+    "P": null,
+    "ID": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-sabine/_publication/fichiers/Rglement%20de%20zonage%2005-2007%20-%202025-03-12.pdf",
+  "note": "Règlement de zonage de la Municipalité de Sainte-Sabine (MRC Les Etchemins), CHAPITRE 3 « LE PLAN DE ZONAGE », article 3.2 « Codification des zones »: « Chaque zone porte un numéro d'identification auquel est attaché des lettres d'appellation telles qu'indiquées au tableau suivant : » puis le tableau LETTRES / GROUPE D'USAGE, verbatim: H « Habitation »; C « Commercial »; CH « Commercial et habitation »; P « Public et institutionnel »; I « Industriel »; V « Villégiature »; A « Agricole »; AF « Agroforestier »; F « Forestier »; Cn « Conservation »; R « Récréation »; M « Multiressources »; ID « Îlot déstructuré ». Mapping: H « Habitation » et V « Villégiature » -> residentiel; A « Agricole », AF « Agroforestier » et F « Forestier » -> agricole; I « Industriel » -> industriel. NULL EXPLICITES: CH « Commercial et habitation » est une appellation DUALE (aucune dominante unique) — le null explicite bloque aussi le fallthrough longest-prefix vers un « C » qui serait commercial; P « Public et institutionnel » est public; ID « Îlot déstructuré » est une enclave d'habitations existantes en zone agricole dont le tableau n'énonce AUCUNE dominante parmi les cinq catégories. Les lettres C, Cn, R et M du tableau ne sont PAS mappées: elles n'existent pas dans le SIG servi (codes SIG relevés: A-14, AF-11/12, CH-3/4/5/6/7/20, F-9/13/15/16/18/21/23, H-2, I-19/22, ID-17, P-8, V-10). La matrice des usages permis des grilles de spécifications n'est pas utilisée."
+}
