@@ -84,7 +84,7 @@ async function applyToServed(
       if (opts.strip) {
         if (field in f.properties) { delete f.properties[field]; changed++; }
       } else {
-        const val = (prov as Record<string, unknown>)[field] ?? null;
+        const val = prov[field] ?? null;
         if (f.properties[field] !== val) { f.properties[field] = val; changed++; }
       }
     }
