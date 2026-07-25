@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "Ha": "residentiel",
+    "Co": "commercial",
+    "In": "industriel",
+    "Ag": "agricole",
+    "Re": "environnemental",
+    "Pu": null
+  },
+  "source": "https://www.gatineau.ca/docs/guichet_municipal/participation_citoyenne/consultations_publiques/consultations_publiques_2020/travaux_concordance_revision_plan_urbanisme/texte_zonage_532_2020.pdf",
+  "note": "Règlement de zonage numéro 532-2020 de la Ville de Gatineau (numéro VERBATIM: pied de page « Ville de Gatineau / Règlement de zonage numéro 532-2020 » sur chaque page; titre « RÈGLEMENT DE ZONAGE Règlement numéro 532-2020 »). CHAPITRE 1 « DISPOSITIONS DÉCLARATOIRES ET INTERPRÉTATIVES », SECTION 3 « DISPOSITIONS INTERPRÉTATIVES RELATIVES AU DÉCOUPAGE EN ZONES », ARTICLE 15 « IDENTIFICATION DES ZONES », p. 1-6, VERBATIM: « Chaque zone délimitée au plan de zonage est identifiée par deux lettres d'appellation indiquant l'affectation principale de la zone : » suivi du tableau à colonnes « Lettres d'appellation | Affectation principale »: « Ha | Habitation », « Co | Commerciale », « In | Industrielle », « Pu | Communautaire », « Re | Récréative », « Ag | Agricole ». C'est la table d'appellation officielle: elle fait foi. La matrice des usages permis des grilles n'est PAS utilisée. MILLÉSIME tranché par la FORME du code: l'art. 15 donne l'exemple VERBATIM « Ha-01-001 / Ha : Affectation principale « Habitation » / 01 : Unité de planification / 001 : Ordre numérique de la zone » — exactement la forme servie par le SIG (Ha-06-022, Pu-04-182, Co-01-050), ce qui confirme que c'est bien le 532-2020 (et non l'ancien 502-2005) qui correspond au zonage servi. Mapping: Ha « Habitation » -> residentiel; Co « Commerciale » -> commercial; In « Industrielle » -> industriel; Ag « Agricole » -> agricole; Re « Récréative » -> environnemental (famille Récréative/Conservation). Null explicite: Pu « Communautaire » (532 polygones) ne nomme AUCUNE des cinq catégories — l'affectation communautaire/publique n'est pas une dominante résidentielle et n'est pas forcée. Préfixes SIG réellement présents (1871 polygones, sansCode=0, lus sur la collection servie via `fold-usage-dominant.ts --list-prefixes`): Ha(858), Pu(532), Co(341), Ag(77), In(33), Re(30) — les 6 préfixes du SIG sont TOUS couverts par le tableau de l'art. 15, et aucun préfixe mappé n'est absent du SIG. Aucun conflit de longest-prefix (les 6 appellations sont des couples de lettres distincts, aucune n'est le préfixe d'une autre)."
+}

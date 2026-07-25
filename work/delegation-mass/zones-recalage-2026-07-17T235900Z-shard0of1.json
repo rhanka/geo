@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-07-17T23:59:00Z",
+  "shard": { "index": 0, "modulus": 1 },
+  "served": [
+    {
+      "slug": "saint-polycarpe",
+      "method": "t2-text",
+      "officialPdf": "work/zones-recalage/shard0-20260717T09/saint-polycarpe-plan-norot.pdf",
+      "gcpIndependent": 42,
+      "residualMaxM": 14.154,
+      "holdoutMaxM": 14.118,
+      "codes": 16,
+      "spatialKm": 2.204,
+      "lotCoveragePct": 67.17,
+      "collection": "normalized/ca-qc-zonage/qc-zonage-saint-polycarpe.geojson",
+      "lotZoneJoin": "ok",
+      "lotsEnriched": "ok"
+    }
+  ],
+  "withheld": [
+    { "slug": "austin", "reason": "cadastre S3 NoSuchKey after GeoPDF and dictionary-validated Claude reads" },
+    { "slug": "chertsey", "reason": "48.2% lot coverage; map inset labels cannot be used with the main-map calibration" },
+    { "slug": "saint-ambroise", "reason": "glyph labels without an authoritative municipal dictionary" },
+    { "slug": "bethanie", "reason": "only a non-independent chamfer seed; no sufficient independent GCPs" },
+    { "slug": "montpellier", "reason": "9 independent raster matches after pruning; threshold 12" },
+    { "slug": "petit-saguenay", "reason": "0 raster/cadastre matches" },
+    { "slug": "riviere-eternite", "reason": "T2 orientation/isotropy gate fails or no residual/holdout seed" },
+    { "slug": "sainte-thecle", "reason": "5 independent raster matches after pruning; threshold 12" }
+  ],
+  "nextBatch": [
+    { "slug": "aguanish", "result": "skip", "reason": "cached municipal pages have no zoning-plan PDF" },
+    { "slug": "alleyn-et-cawood", "result": "abort", "reason": "svg_points=0; no seed or GCP" },
+    { "slug": "amherst", "result": "abort", "reason": "official 352-02 by-law has no T1 georeference and no published recalibrable plan" },
+    { "slug": "aumond", "result": "abort", "reason": "svg_points=0; no fit" },
+    { "slug": "baie-johan-beetz", "result": "abort", "reason": "svg_points=0; no fit" },
+    { "slug": "begin", "result": "abort", "reason": "svg_points=0; no fit" },
+    { "slug": "belcourt", "result": "abort", "reason": "all residual/holdout seeds fail orientation or anisotropy gates" },
+    { "slug": "blanc-sablon", "result": "skip", "reason": "cached official page has no zoning-plan PDF" }
+  ]
+}

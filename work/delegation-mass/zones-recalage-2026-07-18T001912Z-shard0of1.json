@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-07-18T00:19:12.809Z",
+  "shard": { "index": 0, "modulus": 1 },
+  "served": [
+    {
+      "slug": "saint-casimir",
+      "officialPdf": "https://www.saint-casimir.com/file-23022",
+      "officialPdfHttp": 200,
+      "plan": "Annexe II, Plan de zonage, feuillet 1/2, page 344",
+      "method": "t3-chamfer-seed + independent-raster-register + claude-dict-labels",
+      "gcpIndependent": 48,
+      "residualMaxM": 22.009,
+      "holdoutMaxM": 14.512,
+      "codes": 16,
+      "spatialKm": 0.308,
+      "lotCoveragePct": 94.8,
+      "collection": "normalized/ca-qc-zonage/qc-zonage-saint-casimir.geojson",
+      "lotZoneJoin": { "verified": true, "rows": 1672, "assignedPct": 94.8 },
+      "lotsEnriched": { "deposit": true, "zoneCodePct": 94.8, "surfacePct": 100, "postalPct": 100, "addressPct": 88.58 }
+    }
+  ],
+  "rejected": [
+    { "slug": "cap-chat", "reason": "available official maps are coastal-erosion constraints, not zoning" },
+    { "slug": "saint-jean-port-joli", "reason": "provided regulation has no zoning map; annex low-text pages are technical diagrams" },
+    { "slug": "saint-paul-de-lile-aux-noix", "reason": "provided regulation has grids only and no zoning map appendix" },
+    { "slug": "saint-felix-dotis", "reason": "Annexe D is a plan-amendment index, with no plan sheet attached" },
+    { "slug": "saint-gedeon", "reason": "document ends at annexes cover page; no map annex attached" },
+    { "slug": "saint-henri-de-taillon", "reason": "remaining annexes are non-zoning and pages 194/196 are blank" },
+    { "slug": "saint-omer", "reason": "cached file identifies Ville de Carleton-sur-Mer; spatial-municipality gate rejects it" }
+  ]
+}

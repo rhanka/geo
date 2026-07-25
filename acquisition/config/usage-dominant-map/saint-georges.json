@@ -1,0 +1,33 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "residentiel",
+    "RD": "residentiel",
+    "RE": "residentiel",
+    "RP": "residentiel",
+    "RX": "residentiel",
+    "CB": "commercial",
+    "CC": "commercial",
+    "CD": "commercial",
+    "CP": "commercial",
+    "CR": "commercial",
+    "CV": "commercial",
+    "IA": "industriel",
+    "IB": "industriel",
+    "IC": "industriel",
+    "IX": "industriel",
+    "AA": "agricole",
+    "AG": "agricole",
+    "FO": "agricole",
+    "CO": "environnemental",
+    "PA": null,
+    "PB": null,
+    "PC": null,
+    "PD": null,
+    "PP": null,
+    "TR": null
+  },
+  "source": "https://www.saint-georges.ca/storage/app/media/ville/administration/reglements-municipaux/urbanisme/Reglement-de-zonage-no-150-2005-mise-a-jour-8-avril-2026.pdf",
+  "note": "Ville de Saint-Georges, Règlement de zonage No 150-2005 (mise à jour du 8 avril 2026), Chapitre 1 « Dispositions déclaratoires et interprétatives », section « TYPES DE ZONE »: « Les types de zones apparaissant au plan de zonage sont identifiés par les lettres d'appellation suivantes : », puis table à 2 colonnes « TYPES DE ZONES | LETTRES D'APPELLATION » organisée en FAMILLES (en-têtes en majuscules qui nomment la vocation, chaque code étant un sous-type de sa famille) [r. 632-2016, 19-10-2016] [r.751-2019, 27-11-2019]. VERBATIM: « ZONES RÉSIDENTIELLES »: « de très faible densité | RA »; « de faible densité | RB »; « de moyenne densité | RC »; « de forte densité | RD »; « de très forte densité | RE »; « d'intérêt patrimonial | RP »; « d'expansion | RX ». « ZONES COMMERCIALES »: « d'utilité quotidienne | CB »; « de type centre-ville | CC »; « de type local et régional | CD »; « d'intérêt patrimonial | CP »; « récréotouristique | CR »; « noyau villageois | CV ». « ZONES INDUSTRIELLES »: « commerce de gros et industrie à contraintes légères | IA »; « à contraintes modérées | IB »; « à contraintes élevées | IC »; « à contraintes lourdes | ID »; « d'expansion | IX ». « ZONES PUBLIQUES »: « parcs et espaces verts | PA »; « institutions et équipements publics | PB »; « équipements publics à contraintes modérées | PC »; « équipements publics à contraintes élevées | PD »; « d'intérêt patrimonial | PP »; « Transport | TR ». « ZONES AGRICOLES | AA »; « ZONES AGROFORESTIÈRES | AG »; « ZONES DE CONSERVATION | CO »; « ZONES FORESTIÈRES | FO ». L'article suivant confirme que le CHIFFRE n'est que de la numérotation: « Pour les fins de réglementation et de votation, chaque zone est numérotée au plan de zonage en ajoutant un chiffre aux lettres d'appellation. » MAPPING: la famille (en-tête) porte la vocation, le sous-libellé n'est qu'un qualificatif de DENSITÉ (« très faible » à « très forte »), de PATRIMOINE, de LOCALISATION ou de niveau de CONTRAINTE — aucun de ces qualificatifs n'est une des cinq catégories. -> RA/RB/RC/RD/RE/RP/RX = residentiel; CB/CC/CD/CP/CR/CV = commercial; IA/IB/IC/IX = industriel; AA « ZONES AGRICOLES » + AG « ZONES AGROFORESTIÈRES » + FO « ZONES FORESTIÈRES » = agricole (famille agricole/agroforestière/forestière); CO « ZONES DE CONSERVATION » = environnemental. Cas tranchés explicitement: « CC de type centre-ville » = commercial et NON null malgré la règle générique « centre-ville -> null », parce que la famille « ZONES COMMERCIALES » nomme elle-même l'unique vocation et que « de type centre-ville » n'est ici qu'une localisation; « CR récréotouristique » = commercial (famille COMMERCIALE, la seule des cinq nommée — le récréotourisme y est le type de commerce, non une vocation environnementale concurrente); « RX / IX d'expansion » = residentiel / industriel et NON réserve: le règlement les range sous les familles RÉSIDENTIELLES / INDUSTRIELLES, il ne les qualifie NI de « réserve » NI de « développement futur » (contraste avec Sherbrooke où « à long terme » est écrit verbatim); « IA commerce de gros et industrie à contraintes légères » = industriel: le libellé mentionne le commerce de gros, mais la famille déclarée par le règlement est « ZONES INDUSTRIELLES » et le commerce de gros y est le type d'établissement industriel visé, non une co-dominance déclarée (aucun effet sur le filtre résidentiel d'immo dans tous les cas). NULLS EXPLICITES: PA/PB/PC/PD/PP/TR relèvent tous de la famille « ZONES PUBLIQUES » -> publique, aucune des cinq catégories nommée. PA « parcs et espaces verts » est laissé null (et NON environnemental) précisément parce que le règlement le classe sous « ZONES PUBLIQUES » et ne lui attache ici aucune fonction de conservation ni de récréation verbatim. NON mappé (anti-invention): « ID » (« ZONES INDUSTRIELLES à contraintes lourdes ») est défini par la table mais N'EXISTE PAS dans le SIG servi (aucun code ID-*). Aucun conflit de fall-through: tous les préfixes servis font exactement 2 lettres et aucun préfixe à 1 lettre n'est déclaré. Préfixes SIG servis (583 polygones, 27 préfixes, TOUS couverts par la table): RB 176, RC 65, CD 57, RA 53, PB 38, AG 31, RD 25, CC 21, PA 19, AA 14, RE 13, IA 12, IB 11, RX 7, CR 6, IC 6, PP 4, FO 4, RP 4, CB 3, CV 3, TR 3, CO 2, CP 2, PC 2, PD 1, IX 1. La matrice des usages permis des grilles n'est pas utilisée."
+}

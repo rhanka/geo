@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-07-17T07:47:51Z",
+  "shard": "0/1",
+  "scope": "pdf-zoning-georeferencing",
+  "deposits": [],
+  "results": [
+    {
+      "slug": "bowman",
+      "status": "rejected",
+      "tier": "T3",
+      "reason": "7 independent raster/cadastre GCP matches; strict minimum is 8",
+      "evidence": "work/delegation-mass/zones-recalage-20260717T-bowman-t3-register.json"
+    },
+    {
+      "slug": "inverness",
+      "status": "rejected",
+      "tier": "T3 plus Claude dictionary labels",
+      "officialSource": "https://www.invernessquebec.ca/fr/citoyens/urbanisme-et-environnement/reglements-d-urbanisme/",
+      "sheet1": {
+        "independentGcps": 33,
+        "validatedCodes": 35,
+        "labelSpatialKm": 1.166
+      },
+      "sheet2": {
+        "independentGcps": 12,
+        "residualMaxM": 14.774,
+        "holdoutMaxM": 12.321,
+        "validatedCodes": 24,
+        "labelSpatialKm": 4.95,
+        "reason": "strict spatial gate failed; 11 of 24 labels in cadastre bbox"
+      },
+      "reason": "complementary multi-sheet plan cannot be published partially; no stable T2 multisheet Claude runner"
+    },
+    {
+      "slug": "sainte-therese-de-la-gatineau",
+      "status": "rejected",
+      "tier": "T1",
+      "reason": "124-page regulation PDF has no parseable embedded georeference and no isolated zoning plan"
+    },
+    {
+      "slug": "riviere-eternite",
+      "status": "rejected",
+      "tier": "T2",
+      "urban": {"reason": "5 independent matches after pruning; minimum is 6"},
+      "territoire": {"reason": "best affine anisotropy 1.319 exceeds strict 1.1 gate"},
+      "evidence": "work/gcp/riviere-eternite-territoire.report.json"
+    },
+    {
+      "slug": "la-tuque",
+      "status": "rejected",
+      "tier": "T1",
+      "reason": "no parseable /VP, /Measure, or /GEO georeference"
+    },
+    {
+      "slug": "ange-gardien",
+      "status": "rejected",
+      "tier": "T1",
+      "reason": "embedded GPTS corner residual 996.21 m exceeds strict 50 m gate"
+    },
+    {
+      "slug": "saint-mathieu-du-parc",
+      "status": "rejected",
+      "tier": "T1",
+      "reason": "both archived zoning PDFs lack parseable /VP, /Measure, or /GEO georeference"
+    },
+    {
+      "slug": "noyan",
+      "status": "rejected",
+      "tier": "discovery",
+      "reason": "R444 is a construction regulation; official zoning R442 and its plan are not published",
+      "evidence": "work/delegation-mass/zones-recalage-2/noyan.json"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "C": "commercial",
+    "P": null,
+    "R": "residentiel",
+    "RU": "residentiel",
+    "RM": "residentiel",
+    "I": "industriel",
+    "Cons": "environnemental",
+    "Rec": "environnemental"
+  },
+  "source": "Règlement de zonage n° 751-09, Municipalité de Saint-Jean-Baptiste, MRC de La Vallée-du-Richelieu — corpus local work/zonage-norms/saint-jean-baptiste/grille.pdf (urbaniste Teknika HBA); art. 1.2 « s'applique à l'ensemble du territoire de la municipalité ».",
+  "note": "Art. 1.8 « Subdivision du territoire en zones » pose le système (« combinaison de lettres correspond au caractère général de la zone ») sans table; la nomenclature lettre->dominance est portée verbatim par les EN-TÊTES des familles de grilles (chap. 5, art. 5.6): « a) Zones agricoles A; b) Zones commerciales C; c) Zones publiques P; d) Zones résidentielles R; e) Zones résidentielles (maison mobile) Rm; f) Zones résidentielles rurale RU; g) Zones industrielles I; h) Zones de conservations CONS; i) Zones récréatives REC ». -> A -> agricole; C -> commercial; R « résidentielles », RU « résidentielles rurale » et Rm « résidentielles (maison mobile) » -> residentiel (vocation résidentielle nommée pour les trois); I -> industriel; CONS « conservations » et REC « récréatives » -> environnemental. Null explicite: P « publiques ». Longest-prefix OBLIGATOIRE: Cons bat C (sinon Cons-1 -> commercial), Rec/RU/RM bat R. La matrice des usages permis n'est pas utilisée."
+}

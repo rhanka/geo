@@ -12,7 +12,7 @@
  * upload clippé -> qc-cadastre-lots/<slug> (canonical).
  *
  * IDEMPOTENT & RESUMABLE : skip si preclip existe / si déjà dans le checkpoint
- * /tmp/clip_province_progress.json ; borné par --max-seconds.
+ * .h2a/tmp/clip_province_progress.json ; borné par --max-seconds.
  *
  * Usage :
  *   tsx src/cadastre-clip-province.ts [--max-seconds 3000] [--chunk N]
@@ -26,9 +26,10 @@ import { s3Client, exists, getBytes, putBytes, copyObject, listSlugs } from "./l
 import { SDAIndex, clipSlug, norm } from "./cadastre-clip-sda.js";
 import { fetchIndex } from "./role-foncier.js";
 import { readParquetRows } from "./lib/parquet-read.js";
+import { workspaceTmp, workspaceTmpFile } from "./lib/workspace-tmp.js";
 
-const PROG = "/tmp/clip_province_progress.json";
-const WORK = "/tmp/clip_province";
+const PROG = workspaceTmpFile("clip_province_progress.json");
+const WORK = workspaceTmp("clip_province");
 const BOUNDARIES = WORK + "/qc-municipalites.geojson";
 const ROLE_INDEX = WORK + "/role_index.json";
 

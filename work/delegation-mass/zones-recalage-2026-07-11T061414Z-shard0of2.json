@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-07-11T06:14:14Z",
+  "branch": "feat/cadre-acquisition",
+  "shard": {
+    "remainder": 0,
+    "modulus": 2,
+    "rule": "index in complete sorted city list % 2 == 0"
+  },
+  "scope": {
+    "priorAuditedNonDone": 151,
+    "priorEvidenceComplete": true,
+    "priorAudit": "work/delegation-mass/zones-recalage-2026-07-11T040131Z-shard0of2-audit.json",
+    "remainingNonDoneAfterDeposit": 150,
+    "remainingPdfBucketsAfterDeposit": 142,
+    "remainingDisposition": "all covered by the prior audit; no unevidenced slug remains"
+  },
+  "deposits": [
+    {
+      "slug": "sainte-henedine",
+      "method": "t1-geopdf-claude-vision-multisheet",
+      "model": "claude-sonnet-4-6",
+      "sources": [
+        "work/pdf-cache/sainte-henedine-plan-agricole.pdf",
+        "work/pdf-cache/sainte-henedine-plan-urbain.pdf"
+      ],
+      "dictionary": "work/zonage-norms/sainte-henedine-official-plans-codes.json",
+      "dictionarySource": "verbatim visible zone labels on the two official municipal plans",
+      "dictionarySize": 52,
+      "sheets": [
+        {
+          "type": "agricole",
+          "crs": "NAD_1983_MTM_7",
+          "residualM": 0.079,
+          "claudeReads": 24,
+          "validated": 24,
+          "rejected": 0
+        },
+        {
+          "type": "urbain",
+          "crs": "NAD_1983_MTM_7",
+          "residualM": 0.274,
+          "claudeReads": 42,
+          "validated": 42,
+          "rejected": 0
+        }
+      ],
+      "pooledCodePoints": 66,
+      "distinctCodes": 52,
+      "servedFeatures": 51,
+      "spatialKm": 1.054,
+      "lotsAssigned": 1083,
+      "lotsTotal": 1106,
+      "lotsAssignedPct": 97.92,
+      "surfaceCoveredPct": 96.43,
+      "s3Key": "normalized/ca-qc-zonage/qc-zonage-sainte-henedine.geojson",
+      "gate": "passed",
+      "inline": {
+        "lotZoneJoin": "verified and deposited",
+        "lotsEnriched": "verified and deposited",
+        "surfacePct": 100,
+        "codePostalPct": 100,
+        "adressePct": 90.24,
+        "normsPct": 0,
+        "normsWarning": "existing qc-zonage-norms payload exposes only RA and is not a complete dictionary"
+      }
+    }
+  ],
+  "scoreboard": {
+    "zonesBefore": 816,
+    "zonesAfter": 817
+  },
+  "antiInvention": {
+    "agolOwnerHarvest": false,
+    "pythonUsed": false,
+    "numericOrSequentialCodes": false,
+    "affectationCodes": false,
+    "fabricatedGcps": false,
+    "fabricatedLabels": false
+  }
+}

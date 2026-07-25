@@ -1,0 +1,61 @@
+{
+  "iso": "2026-07-10T174825Z",
+  "shard": { "mod": 2, "rem": 0, "basis": "sorted slugs" },
+  "mode": "official municipal PDF only; no AGOL owner harvest",
+  "deposits": [
+    {
+      "slug": "louiseville",
+      "sourcePdf": "work/pdf-cache/louiseville-zonage-agricole-622.pdf",
+      "track": "t2-autogcp-aniso",
+      "gcp": {
+        "path": "work/gcp/louiseville-zonage-agricole-622.gcp.json",
+        "report": "work/gcp/louiseville-zonage-agricole-622.autogcp.report.json",
+        "independent": 45,
+        "bboxDerived": 0,
+        "residualMaxM": 9.345,
+        "residualRmsM": 4.003,
+        "holdoutMaxM": 7.778
+      },
+      "anisoArbitration": {
+        "serve": true,
+        "servingCoveragePct": 95.8,
+        "distinctCodes": 26
+      },
+      "build": {
+        "labels": 29,
+        "distinctCodes": 26,
+        "spatialKm": 2.012,
+        "labelsInsideBbox": "28/29",
+        "features": 24,
+        "lotsAssigned": 3967,
+        "lotsTotal": 4141,
+        "lotToZonePct": 95.8
+      },
+      "s3": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-louiseville.geojson",
+      "inline": {
+        "lotZoneJoin": "OK assigned=95.8% parquet=Y",
+        "lotsEnriched": "OK zone_code=95.8% norms=95.8% deposit=Y"
+      }
+    }
+  ],
+  "failures": [
+    { "slug": "alleyn-et-cawood", "reason": "T1 no embedded georef; existing T2 no seed cleared residual+holdout; grille is not a plan" },
+    { "slug": "amherst", "reason": "official zoning regulation has no embedded georef; plan annexes A/B not found as separate recalable PDFs" },
+    { "slug": "aumond", "reason": "no explicit official zoning plan PDF found; local grille has no georef and no usable text" },
+    { "slug": "belcourt", "reason": "T1 no georef; T2 urban no seed; T2 rural orientation/aniso not confirmed by lot coverage" },
+    { "slug": "bethanie", "reason": "official zoning regulation has no georef; existing T2 no seed cleared residual+holdout" },
+    { "slug": "bonaventure", "reason": "GeoPDF residual 0.305 m but strict spatial gate fails; diagnostic coverage only 4.33% and false bylaw code detected" },
+    { "slug": "bouchette", "reason": "official regulations page has no explicit zoning plan PDF; local lac-bouchette PDF empty/wrong" },
+    { "slug": "charette", "reason": "official cartography PDFs downloaded; T1 no georef; T2 svg_points=0; T3 requires seed GCP not available" },
+    { "slug": "chartierville", "reason": "official zoning PDFs are Word/PDF regulations, no embedded georef" },
+    { "slug": "chertsey", "reason": "T1 no georef; existing T2 reports no seed cleared residual+holdout" },
+    { "slug": "chibougamau", "reason": "official VPlus portal exposes no static zoning PDF in captured HTML or literal bundle URLs; cached PDF is HTML" },
+    { "slug": "colombier", "reason": "official site did not respond within the allowed window; no PDF recovered" },
+    { "slug": "maniwaki", "reason": "official 2025 zoning/urbanism PDFs have no embedded georef; no zoning plan localized in this passage" }
+  ],
+  "postLoopSupervise": {
+    "scoreboardZones": 809,
+    "scoreboardNormes": 595,
+    "focusMissingZones": ["alma", "saint-boniface"]
+  }
+}

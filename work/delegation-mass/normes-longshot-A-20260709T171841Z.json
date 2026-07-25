@@ -1,0 +1,123 @@
+{
+  "runId": "normes-longshot-A-20260709T171841Z",
+  "branch": "feat/cadre-acquisition",
+  "lane": "A",
+  "scope": {
+    "selection": "coverage-matrix order, normes.status != done, index % 2 == 0, candidateTracks includes pdf-native",
+    "laneCandidates": 272,
+    "stagedGrillePdfs": 56
+  },
+  "coverage": {
+    "before": {
+      "scoreboard": "pv=1050 | normes=560 | zones=769 | cadastre=1106 | role-foncier=1106 | tod=39"
+    },
+    "after": {
+      "scoreboard": "pv=1051 | normes=561 | zones=770 | cadastre=1106 | role-foncier=1106 | tod=39",
+      "laneNormesDelta": 1,
+      "note": "The extra pv/zones drift appeared during final coverage-reconcile from concurrent S3 state; lane A deposited only normes/saint-elie-de-caxton."
+    }
+  },
+  "deposits": [
+    {
+      "slug": "saint-elie-de-caxton",
+      "route": "native-sweep",
+      "method": "native-text/grille-native-sweep",
+      "rows": 70,
+      "uniqueZoneCodes": 70,
+      "publishedFieldPct": 57.5,
+      "gridFound": false,
+      "sigZoneCodes": 0,
+      "overlap": 0,
+      "sampleZoneCodes": ["101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112"],
+      "s3Key": "registry/qc-zonage-norms/qc-zonage-norms-saint-elie-de-caxton.parquet",
+      "manifest": "targeted upsert applied with norms-manifest-refresh.ts",
+      "sourceUrl": "non-disponible",
+      "sourcePolicy": "No source URL was recovered from existing manifests/artifacts; no source URL was invented. The PDF was the pre-existing staged work/zonage-norms/saint-elie-de-caxton/grille.pdf."
+    }
+  ],
+  "attempts": {
+    "nativeDry": {
+      "report": "work/delegation-mass/normes-longshot-A-20260709T171841Z.native-dry.json",
+      "candidates": 56,
+      "processed": 56,
+      "wouldDeposit": 1,
+      "skipNoZones": 48,
+      "skipCount": 7
+    },
+    "nativeApply": {
+      "report": "work/delegation-mass/normes-longshot-A-20260709T171841Z.native-apply.json",
+      "deposited": 1,
+      "depositedZones": 70
+    },
+    "ocrBatch": {
+      "targets": "work/delegation-mass/normes-longshot-A-20260709T171841Z.ocr-targets.json",
+      "deposited": 0,
+      "outcomes": [
+        { "slug": "thetford-mines", "status": "no-zones", "window": "31..37" },
+        { "slug": "saint-lin-laurentides", "status": "no-zones", "window": "120..142" },
+        { "slug": "trois-rivieres", "status": "no-zones", "window": "1..1" }
+      ]
+    },
+    "multizoneBatch": {
+      "targets": "work/delegation-mass/normes-longshot-A-20260709T171841Z.multizone-targets.json",
+      "deposited": 0,
+      "outcomes": [
+        { "slug": "thetford-mines", "status": "no-zones", "window": "31..37" },
+        {
+          "slug": "saint-lin-laurentides",
+          "status": "gate-reject-overlap0",
+          "window": "120..142",
+          "sigZoneCodes": 115,
+          "extractedZoneCodes": 7,
+          "extractedNotInSig": ["NA-1-NI", "NA-2", "NS-1", "NS-2", "NH", "RA-1-NA2", "RA-1-SOMMETRA1-BASE"]
+        },
+        {
+          "slug": "trois-rivieres",
+          "status": "gate-reject-overlap0",
+          "window": "1..1",
+          "sigZoneCodes": 1664,
+          "extractedZoneCodes": 3,
+          "extractedNotInSig": ["I", "J", "R"]
+        }
+      ]
+    },
+    "gpt55Batch": {
+      "targets": "work/delegation-mass/normes-longshot-A-20260709T171841Z.gpt55-targets.json",
+      "report": "work/delegation-mass/normes-longshot-A-20260709T171841Z.gpt55-report.json",
+      "deposited": 0,
+      "outcomes": [
+        { "slug": "thetford-mines", "status": "no-zones", "window": "31..37" }
+      ]
+    }
+  },
+  "manifest": {
+    "globalMergeDryRun": "work/delegation-mass/normes-longshot-A-20260709T171841Z.manifest-merge-dry.json",
+    "globalMergeDryRunSummary": {
+      "manifestBefore": 555,
+      "parquetSlugs": 561,
+      "addedToManifestIfApplied": 5,
+      "droppedStock": 0,
+      "failed": ["registry"]
+    },
+    "appliedStrategy": "targeted norms-manifest-refresh.ts --slugs saint-elie-de-caxton --apply"
+  },
+  "guardrails": {
+    "minimumZoneCodes": "passed for saint-elie-de-caxton: 70 unique zone codes",
+    "publishedFieldPct": "passed for saint-elie-de-caxton: 57.5",
+    "sigOverlap": "not applicable for saint-elie-de-caxton because no SIG grid was found; overlap gates rejected saint-lin-laurentides and trois-rivieres",
+    "noInventedCode": true,
+    "noInventedSource": true,
+    "trackClaudeTouched": false
+  },
+  "artifacts": [
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.md",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.native-dry.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.native-apply.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.ocr-targets.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.multizone-targets.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.gpt55-targets.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.gpt55-report.json",
+    "work/delegation-mass/normes-longshot-A-20260709T171841Z.manifest-merge-dry.json"
+  ]
+}

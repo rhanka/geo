@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "RV": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "AF": "agricole",
+    "CONS": "environnemental",
+    "REC": "environnemental",
+    "MIX": null,
+    "RF": null
+  },
+  "source": "https://www.morinheights.com/IMG/pdf/mh_-_reglement_zonage_642-2022_maj_2026-01-26_.pdf",
+  "note": "Municipalité de Morin-Heights, règlement de zonage numéro 642-2022 (codification à jour au 2026-01-26), SECTION D « PLAN DE ZONAGE ET GRILLES DES SPÉCIFICATIONS », art. 17 « Identification des zones »: « Les zones illustrées au plan de zonage sont identifiées par une ou des lettres suivies par un trait et un chiffre identifiant le numéro de la zone (ex. : RV-1). Les lettres correspondent à la vocation principale de la zone, soit : ». Table verbatim: « AF : Agro-forestière » -> agricole ; « C : Commerciale » -> commercial ; « CONS : Conservation » et « REC : Récréative » -> environnemental (bucket contrat Conservation/Récréative/Faunique) ; « I : Industrielle » -> industriel ; « RV : Résidentielle et villégiature » -> residentiel: une SEULE des cinq catégories est nommée (« villégiature » n'en est aucune, c'est un qualificatif de milieu) — ce n'est donc PAS une dualité, conformément aux précédents committés portneuf « Rv Résidentielle de villégiature » et saint-francois-xavier-de-brompton « Rv » -> residentiel ; 37 polygones, le plus gros préfixe du slug. Null explicite: « MIX : Mixte » -> le règlement refuse une dominante ; « RF : Résidentielle et forestière » -> DUALE, deux des cinq catégories sont nommées (Résidentielle -> residentiel + forestière -> agricole), même motif que nominingue « Fr Forestière et récréative » et le précédent « If Industrielle-forestière » -> null ; RF est aussi le seul code servi qui exigerait un anti-fall-through si « R » était déclaré (il ne l'est pas: aucun « R » nu n'est servi). Recouvrement table<->SIG = 8/8 préfixes servis (RV 37, RF 11, C 7, REC 5, MIX 4, I 2, CONS 2, AF 1 = 69/69), aucun préfixe mappé qui n'existe pas dans le SIG. Longest-prefix vérifié: « CONS-1 » gagne sur « C » -> environnemental (et non commercial). L'art. 16 « Division du territoire en zone » ne pose que les limites de zones ; l'art. 18 « Grilles des spécifications » (annexe B) n'est pas utilisé — la matrice des usages permis ne fait jamais foi. MILLÉSIME: le 642-2022 abroge le règlement 416 (l'ancien zonage, encore indexé par les moteurs) ; ⚠️ l'URL rendue par les moteurs (`..._maj_2025-06-17_.pdf`) est un 404 FRANC — le lien réel a été repris sur la page https://www.morinheights.com/Reglements et porte la MAJ 2026-01-26 (20 835 187 o, PDF natif du 2026-01-29). Un 404 sur une URL de moteur ne prouve jamais la mort du document. Propriété du document attestée: pied de page de chaque page « Règlement 642-2022 de zonage — Municipalité de Morin-Heights »."
+}
