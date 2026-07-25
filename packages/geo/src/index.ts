@@ -13,14 +13,36 @@
  * `@sentropic/geo-sources-<continent>`.
  *
  * NOTE (merge main ↔ acquisition): the pure lot/zone join used by the QC
- * acquisition chain lives in `./zonage/lotZoneJoin.ts` and is reached through the
- * `@sentropic/geo/zonage` sub-path (and, for the acquisition workspace, through
- * the `@sentropic/geo` tsconfig path mapping). It is deliberately NOT re-exported
- * from this root barrel: the barrel pulls in the acquire/storage subsystems whose
- * dependencies the acquisition workspace does not install.
+ * acquisition chain lives in `./zonage/lotZoneJoin.ts`. It is reachable three ways
+ * and ALL THREE must agree, because different resolvers pick different ones:
+ *   - `@sentropic/geo/zonage` (package.json sub-path export → dist/zonage/…),
+ *   - the acquisition workspace `@sentropic/geo` tsconfig path mapping (→ src),
+ *   - this root barrel (what Node/vitest actually resolve `@sentropic/geo` to,
+ *     via package.json `exports["."]` → dist/index.js).
+ * Dropping it from the barrel does NOT save the acquisition workspace any
+ * dependency — `export *` of acquire/storage below already pulls those in on the
+ * very same module — it only makes `import { canonicalizeZoneCodeForJoin } from
+ * "@sentropic/geo"` type-check (via the path mapping) and then evaluate to
+ * `undefined` at runtime. The named re-export below is therefore load-bearing:
+ * it is the join key served to Immo. Keep it explicit (not `export *`) so a name
+ * collision with acquire/storage fails the build instead of silently shadowing.
  */
 
 export const VERSION = "0.1.0";
 
 export * from "./acquire/index.js";
 export * from "./storage/index.js";
+export {
+  assignLotZones,
+  canonicalizeZoneCodeForJoin,
+  enrichWithNorms,
+  normalizeZoneCode,
+  zoneNumberOf,
+  type LotZoneAssignment,
+  type LotZoneAssignmentMethod,
+  type LotZoneJoinOptions,
+  type LotZoneNormAssignment,
+  type NormsRecord,
+  type PolygonalFeature,
+  type PolygonalGeometry,
+} from "./zonage/lotZoneJoin.js";
