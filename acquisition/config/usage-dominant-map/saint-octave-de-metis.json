@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AGC": "agricole",
+    "AGF": "agricole",
+    "AIC": "agricole",
+    "VLG": "residentiel",
+    "HBF": "residentiel",
+    "RCT": "environnemental",
+    "CSV": "environnemental",
+    "ILG": "industriel",
+    "ILD": "industriel",
+    "MTF": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09055]",
+  "note": "Municipalité de Saint-Octave-de-Métis (MRC de La Mitis), « RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE SAINT-OCTAVE-DE-MÉTIS — RÈGLEMENT NUMÉRO 357-10 », article 4.1, page 4/1. Le document est le corpus LOCAL `work/zonage-norms/saint-octave-de-metis/grille.pdf` (une première passe avait conclu à tort qu'il ne contenait pas la table). Gate propriétaire VERBATIM: page titre « RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE SAINT-OCTAVE-DE-MÉTIS », pied de page « Municipalité de Saint-Octave-de-Métis — MRC de La Mitis », et l'article lui-même: « Afin de pouvoir réglementer les usages et les normes d'implantation sur tout le territoire de Saint-Octave-de-Métis, la municipalité est divisée en zones délimitées au plan de zonage portant le numéro 9055-2010-C […] Chaque zone porte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant le groupe d'usages dominant […] ». LA VOCATION EST EN SUFFIXE PARENTHÉSÉ: le code servi est « 05 (AGF) », « 16 (HBF) » — forme atteignable par le fold depuis le correctif de ce lot. Table VERBATIM de l'art. 4.1: « AGC pour Agricole / AGF pour Agroforestière / AIC pour Agricole inculte / RCT pour Récréative / VLG pour Villégiature / CSV pour Conservation / HBF pour Habitation de faible densité / MTF pour Multifonctionnelle / ILG pour Industrielle légère / ILD pour Industrielle lourde ». Les 9 sigles servis (CSV, ILD, AGC, AGF, AIC, VLG, HBF, MTF, ILG) sont TOUS couverts. Mapping: AGC « Agricole », AGF « Agroforestière », AIC « Agricole inculte » -> agricole; HBF « Habitation de faible densité » et VLG « Villégiature » -> residentiel; RCT « Récréative » et CSV « Conservation » -> environnemental; ILG « Industrielle légère » et ILD « Industrielle lourde » -> industriel. NULL EXPLICITE: MTF « Multifonctionnelle » (aucune dominante unique). ⭐ « AIC = Agricole inculte » et « FRT = Forestière » ont été élucidés sur le gabarit MRC-wide identique du règlement 08-38 de la Ville de Métis-sur-Mer (art. 4.1), puis RETROUVÉS ici dans le document propre à Saint-Octave — c'est CE document-ci qui gate le dépôt, pas celui de Métis-sur-Mer. Couverture: 33/33 polygones servis."
+}

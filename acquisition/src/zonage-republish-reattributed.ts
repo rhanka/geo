@@ -43,6 +43,11 @@ const MAP: Array<{ slug: string; dir: string; name: string }> = [
   { slug: "cote-saint-luc", dir: "ca-qc-zonage-vthomas7-arcgis", name: "Côte-Saint-Luc" },
   { slug: "dorval", dir: "ca-qc-zonage-tidorval1-arcgis", name: "Dorval" },
   { slug: "chambly", dir: "ca-qc-zonage-jehanninnicolas-arcgis", name: "Chambly" },
+  // longueuil: grille mono-muni Ville de Longueuil (1927 zones, champ `Zonage`
+  // type "H34-327 (VLO)"; VLO=Ville de Longueuil). Réattribution HAUTE → Longueuil,
+  // centroïde bbox à 1.2km du registre. Régression baseline: l'agrégat -arcgis
+  // existait mais le slug canonique qc-zonage-longueuil n'était plus servi.
+  { slug: "longueuil", dir: "ca-qc-zonage-longueuil-arcgis", name: "Longueuil" },
 ];
 
 const PREFIX = "normalized/ca-qc-zonage/";
@@ -94,8 +99,11 @@ async function main() {
       skipped.push(`${m.slug}: source geojson absent (${srcGeojson})`);
       continue;
     }
-    // Guard 2: reattribution confirms muni + HAUTE confiance
-    const re = reatt.find((r) => r.collection_id === base);
+    // Guard 2: reattribution confirms muni + HAUTE confiance.
+    // collection_id peut être stocké soit comme la base source (`qc-zonage-…-arcgis`)
+    // soit comme l'id canonique normalisé (`qc-zonage-…` sans le suffixe `-arcgis`).
+    const baseNoArcgis = base.replace(/-arcgis$/, "");
+    const re = reatt.find((r) => r.collection_id === base || r.collection_id === baseNoArcgis);
     if (!re) { skipped.push(`${m.slug}: pas d'entrée réattribution pour ${base}`); continue; }
     if (canonSlug(re.municipalite_reelle ?? "") !== m.slug) {
       skipped.push(`${m.slug}: réattribution muni="${re.municipalite_reelle}" ≠ slug (anti-invention)`);

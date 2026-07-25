@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "CO": "environnemental",
+    "M": null,
+    "P": null,
+    "AE": null
+  },
+  "source": "https://ville.delson.qc.ca/wp-content/uploads/2025/03/CODIFICATION-MARS-2025_RG-901.pdf",
+  "note": "Règlement de zonage numéro 901 de la Ville de Delson, codification administrative de mars 2025 (numéro VERBATIM en page de garde: « Règlement de zonage No 901 / PROVINCE DE QUÉBEC / VILLE DE DELSON / RÈGLEMENT NUMÉRO 901 / RÈGLEMENT DE ZONAGE », avis de présentation du 26 août 2014). ARTICLE 17 « IDENTIFICATION DES ZONES », p. 1-5, VERBATIM: « Le territoire de la Ville de Delson est divisé en zones sur le plan de zonage. Ces zones sont identifiées séparément par un code composé d'une lettre indiquant la dominance d'usage de la zone suivie d'une série de chiffres servant à la numérotation de la zone. Les lettres identifiant la dominance d'usage correspondent aux groupes d'usages identifiés dans la classification des usages et ont la signification suivante: AE : Agricole-Extraction / H : Habitation / C : Commerce / I : Industrie / M : Mixte / P : Public / CO : Conservation ». C'est la liste officielle des lettres de dominance d'usage: elle fait foi. La matrice des usages permis des grilles (annexe B) n'est PAS utilisée. Mapping: H « Habitation » -> residentiel; C « Commerce » -> commercial; I « Industrie » -> industriel; CO « Conservation » -> environnemental. Null explicite (25 polygones non forcés): M « Mixte » (10) est DUAL par définition; P « Public » (14) est public, aucune des cinq catégories; AE « Agricole-Extraction » (1) nomme DEUX des cinq catégories — « Agricole » et « Extraction » (que le brief range avec Industrielle) — le trait d'union marquant la combinaison et non une localisation: dominante non forcée. Préfixes SIG réellement présents (97 polygones, sansCode=0, lus sur la collection servie via `fold-usage-dominant.ts --list-prefixes`): H(45), I(15), P(14), C(11), M(10), CO(1), AE(1) — les 7 préfixes du SIG sont TOUS couverts par la liste de l'art. 17, et aucun préfixe mappé n'est absent du SIG. LONGEST-PREFIX (vérifié dans le fold): « CO » (2 lettres) bat « C » (1 lettre), donc CO-316 est bien servi environnemental et ne tombe PAS à tort sur C -> commercial."
+}

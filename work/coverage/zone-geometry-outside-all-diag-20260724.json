@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-07-24",
+  "scope": "Diagnostic READ-ONLY des 7 villes dites 'outside_all-dominées' : la géométrie de zonage servie est-elle INCOMPLÈTE (zones non dessinées) ou l'outside_all est-il un résidu topologique légitime ?",
+  "method": "acquisition/src/_zone-geometry-gap-diag.ts (S3 réel, centroïde shoelace + point-in-polygon avec trous, ZÉRO fold, ZÉRO écriture). Discriminant clé : pour chaque lot outside_all, son code_zone assigné est-il DESSINÉ (code_drawn_but_gap) ou ABSENT (code_not_drawn) du zonage servi, et son centroïde tombe-t-il DANS la bbox du zonage (trou interne) ou HORS (territoire non couvert). 'codes attendus' = sigZoneCodes de la crossval normes (completion-1-normes-matrix-20260723.json) quand dispo, sinon plans réglementaires.",
+  "headline_finding": "REFUTATION de l'hypothèse du brief pour les 7 : outside_all n'est PAS le symptôme de zones manquantes. code_not_drawn=0 pour LES 7 villes et outside_zone_bbox≈0 → tout lot outside_all a son code DESSINÉ et tombe DANS l'emprise du zonage = gaps interstitiels (frontières/emprises/eau), pas de la géométrie absente. Le vrai signal de géométrie PARTIELLE = unassigned% élevé + (codes dessinés << codes SIG). Seules 2/7 villes sont réellement partielles : saint-frederic (6 codes / 76% unassigned) et saint-boniface (21 codes / 50% unassigned).",
+  "cities": [
+    {
+      "slug": "saint-frederic",
+      "zones_features": 10, "zones_codes": 6, "codes_expected": 43,
+      "codes_expected_source": "geocentralis evb:siadmin_pzon_99_s id_municipalite=27065 → numberMatched=43 (≈ 42 zones réglementaires; mémoire '6/42')",
+      "lots_total": 1041, "assigned": 246, "unassigned": 795, "unassigned_pct": 76.4,
+      "matched": 216, "misassigned": 0, "outside_all": 30,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 30, "inside_zone_bbox": 30, "outside_zone_bbox": 0 },
+      "served_source": "vision-vectorized (trace partielle de 6 zones)",
+      "verdict": "a", "verdict_label": "GEOMETRIE PARTIELLE RECUPERABLE",
+      "reacq_source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite=27065",
+      "reacq_recoupement": "43 features / 42 codes distincts geocentralis (SIG municipal EN VIGUEUR, PG Solutions, description='zonage 2024', annee=2024) vs 6 codes servis. VÉRIFIÉ: les 6 codes servis (A-19,A-27,AF-30,F-31,F-32,I-90) sont TOUS présents dans les 42 (etiquette_1: A10..A27,AF30,F31,F32,I90..I92,M80..M87,P40,P41,RR70,Rf50..Rf55,Rm60,Rm61) ⇒ même municipalité, même système de codes, géométrie 7× plus complète. Témoin sonde: saint-mathieu 57045→54 OK. Lane [[geocentralis-zonage-municipal-lane]]/[[jmap-rest-vector-lane]] (a résolu alma, saint-mathieu). Les 795 lots unassigned (76%) = les ~36 zones non tracées.",
+      "note": "outside_all=30 = résidu topo mineur; le défaut DOMINANT est les 795 unassigned + 6/43 codes."
+    },
+    {
+      "slug": "saint-boniface",
+      "zones_features": 21, "zones_codes": 21, "codes_expected": "100+",
+      "codes_expected_source": "plans PZ-1..4-2000 saint-bo.ca (PZ1=38, PZ2=52, PZ3=83, PZ4=34 codes numériques 100s-500s); grille Annexe B #337 ~100+ codes",
+      "lots_total": 3842, "assigned": 1905, "unassigned": 1937, "unassigned_pct": 50.4,
+      "matched": 1872, "misassigned": 11, "outside_all": 22,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 22, "inside_zone_bbox": 22, "outside_zone_bbox": 0 },
+      "served_source": "t2-gcp3 (secteur central seulement, codes 105..136 — NOUVEAU vs mémoire du 2026-07-12 qui donnait zone_features=0)",
+      "verdict": "a", "verdict_label": "GEOMETRIE PARTIELLE (secteur central) mais RECUPERATION HARD/TERMINAL",
+      "reacq_source": "saint-bo.ca : plans PZ-1..4-2000 = https://saint-bo.ca/file-16589 .. file-16592 ; grille Annexe B #337 = https://saint-bo.ca/file-23003",
+      "reacq_recoupement": "Source réglementaire PUBLIQUE existe MAIS PZ-2000 = rasters plats Esri NON-GeoPDF (0 marqueur géo); auto-GCP T2 ÉCHOUÉ idempotent (svg_points=0) et flotte-remote t2-pdf-vectoriel-calage AUTORISÉE+EXÉCUTÉE+ÉCHOUÉE (2026-07-12, OPTION B). geocentralis id 51085 = 0 (ancienne+moderne), ArcGIS MRC Maskinongé 499 token. Voie restante = GCP manuels denses/TPS humains ou publication vecteur MRC future. Voir [[saint-boniface-cohere-status]] (CONSOLIDÉ l.117).",
+      "note": "Le secteur central (21 zones) a été récupéré via t2-gcp3 depuis la mémoire; les ~80 zones rurales (PZ-2/3/4) restent non dessinées → 50% unassigned. NE PAS re-sonder/re-lancer flotte (terminal ≥36 re-vérifs)."
+    },
+    {
+      "slug": "rosemere",
+      "zones_features": 117, "zones_codes": 102, "codes_expected": 102,
+      "codes_expected_source": "sigZoneCodes crossval = 102 ; drawn=102 → COMPLET",
+      "lots_total": 5767, "assigned": 4246, "unassigned": 1521, "unassigned_pct": 26.4,
+      "matched": 3929, "misassigned": 40, "outside_all": 277,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 277, "inside_zone_bbox": 277, "outside_zone_bbox": 0 },
+      "served_source": "ocg-street-georef",
+      "verdict": "b", "verdict_label": "PLATEAU — outside_all LEGITIME (gaps topo)",
+      "reacq_source": null,
+      "reacq_recoupement": "102/102 codes SIG déjà dessinés. outside_all=277 (4.8%) = gaps interstitiels dans l'emprise (0 hors bbox). Déjà TERMINAL/cohérent ([[rosemere-cohere-status]] strict 95.1%, real_zoning=true, fold 73.4%). unassigned=1521 = lots sans code au registre (condos/parcelles empilées), pas des zones manquantes.",
+      "note": "NE PAS ré-acquérir."
+    },
+    {
+      "slug": "plaisance",
+      "zones_features": 71, "zones_codes": 53, "codes_expected": 53,
+      "codes_expected_source": "sigZoneCodes crossval = 53 ; drawn=53 → COMPLET (source = SIG goAzimut lui-même)",
+      "lots_total": 837, "assigned": 833, "unassigned": 4, "unassigned_pct": 0.5,
+      "matched": 715, "misassigned": 21, "outside_all": 97,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 97, "inside_zone_bbox": 97, "outside_zone_bbox": 0 },
+      "served_source": "goAzimut ArcGIS 800_Papineau/80045_Plaisance_public/MapServer/144",
+      "verdict": "b", "verdict_label": "PLATEAU — outside_all LEGITIME (gaps topo)",
+      "reacq_source": null,
+      "reacq_recoupement": "53/53 codes SIG dessinés depuis le SIG autoritaire goAzimut. unassigned quasi nul (4/837). outside_all=97 (11.6%) = gaps de frontières/emprises (0 hors bbox, misassigned bas=21 ⇒ recalage bon). Aucune source plus complète.",
+      "note": "outside_all améliorable seulement par snap/re-fold (interdit ici), pas par ré-acquisition."
+    },
+    {
+      "slug": "sainte-cecile-de-milton",
+      "zones_features": 37, "zones_codes": 32, "codes_expected": 32,
+      "codes_expected_source": "sigZoneCodes crossval = 32 ; drawn=32 → COMPLET",
+      "lots_total": 1518, "assigned": 1219, "unassigned": 299, "unassigned_pct": 19.7,
+      "matched": 1135, "misassigned": 17, "outside_all": 67,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 67, "inside_zone_bbox": 66, "outside_zone_bbox": 1 },
+      "served_source": "boundary-georef",
+      "verdict": "b", "verdict_label": "PLATEAU — outside_all LEGITIME (gaps topo)",
+      "reacq_source": null,
+      "reacq_recoupement": "32/32 codes SIG dessinés. outside_all=67 (5.5%) quasi tous dans la bbox (1 hors). Aucune source plus complète que le SIG déjà utilisé.",
+      "note": "Résidu topo."
+    },
+    {
+      "slug": "preissac",
+      "zones_features": 25, "zones_codes": 25, "codes_expected": 25,
+      "codes_expected_source": "sigZoneCodes crossval = 25 ; drawn=25 → COMPLET (grille PDF listait 36 rows, mais SIG autoritaire=25)",
+      "lots_total": 683, "assigned": 562, "unassigned": 121, "unassigned_pct": 17.7,
+      "matched": 542, "misassigned": 9, "outside_all": 11,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 11, "inside_zone_bbox": 11, "outside_zone_bbox": 0 },
+      "served_source": "geopdf-esri (GeoPDF officiel)",
+      "verdict": "b", "verdict_label": "PLATEAU — outside_all LEGITIME (gaps topo)",
+      "reacq_source": null,
+      "reacq_recoupement": "25/25 codes SIG dessinés depuis le GeoPDF Esri officiel. outside_all=11 (2%) tous dans la bbox. Aucune source plus complète.",
+      "note": "Résidu topo mineur."
+    },
+    {
+      "slug": "notre-dame-de-lourdes--lerable",
+      "zones_features": 38, "zones_codes": 38, "codes_expected": null,
+      "codes_expected_source": "pas de crossval SIG (normes local_evidence=null) ; 38 codes A/H/I/P/T/U dessinés",
+      "lots_total": 795, "assigned": 704, "unassigned": 91, "unassigned_pct": 11.4,
+      "matched": 695, "misassigned": 4, "outside_all": 5,
+      "outside_breakdown": { "code_not_drawn": 0, "code_drawn_but_gap": 5, "inside_zone_bbox": 5, "outside_zone_bbox": 0 },
+      "served_source": "t2-gcp3 (GeoPDF recalé)",
+      "verdict": "b", "verdict_label": "PLATEAU — résidu minime",
+      "reacq_source": null,
+      "reacq_recoupement": "38 codes dessinés, 88.6% des lots assignés, outside_all=5 (0.7%) tous dans la bbox, misassigned=4. Pas de crossval SIG pour confirmer un compte 'attendu', mais les résidus sont trop faibles pour indiquer une géométrie partielle. Aucune source plus complète identifiée.",
+      "note": "Plateau; probe geocentralis L'Érable non effectué (résidu trop faible pour le justifier)."
+    }
+  ],
+  "ranking": {
+    "recuperables": [
+      "saint-frederic — CLAIR: geocentralis siadmin_pzon_99_s id=27065 → 43 features vs 6 servies. Cible ré-acq nette.",
+      "saint-boniface — source publique existe (PZ-2000 + Annexe B) MAIS non-géoréférençable en auto (raster plat), auto-GCP+flotte échoués = TERMINAL; récupération = GCP manuels humains. Secteur central (21 zones) déjà récupéré via t2-gcp3."
+    ],
+    "plateau_outside_all_legitime": [
+      "rosemere (102/102 SIG)",
+      "plaisance (53/53 SIG goAzimut)",
+      "sainte-cecile-de-milton (32/32 SIG)",
+      "preissac (25/25 SIG geopdf-esri)",
+      "notre-dame-de-lourdes--lerable (38 codes, résidu minime)"
+    ]
+  }
+}

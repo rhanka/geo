@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "AFD": "agricole",
+    "C": "commercial",
+    "Ex": "industriel",
+    "R": "residentiel",
+    "ID": null,
+    "P": null
+  },
+  "source": "https://val-joli.ca/fichiersUpload/fichiers/20251016162716-reg-zonage-maj-2025-08.pdf",
+  "note": "Municipalité de Val-Joli (MRC du Val-Saint-François), « RÈGLEMENT DE ZONAGE », réglementation d'urbanisme d'août 2004, VERSION ADMINISTRATIVE à jour 2025-08 diffusée par la municipalité. Gate propriétaire: page de garde « PROVINCE DE QUÉBEC / MRC LE VAL-SAINT-FRANÇOIS / MUNICIPALITÉ DE VAL-JOLI » et art. 1.2 « Le présent règlement s'applique à l'ensemble du territoire de la Municipalité de Val-Joli. » L'art. 1.8 « SUBDIVISION DU TERRITOIRE EN ZONES » pose la codification VERBATIM: « Chaque zone comporte une identification de base formée par une lettre ou une combinaison de lettres. L'identification de base correspond au caractère général de la zone. Les zones présentant un même caractère général se distinguent l'une de l'autre par un chiffre séparé de l'identification de base par un tiret. » Le caractère général de chaque identification de base est nommé VERBATIM par les intitulés a) à h) de la section des grilles: « a) Zones agricoles A », « b) Zones agro-forestières AF », « c) Zones agro-forestières dynamique AFD », « d) Zones Îlots déstructurés ID », « e) Zones commerciales C », « f) Zones d'extraction Ex », « g) Zones publiques P », « h) Zones résidentielles R ». Corroboration au corps: « uniquement dans les zones de type agricoles (A), agro-forestières (AF) et agro-forestières dynamiques (AFD) » et « sont autorisés que dans les zones A, AF et AFD ». Mapping: A « agricoles », AF « agro-forestières », AFD « agro-forestières dynamique » -> agricole (longest-prefix: AFD gagne sur AF qui gagne sur A); C « commerciales » -> commercial; Ex « d'extraction » -> industriel (extraction); R « résidentielles » -> residentiel. Null explicite: ID « Îlots déstructurés » (îlot déstructuré = réserve de droits acquis en zone agricole, art. 15.32-15.34; aucune dominante forcée); P « publiques ». Le préfixe servi « Rd » (2 pol., Rd-3 et Rd-5) n'a pas d'intitulé propre: sa grille est imprimée SOUS l'intitulé « h) Zones résidentielles R » et n'autorise que « Habitations unifamiliales isolées »; il reçoit donc residentiel par longest-prefix sur la clé « R ». Les matrices d'usages permis des grilles ne servent PAS à établir la dominante (seuls les intitulés de famille sont utilisés). Couverture: 52/52 polygones servis (100%) — ID 16, AF 9, AFD 9, A 8, C 3, P 3, Rd 2, EX 1, R 1."
+}

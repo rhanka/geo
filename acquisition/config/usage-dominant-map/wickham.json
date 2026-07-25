@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "AD": "agricole",
+    "AV": "agricole",
+    "AID": "agricole",
+    "P": null
+  },
+  "source": "https://wickham.ca/",
+  "note": "Municipalité de Wickham, règlement de zonage n° 2024-03-986, art. 16 « Identification des zones »: « Les zones illustrées au plan de zonage sont identifiées par une ou des lettres suivies par un trait d'union et un chiffre identifiant le numéro de la zone (ex. : AD-1). Les lettres correspondent à la vocation principale de la zone, soit : AD : Agricole dynamique / AV : Agricole viable / AID : Agricole îlot déstructuré / C : Commerciale / I : Industrielle / P : Publique / R : Résidentielle ». La table porte EXACTEMENT les 7 préfixes servis par le SIG (aucun orphelin de part et d'autre). R -> residentiel; C -> commercial; I -> industriel; AD, AV et AID -> agricole. AID « Agricole îlot déstructuré » -> agricole et NON null/residentiel: (1) le libellé de la colonne « vocation principale » ne nomme qu'UNE des cinq catégories (« Agricole »), « îlot déstructuré » n'en étant aucune (qualificatif); (2) l'art. 189 range AID dans la famille agricole verbatim: « À l'intérieur de la zone agricole décrétée correspondant aux zones Agricole dynamique (AD), Agricole viable (AV) et Agricole îlot déstructuré (AID) »; (3) le règlement ne DÉFINIT nulle part « îlot déstructuré » (0 entrée en terminologie, vérifié) et aucun article ne contredit l'étiquette — à la différence de vaudreuil-dorion AID (« usages majoritairement non agricoles » -> null) ou de racine ID (défini comme « zone bénéficiant d'une autorisation pour la construction de résidence » -> residentiel); (4) l'art. 191 n'y autorise l'usage Habitation que SOUS CONDITION de la décision rendue en vertu de l'art. 59 de la LPTAA, ce qui confirme le statut agricole plutôt qu'une vocation résidentielle propre. Null explicite: P « Publique » est publique. La matrice des usages permis des grilles (annexe B) n'est pas utilisée. Corpus local work/zonage-norms/wickham/grille.pdf = le CORPS du règlement (212 p.), lu à $0."
+}

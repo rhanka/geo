@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "Rb": "residentiel",
+    "RcM": "residentiel",
+    "RcMP": "residentiel",
+    "RdM": "residentiel",
+    "RdMP": "residentiel",
+    "RdP": "residentiel",
+    "CcM": "commercial",
+    "Ib": "industriel",
+    "IbM": "industriel",
+    "Ab": "agricole",
+    "Ac": "agricole",
+    "Fc": "agricole",
+    "Fa": null,
+    "V": null,
+    "Sc": null,
+    "ScM": null,
+    "ScMP": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite='18055'",
+  "note": "Vocation VERBATIM portée par l'attribut SIG `etiquette_2` de la couche geocentralis evb:siadmin_pzon_99_s, filtrée sur id_municipalite='18055' (Saint-Pierre-de-la-Rivière-du-Sud) — couche JUMELLE de evb:zonage_municipal qui sert les 65 polygones de ce slug. `etiquette_1` = code complet, `etiquette_3` = préfixe alphabétique servi, `etiquette_2` = vocation. Table (etiquette_3 -> etiquette_2, VERBATIM) : Rb = « Unifamiliale isolée, jumelée, bifamiliale » ; RcM et RcMP = « Unifamiliale isolée, jumelée, bifamiliale, trifamiliale » ; RdM, RdMP et RdP = « Unifamiliale à multifamiliale (max: 2 étages) » -> residentiel. CcM = « Commerce régional de grande superficie (à nuisance) » -> commercial. Ib et IbM = « Industrie à nuisance limitée » -> industriel (le code servi `Ibm.2` porte etiquette_3='IbM' et la même etiquette_2 ; le match du fold est case-insensible donc la clé `IbM` couvre aussi `Ibm`). Ab = « Agriculture à nuisance limitée » ; Ac = « Agriculture à nuisance » (deux lignes du SIG écrivent la variante « Agriculture avec nuisance » pour Ac.7 et Ac.8 — même famille) ; Fc = « Forêt » -> agricole. Null explicite et SERVI : Fa = « Forêt et conservation faunique avec restriction particulière » est DUALE ; V = « Villégiature et espace récréatif » est DUALE ; Sc, ScM et ScMP = « Équipement ou espace public » est PUBLIQUE. NON MAPPÉ VOLONTAIREMENT : le préfixe `Ta` (1 polygone, Ta.2) porte etiquette_2 = « Parterre » — libellé qui ne s'énonce sur AUCUNE des 5 catégories servies et dont aucune forme longue n'existe (balayage de TOUT le serveur sur etiquette_3='Ta' : 4 lignes seulement, id 18055/18060/19117, toutes « Parterre » nu). Il est laissé HORS du prefix_map pour que le fold rende le null de non-match (honnête) plutôt qu'un null documenté abusif. Aucune vocation n'est déduite de la lettre (réfutation : `ReM` = commercial à Saint-Paul-de-Montminy, résidentiel à Saint-Just-de-Bretenières). Gate propriétaire (nomenclature Lettre(s).numéro PARTAGÉE dans la MRC de Montmagny) : le filtre id_municipalite='18055' est le gate, et la correspondance avec la collection servie est EXACTE — SIG 18055 : 65 lignes ; collection servie qc-zonage-saint-pierre-de-la-riviere-du-sud : 65 polygones, sansCode=0, même inventaire de codes et mêmes effectifs par préfixe (Ac 12, RdM 8, Fa 6, RcM 5, Rb 5, Ab 5, Fc 5, RcMP 4, IbM 3, V 2, CcM 2, ScM 1, RdP 1, Ibm 1, Ib 1, Sc 1, ScMP 1, Ta 1, RdMP 1). Couverture : 18/19 préfixes servis documentés, 64/65 polygones (le seul Ta.2 reste null de non-match)."
+}

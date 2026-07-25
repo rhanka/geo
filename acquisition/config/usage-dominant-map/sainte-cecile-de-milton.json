@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "RE": "residentiel",
+    "VLR": "residentiel",
+    "A": "agricole",
+    "AF": "agricole",
+    "AFL": "agricole",
+    "AL": "agricole",
+    "CO": "commercial",
+    "CONS": "environnemental",
+    "ICL": null,
+    "LET": null,
+    "VLI": null
+  },
+  "source": "https://www.miltonqc.ca/wp-content/uploads/2026/02/ReglementZonage560-2017-_VersionAdmin-675-2025_compresse-1.pdf",
+  "note": "Règlement de zonage 560-2017 de la Municipalité de Sainte-Cécile-de-Milton, version administrative (à jour 675-2025) — concorde avec reglement_numero=560-2017 servi. Section « Division du territoire en zones »: « Chacune des zones est identifiée par : Des lettres qui spécifient la vocation dominante dans la zone, en relation étroite avec le plan d'affectation accompagnant le plan d'urbanisme : A : Agricole; AF : Agro-forestier; AFL : Agro-forestier limité; AL : Agricole limité; CO : Commercial; CONS : Conservation; ICL : industriel et commercial local; IN : Institutionnel; LET : Lieu d'enfouissement technique; RE : Résidentiel; VLI : Villégiature intensive; VLR : Villégiature résidentielle » (Règl. n°606-2020 - art.2). Le règlement confirme le sens de la lettre: « AFL, vocation dominante agroforestière limitée ». Mappés: RE « Résidentiel » -> residentiel; VLR « Villégiature RÉSIDENTIELLE » -> residentiel (la légende nomme la vocation résidentielle); A/AF/AFL/AL (« Agricole », « Agro-forestier », « Agro-forestier limité », « Agricole limité ») -> agricole (famille agricole/agroforestière); CO « Commercial » -> commercial; CONS « Conservation » -> environnemental. NULLS EXPLICITES (aucune dominante forcée): ICL « industriel ET commercial local » est DUAL par sa propre définition; LET « Lieu d'enfouissement technique » est une infrastructure de gestion des matières résiduelles et ne nomme aucune des cinq catégories; VLI « Villégiature intensive » ne nomme ni résidentiel ni commercial (contrairement à VLR). Ces trois entrées sont aussi ANTI-FALL-THROUGH. « CONS » est déclaré pour que Cons-1 ne retombe pas sur « CO » (match longest-prefix), et AF/AFL/AL pour ne pas dépendre de « A » — toutes agricoles de toute façon. Préfixe de la légende ABSENT du SIG (non mappé, gate): IN. 5 polygones du SIG sont sans zone_code et rendent null. La matrice des usages permis des grilles n'est PAS utilisée."
+}

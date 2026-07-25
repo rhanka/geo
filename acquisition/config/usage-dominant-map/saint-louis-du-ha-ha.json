@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "R": "residentiel",
+    "V": "residentiel",
+    "M": null,
+    "P": null
+  },
+  "source": "http://saintlouisduhaha.com/wp-content/uploads/2018/08/Projet_de_r%C3%A8glement_373_SLDHH_Zonage.pdf",
+  "note": "Règlement de zonage numéro 373 de la Municipalité de Saint-Louis-du-Ha! Ha!, chapitre 1, art. 1.3.2 « IDENTIFICATION DES ZONES », p.38: « Chacune des zones est identifiée par un code unique, composé d'initiales suivies d'un tiret et d'un chiffre. Les initiales qualifient la zone de la manière suivante : 1° EA : Agricole (qui comprend EA/A et EA/B); 2° EAF : Agroforestière; 3° EF : Forestière; 4° M : Mixte; 5° P : Publique; 6° R : Résidentielle; 7° RU : Réserve urbaine; 8° V : Villégiature. » Mappé: EAA et EAB -> agricole — le SIG sert EAA-*/EAB-* qui sont les « EA/A » et « EA/B » de la légende (tiret oblique élidé), tous deux couverts VERBATIM par « EA : Agricole (qui comprend EA/A et EA/B) »; mappés explicitement plutôt que par un préfixe « EA » nu, absent du SIG. EAF « Agroforestière » et EF « Forestière » -> agricole. R « Résidentielle » -> residentiel. V « Villégiature » -> residentiel (doctrine constante du repo, 6 configs committées mappent V -> residentiel; corroborée par preissac.json dont le règlement range explicitement la villégiature sous « Les zones à dominante résidentielle »). Null explicite: M « Mixte » est mixte par définition -> DUALE; P « Publique » est public. NON MAPPÉS À DESSEIN — présents au SIG servi mais ABSENTS de la légende de l'art. 1.3.2: T-1/T-2 (2 polygones) et I-1 (1 polygone); le règlement ne définit aucune initiale « T » ni « I », on ne devine pas leur dominante et ils tombent honnêtement à usage_dominant=null. RU « Réserve urbaine » figure à la légende mais AUCUN code RU-* n'est servi au SIG: non mappé (gate: aucun préfixe mappé qui n'existe pas dans le SIG). Les grilles de spécifications (matrice des usages permis) ne sont pas utilisées. Source consultée le 2026-07-17."
+}

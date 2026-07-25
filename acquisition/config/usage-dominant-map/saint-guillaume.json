@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "V": "environnemental",
+    "A": "agricole",
+    "AF": "agricole",
+    "ID": null
+  },
+  "source": "work/zonage-norms/saint-guillaume/grille.pdf — Règlement de zonage, Municipalité de Saint-Guillaume (corpus local; reglement_url=null au registre reglement-provenance)",
+  "note": "Règlement de zonage, art. 3.2 « Identification des zones »: « Chacune des zones … est identifiée … par une lettre d'appellation indiquant l'affectation principale de la zone …, selon le tableau suivant : Affectation principale / Lettre d'appellation — Habitation : H ; Commercial : C ; Industriel : I ; Communautaire : P ; Espace vert : V ; Agricole : A ; Agroforestier : AF ; Ilot déstructuré : ID ». Mapping VERBATIM sur cette table. H « Habitation » -> residentiel (préfixes servis Ha/Hb = sous-types d'habitation). C « Commercial » -> commercial. I « Industriel » -> industriel (Ib/Ic servis). V « Espace vert » -> environnemental (Vd servi). A « Agricole » (Aa servi) et AF « Agroforestier » (Af servi) -> agricole. Null explicite: P « Communautaire » -> null (fonction communautaire/publique, pas une des cinq catégories); ID « Ilot déstructuré » -> null (affectation particulière non nommée parmi les cinq catégories — la légende ne la qualifie PAS « Agricole » ici, contrairement à Maria/Saint-Raymond où le libellé était « Agricole îlot déstructuré »; enclave résidentielle en milieu agricole => dominance non univoque). Longest-prefix: ID (2) l'emporte sur I; AF (2) sur A. Tous les préfixes servis (Ha,Hb,C,Ic,Ib,ID,P,Vd,Aa,Af) sont couverts par les lettres de base H/C/I/P/V/A/AF/ID."
+}

@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "FO": "agricole",
+    "AF": "agricole",
+    "Ra": "residentiel",
+    "Ib": "industriel",
+    "CO": "environnemental",
+    "PC": null,
+    "MX": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2788005%27",
+  "note": "Champneuf (Municipalité, MRC d'Abitibi), code MAMH 88005. LA LÉGENDE EST DANS LE SIG: la couche geocentralis « evb:siadmin_pzon_99_s » qui sert ces polygones porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2`. Gate propriétaire: 88005 = « Champneuf (Municipalité) » au répertoire MAMH committé, et le dump rend exactement les 13 codes servis. Dump vérifié (`_ud-geocentralis-etiquette.ts --slugs champneuf`, 13 features): « Forestière » pour FO-1..FO-5, « Publique et communautaire » pour PC-1/PC-2, « Résidence faible densité » pour Ra-1/Ra-2, « Industrie à contrainte élevée » pour Ib-1, « Agroforestière » pour AF-1, « Conservation » pour CO-1, « Mixte » pour MX-1 — un libellé uniforme par préfixe. Mapping: FO « Forestière » et AF « Agroforestière » -> agricole; Ra « Résidence faible densité » -> residentiel; Ib « Industrie à contrainte élevée » -> industriel; CO « Conservation » -> environnemental. NULLS EXPLICITES: MX « Mixte » et PC « Publique et communautaire » (public, hors des cinq catégories). Ce vocabulaire est celui de la famille MRC d'Abitibi (identique à sainte-gertrude-manneville et saint-felix-de-dalquier), mais il est ici lu SUR LES ENTITÉS DE CHAMPNEUF elles-mêmes: aucune transposition. Couverture: 13/13 polygones servis."
+}

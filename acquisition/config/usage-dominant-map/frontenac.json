@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AFT": "agricole",
+    "CONS": "environnemental",
+    "I": null,
+    "IL": null,
+    "M": null,
+    "P": null,
+    "R": "residentiel",
+    "REC": "environnemental",
+    "RU": null,
+    "VILL": null
+  },
+  "source": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=Nom_Mun_View+LIKE+%27%25rontenac%25%27&outFields=MUNI,Nom_Mun_View,ZONE,NO_ZONE,TYPE&returnGeometry=false&returnDistinctValues=true&f=json",
+  "note": "Légende lue DANS L'ATTRIBUT SIG de la couche même qui sert la géométrie de frontenac (source servie: https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5, ArcGIS de la MRC du Granit). Le champ `NO_ZONE` porte le code de zone et le champ `TYPE` porte la vocation VERBATIM; le renderer de la couche (drawingInfo, uniqueValueInfos sur le champ TYPE) reprend les mêmes libellés. Gate propriétaire: toutes les lignes citées portent MUNI=\"Frontenac\" et Nom_Mun_View=\"Frontenac\" (filtre SQL sur la municipalité), et le règlement servi est le 243-90 de la Municipalité de Frontenac. Table verbatim NO_ZONE -> TYPE pour Frontenac: A-1..A-6 -> « Agricole »; AFT1-1..AFT1-8 -> « Agroforestière (Type 1) »; CONS-1, CONS-2 -> « Conservation »; I-1 -> « Industriel »; I-2 -> « Agricole » et « Agroforestière (Type 1) »; IL-15..IL-25 -> « Îlot avec morcellement (Type 1) »; M-1..M-6 -> « Mixte »; P-1 -> « Public »; R-1..R-14 -> « Résidentiel »; REC-2..REC-5 -> « Récréation (Type 1) »; RU-1..RU-8 -> « Rurale »; VILL-1..VILL-5 -> « Villégiature ». Mapping: A « Agricole » et AFT « Agroforestière » -> agricole; R « Résidentiel » -> residentiel; CONS « Conservation » et REC « Récréation » -> environnemental. Null explicite et documenté: M « Mixte » est une vocation DUALE; P « Public » est publique; IL « Îlot avec morcellement » (îlot déstructuré en zone agricole désignée) n'énonce pas une dominante parmi les cinq catégories; RU dont la vocation servie est « Rurale » n'énonce pas non plus de dominante (le champ ZONE vaut déjà « Rurale » pour tout le territoire hors périmètre urbain); VILL « Villégiature » n'est associée à aucun énoncé verbatim de dominance résidentielle dans cette source; I est CONTRADICTOIRE dans la source elle-même (I-1 = « Industriel » mais les deux polygones I-2 portent « Agricole » et « Agroforestière (Type 1) »), donc non tranchable sans invention. Le corps du règlement 243-90 n'est diffusé nulle part en ligne (site municipal, MRC du Granit, Wayback: aucun PDF de zonage) et la matrice des usages permis des grilles n'est pas utilisée."
+}

@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "C": "commercial",
+    "Co": "environnemental",
+    "I": "industriel",
+    "M": null,
+    "Pi": null,
+    "Pr": "environnemental",
+    "R": "residentiel",
+    "V": "residentiel"
+  },
+  "source": "https://peribonka.ca/app/uploads/2024/01/Reglement-de-zonage.pdf",
+  "note": "Règlement de zonage 2010-05, art. 2.3.3 « Identification des zones »: « les zones sont désignées par un numéro et par une ou plusieurs lettre(s) qui réfère(nt) à l'usage dominant autorisé. Cet usage dominant est identifié comme suit: R Résidence; C Commerce et services; I Industrie; Pi Communautaire à caractère institutionnel; Pr Communautaire à caractère récréatif, de sports et loisirs; A Agriculture; F Forêt et sylviculture; V Villégiature; CO Conservation. » + « Une zone peut se prêter à deux ou plusieurs usages [...] sans que l'un de ceux-ci ne domine. On identifiera alors une telle zone par son numéro suivi de la lettre \"M\" faisant valoir le caractère mixte ». Mapping: R « Résidence » et V « Villégiature » = residentiel; C « Commerce et services » = commercial; I « Industrie » = industriel; A « Agriculture » = agricole; CO « Conservation » et Pr « Communautaire à caractère récréatif/sports/loisirs » = environnemental (récréatif, cf. convention lane REC->environnemental). Null explicite: M « mixte » (dual verbatim); Pi « Communautaire à caractère institutionnel » (public/institutionnel). (F « Forêt et sylviculture » défini au règlement mais absent du SIG, donc non mappé.) Table de l'usage dominant lue dans le corps, PAS la matrice de la grille. NB: quelques codes du SIG portent la lettre en suffixe avec un token additionnel (« 43 A dyn », « 113-2 C ») que la canonicalisation ne réordonne pas -> ces zones restent null (artefact de forme de code, non un usage forcé)."
+}

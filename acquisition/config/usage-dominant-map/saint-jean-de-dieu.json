@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "F": "agricole",
+    "H": "residentiel",
+    "P": null,
+    "I": "industriel",
+    "M": null
+  },
+  "source": "work/zonage-norms/saint-jean-de-dieu/grille.pdf — Règlement de zonage no 232, Municipalité de Saint-Jean-de-Dieu (corpus local; reglement_url=null au registre reglement-provenance)",
+  "note": "Règlement de zonage, art. 3.1 « Division du territoire en zones »: « la municipalité est répartie en zones … identifiées par les lettres d'appellation ci-indiquées : Agricole : A ; Forestière : F ; Habitation : H-A, H-B, H-M ; Communautaire : P-A, P-B ; Industrie : I, I-A ; Mixte (habitation et commerce) : M-H/B, M-H/C ; Mixte commerce et service, et communautaire : M-C/P ». Mapping VERBATIM sur les lettres de base. A « Agricole » et F « Forestière » -> agricole. H « Habitation » (H-A/H-B servis) -> residentiel. I « Industrie » -> industriel. Null explicite: P « Communautaire » -> null (communautaire/publique); M « Mixte (habitation et commerce) » et « Mixte commerce et service, et communautaire » -> null (fonction DUALE/mixte, jamais forcée). Longest-prefix sur les lettres de base: les codes servis M-H/… commencent par « M » (mixte) et non par « H ». Les 6 préfixes servis (A,F,H,P,I,M) sont couverts."
+}
