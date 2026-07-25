@@ -39,7 +39,9 @@
  *     left to the operator (this only measures overlap, never invents one).
  *
  * Everything is read-only: S3 GET/List via lib/s3.ts, HTTP GET via fetch.
- * No PutObjectCommand, no lib/zonage-proof.ts import, ever.
+ * No S3 write command, no lib/zonage-proof.ts import, ever. (The guard test in
+ * lib/zonage-proof.test.ts scans sources textually, so this file must never even
+ * NAME the S3 write command — a mention in a comment reads as a real write.)
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
