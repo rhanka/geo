@@ -107,18 +107,30 @@ function loadFile(relPath) {
   return { path: relPath, exists: true, sha256: sha, data, asOf: null };
 }
 
-// Découverte du readback le plus récent (par nom).
-function discoverReadback() {
+// Découverte du fichier daté le plus récent (par nom) répondant à un patron.
+function discoverLatest(re) {
   if (!fs.existsSync(COV)) return null;
   const files = fs
     .readdirSync(COV)
-    .filter((f) => /^zone-source-readback-audit-.*\.json$/.test(f))
+    .filter((f) => re.test(f))
     .sort();
   return files.length ? path.join('work', 'coverage', files[files.length - 1]) : null;
 }
 
+// Découverte du readback le plus récent (par nom).
+function discoverReadback() {
+  return discoverLatest(/^zone-source-readback-audit-.*\.json$/);
+}
+
+// Découverte de la mesure de cohérence lot-zone À L'ÉCHELLE la plus récente (par nom).
+// Repli explicite sur l'ancien fichier mono-ville si aucune passe à l'échelle n'existe.
+function discoverLotZoneScale() {
+  return discoverLatest(/^lot-zone-consistency-scale-.*\.json$/);
+}
+
 // Paths (relatifs à ROOT).
 const readbackRel = discoverReadback();
+const lotZoneScaleRel = discoverLotZoneScale();
 
 const SRC = {
   zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
@@ -129,8 +141,24 @@ const SRC = {
   immoFolded: loadFile('work/coverage/immo-folded-normes-city-matrix.json'),
   immoField: loadFile('work/immo-field-completion-matrices/immo-field-completion-matrix.json'),
   readback: readbackRel ? loadFile(readbackRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
+  // Mesure de cohérence lot-zone à l'échelle (867 villes auditables). Ancien chemin conservé en repli.
+  lotZoneScale: lotZoneScaleRel ? loadFile(lotZoneScaleRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   lotZoneConsistency: loadFile('work/coverage/lot-zone-consistency.json'),
+  // Registre des villes canoniques (UTILISÉ UNIQUEMENT pour l'ensemble des slugs de l'univers 1 106,
+  // jamais pour ses valeurs de couverture) : évite de créditer une ligne hors-univers.
+  cityRegistry: loadFile('work/coverage/coverage-matrix.json'),
 };
+
+// Ensemble des slugs villes canoniques (univers 1 106). null si le registre est absent.
+function canonicalSlugSet() {
+  const c = SRC.cityRegistry.data?.cities;
+  if (!c || typeof c !== 'object') return null;
+  const keys = Object.keys(c);
+  if (keys.length !== UNIVERSE) {
+    warn(`Registre villes: ${keys.length} slugs ≠ univers ${UNIVERSE} (gate hors-univers appliqué quand même)`);
+  }
+  return new Set(keys);
+}
 
 // ---- extraction des as-of (depuis chaque artefact lui-même) ----------------
 function computeAsOf() {
@@ -163,7 +191,13 @@ function computeAsOf() {
     s.immoField.asOf = 'non daté dans l’artefact (entrées: coverage-matrix, immo-lots)';
   }
   if (s.readback.data) s.readback.asOf = s.readback.data.generatedAt || null;
+  if (s.lotZoneScale.data) {
+    const g = s.lotZoneScale.data.generatedAt || null;
+    const l = s.lotZoneScale.data.asOfS3Listing || null;
+    s.lotZoneScale.asOf = [g, l ? `listing S3 ${l}` : null].filter(Boolean).join(' ; ') || null;
+  }
   if (s.lotZoneConsistency.data) s.lotZoneConsistency.asOf = s.lotZoneConsistency.data.generatedAt || null;
+  if (s.cityRegistry.data) s.cityRegistry.asOf = s.cityRegistry.data.generatedAt || null;
 }
 computeAsOf();
 
@@ -330,18 +364,52 @@ function immoFieldCell(fieldKey) {
   return stdCell({ complete: f.complete, incomplete: f.incomplete, unknown: f.unknown, na: f['N/A'] || 0 });
 }
 
-// AJOUT qualité #2 : cohérence lot-zone. Complete si mismatch < 5 %, MAIS seulement
-// si le fichier couvre assez de villes ; sinon "donnée insuffisante" (jamais inventé).
+// AJOUT qualité #2 : cohérence lot-zone. Source = la passe À L'ÉCHELLE la plus récente
+// (`lot-zone-consistency-scale-*.json`), repli sur l'ancien `lot-zone-consistency.json`.
+// Règles NON NÉGOCIABLES :
+//   - ville `complete` SSI `mismatch_pct < 5 %` ET `status === 'measured'` ;
+//   - `inconclusive_zero_assigned` (0 lot porteur d'un `code_zone`) => `unknown`, JAMAIS
+//     `complete` : leur mismatch vaut 0 par absence de donnée, pas par qualité ;
+//   - ville non auditable (pas de zonage servi OU pas de lots servis) => `unknown` ;
+//   - une ligne hors univers canonique ne reçoit aucun crédit de complétion ;
+//   - la partition ferme sur l'univers 1 106.
 function kpiCoherenceLotZone() {
-  const d = SRC.lotZoneConsistency.data;
+  const scale = SRC.lotZoneScale.data;
+  const legacy = SRC.lotZoneConsistency.data;
+  const d = scale || legacy;
+  const sourcePath = scale ? SRC.lotZoneScale.path : SRC.lotZoneConsistency.path;
   if (!d) return { status: 'unknown', complete: null, incomplete: null, unknown: null, na: null, denominator: null, partitionTotal: null, display: 'unknown', cible: fmt(UNIVERSE) };
+
   const cities = Array.isArray(d.cities) ? d.cities : [];
-  const audited = cities.length;
+  const canon = canonicalSlugSet();
+  const inUniverse = (slug) => (canon ? canon.has(slug) : true);
+
+  let complete = 0;
+  let incomplete = 0;
+  let inconclusive = 0;
+  let offUniverse = 0;
+  for (const c of cities) {
+    if (!inUniverse(c.slug)) {
+      offUniverse++;
+      continue;
+    }
+    // `status` absent (ancien format) => on retombe sur le seul test du taux.
+    const measured = c.status ? c.status === 'measured' : typeof c.mismatch_pct === 'number';
+    if (measured && typeof c.mismatch_pct === 'number') {
+      if (c.mismatch_pct < 5) complete++;
+      else incomplete++;
+    } else {
+      // 0 lot assigné (ou taux non calculable) : jamais `complete`.
+      inconclusive++;
+    }
+  }
+  const auditedInUniverse = complete + incomplete + inconclusive;
+
   const COVERAGE_MIN = Math.ceil(UNIVERSE * 0.5); // seuil "assez de villes"
-  if (audited < COVERAGE_MIN) {
+  if (auditedInUniverse < COVERAGE_MIN) {
     const ex = cities
       .slice(0, 3)
-      .map((c) => `${c.slug} : mismatch ${pctFr(c.mismatch_pct)}`)
+      .map((c) => `${c.slug} : mismatch ${c.mismatch_pct === null || c.mismatch_pct === undefined ? 'non calculable' : pctFr(c.mismatch_pct)}`)
       .join(' ; ');
     return {
       status: 'insufficient',
@@ -351,20 +419,40 @@ function kpiCoherenceLotZone() {
       na: null,
       denominator: null,
       partitionTotal: null,
-      display: `donnée insuffisante — ${fmt(audited)} / ${fmt(UNIVERSE)} ville(s) auditée(s)${ex ? ` (${ex})` : ''}`,
+      display: `donnée insuffisante — ${fmt(auditedInUniverse)} / ${fmt(UNIVERSE)} ville(s) auditée(s)${ex ? ` (${ex})` : ''}`,
       cible: fmt(UNIVERSE),
-      extra: { audited, universe: UNIVERSE, coverage_min: COVERAGE_MIN },
+      extra: { audited: auditedInUniverse, universe: UNIVERSE, coverage_min: COVERAGE_MIN, source: sourcePath },
     };
   }
-  // Couverture suffisante : ville complete si mismatch < 5 %.
-  let complete = 0;
-  let incomplete = 0;
-  for (const c of cities) {
-    if (typeof c.mismatch_pct === 'number' && c.mismatch_pct < 5) complete++;
-    else incomplete++;
+
+  // Couverture suffisante. `unknown` = tout ce qui n'est ni complete ni incomplete :
+  // villes non concluantes (0 lot assigné) + villes non auditables (zonage OU lots absents).
+  const notAuditable = UNIVERSE - auditedInUniverse;
+  const unknown = inconclusive + notAuditable;
+  const cell = stdCell({ complete, incomplete, unknown, na: 0 });
+  const t = d.totals || {};
+  cell.extra = {
+    source: sourcePath,
+    audited_in_universe: auditedInUniverse,
+    off_universe_rows: offUniverse,
+    complete_under_5pct: complete,
+    incomplete_at_or_over_5pct: incomplete,
+    inconclusive_zero_assigned: inconclusive,
+    not_auditable: notAuditable,
+    coverage_min: COVERAGE_MIN,
+    weighted_mismatch_pct: t.weighted_mismatch_pct ?? null,
+    median_city_mismatch_pct: t.median_city_mismatch_pct ?? null,
+    p90_city_mismatch_pct: t.p90_city_mismatch_pct ?? null,
+  };
+  // Contrôle de cohérence défensif avec l'agrégat publié par la source (jamais silencieux).
+  const claimed = d.kpi_threshold_5pct;
+  if (claimed && typeof claimed.complete_under_5pct === 'number') {
+    const expected = claimed.complete_under_5pct - offUniverse;
+    if (expected !== complete) {
+      warn(`cohérence lot-zone: complete recalculé (${complete}) ≠ source (${claimed.complete_under_5pct}) − hors-univers (${offUniverse})`);
+    }
   }
-  const unknown = UNIVERSE - audited;
-  return stdCell({ complete, incomplete, unknown, na: 0 });
+  return cell;
 }
 
 // ---- table des KPI (ordre figé) --------------------------------------------
@@ -426,15 +514,22 @@ const DELTA_FIELDS = [
 
 function computeDelta(prior, cur) {
   if (!prior || cur.status !== 'ok') return '—';
+  // Le snapshot précédent doit lui-même porter une mesure comparable. S'il était
+  // `unknown`/`insufficient` (champs null), AUCUN Δ n'est calculable : on dit "—"
+  // et non "0" — un "0" laisserait croire à une absence de mouvement.
+  if (prior.status && prior.status !== 'ok') return '—';
   const parts = [];
+  let comparable = 0;
   for (const [f, label] of DELTA_FIELDS) {
     const a = prior[f];
     const b = cur[f];
     if (typeof a === 'number' && typeof b === 'number') {
+      comparable++;
       const d = b - a;
       if (d !== 0) parts.push(`${d > 0 ? '+' : ''}${d} ${label}`);
     }
   }
+  if (!comparable) return '—';
   return parts.length ? parts.join(' · ') : '0';
 }
 
@@ -481,7 +576,9 @@ function build(todayNum) {
     SRC.immoFolded,
     SRC.immoField,
     SRC.readback,
+    SRC.lotZoneScale,
     SRC.lotZoneConsistency,
+    SRC.cityRegistry,
   ]
     .filter((s) => s.path)
     .map((s) => ({ path: s.path, asOf: s.asOf, sha256: s.sha256 ? `sha256:${s.sha256}` : null, present: s.exists }));
@@ -557,6 +654,50 @@ function renderMarkdown(payload) {
   const coh = payload.kpis.find((k) => k.key === 'coherence_lot_zone');
   if (coh && coh.actuel.status === 'insufficient') {
     L.push(`- **Cohérence lot-zone** : ${coh.actuel.display}. Marqué "donnée insuffisante" ; rien n’est extrapolé au reste des villes.`);
+  }
+  if (coh && coh.actuel.status === 'ok') {
+    const e = coh.actuel.extra || {};
+    L.push(
+      `- **Cohérence lot-zone** : mesure RÉELLE sur ${fmt(e.audited_in_universe)} villes auditables (zonage ET lots servis), ville \`complete\` ssi \`mismatch_pct < 5 %\`. ` +
+        `${fmt(e.inconclusive_zero_assigned)} villes sans AUCUN lot porteur de \`code_zone\` sont comptées \`unknown\`, jamais \`complete\` : leur taux vaut 0 par absence de donnée, pas par qualité. ` +
+        `${fmt(e.not_auditable)} villes non auditables (zonage ou lots non servis) sont également \`unknown\`.` +
+        (e.off_universe_rows ? ` ${fmt(e.off_universe_rows)} ligne(s) hors univers canonique sans crédit de complétion.` : '')
+    );
+    if (e.weighted_mismatch_pct != null) {
+      L.push(
+        `- **Mismatch lot-zone à l’échelle (contexte lots, non mélangé aux KPI villes)** : ${pctFr(e.weighted_mismatch_pct)} pondéré par les lots, ` +
+          `médiane par ville ${pctFr(e.median_city_mismatch_pct)}, p90 ${pctFr(e.p90_city_mismatch_pct)} — le défaut est CONCENTRÉ, pas diffus.`
+      );
+    }
+    if (coh.precedent && coh.precedent !== '—' && coh.delta === '—') {
+      L.push(
+        `- Δ cohérence lot-zone non calculable : le snapshot ${payload.previousSnapshotDate} portait ce KPI en "donnée insuffisante" (aucun champ numérique). ` +
+          'Aucun Δ n’est fabriqué ; le premier Δ réel sortira au prochain run.'
+      );
+    }
+  }
+  // Trou de jointure lot→zone : contexte LOTS, présenté séparément (comme les normes pliées),
+  // jamais fondu dans le KPI ville.
+  const scaleTot = SRC.lotZoneScale.data?.totals;
+  if (scaleTot && typeof scaleTot.unassigned === 'number' && scaleTot.lots) {
+    const pct = Math.round((scaleTot.unassigned / scaleTot.lots) * 10000) / 100;
+    const sc = Array.isArray(SRC.lotZoneScale.data.cities) ? SRC.lotZoneScale.data.cities : [];
+    const byUnassigned = sc.slice().sort((a, b) => (b.unassigned || 0) - (a.unassigned || 0) || a.slug.localeCompare(b.slug));
+    const worst = byUnassigned[0];
+    const fullyUnassigned = sc
+      .filter((c) => c.assigned === 0 && (c.lots || 0) > 0)
+      .sort((a, b) => (b.lots || 0) - (a.lots || 0) || a.slug.localeCompare(b.slug))[0];
+    const bits = [];
+    if (worst) bits.push(`${worst.slug} ${fmt(worst.unassigned)}/${fmt(worst.lots)}`);
+    if (fullyUnassigned && (!worst || fullyUnassigned.slug !== worst.slug)) {
+      bits.push(`${fullyUnassigned.slug} ${fmt(fullyUnassigned.unassigned)}/${fmt(fullyUnassigned.lots)}`);
+    }
+    L.push(
+      `- **Lots sans \`code_zone\` (contexte lots, non mélangé aux KPI villes)** : ${fmt(scaleTot.unassigned)} lots servis sur ${fmt(scaleTot.lots)} (${pctFr(pct)}) n’ont AUCUN \`code_zone\` — ` +
+        `trou de jointure PLUS GROS que le mismatch lui-même, concentré sur quelques villes` +
+        (bits.length ? ` (${bits.join(' ; ')})` : '') +
+        '. À traiter comme un gisement de re-fold distinct, pas comme une incohérence de géométrie.'
+    );
   }
   const fold = SRC.immoFolded.data?.counts;
   if (fold) {
