@@ -5,6 +5,10 @@
  */
 import { createHash } from "node:crypto";
 import { PutObjectCommand, type S3Client } from "@aws-sdk/client-s3";
+import {
+  captureProofFields,
+  type CaptureManifestLine,
+} from "../../../packages/qc-sources/src/capture/index.js";
 import { BUCKET, isServedZoneKey, getBytes, objectHead, copyObject } from "./s3.js";
 
 export type GeometrySourceType = "wfs" | "arcgis" | "agol" | "geonet" | "jmap" | "geojson-officiel" | "pdf-zonage";
@@ -66,6 +70,40 @@ export function proofFromFetched(input: Omit<GeometrySourceProof, "retrieved_at"
   const retrieved_at = input.retrievedAt ?? new Date().toISOString();
   if (!isIsoTimestamp(retrieved_at)) throw new Error("geometry proof retrieved_at must be an ISO timestamp");
   const proof = { url: input.url, type: input.type, method: input.method, reliability: input.reliability, retrieved_at, sha256: sha256(input.bytes) };
+  assertGeometryProof(proof);
+  return proof;
+}
+
+/**
+ * ENTRÉE DE CAPTURE → PREUVE v2 (SPEC_CAPTURE_ON_CLUSTER.md §3.1, règle C-1).
+ *
+ * La correspondance est TOTALE et MÉCANIQUE : `url`, `retrieved_at` et `sha256`
+ * viennent tels quels de la ligne de `capture/_runs/<run-id>/manifest.jsonl` —
+ * l'instant et les octets sont ceux MESURÉS par le chokepoint, pas ceux que le
+ * producteur affirme. Seuls `type` / `method` / `reliability`, qui relèvent du
+ * vocabulaire zonage, restent à la charge de l'appelant.
+ *
+ * `captureProofFields` REFUSE une ligne sans octets (404/403/timeout) ou dont
+ * l'URL a été rédigée : une preuve v2 ne peut pas naître d'un échec, ni d'une URL
+ * non re-téléchargeable. C'est exactement la règle C-2 (une preuve sans capture
+ * est déclarative, donc sans valeur).
+ *
+ * Aucun garde existant n'est modifié : la preuve produite passe par
+ * `assertGeometryProof` comme n'importe quelle autre.
+ */
+export function proofFromCaptureEntry(
+  line: CaptureManifestLine,
+  kind: Pick<GeometrySourceProof, "type" | "method" | "reliability">,
+): GeometrySourceProof {
+  const fields = captureProofFields(line);
+  const proof: GeometrySourceProof = {
+    url: fields.url,
+    type: kind.type,
+    method: kind.method,
+    reliability: kind.reliability,
+    retrieved_at: fields.retrieved_at,
+    sha256: fields.sha256,
+  };
   assertGeometryProof(proof);
   return proof;
 }
