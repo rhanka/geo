@@ -1,0 +1,28 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "residentiel",
+    "RD": "residentiel",
+    "RE": "residentiel",
+    "REC": "environnemental",
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "IA": "industriel",
+    "V": null,
+    "M": null,
+    "MA": null,
+    "MB": null,
+    "MC": null,
+    "MD": null,
+    "ME": null,
+    "PA": null,
+    "PB": null
+  },
+  "source": "https://degelis.ca/media/attachments/2026/04/21/656_zonage_codif.-admin_2024-04-15.pdf",
+  "note": "Règlement de zonage numéro 656 de la Ville de Dégelis (codification administrative 2024-04-15; art. 1.3.2 remplacé par le règlement 738, 2023-08-21), ART. 1.3.2 « IDENTIFICATION DES ZONES », verbatim: « Chacune des zones est identifiée par un code unique, composé d'initiales suivies d'un chiffre. Les initiales qualifient la zone de la manière suivante : 1° C : commerciale; 2° EA : agricole (qui comprend EAA et EAB); 3° EAF : agroforestière; 4° EF : forestière; 5° I : industrielle; 6° M : mixte (qui comprend Ma, Mb, Mc, Md et Me); 7° P : publique (qui comprend Pa et Pb); 8° R : résidentielle (qui comprend Ra, Rb, Rc, Rd et Re); 9° REC : récréative; 10° V : de villégiature; 11° IA : industrielle autoroutière. » -> Ra..Re « résidentielle » -> residentiel; EAA/EAB « agricole », EAF « agroforestière », EF « forestière » -> agricole (le contrat regroupe agricole/agroforestière/forestière; EAF n'est PAS dual); C « commerciale » -> commercial; I « industrielle » et IA « industrielle autoroutière » -> industriel; REC « récréative » -> environnemental. Null explicite: M/Ma..Me « mixte »; Pa/Pb « publique »; V « de villégiature » SEULE. ⚠ REC est déclaré pour l'anti-fall-through: le match est longest-prefix et « REC-1 » commence par « RE » (residentiel) — sans lui la zone récréative serait servie residentiel. Les préfixes « EA », « R » et « P » sont définis au règlement mais ABSENTS du SIG -> non mappés (leurs enfants le sont tous, donc aucun fall-through). La matrice des classes d'usages de l'art. 1.4.2 (H1/H2/C/A) n'est PAS utilisée."
+}

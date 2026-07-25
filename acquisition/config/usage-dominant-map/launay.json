@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RR": "residentiel",
+    "VC": "residentiel",
+    "IB": "industriel",
+    "MN": "industriel",
+    "AG": "agricole",
+    "AF": "agricole",
+    "FO": "agricole",
+    "CO": "environnemental",
+    "MX": null,
+    "PC": null,
+    "REC": null,
+    "EV": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2788080%27",
+  "note": "Launay (Municipalité de canton, MRC d'Abitibi-Ouest), code MAMH 88080. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche geocentralis « evb:siadmin_pzon_99_s » porte la vocation écrite PAR ENTITÉ dans `etiquette_2` (`etiquette_1` = code complet, `etiquette_3` = préfixe). Gate propriétaire: `id_municipalite=88080` = « Launay » au répertoire MAMH committé (packages/qc-sources/src/geo/qc-municipal-directory.json); recouvrement mesuré 34/34 = 100% des polygones servis (helper `_ud-geocentralis-etiquette-dump.ts --slugs launay`). Étiquettes VERBATIM relevées: AF « Agroforestière »; AG « Agricole »; CO « Conservation »; EV « Parc et espaces verts »; FO « Forestière »; Ib « Industrie à contrainte élevée »; MN « Minière »; MX « Mixte »; PC « Publique et communautaire »; REC « Récréotouristique »; RR « Résidence rurale »; Ra « Résidence faible densité »; Rb « Résidence moyenne et haute densité »; VC « Villégiature (consolidation) ». Mapping: Ra, Rb, RR (« Résidence … ») et VC « Villégiature (consolidation) » -> residentiel; AG « Agricole », AF « Agroforestière » et FO « Forestière » -> agricole; Ib « Industrie à contrainte élevée » -> industriel et MN « Minière » -> industriel (extraction); CO « Conservation » -> environnemental. NULL EXPLICITES: MX « Mixte » est duale par définition; PC « Publique et communautaire » est public; REC « Récréotouristique » est duale (volet récréatif = environnemental, volet touristique = commercial), même traitement que sur franquelin et saint-marcel; EV « Parc et espaces verts » n'énonce aucune des cinq catégories — un parc municipal est autant un équipement public qu'un espace naturel, la dominante n'est pas tranchable sans invention. Codes SIG servis (34, en forme majuscule): AF-1..3, AG-1/2, CO-1/2, EV-1, FO-1..5, IB-1, MN-1, MX-1..5, PC-1..3, RA-1..7, RB-1, REC-1, RR-1, VC-1 — aucun autre préfixe. Attention longest-prefix: REC (null) est déclaré à part de RA/RB/RR pour éviter tout fallthrough. ⛔ PIÈGE ÉCARTÉ: le PDF local le plus gros du dossier Abitibi-Ouest est le « Règlement de zonage des Territoires non organisés de la MRC d'Abitibi-Ouest », qui ne NOMME pas Launay — il n'a PAS été utilisé."
+}

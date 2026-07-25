@@ -1,0 +1,120 @@
+{
+  "run": "zones-recalage-1-20260709T114400Z",
+  "shard": {
+    "modulo": 4,
+    "remainder": 0,
+    "candidate_rule": "zones.status != done && index % 4 == 0",
+    "candidate_count": 86,
+    "pdf_candidate_count": 82,
+    "priority_candidates": [
+      "pike-river",
+      "saint-zotique",
+      "saint-liboire",
+      "saint-valerien-de-milton",
+      "saint-armand",
+      "sainte-marcelline-de-kildare",
+      "dunham",
+      "sainte-beatrix",
+      "saint-theodore-dacton",
+      "sainte-agathe-des-monts",
+      "stukely-sud",
+      "bolton-ouest"
+    ],
+    "mont_tremblant": {
+      "in_shard": false,
+      "index": 350,
+      "zones_status": "done"
+    }
+  },
+  "successes": [
+    {
+      "slug": "rawdon",
+      "index": 192,
+      "source_page": "https://rawdon.ca/reglements-municipaux",
+      "source_pdf": "https://rawdon.ca/storage/app/media/municipalite/administration/R%C3%A8glements%20municipaux/amenagement-et-urbanisme/2021-02-zonage-annexe1-plans-v.adm-25-06-2025.pdf",
+      "source_http": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "content_length": 8606010
+      },
+      "local_pdf": "work/zonage-plans/rawdon-plan.pdf",
+      "track": "pdf-scan-t4",
+      "tier": "T2",
+      "page": 3,
+      "labels": "text",
+      "s3_key": "normalized/ca-qc-zonage/qc-zonage-rawdon.geojson",
+      "gcp_file": "work/gcp/rawdon-page3.recalage1.gcp.json",
+      "autogcp_report": "work/gcp/rawdon-page3.recalage1.autogcp.report.json",
+      "gates": {
+        "independent_gcps": 35,
+        "bbox_derived_gcps": 0,
+        "residual_max_m": 28.284,
+        "holdout_max_m": 12.365,
+        "aniso_arbitration": "serve",
+        "serving_coverage_pct": 96.16,
+        "tight_cutoff_pct": 28.07,
+        "distinct_codes": 147,
+        "spatial_km": 1.279,
+        "labels_inside_cadastre_bbox": "140/147"
+      },
+      "build": {
+        "served_features": 119,
+        "lots_total": 9298,
+        "lots_assigned": 8941,
+        "lot_to_zone_pct": 96.16,
+        "zone_union_area_pct": 81.06,
+        "prefixes": ["P", "RC", "RD", "CV", "I", "M"]
+      },
+      "post_deposit": {
+        "lot_zone_join": {
+          "ok": true,
+          "lots": 9298,
+          "assigned_pct": 96.2,
+          "norm_match_pct": 5.09,
+          "warning": "norm match rate 5.09% < 95%"
+        },
+        "lots_enriched": {
+          "ok": true,
+          "zone_code_pct": 96.2,
+          "norms_pct": 4.89,
+          "surface_pct": 100,
+          "code_postal_pct": 100,
+          "adresse_pct": 98.94
+        },
+        "coverage_reconcile": {
+          "pv": 1050,
+          "normes": 560,
+          "zones": 769,
+          "cadastre": 1106,
+          "role_foncier": 1106,
+          "tod": 39
+        }
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "saint-michel-des-saints",
+      "stage": "t2-autogcp",
+      "reason": "interrupted after more than 6 minutes without numeric verdict",
+      "deposited": false
+    },
+    {
+      "slug": "rawdon",
+      "page": 2,
+      "stage": "t2-autogcp",
+      "report": "work/gcp/rawdon-page2.recalage1.autogcp.report.json",
+      "reason": "best aniso arbitration serving coverage 84.03% < floor 85%",
+      "residual_max_m": 24.392,
+      "holdout_max_m": 19.283,
+      "deposited": false
+    }
+  ],
+  "commit_candidate_paths": [
+    "work/gcp/rawdon-page2.recalage1.autogcp.report.json",
+    "work/gcp/rawdon-page3.recalage1.autogcp.report.json",
+    "work/gcp/rawdon-page3.recalage1.gcp.json",
+    "work/delegation-mass/zones-recalage-1-20260709T114400Z.md",
+    "work/delegation-mass/zones-recalage-1-20260709T114400Z.json"
+  ]
+}

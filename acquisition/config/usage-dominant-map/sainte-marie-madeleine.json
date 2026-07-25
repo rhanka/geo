@@ -1,0 +1,29 @@
+{
+  "prefix_map": {
+    "101": "residentiel",
+    "102": "residentiel",
+    "103": "residentiel",
+    "104": "residentiel",
+    "105": "residentiel",
+    "106": "residentiel",
+    "107": "residentiel",
+    "108": "residentiel",
+    "109": "residentiel",
+    "110": "residentiel",
+    "116": "residentiel",
+    "1002": "agricole",
+    "1003": "agricole",
+    "1007": "agricole",
+    "2": null,
+    "5": "agricole",
+    "8040": "agricole",
+    "8043": "agricole",
+    "8064": "agricole",
+    "8051": null,
+    "8054": null,
+    "8055": null,
+    "A": "agricole"
+  },
+  "source": "normalized/ca-qc-zonage/qc-zonage-sainte-marie-madeleine/qc-zonage-sainte-marie-madeleine.geojson (attribut `Affectation` du SIG municipal servi)",
+  "note": "Sainte-Marie-Madeleine (MRC Les Maskoutains). La catégorie N'est PAS devinée à partir du code: chaque feature du zonage SERVI porte un attribut `Affectation` VERBATIM qui EST la fonction dominante de la zone (même gisement que honfleur/saint-malo/saint-marcel-de-richelieu). Aucun PDF de règlement n'a été utilisé. Valeurs relevées VERBATIM par code servi (`_ud-code-vocation-dump.ts`, 40 codes): 101,102,103,104,105,106,107,108,109,110 -> « Résidentielle » et 116 -> « résidentiel » => residentiel; 501 à 512 -> « Agricole » (12/12) => préfixe « 5 » -> agricole; 8040 A21, 8043 A13, 8064 A03, 1002 A21, 1003 A10, 1007 A02 -> « Agricoles » => agricole (clés à 4 chiffres, plus longues que « 1 »/« 5 », pour ne pas confondre 100x « Agricoles » avec la famille 1xx résidentielle); A-307, A-308 -> « Agricole » => préfixe « A » -> agricole. Null explicite: la famille 2xx (201,202,203,204,205,206) porte « Commerciale - Résidentielle », affectation DUALE, avec en plus des valeurs contradictoires sur 201 (« récréative ») et 205 (« commerciale ») => préfixe « 2 » -> null (aucune dominante ne peut être forcée sur une zone duale); 8054 M09 et 8055 M09 -> « Mixtes » => null (duale); 8051 X11 -> « Soumises à un plan » => null (aucune fonction dominante énoncée). Aucun code servi n'est laissé sans clé. La matrice des usages permis des grilles n'est PAS utilisée."
+}

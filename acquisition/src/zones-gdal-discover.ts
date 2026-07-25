@@ -52,6 +52,7 @@ import {
   parsePvIndex,
   type PvIndexItemT,
 } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ACQ = resolve(HERE, "..");
@@ -234,7 +235,7 @@ async function main(): Promise<void> {
 
   console.error(`[zones-discover] ${slugs.length} cities (offset=${args.offset} limit=${args.limit ?? "all"})`);
 
-  const tmpDir = join("/tmp", `zones-discover-${Date.now()}`);
+  const tmpDir = workspaceTmp(`zones-discover-${Date.now()}`);
   mkdirSync(tmpDir, { recursive: true });
 
   const candidates: Candidate[] = [];

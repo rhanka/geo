@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "M": null,
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "A": "agricole",
+    "Af": "agricole",
+    "Ex": "industriel"
+  },
+  "source": "https://saint-gilbert.ca/uploads/documents/Reglement-de-zonage-Saint-Gilbert-refondu-08-2023.pdf",
+  "note": "Règlement de zonage no U-08-2014 de la Municipalité de Saint-Gilbert (MRC de Portneuf), refonte 08-2023, chapitre 3, art. 3.2 « CODIFICATION DES ZONES », p.3-1: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante. Les lettres font référence aux types de zones et aux vocations dominantes suivantes ». Table « Types de zone / Vocations dominantes » relevée VERBATIM, par famille. Famille « Résidentielle »: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « Résidentielle de faible densité en milieu agricole (unifamiliale isolée) », Rb « Résidentielle de moyenne densité (unifamiliale et bifamiliale) » -> residentiel (Ra couvre le code servi Ra/a-1 par longest-prefix, même dominante). Famille « Commerciale »: C « Commerciale » -> commercial. Famille « Industrielle »: I « Industrielle » -> industriel. Famille « Agricole »: A « Agricole dynamique », Af/a « Agroforestière (avec résidence sur propriété de 5 ha et plus) », Af/b « (10 ha et plus) », Af/c « Agroforestière (sans résidence) » -> agricole (Af couvre les codes servis Af/a-*, Af/b-*, même dominante). Famille « Extraction »: Ex « Extraction » -> industriel (l'extraction est traitée comme industrielle, même doctrine que Ie dans saint-basile.json et Ex dans saint-raymond.json). Null explicite: M « Mixte (résidentielle et commerciale) » est rangé par le règlement sous la famille « Mixte » et nomme DEUX fonctions -> DUALE; P « Publique et institutionnelle » est public. Les 9 préfixes mappés sont EXACTEMENT les 9 présents au SIG servi (29 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée. Source consultée le 2026-07-17."
+}

@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-07-10T12:33:21Z",
+  "shard": {
+    "rem": 2,
+    "mod": 6,
+    "selection": "sorted slugs where index % 6 == 2",
+    "nonDoneAtStart": 56
+  },
+  "summary": {
+    "deposited": ["saint-armand"],
+    "rejectedOrSkipped": [
+      "duhamel",
+      "stanstead--memphremagog--2",
+      "saint-isidore-de-clifton",
+      "saint-telesphore",
+      "trois-rives",
+      "saint-louis-de-gonzague--beauharnois-salaberry"
+    ],
+    "supervisorZonesInitial": 797,
+    "supervisorZonesFinal": 803
+  },
+  "deposits": [
+    {
+      "slug": "saint-armand",
+      "method": "t2-autogcp-aniso",
+      "gcpFile": "work/gcp/saint-armand.autogcp.json",
+      "arbitrationReport": "work/gcp/saint-armand.arb.report.json",
+      "statsFile": "work/delegation-mass/zones-recalage-shard2-20260710/saint-armand-t2-live/qc-zonage-saint-armand.stats.json",
+      "s3Key": "normalized/ca-qc-zonage/qc-zonage-saint-armand.geojson",
+      "nGcps": 46,
+      "gcpResidualMaxM": 26.823,
+      "gcpResidualRmsM": 10.069,
+      "holdoutMaxM": 26.147,
+      "labelCodes": 286,
+      "labelsInFrame": 862,
+      "servedFeatures": 143,
+      "lotsAssigned": 929,
+      "lotsTotal": 1024,
+      "lotToZonePct": 90.72,
+      "labelSpatialKm": 0.552,
+      "downstream": {
+        "lotZoneJoin": {
+          "ok": true,
+          "lots": 1024,
+          "assignedPct": 90.72,
+          "normMatchPct": 5.06
+        },
+        "lotsEnriched": {
+          "ok": true,
+          "lots": 1024,
+          "zoneCodePct": 90.72,
+          "normsPct": 4.59,
+          "surfacePct": 100,
+          "codePostalPct": 100,
+          "adressePct": 99.61,
+          "deposit": true
+        }
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "slug": "duhamel",
+      "reason": "GeoPDF feuillet 3 and local feuillets failed coverage/spatial/orientation gates",
+      "evidence": [
+        {
+          "artifact": "work/t1-duhamel-f1/qc-zonage-duhamel.stats.json",
+          "georefResidualM": 0.078,
+          "labelCodes": 19,
+          "lotToZonePct": 0,
+          "labelSpatialKm": 17.602
+        },
+        {
+          "artifact": "work/t1-duhamel-f3/qc-zonage-duhamel.stats.json",
+          "georefResidualM": 0.078,
+          "labelCodes": 38,
+          "lotToZonePct": 7.34,
+          "lotsAssigned": 16,
+          "lotsTotal": 218,
+          "labelSpatialKm": 9.575
+        },
+        {
+          "artifact": "work/gcp/duhamel-f2.shard2.autogcp.report.json",
+          "pass": false,
+          "reason": "9 seeds cleared residual+holdout but none cleared orientation/isotropy"
+        }
+      ]
+    },
+    {
+      "slug": "stanstead--memphremagog--2",
+      "reason": "automatic GeoPDF was Canton homonym; correct Ville plan is non-georef and T2 gates reject",
+      "evidence": [
+        {
+          "source": "https://www.cantonstanstead.ca/wp-content/uploads/2026/02/488-2025-Annexe-2_Plan-Zonage.pdf",
+          "status": "homonym-rejected",
+          "t1SpatialKm": 12.09
+        },
+        {
+          "source": "https://stanstead.ca/wp-content/uploads/2022/06/2012-URB-02-Plan-de-zonage-a-jour-au-8-mai-2014.pdf.pdf",
+          "localPdf": "work/delegation-mass/zones-recalage-shard2-20260710-stanstead-ville-plan.pdf",
+          "t1": "no /VP /Measure /GEO",
+          "t2AffineReport": "work/gcp/stanstead--memphremagog--2.shard2.autogcp.report.json",
+          "t2AffineReason": "19 seeds cleared residual+holdout but none cleared orientation/isotropy",
+          "t2SimilarityReport": "work/gcp/stanstead--memphremagog--2.shard2.sim.autogcp.report.json",
+          "t2SimilarityReason": "no extent x rotation seed cleared residual+holdout"
+        }
+      ]
+    },
+    {
+      "slug": "saint-isidore-de-clifton",
+      "reason": "official zoning PDFs are scans without georef markers or text tokens",
+      "evidence": [
+        {"producer": "TOSHIBA e-STUDIO255", "geoMarkers": 0, "zoneTokens": 0},
+        {"producer": "TOSHIBA e-STUDIO2555C", "geoMarkers": 0, "zoneTokens": 0}
+      ]
+    },
+    {
+      "slug": "saint-telesphore",
+      "reason": "zoning map PDF has zone tokens but no georef markers",
+      "evidence": [{"producer": "PScript5.dll Version 5.2.2", "geoMarkers": 0, "zoneTokens": 8}]
+    },
+    {
+      "slug": "trois-rives",
+      "reason": "official zoning annex PDF is non-georef and has no zone tokens",
+      "evidence": [{"producer": "Microsoft Office Word 2007", "geoMarkers": 0, "zoneTokens": 0}]
+    },
+    {
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "reason": "annex PDFs are non-georef and have no zone tokens",
+      "evidence": [{"producer": "Microsoft Print To PDF", "geoMarkers": 0, "zoneTokens": 0}]
+    }
+  ],
+  "discoveryBatches": [
+    {
+      "name": "batch1",
+      "artifact": "work/delegation-mass/zones-recalage-shard2-20260710-batch1.gdal-candidates.json",
+      "cities": 12,
+      "planLinks": 3,
+      "downloaded": 1,
+      "geoCandidates": 1,
+      "noPlanLink": 6
+    },
+    {
+      "name": "batch2",
+      "artifact": "work/delegation-mass/zones-recalage-shard2-20260710-batch2.gdal-candidates.json",
+      "cities": 12,
+      "planLinks": 0,
+      "downloaded": 0,
+      "geoCandidates": 0,
+      "noPlanLink": 5
+    },
+    {
+      "name": "batch3",
+      "artifact": "work/delegation-mass/zones-recalage-shard2-20260710-batch3.gdal-candidates.json",
+      "cities": 12,
+      "planLinks": 0,
+      "downloaded": 0,
+      "geoCandidates": 0,
+      "noPlanLink": 2
+    },
+    {
+      "name": "batch4",
+      "artifact": null,
+      "status": "interrupted after useful console evidence on slow municipalites-du-quebec fetch",
+      "geoCandidates": 0
+    },
+    {
+      "name": "batch5",
+      "artifact": "work/delegation-mass/zones-recalage-shard2-20260710-batch5.gdal-candidates.json",
+      "cities": 8,
+      "planLinks": 6,
+      "downloaded": 6,
+      "geoCandidates": 2,
+      "noPlanLink": 3
+    }
+  ]
+}

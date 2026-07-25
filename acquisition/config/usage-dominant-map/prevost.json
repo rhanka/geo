@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "T2": null,
+    "T3": null,
+    "T4": null,
+    "T5": null,
+    "ZC": "commercial",
+    "ZI": "industriel",
+    "ZP": null
+  },
+  "source": "https://www.ville.prevost.qc.ca/storage/app/media/actualites/2025/843-reglement-urbanisme-durable-20251202-avec%20compression.pdf",
+  "note": "Ville de Prévost, Règlement d'urbanisme durable numéro 843, article 1.3.2.1 « Plan de zonage » (section 1.3.2 « Découpage du territoire en zone »), verbatim: « Ces zones sont organisées selon un gradient d'intensité urbaine et chacune présente des spécificités propres en termes de forme et d'usages. […] On retrouve les huit catégories suivantes sur le territoire : 1° la catégorie « T1 - Naturel » ; 2° la catégorie « T2 – Rural » ; 3° la catégorie « T3 – Suburbain » ; 4° la catégorie « T4 – Urbain » ; 5° la catégorie « T5 – Centralité » ; 6° la catégorie « ZP - Publique » ; 7° la catégorie « ZC – Commerciale » ; 8° la catégorie « ZI – Industrielle ». » La légende de l'Annexe A (plan de zonage) détaille les sous-types: T1.1 Conservation, T1.2 Récréation; T2.1 Agricole, T2.2 Rural, T2.3 Rural champêtre; T3 Suburbain; T4 Urbain, T4.D1 Urbain densité moyenne, T4.D2 Urbain densité élevée, T4.D3 Urbain mixte; T5.D1 Centralité secondaire, T5.D2 Centralité mixte; ZP.1 Espace ouvert, ZP.2 Institutionnel, ZP.3 Utilité publique. Mapping: ZC « Zone commerciale » -> commercial; ZI « Zone industrielle » -> industriel. Null explicite: ZP « Zone publique » (espace ouvert / institutionnel / utilité publique) est publique; T2 « Rural » regroupe Agricole + Rural + Rural champêtre, donc pas de dominante unique (rurale seule -> null); T3 « Suburbain » et T4 « Urbain » sont des degrés d'intensité urbaine (transect SmartCode) et non des vocations — le règlement ne leur attribue AUCUNE dominante verbatim, et T4 englobe « T4.D3 - Urbain mixte »; T5 « Centralité » est le centre-ville, dual/mixte (« T5.D2 - Centralité mixte »). Le SIG sert la catégorie sans le sous-type (T2-320, T3-315, T4-221, T5-222), d'où le mapping au niveau catégorie exact (T2/T3/T4/T5, jamais « T » seul). La matrice des usages permis des grilles de spécifications n'est pas utilisée."
+}

@@ -1,0 +1,148 @@
+{
+  "timestamp": "2026-07-10T164228Z",
+  "shard": {
+    "rem": 0,
+    "mod": 2
+  },
+  "deposits": [
+    {
+      "slug": "blue-sea",
+      "collection": "qc-zonage-blue-sea",
+      "method": "t2-autogcp",
+      "pdf": "work/pdf-cache/blue-sea.pdf",
+      "gcpReport": "work/gcp/blue-sea.autogcp.report.json",
+      "gcpFile": "work/gcp/blue-sea.autogcp.json",
+      "gcpResidualMaxM": 11.7,
+      "holdoutMaxM": 11.75,
+      "spatialKm": 1.246,
+      "distinctCodes": 43,
+      "servedFeatures": 40,
+      "lotsAssignedPct": 87.65,
+      "inline": {
+        "lotZoneJoin": "OK lots=2316 assigned=87.74%",
+        "lotsEnriched": "OK zone_code=87.74% deposit=Y"
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "alleyn-et-cawood",
+      "reason": "scan; no embedded georef; t2 autogcp svg_points=0",
+      "evidence": "work/gcp/alleyn-et-cawood.autogcp.report.json"
+    },
+    {
+      "slug": "amherst",
+      "reason": "official page exposes zoning regulation/grids, no standalone plan PDF found; local regulation has no embedded georef",
+      "evidence": "work/pdf-cache/amherst.pdf"
+    },
+    {
+      "slug": "aumond",
+      "reason": "official PDF found is a bylaw/modification, not a zoning map; no embedded georef",
+      "evidence": "https://www.aumond.ca/images/r%C3%A8glement_2022-06-275-_final_sign%C3%A9.pdf"
+    },
+    {
+      "slug": "belcourt",
+      "reason": "rural plan fails orientation/isotropy and aniso arbitration; urban plan lacks enough independent GCPs",
+      "evidence": "work/gcp/belcourt-rural.autogcp.shard4.report.json"
+    },
+    {
+      "slug": "bethanie",
+      "reason": "annex B plan page 190 is raster/non-vector; t2 autogcp svg_points=0",
+      "evidence": "work/gcp/bethanie.autogcp.report.json"
+    },
+    {
+      "slug": "bonaventure",
+      "reason": "GeoPDF residual OK but spatial gate fails at 8.14-8.88 km",
+      "evidence": "work/zonage-plans/bonaventure-plan.pdf"
+    },
+    {
+      "slug": "bouchette",
+      "reason": "official page exposes zoning bylaw parts, no standalone zoning map PDF found",
+      "evidence": "work/zones-recalage/shard0of2/bouchette-reglements.html"
+    },
+    {
+      "slug": "charette",
+      "reason": "official static pages inspected; no zoning map PDF link found",
+      "evidence": "work/zonage-plans/charette-urbanisme.html"
+    },
+    {
+      "slug": "chartierville",
+      "reason": "official PDF is a bylaw modification, not a zoning map; no embedded georef",
+      "evidence": "https://chartierville.ca/wp-content/uploads/2025/04/Reglement-2025-03-Modifiant-reglement-de-zonage-corriger-RU-7.pdf"
+    },
+    {
+      "slug": "chertsey",
+      "reason": "raster/non-georef; t2 autogcp svg_points=0",
+      "evidence": "work/gcp/chertsey.autogcp.report.json"
+    },
+    {
+      "slug": "chibougamau",
+      "reason": "official PWA inspected; no literal zoning map PDF URL found in HTML or main bundle",
+      "evidence": "work/zones-recalage/shard0of2/chibougamau-main.js"
+    },
+    {
+      "slug": "cote-nord-du-golfe-du-saint-laurent",
+      "reason": "prior pass: official host DNS failed",
+      "evidence": "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.md"
+    },
+    {
+      "slug": "desbiens",
+      "reason": "prior pass: scanned bylaw, no standalone map found",
+      "evidence": "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.md"
+    },
+    {
+      "slug": "duhamel",
+      "reason": "T1 GeoPDF has residual 0.078 m but spatial 9.575 km and only 7.34% lot assignment; T2 fails orientation/isotropy",
+      "evidence": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z/duhamel-t1-dry-spatial12/qc-zonage-duhamel.stats.json"
+    },
+    {
+      "slug": "fassett",
+      "reason": "scan; t2 autogcp svg_points=0",
+      "evidence": "work/gcp/fassett.autogcp.shard4.report.json"
+    },
+    {
+      "slug": "forestville",
+      "reason": "not T1; T2 has one residual/holdout seed but fails north-up orientation gate",
+      "evidence": "work/gcp/forestville.autogcp.report.json"
+    },
+    {
+      "slug": "grandes-piles",
+      "reason": "not T1; T2 has too few independent GCPs",
+      "evidence": "work/gcp/grandes-piles.autogcp.report.json"
+    },
+    {
+      "slug": "hatley",
+      "reason": "GeoPDF residual OK but spatial gate fails at 11.70 km",
+      "evidence": "work/pdf-cache/hatley-f1.pdf"
+    },
+    {
+      "slug": "hebertville",
+      "reason": "prior pass: bylaw PDF, no cartographic zoning plan found",
+      "evidence": "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.md"
+    },
+    {
+      "slug": "inverness",
+      "reason": "scan/image conversion; t2 autogcp svg_points=0",
+      "evidence": "work/gcp/inverness.autogcp.report.json"
+    },
+    {
+      "slug": "kipawa",
+      "reason": "prior pass: official maps page inspected, no zoning map PDF found",
+      "evidence": "work/delegation-mass/zones-recalage-2026-07-10T123411Z-shard0.md"
+    }
+  ],
+  "deferred": [
+    {
+      "slug": "colombier",
+      "reason": "no local PDF source found in this pass"
+    },
+    {
+      "slug": "eeyou-istchee-james-bay",
+      "reason": "no local PDF source found in this pass"
+    },
+    {
+      "slug": "grand-remous",
+      "reason": "local HTML present but source plan PDF not resolved in this pass"
+    }
+  ]
+}

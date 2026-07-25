@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "RM": "residentiel",
+    "AF": "agricole",
+    "AG": "agricole",
+    "FO": "agricole",
+    "Ia": "industriel",
+    "MX": null,
+    "PC": null
+  },
+  "source": "https://services6.arcgis.com/46OZd3O7yxMgDq1y/arcgis/rest/services/Zonage___St_F%C3%A9lix/FeatureServer/537",
+  "note": "Saint-Félix-de-Dalquier (MRC d'Abitibi), code MAMH 88060. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche ArcGIS « Zonage - St-Félix - 537 » qui SERT ces polygones (elle EST la provenance du geojson servi) porte DEUX champs par entité — `Zonage_abr` « Zonage (abréviation) » et `Zonage` « Zonage » = la vocation écrite en toutes lettres — soit exactement la table « Abréviation / Fonction dominante ». Gate propriétaire porté par l'attribut lui-même: chaque entité porte `Toponyme` = « Saint-Félix-de-Dalquier » et `Code_mun` = « 88060 », et `No_regl_vigueur` = « Règlement no. 297 modifie le règlement no. 240 » (le 240 est bien le règlement de zonage de cette municipalité, confirmé verbatim par son amendement R-285: « Le présent règlement modifie le Règlement de zonage de la Municipalité de St-Félix-de-Dalquier, numéro 240. »). Dump vérifié (`_ud-arcgis-source-fields.ts --pair Zonage_abr,Zonage`, 33 entités = les 33 polygones servis): « Ra = Résidence faible densité » n=8, « MX = Mixte » n=5, « AF = Agroforestière » n=4, « AG = Agricole » n=4, « PC = Publique et communautaire » n=4, « FO = Forestière » n=3, « RM = Résidence unimodulaire » n=2, « Rb = Résidence moyenne et haute densité » n=1, « Rb = Résidence (toute densité) » n=1, « Ia = Industrie à contrainte faible » n=1. Mapping: Ra, Rb, RM (« Résidence … », y compris l'unimodulaire = maison mobile) -> residentiel; AF « Agroforestière », AG « Agricole », FO « Forestière » -> agricole; Ia « Industrie à contrainte faible » -> industriel. NULLS EXPLICITES: MX « Mixte » (le SIG écrit mixte) et PC « Publique et communautaire » (public, hors des cinq catégories). Note de non-uniformité tolérée: le préfixe Rb porte DEUX libellés (« Résidence moyenne et haute densité » et « Résidence (toute densité) ») — tous deux résidentiels, la catégorie servie est donc la même et la règle « attribut non uniforme => null » ne s'applique pas ici (elle vise les préfixes dont les libellés relèvent de catégories DIFFÉRENTES). ⭐ CE DÉPÔT LÈVE UN MUR: le CORPS du règlement 240 est introuvable en ligne (856 médias énumérés sur stfelixdedalquier.ca, 0 correspondance; 2 026 lignes de CDX Wayback, aucune; centre documentaire de la MRC d'Abitibi = MRC et TNO seulement), et `_ud-affectation-dump.ts` rend « (vide) » parce qu'il ne connaît pas les noms de champs `Zonage`/`Zonage_abr`. ⛔ Corollaire de méthode: interroger la COUCHE SOURCE avec outFields=* avant de conclure au mur documentaire — le geojson normalisé jette ces champs. Couverture: 33/33 polygones servis."
+}

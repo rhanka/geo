@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-07-10T224607Z",
+  "shard": {
+    "rem": 0,
+    "mod": 2
+  },
+  "mode": "official-pdf-recalage-only",
+  "agolOwnerHarvest": false,
+  "deposits": [
+    {
+      "slug": "louiseville",
+      "collection": "qc-zonage-louiseville",
+      "method": "t2-autogcp-aniso",
+      "officialPage": "https://www.louiseville.ca",
+      "pdf": "work/pdf-cache/louiseville-zonage-agricole-622.pdf",
+      "gcpReport": "work/gcp/louiseville-agricole.autogcp.report.json",
+      "gcpFile": "work/gcp/louiseville-agricole.autogcp.json",
+      "gcpResidualMaxM": 9.345,
+      "holdoutMaxM": 7.778,
+      "independentGcps": 45,
+      "spatialKm": 2.012,
+      "distinctCodes": 26,
+      "servedFeatures": 24,
+      "lotsAssigned": 3967,
+      "lotsTotal": 4141,
+      "lotsAssignedPct": 95.8,
+      "areaCoveredPct": 82.22,
+      "s3": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-louiseville.geojson",
+      "inline": {
+        "lotZoneJoin": "OK lots=4141 assigned=95.8% match=100% parquet=Y stats=Y",
+        "lotsEnriched": "OK zone_code=95.8% norms=95.8% adresse=99.47% code_postal=100% deposit=Y"
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "colombier",
+      "stage": "official-source-fetch",
+      "reason": "official site timed out after 35s; no zoning-plan PDF recovered",
+      "evidence": "https://www.colombierhcn.com"
+    },
+    {
+      "slug": "maniwaki",
+      "stage": "t2-autogcp",
+      "reason": "zoning bylaw appendix plan is raster/scan; page 84 has svg_points=0, page 85 has only 14 SVG points and <=3 independent matches; T3 requires a seed GCP file that is not available",
+      "evidence": [
+        "work/pdf-cache/maniwaki-zonage-2025.pdf",
+        "work/gcp/maniwaki-p84.autogcp.report.json",
+        "work/gcp/maniwaki-p85.autogcp.report.json"
+      ]
+    },
+    {
+      "slug": "longue-pointe-de-mingan",
+      "stage": "official-source-discovery",
+      "reason": "official site reachable with certificate bypass, but homepage/documentation capture exposes no static zoning-plan PDF link",
+      "evidence": "https://longuepointedemingan.ca/documentation-et-formulaires"
+    },
+    {
+      "slug": "marsoui",
+      "stage": "official-source-fetch",
+      "reason": "official host did not resolve",
+      "evidence": "https://marsoui-village.ca"
+    }
+  ],
+  "reusedPriorEvidence": {
+    "report": "work/delegation-mass/zones-recalage-2026-07-10T164228Z-shard0of2.md",
+    "slugs": [
+      "alleyn-et-cawood",
+      "amherst",
+      "aumond",
+      "belcourt",
+      "bethanie",
+      "bonaventure",
+      "bouchette",
+      "charette",
+      "chartierville",
+      "chertsey",
+      "chibougamau",
+      "colombier"
+    ]
+  }
+}

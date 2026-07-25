@@ -29,6 +29,7 @@
  */
 
 import { readFileSync, existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   emptyMatrix,
@@ -48,16 +49,17 @@ export const MEASURED = {
   pvReady: 563, // 'ready' → planned (scraper-configured)
 } as const;
 
-// Seed snapshots vendored with the package so the measured-state seed is
-// deterministic and portable (CI, any checkout). Override with GEO_AUDIT_ZONAGE
-// / GEO_NORMS_MUNIS to read live `work/` data on a machine that runs the
-// scrapers.
-const dataPath = (name: string): string =>
-  fileURLToPath(new URL(`../data/${name}`, import.meta.url));
-const AUDIT_ZONAGE =
-  process.env["GEO_AUDIT_ZONAGE"] ?? dataPath("zonage-resolution.json");
-const NORMS_MUNIS =
-  process.env["GEO_NORMS_MUNIS"] ?? dataPath("munis.json");
+// Registres de PREUVE — chemins résolus depuis l'emplacement de ce module
+// (indépendants du cwd ET de la machine : un chemin absolu en dur rendait ces
+// preuves introuvables partout ailleurs que sur le poste d'origine, et le seed
+// dégradait alors en silence vers un remplissage sans preuve). Ces deux fichiers
+// sont VERSIONNÉS ; leur absence est une anomalie, pas un mode dégradé.
+const SRC_DIR = dirname(fileURLToPath(import.meta.url)); // acquisition/src
+const AUDIT_ZONAGE = resolve(
+  SRC_DIR,
+  "../../work/immo-audit/zonage-resolution.json",
+);
+const NORMS_MUNIS = resolve(SRC_DIR, "../../work/zonage-norms/munis.json");
 
 interface ZonageAuditRow {
   readonly ville: string;
@@ -70,9 +72,30 @@ interface NormMuni {
   readonly route: "native" | "vision" | "multizone" | "none";
 }
 
-function readJson<T>(path: string): T | null {
-  if (!existsSync(path)) return null;
+/**
+ * Lit un registre de PREUVE. ANTI-INVENTION : l'absence du registre n'est JAMAIS
+ * silencieuse — sans lui, le seed ne peut pas savoir quelles villes sont
+ * auditées-ABSENTES et finirait par revendiquer une couverture non prouvée.
+ * On échoue donc bruyamment plutôt que de dégrader en mode « tout est done ».
+ */
+function requireJson<T>(path: string, what: string): T {
+  if (!existsSync(path)) {
+    throw new Error(
+      `coverage-seed: registre de preuve introuvable (${what}) : ${path}. ` +
+        `Ce fichier est versionné — sans lui le seed refuse de marquer des ` +
+        `cellules 'done' (anti-invention). Vérifier le checkout.`,
+    );
+  }
   return JSON.parse(readFileSync(path, "utf8")) as T;
+}
+
+let zonageAuditCache: ZonageAuditRow[] | null = null;
+function zonageAudit(): ZonageAuditRow[] {
+  zonageAuditCache ??= requireJson<ZonageAuditRow[]>(
+    AUDIT_ZONAGE,
+    "audit zonage (statut couvert/absent par ville)",
+  );
+  return zonageAuditCache;
 }
 
 /**
@@ -83,7 +106,7 @@ function knownZoneSlugs(registrySlugs: Set<string>): {
   agol: string[];
   disagg: string[];
 } {
-  const rows = readJson<ZonageAuditRow[]>(AUDIT_ZONAGE) ?? [];
+  const rows = zonageAudit();
   const agol: string[] = [];
   const disagg: string[] = [];
   for (const r of rows) {
@@ -103,7 +126,7 @@ function knownZoneSlugs(registrySlugs: Set<string>): {
  * le remplissage déterministe (anti-faux-positif). Elles restent 'to-research'.
  */
 function knownAbsentZoneSlugs(registrySlugs: Set<string>): Set<string> {
-  const rows = readJson<ZonageAuditRow[]>(AUDIT_ZONAGE) ?? [];
+  const rows = zonageAudit();
   const out = new Set<string>();
   for (const r of rows) {
     if (r.statut === "absent" && registrySlugs.has(r.ville)) out.add(r.ville);
@@ -116,8 +139,11 @@ function knownNormSlugs(registrySlugs: Set<string>): {
   pdfNative: string[];
   pdfVision: string[];
 } {
-  const cfg = readJson<{ munis: NormMuni[] }>(NORMS_MUNIS);
-  const munis = cfg?.munis ?? [];
+  const cfg = requireJson<{ munis: NormMuni[] }>(
+    NORMS_MUNIS,
+    "registre normes (munis.json)",
+  );
+  const munis = cfg.munis ?? [];
   const pdfNative: string[] = [];
   const pdfVision: string[] = [];
   for (const m of munis) {
@@ -190,9 +216,15 @@ export function seedMatrix(): CoverageMatrix {
     const used = new Set<string>();
     const known = knownZoneSlugs(regSet);
     const absent = knownAbsentZoneSlugs(regSet);
+    const provenAgol = new Set(known.agol);
+    const provenDisagg = new Set(known.disagg);
+    const UNPROVEN =
+      "compte mesuré — remplissage déterministe, provenance par-ville NON prouvée par l'audit";
     const agol = take(MEASURED.zones.agol, known.agol, used, absent);
     for (const s of agol) {
-      matrix = markDone(matrix, s, "zones", "agol-account");
+      matrix = provenAgol.has(s)
+        ? markDone(matrix, s, "zones", "agol-account")
+        : markDone(matrix, s, "zones", "agol-account", UNPROVEN);
     }
     const disagg = take(MEASURED.zones.disaggregation, known.disagg, used, absent);
     for (const s of disagg) {
@@ -201,8 +233,19 @@ export function seedMatrix(): CoverageMatrix {
         s,
         "zones",
         "disaggregation",
-        "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+        provenDisagg.has(s)
+          ? "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)"
+          : UNPROVEN,
       );
+    }
+    // INVARIANT anti-invention : aucune ville auditée-ABSENTE ne peut sortir
+    // 'done' de ce bloc (garde-fou explicite, pas seulement un `exclude`).
+    for (const s of absent) {
+      if (matrix.cities[s]?.zones.status === "done") {
+        throw new Error(
+          `coverage-seed: ${s} est auditée ABSENTE en zones et pourtant marquée done`,
+        );
+      }
     }
   }
 

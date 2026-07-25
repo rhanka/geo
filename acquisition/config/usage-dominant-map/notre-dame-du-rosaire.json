@@ -1,0 +1,19 @@
+{
+  "prefix_map": {
+    "Ac": "agricole",
+    "Fa": "agricole",
+    "Fc": "agricole",
+    "V": "agricole",
+    "VM": "agricole",
+    "RbM": "residentiel",
+    "RdM": "residentiel",
+    "ReM": "residentiel",
+    "CbM": "commercial",
+    "IbM": "industriel",
+    "Ic": "industriel",
+    "ScM": null,
+    "ScMP": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2718040%27",
+  "note": "Notre-Dame-du-Rosaire (Municipalité, MRC de Montmagny), code MAMH 18040. LA LÉGENDE EST DANS LE SIG: la couche geocentralis « evb:siadmin_pzon_99_s » qui sert ces polygones porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2` (`etiquette_1` = code complet). Gate propriétaire: 18040 = « Notre-Dame-du-Rosaire (Municipalité) » au répertoire MAMH committé, et le dump rend exactement les 49 codes servis. Dump vérifié (`_ud-geocentralis-etiquette.ts --slugs notre-dame-du-rosaire`, 49 features): « Agriculture et forêt » pour Ac.1-Ac.6, Fa.1, Fc.1-Fc.12, V.1/V.2/V.4 et VM.3 (23 pol.); « Habitation » pour RbM.1-2, RdM.1-11, ReM.1 (15 pol.); « Service public et institution » pour ScM.1/3/4/5 et ScMP.2 (5 pol.); « Commerce et service privé » pour CbM.1-3 (4 pol.); « Industrie » pour IbM.1 et Ic.1 (2 pol.). Chaque préfixe reçoit un libellé UNIFORME — la règle « attribut non uniforme => null » ne se déclenche pour aucun. Mapping: tout ce que le SIG range sous « Agriculture et forêt » -> agricole; « Habitation » -> residentiel; « Commerce et service privé » -> commercial; « Industrie » -> industriel. NULL EXPLICITE: « Service public et institution » (ScM, ScMP) -> null, hors des cinq catégories. ⚠️ POINT ANTI-INVENTION IMPORTANT: les préfixes `V` et `VM` sont rangés par le SIG sous « Agriculture et forêt », PAS sous « Habitation » — ils sont donc servis en agricole. Le réflexe « V = villégiature = résidentiel » (vrai dans d'autres munis de la lane) aurait produit 4 polygones FAUX ici: c'est l'attribut de la muni qui fait foi, pas la convention de lettre. Longest-prefix: VM est écrit explicitement bien que V le couvre déjà (même catégorie), ScMP explicitement bien que ScM le couvre. ⭐ Cette nomenclature (Fa/Fb/Fc/RdM/VM/ScM/CbM) est celle de la MRC de Montmagny, la MÊME que celle de lac-frontiere — mais lac-frontiere a `etiquette_2` NULL et aucun document ne la nomme: sa transposition reste REFUSÉE. Couverture: 49/49 polygones servis."
+}

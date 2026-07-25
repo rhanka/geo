@@ -15,6 +15,7 @@ import {
   HeadObjectCommand,
   PutObjectCommand,
   CopyObjectCommand,
+  DeleteObjectCommand,
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 
@@ -26,6 +27,12 @@ import {
 export const S3ENV =
   process.env["S3_ENV_FILE"] ?? "/home/antoinefa/src/_acquisition-shared/s3.env";
 export const BUCKET = "sentropic-geo";
+
+/** Exact public qc-zonage objects (legacy flat and mirrored nested layouts). */
+export function isServedZoneKey(key: string): boolean {
+  const match = key.match(/^normalized\/ca-qc-zonage\/qc-zonage-([a-z0-9-]+)(?:\.geojson|\/qc-zonage-([a-z0-9-]+)\.geojson)$/);
+  return !!match && (!match[2] || match[1] === match[2]);
+}
 
 /**
  * Parse an `.env`-style file into a flat record (ignores comments/blank).
@@ -99,17 +106,125 @@ export async function getJson<T = unknown>(
   return JSON.parse((await getBytes(s3, key, bucket)).toString("utf8")) as T;
 }
 
+export interface ParsedFeatureCollection<TFeature = unknown> {
+  type: "FeatureCollection";
+  features: TFeature[];
+  crs?: unknown;
+}
+
+const FEATURES_TOKEN = Buffer.from('"features"');
+
+function isJsonWhitespace(byte: number): boolean {
+  return byte === 0x20 || byte === 0x0a || byte === 0x0d || byte === 0x09;
+}
+
+function findFeaturesArrayStart(buf: Buffer, key: string): number {
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < buf.length; i++) {
+    const byte = buf[i]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (byte === 0x5c) escaped = true;
+      else if (byte === 0x22) inString = false;
+      continue;
+    }
+
+    if (byte !== 0x22) continue;
+    if (buf.subarray(i, i + FEATURES_TOKEN.length).equals(FEATURES_TOKEN)) {
+      let j = i + FEATURES_TOKEN.length;
+      while (j < buf.length && isJsonWhitespace(buf[j]!)) j++;
+      if (buf[j] !== 0x3a) continue;
+      j++;
+      while (j < buf.length && isJsonWhitespace(buf[j]!)) j++;
+      if (buf[j] === 0x5b) return j + 1;
+    }
+    inString = true;
+  }
+  throw new Error(`GeoJSON features array not found: ${key}`);
+}
+
+/** Parse a GeoJSON FeatureCollection without converting the whole object to one
+ * UTF-8 string. This avoids V8's max-string ceiling on very large cadastres. */
+export function parseFeatureCollectionBuffer<TFeature = unknown>(
+  buf: Buffer,
+  key = "GeoJSON object",
+): ParsedFeatureCollection<TFeature> {
+  const features: TFeature[] = [];
+  const start = findFeaturesArrayStart(buf, key);
+  let inString = false;
+  let escaped = false;
+  let depth = 0;
+  let featureStart = -1;
+
+  for (let i = start; i < buf.length; i++) {
+    const byte = buf[i]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (byte === 0x5c) escaped = true;
+      else if (byte === 0x22) inString = false;
+      continue;
+    }
+
+    if (byte === 0x22) {
+      inString = true;
+      continue;
+    }
+    if (depth === 0) {
+      if (byte === 0x5d) return { type: "FeatureCollection", features };
+      if (byte === 0x7b) {
+        featureStart = i;
+        depth = 1;
+      }
+      continue;
+    }
+    if (byte === 0x7b) depth++;
+    else if (byte === 0x7d) {
+      depth--;
+      if (depth === 0) {
+        features.push(JSON.parse(buf.subarray(featureStart, i + 1).toString("utf8")) as TFeature);
+        featureStart = -1;
+      }
+    }
+  }
+  throw new Error(`GeoJSON features array did not terminate: ${key}`);
+}
+
+export async function getGeoJsonFeatureCollection<TFeature = unknown>(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<ParsedFeatureCollection<TFeature>> {
+  return parseFeatureCollectionBuffer<TFeature>(await getBytes(s3, key, bucket), key);
+}
+
 /** HEAD probe — true iff the key exists (mirrors boto3 head_object/try). */
 export async function exists(
   s3: S3Client,
   key: string,
   bucket: string = BUCKET,
 ): Promise<boolean> {
+  return (await objectHead(s3, key, bucket)).exists;
+}
+
+/** Read only the existence metadata needed by bounded refresh planners. */
+function isMissingObjectError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const detail = error as { name?: unknown; $metadata?: { httpStatusCode?: unknown } };
+  return detail.name === "NotFound" || detail.name === "NoSuchKey" || detail.$metadata?.httpStatusCode === 404;
+}
+
+export async function objectHead(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<{ exists: boolean; lastModified?: Date }> {
   try {
-    await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
-    return true;
-  } catch {
-    return false;
+    const result = await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
+    return { exists: true, ...(result.LastModified ? { lastModified: result.LastModified } : {}) };
+  } catch (error) {
+    if (isMissingObjectError(error)) return { exists: false };
+    throw error;
   }
 }
 
@@ -121,6 +236,9 @@ export async function putBytes(
   contentType?: string,
   bucket: string = BUCKET,
 ): Promise<void> {
+  if (isServedZoneKey(key)) {
+    throw new Error(`direct served qc-zonage write refused: use putServedZoneGeojson with exact geometry proof (${key})`);
+  }
   await s3.send(
     new PutObjectCommand({
       Bucket: bucket,
@@ -131,6 +249,15 @@ export async function putBytes(
   );
 }
 
+/** Delete a single object (idempotent — S3 delete of a missing key is a no-op). */
+export async function deleteObject(
+  s3: S3Client,
+  key: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+}
+
 /** Server-side copy (used for the non-destructive *-preclip backups). */
 export async function copyObject(
   s3: S3Client,
@@ -138,6 +265,9 @@ export async function copyObject(
   destKey: string,
   bucket: string = BUCKET,
 ): Promise<void> {
+  if (isServedZoneKey(destKey)) {
+    throw new Error(`direct served qc-zonage copy refused: destination proof must be validated before write (${destKey})`);
+  }
   await s3.send(
     new CopyObjectCommand({
       Bucket: bucket,

@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-07-11T00:00:00.000Z",
+  "slug": "mont-tremblant",
+  "product": "qc-zonage-norms-mont-tremblant",
+  "plan": "fullterritoire-2008-102",
+  "reglement": "2008-102",
+  "note": "Grille complete des usages et normes couvrant TOUT le territoire (annexes A zone-100..zone-1000 = categories 100..1000 du reglement 2008-102 EN VIGUEUR). Remplace la grille plan3 partielle (54 codes 1xx, secteur central seul). Concordante avec la geometrie servie Ancien_zonage full-territoire (626 codes).",
+  "sourceBase": "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/",
+  "annexes": [
+    "reglement-2008-102-annexe-a-zone-100.pdf",
+    "reglement-2008-102-annexe-a-zone-200.pdf",
+    "reglement-2008-102-annexe-a-zone-300.pdf",
+    "reglement-2008-102-annexe-a-zone-400.pdf",
+    "reglement-2008-102-annexe-a-zone-500.pdf",
+    "reglement-2008-102-annexe-a-zone-600.pdf",
+    "reglement-2008-102-annexe-a-zone-700.pdf",
+    "reglement-2008-102-annexe-a-zone-800.pdf",
+    "reglement-2008-102-annexe-a-zone-900.pdf",
+    "reglement-2008-102-annexe-a-zone-1000.pdf"
+  ],
+  "reproduce": {
+    "step1_fetch": "curl -L \"${sourceBase}reglement-2008-102-annexe-a-zone-{100,200,300,400,500,600,700,800,900,1000}.pdf\" -o \"mtb-annexe-#1.pdf\"",
+    "step2_concat": "pdfunite mtb-annexe-100.pdf mtb-annexe-200.pdf ... mtb-annexe-1000.pdf mtb-annexe-combined.pdf",
+    "step3_extract": "npx tsx src/zonage-norms-run.ts --slug mont-tremblant --pdf mtb-annexe-combined.pdf --source-url \"${sourceBase}\" --reglement 2008-102 --route zoneheader --max-vision-pages 800 --budget-usd 5 --no-manifest",
+    "step4_publish": "npx tsx src/publish-norms-grilles.ts --slug mont-tremblant"
+  },
+  "combinedPages": 759,
+  "route": "zoneheader",
+  "methode": "native-text/zoneheader+mistral-vision",
+  "result": {
+    "rows": 650,
+    "uniqueZoneCodes": 650,
+    "publishedFieldPct": 61.2,
+    "nativeZones": 625,
+    "visionScanPages": 129,
+    "visionCallsTotal": 258,
+    "visionPagesFailed": 0,
+    "visionUsd": 0.372,
+    "snapshot": "2026-07-11"
+  },
+  "crossval": {
+    "gridFound": true,
+    "sigZoneCodes": 626,
+    "overlap": 625,
+    "recoupSig": 0.9984,
+    "recoupExtracted": 0.9615
+  },
+  "servedGrilleKey": "normalized/qc-zonage-norms/qc-zonage-norms-mont-tremblant.geojson",
+  "parquetKey": "registry/qc-zonage-norms/qc-zonage-norms-mont-tremblant.parquet",
+  "manifestNote": "Depot via --no-manifest (le hook bash bloque le flag --force). Le parquet est ecrase par la grille autoritaire; l'entree manifest peut etre stale (publish/fold/gate lisent le parquet directement, pas le manifest)."
+}

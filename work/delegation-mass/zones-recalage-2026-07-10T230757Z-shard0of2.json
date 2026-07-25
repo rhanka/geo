@@ -1,0 +1,115 @@
+{
+  "timestamp": "2026-07-10T23:07:57.883Z",
+  "shard": {
+    "rem": 0,
+    "mod": 2,
+    "rule": "sorted city index % 2 == 0"
+  },
+  "deposits": [
+    {
+      "slug": "louiseville",
+      "path": "work/zones-recalage/louiseville-agricole/qc-zonage-louiseville.geojson",
+      "statsPath": "work/zones-recalage/louiseville-agricole/qc-zonage-louiseville.stats.json",
+      "sourcePdf": "work/pdf-cache/louiseville-zonage-agricole-622.pdf",
+      "method": "t2-build",
+      "labels": "text",
+      "gcp": "work/gcp/louiseville-zonage-agricole-622.gcp.json",
+      "gcpResidualMaxM": 9.345,
+      "gcpResidualRmsM": 4.003,
+      "spatialKm": 2.012,
+      "distinctCodes": 26,
+      "servedFeatures": 24,
+      "lotsAssigned": 3967,
+      "lotsTotal": 4141,
+      "lotToZonePct": 95.8,
+      "lotZoneJoin": {
+        "status": "ok",
+        "assignedPct": 95.8,
+        "matchPct": 100,
+        "verifyParquet": true,
+        "verifyStats": true
+      },
+      "lotsEnriched": {
+        "status": "ok",
+        "zoneCodePct": 95.8,
+        "normsPct": 95.8,
+        "deposit": true
+      }
+    },
+    {
+      "slug": "peribonka",
+      "path": "work/zonage-recalage/peribonka-multisheet-t1-claude-deposit/qc-zonage-peribonka.geojson",
+      "statsPath": "work/zonage-recalage/peribonka-multisheet-t1-claude-deposit/qc-zonage-peribonka.stats.json",
+      "sourcePdfs": [
+        "work/zonage-plans/peribonka-plan.pdf",
+        "work/zonage-plans/peribonka-zone-urbaine-1.pdf"
+      ],
+      "method": "t1-build-multisheet-claude",
+      "labels": "claude-multisheet",
+      "dict": "work/zonage-dicts/peribonka.codes.json",
+      "sheetResidualMaxM": [0.169, 0.302],
+      "spatialKm": 1.597,
+      "distinctCodes": 27,
+      "servedFeatures": 25,
+      "lotsAssigned": 526,
+      "lotsTotal": 952,
+      "lotToZonePct": 55.25,
+      "lotZoneJoin": {
+        "status": "ok_with_warning",
+        "assignedPct": 55.57,
+        "matchPct": 0,
+        "withoutNormsPct": 100,
+        "verifyParquet": true,
+        "verifyStats": true
+      },
+      "lotsEnriched": {
+        "status": "ok",
+        "zoneCodePct": 55.57,
+        "normsPct": 0,
+        "deposit": true
+      }
+    }
+  ],
+  "failures": [
+    {
+      "slug": "maniwaki",
+      "reason": "T1 no embedded georef; T2 p84 svg_points=0 and p85 svg_points=14, no residual+holdout seed",
+      "evidence": [
+        "work/gcp/maniwaki-p84.autogcp.report.json",
+        "work/gcp/maniwaki-p85.autogcp.report.json"
+      ]
+    },
+    { "slug": "matagami", "reason": "T1 no embedded georef", "sourcePdf": "work/pdf-cache/matagami-plan-zonage-zone-bleu.pdf" },
+    { "slug": "montcalm", "reason": "T1 no embedded georef", "sourcePdf": "work/pdf-cache/montcalm-zonage-rural.pdf" },
+    { "slug": "montebello", "reason": "T1 no embedded georef", "sourcePdf": "work/zonage-plans/montebello-village.pdf" },
+    { "slug": "montpellier", "reason": "T1 no embedded georef", "sourcePdf": "work/zonage-plans/montpellier-rural.pdf" },
+    { "slug": "north-hatley", "reason": "T1 no embedded georef", "sourcePdf": "work/pdf-cache/north-hatley.pdf" },
+    { "slug": "notre-dame-de-bonsecours", "reason": "local .pdf is HTML, no parseable georef", "sourcePdf": "work/zonage-plans/notre-dame-de-bonsecours.pdf" },
+    { "slug": "noyan", "reason": "T1 no embedded georef", "sourcePdf": "work/zonage-plans/noyan-r445p1.pdf" },
+    {
+      "slug": "rougemont",
+      "reason": "T1 Claude/dict numeric labels validated, but spatial gate 2571.03 km; T2 autogcp rejected by orientation/isotropy",
+      "sourcePdf": "work/zonage-plans/rougemont-urbain-2026.pdf",
+      "dict": "work/zonage-dicts/rougemont.codes.json",
+      "reads": "work/zonage-dicts/rougemont.reads.json"
+    },
+    { "slug": "saint-adelphe", "reason": "T1 no embedded georef", "sourcePdf": "work/zonage-plans/saint-adelphe-carte.pdf" },
+    { "slug": "sainte-louise", "reason": "T1 no embedded georef; T2 svg_points=0", "sourcePdf": "work/pdf-zonage/sainte-louise.pdf" },
+    {
+      "slug": "sainte-anne-de-la-pocatiere",
+      "reason": "T2 anisotropy arbitration skipped: best serving coverage 76.45% < 85%",
+      "sourcePdf": "work/pdf-zonage/sainte-anne-de-la-pocatiere.pdf"
+    },
+    {
+      "slug": "saint-telesphore",
+      "reason": "T2 rotation disambiguation skipped: tight coverage margin 0.1 pt < 15 pt; aniso coverage 78.65% < 85%",
+      "sourcePdf": "work/pdf-zonage/saint-telesphore.pdf"
+    }
+  ],
+  "ignored": [
+    {
+      "slug": "alma",
+      "reason": "focus-30 missing but sorted index 7, so belongs to shard 1/2"
+    }
+  ]
+}

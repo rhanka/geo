@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "RB": "residentiel",
+    "RH": "residentiel",
+    "RM": "residentiel",
+    "C": "commercial",
+    "M": null,
+    "P": null,
+    "I": "industriel",
+    "PI": "industriel",
+    "A": "agricole",
+    "AD": "agricole",
+    "API": "agricole",
+    "Cons": "environnemental"
+  },
+  "source": "Règlement de zonage n° 02-17 (modifié par 02-18), Municipalité de Laurier-Station, MRC de Lotbinière — https://laurierstation.ca/storage/app/media/municipalite/administration/reglements/z/02-17-reglement-de-zonage.pdf, art. 2.2 « Codification des zones ».",
+  "note": "Art. 2.1 (verbatim): « La lettre confère à la zone sa dominance ou sa vocation principale ». Art. 2.2 tableau « Codification des zones » (verbatim): « Zones résidentielles RB, RH, RM; Zones commerciales C; Zones mixtes M; Zone publique et institutionnelle P; Zones industrielles I; Zone parc industriel PI; Zone agricole du parc industriel API; Zones agricole dynamique A; Zone agricole déstructurée AD ». -> RB/RH/RM « résidentielles » -> residentiel; C « commerciales » -> commercial; I « industrielles » et PI « parc industriel » -> industriel; A « agricole dynamique », AD « agricole déstructurée » (classée famille agricole par la légende) et API « agricole du parc industriel » (nom-tête agricole) -> agricole. Null explicite: M « mixtes »; P « publique et institutionnelle ». Cons « conservation » -> environnemental (hors table art. 2.2 mais nom univoque, corroboré par le groupe d'usages R5 « Espace de conservation naturelle »). Longest-prefix OBLIGATOIRE: PI/API battent P/A, Cons bat C, AD bat A. La matrice des usages permis n'est pas utilisée."
+}
