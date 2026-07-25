@@ -1,0 +1,32 @@
+/* Sent Tech design-system theme tokens (defines --st-* custom properties on
+   [data-st-theme="sent-tech"]). */
+@import "@sentropic/design-system-themes/css/sent-tech.css";
+/* MapLibre GL control / popup styling used by <GeoMap>. */
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--st-font-sans, system-ui, sans-serif);
+  color: var(--st-color-slate-90, #0f172a);
+  background: var(--st-color-slate-10, #f8fafc);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}

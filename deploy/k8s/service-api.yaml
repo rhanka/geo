@@ -1,0 +1,18 @@
+# ClusterIP Service fronting the geo-api pods. Targeted by the Ingress.
+apiVersion: v1
+kind: Service
+metadata:
+  name: geo-api
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: geo-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

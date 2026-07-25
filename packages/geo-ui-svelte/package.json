@@ -1,0 +1,46 @@
+{
+  "name": "@sentropic/geo-ui-svelte",
+  "version": "0.5.0",
+  "type": "module",
+  "description": "Composants Svelte pour parcourir et cartographier les données géographiques, stylés par les tokens du design-system Sent Tech. Ports React/Vue à venir.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git",
+    "directory": "packages/geo-ui-svelte"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.svelte"
+  ],
+  "svelte": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "svelte": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run src --passWithNoTests"
+  },
+  "dependencies": {
+    "@sentropic/dataviz-core": "^0.4.37",
+    "@sentropic/geo-core": "^0.5.0"
+  },
+  "peerDependencies": {
+    "@sentropic/design-system-svelte": "^0.34.32",
+    "@sentropic/design-system-tokens": "^0.11.0",
+    "maplibre-gl": "^5.24.0",
+    "svelte": "^5.53.2"
+  }
+}
