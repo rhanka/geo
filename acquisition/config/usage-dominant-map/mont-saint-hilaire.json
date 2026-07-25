@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "C": "commercial",
+    "CON": "environnemental",
+    "H": "residentiel",
+    "I": "industriel",
+    "PE": "environnemental",
+    "R": "environnemental",
+    "CA": null,
+    "P": null
+  },
+  "source": "https://www.villemsh.ca/wp-content/uploads/2026/06/1235_codification_Zonage_26mai2026-1.pdf",
+  "note": "Règlement de zonage 1235 (Ville de Mont-Saint-Hilaire, codification 26 mai 2026), ARTICLE 14 « Identification des zones »: « Chaque zone est caractérisée par un code d'une ou deux lettres indiquant la dominance d'usage de la zone, suivi d'un numéro servant à l'identification de la zone. Ainsi, les lettres identifient la dominance d'usage affectée à une zone donnée et ont la signification suivante : A : Agricole / AF : Agroforestier / C : Commerciale / CA : Commercial-agricole / CN : Conservation / H : Habitation / I : Industrielle / P : Publique et institutionnelle / PE : Parc et espace vert / R : Récréatif ». Cette table est la légende qui fait foi. A « Agricole » et AF « Agroforestier » -> agricole; C « Commerciale » -> commercial; H « Habitation » -> residentiel; I « Industrielle » -> industriel; R « Récréatif » et PE « Parc et espace vert » -> environnemental. Null explicite: CA « Commercial-agricole » est DUAL (commercial ET agricole, aucune dominante unique); P « Publique et institutionnelle » est public/institutionnel, hors des cinq catégories. ÉCART LÉGENDE/SIG RÉSOLU: la légende de l'ARTICLE 14 écrit « CN : Conservation » mais le SIG sert CON-1..CON-4 et le CORPS du règlement emploie CON — ARTICLE 58 « CON-1 Conservation »: « Font partie de la classe « CON-1 » les usages visant la sauvegarde, la mise en valeur et le maintien des milieux environnementaux fragiles; il s'agit de milieux propices à la régénération des essences floristiques et des spécimens fauniques », et l'annexe « Boisé de conservation type 1 » vise « les zones AF-11-1, CON-1, CON-2, CON-3 et CON-4 ». CON est donc mappé (environnemental) sur cette citation verbatim, et CN — absent du SIG — n'est PAS mappé. Ce mapping de CON est aussi indispensable au longest-prefix: sans lui, CON-3 tomberait à tort sur C « Commerciale ». Préfixes mappés = les 10 réellement présents dans le SIG (H 119, P 24, C 24, AF 21, PE 21, A 15, CA 5, I 5, CON 4, R 2 = 240 polygones). Longest-prefix: AF bat A, CA et CON battent C, PE bat P. La grille des spécifications (art. 17-18, matrice des usages autorisés) n'est pas utilisée."
+}

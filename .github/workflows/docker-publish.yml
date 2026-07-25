@@ -51,15 +51,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Scaleway Container Registry login. Secrets are referenced by NAME only —
-      # provide their values in the repo/org secrets. The username for Scaleway
-      # registry tokens is the literal "nologin"; the password is a Scaleway
-      # secret key (or registry token). Adjust to your configured secret names.
+      # Convention Scaleway (identique à radar-immobilier, qui pousse sur le même
+      # registre) : le nom d'utilisateur est le LITTÉRAL `nologin` — ce n'est pas
+      # un secret — et le mot de passe est la clé secrète Scaleway, la même que
+      # celle utilisée par `scw registry login`. L'ancienne version lisait
+      # `secrets.SCW_REGISTRY_USERNAME`, un secret qui n'existait nulle part :
+      # il se rendait donc en chaîne vide et le login échouait à chaque tag,
+      # l'image `geo-api` n'ayant jamais été publiée.
       - name: Log in to Scaleway Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.SCW_REGISTRY_USERNAME }}
+          username: nologin
           password: ${{ secrets.SCW_SECRET_KEY }}
 
       - name: Compute image tags

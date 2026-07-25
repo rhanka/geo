@@ -1,0 +1,8 @@
+{
+  "prefix_map": {
+    "5": "agricole",
+    "8031": "agricole"
+  },
+  "source": "normalized/ca-qc-zonage/qc-zonage-saint-barnabe-sud.geojson (attribut `Affectation` du SIG municipal servi)",
+  "note": "Saint-Barnabé-Sud (MRC Les Maskoutains). La catégorie N'est PAS devinée à partir du code: chaque feature du zonage SERVI porte un attribut `Affectation` VERBATIM qui EST la fonction dominante de la zone (même gisement que honfleur/saint-malo/saint-marcel-de-richelieu). Aucun PDF de règlement n'a été utilisé. Le SIG servi ne compte que 4 codes et les 4 portent une affectation agricole VERBATIM (`_ud-code-vocation-dump.ts`): 505 -> « Agricole », 508 -> « Agricole », 509 -> « Agricole », « 8031  A21 » -> « Agricoles ». Mapping: préfixe « 5 » -> agricole (couvre 505/508/509, aucun autre code 5xx servi) et clé « 8031 » -> agricole. Aucun null n'est nécessaire: aucune zone duale, publique ni en réserve n'est servie sur ce slug. La matrice des usages permis des grilles n'est PAS utilisée."
+}

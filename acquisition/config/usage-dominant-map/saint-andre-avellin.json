@@ -1,0 +1,11 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "F": "agricole",
+    "A": "agricole",
+    "AD": null
+  },
+  "source": "work/zonage-norms/saint-andre-avellin/grille.pdf (Règlement de zonage numéro 353-21, Municipalité de Saint-André-Avellin — corpus local)",
+  "note": "Règlement de zonage numéro 353-21; le document nomme sa municipalité: « Le territoire de la Municipalité de Saint-André-Avellin est divisé en zones sur le plan de zonage apparaissant comme annexe « A » au présent règlement » (article « DIVISION DU TERRITOIRE EN ZONES », chapitre 1, sous-section 2). Article « IDENTIFICATION DES ZONES »: « Chaque zone délimitée au plan de zonage est d'abord identifiée par une lettre majuscule se référant au groupe d'usages dominant de la zone » — exemple donné: « H-144 » / « H : Usage dominant « habitation » » / « 144 : numéro de zone ». La table lettre->fonction est donc celle des groupes d'usages, chapitre 3, article « REGROUPEMENT DES USAGES »: « Aux fins du règlement, les usages principaux sont regroupés en cinq groupes, soit : a) Habitation (H); b) Commerce (C); c) Industrie (I); d) Foresterie (F); e) Public (P); f) Agricole (A). » (repris en intitulés: « CLASSIFICATION DU GROUPE D'USAGES HABITATION « H » », « ... COMMERCIAL « C » », « ... FORESTERIE « F » », « ... AGRICOLE « A » »). Mapping des seuls préfixes réellement servis par le SIG (A, AD, C, F, H): H « Habitation » -> residentiel; C « Commerce » -> commercial; A « Agricole » -> agricole; F « Foresterie » -> agricole (famille agricole/forestière). Null explicite: AD n'apparaît NULLE PART dans le règlement (ni au regroupement des usages, ni à l'article d'identification des zones); aucune vocation ne lui est donnée par la légende — la clé est déclarée explicitement pour que le longest-prefix empêche « AD-116/130/132 » de retomber à tort sur la clé « A » (agricole). Les groupes I « Industrie » et P « Public » existent au règlement mais aucun préfixe I ou P n'est servi par le SIG, donc non mappés. La matrice des usages permis des grilles (annexe « B ») n'a PAS été utilisée."
+}

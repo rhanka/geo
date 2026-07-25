@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "AA": "agricole",
+    "AB": "agricole",
+    "AC": null,
+    "AD": null,
+    "FA": "agricole",
+    "FB": "agricole",
+    "M": null,
+    "PU": null
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06040_Publique/MapServer/13/query?where=1%3D1&outFields=Usage,Type_Zone,Num_Zone,Description&returnGeometry=false&f=json",
+  "note": "Saint-André-de-Restigouche (MRC d'Avignon). La catégorie n'est PAS déduite de la lettre: la couche SIG AMONT « Zonage » (Altus, MRC060/06040_Publique/MapServer/13 — c'est la couche citée en `source` des polygones servis) porte pour CHAQUE zone un champ `Description` VERBATIM qui EST la vocation, en regard de `Usage`/`Type_Zone` (le code servi). Gate propriétaire: le service ne porte pas de champ `nom_mun`, mais la couche 11 « Identification de l'entité municipale » du MÊME MapServer étiquette le territoire, VERBATIM, « Saint-André-de-Restigouche » (`TextString` et `SI0204C`), avec `ADM01A` = `MUN` = « 06040 » = exactement le code du dossier de service; et le compte (33 zones) comme la distribution (FA 8, AC 7, FB 5, PU 3, AD 3, M 3, AB 2, AA 2) coïncident EXACTEMENT avec les 33 polygones servis (sansCode=0). ⚠ Ce gate est indispensable ici: le corpus local `work/zonage-norms/saint-andre-de-restigouche/` est CONTAMINÉ — il contient `PlanZonage_StAlexis_LL_20210210.pdf` et `ANNEXE_2_Grilles_spe-cifications_St-AlexisV6.pdf`, soit les documents de **Saint-Alexis**. Table VERBATIM relevée (code -> Description), 1:1 sans exception: AA-1, AA-2 -> « Agricole dynamique »; AB-1, AB-2 -> « Agricole dévitalisée »; AC-1..AC-7 -> « Ilot déstructuré de type 1 »; AD-1..AD-3 -> « Ilot déstructuré de type 2 »; FA-1..FA-8 -> « Forêt privée »; FB-1..FB-5 -> « Forêt publique »; M-1..M-3 -> « Mixte »; PU-1..PU-3 -> « Périurbaine ». Mapping: AA « Agricole dynamique » et AB « Agricole dévitalisée » -> agricole; FA « Forêt privée » et FB « Forêt publique » -> agricole (famille agricole/forestière; dans « Forêt publique » l'épithète qualifie le MODE DE TENURE des terres, pas une vocation publique — la vocation écrite est « Forêt »). Null explicites et DOCUMENTÉS: AC « Ilot déstructuré de type 1 » et AD « Ilot déstructuré de type 2 » ne nomment AUCUNE dominante parmi les cinq (enclave de droits acquis en zone agricole au sens de la LPTAA, caractère dual) -> null; M « Mixte » est DUALE; PU « Périurbaine » désigne une position dans le territoire, pas une fonction dominante. Aucune dominante n'est forcée sur ces 16 polygones. La matrice des usages permis des grilles n'est PAS utilisée. Couverture: 33/33 polygones (100%), dont 17 avec catégorie positive."
+}

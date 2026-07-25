@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "I": "industriel",
+    "R": "residentiel",
+    "M": null,
+    "P": null,
+    "T": null,
+    "V": null
+  },
+  "source": "https://www.riviere-bleue.ca/images/r%C3%A8glements/2015-364_-_Zonage.pdf",
+  "note": "Municipalité de Rivière-Bleue (MRC de Témiscouata), règlement de zonage numéro 2015-364. Légende VERBATIM, art. 1.9 « Identification des zones » (page imprimée 18), dont le préambule est explicitement dominanciel: « Chacune des zones est identifiée par un code alphanumérique, composé d'initiales suivies d'un chiffre. Les lettres qualifient la zone de la manière suivante, SELON LE GROUPE D'USAGES DOMINANT : 1° EA : agricole (qui comprend EA/A et EA/B); 2° EAF : agroforestière; 3° EF : forestière; 4° I : industrielle (qui comprend Ia, Ib et Ic); 5° M : mixte (qui comprend Ma et Mb); 6° P : publique (qui comprend Pa et Pb); 7° R : résidentielle (qui comprend Ra, Rb, Rc, Rd, Re et Rf); 8° T : Transport, communications et services publics (qui comprend Ta et Tb); 9° V : de villégiature. » Propriétaire attesté par le CORPS (p.1 « MUNICIPALITÉ DE RIVIÈRE-BLEUE / À la séance ordinaire du conseil de la Municipalité de Rivière-Bleue, MRC de Témiscouata », art. 1.8 « le territoire de la Municipalité de Rivière-Bleue est divisé en zones »), pas par le nom de fichier ni par les métadonnées. FORME SERVIE: le règlement écrit « EA/A » et « EA/B » là où le SIG sert « EAA » et « EAB » — la forme déclarée est celle du SIG (match startsWith brut, sans split sur séparateur). Modèle « un libellé par famille, sous-classes muettes »: la légende énumère elle-même ses sous-classes, donc les familles sont mappées et le longest-prefix fait le reste — RA/RB/RC -> « R » -> residentiel (⚠️ ICI « RC » est la sous-classe « Rc » de RÉSIDENTIELLE, l'INVERSE de saint-michel-du-squatec où « RC : récréative » est un item distinct: même MRC, même gabarit de consultant, lettre inversée — ne jamais déduire la catégorie de la lettre); IB/IC -> « I » -> industriel; MA/MC -> « M » -> null; PA -> « P » -> null; TA -> « T » -> null; VA/VB -> « V » -> null. EA/EAF/EF (agricole, agroforestière, forestière) -> agricole, famille regroupée par le règlement. Null explicites: M « mixte » est dual; P « publique » est public; T « Transport, communications et services publics » est de l'utilité publique et ne nomme aucune des cinq catégories; V « de villégiature » ne nomme aucune des cinq — aucune colonne d'usages dominants n'y assigne l'Habitation, et les art. 11.11/11.12 opposent « Zones résidentielles ET de villégiature » à « Zones autres que résidentielles ou de villégiature », traitant les deux familles comme DISTINCTES. « MC » (3 polygones) n'est pas énuméré par la légende (« M : mixte (qui comprend Ma et Mb) ») mais tombe correctement sur M -> null. Source attestée byte-exact (3 184 848 o) contre le corpus local work/zonage-norms/riviere-bleue/grille.pdf. Couverture 15/15 préfixes = 66/66 polygones."
+}
