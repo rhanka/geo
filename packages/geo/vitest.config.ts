@@ -1,26 +1,23 @@
-import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { defineConfig } from "../../acquisition/node_modules/vitest/dist/config.js";
+import { defineConfig } from "vitest/config";
 
-const here = fileURLToPath(new URL(".", import.meta.url));
-const acquisitionNodeModules = resolve(here, "../../acquisition/node_modules");
-
+/**
+ * NOTE (merge main ↔ acquisition): this config used to import `defineConfig`
+ * from `../../acquisition/node_modules/vitest/...` and to alias `proj4` and the
+ * `@turf/*` packages into `acquisition/node_modules`. That was correct while
+ * `packages/geo` held nothing but `zonage/lotZoneJoin.ts` and declared no
+ * dependencies of its own — it borrowed the acquisition workspace's install.
+ *
+ * Since the merge, `packages/geo` IS the published lib (0.5.0): it declares
+ * proj4 and @turf/* in its own `dependencies`, and npm installs them under
+ * `packages/geo/node_modules` (or hoists them to the root). The hard-coded
+ * aliases then pointed at paths that no longer exist, and `geopdf.test.ts` /
+ * `lotZoneJoin.test.ts` failed to even load their suites. Plain Node resolution
+ * is now both correct and sufficient — do not re-add cross-workspace aliases.
+ */
 export default defineConfig({
-  root: here,
-  resolve: {
-    alias: {
-      "@turf/area": resolve(acquisitionNodeModules, "@turf/area/dist/esm/index.js"),
-      "@turf/boolean-point-in-polygon": resolve(
-        acquisitionNodeModules,
-        "@turf/boolean-point-in-polygon/dist/esm/index.js",
-      ),
-      "@turf/buffer": resolve(acquisitionNodeModules, "@turf/buffer/dist/esm/index.js"),
-      "@turf/helpers": resolve(acquisitionNodeModules, "@turf/helpers/dist/esm/index.js"),
-      "@turf/intersect": resolve(acquisitionNodeModules, "@turf/intersect/dist/esm/index.js"),
-      proj4: resolve(acquisitionNodeModules, "proj4/lib/index.js"),
-    },
-  },
+  root: fileURLToPath(new URL(".", import.meta.url)),
   test: {
     include: ["src/**/*.test.ts"],
   },
