@@ -106,3 +106,5 @@ if (wpfdSeen) {
   console.log('# WP File Download: no plugin sitemap (media library is the whole corpus)');
 }
 console.log('# NOTE: an amendment ("modifiant la grille") is NOT the grille — check the title.');
+
+export {};

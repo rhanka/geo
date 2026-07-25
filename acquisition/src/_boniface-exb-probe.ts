@@ -53,3 +53,5 @@ function collectUrls(obj: any, out: Set<string>) {
     } catch (e) { console.log(`  (root meta failed: ${(e as Error).message})`); }
   }
 })();
+
+export {};
