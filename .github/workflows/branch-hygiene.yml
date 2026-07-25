@@ -1,0 +1,64 @@
+# Branch hygiene
+#
+# La protection de `main` exige le check `Branch hygiene / rebase main`. Ce
+# contexte existait dans la protection sans qu'aucun workflow ne l'émette : le
+# check restait donc éternellement `pending` et AUCUNE pull request ne pouvait
+# être mergée. Ce fichier fournit le job manquant.
+name: Branch hygiene
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  rebase-main:
+    name: rebase main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Branch must already contain the base tip
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          BASE_TIP="$(git rev-parse "origin/${BASE_REF}")"
+          echo "base ${BASE_REF} tip : ${BASE_TIP}"
+          echo "pr head           : ${HEAD_SHA}"
+
+          # Le gitflow du dépôt : une branche est rebasée (ou a intégré) `main`,
+          # puis on merge par merge-commit. Les deux formes conviennent ici — la
+          # seule exigence est que le sommet de `main` soit un ancêtre du head,
+          # donc que la PR ne réintroduise pas un état antérieur de `main` et que
+          # les conflits aient été résolus DANS la branche, pas au moment du merge.
+          if git merge-base --is-ancestor "${BASE_TIP}" HEAD; then
+            echo "OK — la branche contient le sommet de ${BASE_REF}."
+          else
+            echo "ÉCHEC — la branche ne contient pas le sommet de ${BASE_REF}." >&2
+            echo "Intègre la base avant de merger :" >&2
+            echo "  git fetch origin ${BASE_REF} && git rebase origin/${BASE_REF}" >&2
+            echo "  (ou 'git merge origin/${BASE_REF}' si l'historique est déjà partagé)" >&2
+            echo "Commits de ${BASE_REF} absents de cette branche :" >&2
+            git log --oneline "HEAD..${BASE_TIP}" | head -20 >&2
+            exit 1
+          fi
+
+      - name: No merge conflict markers in tracked files
+        run: |
+          set -euo pipefail
+          # Un marqueur laissé par une résolution manuelle casse silencieusement le
+          # fichier ; on le refuse avant merge plutôt qu'après.
+          if git grep -nE '^(<{7}|={7}|>{7})( |$)' -- . ':(exclude).github/workflows/branch-hygiene.yml'; then
+            echo "ÉCHEC — marqueurs de conflit non résolus (ci-dessus)." >&2
+            exit 1
+          fi
+          echo "OK — aucun marqueur de conflit."
