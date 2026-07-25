@@ -158,23 +158,36 @@ describe("parseLabelValueGrillePage — durham-sud proof (publishedFieldPct 0 �
   });
 
   it("MAPS the label:value norms (this is the unblock)", () => {
-    expect(z.marges.avant_min.value).toBe(10);
-    expect(z.marges.arriere_min.value).toBe(7.5);
-    expect(z.marges.laterale_min.value).toBe(2);
-    expect(z.hauteur_max.value).toBe(9);
-    expect(z.hauteur_max.unit).toBe("m");
-    expect(z.frontage_min.value).toBe(25);
-    expect(z.superficie_min.value).toBe(1500);
-    expect(z.superficie_min.unit).toBe("m2");
+    // A NormField is `NormFieldT | null` by contract: null = the field was never
+    // emitted at all, a published field with `.value === null` = read but refused.
+    // This parser always emits the field OBJECT, so assert that first (the test
+    // fails here if a field ever goes missing) and only then read `.value`.
+    expect(z.marges.avant_min).not.toBeNull();
+    expect(z.marges.arriere_min).not.toBeNull();
+    expect(z.marges.laterale_min).not.toBeNull();
+    expect(z.hauteur_max).not.toBeNull();
+    expect(z.frontage_min).not.toBeNull();
+    expect(z.superficie_min).not.toBeNull();
+    expect(z.marges.avant_min!.value).toBe(10);
+    expect(z.marges.arriere_min!.value).toBe(7.5);
+    expect(z.marges.laterale_min!.value).toBe(2);
+    expect(z.hauteur_max!.value).toBe(9);
+    expect(z.hauteur_max!.unit).toBe("m");
+    expect(z.frontage_min!.value).toBe(25);
+    expect(z.superficie_min!.value).toBe(1500);
+    expect(z.superficie_min!.unit).toBe("m2");
   });
 
   it("does NOT fold the 'somme des marges' into a marge minimum (anti-over-mapping)", () => {
     // The only latéral value published is the 2 m minimum, never the 4 m sum.
-    expect(z.marges.laterale_min.value).toBe(2);
+    expect(z.marges.laterale_min).not.toBeNull();
+    expect(z.marges.laterale_min!.value).toBe(2);
   });
 
   it("leaves densité null on a 'log/ha' dwelling density (not emprise %)", () => {
-    expect(z.densite.value).toBeNull();
+    // The field is PUBLISHED (the label was read) but its value is refused.
+    expect(z.densite).not.toBeNull();
+    expect(z.densite!.value).toBeNull();
   });
 
   it("publishes a non-zero field count (defeats the zero-norm-fields reject gate)", () => {
