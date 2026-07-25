@@ -5,6 +5,7 @@ import {
   exactEvidence,
   resolveKeys,
   resolveReportPaths,
+  topLevelCollectionProof,
   visitFeatures,
 } from "./served-proof-registry-audit.js";
 import { proofFromFetched } from "./lib/zonage-proof.js";
@@ -66,5 +67,23 @@ describe("served proof registry audit", () => {
     const seen: unknown[] = [];
     expect(visitFeatures(fc, "fixture", (feature) => seen.push(feature.properties))).toBe(2);
     expect(seen).toEqual([{ a: "}" }, { b: [1, 2] }]);
+  });
+
+  it("reads a collection proof regardless of top-level key order or whitespace", () => {
+    const expected = { schema_version: "2.0", geometry_source: proof };
+    const beforeFeatures = Buffer.from(JSON.stringify({
+      proof: expected,
+      features: [{ properties: { a: 1 } }],
+      type: "FeatureCollection",
+    }, null, 2));
+    const afterFeatures = Buffer.from(JSON.stringify({
+      type: "FeatureCollection",
+      features: [{ properties: { a: 1 } }],
+      proof: expected,
+    }));
+    expect(topLevelCollectionProof(beforeFeatures)).toEqual(expected);
+    expect(topLevelCollectionProof(afterFeatures)).toEqual(expected);
+    expect(topLevelCollectionProof(Buffer.concat([afterFeatures, Buffer.from(" trailing")]))).toBeUndefined();
+    expect(topLevelCollectionProof(Buffer.from(`{"type":"FeatureCollection","features":[],"proof":${JSON.stringify(expected)},"bad":}`))).toBeUndefined();
   });
 });

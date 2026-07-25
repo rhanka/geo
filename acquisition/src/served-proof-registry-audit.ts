@@ -247,14 +247,92 @@ export function visitFeatures(buf: Buffer, key: string, visit: (feature: Feature
   throw new Error(`GeoJSON features array did not terminate: ${key}`);
 }
 
-function topLevelCollectionProof(buf: Buffer): FC["proof"] | undefined {
-  // New v2 writers serialize collection proof after `features`. Read only the
-  // bounded trailer; legacy objects normally have no collection-level proof.
-  const tail = buf.subarray(Math.max(0, buf.length - 32_768)).toString("utf8");
-  const match = tail.match(/,"proof":(\{"schema_version":"2\.0","geometry_source":\{[^{}]+\}\})\s*}\s*$/);
-  if (!match) return undefined;
-  try { return JSON.parse(match[1]!) as FC["proof"]; }
-  catch { return undefined; }
+function skipJsonWhitespace(buf: Buffer, index: number): number {
+  while (index < buf.length && /\s/.test(String.fromCharCode(buf[index]!))) index++;
+  return index;
+}
+
+function endJsonString(buf: Buffer, start: number): number {
+  if (buf[start] !== 0x22) throw new Error("JSON string expected");
+  for (let index = start + 1; index < buf.length; index++) {
+    if (buf[index] === 0x5c) { index++; continue; }
+    if (buf[index] === 0x22) return index + 1;
+  }
+  throw new Error("unterminated JSON string");
+}
+
+function endJsonValue(buf: Buffer, start: number): number {
+  const first = buf[start];
+  if (first === undefined || [0x2c, 0x3a, 0x5d, 0x7d].includes(first)) throw new Error("JSON value expected");
+  if (first === 0x22) return endJsonString(buf, start);
+  if (first !== 0x7b && first !== 0x5b) {
+    let index = start;
+    while (index < buf.length && !/\s/.test(String.fromCharCode(buf[index]!)) && ![0x2c, 0x5d, 0x7d].includes(buf[index]!)) index++;
+    JSON.parse(buf.subarray(start, index).toString("utf8"));
+    return index;
+  }
+
+  const closers = first === 0x7b ? [0x7d] : [0x5d];
+  for (let index = start + 1; index < buf.length; index++) {
+    const byte = buf[index]!;
+    if (byte === 0x22) { index = endJsonString(buf, index) - 1; continue; }
+    if (byte === 0x7b) closers.push(0x7d);
+    else if (byte === 0x5b) closers.push(0x5d);
+    else if (byte === closers.at(-1)) {
+      closers.pop();
+      if (closers.length === 0) return index + 1;
+    }
+  }
+  throw new Error("unterminated JSON value");
+}
+
+function fullyValidatedCollectionProof(buf: Buffer, candidate: FC["proof"] | undefined): FC["proof"] | undefined {
+  // Keep the common legacy path streaming. A collection that presents a v2
+  // proof is a candidate for exact eligibility, so validate its complete JSON
+  // document before trusting that proof.
+  if (!candidate) return undefined;
+  try {
+    const collection = JSON.parse(buf.toString("utf8")) as FC;
+    return collection.type === "FeatureCollection" ? collection.proof : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Locate a top-level proof structurally; validate full JSON only for a candidate proof. */
+export function topLevelCollectionProof(buf: Buffer): FC["proof"] | undefined {
+  let index = skipJsonWhitespace(buf, 0);
+  if (buf[index++] !== 0x7b) return undefined;
+  let proof: FC["proof"] | undefined;
+  for (;;) {
+    index = skipJsonWhitespace(buf, index);
+    if (buf[index] === 0x7d) {
+      index = skipJsonWhitespace(buf, index + 1);
+      return index === buf.length ? fullyValidatedCollectionProof(buf, proof) : undefined;
+    }
+    if (buf[index] !== 0x22) return undefined;
+    const keyStart = index;
+    const keyEnd = endJsonString(buf, keyStart);
+    let key: string;
+    try { key = JSON.parse(buf.subarray(keyStart, keyEnd).toString("utf8")) as string; }
+    catch { return undefined; }
+    index = skipJsonWhitespace(buf, keyEnd);
+    if (buf[index++] !== 0x3a) return undefined;
+    index = skipJsonWhitespace(buf, index);
+    const valueStart = index;
+    let valueEnd: number;
+    try { valueEnd = endJsonValue(buf, valueStart); }
+    catch { return undefined; }
+    if (key === "proof") {
+      try { proof = JSON.parse(buf.subarray(valueStart, valueEnd).toString("utf8")) as FC["proof"]; }
+      catch { return undefined; }
+    }
+    index = skipJsonWhitespace(buf, valueEnd);
+    if (buf[index] === 0x2c) { index++; continue; }
+    if (buf[index] !== 0x7d) return undefined;
+    index = skipJsonWhitespace(buf, index + 1);
+    return index === buf.length ? fullyValidatedCollectionProof(buf, proof) : undefined;
+  }
 }
 
 async function pool<T>(items: readonly T[], concurrency: number, work: (item: T) => Promise<void>): Promise<void> {
