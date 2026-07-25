@@ -1,0 +1,7 @@
+{
+  "prefix_map": {
+    "Fc": "agricole"
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2717045%27",
+  "note": "Saint-Cyrille-de-Lessard (Paroisse, MRC de L'Islet), code MAMH 17045. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche geocentralis « evb:siadmin_pzon_99_s » qui SERT ces polygones (provenance du geojson servi: « …#evb:siadmin_pzon_99_s[id_municipalite=17045] ») porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2`. Gate propriétaire: le filtre `id_municipalite='17045'` est EXACTEMENT celui de la provenance du polygone servi, et 17045 = « Saint-Cyrille-de-Lessard (Paroisse) » au répertoire MAMH committé. Dump vérifié (`_ud-geocentralis-etiquette.ts --muni 17045`, 6 features = les 6 polygones servis): etiquette_2 « Forêt » pour Fc, Fc, Fc, Fc.2, Fc.3, Fc.7 — une seule valeur, uniforme. Mapping: Fc « Forêt » -> agricole (famille forestière). ⛔ PIÈGE ÉCARTÉ: le `reglement_url` de provenance (WebLex documentid=7b84faef-…) est la GRILLE du règlement 457-2025, dont les zones sont codées 1R / 3R / 4R — « Fc » n'y figure pas. Couverture: 6/6 polygones servis."
+}

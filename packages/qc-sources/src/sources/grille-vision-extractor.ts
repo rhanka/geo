@@ -119,6 +119,16 @@ interface FieldSpec {
   semantic: "length" | "area" | "count" | "pct";
   /** Plausibility window [min, max] for a PUBLISHED value. */
   plausible: [number, number];
+  /**
+   * ROUND-TRIP guard (design §6b). When an engine can report the VERBATIM printed
+   * label the cell was read from, a label matching this pattern means the model
+   * read the RIGHT-LOOKING number off the WRONG ROW — the norm belongs to another
+   * object (the building instead of the lot, an accessory building instead of the
+   * main one). Observed on the fiche-par-zone family: "Dimension minimum (façade)
+   * : 7,6 m" (a BUILDING façade) landed in `frontage_min` (a LOT width), a
+   * plausible-but-false value that every numeric gate accepted.
+   */
+  labelReject?: RegExp;
 }
 
 /**
@@ -129,17 +139,21 @@ interface FieldSpec {
 const FIELD_SPECS: ReadonlyArray<FieldSpec> = [
   {
     id: "hauteur_etages",
-    label: "Hauteur en étages min / max",
+    label:
+      "Hauteur du bâtiment principal en ÉTAGES (si la case imprime un intervalle min./max. — ex. \"1 / 2\" — recopie l'intervalle VERBATIM)",
     fallbackUnit: "etages",
     semantic: "count",
     plausible: [1, 20],
+    labelReject: /accessoire|garage|d[ée]pendance|cl[ôo]ture|enseigne|remise/i,
   },
   {
     id: "hauteur_metres",
-    label: "Hauteur en mètres min / max",
+    label:
+      "Hauteur du bâtiment principal en MÈTRES (si la case imprime un intervalle min./max., recopie-le VERBATIM ; si SEULE une hauteur MINIMALE est imprimée, renvoie null)",
     fallbackUnit: "m",
     semantic: "length",
     plausible: [1, 60],
+    labelReject: /accessoire|garage|d[ée]pendance|cl[ôo]ture|enseigne|remise/i,
   },
   {
     id: "marge_avant_min",
@@ -164,17 +178,22 @@ const FIELD_SPECS: ReadonlyArray<FieldSpec> = [
   },
   {
     id: "frontage_min",
-    label: "Largeur frontale minimale du lot (mètre)",
+    label:
+      "Largeur frontale minimale du TERRAIN / lot (mètre) — JAMAIS la façade ou la largeur du BÂTIMENT",
     fallbackUnit: "m",
     semantic: "length",
     plausible: [6, 10000],
+    labelReject: /b[âa]timent|fa[çc]ade|construction|plancher|logement|accessoire/i,
   },
   {
     id: "superficie_min",
-    label: "Superficie minimale du lot (mètre carré)",
+    label:
+      "Superficie minimale du TERRAIN / lot (mètre carré) — JAMAIS la superficie du BÂTIMENT ou du plancher",
     fallbackUnit: "m2",
     semantic: "area",
     plausible: [150, 10_000_000],
+    labelReject:
+      /b[âa]timent|plancher|construction|logement|garage|d[ée]pendance|accessoire/i,
   },
   {
     id: "densite",
@@ -511,6 +530,71 @@ function concordKey(
   return `${n.value}:${n.unit ?? "?"}`;
 }
 
+/**
+ * A printed MIN/MAX range cell ("1 / 2", "1 à 2", "2-4 étages") carries BOTH
+ * bounds in ONE cell. Handing it whole to `normalizeUnit` reads the FIRST number
+ * — the MINIMUM — which, routed into `hauteur_max`, publishes a plausible-but-
+ * FALSE value that passes every mechanical gate. That is exactly the design's
+ * garde-fou #1 (`docs/spec/normes-extraction-retenu.md` §6), observed live on
+ * saint-justin: "Nombre d'étage (min. / max.) : 1 / 2" published hauteur_max=1.
+ *
+ * `rangeEnd(raw, "max")` returns the SUB-STRING of the printed cell carrying the
+ * requested bound (any trailing unit/annotation preserved), or the cell unchanged
+ * when it is not a two-number range. It selects printed text — it never computes,
+ * converts, or completes a value.
+ */
+const RANGE_RE =
+  /^\s*(\d+(?:[.,]\d+)?)\s*(?:\/|à|a|-|–|—)\s*(\d+(?:[.,]\d+)?)\s*(.*)$/i;
+
+export function rangeEnd(
+  raw: string | null | undefined,
+  which: "min" | "max",
+): string | null | undefined {
+  if (raw === null || raw === undefined) return raw;
+  const m = RANGE_RE.exec(raw.trim());
+  if (!m) return raw;
+  const num = which === "max" ? m[2]! : m[1]!;
+  const tail = (m[3] ?? "").trim();
+  return tail ? `${num} ${tail}` : num;
+}
+
+/**
+ * ROUND-TRIP guard (design §6b): does the VERBATIM printed label the engine says
+ * it read the cell from belong to this field? Returns true when the label is a
+ * KNOWN MISMATCH (`spec.labelReject`) — the value must then be refused even though
+ * it is numerically plausible. An absent label (engine cannot report one) is never
+ * a rejection: the guard only fires on positive evidence of a wrong row.
+ */
+export function labelContradictsField(
+  spec: FieldSpec,
+  label: string | null | undefined,
+): boolean {
+  if (!label || !spec.labelReject) return false;
+  return spec.labelReject.test(label);
+}
+
+/**
+ * Guarded field for a MAX-bound norm read off a possibly-ranged cell. The value is
+ * parsed from the MAX bound (`rangeEnd`), while the VERBATIM full cell is kept as
+ * `raw` — provenance stays faithful to what is printed ("1 / 2"), the published
+ * number is the bound the field actually means (2).
+ */
+export function buildRangeMaxField(
+  spec: FieldSpec,
+  rawA: string | null | undefined,
+  rawB: string | null | undefined,
+  provenance: FieldProvenanceT,
+): NormFieldT {
+  const field = buildVisionField(
+    spec,
+    rangeEnd(rawA, "max"),
+    rangeEnd(rawB, "max"),
+    provenance,
+  );
+  const verbatim = (rawA ?? rawB ?? "").toString();
+  return verbatim && verbatim !== field.raw ? { ...field, raw: verbatim } : field;
+}
+
 function semanticUnitMatches(
   semantic: FieldSpec["semantic"],
   unit: NormUnitT,
@@ -669,10 +753,16 @@ export async function extractZonePageFromImage(
     const spec = FIELD_SPECS.find((s) => s.id === id)!;
     return buildVisionField(spec, passA.fields[id], passB.fields[id], provenance());
   };
+  /** Same as `field`, but reads only the MAX bound of a printed min/max range. */
+  const fieldMax = (id: FieldId): NormFieldT => {
+    const spec = FIELD_SPECS.find((s) => s.id === id)!;
+    return buildRangeMaxField(spec, passA.fields[id], passB.fields[id], provenance());
+  };
 
   // Hauteur: prefer the métres field when it publishes; else fall back to étages.
-  const hauteurMetres = field("hauteur_metres");
-  const hauteurEtages = field("hauteur_etages");
+  // Both are read at their MAX bound (a "1 / 2" cell must never publish 1 as max).
+  const hauteurMetres = fieldMax("hauteur_metres");
+  const hauteurEtages = fieldMax("hauteur_etages");
   const hauteurMax = hauteurMetres.value !== null ? hauteurMetres : hauteurEtages;
 
   // Usages: keep only those both passes named (verbatim, order-insensitive).

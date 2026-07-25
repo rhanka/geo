@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "F": "agricole",
+    "C": "environnemental",
+    "A": null,
+    "AF": null,
+    "I": null,
+    "L": null,
+    "M": null,
+    "P": null,
+    "RE": null,
+    "RU": null
+  },
+  "source": "work/zonage-norms/saint-godefroi/grille.pdf (= disc-297-2026.pdf, 1er projet de Règlement numéro 297-2026 modifiant le Règlement numéro 202-2011 « Règlement de zonage » de la Municipalité de Saint-Godefroi — corpus local)",
+  "note": "Propriétaire confirmé verbatim: « Province de Québec / MRC de Bonaventure / Municipalité du Canton de Saint-Godefroi » (page de garde) et « Règlement numéro 202-2011 «Règlement de zonage» de la Municipalité de Saint-Godefroi ». Seule légende de dominance disponible dans le corpus local, article 1: « Le plan de zonage, faisant partie intégrante du Règlement numéro 202-2011 (Règlement de zonage) de la Municipalité de Saint-Godefroi, est modifié par un ajustement des limites entre les zones 1-F (Zone à dominance forestière) et 7-C (Zone à dominance de conservation). » Le règlement écrit le code sous la forme chiffre-lettre (« 1-F », « 7-C ») alors que le SIG le sert sous la forme lettre-chiffre (« F-1 », « C-7 »): même zone, ordre inversé. Mapping: F « Zone à dominance forestière » -> agricole (famille forestière); C « Zone à dominance de conservation » -> environnemental. PIÈGE ÉCARTÉ: C ne signifie PAS « commerciale » ici mais « conservation », d'où le mapping environnemental. Null explicite pour A, AF, I, L, M, P, RE, RU: le corps du Règlement 202-2011 n'est PAS au corpus local (seuls le projet 297-2026 et le plan MRC disc-290-2026.pdf y sont, ce dernier ne portant aucune table lettre->dominance) et une recherche web n'a pas permis de récupérer le corps; aucune vocation n'est donc énoncée verbatim pour ces huit lettres et elles ne sont PAS déduites de leur initiale. AF est déclaré explicitement pour empêcher le longest-prefix de faire retomber « AF-10 »/« AF-14 » sur la clé « A ». Gisement de reprise: corps du Règlement de zonage 202-2011 de Saint-Godefroi (grille des spécifications / légende du plan de zonage)."
+}

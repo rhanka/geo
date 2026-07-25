@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "Rb": "residentiel",
+    "RbM": "residentiel",
+    "RbMX": "residentiel",
+    "RcM": "residentiel",
+    "RcMP": "residentiel",
+    "RdM": "residentiel",
+    "Rr": "residentiel",
+    "ReM": "commercial",
+    "CbMP": "commercial",
+    "CcM": "commercial",
+    "IcM": "industriel",
+    "Ab": "agricole",
+    "Ac": "agricole",
+    "Fc": "agricole",
+    "Fa": null,
+    "V": null,
+    "ScM": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite='18030'",
+  "note": "Vocation VERBATIM portée par l'attribut SIG `etiquette_2` de la couche geocentralis evb:siadmin_pzon_99_s, filtrée sur id_municipalite='18030' (Saint-Paul-de-Montminy) — la même couche/le même filtre qui sert les 81 polygones de ce slug ; `etiquette_3` porte exactement le préfixe alphabétique servi, `etiquette_1` le code complet (ex. etiquette_1='RcMP.2', etiquette_3='RcMP', etiquette_2='Unifamiliale isolée, jumelée, bifamiliale, trifamiliale'). Table Identification/Dominance lue (couple etiquette_3 -> etiquette_2, verbatim): Rb, RbM, RbMX = « Unifamiliale isolée, jumelée, bifamiliale » ; RcM, RcMP = « Unifamiliale isolée, jumelée, bifamiliale, trifamiliale » ; RdM = « Unifamiliale à multifamiliale (max: 2 étages) » ; Rr = « Maison mobile » -> résidentiel. ReM = « Commerce régional de grande superficie (à nuisance) » ; CcM = « Commerce régional de grande superficie (à nuisance) » ; CbMP = « Commerce local et régional (sans nuisance) » -> commercial (ReM porte une vocation COMMERCIALE malgré la lettre R : la lettre n'est pas lue, seule la vocation écrite l'est). IcM = « Industrie à nuisance élevée » -> industriel. Ab = « Agriculture à nuisance limitée » ; Ac = « Agriculture à nuisance » ; Fc = « Forêt » -> agricole (famille agricole/forestière). Null explicite et SERVI : Fa = « Forêt et conservation faunique avec restriction particulière » est DUALE (forêt + conservation faunique) ; V = « Villégiature et espace récréatif » est DUALE (aucune mention d'usage principal résidentiel, l'énoncé associe villégiature ET espace récréatif) ; ScM = « Équipement ou espace public » est PUBLIQUE. Gate propriétaire (nomenclature partagée dans la MRC de Montmagny, donc exigé) : le document local work/zonage-norms/saint-paul-de-montminy/annexe-grille-web.pdf NOMME la municipalité — pied de page « Saint-Paul-de-Montminy / Règlement No 2023-03 » et en-tête « MUNICIPALITÉ DE SAINT-PAUL-DE-MONTMINY » — et son article 2.1 énumère les MÊMES codes que le SIG : « Les limites des zones « Ab.1 », « CbMP.1 », [...] « RcMP.4 », « RcM.12 », « RcM.13 », « RdM.1 », « RdM.2 », [...] et « ScM.1 », indiquées au plan de zonage du Règlement de zonage No 02-90, sont modifiées » (deux codes de cette énumération sont illisibles à l'OCR et ne sont donc pas cités), « Les zones « RcM.14 », « RdM.4 » et « ReM.2 » sont ajoutées au plan de zonage », « Les zones « CcM.1 », « CcM.2 », « CcM.3 », « CcM.4 », « RbM.3 », « RbM.5 » et « ReM.1 », indiquée[s] au plan de zonage du Règlement de zonage No 02-90, sont abrogées » — et le SIG 18030 reflète exactement ces abrogations/ajouts (aucun CcM.1 à CcM.4, aucun RbM.3 ni RbM.5, aucun ReM.1 ; présence de ReM.2, RdM.4, RcM.14). La matrice des usages permis de la grille des spécifications (annexe 2 du règlement 2023-03) n'est PAS utilisée. Couverture : 17/17 préfixes servis, 81/81 polygones."
+}

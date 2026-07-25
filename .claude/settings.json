@@ -1,0 +1,81 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git clean -d*)",
+      "Bash(rm -rf*)",
+      "Bash(rm -fr*)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(dd if=*)",
+      "Bash(mkfs*)",
+      "Bash(chmod -R 777*)"
+    ],
+    "allow": [
+      "Bash(npx tsx acquisition/src/*)",
+      "Bash(npx tsx packages/*)",
+      "Bash(npx tsx scripts/*)",
+      "Bash(npx tsx src/*)",
+      "Bash(npx tsx work/*)",
+      "Bash(npx vitest*)",
+      "Bash(npx tsc*)",
+      "Bash(npx playwright*)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npm ci*)",
+      "Bash(npm install*)",
+      "Bash(npm --prefix *)",
+      "Bash(npm exec *)",
+      "Bash(npm ls*)",
+      "Bash(node scripts/*)",
+      "Bash(node packages/*)",
+      "Bash(node acquisition/*)",
+      "Bash(bash scripts/*)",
+      "Bash(sh scripts/*)",
+      "Bash(./scripts/*)",
+      "Bash(cd *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(kubectl *)",
+      "Bash(helm *)",
+      "Bash(docker *)",
+      "Bash(podman *)",
+      "Bash(make *)",
+      "Bash(agy *)",
+      "Bash(claude *)",
+      "Bash(codex *)",
+      "Bash(gemini *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(scp *)",
+      "Bash(aws *)",
+      "Bash(rclone *)",
+      "Bash(mc *)",
+      "Bash(s3cmd *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(ln *)",
+      "Bash(touch *)",
+      "Bash(rmdir *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-/home/antoinefa/src/geo}/.claude/hooks/deny-adhoc-bash.sh\"",
+            "timeout": 10,
+            "statusMessage": "Contrôle allowlist commande"
+          }
+        ]
+      }
+    ]
+  }
+}

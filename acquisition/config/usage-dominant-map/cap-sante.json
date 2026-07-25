@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "Af": "agricole",
+    "C": "commercial",
+    "Cons": "environnemental",
+    "I": "industriel",
+    "Ie": "industriel",
+    "M": null,
+    "P": null,
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rec": "environnemental",
+    "Rh": "residentiel",
+    "Rm": "residentiel",
+    "Rv": "residentiel",
+    "Rx": null,
+    "T": null
+  },
+  "source": "https://capsante.qc.ca/assets/documents/R%C3%A8glement-de-zonage-Cap-Sant%C3%A9-refondu-2019-08.pdf",
+  "note": "Règlement de zonage de la Ville de Cap-Santé (refondu 2019-08, MRC de Portneuf), chapitre 3 « Plan de zonage et grilles des spécifications », art. 3.2 « CODIFICATION DES ZONES », p.3-1: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante. Les lettres font référence aux types de zones et aux vocations dominantes suivantes », suivi de la table « Types de zone / Vocations dominantes » relevée VERBATIM. Résidentielle: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « Résidentielle de faible densité en milieu agricole », Rb « Résidentielle de moyenne densité », Rc « Résidentielle de haute densité », Rh « Résidentielle historique », Rm « Résidentielle de maisons mobiles ou résidences unimodulaires », Rv « Résidentielle de villégiature » -> residentiel (le préfixe « Ra » couvre aussi les codes servis Ra/a-* par longest-prefix, même dominante). Commerciale: C « Commerciale » -> commercial. Industrielle: I « Industrielle » et Ie « Industrielle-extraction » -> industriel. Agricole et/ou forestière: A « Agricole dynamique » et Af « Agroforestière » (codes servis Af/b « avec résidence sur propriété de 10 ha et plus », Af/c « sans résidence ») -> agricole. Publique: Rec « Récréative » et Cons « Conservation » -> environnemental. Null explicite: M « Mixte (résidentielle et commerciale) » est DUALE par le libellé même du règlement; P « Publique et institutionnelle » est public; T « Transport » n'appartient à aucune des cinq catégories servies; Rx « Résidentielle de réserve » est une RÉSERVE — le terrain est mis en réserve pour un développement futur, la dominante résidentielle n'y est pas établie (cf. saint-raymond.json RX « développement futur » -> null). Les 17 préfixes mappés sont exactement les 17 présents au SIG servi (144 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée."
+}

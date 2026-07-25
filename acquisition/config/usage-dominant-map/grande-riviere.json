@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "Po": "environnemental",
+    "Ru": null,
+    "P": null,
+    "M": null,
+    "T": null
+  },
+  "source": "https://villegranderiviere.ca/wp-content/uploads/2025-10-20-ZONAGE-VERSION-WEB-FINAL.pdf",
+  "note": "Règlement de zonage numéro U-006/03-19 de la Ville de Grande-Rivière (entré en vigueur le 11 mars 2019, codification administrative), chapitre 3, article 3.2 « CODIFICATION DES ZONES »: « Chacune des zones illustrées sur le plan de zonage est identifiée par une référence alphanumérique. En plus de l'identification numérique, chacune des zones identifiées au plan de zonage est caractérisée par une lettre d'appellation indiquant la dominante de la zone quant aux usages exercés et ce, aux fins de compréhension seulement. Ces dominantes sont les suivantes: ». Table verbatim « Lettre d'appellation | Dominante »: « R | Résidentielle » -> residentiel; « C | Commerciale » -> commercial; « I | Industrielle » -> industriel; « Po | Protection faunique » -> environnemental (ligne du contrat: Conservation/Récréative/Faunique; « Protection » et « faunique » convergent sur la même catégorie). Recouvrement table<->SIG = 8/8, aucun préfixe mappé absent du SIG. Null explicite: « Ru | Rurale » -> le règlement tranche lui-même le piège Ru/R (RURALE, et non « Résidentielle urbaine »), « rurale » n'est aucune des cinq (précédent committé sherbrooke RU « Rural » -> null); « P | Publique et institutionnelle » -> règle Publique; « M | Mixte » -> duale par libellé; « T | Transport et communication » -> aucune des cinq (confirme le précédent committé portneuf « T | Transport »). Longest-prefix OBLIGATOIRE et vérifié sur le matcher (categoryFor, startsWith brut case-insensible): « Ru » (len 2) bat « R » (len 1) donc Ru-3 -> null et R-3 -> residentiel; « Po » (len 2) bat « P » (len 1) donc Po-3 -> environnemental et non null. Couverture non-null = 32/83 (38,6 %): c'est le plafond du contrat (Ru « Rurale » à lui seul vaut 32/83 polygones), pas un défaut d'extraction — ne pas « améliorer » ce chiffre en devinant. L'art. 3.3 qui suit la table ne traite que des limites de zones et ne la renverse pas. La matrice des usages permis des grilles n'est pas utilisée. Document authentifié: « VILLE DE GRANDE-RIVIÈRE » en en-tête de chaque page, « Le présent règlement s'applique à l'ensemble du territoire de la ville de Grande-Rivière »."
+}

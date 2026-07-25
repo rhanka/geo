@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "AF": "agricole",
+    "AG": "agricole",
+    "FO": "agricole",
+    "CO": "environnemental",
+    "REC": "environnemental",
+    "Ra": "residentiel",
+    "MX": null,
+    "PC": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2788085%27",
+  "note": "Sainte-Gertrude-Manneville (Municipalité, MRC d'Abitibi), code MAMH 88085. LA LÉGENDE EST DANS LE SIG: la couche geocentralis « evb:siadmin_pzon_99_s » porte la vocation écrite PAR ENTITÉ dans l'attribut `etiquette_2` (`etiquette_1` = code complet, `etiquette_3` = préfixe). Gate propriétaire: 88085 = « Sainte-Gertrude-Manneville (Municipalité) » au répertoire MAMH committé (packages/qc-sources/src/geo/qc-municipal-directory.json), et le dump rend EXACTEMENT les 30 codes servis. Dump vérifié (`_ud-geocentralis-etiquette.ts --slugs sainte-gertrude-manneville`, 30 features): « Agroforestière » pour AF-1..AF-7 (8 pol.), « Forestière » pour FO-1..FO-5, « Conservation » pour CO-1..CO-4, « Mixte » pour MX-1..MX-4, « Publique et communautaire » pour PC-1..PC-3, « Récréotouristique » pour REC-1..REC-3, « Agricole » pour AG-1 et AG-2, « Résidence faible densité » pour Ra-1 — un libellé UNIFORME par préfixe, aucune exception par entité. Mapping: AF « Agroforestière », FO « Forestière », AG « Agricole » -> agricole; CO « Conservation » et REC « Récréotouristique » -> environnemental; Ra « Résidence faible densité » -> residentiel. NULLS EXPLICITES: MX « Mixte » (le SIG écrit mixte) et PC « Publique et communautaire » (public, hors des cinq catégories). ⭐ CE DÉPÔT LÈVE UN MUR: le corps du règlement de zonage de cette municipalité n'est diffusé NULLE PART (site sur l'hôte bloqué 208.69.79.54, archive Wayback complète = 11 PDF dont aucun d'urbanisme, centre documentaire de la MRC d'Abitibi = MRC et TNO seulement), et `_ud-affectation-dump.ts` rend « (vide) » car il ne connaît pas le champ `etiquette_2`. La vocation était pourtant servie en clair par le SIG. ⛔ Corollaire de méthode: sonder geocentralis AVANT de conclure au mur documentaire. Couverture: 30/30 polygones servis."
+}

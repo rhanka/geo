@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "RC": "residentiel",
+    "RD": "residentiel",
+    "I": "industriel",
+    "CV": null,
+    "M": null,
+    "P": null
+  },
+  "source": "https://rawdon.ca/storage/app/media/municipalite/administration/R%C3%A8glements%20municipaux/r2021-02-zonage-21-03-2023.pdf",
+  "note": "Municipalité de Rawdon, Règlement de zonage no. 2021-02 (codification administrative à jour au 21-03-2023), chapitre 2 « Dispositions relatives à la classification des usages et au plan de zonage », article « Identification des zones », Tableau 27 « Identification des zones ». Texte habilitant verbatim: « Aux fins d'identification et de référence, chaque zone est désignée par un sigle alphanumérique permettant de se référer aux différentes dispositions du présent règlement et à la grille des spécifications qui lui est relative. Les lettres utilisées pour l'identification des zones font référence à son affectation identifiée au Plan d'urbanisme ou la vocation principale de la zone, soit : ». Table « Préfixe / Affectation ou vocation principale »: RC « Résidentielle de consolidation » et RD « Résidentielle de densification » -> residentiel (libellé composé dont seule « résidentielle » est des cinq); I « Industrielle » (zones à l'extérieur du périmètre d'urbanisation) et « Industrielle urbaine » (à l'intérieur) -> industriel (les deux acceptions convergent). Null explicite: CV « Centre-ville » nu ne nomme aucune des cinq; M « Multifonctionnelle » est mixte par définition; P « Publique » (extérieur du périmètre) et « Publique et institutionnelle et grands parcs et espaces verts » (intérieur) est publique -- « grands parcs et espaces verts » ne suffit pas à forcer environnemental, le libellé nomme d'abord la fonction publique/institutionnelle. Le Tableau 27 définit aussi AD, AV, CONS, ID, REC, RF, RUR, VC, VD, ABSENTS du SIG servi -> non mappés. Note anti-fall-through: ID « Îlot déstructuré » est défini au règlement mais n=0 au SIG; si le SIG s'étendait hors périmètre, I -> industriel capturerait ID-* à tort et un null explicite deviendrait nécessaire. 6/6 préfixes du SIG couverts. La matrice des usages permis des grilles n'est pas utilisée."
+}

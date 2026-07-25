@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "C": "commercial",
+    "R": "residentiel",
+    "CA": null,
+    "CR": null,
+    "IA": null,
+    "RA": null,
+    "TA": null,
+    "P": null
+  },
+  "source": "Attribut SIG `affectation` (vocation dominante VERBATIM par feature) de la collection zonage servie normalized/ca-qc-zonage/qc-zonage-saint-mathias-sur-richelieu.geojson.",
+  "note": "Gisement attribut SIG `affectation`: chaque feature porte sa vocation dominante en clair. Valeurs distinctes observées par préfixe (via _ud-affectation-dump): A « Agricole » -> agricole; C « Commercial » -> commercial; R « Résidentiel » -> residentiel. Null explicite: CR « Commercial-résidentiel » est DUAL; CA « Agricole | Commercial-agricole » est non uniforme au niveau du préfixe et le libellé « Commercial-agricole » est un composé dual; IA « Industriel-agricole », RA « Résidentiel-agricole » et TA « Tampon-agricole » sont des libellés COMPOSÉS (deux catégories accolées / zone tampon) sans dominante unique -> null (règle verbatim-or-null, aucune dominante forcée sur une zone duale); P « Public » est publique et n'énonce aucune des cinq catégories. Clés = les 9 préfixes réellement présents dans le SIG servi (A, C, CA, CR, IA, P, R, RA, TA); longest-prefix (CA/CR/RA/TA/IA battent A/C/R). La matrice des usages permis n'est pas utilisée: la vocation provient directement de l'attribut `affectation`."
+}

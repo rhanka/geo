@@ -12,7 +12,7 @@
  *
  * ANTI-INVENTION : code_zone = lookup[normalize(no_lot)] OU null. Jamais deviné.
  * NON-DESTRUCTIF : on ajoute/écrase la seule clé code_zone.
- * Idempotent : checkpoint /tmp/enrich_codezone_progress.json (skip sauf --force).
+ * Idempotent : checkpoint .h2a/tmp/enrich_codezone_progress.json (skip sauf --force).
  *
  * Usage :
  *   tsx src/enrich-lots-codezone.ts --only chelsea
@@ -27,10 +27,11 @@ import type { S3Client } from "@aws-sdk/client-s3";
 
 import { s3Client, exists, getBytes, getJson, putBytes, listSlugs } from "./lib/s3.js";
 import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
+import { workspaceTmpFile } from "./lib/workspace-tmp.js";
 
 const INDEX_PREFIX = "registry/index-immo/";
 const CAD_PREFIX = "normalized/qc-cadastre-lots/";
-const PROG = "/tmp/enrich_codezone_progress.json";
+const PROG = workspaceTmpFile("enrich_codezone_progress.json");
 
 // ---------------------------------------------------------------------------
 // Helpers

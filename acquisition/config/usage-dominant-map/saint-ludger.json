@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "AFT": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "IL": null,
+    "M": null,
+    "P": null,
+    "RU": null
+  },
+  "source": "https://st-ludger.qc.ca/wp-content/uploads/2017/02/LUD-ZON-FINAL-59.pdf",
+  "note": "Municipalité de Saint-Ludger (MRC du Granit), règlement de zonage no 2006-90. Table VERBATIM à l'art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES » (p.26), colonnes « ZONE | VOCATION DOMINANTE », introduite par: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant la vocation dominante ». Contenu: « A Agricole | Af Agroforestière | Cons Conservation | I Industrielle | M Mixte | P Publique | R Résidentielle | Rec Récréative | Ru Rurale | Vill Villégiature ». C'est le moule de la MRC du Granit (même art. 5.1 et même colonne « VOCATION DOMINANTE » que saint-romain 2012-257 et courcelles 22-423), mais la table lue est bien celle de Saint-Ludger: page de titre « MUNICIPALITÉ DE ST-LUDGER — RÈGLEMENT DE ZONAGE », préambule « le Conseil de la Municipalité de Saint-Ludger adopte le projet de règlement n° 2006-90 visant à remplacer les règlements de zonage numéros 112-90 (Saint-Ludger), 136 (Gayhurst-partie-sud-est) et 211-90 (Risborough-et-partie-de-Marlow) », pied de page « RÈGLEMENT DE ZONAGE – SAINT-LUDGER ». ⛔ IL = « ÎLOT », PAS « Industriel » — null anti-fall-through OBLIGATOIRE, prouvé DEUX fois chez saint-ludger même: la légende textuelle du plan de zonage 2022 (annexe 2, partie intégrante) porte « IL - Îlot sans morcellement » et « IL - Îlot avec morcellement », et la grille des spécifications (feuillet 3) porte les colonnes « Îlot 60 | Îlot 61 | Îlot 62 | Îlot 63 » = EXACTEMENT les 4 polygones IL du SIG. Sans cette clé, IL-60..63 tomberaient sur « I » -> industriel EN SILENCE; par ailleurs la table 5.1 prive « Îlot » du mot dominance, ce qui vaut refus de dominante. AFT -> agricole: le trigramme a 0 occurrence dans le corps (qui écrit « Af »), mais 3 voies convergent — la grille (annexe 1, feuillet 2) porte « AFT1-1 … AFT1-11 » = la forme exacte servie par le SIG, la légende du plan porte « AGF1 - Agroforestier (Type 1) » (coquille du dessinateur AGF/AFT sur le même objet), et le corps donne « Af Agroforestière ». Déclaration sans risque: en l'omettant, « AFT1-3 » retomberait de toute façon sur « A » -> agricole par longest-prefix, résultat identique. Null explicites: M « Mixte » est dual; P « Publique » est public; RU « Rurale » ne nomme aucune des cinq catégories. Rec « Récréative » -> environnemental (ligne Conservation/Récréative/Faunique du contrat) et Cons « Conservation » -> environnemental; la forme servie est « REC »/« CONS ». « Vill » figure à la table mais n'est pas servi: non déclaré. Corpus local inexistant pour ce slug; le règlement a été trouvé via l'API WP REST media (/wp-json/wp/v2/media, 104 documents énumérés, $0). Couverture 10/10 préfixes = 68/68 polygones."
+}
