@@ -141,7 +141,7 @@ if (linksMode) {
 await mkdir(dirname(out!), { recursive: true });
 const ws = createWriteStream(out!);
 ws.end(body);
-await new Promise((r) => ws.on('finish', r));
+await new Promise<void>((r) => ws.on('finish', () => r()));
 const size = (await stat(out!)).size;
 // Magic-byte check: an HTML error page saved as .pdf is the classic false success.
 const head = (await readFile(out!)).subarray(0, 5).toString('latin1');

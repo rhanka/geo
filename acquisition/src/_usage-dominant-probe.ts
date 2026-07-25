@@ -74,3 +74,5 @@ if (!slugs.length) {
   process.exit(2);
 }
 for (const slug of slugs) await probe(slug, showCodes);
+
+export {};

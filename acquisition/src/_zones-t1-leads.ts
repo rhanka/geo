@@ -120,7 +120,7 @@ for (const [slug, files] of [...bySlug.entries()].sort()) {
     leads.push({
       slug,
       path: f.path,
-      crs: geo.crs ?? "?",
+      crs: geo.crsName,
       residM: geo.maxResidualM ?? -1,
       scale: (geo as any).scaleMPerPt ?? -1,
       codeLike,

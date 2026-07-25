@@ -403,7 +403,9 @@ async function runCity(s3: S3Client, slug: string, args: Args): Promise<PublishS
       // when the SIG actually serves this code; otherwise keep the canon serve form.
       const servedCode = args.alignSigCode ? (geom.byCanonToSigRaw.get(canonKey) ?? zoneCode) : zoneCode;
       const props = normProperties(row, servedCode);
-      const feature: Feature = { type: "Feature", id: servedCode, geometry: g, properties: props };
+      // `Feature<Geometry | null>` : la géométrie ABSENTE reste `null` (RFC 7946 l'autorise
+      // et le contrat anti-invention l'exige) — on ne fabrique pas de géométrie de repli.
+      const feature: Feature<Geometry | null> = { type: "Feature", id: servedCode, geometry: g, properties: props };
       await write((first ? "" : ",") + JSON.stringify(feature));
       first = false;
       if (!example && publishedCountRow(row) > 0) {

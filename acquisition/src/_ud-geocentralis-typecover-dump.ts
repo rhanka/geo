@@ -68,3 +68,5 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => { console.error(String(e?.message ?? e)); process.exit(1); });
+
+export {};

@@ -84,9 +84,10 @@ const RURAL_FAMILIES = new Set([
 
 async function loadCadastreBBox(s3: S3Client, slug: string): Promise<{ key: string; bbox: BBox; lots: number } | null> {
   const key = `${CAD_PREFIX}${slug}.geojson`;
+  type LotFeature = { geometry?: { coordinates?: unknown } | null };
   let fc;
   try {
-    fc = await getGeoJsonFeatureCollection(s3, key);
+    fc = await getGeoJsonFeatureCollection<LotFeature>(s3, key);
   } catch {
     return null;
   }
@@ -95,7 +96,7 @@ async function loadCadastreBBox(s3: S3Client, slug: string): Promise<{ key: stri
   for (const f of fc.features ?? []) {
     if (!f.geometry) continue;
     lots++;
-    accumulate(bbox, (f.geometry as { coordinates?: unknown }).coordinates);
+    accumulate(bbox, f.geometry.coordinates);
   }
   return { key, bbox, lots };
 }
