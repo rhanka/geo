@@ -27,10 +27,15 @@ build/
 # normalized data lives on S3 object storage, not git (ADR-0012); the datasets
 # already committed under data/normalized stay tracked (gitignore does not
 # untrack them), new raw/tmp payloads are never versioned.
-data/
-data/raw/
-data/tmp/
-data/normalized/
+#
+# ANCRÉ À LA RACINE (`/data/…`, pas `data/…`) : une règle non ancrée matche TOUT
+# répertoire nommé `data` à n'importe quelle profondeur, donc `acquisition/data/`
+# et `apps/site/static/data/` — 16 fichiers pourtant SUIVIS sur `main`. Un fichier
+# déjà suivi n'est pas déréférencé par gitignore, mais tout AJOUT à côté devient
+# invisible en silence : c'est le piège que l'ancrage supprime.
+/data/raw/
+/data/tmp/
+/data/normalized/
 *.pdf
 work/**/run.log
 *.zip
