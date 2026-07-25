@@ -226,7 +226,18 @@ async function main(): Promise<void> {
     ...stats,
   };
 
-  if (pdfBytes && geometryUrl) attachGeometryProof(served, proofFromFetched({ url: geometryUrl, type: "pdf-zonage", method: "georeference", reliability: "georeferencee", bytes: pdfBytes }));
+  // Preuve v2 + ESTAMPILLE DE SOURCE explicite sur chaque feature servie. L'URL
+  // estampillee est EXACTEMENT l'artefact reellement telecharge et hache ci-dessus
+  // (aucune URL fabriquee) ; niveau "documented" = plan de zonage officiel
+  // re-telechargeable, georeference apres revue humaine (GCP + gates), sans
+  // conservation de l'octet source historique (donc pas "historical-verified").
+  if (pdfBytes && geometryUrl) {
+    attachGeometryProof(
+      served,
+      proofFromFetched({ url: geometryUrl, type: "pdf-zonage", method: "georeference", reliability: "georeferencee", bytes: pdfBytes }),
+      { url: geometryUrl, level: "documented" },
+    );
+  }
 
   const outDir = args.out ?? join(tmpdir(), `t2v-${args.slug}`);
   mkdirSync(outDir, { recursive: true });
