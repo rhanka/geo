@@ -1,0 +1,222 @@
+# Backlog / Track — @sentropic/geo
+
+Source de vérité du backlog (le MCP `track` étant indisponible — voir [ADR-0001](decisions.md)).
+Piloté en `/loop` par le conductor ; délégation ≤4 sous-agents en parallèle.
+
+Statuts : ⬜ todo · 🟡 in-progress · ✅ done · ⛔ blocked. Rôles : voir [`ROLES.md`](ROLES.md).
+
+## Objectif
+
+Capitaliser la lib `@sentropic/geo` jusqu'à **publication npm + API hébergée** (`geo.sent-tech.ca`
+sur `poc-k8s`), en priorisant les **villes/municipalités du Québec** (besoin `immo`).
+
+---
+
+## État (2026-06-15) — npm PUBLIÉ (5 packages @0.1.0) · refactor + zones/lots mergés sur `main` (407 tests)
+
+**Livré** (tout mergé sur **`main`** `10d2147`, CI verte) :
+- **Lib** : `geo-core` (modèle/standards/licences/Source Manifest/référentiel), `geo-acquire`
+  (download + gate licence + cache/checksum + GDAL bulk + `.7z` + CSV + `referentialNormalizer`),
+  `geo-api` (OGC API – Features + `/sources` + provider fichier/S3 + CORS), `geo-cli`, `geo-storage`
+  (S3 Scaleway), `geo-sources` (inventaire 13 sources), `geo-ui-svelte`, `apps/site`.
+- **Données / 3 pays** : QC (SDA régions/MRC/**municipalités**, StatCan CSD, cadastre, CPTAQ/BDZI/GRHQ,
+  terrAPI+MAMH), Canada (provinces, FSA postal), France (IGN ADMIN EXPRESS, INSEE COG, La Poste).
+  Capitalisation **immo** complète (ADR-0013). Données → **S3** (`sentropic-geo`, ADR-0012).
+- **Carte WebGL** (`GeoMap`, MapLibre v5) : MVP + choroplèthe + légende + recherche + panneau détail +
+  binning délégué à `@sentropic/dataviz-core@0.4.37` (choroplèthe/hexbin/cluster/density, inc.2b/2c,
+  ADR-0016 ; glue locale retirée, équivalence prouvée). Page `/carte` + `/sources`. Consensus
+  dataviz/DS/immo tranché (ADR-0014/0015/0016).
+- **Déploiement** : `main` mergé (`10d2147`) ; **GitHub Pages** activé + **déployé** (build full-workspace
+  corrigé, domaine custom `geo.sent-tech.ca` posé) ; poc-k8s **#30 mergé** (tenant geo : namespace + netpol) ;
+  Dockerfile + `deploy/k8s/` (API S3) + workflows CI / npm-publish (OIDC) / docker-publish (tag `v*` = npm + image).
+- **Gouvernance** : ADR-0001→0015, registre de licences, ce backlog.
+
+**Publié** ✅ : les **5 packages `@sentropic/geo*@0.1.0`** sont sur npm (geo-core, geo, geo-sources-americas,
+geo-sources-europe, geo-ui-svelte ; 1er publish manuel via token bootstrap révoqué). immo les consomme déjà.
+
+**Reste — dépend de TOI (user-gated)** :
+- 🌐 **DNS** (zone `sent-tech.ca`) : `geo.sent-tech.ca` → CNAME `rhanka.github.io` (site Pages, HTTPS auto) ;
+  `api.geo.sent-tech.ca` → A/CNAME vers le LoadBalancer du cluster poc-k8s (ingress Traefik tenant geo).
+- 🐳 **Image API** : `docker-publish` bloqué — ajouter secrets `SCW_REGISTRY_USERNAME` (=`nologin`) +
+  `SCW_SECRET_KEY` (clé Scaleway avec perm Container Registry) sur `rhanka/geo`, puis re-dispatch.
+- ☸️ **Appliquer `deploy/k8s/`** sur le tenant geo (après image + DNS api) — accès `kubectl` ou GitOps poc-k8s.
+- 🔧 **`geo@0.1.1`** : republier pour réintégrer le `bin geo` (npm 11 l'a retiré au 1er publish ; CLI OK via
+  Docker/local en attendant) — nécessite auth/2FA.
+- ✅ GO immo : `SignauxMapView`→`GeoMap` (immo consomme déjà la lib npm ; bascule UI parallèle prudente).
+
+**Reste — polish optionnel (autonome, faible priorité)** :
+- inc.4 basemap **PMTiles** auto-hébergé (le MVP marche sur fond tokenisé) ; inc.5 **projection routière**
+  deck.gl (bloqué : pas de source de routes — nécessite une couche RRN/Adresses QC d'abord) ;
+  variante `DatasetCard` pour le catalogue de sources. (`/sources` dans l'OpenAPI = ✅ livré.)
+
+---
+
+## Refactor packages 16→5 (`refactor/packages-v2`, ADR-0017/0018) — ✅ exécuté (363 tests)
+
+Consolidation de la taxonomie 16→**5 packages** — **mergée sur `main` + publiée npm @0.1.0** — voir
+[ADR-0017](decisions.md) (décision) + [ADR-0018](decisions.md) (exécution).
+
+- **Phase A** ✅ (`20bf694`) — `geo-core` : types `FieldMap`/`recipe?`/`SourceRegistry`/`NormalizerFn`
+  + `featuresToCollection` déplacé ici (casse le cycle recettes→engine).
+- **Phase B** ✅ (`ca935ff`) — `@sentropic/geo` créé ; `geo-acquire`+`geo-storage` fusionnés dedans.
+- **Phase C** ✅ — `geo-api`+`geo-cli`+`geo-sources` repliés dans `geo` (`src/{api,cli,catalog,normalize}`) ;
+  **inventaire injecté** (`buildInventory(registries)`, `createApp(provider, inventory?)`,
+  `buildRegistry(registries)`) ; dispatch de recette dans `fetch.ts` ; continents chargés par **import
+  dynamique optionnel** ; normaliseur générique `fieldMap` (factory livrée, conversion des recettes différée) ;
+  `geo-api`/`geo-cli`/`geo-sources` supprimés. Tests moteur sur **fixture hermétique** in-`geo`.
+- **Phase D** ✅ — libs continent `@sentropic/geo-sources-americas` (6 CA/QC) + `@sentropic/geo-sources-europe`
+  (3 FR) : registres `{ manifests, recipes }` ; ré-exports nommés conservés (`QC_MUNICIPALITIES`,
+  `fetchQcCivicAddresses`, `parseQcCivicAddresses`, `fetchRoleXml`) ; recettes verbatim (pas de fieldMap) ;
+  9 `geo-source-*` supprimés ; test d'intégration pipeline ca-qc réel relocalisé dans americas.
+- **Phase E** ✅ — `apps/site` (`buildInventory([americas, europe])`), scripts racine, `npm-publish.yml`
+  (5 packages), `pages.yml`, `Dockerfile`/entrypoint/`job-fetch` (chemins `dist/cli/cli.js` + `dist/api/server.js`),
+  docs (ce backlog + ADR-0018).
+
+**5 packages cibles** : `geo-core`, `geo`, `geo-ui-svelte`, `geo-sources-americas`, `geo-sources-europe`.
+**Différé (réversible)** : conversion des normaliseurs simples en `fieldMap` (recettes conservées telles
+quelles). `npm run verify` EXIT=0, 0 cycle topo. **Mergé sur `main` + 5 packages publiés npm @0.1.0.**
+
+> **MAJ npm-publish** : la liste passe de 8 à **5 packages** ; le « npm Trusted Publishing » ci-dessus
+> vise désormais ces 5 (`geo-core`, `geo`, `geo-sources-americas`, `geo-sources-europe`, `geo-ui-svelte`).
+
+---
+
+## Chantier zones+lots (acquisition intra-ville, cadrage immo) — A/C/B livrés (mergés sur `main`) + **acquisition LIVE livrée** sur `feat/qc-zones-lots-acquisition`
+
+geo owne l'**acquisition géo générique** (cadastre lots + zonage), immo consomme + garde la résolution
+métier temporelle (Loi 25, jointure rôle↔lot). Mergé sur `main` (`101fa85`).
+
+**✅ Acquisition LIVE livrée (2026-06-16, branche `feat/qc-zones-lots-acquisition`, non mergée, rien publié).**
+4 agents Opus 4.8 (A1 lots, A2 découverte ArcGIS, A3 ingestion zonage, A4 annuaire) → consolidation
+(purge faux-positifs, vérif, commit). Chiffres **réels** après purge ([ADR-0020], [ADR-0021], [ADR-0019]) :
+- **Zonage : 67 collections QC réelles / 50 095 features** servies (`geo serve` → GET /collections = 67).
+  Découverte AGOL = **122 endpoints** vérifiés live → ingérés 74 collections → **purge de 7 faux-positifs**
+  (4 Ontario : Ottawa `plan-admin`+`quinnjackson3`, `cityofcornwall`, comté SDG `sade` ; 3 redondants/keep-français
+  tranchés sur preuve géométrique). 11 CKAN (Québec, Saguenay, Gatineau, Lévis, …) + ArcGIS AGOL. S3 only.
+- **Lots : 40 villes prioritaires / 1 782 312 lots** (cadastre allégé, `NO_LOT`). Servis en **40 shards
+  `qc-lots-<slug>`** (monolithe 2,63 Go **supprimé** ; servir tous les shards d'un coup = OOM → **tuilage/lazy-load
+  requis**, voir [ADR-0021] et P1). S3 only.
+- **Annuaire municipal : 1100/1106 villes joints (99.5 %), 1076 sites** (`ca-qc/municipal-directory`, MAMH+Wikidata,
+  CC-BY 4.0, **committé** 396 KB) → débloque le domain-probing zonage et l'attribution ([ADR-0019]).
+- `npm run verify` **VERT** (geo 259 + americas 200 + europe 28 + ui 46 ; 0 erreur type/svelte-check, 0 cycle topo).
+- **Suivi (P1)** : (a) **lazy-load/tuilage** du `StoreProvider` pour servir tous les lots ([ADR-0021]) ;
+  (b) **polygone QC précis** dans le filtre de découverte zonage (élimine le faux-positif frontalier à la source,
+  [ADR-0020]) ; (c) nettoyage attribution slugs-owner AGOL → noms de villes via l'annuaire ; (d) corriger le
+  doublon de préfixe S3 du runner zonage.
+- **Lot A** ✅ (`21a6edb`) — **crawler ArcGIS REST générique** `crawlArcgisLayer` (pagination offset +
+  bbox tiling, throttle+backoff Retry-After, outSR=4326, provenance ; fetch/sleep/now injectables, hermétique).
+  Primitive réutilisable (zonage T1 + gros cadastre).
+- **Lot C** ✅ (`b85b757`) — **cadastre allégé province-wide** `crawlQcCadastreLots` (bbox tiling sur
+  `QC_EXTENT`, params spatiaux ESRI contournant le 404 `where=1=1`, `NO_LOT` verbatim ; ids/clés S3 inchangés).
+- **Lot B** ✅ (`101fa85`) — **adapter CKAN Données Québec** (`searchCkanPackages` / `resolveGeoResources` /
+  `acquireCkanGeoJson`, GeoJSON ; SHP/GPKG→GDAL documenté).
+- **Lot B+** ✅ (`4711008`) — **11 sources zonage QC RÉELLES câblées** (ids CKAN confirmés live, toutes `cc-by`) :
+  Longueuil, Gatineau, Saguenay, Lévis, Trois-Rivières, Sherbrooke, Québec, Repentigny, Rimouski, Rouyn-Noranda,
+  Shawinigan — manifestes par `packageId`, résolution de la ressource GeoJSON via l'adapter au fetch (512 tests).
+- **Lot D** ✅ (`07be0e9`) — `GeoSourceInventory` migré dans `geo/catalog` (types TS + validateur `isGeoSourceInventory`,
+  sans Zod, champ `platform` ajouté) + `recenseCkanZonage` (découverte CKAN, idempotent, hermétique) +
+  `recensePlatform` (détection par signature d'URL **fournie**). **Bloqué (suivi)** : la découverte auto
+  `slug→URL officielle` (sondage des sites municipaux) requiert un **annuaire des sites web municipaux** (MAMH/Wikidata).
+- **À confirmer (réseau)** : ids/URLs CKAN réels par ville ; câblage des manifestes zonage dans le registre ;
+  enrichissement T3 JMap (cas par cas) ; T5 PDF = fallback semi-manuel (hors scraper).
+
+---
+
+## P0 — Vertical slice : municipalités du Québec servies par l'API  🟡
+
+But : `geo fetch ca-qc/sda#qc-municipalites` → GeoJSON normalisé WGS84 → `geo-api` (OGC Features,
+collection `qc-municipalites`) → carte sur `apps/site`. Données Québec SDA, CC-BY 4.0 ([ADR-0006]).
+
+| # | WP | Rôle | Statut |
+|---|----|------|--------|
+| P0.1 | `geo-core` contrat (admin, geojson, crs, licence, source-manifest, `kind`) | conductor | ✅ |
+| P0.2 | `geo-acquire` (download, gate licence, arcgis, acquire/writeNormalized) | lib-build | ✅ |
+| P0.3 | `geo-api` OGC Features + FileProvider **récursif** ([ADR-0005]) | lib-build | ✅ |
+| P0.4 | `geo-source-ca-qc` : manifests SDA (régions, MRC, **municipalités**) + normalizers, ids `qc-*` | lib-build | ✅ |
+| P0.5 | `geo-cli` : `sources`, `fetch`, `serve`, `build`, `refresh`, `licenses build` | lib-build | ✅ |
+| P0.6 | `geo-ui-svelte` + `apps/site` : catalogue + carte MapLibre (chrome design-system) | lib-build | ✅ |
+| P0.7 | **scrape réel** via GPKG bulk + GDAL ([ADR-0008]) : régions 18, MRC 106, **municipalités 1343** (WGS84, simplifié, ~6.7 Mo) | scrape-exec | ✅ |
+| P0.8 | `data/requests/` ledger (municipalités = demande immo) + registre licences QC | conductor | ✅ |
+
+**P0 livré** : `npm run verify` vert (geo-core 19 / geo-acquire 31 / geo-api 18 / geo-source-ca-qc 8 / geo-cli 30 tests) ; `GET /collections/qc-municipalites/items` → 1343 features GeoJSON servies par l'API. Reste : déploiement (P6) pour l'exposer publiquement.
+
+## P-S3 — Stockage object storage (S3 Scaleway)  ⬜ **priorité haute** ([ADR-0012])
+Fondation manquante : la donnée scrappée doit vivre sur **S3** (Scaleway Object Storage), pas dans git.
+- `@sentropic/geo-storage` : `Store` (`get/put/list/has`) + `FsStore` (dev/CI) + `S3Store` (`@aws-sdk/client-s3`, endpoint `s3.fr-par.scw.cloud`).
+- `geo-acquire`/CLI : `writeNormalized` → `Store` ; `geo fetch --out s3://sentropic-geo/normalized`.
+- `geo-api` : `geo serve --data s3://…` (provider lit le bucket, cache).
+- Deploy : Job `geo fetch` **écrit** S3 ; API **lit** S3 ; secret `geo-s3-credentials`. Amende PR poc-k8s #30 (bucket `sentropic-geo` fr-par).
+- Migration : retirer les géométries committées (QC/FR) de git → S3 (garder au plus un échantillon CI).
+
+## P-immo — Capitalisation du scraping immo  ⬜ **priorité haute** ([ADR-0013])
+« La valeur de la lib » : reproduire le scrapping + les assets d'immo (`~/src/radar-immobilier`),
+périmètre dans `/tmp/etude-geo/separation.md`. Chunks :
+- **Lot 1 (immo demande)** : registre **1106 munis QC** + schéma `Municipality` + **polygones StatCan CSD**
+  (name/code-join `MUS_CO_GEO`) → `geo-source-ca-qc` ; données → S3. 🟡 *(bg)*
+- **Lot 2** : adapter **terrAPI adresses** + fetcher **MAMH role-evaluation** (XML) → sources geo.
+- **Lot 3** : **GeoSourceInventory** + contraintes **CPTAQ/BDZI/GRHQ** (manifests/recettes).
+- **Lot 4** : **StatCan census profile** + **orthophotos** + cadastre allégé SDA.
+- Garde-fous : anti-PII (Loi 25), anti-invention, OSM=ODbL → recettes/URLs only. immo = consommateur.
+
+## P-dataviz — Composant carte WebGL géo + showcase geo.sent-tech.ca  ⬜ **priorité haute** ([ADR-0014])
+Pilotage Opus-4.8, **double-revue 4.8**, décisions réversibles. Phases : **spec → consensus → build →
+publish (main) → deploy (GitHub Pages site + k8s API)**.
+- `@sentropic/geo-ui-svelte` : composant **`GeoMap` WebGL** (classe deck.gl) remplaçant Leaflet/raster —
+  basemap vectoriel + couches admin + données QC + dataviz géo (choroplèthe, projection sur routes).
+  Ontologie-agnostique (catégories labellisées+colorées + schéma détail passés par le consommateur).
+- `apps/site` (geo.sent-tech.ca) : showcase des composants dataviz géo + parcours des géographies,
+  format design-system ; recherche en haut (graphify), légende+bulle, panneau détail dépliable, FR.
+- Frontière dataviz/geo + composants DS (légende+bulle, search, chrome) : coordination h2a en cours.
+- Cas d'usage immo : remplace SignauxMapView (labels FR, types lisibles, détail citation/pdf/meta).
+
+## P1 — Durcissement API + site pour la collection municipalités  ⬜
+Pagination/bbox/filtre, OpenAPI complet, états vides gracieux, attribution CC-BY affichée.
+
+## P2 — Premier lot de données `immo` ("zones")  ⛔ bloqué (input immo)
+Bloqué : nécessite le **contrat d'attributs exact** de `radar-immobilier` (zones → lots) et la
+coordination immo (h2a indisponible cette session). Préparé : municipalités QC servies + entrée
+ledger `data/requests/ca-qc-sda__qc-municipalites.json` (`requestedBy: immo`, [ADR-0004]).
+Au déblocage : modéliser zones/lots en dataset QC avec `geoId` stable + rescrape des datasets immo.
+
+## P3 — Provinces du Canada  🟡
+`geo-source-ca` : StatCan 2021 cartographic boundaries, **OGL-Canada**. ✅ provinces+territoires (13,
+PRUID→ISO 3166-2) — package + manifest + tests verts, **non seedé** (17.8 Mo > budget [ADR-0010],
+reproductible via `geo fetch`). ⬜ census divisions (CD) déclaré, non produit (follow-up).
+**Follow-up** : généralisation par aire (anneaux < seuil) pour une couche légère committable.
+
+## P4 — France (data.gouv.fr / IGN)  🟡
+`geo-source-fr` : **ADMIN EXPRESS COG CARTO** (IGN), **Licence Ouverte 2.0**. ✅ régions (18) +
+départements (101) produits & servis. ⬜ communes (34 877) déclarées mais non produites (volume —
+TopoJSON / découpage départemental / attributs réduits, voir [ADR-0009]).
+**Follow-up geo-acquire** : support `.7z`/libarchive (IGN livre en `.7z`, `/vsizip/` ne lit que ZIP)
+pour que `geo fetch fr/...` marche de bout en bout ([ADR-0009]).
+
+## P5 — Référentiels statistiques & postaux  ⬜
+Par pays, `kind: "statistical"` / `"postal"` ([ADR-0002]). Packages frères créés à l'implémentation :
+- `geo-source-ca-stat` (Statistics Canada — DGUID/SGC, géographies de recensement)
+- `geo-source-ca-postal` (FSA StatCan ouvert ; PCCF complet = **non redistribuable**, gate)
+- `geo-source-fr-stat` (INSEE — COG, IRIS), `geo-source-fr-postal` (BAN / code postal↔commune)
+- Postal **après** l'admin dans chaque pays (licences restrictives à vérifier d'abord).
+- **Modèle décidé** ([ADR-0011]) : crosswalks/codes = features `geometry:null` (servis par l'API OGC).
+  **Pré-requis lib** : `geo-acquire` doit gagner les formats **CSV** + **`.7z`** (débloque aussi
+  `fr-communes`). Gate licence stricte : seulement les référentiels ouverts (OGL / Licence Ouverte).
+
+## P6 — Publication  🟡 harnessing fait, publication "à la fin"
+- ✅ Harnessing : `Dockerfile` (+gdal), `deploy/k8s/` (deployment/service/ingress/pvc/job-fetch),
+  workflows `npm-publish` (Trusted Publishing) + `docker-publish` — **tag-driven, rien d'auto**.
+- ✅ Demande tenant poc-k8s : PR `rhanka/k8s-ops#30` (`requests/geo.md` + `tenants/geo/`, ingress
+  `geo.sent-tech.ca`).
+- ⬜ Publication effective (npm publish, docker push, déploiement, site→CDN) — **à la fin**, par
+  l'owner (Playwright MCP prévu pour le CDN).
+
+---
+
+## Registre licences (P-transverse, continu)
+`licenses/registry.json` (machine) + `docs/licenses.md` (généré). Toute nouvelle source ⇒ entrée +
+vérif anti-dérive vs `geo-core.LICENSES` ([ADR-0003]).
+
+## Invariants de pilotage
+- Avancer **par priorité** ; ne pas ouvrir Pn+1 tant que Pn n'est pas livrable, sauf si bloqué
+  (alors prendre une tâche transverse, ex. France/registre, pour ne pas rester idle).
+- Chaque itération `/loop` : déléguer → intégrer → `verify` → committer → consigner décisions.
+- ≤4 sous-agents/dockers en parallèle.
