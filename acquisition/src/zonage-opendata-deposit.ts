@@ -35,8 +35,17 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  capturedFetch,
+  capturedText,
+  CapturedFetchError,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureManifestLine,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, copyObject, deleteObject, exists } from "./lib/s3.js";
-import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { attachGeometryProof, proofFromCaptureEntry, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
 // MÊME canon que la JOINTURE runtime lot⋈zone⋈norms et que le gate de dépôt des
 // normes (lib/zonage-norms.canonZone délègue à ceci) : l'overlap qu'on MESURE ici
@@ -103,24 +112,41 @@ function normCode(raw: unknown): string | null {
   return s === "" ? null : s;
 }
 
-async function loadFeatures(args: Args): Promise<{ features: GeoFeature[]; bytes: Buffer }> {
+async function loadFeatures(
+  args: Args,
+  run?: CaptureRun,
+): Promise<{ features: GeoFeature[]; capture: CaptureManifestLine | null }> {
   let text: string;
+  let capture: CaptureManifestLine | null = null;
   if (args.file) {
     text = readFileSync(args.file, "utf8");
   } else if (args.url) {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 60_000);
-    try {
-      const r = await fetch(args.url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/geo+json,application/json" } });
-      if (!r.ok) throw new Error(`HTTP ${r.status} @ ${args.url}`);
-      text = await r.text();
-    } finally { clearTimeout(t); }
+    if (!run) throw new Error("capture run requis pour une acquisition HTTP");
+    const captured = await capturedFetch(args.url, {
+      headers: { "user-agent": HTTP_UA, accept: "application/geo+json,application/json" },
+    }, {
+      run,
+      lane: "zones",
+      source: "zones-opendata",
+      slugs: [args.slug],
+      timeoutMs: 60_000,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+    });
+    if (!captured.ok || captured.bytes === null) {
+      if (captured.response !== null) throw new Error(`HTTP ${captured.response.status} @ ${args.url}`);
+      throw new CapturedFetchError(captured.line);
+    }
+    if (captured.line.error !== null || captured.line.storage_key === null) {
+      throw new Error(`capture raw non déposée pour ${args.url}: ${captured.line.error ?? "storage_key absente"}`);
+    }
+    text = capturedText(captured);
+    capture = captured.line;
   } else {
     throw new Error("ni --file ni --url fourni");
   }
   const fc = JSON.parse(text) as GeoFC;
   if (fc.type !== "FeatureCollection" || !Array.isArray(fc.features)) throw new Error("pas un FeatureCollection GeoJSON");
-  return { features: fc.features.filter((f) => f && f.geometry && f.properties), bytes: Buffer.from(text) };
+  return { features: fc.features.filter((f) => f && f.geometry && f.properties), capture };
 }
 
 /**
@@ -163,7 +189,10 @@ async function main(): Promise<void> {
   const muni = munis.find((m) => m.slug === args.slug);
 
   if (args.deposit && !args.url) throw new Error("served deposit requires --url: a local file alone is not geometry proof");
-  const loaded = await loadFeatures(args);
+  const run = args.url ? openCaptureRun({ lane: "zones", userAgent: HTTP_UA }) : null;
+  let exitCode = 1;
+  try {
+  const loaded = await loadFeatures(args, run ?? undefined);
   const features = loaded.features;
   console.error(`[opendata] slug=${args.slug} champ='${args.zoneField}' features=${features.length} source=${source}`);
 
@@ -172,7 +201,13 @@ async function main(): Promise<void> {
   const st = verdict.stats;
   console.error(`[opendata] gate zone-field: ok=${verdict.ok} (${verdict.reason}) — total=${st.total} nonNull=${st.nonNull} distinct=${st.distinct} codeLike=${(st.codeLikeRatio * 100).toFixed(0)}% maxLen=${st.maxLen} seq=${st.sequentialIdLike}`);
   console.error(`[opendata] échantillon codes: ${JSON.stringify(st.sample.slice(0, 12))}`);
-  if (!verdict.ok) { console.error(`[opendata] REJET anti-invention: ${verdict.reason}`); if (!args.outFile) process.exit(1); }
+  if (!verdict.ok) {
+    console.error(`[opendata] REJET anti-invention: ${verdict.reason}`);
+    if (!args.outFile) {
+      process.exitCode = 1;
+      return;
+    }
+  }
 
   const norm = normalize(features, args.zoneField, source, args.confidence);
   const distinctCodes = new Set<string>();
@@ -189,7 +224,13 @@ async function main(): Promise<void> {
     if (n > 0) {
       distanceKm = haversineKm(muni.lat, muni.lon, (miny + maxy) / 2, (minx + maxx) / 2);
       console.error(`[opendata] gate spatial: bbox à ${distanceKm.toFixed(1)}km du centroïde (seuil ${Math.max(args.spatialKm, 35)}km)`);
-      if (distanceKm > Math.max(args.spatialKm, 35)) { console.error(`[opendata] REJET spatial`); if (!args.outFile) process.exit(1); }
+      if (distanceKm > Math.max(args.spatialKm, 35)) {
+        console.error(`[opendata] REJET spatial`);
+        if (!args.outFile) {
+          process.exitCode = 1;
+          return;
+        }
+      }
     }
   } else {
     console.error(`[opendata] AVERTISSEMENT: slug '${args.slug}' absent du registre — gate spatial ignoré`);
@@ -213,7 +254,13 @@ async function main(): Promise<void> {
     missingSample = missing.slice(0, 15);
     const ratio = distinctCodes.size ? (overlap / distinctCodes.size) * 100 : 0;
     console.error(`[opendata] gate normes (canon jointure): grille=${normsTotal} codes | zones distinctes=${distinctCodes.size} | JOINTES=${overlap} (${ratio.toFixed(0)}%) | non-jointes(ex)=${JSON.stringify(missingSample)}`);
-    if (overlap === 0) { console.error(`[opendata] REJET: overlap normes = 0 (ces codes ne joignent PAS la grille — affectation/CMM suspecté)`); if (!args.outFile) process.exit(1); }
+    if (overlap === 0) {
+      console.error(`[opendata] REJET: overlap normes = 0 (ces codes ne joignent PAS la grille — affectation/CMM suspecté)`);
+      if (!args.outFile) {
+        process.exitCode = 1;
+        return;
+      }
+    }
   } else {
     console.error(`[opendata] (pas de --norms-codes : gate jointure normes NON exécuté)`);
   }
@@ -228,7 +275,11 @@ async function main(): Promise<void> {
   const allGatesOk = verdict.ok && (distanceKm === undefined || distanceKm <= Math.max(args.spatialKm, 35)) && (overlap === undefined || overlap > 0);
 
   if (args.deposit && allGatesOk) {
-    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: args.url!, type: "geojson-officiel", method: "natif", reliability: "directe", bytes: loaded.bytes }));
+    if (loaded.capture === null) throw new Error("served deposit requires a successful capture entry");
+    const fc = attachGeometryProof(
+      { type: "FeatureCollection" as const, features: norm },
+      proofFromCaptureEntry(loaded.capture, { type: "geojson-officiel", method: "natif", reliability: "directe" }),
+    );
     const s3 = s3Client();
     // On dépose au layout PLAT `qc-zonage-<slug>.geojson` que resolveGridKey PRÉFÈRE
     // (lib/zonage-norms.resolveGridKey : plat d'abord, puis sous-dossier). L'ancien
@@ -258,6 +309,10 @@ async function main(): Promise<void> {
   const out = args.outFile ?? resolve(HERE, "../../work/delegation-mass/zonage-opendata-report.json");
   writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
   console.error(`[opendata] rapport → ${out}`);
+  exitCode = 0;
+  } finally {
+    if (run) await run.finish(exitCode);
+  }
 }
 
 main().catch((e: unknown) => { console.error(e instanceof Error ? e.message : e); process.exit(1); });
