@@ -107,6 +107,36 @@ describe("artefact 4a delta de grille", () => {
     expect(artifact.source_collections[0]?.collection_s3_uri).toContain(nested);
   });
 
+  it("carries the delta method and its page citation, and stays null when unserved", async () => {
+    // 80 des 224 deltas des artefacts sont `deduit` — inférés des classes
+    // d'habitation autorisées — et non `explicit`, lus dans une colonne. Un
+    // consommateur qui annote un procès-verbal doit pouvoir les distinguer.
+    const key = `${PREFIX}qc-zonage-sutton.geojson`;
+    const withMethod = memoryStore({
+      [key]: fc([known({
+        densite_apres: 4,
+        effet_densifiant: "densifie",
+        effet_densifiant_methode: "deduit",
+        densite_avant_source: "115-12-2020 Annexe 2 p.10 H-01: classes H autorisées=H1",
+        densite_apres_source: "358 Annexe 2 p.4 H-01: classes H autorisées=H1,H2,H3",
+      })]),
+    });
+    const artifact = await buildImmo4aArtifact(buildOptions(withMethod.store));
+    expect(artifact.records[0]?.provenance.grid_delta_evidence).toEqual({
+      methode: "deduit",
+      densite_avant_source: "115-12-2020 Annexe 2 p.10 H-01: classes H autorisées=H1",
+      densite_apres_source: "358 Annexe 2 p.4 H-01: classes H autorisées=H1,H2,H3",
+    });
+
+    // Sans méthode servie, la preuve reste `null` : supposer `explicit` serait la
+    // valeur flatteuse, et la seule qu'il faudrait deviner.
+    const bare = memoryStore({
+      [key]: fc([known({ densite_apres: 4, effet_densifiant: "densifie" })]),
+    });
+    const bareArtifact = await buildImmo4aArtifact(buildOptions(bare.store));
+    expect(bareArtifact.records[0]?.provenance.grid_delta_evidence).toBeNull();
+  });
+
   it("refuses an observed effect that contradicts its two densities", async () => {
     const key = `${PREFIX}qc-zonage-sutton.geojson`;
     const { store } = memoryStore({
