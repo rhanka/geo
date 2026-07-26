@@ -24,14 +24,21 @@ import {
 } from "./manifest.js";
 
 /**
- * Port d'écriture objet, réduit au strict nécessaire : HEAD idempotent + PUT.
- * Aucune suppression n'est exposée — règle C-7 (les objets `raw/` ne sont JAMAIS
- * supprimés par un script d'acquisition).
+ * Port d'écriture objet. Les trois opérations de streaming sont optionnelles :
+ * les petits appels historiques peuvent continuer à utiliser HEAD + PUT, tandis
+ * que le Job de capture pousse les gros corps vers un spool de run puis les
+ * promeut vers le CAS sans les retenir en mémoire.
  */
 export interface CaptureObjectStore {
   /** `true` ssi la clé existe déjà (HEAD-skip du PUT). */
   head(key: string): Promise<boolean>;
   put(key: string, body: Uint8Array | string, contentType?: string): Promise<void>;
+  /** PUT d'un flux sans matérialiser l'objet complet. */
+  putStream?(key: string, body: AsyncIterable<Uint8Array>, contentType?: string): Promise<void>;
+  /** Copie serveur-à-serveur du spool vers sa clé CAS déjà vérifiée. */
+  copy?(sourceKey: string, destinationKey: string): Promise<void>;
+  /** Supprime exclusivement un spool sous `capture/_runs/<run-id>/spool/`. */
+  delete?(key: string): Promise<void>;
 }
 
 export interface CaptureRunOptions {
@@ -112,6 +119,40 @@ export class CaptureRun {
   async storePut(key: string, body: Uint8Array | string, contentType?: string): Promise<void> {
     assertCaptureWritableKey(key);
     await this.store.put(key, body, contentType);
+  }
+
+  /** `true` quand l'adaptateur peut exécuter le protocole spool → CAS. */
+  canStreamToCas(): boolean {
+    return this.store.putStream !== undefined && this.store.copy !== undefined && this.store.delete !== undefined;
+  }
+
+  /** PUT de flux, toujours gardé par le même périmètre d'écriture. */
+  async storePutStream(
+    key: string,
+    body: AsyncIterable<Uint8Array>,
+    contentType?: string,
+  ): Promise<void> {
+    assertCaptureWritableKey(key);
+    if (!this.store.putStream) throw new Error("capture store: putStream indisponible");
+    await this.store.putStream(key, body, contentType);
+  }
+
+  /** Copie gardée : source et destination restent des objets de capture. */
+  async storeCopy(sourceKey: string, destinationKey: string): Promise<void> {
+    assertCaptureWritableKey(sourceKey);
+    assertCaptureWritableKey(destinationKey);
+    if (!this.store.copy) throw new Error("capture store: copy indisponible");
+    await this.store.copy(sourceKey, destinationKey);
+  }
+
+  /** Nettoyage d'un spool jetable ; le CAS `raw/` reste strictement immuable. */
+  async storeDeleteSpool(key: string): Promise<void> {
+    const prefix = `capture/_runs/${this.runId}/spool/`;
+    if (!key.startsWith(prefix)) {
+      throw new Error(`capture refuse de supprimer hors du spool de run : ${key}`);
+    }
+    if (!this.store.delete) throw new Error("capture store: delete indisponible");
+    await this.store.delete(key);
   }
 
   /** Une ligne de `run.log`. AUCUN secret ne doit y transiter (règle C-6). */

@@ -80,6 +80,8 @@ export function capturedRobotsFetch(
       source: "robots-txt",
       slugs: [],
       fetchImpl: transport,
+      // RobotsCache doit parser ce petit document après la capture.
+      retainBody: true,
     });
     if (result.response !== null) {
       // capturedFetch a consommé le body 2xx afin de le hasher. RobotsCache doit
