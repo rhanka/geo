@@ -29,7 +29,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
+import type { S3Client } from "@aws-sdk/client-s3";
 import type { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from "geojson";
 import * as polyclip from "polyclip-ts";
 
@@ -37,6 +39,28 @@ import { extractGeoRef } from "./lib/t1-georef.js";
 import { extractLabelsOcr } from "./lib/t1-labels-ocr.js";
 import { buildZones, projConstants } from "./lib/t1-zones.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
+
+/** Deposit a freshly derived OCR T1 geometry only with the bytes of its real plan. */
+export async function depositT1OcrServedZoneGeojson(
+  s3: S3Client,
+  key: string,
+  served: ServedZoneGeoJson,
+  pdfUrl: string,
+  pdfBytes: Buffer,
+  retrievedAt = new Date().toISOString(),
+): Promise<void> {
+  const proof = proofFromFetched({
+    url: pdfUrl,
+    type: "pdf-zonage",
+    method: "georeference",
+    reliability: "georeferencee",
+    bytes: pdfBytes,
+    retrievedAt,
+  });
+  attachGeometryProof(served, proof, { url: pdfUrl, level: "documented" });
+  await putServedZoneGeojson(s3, key, served);
+}
 
 interface Args {
   slug: string;
@@ -201,6 +225,7 @@ async function main(): Promise<void> {
   // 1. PDF + embedded georef -------------------------------------------------
   const pdfPath = await resolvePdf(args.pdf);
   const pdfBuf = readFileSync(pdfPath);
+  const pdfRetrievedAt = new Date().toISOString();
   const geo = extractGeoRef(pdfBuf, pdfPath);
   if (!geo) fail("no embedded georeferencing (/VP /Measure /GEO /GPTS) — not a T1 GeoPDF.");
   console.error(
@@ -319,7 +344,14 @@ async function main(): Promise<void> {
     console.error("[t1-ocr-build] --dry-run: NOT uploading to S3.");
   } else {
     const s3Key = `normalized/ca-qc-zonage/qc-zonage-${args.slug}.geojson`;
-    await putBytes(s3, s3Key, JSON.stringify(served), "application/geo+json");
+    await depositT1OcrServedZoneGeojson(
+      s3,
+      s3Key,
+      served as unknown as ServedZoneGeoJson,
+      args.pdf,
+      pdfBuf,
+      pdfRetrievedAt,
+    );
     await putBytes(
       s3,
       `normalized/ca-qc-zonage/qc-zonage-${args.slug}.stats.json`,
@@ -332,7 +364,9 @@ async function main(): Promise<void> {
   console.log(JSON.stringify(report, null, 2));
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
