@@ -235,12 +235,52 @@ export function redactUrlForManifest(url: string): { url: string; redacted: bool
     parsed.searchParams.set(name, REDACTED);
     redacted = true;
   }
+  // Les fragments ne sont pas envoyés au serveur mais ils sont bien présents
+  // dans une URL de manifeste/log. OAuth y dépose couramment access_token : les
+  // traiter exactement comme la query évite de le rendre durable par accident.
+  if (parsed.hash.length > 1) {
+    const fragment = new URLSearchParams(parsed.hash.slice(1));
+    let fragmentRedacted = false;
+    for (const name of [...fragment.keys()]) {
+      if (!SECRET_PARAM_RE.test(name)) continue;
+      fragment.set(name, REDACTED);
+      fragmentRedacted = true;
+    }
+    if (fragmentRedacted) {
+      parsed.hash = `#${fragment.toString()}`;
+      redacted = true;
+    }
+  }
   if (parsed.username || parsed.password) {
     parsed.username = "";
     parsed.password = "";
     redacted = true;
   }
   return { url: parsed.toString(), redacted };
+}
+
+/**
+ * Nettoie un texte destiné à `capture/_runs/<run-id>/run.log`.
+ *
+ * Un log de pod est utile au diagnostic mais durable, donc il suit la même
+ * règle C-6 que le manifeste : une URL signée ou une affectation de variable
+ * secrète ne doit pas y survivre. Le texte reste autrement tel qu'émis par le
+ * processus; le but est la persistance sûre, pas la restructuration du log.
+ */
+export function redactCaptureLog(text: string): string {
+  const urlsRedacted = text.replace(/https?:\/\/[^\s"'<>`]+/g, (value) => redactUrlForManifest(value).url);
+  // Headers HTTP : la valeur peut contenir plusieurs mots (`Bearer <jeton>`) ou
+  // plusieurs cookies. On supprime donc TOUTE la valeur jusqu'au saut de ligne.
+  const headersRedacted = urlsRedacted.replace(
+    /\b((?:proxy-)?authorization|(?:set-)?cookie)\s*:\s*[^\r\n]*/gim,
+    (_match, name: string) => `${name}: ${REDACTED}`,
+  );
+  // Affectations shell et objets JSON/JS : guillemets facultatifs autour de la
+  // clé et de la valeur. Les séparateurs usuels gardent le reste du diagnostic.
+  return headersRedacted.replace(
+    /(["']?(?:token|api[_-]?key|secret|password|passwd|pwd|signature|sig|sas|auth(?:orization)?|access[_-]?token|refresh[_-]?token|credential(?:s)?)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;\]}]+)/gi,
+    (_match, prefix: string) => `${prefix}${REDACTED}`,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -293,13 +333,19 @@ export function captureProofFields(line: CaptureManifestLine): CaptureProofField
       `capture ${line.run_id}: l'URL porte ${REDACTED} — non re-téléchargeable, elle NE PEUT PAS servir de preuve v2 (déposer zone_source_url: null)`,
     );
   }
-  if (line.sha256 === null || line.retrieved_at === null) {
+  if (line.sha256 === null || line.retrieved_at === null || line.storage_key === null) {
     throw new Error(
-      `capture ${line.run_id}: la ligne n'a PAS d'octets (http_status=${String(line.http_status)}, error=${String(line.error)}) — aucune preuve v2 dérivable`,
+      `capture ${line.run_id}: la ligne n'a PAS d'octets CAS durables (http_status=${String(line.http_status)}, storage_key=${String(line.storage_key)}, error=${String(line.error)}) — aucune preuve v2 dérivable`,
     );
   }
   if (!SHA256_PREFIXED_RE.test(line.sha256)) {
     throw new Error(`capture ${line.run_id}: sha256 hors format sha256:<64hex> — ${line.sha256}`);
+  }
+  const cas = CAS_KEY_RE.exec(line.storage_key);
+  if (!cas || cas[2] !== line.sha256.slice("sha256:".length)) {
+    throw new Error(
+      `capture ${line.run_id}: storage_key CAS absent ou incohérent avec sha256 — aucune preuve v2 dérivable`,
+    );
   }
   if (!isRealHttpUrl(line.url)) {
     throw new Error(`capture ${line.run_id}: url non re-téléchargeable — ${line.url}`);

@@ -16,6 +16,7 @@ import {
   CaptureRunHeaderSchema,
   captureRunKeys,
   assertCaptureWritableKey,
+  redactCaptureLog,
   serializeManifestLine,
   type CaptureLane,
   type CaptureManifestLine,
@@ -115,7 +116,7 @@ export class CaptureRun {
 
   /** Une ligne de `run.log`. AUCUN secret ne doit y transiter (règle C-6). */
   log(msg: string): void {
-    const stamped = `${new Date().toISOString()} ${msg}`;
+    const stamped = `${new Date().toISOString()} ${redactCaptureLog(msg)}`;
     this.logLines.push(stamped);
     this.echo?.(stamped);
   }
