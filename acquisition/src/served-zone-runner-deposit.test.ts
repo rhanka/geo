@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { depositT1OcrServedZoneGeojson } from "./t1-ocr-build.js";
 import { depositT1ServedZoneGeojson } from "./t1-build.js";
+import { depositT1MultiframeServedZoneGeojson } from "./t1-build-multiframe.js";
+import { depositT1MultisheetTextServedZoneGeojson } from "./t1-build-multisheet-text.js";
 import { depositT2ServedZoneGeojson } from "./t2-build.js";
+import { depositRecomposedServedZoneGeojson } from "./recompose-zones-pdf.js";
 
 const KEY = "normalized/ca-qc-zonage/qc-zonage-alpha.geojson";
 const PDF_URL = "https://zonage.example.org/reglement/plan-zonage.pdf";
@@ -20,7 +23,10 @@ type Deposit = (
 const writers: ReadonlyArray<{ name: string; deposit: Deposit }> = [
   { name: "t1-build", deposit: depositT1ServedZoneGeojson },
   { name: "t1-ocr-build", deposit: depositT1OcrServedZoneGeojson },
+  { name: "t1-build-multiframe", deposit: depositT1MultiframeServedZoneGeojson },
+  { name: "t1-build-multisheet-text", deposit: depositT1MultisheetTextServedZoneGeojson },
   { name: "t2-build", deposit: depositT2ServedZoneGeojson },
+  { name: "recompose-zones-pdf", deposit: depositRecomposedServedZoneGeojson },
 ];
 
 function fakeS3(current: unknown) {
