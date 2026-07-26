@@ -38,6 +38,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import type { S3Client } from "@aws-sdk/client-s3";
 import type { FeatureCollection } from "geojson";
 
 import { extractGeoRef, type GeoRef } from "./lib/t1-georef.js";
@@ -49,6 +51,28 @@ import {
 import { buildZones } from "./lib/t1-zones.js";
 import { bboxCenter, haversineKm, mergeByZoneCode } from "./lib/zone-serve.js";
 import { BUCKET, getBytes, putBytes, s3Client } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
+
+/** Deposit a new multi-frame T1 geometry only with the bytes of its real GeoPDF. */
+export async function depositT1MultiframeServedZoneGeojson(
+  s3: S3Client,
+  key: string,
+  served: ServedZoneGeoJson,
+  pdfUrl: string,
+  pdfBytes: Buffer,
+  retrievedAt = new Date().toISOString(),
+): Promise<void> {
+  const proof = proofFromFetched({
+    url: pdfUrl,
+    type: "pdf-zonage",
+    method: "georeference",
+    reliability: "georeferencee",
+    bytes: pdfBytes,
+    retrievedAt,
+  });
+  attachGeometryProof(served, proof, { url: pdfUrl, level: "documented" });
+  await putServedZoneGeojson(s3, key, served);
+}
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -82,7 +106,7 @@ function frameArea(geo: GeoRef): number {
 
 async function main(): Promise<void> {
   const slug = arg("slug");
-  const pdf = arg("pdf");
+  const pdfInput = arg("pdf");
   const dictPath = arg("dict");
   const page = arg("page") ? Number(arg("page")) : undefined;
   const out = arg("out");
@@ -90,8 +114,22 @@ async function main(): Promise<void> {
   const maxResidualM = arg("max-residual-m") ? Number(arg("max-residual-m")) : 50;
   const spatialKmMax = arg("spatial-km") ? Number(arg("spatial-km")) : 8;
   const cutoffM = arg("cutoff-m") ? Number(arg("cutoff-m")) : 1500;
-  if (!slug || !pdf || !dictPath) fail("required: --slug <slug> --pdf <plan.pdf> --dict <codes.json>");
-  if (!existsSync(pdf)) fail(`PDF not found: ${pdf}`);
+  if (!slug || !pdfInput || !dictPath) fail("required: --slug <slug> --pdf <plan.pdf|url> --dict <codes.json>");
+  const pdfUrl = /^https?:\/\//.test(pdfInput) ? pdfInput : undefined;
+  let pdf = pdfInput;
+  let pdfBytes: Buffer;
+  let pdfRetrievedAt: string | undefined;
+  if (pdfUrl) {
+    const response = await fetch(pdfUrl);
+    if (!response.ok) fail(`PDF fetch failed: ${pdfUrl} (${response.status} ${response.statusText})`);
+    pdfBytes = Buffer.from(await response.arrayBuffer());
+    pdfRetrievedAt = new Date().toISOString();
+    pdf = join(tmpdir(), `t1-multiframe-${slug}-${Date.now()}.pdf`);
+    writeFileSync(pdf, pdfBytes);
+  } else {
+    if (!existsSync(pdf)) fail(`PDF not found: ${pdf}`);
+    pdfBytes = readFileSync(pdf);
+  }
   if (!existsSync(dictPath)) fail(`dict not found: ${dictPath}`);
 
   const t0 = Date.now();
@@ -101,10 +139,9 @@ async function main(): Promise<void> {
   console.error(`[t1-multiframe] slug=${slug} pdf=${pdf} dict=${dict.length} codes`);
 
   // 1. Cadres géoréférencés --------------------------------------------------
-  const buf = readFileSync(pdf);
   const frames: GeoRef[] = [];
   for (let i = 0; i < 8; i++) {
-    const g = extractGeoRef(buf, pdf, { frame: i });
+    const g = extractGeoRef(pdfBytes, pdf, { frame: i });
     if (!g) break;
     frames.push(g);
   }
@@ -204,7 +241,7 @@ async function main(): Promise<void> {
     source: "geopdf-esri-multiframe",
     confidence: "contour-auto",
     label_mode: "text",
-    pdf,
+    pdf: pdfUrl ?? pdf,
     n_frames: frames.length,
     frames: perFrame,
     crs: frames[0]!.crsName,
@@ -226,8 +263,21 @@ async function main(): Promise<void> {
   if (dryRun) {
     console.error("[t1-multiframe] --dry-run: NOT uploading to S3.");
   } else {
+    if (!pdfUrl || !pdfRetrievedAt) {
+      fail(
+        "served deposit requires a real HTTP(S) GeoPDF acquisition URL, its retrieval timestamp, and the received bytes for sha256 proof v2; " +
+          "a local --pdf path has no capture URL/retrieved_at, so it may only be used with --dry-run",
+      );
+    }
     const key = `normalized/ca-qc-zonage/qc-zonage-${slug}.geojson`;
-    await putBytes(s3, key, JSON.stringify(served), "application/geo+json");
+    await depositT1MultiframeServedZoneGeojson(
+      s3,
+      key,
+      served as unknown as ServedZoneGeoJson,
+      pdfUrl,
+      pdfBytes,
+      pdfRetrievedAt,
+    );
     await putBytes(
       s3,
       `normalized/ca-qc-zonage/qc-zonage-${slug}.stats.json`,
@@ -239,7 +289,9 @@ async function main(): Promise<void> {
   console.log(JSON.stringify(report, null, 2));
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
