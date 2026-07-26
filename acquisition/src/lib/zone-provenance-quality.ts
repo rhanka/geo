@@ -100,13 +100,17 @@ export function proofTuple(value: Pick<GeometrySourceProof, "url" | "retrieved_a
   return JSON.stringify([value.url, value.retrieved_at, value.sha256]);
 }
 
-/** Convert the suffix returned by listSlugs into one exact capture manifest key. */
+/**
+ * Recognise one exact manifest object returned by `ListObjectsV2` below
+ * `capture/_runs/`.  S3 returns object keys, never the pseudo-directories that
+ * contain them, so accepting `<run-id>/` here would silently scan nothing.
+ */
 export function captureManifestKeyFromListedRest(rest: string): string | null {
-  const runId = rest.endsWith("/") ? rest.slice(0, -1) : "";
+  const match = /^([A-Za-z0-9][A-Za-z0-9-]*)\/manifest\.jsonl$/.exec(rest);
   // buildCaptureRunId uses uppercase T/Z in its sortable timestamp. Restrict
-  // the rest to one path segment, but never lowercase or otherwise rewrite the
-  // observed S3 run id.
-  return /^[A-Za-z0-9][A-Za-z0-9-]*$/.test(runId) ? `capture/_runs/${runId}/manifest.jsonl` : null;
+  // the observed key to its one run-id path segment, but never lowercase or
+  // otherwise rewrite it.
+  return match ? `capture/_runs/${match[1]}/manifest.jsonl` : null;
 }
 
 /**
