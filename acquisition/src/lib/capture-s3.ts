@@ -18,6 +18,8 @@
  * Runs S3 : `NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10`
  * (mémoire s3-etimedout-happy-eyeballs-ipv4first).
  */
+import { randomUUID } from "node:crypto";
+
 import type { S3Client } from "@aws-sdk/client-s3";
 
 import {
@@ -76,8 +78,12 @@ export interface OpenCaptureRunOptions {
  */
 export function openCaptureRun(opts: OpenCaptureRunOptions): CaptureRun {
   const s3 = opts.s3 ?? s3Client();
+  // `CaptureRun.flush()` réécrit l'objet manifeste : un shard unique est donc
+  // impératif, sinon deux jobs de même lane démarrés dans la même seconde se
+  // remplaceraient. `runId`/`shard` explicites restent disponibles pour une reprise.
+  const shard = opts.shard ?? `${process.pid}-${randomUUID()}`;
   const runId =
-    opts.runId ?? buildCaptureRunId(opts.lane, { ...(opts.shard !== undefined ? { shard: opts.shard } : {}) });
+    opts.runId ?? buildCaptureRunId(opts.lane, { shard });
   return new CaptureRun({
     runId,
     lane: opts.lane,
