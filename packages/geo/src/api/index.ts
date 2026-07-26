@@ -31,6 +31,7 @@ export type {
   FeatureProvider,
   ItemsQuery,
   ItemsResult,
+  ItemsStream,
 } from "./provider.js";
 export type {
   PostgisProviderConfig,
