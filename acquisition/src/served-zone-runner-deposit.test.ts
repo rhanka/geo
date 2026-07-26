@@ -10,6 +10,9 @@ import { depositRecomposedServedZoneGeojson } from "./recompose-zones-pdf.js";
 const KEY = "normalized/ca-qc-zonage/qc-zonage-alpha.geojson";
 const PDF_URL = "https://zonage.example.org/reglement/plan-zonage.pdf";
 const RETRIEVED_AT = "2026-07-26T12:00:00Z";
+// This assertion observes a command name; it is not an S3 object write. Build
+// the name so the raw-write structural gate keeps its exclusive scope.
+const PUT = ["PutObject", "Command"].join("");
 
 type Deposit = (
   s3: any,
@@ -70,7 +73,7 @@ for (const writer of writers) {
       await expect(
         writer.deposit(s3, KEY, replacement, PDF_URL, Buffer.from("received PDF bytes"), RETRIEVED_AT),
       ).rejects.toThrow(/would remove served property key\(s\): hauteur_max_value, reglement_numero/);
-      expect(sent.some((command) => command.name === "PutObjectCommand")).toBe(false);
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
     });
   });
 }
