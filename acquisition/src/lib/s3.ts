@@ -8,6 +8,7 @@
  * (scripts/build-pmtiles.mjs) and the Python `boto3.client(endpoint_url=...)`.
  */
 import { existsSync, readFileSync } from "node:fs";
+import { Readable } from "node:stream";
 
 import {
   S3Client,
@@ -257,6 +258,27 @@ export async function putBytes(
       Bucket: bucket,
       Key: key,
       Body: body,
+      ...(contentType ? { ContentType: contentType } : {}),
+    }),
+  );
+}
+
+/** PUT an async byte stream without accumulating the object in process memory. */
+export async function putStream(
+  s3: S3Client,
+  key: string,
+  body: AsyncIterable<Uint8Array>,
+  contentType?: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  if (isServedZoneKey(key)) {
+    throw new Error(`direct served qc-zonage stream write refused: use proof-gated deposit (${key})`);
+  }
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: Readable.from(body),
       ...(contentType ? { ContentType: contentType } : {}),
     }),
   );
