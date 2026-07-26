@@ -46,6 +46,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import { capturedFetch, capturedText, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
+import { NODE_FETCH_DEFAULT_MAX_REDIRECTS, type CaptureRequestInit } from "../../packages/qc-sources/src/capture/capturedFetch.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
 import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import { validateExplicitZoneField } from "./zones-obscura-run.js";
@@ -59,6 +62,7 @@ const HTTP_UA = "sentropic-geo/0.1";
 const HTTP_TIMEOUT_MS = 30_000;
 const MAX_FEATURES = 20_000;
 const PAGE_SIZE = 2000;
+const CAPTURE_SOURCE = "zones-jmap";
 
 // Couche de zonage réglementaire : nom contenant "zonage". On EXCLUT explicitement
 // les couches d'affectation / contrainte / risque / thématiques qui ne portent PAS
@@ -131,14 +135,25 @@ function parseArgs(argv: string[]): Args {
 
 // ── HTTP ──────────────────────────────────────────────────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
-async function fetchJson<T = unknown>(url: string, init?: RequestInit, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+// Le chokepoint a son propre type de requête, plus étroit que `RequestInit` :
+// ses en-têtes sont un simple enregistrement et son corps ne peut pas être null.
+// Le prendre ici évite d'étaler un `HeadersInit` (tableau ou `Headers`) dans un
+// `Record<string, string>`, qui y ferait entrer `length` et consorts.
+async function fetchJson<T = unknown>(url: string, init?: CaptureRequestInit, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
   try {
-    const r = await fetch(url, { ...init, signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json", ...(init?.headers ?? {}) } });
+    if (!CAPTURE) throw new Error("capture run absent");
+    const r = await capturedFetch(url, { ...init, headers: { "user-agent": HTTP_UA, accept: "application/json", ...(init?.headers ?? {}) } }, {
+      run: CAPTURE,
+      source: CAPTURE_SOURCE,
+      slugs: CAPTURE_SLUG ? [CAPTURE_SLUG] : [],
+      attempt: 1,
+      timeoutMs,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+      version: "zones-jmap-run/1",
+    });
     if (!r.ok) return null;
-    return JSON.parse(await r.text()) as T;
-  } catch { return null; } finally { clearTimeout(t); }
+    return JSON.parse(capturedText(r)) as T;
+  } catch { return null; }
 }
 
 /** Ouvre une session WEB anonyme JMap et renvoie le sessionId (entier), ou null. */
@@ -367,6 +382,9 @@ async function processSlug(args: Args, muni: MuniEntry | undefined, s3: S3Client
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+let CAPTURE: CaptureRun | null = null;
+let CAPTURE_SLUG: string | null = null;
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (!args.slug || !args.base) {
@@ -376,9 +394,13 @@ async function main(): Promise<void> {
 
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const muni = munis.find((m) => m.slug === args.slug);
-  const s3 = args.deposit ? s3Client() : (await (async () => { try { return s3Client(); } catch { return null; } })());
+  const s3 = s3Client();
+  CAPTURE_SLUG = args.slug;
+  CAPTURE = openCaptureRun({ lane: "zones", s3 });
 
   console.error(`[jmap] slug=${args.slug} base=${args.base} project=${args.project ?? "auto"} mode=${args.probe ? "probe" : args.deposit ? "deposit" : "dry"}`);
+  console.error(`[jmap] capture run=${CAPTURE.runId} manifest=s3://${CAPTURE.keys.manifest}`);
+  CAPTURE.log(`[jmap] slug=${args.slug} base=${args.base} project=${args.project ?? "auto"} deposit=${args.deposit}`);
   let r: SlugResult;
   try { r = await processSlug(args, muni, s3); }
   catch (e) { r = { slug: args.slug, base: args.base, project: args.project ?? null, deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
@@ -396,4 +418,16 @@ async function main(): Promise<void> {
   console.error(`\nrapport → ${out}`);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.message : e); process.exit(1); });
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[jmap] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(typeof process.exitCode === "number" ? process.exitCode : 0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.message : e);
+    await closeCapture(1);
+    process.exit(1);
+  });
