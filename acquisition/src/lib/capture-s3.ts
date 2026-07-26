@@ -3,13 +3,14 @@
  *
  * La logique de capture vit dans la LIB (`packages/qc-sources/src/capture/`), qui
  * ne dépend que de zod ; ce module est le seul endroit qui la relie au SDK S3 réel.
- * Il n'ajoute AUCUNE règle : il implémente le port `CaptureObjectStore` (HEAD + PUT)
- * et ouvre un run.
+ * Il n'ajoute AUCUNE règle : il implémente le port `CaptureObjectStore` (HEAD,
+ * PUT, spool stream et promotion CAS) et ouvre un run.
  *
  * CONTRAINTE DURE (SPEC_CAPTURE_ON_CLUSTER.md §2.1/§2.2, règle C-5) : ce store
  * n'écrit QUE sous `raw/` et `capture/_runs/` — deux préfixes NEUFS, jamais servis.
  * Toute autre clé est refusée avant le moindre octet, EN PLUS du garde de la lib.
- * Aucune suppression n'est exposée (règle C-7).
+ * La seule suppression exposée sert au spool jetable sous `capture/_runs/`; les
+ * objets CAS `raw/` ne sont jamais supprimés.
  *
  * Décision propriétaire en vigueur : journaliser d'abord, migrer sur cluster
  * ensuite. L'exécution reste LOCALE (`execution: "local"` dans `run.json`), mais
@@ -29,7 +30,7 @@ import {
   type CaptureLane,
   type CaptureObjectStore,
 } from "../../../packages/qc-sources/src/capture/index.js";
-import { exists, putBytes, s3Client } from "./s3.js";
+import { copyObject, deleteObject, exists, putBytes, putStream, s3Client } from "./s3.js";
 
 /** UA honnête et CONSTANT — aucune rotation d'UA dans ce dépôt (SPEC §5.4/§8-D). */
 export const CAPTURE_USER_AGENT = "sentropic-geo/0.1";
@@ -51,6 +52,19 @@ export function s3CaptureStore(s3: S3Client): CaptureObjectStore {
     put: async (key: string, body: Uint8Array | string, contentType?: string): Promise<void> => {
       guard(key);
       await putBytes(s3, key, body instanceof Uint8Array ? Buffer.from(body) : body, contentType);
+    },
+    putStream: async (key: string, body: AsyncIterable<Uint8Array>, contentType?: string): Promise<void> => {
+      guard(key);
+      await putStream(s3, key, body, contentType);
+    },
+    copy: async (sourceKey: string, destinationKey: string): Promise<void> => {
+      guard(sourceKey);
+      guard(destinationKey);
+      await copyObject(s3, sourceKey, destinationKey);
+    },
+    delete: async (key: string): Promise<void> => {
+      guard(key);
+      await deleteObject(s3, key);
     },
   };
 }
