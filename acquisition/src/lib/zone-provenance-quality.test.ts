@@ -102,11 +102,12 @@ describe("zone provenance quality", () => {
     ]);
   });
 
-  it("keeps the uppercase T and Z from a normative capture run id", () => {
-    expect(captureManifestKeyFromListedRest("zones-20260726T150000Z-0/")).toBe(
+  it("recognises an exact listed manifest key and keeps the uppercase T and Z from its run id", () => {
+    expect(captureManifestKeyFromListedRest("zones-20260726T150000Z-0/manifest.jsonl")).toBe(
       "capture/_runs/zones-20260726T150000Z-0/manifest.jsonl",
     );
-    expect(captureManifestKeyFromListedRest("zones-20260726T150000Z-0/extra/")).toBeNull();
+    expect(captureManifestKeyFromListedRest("zones-20260726T150000Z-0/")).toBeNull();
+    expect(captureManifestKeyFromListedRest("zones-20260726T150000Z-0/extra/manifest.jsonl")).toBeNull();
   });
 
   it("accepts a capture receipt only when the manifest CAS key agrees with the declared sha", () => {
