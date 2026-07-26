@@ -65,11 +65,19 @@ spec:
                     name: geo-s3-credentials
               resources:
                 requests:
-                  cpu: 100m
-                  memory: 192Mi
+                  # Avec les services résidents, le quota laisse 395m de requêtes:
+                  # six captures à 60m utilisent 360m.
+                  cpu: 60m
+                  # Le quota laisse 736Mi de requêtes mémoire après les services:
+                  # six captures réservent 720Mi sans abaisser leur limite de 176Mi.
+                  memory: 120Mi
                 limits:
-                  cpu: 500m
-                  memory: 256Mi
+                  # Le quota laisse 900m de limites CPU: six captures à 150m
+                  # atteignent ce plafond sans empêcher leur création.
+                  cpu: 150m
+                  # Capture streamée mesurée sur un règlement de 31,664,331 octets:
+                  # pic cgroup 136.36 MiB. 176 Mi garde 39.64 Mi (29%) de marge.
+                  memory: 176Mi
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
