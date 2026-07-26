@@ -284,6 +284,39 @@ export async function putBytesIfAbsent(
   );
 }
 
+/**
+ * PUT conditionné à l'ETag courant — le compare-and-swap d'un POINTEUR mutable.
+ *
+ * `priorEtag === null` signifie « le pointeur ne doit pas encore exister » et
+ * retombe donc sur `IfNoneMatch: "*"`. Sans cette précondition, deux runs
+ * concurrents écriraient chacun leur pointeur et le dernier gagnerait en
+ * silence : un consommateur lirait alors un `latest` qui ne correspond à aucun
+ * instantané qu'il a vu. C'est la raison d'être de cette variante, et c'est
+ * pourquoi elle vit ICI plutôt que chez son appelant — les écritures S3 brutes
+ * restent confinées au helper générique et au gate de preuve.
+ */
+export async function putBytesIfMatch(
+  s3: S3Client,
+  key: string,
+  body: Buffer | Uint8Array | string,
+  priorEtag: string | null,
+  contentType?: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  if (isServedZoneKey(key)) {
+    throw new Error(`direct served qc-zonage write refused: use putServedZoneGeojson with exact geometry proof (${key})`);
+  }
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ...(priorEtag === null ? { IfNoneMatch: "*" } : { IfMatch: priorEtag }),
+      ...(contentType ? { ContentType: contentType } : {}),
+    }),
+  );
+}
+
 /** Delete a single object (idempotent — S3 delete of a missing key is a no-op). */
 export async function deleteObject(
   s3: S3Client,

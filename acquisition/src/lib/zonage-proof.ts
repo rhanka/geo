@@ -365,6 +365,13 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "densite_apres_reglement",
   "effet_densifiant",
   "effet_densifiant_delta",
+  // Un effet DÉDUIT (des classes d'habitation autorisées) n'a pas la même valeur
+  // probante qu'un effet LU dans une colonne de grille, et un consommateur qui
+  // annote un procès-verbal doit pouvoir citer la page. Servir le verdict sans
+  // sa méthode ni sa source rendait les deux indiscernables.
+  "effet_densifiant_methode",
+  "densite_avant_source",
+  "densite_apres_source",
 ]);
 
 export interface AdditiveOptions {
