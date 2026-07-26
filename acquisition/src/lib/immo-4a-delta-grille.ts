@@ -14,7 +14,6 @@ import { BUCKET, getBytes, putBytes, putBytesIfAbsent, s3Client } from "./s3.js"
 export const IMMO_4A_SCHEMA_VERSION = "1.0.0";
 export const IMMO_4A_OUTPUT_PREFIX = "exports/immo/artefact-4a-delta-grille/v1/";
 export const SERVED_ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
-const S3_READ_TIMEOUT_MS = 300_000;
 
 type KnownEffet = "densifie" | "reduit" | "stable";
 type Effet = KnownEffet | "inconnu";
@@ -75,10 +74,21 @@ export interface Immo4aRecord {
       zone_code: string;
     };
     /**
-     * The served collection currently does not materialise source_avant/source_apres.
-     * Do not relabel geometry/reglement evidence as a density-delta proof.
+     * La preuve du DELTA lui-même, distincte de celle de la géométrie.
+     *
+     * `methode` vaut `deduit` quand la densité a été inférée des classes
+     * d'habitation autorisées, et `explicit` quand elle a été lue dans une
+     * colonne de grille : 80 des 224 deltas des artefacts sont `deduit`, et un
+     * consommateur qui annote un procès-verbal doit pouvoir les distinguer et
+     * citer la page. `null` tant que la collection servie ne matérialise pas ces
+     * champs — ne JAMAIS y remettre la preuve de géométrie ou de règlement à la
+     * place, ce serait requalifier une preuve en une autre.
      */
-    grid_delta_evidence: null;
+    grid_delta_evidence: {
+      methode: string;
+      densite_avant_source: string | null;
+      densite_apres_source: string | null;
+    } | null;
     zone_geometry: {
       zone_source_url: string | null;
       zone_source_level: string | null;
@@ -193,25 +203,6 @@ interface MutableCounters extends EffectCounters {}
 
 function sha256(value: Buffer | string): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-/**
- * Keep an S3 read observable until it resolves or fails. Some aborted sockets
- * can otherwise leave an unresolved SDK promise with no active Node handle,
- * which lets Node exit before the all-collections measurement is complete.
- */
-async function boundedS3Read<T>(key: string, read: Promise<T>): Promise<T> {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      read,
-      new Promise<never>((_resolve, reject) => {
-        timeout = setTimeout(() => reject(new Error(`4a lecture S3 expirée après 300s: ${key}`)), S3_READ_TIMEOUT_MS);
-      }),
-    ]);
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
 }
 
 function hasOwn(record: Record<string, unknown>, key: string): boolean {
@@ -329,6 +320,7 @@ function createRecord(
   const beforeMillesime = stringOrNull(props["densite_avant_millesime"]);
   const beforeReglement = stringOrNull(props["densite_avant_reglement"]);
   const usage = stringOrNull(props["usage_dominant"]);
+  const methode = stringOrNull(props["effet_densifiant_methode"]);
   const deltaId = sha256(`geo-4a-v1|${citySlug}|${canon}|${afterReglement}`);
   return {
     delta_id: deltaId,
@@ -355,7 +347,14 @@ function createRecord(
         selected_layout: source.selected_layout,
         zone_code: zoneCode,
       },
-      grid_delta_evidence: null,
+      // Seule une méthode RÉELLEMENT servie fait une preuve : sans elle, on
+      // laisse `null` plutôt que de supposer `explicit`, qui serait la valeur
+      // flatteuse et la seule à ne pas devoir être devinée.
+      grid_delta_evidence: methode === null ? null : {
+        methode,
+        densite_avant_source: stringOrNull(props["densite_avant_source"]),
+        densite_apres_source: stringOrNull(props["densite_apres_source"]),
+      },
       zone_geometry: {
         zone_source_url: stringOrNull(props["zone_source_url"]),
         zone_source_level: stringOrNull(props["zone_source_level"]),
@@ -652,7 +651,10 @@ export function s3Immo4aStore(s3 = s3Client()): Immo4aStore {
     },
     async get(key) {
       try {
-        return await boundedS3Read(key, getBytes(s3, key));
+        // A read timeout would turn a transport failure into a false absence
+        // measurement.  Let the SDK's retry policy and the caller's lifecycle
+        // govern the read; publication fails closed on any returned error.
+        return await getBytes(s3, key);
       } catch (error) {
         const status = (error as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode;
         if (status === 404 || (error as { name?: string })?.name === "NotFound") return null;
