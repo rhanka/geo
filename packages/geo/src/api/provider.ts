@@ -70,6 +70,12 @@ export interface ItemsResult {
   numberReturned: number;
 }
 
+/** Features matching an items query, delivered one at a time. */
+export interface ItemsStream {
+  /** All bbox-matching features in their served order; pagination is applied by the HTTP layer. */
+  features: AsyncIterable<ServedFeature>;
+}
+
 /**
  * Read-only data access for the OGC API – Features server. All methods are
  * async so providers may hit disk or a database. Lookups that miss resolve to
@@ -85,6 +91,12 @@ export interface FeatureProvider {
    * unknown (distinct from a known collection that yields zero features).
    */
   getItems(id: string, query: ItemsQuery): Promise<ItemsResult | undefined>;
+  /**
+   * Optional bounded alternative to {@link getItems}. Providers backed by a
+   * large sequential object use this to avoid materializing either the source
+   * FeatureCollection or the selected page.
+   */
+  streamItems?(id: string, query: Pick<ItemsQuery, "bbox">): Promise<ItemsStream | undefined>;
   /** A single feature by id, or `undefined` if collection/feature is unknown. */
   getItem(id: string, featureId: string): Promise<ServedFeature | undefined>;
 }
