@@ -51,8 +51,14 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  capturedFetch,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
 import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { PV_USER_AGENT } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 
 // ── Filtres PV (mêmes principes que la garde-fou partagée : PV explicite requis) ──
 /** Un billet n'est un PV que si son titre porte « procès-verbal » (ou « p.v. »). */
@@ -99,35 +105,34 @@ function parseArgs(argv: string[]): Args {
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
-async function getText(url: string): Promise<{ ok: boolean; status: number; body: string }> {
-  const ac = new AbortController();
-  const timer = setTimeout(() => ac.abort(), 20_000);
-  try {
-    const r = await fetch(url, {
-      redirect: "follow",
-      signal: ac.signal,
-      headers: {
-        "User-Agent": PV_USER_AGENT,
-        Accept: "text/html,application/xml,*/*;q=0.8",
-        "Accept-Language": "fr-CA,fr;q=0.9",
-      },
-    });
-    const buf = Buffer.from(await r.arrayBuffer());
-    let body = buf.toString("utf8");
-    if (body.includes("�")) body = buf.toString("latin1");
-    return { ok: r.ok, status: r.status, body };
-  } catch (e) {
-    return { ok: false, status: -1, body: e instanceof Error ? e.name : "err" };
-  } finally {
-    clearTimeout(timer);
-  }
+async function getText(url: string, slug: string, run: CaptureRun): Promise<{ ok: boolean; status: number; body: string }> {
+  const captured = await capturedFetch(url, {
+    redirect: "follow",
+    headers: {
+      "User-Agent": PV_USER_AGENT,
+      Accept: "text/html,application/xml,*/*;q=0.8",
+      "Accept-Language": "fr-CA,fr;q=0.9",
+    },
+  }, {
+    run,
+    lane: "pv",
+    source: "pv-wix",
+    slugs: [slug],
+    timeoutMs: 20_000,
+    maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  });
+  if (captured.response === null) return { ok: false, status: -1, body: captured.line.error ?? "err" };
+  const buf = Buffer.from(captured.bytes ?? []);
+  let body = buf.toString("utf8");
+  if (body.includes("�")) body = buf.toString("latin1");
+  return { ok: captured.ok, status: captured.response.status, body };
 }
 
 // ── robots.txt (Robots ON) ────────────────────────────────────────────────────
 
 /** Renvoie les `Disallow:` applicables à notre UA (bloc `*` ou ciblant « radar »). */
-async function robotsDisallows(origin: string): Promise<string[]> {
-  const r = await getText(`${origin}/robots.txt`);
+async function robotsDisallows(origin: string, slug: string, run: CaptureRun): Promise<string[]> {
+  const r = await getText(`${origin}/robots.txt`, slug, run);
   if (!r.ok || !r.body) return [];
   const out: string[] = [];
   let active = false;
@@ -224,14 +229,21 @@ async function runSlug(
     return { slug, status: "bad-home", pairs: 0 };
   }
 
-  const disallows = await robotsDisallows(origin);
+  const run = openCaptureRun({ lane: "pv", userAgent: PV_USER_AGENT });
+  let exitCode = 1;
+  const complete = (result: { slug: string; status: string; pairs: number; out?: string; note?: string }) => {
+    exitCode = 0;
+    return result;
+  };
+  try {
+  const disallows = await robotsDisallows(origin, slug, run);
   if (!robotsAllows(disallows, "/blog-feed.xml")) {
-    return { slug, status: "robots-denied-feed", pairs: 0 };
+    return complete({ slug, status: "robots-denied-feed", pairs: 0 });
   }
 
-  const feed = await getText(`${origin}/blog-feed.xml`);
+  const feed = await getText(`${origin}/blog-feed.xml`, slug, run);
   if (!feed.ok || !/<rss|<item\b/i.test(feed.body)) {
-    return { slug, status: "no-wix-feed", pairs: 0, note: `status=${feed.status}` };
+    return complete({ slug, status: "no-wix-feed", pairs: 0, note: `status=${feed.status}` });
   }
 
   const items = parseFeed(feed.body);
@@ -246,7 +258,7 @@ async function runSlug(
     .slice(0, args.maxPosts);
 
   if (pvItems.length === 0) {
-    return { slug, status: "feed-no-pv-post", pairs: 0, note: `items=${items.length}` };
+    return complete({ slug, status: "feed-no-pv-post", pairs: 0, note: `items=${items.length}` });
   }
 
   const pairs: Array<{ href: string; text: string }> = [];
@@ -261,7 +273,7 @@ async function runSlug(
     }
     if (!robotsAllows(disallows, p)) continue;
     await sleep(args.delayMs);
-    const post = await getText(it.link);
+    const post = await getText(it.link, slug, run);
     if (!post.ok || !post.body) continue;
     for (const href of wixPdfUrls(post.body)) {
       if (seen.has(href)) continue;
@@ -292,13 +304,16 @@ async function runSlug(
     ) + "\n",
   );
 
-  return {
+  return complete({
     slug,
     status: pairs.length > 0 ? "pairs-ok" : "post-no-pdf",
     pairs: pairs.length,
     out: outFile,
     note: `pvPosts=${pvItems.length}`,
-  };
+  });
+  } finally {
+    await run.finish(exitCode);
+  }
 }
 
 async function main(): Promise<void> {
