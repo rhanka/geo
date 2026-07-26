@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildRawDocumentRecord,
+  buildRawDocumentRecordFromDigest,
   extForContentType,
   rawDocumentId,
   RawDocumentRecordSchema,
@@ -77,6 +78,27 @@ describe("buildRawDocumentRecord", () => {
     );
     expect(rec.bytesLen).toBe(body.byteLength);
     expect(rec.provenance.viaObscura).toBe(false);
+  });
+
+  it("builds the identical record from an incrementally computed digest", () => {
+    const fromBytes = buildRawDocumentRecord({
+      source: "avis-publics-valleyfield",
+      sourceUrl: "https://www.ville.valleyfield.qc.ca/avis-publics",
+      body,
+      fetchedAt: "2026-06-08T09:30:00.000Z",
+      contentType: "text/html; charset=utf-8",
+      provenance: PROVENANCE,
+    });
+    const fromDigest = buildRawDocumentRecordFromDigest({
+      source: "avis-publics-valleyfield",
+      sourceUrl: "https://www.ville.valleyfield.qc.ca/avis-publics",
+      sha256: sha256Hex(body),
+      bytesLen: body.byteLength,
+      fetchedAt: "2026-06-08T09:30:00.000Z",
+      contentType: "text/html; charset=utf-8",
+      provenance: PROVENANCE,
+    });
+    expect(fromDigest).toEqual(fromBytes);
   });
 
   it("is idempotent: byte-identical content yields the same id + key", () => {
