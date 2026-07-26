@@ -46,8 +46,26 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, exists } from "./lib/s3.js";
-import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import {
+  capturedFetch,
+  capturedText,
+  type CaptureFetchLike,
+  type CaptureHttpResponse,
+  type CaptureManifestLine,
+  type CaptureRequestInit,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
+import { copyObject, exists, getBytes, s3Client } from "./lib/s3.js";
+import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
+import {
+  attachGeometryProof,
+  carryForwardServedZoneProperties,
+  type GeometrySourceProof,
+  proofFromCaptureEntry,
+  putServedZoneAdditive,
+  putServedZoneGeojson,
+} from "./lib/zonage-proof.js";
 import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 // Réutilise le validateur de codes-zone value-based (agnostique du NOM de champ)
 // déjà éprouvé côté WFS : signature code (CODE_PATTERN_RE), ratio non-null, rejet
@@ -66,7 +84,7 @@ const MUNI_DIRECTORY_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/qc-
 const S3_PREFIX = "normalized/ca-qc-zonage/";
 const REAL_UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
-const HTTP_UA = "sentropic-geo/0.1";
+const HTTP_UA = CAPTURE_USER_AGENT;
 const HTTP_TIMEOUT_MS = 8_000;
 const MAX_FEATURES = 6_000;
 
@@ -116,7 +134,7 @@ let MUNI_SLUG_SET = new Set<string>();
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface MuniEntry { slug: string; name: string; mrc: string | null; lat: number; lon: number }
 interface GeoFeature { type: "Feature"; geometry: { type: string; coordinates: unknown } | null; properties: Record<string, unknown> }
-interface GeoFC { type: "FeatureCollection"; features: GeoFeature[] }
+interface GeoFC { type: "FeatureCollection"; features: GeoFeature[]; exceededTransferLimit?: boolean }
 
 type Platform = "arcgis" | "goazimut" | "jmap" | "igo" | "wfs" | "carto" | "none";
 
@@ -139,10 +157,34 @@ interface SlugResult {
   zoneCodeField?: string;
   featureCount?: number;
   distanceKm?: number;
+  servedBefore?: ServedAudit[];
+  servedAfter?: ServedAudit[];
   deposited: boolean;
   status: "deposited" | "no-zonage-layer" | "matrice-only" | "no-viewer" | "spatial-fail" | "platform-not-arcgis" | "no-site" | "error";
   detail: string;
 }
+
+interface ServedAudit {
+  key: string;
+  features: number;
+  propertyKeys: string[];
+  populatedProperties: number;
+  zoneSourceUrls: string[];
+  zoneSourceLevels: string[];
+}
+
+interface CapturedFeatures {
+  features: GeoFeature[];
+  entry: CaptureManifestLine;
+  paginated: boolean;
+}
+
+/** A deposited v2 source must be a manifest entry, never a reconstructed body. */
+export function proofFromGonetCapture(entry: CaptureManifestLine) {
+  return proofFromCaptureEntry(entry, { type: "geonet", method: "natif", reliability: "directe" });
+}
+
+let CAPTURE: CaptureRun | null = null;
 
 // ── Args ──────────────────────────────────────────────────────────────────────
 interface GonetSeed { slug: string; code: string }
@@ -203,14 +245,29 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+async function capturedArcgisJson<T = unknown>(
+  url: string,
+  slugs: string[] = [],
+  timeoutMs = HTTP_TIMEOUT_MS,
+): Promise<{ value: T; entry: CaptureManifestLine } | null> {
+  if (!CAPTURE) throw new Error("zones-obscura fetchJson called without an open capture run");
   try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json" } });
-    if (!r.ok) return null;
-    return JSON.parse(await r.text()) as T;
-  } catch { return null; } finally { clearTimeout(t); }
+    const captured = await capturedFetch(url, {
+      headers: { "user-agent": HTTP_UA, accept: "application/json" },
+    }, {
+      run: CAPTURE,
+      lane: "zones",
+      source: "zones-obscura-arcgis",
+      slugs,
+      timeoutMs,
+    });
+    if (!captured.ok) return null;
+    return { value: JSON.parse(capturedText(captured)) as T, entry: captured.line };
+  } catch { return null; }
+}
+
+async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
+  return (await capturedArcgisJson<T>(url, [], timeoutMs))?.value ?? null;
 }
 
 // ── CDP minimal (Chromium headless via remote-debugging) ──────────────────────
@@ -353,6 +410,66 @@ class Browser {
       const r = timed.r.result as { result?: { value?: string } };
       return r?.result?.value ?? null;
     } catch { return null; }
+  }
+
+  /**
+   * Adapt the browser's authenticated GoNet session to the capture chokepoint.
+   * The response body crosses CDP as base64, so the Uint8Array handed to
+   * `capturedFetch` is exactly the body read by `Response.arrayBuffer()` — never
+   * a JSON re-serialization of parsed features.
+   */
+  sessionFetch(sid: string): CaptureFetchLike {
+    return async (url: string, init?: CaptureRequestInit): Promise<CaptureHttpResponse> => {
+      if (init?.body instanceof Uint8Array) {
+        throw new Error("GoNet session fetch does not support binary request bodies");
+      }
+      const headers = Object.fromEntries(
+        Object.entries(init?.headers ?? {}).filter(([name]) => name.toLowerCase() !== "user-agent"),
+      );
+      const request = {
+        url,
+        method: init?.method ?? "GET",
+        headers,
+        ...(typeof init?.body === "string" ? { body: init.body } : {}),
+      };
+      const expr = `(async()=>{
+        const toBase64=(bytes)=>{let out="";for(let i=0;i<bytes.length;i+=32768){out+=String.fromCharCode(...bytes.subarray(i,i+32768));}return btoa(out);};
+        try {
+          const req=${JSON.stringify(request)};
+          const r=await fetch(req.url,{method:req.method,headers:req.headers,body:req.body,redirect:"manual",credentials:"include"});
+          const headers={};r.headers.forEach((value,key)=>{headers[key]=value;});
+          const body=toBase64(new Uint8Array(await r.arrayBuffer()));
+          return JSON.stringify({status:r.status,url:r.url,headers,body});
+        } catch (e) { return JSON.stringify({error:String((e&&e.message)||e)}); }
+      })()`;
+      const text = await this.evalAsync(sid, expr);
+      if (!text) throw new Error("GoNet session fetch did not return a response");
+      let payload: { status?: unknown; url?: unknown; headers?: unknown; body?: unknown; error?: unknown };
+      try { payload = JSON.parse(text) as typeof payload; }
+      catch { throw new Error("GoNet session fetch returned invalid CDP JSON"); }
+      if (payload.error) throw new Error(`GoNet session fetch: ${String(payload.error)}`);
+      if (typeof payload.status !== "number" || typeof payload.body !== "string") {
+        throw new Error("GoNet session fetch returned an incomplete response");
+      }
+      const values = new Map<string, string>();
+      if (payload.headers && typeof payload.headers === "object") {
+        for (const [name, value] of Object.entries(payload.headers as Record<string, unknown>)) {
+          if (typeof value === "string") values.set(name.toLowerCase(), value);
+        }
+      }
+      const bytes = new Uint8Array(Buffer.from(payload.body, "base64"));
+      return {
+        status: payload.status,
+        ok: payload.status >= 200 && payload.status < 300,
+        ...(typeof payload.url === "string" ? { url: payload.url } : {}),
+        headers: { get: (name: string): string | null => values.get(name.toLowerCase()) ?? null },
+        arrayBuffer: async (): Promise<ArrayBuffer> => {
+          const copy = new Uint8Array(bytes.byteLength);
+          copy.set(bytes);
+          return copy.buffer;
+        },
+      };
+    };
   }
 
   async closeSession(targetId: string): Promise<void> {
@@ -638,20 +755,22 @@ function extentDiagKm(e: ExtentInfo): number | null {
 }
 
 // ── Téléchargement + normalisation + dépôt ────────────────────────────────────
-async function fetchFeatures(layerUrl: string, outFields: string, where: string): Promise<GeoFeature[]> {
-  const features: GeoFeature[] = [];
-  let offset = 0;
-  const batch = 1000;
-  while (features.length < MAX_FEATURES) {
-    const url = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${batch}&f=geojson`;
-    const data = await fetchJson<GeoFC>(url, 20_000);
-    if (!data || !Array.isArray(data.features) || data.features.length === 0) break;
-    features.push(...data.features);
-    offset += data.features.length;
-    if (data.features.length < batch) break;
-    await sleep(120);
-  }
-  return features;
+async function fetchFeatures(
+  layerUrl: string,
+  outFields: string,
+  where: string,
+  expectedCount: number,
+  slug: string,
+): Promise<CapturedFeatures | null> {
+  const url = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}` +
+    `&outSR=4326&geometryPrecision=6&resultRecordCount=${MAX_FEATURES}&f=geojson`;
+  const captured = await capturedArcgisJson<GeoFC>(url, [slug], 20_000);
+  if (!captured || !Array.isArray(captured.value.features)) return null;
+  return {
+    features: captured.value.features,
+    entry: captured.entry,
+    paginated: captured.value.exceededTransferLimit === true || captured.value.features.length !== expectedCount,
+  };
 }
 
 function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
@@ -660,6 +779,139 @@ function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string
     const zone = raw !== null && raw !== undefined && String(raw).trim() !== "" ? String(raw).trim() : null;
     return { type: "Feature", geometry: f.geometry, properties: { zone_code: zone, kind: null, affectation: null, num_zone: null, source: serviceUrl, confidence } };
   });
+}
+
+function canonicalZoneCode(value: unknown): string {
+  return String(value ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function auditServed(key: string, features: GeoFeature[]): ServedAudit {
+  const propertyKeys = new Set<string>();
+  const zoneSourceUrls = new Set<string>();
+  const zoneSourceLevels = new Set<string>();
+  // Count populated logical-zone properties, not raw polygon parts: a multipolygon
+  // split cannot fake enrichment growth or hide a loss.
+  const byZone = new Map<string, Record<string, unknown>>();
+  for (const feature of features) {
+    const props = feature.properties ?? {};
+    for (const property of Object.keys(props)) propertyKeys.add(property);
+    if (typeof props["zone_source_url"] === "string") zoneSourceUrls.add(props["zone_source_url"]);
+    if (typeof props["zone_source_level"] === "string") zoneSourceLevels.add(props["zone_source_level"]);
+    const zone = canonicalZoneCode(props["zone_code"]);
+    if (zone) byZone.set(zone, { ...(byZone.get(zone) ?? {}), ...props });
+  }
+  let populatedProperties = 0;
+  for (const props of byZone.values()) {
+    for (const [keyName, value] of Object.entries(props)) {
+      if (keyName !== "proof" && value !== null && value !== undefined && value !== "") populatedProperties++;
+    }
+  }
+  return {
+    key,
+    features: features.length,
+    propertyKeys: [...propertyKeys].sort(),
+    populatedProperties,
+    zoneSourceUrls: [...zoneSourceUrls].sort(),
+    zoneSourceLevels: [...zoneSourceLevels].sort(),
+  };
+}
+
+async function readServedAudit(s3: S3Client, key: string): Promise<{ audit: ServedAudit; features: GeoFeature[] } | null> {
+  if (!(await exists(s3, key))) return null;
+  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: GeoFeature[] };
+  if (!Array.isArray(fc.features)) throw new Error(`served zone object ${key} is not a FeatureCollection`);
+  return { audit: auditServed(key, fc.features), features: fc.features };
+}
+
+function auditLine(label: "AVANT" | "APRÈS", audit: ServedAudit): void {
+  console.error(
+    `[obscura] ${label} ${audit.key}: features=${audit.features} propriétés=${audit.populatedProperties}` +
+    ` keys=[${audit.propertyKeys.join(",")}] provenance_urls=[${audit.zoneSourceUrls.join(",") || "null"}]` +
+    ` provenance_levels=[${audit.zoneSourceLevels.join(",") || "null"}]`,
+  );
+}
+
+class PropertyRegressionError extends Error {
+  constructor(message: string) { super(message); this.name = "PropertyRegressionError"; }
+}
+
+/**
+ * Safe geometry replacement shared by the ArcGIS and GoNet paths in this runner.
+ * It refuses an identity mismatch, keeps served properties by canonical zone code,
+ * replays the committed folds, then records a before/after served audit.  The v2
+ * proof is already bound to one captured response when this function is called.
+ */
+async function depositCapturedZones(
+  s3: S3Client,
+  slug: string,
+  norm: GeoFeature[],
+  proof: GeometrySourceProof,
+): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[] }> {
+  const flatKey = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
+  const nestedKey = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+  const present = (await Promise.all([readServedAudit(s3, flatKey), readServedAudit(s3, nestedKey)])).filter(
+    (value): value is { audit: ServedAudit; features: GeoFeature[] } => value !== null,
+  );
+  const servedBefore = present.map((value) => value.audit);
+  for (const audit of servedBefore) auditLine("AVANT", audit);
+
+  const servedCodes = new Set(present.flatMap(({ features }) => features.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean)));
+  const incomingCodes = new Set(norm.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean));
+  const uncovered = [...servedCodes].filter((code) => !incomingCodes.has(code));
+  if (uncovered.length > 0) {
+    throw new Error(`identity gate: ${uncovered.length} code(s) servi(s) absent(s) de la couche amont (${uncovered.sort().join(",")}); aucun dépôt`);
+  }
+  const maxServedFeatures = Math.max(0, ...present.map(({ features }) => features.length));
+  if (norm.length < maxServedFeatures) {
+    throw new Error(`coverage gate: ${norm.length} features amont < ${maxServedFeatures} features servies; aucun dépôt`);
+  }
+
+  const targets = present.length > 0
+    ? present.map(({ audit, features }) => ({ key: audit.key, current: features }))
+    : [{ key: flatKey, current: [] as GeoFeature[] }];
+  const stamp = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+  for (const { key, current } of targets) {
+    if (current.length > 0) {
+      const backup = `${S3_PREFIX}_replaced/qc-zonage-${slug}__${key === flatKey ? "flat" : "nested"}.${stamp}.geojson`;
+      await copyObject(s3, key, backup);
+      console.error(`[obscura] BACKUP ${key} -> s3://${backup}`);
+    }
+    const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
+    const carried = carryForwardServedZoneProperties(features, current, canonicalZoneCode);
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features }, proof);
+    console.error(`[obscura] PROPRIÉTÉS reportées ${key}: zones appariées=${carried.matched}/${features.length} non-appariées=${carried.unmatched}`);
+    await putServedZoneGeojson(s3, key, fc);
+  }
+
+  // A geometry replacement resets enrichment values. Re-run the committed folds
+  // in the same pass, then stamp the exact live v2 source last.
+  await reapplyServedZonageEnrichment(slug);
+  for (const { key } of targets) {
+    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { type: "FeatureCollection"; features: GeoFeature[] };
+    for (const feature of fc.features) {
+      feature.properties = {
+        ...(feature.properties ?? {}),
+        zone_source_url: proof.url,
+        zone_source_level: "documented",
+      };
+    }
+    await putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] });
+  }
+
+  const servedAfter = (await Promise.all(targets.map(({ key }) => readServedAudit(s3, key)))).map((value) => {
+    if (value === null) throw new Error(`readback missing after served deposit: ${slug}`);
+    return value.audit;
+  });
+  for (const after of servedAfter) {
+    auditLine("APRÈS", after);
+    const before = servedBefore.find((entry) => entry.key === after.key);
+    if (before && after.populatedProperties < before.populatedProperties) {
+      throw new PropertyRegressionError(
+        `property regression on ${after.key}: ${before.populatedProperties} -> ${after.populatedProperties}; stop before another city`,
+      );
+    }
+  }
+  return { servedBefore, servedAfter };
 }
 
 // ── GoNet / GoAzimut (PG Solutions GOnet6) ────────────────────────────────────
@@ -750,150 +1002,56 @@ function gonetMapServerBase(requests: string[]): string | null {
   for (const u of requests) { const m = u.match(/proxy\.jsp\?(https?:\/\/[^?\s"'<>]*?\/MapServer)/i); if (m) return m[1]; }
   return null;
 }
-/** Build a CDP-evaluable async fetch (self-aborting after 25s) returning response body text. */
-function fetchTextExpr(url: string): string {
-  return `(async()=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),25000);try{const r=await fetch(${JSON.stringify(url)},{signal:c.signal});return await r.text();}catch(e){return "__ERR__"+((e&&e.message)||e);}finally{clearTimeout(t);}})()`;
-}
-function parseJsonOrNull<T = Record<string, unknown>>(txt: string | null): T | null {
-  if (!txt || txt.startsWith("__ERR__")) return null;
-  try { return JSON.parse(txt) as T; } catch { return null; }
-}
-
-function firstPosSig(g: GeoFeature["geometry"]): string {
-  for (const [x, y] of positionsOf(g?.coordinates)) return `${x},${y}`;
-  return "";
+/** Every authenticated GoNet request still crosses the shared capture chokepoint. */
+async function capturedGonetJson<T>(
+  browser: Browser,
+  sid: string,
+  url: string,
+  run: CaptureRun,
+  slug: string,
+): Promise<{ value: T; entry: CaptureManifestLine } | null> {
+  const captured = await capturedFetch(url, {
+    headers: { accept: "application/json,application/geo+json" },
+  }, {
+    run,
+    lane: "zones",
+    source: "zones-gonet",
+    slugs: [slug],
+    fetchImpl: browser.sessionFetch(sid),
+    timeoutMs: 35_000,
+  });
+  if (!captured.ok) return null;
+  try {
+    return { value: JSON.parse(capturedText(captured)) as T, entry: captured.line };
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Download every feature of a GoNet MapServer layer via the in-session proxy.
- * Strategy A — OID keyset paging: robust past `maxRecordCount`, but needs a valid
- * OID column name AND `orderByFields` support. Strategy B — plain `resultOffset`
- * paging with `where=1=1` and no OID/orderBy: rescues FLAT layers whose OID column
- * isn't named OBJECTID or that reject orderByFields (empirically la-pocatiere's
- * "Zonage" #183: 233 features, keyset returns 0). B is guarded against servers that
- * ignore `resultOffset` (repeat page 1) by a per-feature signature de-dup. A is
- * tried first (keeps the >maxRecordCount behaviour); B is a fallback only when A
- * yields nothing — anti-invention untouched (both read real backend features).
+ * A v2 proof has one real response URL and one body hash.  Combining several
+ * ArcGIS pages produces no such source response, so pagination is a hard reject.
  */
-async function gonetFetchFeatures(
-  browser: Browser, sid: string, proxy: string, mapBase: string, id: number, zoneField: string, oidField: string,
-): Promise<GeoFeature[]> {
-  const batch = 1000;
-  const dbg = process.env["GONET_PROBE_DL"] ? (m: string): void => console.error(`    [gonet-dl #${id}] ${m}`) : (): void => {};
-  if (process.env["GONET_PROBE_DL"]) {
-    const q = `${proxy}${mapBase}/${id}/query?where=1%3D1&outFields=${encodeURIComponent(zoneField)}&resultRecordCount=2`;
-    for (const [label, extra] of [
-      ["json/nogeom", "&returnGeometry=false&f=json"],
-      ["json/geom", "&returnGeometry=true&f=json"],
-      ["json/geom+outSR", "&returnGeometry=true&outSR=4326&f=json"],
-      ["geojson/geom", "&returnGeometry=true&f=geojson"],
-      ["geojson/geom+outSR", "&returnGeometry=true&outSR=4326&f=geojson"],
-    ] as const) {
-      const raw = await browser.evalAsync(sid, fetchTextExpr(q + extra));
-      dbg(`probe ${label}: ${(raw ?? "null").slice(0, 140).replace(/\s+/g, " ")}`);
-    }
-  }
-
-  // Strategy 0 — returnIdsOnly + `WHERE <oid> IN (...)` chunk paging. Universally
-  // supported by OLD ArcGIS MapServers (wkid 32187 & al.) that reject the advanced
-  // query params (`orderByFields`, `resultOffset`, `geometryPrecision`) with HTTP
-  // 400 — the exact la-pocatiere "Zonage" #183 case. Uses only the params proven to
-  // work on such servers (outFields + returnGeometry + outSR=4326 + f=geojson).
-  const idsChunked = async (): Promise<GeoFeature[]> => {
-    const idsRaw = await browser.evalAsync(sid, fetchTextExpr(`${proxy}${mapBase}/${id}/query?where=1%3D1&returnIdsOnly=true&f=json`));
-    const idsObj = parseJsonOrNull<{ objectIdFieldName?: string; objectIds?: number[] }>(idsRaw);
-    const oid = idsObj?.objectIdFieldName ?? oidField;
-    const ids = Array.isArray(idsObj?.objectIds) ? idsObj!.objectIds! : [];
-    if (ids.length === 0) { dbg(`returnIdsOnly: 0 ids (${(idsRaw ?? "").slice(0, 80)})`); return []; }
-    dbg(`returnIdsOnly: oidField='${oid}' ${ids.length} ids`);
-    let droppedIds = 0;
-    // Fetch one id-set via `IN (...)`. On a persistent 400 (one member has an
-    // un-reprojectable/degenerate geometry that poisons the whole batch under
-    // outSR=4326), binary-split and recurse — isolating the bad id(s) down to
-    // size 1 so we keep every good feature. Anti-invention intact (real backend).
-    const fetchIdSet = async (idset: number[]): Promise<GeoFeature[]> => {
-      const where = encodeURIComponent(`${oid} IN (${idset.join(",")})`);
-      const url = `${proxy}${mapBase}/${id}/query?where=${where}&outFields=${encodeURIComponent(zoneField)}` +
-        `&returnGeometry=true&outSR=4326&f=geojson`;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) await sleep(250 * attempt);
-        const raw = await browser.evalAsync(sid, fetchTextExpr(url));
-        const fc = parseJsonOrNull<GeoFC>(raw);
-        if (fc && Array.isArray(fc.features)) return fc.features;
-      }
-      if (idset.length === 1) { droppedIds++; dbg(`drop un-queryable id ${idset[0]}`); return []; }
-      const mid = Math.floor(idset.length / 2);
-      const left = await fetchIdSet(idset.slice(0, mid));
-      const right = await fetchIdSet(idset.slice(mid));
-      return [...left, ...right];
-    };
-    const features: GeoFeature[] = [];
-    const CHUNK = 50;
-    for (let i = 0; i < ids.length && features.length < MAX_FEATURES; i += CHUNK) {
-      features.push(...(await fetchIdSet(ids.slice(i, i + CHUNK))));
-      await sleep(120);
-    }
-    if (droppedIds > 0) dbg(`idsChunked: ${droppedIds} un-queryable id(s) dropped`);
-    dbg(`idsChunked: ${ids.length} ids → ${features.length} features`);
-    return features;
+async function gonetFetchUnpaginated(
+  browser: Browser,
+  sid: string,
+  proxy: string,
+  mapBase: string,
+  id: number,
+  zoneField: string,
+  expectedCount: number,
+  run: CaptureRun,
+  slug: string,
+): Promise<CapturedFeatures | null> {
+  const url = `${proxy}${mapBase}/${id}/query?where=1%3D1&outFields=${encodeURIComponent(zoneField)}` +
+    `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=${MAX_FEATURES}&f=geojson`;
+  const captured = await capturedGonetJson<GeoFC>(browser, sid, url, run, slug);
+  if (!captured || !Array.isArray(captured.value.features)) return null;
+  return {
+    features: captured.value.features,
+    entry: captured.entry,
+    paginated: captured.value.exceededTransferLimit === true || captured.value.features.length !== expectedCount,
   };
-
-  const keyset = async (): Promise<GeoFeature[]> => {
-    const features: GeoFeature[] = [];
-    let lastOid = -1;
-    while (features.length < MAX_FEATURES) {
-      const where = encodeURIComponent(`${oidField}>${lastOid}`);
-      const of = encodeURIComponent(`${zoneField},${oidField}`);
-      const url = `${proxy}${mapBase}/${id}/query?where=${where}&outFields=${of}&orderByFields=${encodeURIComponent(oidField)}` +
-        `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=${batch}&f=geojson`;
-      const raw = await browser.evalAsync(sid, fetchTextExpr(url));
-      const fc = parseJsonOrNull<GeoFC & { features?: Array<GeoFeature & { id?: number }> }>(raw);
-      if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) { dbg(`keyset stop: ${(raw ?? "").slice(0, 120)}`); break; }
-      features.push(...fc.features);
-      let maxOid = lastOid;
-      for (const f of fc.features) {
-        const oid = Number((f as { id?: number }).id ?? (f.properties?.[oidField] as number | undefined));
-        if (Number.isFinite(oid) && oid > maxOid) maxOid = oid;
-      }
-      if (maxOid <= lastOid || fc.features.length < batch) break; // last page (or no OID progress)
-      lastOid = maxOid;
-      await sleep(120);
-    }
-    return features;
-  };
-
-  const offsetPaged = async (): Promise<GeoFeature[]> => {
-    const features: GeoFeature[] = [];
-    const seen = new Set<string>();
-    let off = 0;
-    while (features.length < MAX_FEATURES) {
-      const url = `${proxy}${mapBase}/${id}/query?where=1%3D1&outFields=${encodeURIComponent(zoneField)}` +
-        `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultOffset=${off}&resultRecordCount=${batch}&f=geojson`;
-      const raw = await browser.evalAsync(sid, fetchTextExpr(url));
-      const fc = parseJsonOrNull<GeoFC>(raw);
-      if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) { dbg(`offset stop @${off}: ${(raw ?? "").slice(0, 120)}`); break; }
-      let added = 0;
-      for (const f of fc.features) {
-        const fid = (f as { id?: number | string }).id;
-        const sig = fid !== undefined && fid !== null ? `id:${fid}` : `${String(f.properties?.[zoneField] ?? "")}|${firstPosSig(f.geometry)}`;
-        if (seen.has(sig)) continue;
-        seen.add(sig); features.push(f); added++;
-      }
-      if (added === 0) { dbg(`offset: page @${off} added 0 unique (server ignores resultOffset) → stop`); break; }
-      if (fc.features.length < batch) break;
-      off += fc.features.length;
-      await sleep(120);
-    }
-    return features;
-  };
-
-  const z = await idsChunked();
-  if (z.length > 0) { dbg(`idsChunked → ${z.length}`); return z; }
-  const a = await keyset();
-  if (a.length > 0) { dbg(`keyset → ${a.length}`); return a; }
-  const b = await offsetPaged();
-  dbg(`fallback offset → ${b.length}`);
-  return b;
 }
 
 /**
@@ -902,7 +1060,7 @@ async function gonetFetchFeatures(
  */
 async function processGonetZonage(
   slug: string, muni: MuniEntry | undefined, viewerUrl: string,
-  browser: Browser, s3: S3Client | null, args: Args, base: SlugResult,
+  browser: Browser, run: CaptureRun, s3: S3Client | null, args: Args, base: SlugResult,
 ): Promise<SlugResult> {
   // The GOnet6 viewer is a heavy JS map: the in-session MapServer proxy request
   // (the only signal that the muni IS on goazimut) is not fired until the map
@@ -915,8 +1073,8 @@ async function processGonetZonage(
     if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
     const proxy = gonetProxyBase(session.requests);
 
-    const info = parseJsonOrNull<{ layers?: GoNetLayer[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/?f=json`)));
-    const layers = info?.layers ?? [];
+    const info = await capturedGonetJson<{ layers?: GoNetLayer[] }>(browser, session.sid, `${proxy}${mapBase}/?f=json`, run, slug);
+    const layers = info?.value.layers ?? [];
     if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
     if (process.env["GONET_DUMP_LAYERS"]) {
       console.error(`[gonet-dump ${slug}] ${layers.length} couches @ ${mapBase}`);
@@ -929,21 +1087,25 @@ async function processGonetZonage(
     // the most features (scale variants are duplicated; one may be empty).
     let best: { id: number; name: string; zoneField: string; oidField: string; count: number } | null = null;
     for (const c of candidates.slice(0, 12)) {
-      const li = parseJsonOrNull<{ fields?: FieldInfo[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}?f=json`)));
-      const fields = li?.fields ?? [];
+      const li = await capturedGonetJson<{ fields?: FieldInfo[] }>(browser, session.sid, `${proxy}${mapBase}/${c.id}?f=json`, run, slug);
+      const fields = li?.value.fields ?? [];
       const zoneField = pickGonetZoneField(fields);
       if (!zoneField) continue;
       const oidField = fields.find((f) => /OID/i.test(f.type))?.name ?? "OBJECTID";
-      const cnt = parseJsonOrNull<{ count?: number }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}/query?where=1%3D1&returnCountOnly=true&f=json`)));
-      const count = cnt?.count ?? 0;
+      const cnt = await capturedGonetJson<{ count?: number }>(browser, session.sid, `${proxy}${mapBase}/${c.id}/query?where=1%3D1&returnCountOnly=true&f=json`, run, slug);
+      const count = cnt?.value.count ?? 0;
       if (count <= 0) continue;
       if (!best || count > best.count) best = { id: c.id, name: stripGonetPrefix(c.name), zoneField, oidField, count };
     }
     if (!best) return { ...base, status: "no-zonage-layer", detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
 
     const layerUrl = `${mapBase}/${best.id}`;
-    const raw = await gonetFetchFeatures(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.oidField);
-    if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    const received = await gonetFetchUnpaginated(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.count, run, slug);
+    if (!received || received.features.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    if (received.paginated) {
+      return { ...base, status: "no-zonage-layer", detail: `gonet: réponse PAGINÉE/refusée (${received.features.length}/${best.count} features; preuve v2 à URL unique impossible)` };
+    }
+    const raw = received.features;
     const norm = normalize(raw, best.zoneField, layerUrl, "obscura-gonet-vector");
 
     // Anti-invention (mission gate) : le champ zone auto-pické GOnet doit porter de
@@ -977,10 +1139,8 @@ async function processGonetZonage(
     if (distanceKm !== undefined) base.distanceKm = distanceKm;
 
     if (args.deposit && s3) {
-      const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: layerUrl, type: "geonet", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }));
-      await putServedZoneGeojson(s3, key, fc);
-      return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
+      const deposited = await depositCapturedZones(s3, slug, norm, proofFromGonetCapture(received.entry));
+      return { ...base, ...deposited, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
     }
     return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${best.zoneField}) via GoNet ${layerUrl}` };
   } finally {
@@ -1048,7 +1208,7 @@ async function processCity(slug: string, muni: MuniEntry | undefined, browser: B
     const viewer = gonetViewerUrl(lead.goazimut);
     dbg(`gonet viewer=${viewer ?? "n/a"}`);
     if (viewer) {
-      const g = await processGonetZonage(slug, muni, viewer, browser, s3, args, base);
+      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base);
       if (g.deposited || g.status === "deposited") return g;
       if (!platforms.includes("arcgis")) return g; // gonet-only → classement gonet terminal
       base.detail = g.detail; // garde la note gonet si l'ArcGIS échoue aussi
@@ -1134,8 +1294,19 @@ async function depositFromServices(
     }
 
     const outFields = probe.muniField ? `${probe.zoneField},${probe.muniField}` : probe.zoneField;
-    const raw = await fetchFeatures(probe.layerUrl, outFields, where);
-    if (raw.length === 0) continue;
+    const targetCount = await capturedArcgisJson<{ count?: number }>(
+      `${probe.layerUrl}/query?where=${encodeURIComponent(where)}&returnCountOnly=true&f=json`,
+      [slug],
+    );
+    const expectedCount = targetCount?.value.count ?? 0;
+    if (expectedCount <= 0) continue;
+    const received = await fetchFeatures(probe.layerUrl, outFields, where, expectedCount, slug);
+    if (!received || received.features.length === 0) continue;
+    if (received.paginated) {
+      base.detail = `réponse PAGINÉE/refusée ${probe.layerUrl} (${received.features.length}/${expectedCount} features; preuve v2 à URL unique impossible)`;
+      continue;
+    }
+    const raw = received.features;
     // Anti-invention: validate the VALUES are real zone codes, even when the field
     // was auto-picked. This rejects affectation labels, letter-only categories,
     // numeric-only zone ids, and technical/sequential ids before any deposit.
@@ -1168,10 +1339,13 @@ async function depositFromServices(
     if (distanceKm !== undefined) base.distanceKm = distanceKm;
 
     if (args.deposit && s3) {
-      const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proofFromFetched({ url: probe.layerUrl, type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) }));
-      await putServedZoneGeojson(s3, key, fc);
-      return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${probe.zoneField}) via ${probe.layerUrl}${isAggregate ? " [MRC filtré]" : ""}` };
+      const deposited = await depositCapturedZones(
+        s3,
+        slug,
+        norm,
+        proofFromCaptureEntry(received.entry, { type: "arcgis", method: "natif", reliability: "directe" }),
+      );
+      return { ...base, ...deposited, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${probe.zoneField}) via ${probe.layerUrl}${isAggregate ? " [MRC filtré]" : ""}` };
     }
     return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${probe.zoneField}) via ${probe.layerUrl}` };
   }
@@ -1248,7 +1422,8 @@ async function main(): Promise<void> {
   const mrcSeeds = gonetSeedsFromMrcs(munis, args.gonetMrcs);
   args.gonetSeeds.push(...mrcSeeds.filter((seed) => !args.gonetSeeds.some((s) => s.slug === seed.slug)));
   if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS] [--service URL --zone-field F --muni-field F]  |  --gonet slug=municode,... | --gonet-mrc \"MRC name\""); process.exit(2); }
-  const s3 = args.deposit ? s3Client() : null;
+  const captureS3 = s3Client();
+  const s3 = args.deposit ? captureS3 : null;
   const seeded = args.services.length > 0 || args.orgs.length > 0;
 
   // Chromium n'est requis que pour le crawl de site / GoNet. Le mode --service/--org
@@ -1257,7 +1432,20 @@ async function main(): Promise<void> {
   const needsChrome = args.gonetSeeds.length > 0 || !seeded;
   const chrome = needsChrome ? resolveChrome() : null;
   if (needsChrome && !chrome) { console.error("[obscura] AUCUN binaire Chromium — abandon"); process.exit(1); }
+  const captureRun = openCaptureRun({
+    lane: "zones",
+    s3: captureS3,
+    userAgent: needsChrome ? REAL_UA : HTTP_UA,
+    viaObscura: needsChrome,
+    // A SOCKS endpoint proves a browser proxy, not its implementation.  A Tor
+    // operator can state `GEO_CAPTURE_EGRESS=tor:zones` explicitly.
+    egress: process.env["GEO_CAPTURE_EGRESS"] ?? (process.env["CHROME_PROXY"] ? "proxy:chrome" : "direct"),
+  });
+  CAPTURE = captureRun;
+  let captureExit = 1;
+  try {
   console.error(`[obscura] chromium=${chrome ?? "n/a (mode --service HTTP)"} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} gonetMrcs=${args.gonetMrcs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto"} muniField=${args.muniField ?? "auto"}`);
+  console.error(`[obscura] capture run=${captureRun.runId} manifest=s3://${captureRun.keys.manifest}`);
 
   const results: SlugResult[] = [];
   // GoNet-seeded mode: needs Chromium (the GOnet6 zonage MapServer is reachable
@@ -1271,8 +1459,11 @@ async function main(): Promise<void> {
         const viewer = `https://www.goazimut.com/GOnet6/?m=${code}&pl=1`;
         const seedBase: SlugResult = { slug, site: websiteForSlug(slug) ?? null, platforms: ["goazimut"], viewerUrls: [viewer], deposited: false, status: "no-zonage-layer", detail: "" };
         let r: SlugResult;
-        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, s3, args, seedBase); }
-        catch (e) { r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase); }
+        catch (e) {
+          if (e instanceof PropertyRegressionError) throw e;
+          r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) };
+        }
         results.push(r);
         console.error(`[${i + 1}/${args.gonetSeeds.length}] ${r.status.padEnd(18)} ${slug} (m=${code}) :: ${r.detail}`);
       }
@@ -1285,7 +1476,10 @@ async function main(): Promise<void> {
       const slug = args.slugs[i]!;
       let r: SlugResult;
       try { r = await processCityFromSeed(slug, bySlug.get(slug), args.services, args.orgs, s3, args); }
-      catch (e) { r = { slug, site: websiteForSlug(slug) ?? null, platforms: ["arcgis"], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+      catch (e) {
+        if (e instanceof PropertyRegressionError) throw e;
+        r = { slug, site: websiteForSlug(slug) ?? null, platforms: ["arcgis"], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
+      }
       results.push(r);
       console.error(`[${i + 1}/${args.slugs.length}] ${r.status.padEnd(18)} ${slug} :: ${r.detail}`);
     }
@@ -1296,7 +1490,10 @@ async function main(): Promise<void> {
         const slug = args.slugs[i]!;
         let r: SlugResult;
         try { r = await processCity(slug, bySlug.get(slug), browser, s3, args); }
-        catch (e) { r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+        catch (e) {
+          if (e instanceof PropertyRegressionError) throw e;
+          r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
+        }
         results.push(r);
         console.error(`[${i + 1}/${args.slugs.length}] ${r.status.padEnd(18)} ${slug} :: platforms=[${r.platforms.join(",")}] ${r.detail}`);
       }
@@ -1315,6 +1512,12 @@ async function main(): Promise<void> {
   console.error(`\n=== STATUS ${JSON.stringify(byStatus)}`);
   console.error(`déposés=${deposited.length} [${deposited.join(",")}]`);
   console.error(`rapport → ${out}`);
+  captureExit = 0;
+  } finally {
+    CAPTURE = null;
+    try { await captureRun.finish(captureExit); }
+    catch (e) { console.error(`[obscura] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+  }
 }
 
 // Run only as CLI entrypoint (keeps pure helpers importable for tests).

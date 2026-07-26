@@ -25,6 +25,12 @@ import {
   type CaptureReceipt,
 } from "./lib/zone-provenance-quality.js";
 import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
+import {
+  classifyRawCaptureAuditBaseline,
+  type RawCaptureAuditBaseline,
+  type RawCaptureAuditDisposition,
+  type RawCaptureAuditManifestLine,
+} from "./lib/zone-provenance-raw-capture-audit.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -33,15 +39,7 @@ const CAPTURE_RUNS_PREFIX = "capture/_runs/";
 const S3_READ_TIMEOUT_MS = 300_000;
 const argv = process.argv.slice(2);
 
-interface BaselineProof {
-  city_slug: string;
-  collection_key: string | null;
-  proof: {
-    url: string;
-    retrieved_at: string;
-    sha256: `sha256:${string}`;
-  };
-}
+type BaselineProof = RawCaptureAuditBaseline;
 
 interface MatrixLike {
   proof_without_attachable_capture?: unknown;
@@ -102,20 +100,21 @@ function baselineProofs(value: unknown): BaselineProof[] {
   return value.map((row, index) => {
     if (!row || typeof row !== "object") throw new Error(`matrice: ligne ${index} invalide`);
     const candidate = row as { city_slug?: unknown; collection_key?: unknown; proof?: unknown };
+    const collectionKey = candidate.collection_key;
+    let collection_key: string | null;
+    if (collectionKey === null) collection_key = null;
+    else if (typeof collectionKey === "string") collection_key = collectionKey;
+    else throw new Error(`matrice: preuve v2 invalide ligne ${index}`);
     const wrapper = candidate.proof as { geometry_source?: unknown } | null;
     const proof = wrapper?.geometry_source as { url?: unknown; retrieved_at?: unknown; sha256?: unknown } | null;
-    if (
-      typeof candidate.city_slug !== "string"
-      || (typeof candidate.collection_key !== "string" && candidate.collection_key !== null)
-      || !proof
-      || typeof proof.url !== "string"
-      || typeof proof.retrieved_at !== "string"
-      || typeof proof.sha256 !== "string"
-      || !/^sha256:[a-f0-9]{64}$/.test(proof.sha256)
-    ) throw new Error(`matrice: preuve v2 invalide ligne ${index}`);
+    if (typeof candidate.city_slug !== "string") throw new Error(`matrice: preuve v2 invalide ligne ${index}`);
+    if (!proof || typeof proof.url !== "string" || typeof proof.retrieved_at !== "string" || typeof proof.sha256 !== "string") {
+      throw new Error(`matrice: preuve v2 invalide ligne ${index}`);
+    }
+    if (!/^sha256:[a-f0-9]{64}$/.test(proof.sha256)) throw new Error(`matrice: preuve v2 invalide ligne ${index}`);
     return {
       city_slug: candidate.city_slug,
-      collection_key: candidate.collection_key,
+      collection_key,
       proof: { url: proof.url, retrieved_at: proof.retrieved_at, sha256: proof.sha256 as `sha256:${string}` },
     };
   });
@@ -148,15 +147,16 @@ async function main(): Promise<void> {
     const key = captureManifestKeyFromListedRest(entry.key.slice(CAPTURE_RUNS_PREFIX.length));
     return key === entry.key ? [key] : [];
   });
-  const scanned = await mapConcurrent(manifestKeys, 4, async (key) => {
+  const scanned = (await mapConcurrent(manifestKeys, 4, async (key) => {
     const text = (await retryS3(`GetObject ${key}`, (signal) => getBytes(s3, key, undefined, signal))).toString("utf8");
-    return parseManifestJsonl(text).flatMap((line: CaptureManifestLine, lineIndex) => {
+    return parseManifestJsonl(text).map((line: CaptureManifestLine, lineIndex): RawCaptureAuditManifestLine => {
       const receipt = captureReceiptFromManifest(line, key, lineIndex);
-      return receipt ? [receipt] : [];
+      return { manifest_key: key, line_index: lineIndex, line, receipt };
     });
-  });
+  })).flat();
   const byTuple = new Map<string, CaptureReceipt[]>();
-  for (const receipt of scanned.flat()) {
+  for (const { receipt } of scanned) {
+    if (!receipt) continue;
     const tuple = proofTuple(receipt);
     byTuple.set(tuple, [...(byTuple.get(tuple) ?? []), receipt]);
   }
@@ -168,17 +168,51 @@ async function main(): Promise<void> {
     const checked = verifyRawCapturePayload(receipt, bytes, sidecar);
     return { baseline: entry, verified: checked.verified, reason: checked.reason, ...checked.observation };
   });
+  const observationByBaselineTuple = new Map<string, typeof observations>();
+  for (const observation of observations) {
+    const tuple = proofTuple(observation.baseline.proof);
+    observationByBaselineTuple.set(tuple, [...(observationByBaselineTuple.get(tuple) ?? []), observation]);
+  }
+  const classifications = baseline.map((entry) => {
+    const initial: RawCaptureAuditDisposition = classifyRawCaptureAuditBaseline(entry, scanned);
+    if (initial.reason !== "matching-manifest-receipt-awaits-cas-verification") {
+      return { baseline: entry, ...initial };
+    }
+    const checks = observationByBaselineTuple.get(proofTuple(entry.proof)) ?? [];
+    const verified = checks.find((check) => check.verified);
+    if (verified) {
+      return {
+        baseline: entry,
+        cause: "d" as const,
+        reason: "attached-capture-verified" as const,
+        manifest_lines_for_city: initial.manifest_lines_for_city,
+        receipt: verified.receipt,
+      };
+    }
+    const rejected = checks[0];
+    if (!rejected) throw new Error(`audit interne: reçu exact sans observation CAS pour ${entry.city_slug}`);
+    return {
+      baseline: entry,
+      cause: "c" as const,
+      reason: rejected.reason,
+      manifest_lines_for_city: initial.manifest_lines_for_city,
+      receipt: rejected.receipt,
+      actual_sha256: rejected.actual_sha256,
+      sidecar: rejected.sidecar,
+    };
+  });
   const report = {
-    contract: "zone-provenance-raw-capture-audit/v1",
+    contract: "zone-provenance-raw-capture-audit/v2",
     generated_at: new Date().toISOString(),
     read_only_s3: true,
     baseline_matrix: source,
     baseline_proofs: baseline.length,
     manifests_scanned: manifestKeys.length,
-    manifest_receipts: scanned.flat().length,
+    manifest_receipts: scanned.filter((entry) => entry.receipt !== null).length,
     matched_receipts: matches.length,
     verified: observations.filter((row) => row.verified).length,
     rejected: observations.filter((row) => !row.verified).length,
+    classifications,
     observations,
   };
   const output = resolve(COVERAGE, `zone-provenance-raw-capture-audit-${sha256(JSON.stringify(report)).slice(0, 16)}.json`);
