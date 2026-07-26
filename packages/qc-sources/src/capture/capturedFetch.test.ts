@@ -23,8 +23,10 @@ import {
   CaptureManifestLineSchema,
   isCaptureWritableKey,
   parseManifestJsonl,
+  redactCaptureLog,
   redactUrlForManifest,
 } from "./manifest.js";
+import { captureWorklist } from "./worklist.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Doubles de test
@@ -435,6 +437,26 @@ describe("capturedFetch — dédup CAS", () => {
     expect(sidecar.sourceUrl).toBe(u1);
     expect(sidecar.fetchedAt).toBe(first.line.retrieved_at);
   });
+
+  it("répare le sidecar absent d'un CAS dédupliqué", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://mrc-a.qc.ca/certificat.pdf";
+    const pdf = "%PDF-1.7 déjà présent";
+    const casKey = `raw/reglement-mrc/cas/${sha256Hex(new TextEncoder().encode(pdf))}.pdf`;
+    // Simule le crash exactement entre le PUT du CAS et celui du sidecar.
+    store.objects.set(casKey, { body: new TextEncoder().encode(pdf), contentType: "application/pdf" });
+
+    const res = await capturedFetch(url, undefined, {
+      run,
+      source: "reglement-mrc",
+      fetchImpl: fakeFetch({ [url]: httpResponse({ body: pdf, headers: { "content-type": "application/pdf" } }) }),
+    });
+
+    expect(res.line.dedup).toBe(true);
+    expect(store.puts.filter((key) => key === casKey)).toHaveLength(0);
+    expect(store.puts).toContain(`${casKey}.meta.json`);
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -455,6 +477,8 @@ describe("rédaction et preuve v2", () => {
     expect(res.line.url).toBe("https://exemple.qc.ca/z.json?token=%3Credacted%3E&f=geojson");
     expect(res.line.redacted).toBe(true);
     expect(JSON.stringify(res.line)).not.toContain("SECRET123");
+    const sidecar = [...store.objects.entries()].find(([key]) => key.endsWith(".meta.json"));
+    expect(JSON.stringify(sidecar?.[1].body)).not.toContain("SECRET123");
     // Une URL rédigée n'est pas re-téléchargeable ⇒ pas de preuve v2.
     expect(() => captureProofFields(res.line)).toThrow(/NE PEUT PAS servir de preuve v2/);
   });
@@ -462,6 +486,20 @@ describe("rédaction et preuve v2", () => {
   it("redactUrlForManifest laisse intacte une URL sans secret", () => {
     const u = "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&typeName=evb%3Ax";
     expect(redactUrlForManifest(u)).toEqual({ url: u, redacted: false });
+  });
+
+  it("rédige aussi un token OAuth porté par le fragment", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://exemple.qc.ca/zones#access_token=fragment-secret&state=ok";
+    const res = await capturedFetch(url, undefined, {
+      run,
+      source: "zones-wfs",
+      fetchImpl: fakeFetch({ [url]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }) }),
+    });
+    const persisted = JSON.stringify(res.line);
+    expect(persisted).not.toContain("fragment-secret");
+    expect(res.line.redacted).toBe(true);
   });
 
   it("une ligne réussie fournit MÉCANIQUEMENT url + retrieved_at + sha256", async () => {
@@ -509,5 +547,85 @@ describe("rédaction et preuve v2", () => {
       fetchImpl: fakeFetch({ [url]: httpResponse({ status: 404 }) }),
     });
     expect(() => captureProofFields(res.line)).toThrow(/aucune preuve v2 dérivable/);
+  });
+
+  it("un dry-run sans CAS durable ne produit AUCUNE preuve", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://exemple.qc.ca/dry.json";
+    const res = await capturedFetch(url, undefined, {
+      run,
+      source: "zones-wfs",
+      store: false,
+      fetchImpl: fakeFetch({ [url]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }) }),
+    });
+    expect(res.line.sha256).not.toBeNull();
+    expect(res.line.storage_key).toBeNull();
+    expect(() => captureProofFields(res.line)).toThrow(/CAS durables/);
+  });
+
+  it("rédige les URL et affectations secrètes avant persistance dans run.log", () => {
+    const raw = [
+      "GET https://exemple.qc.ca/a?token=super-secret API_KEY=top-secret status=200",
+      "Authorization: Bearer header-secret",
+      "Cookie: session=cookie-secret; other=also-secret",
+      '{"token":"json-secret"}',
+    ].join("\n");
+    const redacted = redactCaptureLog(raw);
+    expect(redacted).not.toContain("super-secret");
+    expect(redacted).not.toContain("top-secret");
+    expect(redacted).not.toContain("header-secret");
+    expect(redacted).not.toContain("cookie-secret");
+    expect(redacted).not.toContain("json-secret");
+    expect(redacted).toContain("<redacted>");
+  });
+
+  it("rédige une erreur de transport avant de la déposer dans le manifeste", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://exemple.qc.ca/zones?token=url-secret";
+    const fetchImpl: CaptureFetchLike = async () => {
+      throw new Error("Authorization: Bearer transport-secret; token=error-secret");
+    };
+    const res = await capturedFetch(url, undefined, { run, source: "zones-wfs", fetchImpl });
+    const persisted = JSON.stringify(res.line);
+    expect(persisted).not.toContain("url-secret");
+    expect(persisted).not.toContain("transport-secret");
+    expect(persisted).not.toContain("error-secret");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Worklist — l'entrée générique des Jobs cluster
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("captureWorklist", () => {
+  it("traite un lot séquentiellement, conserve succès + 404 et dépose le log de run", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const okUrl = "https://services3.arcgis.com/abc/zones?f=geojson";
+    const missingUrl = "https://ville.qc.ca/absent.json";
+    const result = await captureWorklist({
+      run,
+      targets: [
+        { slug: "mont-saint-hilaire", source: "zones-arcgis", urls: [okUrl] },
+        { slug: "saint-frederic", source: "zones-arcgis", urls: [missingUrl] },
+      ],
+      delayMs: 0,
+      wait: async () => undefined,
+      fetchImpl: fakeFetch({
+        [okUrl]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }),
+        [missingUrl]: httpResponse({ status: 404 }),
+      }),
+    });
+    await run.finish(0);
+
+    expect(result).toEqual({ selectedTargets: 2, attempted: 2, succeeded: 1, failed: 1, durable: 1 });
+    const lines = parseManifestJsonl(String(store.objects.get(run.keys.manifest)!.body));
+    expect(lines).toHaveLength(2);
+    expect(lines[0]!.storage_key).toMatch(/^raw\/zones-arcgis\/cas\//);
+    expect(lines[1]).toMatchObject({ http_status: 404, sha256: null, storage_key: null });
+    expect(store.puts.every((key) => key.startsWith("raw/") || key.startsWith("capture/_runs/"))).toBe(true);
+    expect(String(store.objects.get(run.keys.log)!.body)).toMatch(/capture-worklist.*done/);
   });
 });
