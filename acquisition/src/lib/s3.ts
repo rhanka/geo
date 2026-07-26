@@ -8,9 +8,10 @@
  * (scripts/build-pmtiles.mjs) and the Python `boto3.client(endpoint_url=...)`.
  */
 import { existsSync, readFileSync } from "node:fs";
-import { Readable } from "node:stream";
-
 import {
+  AbortMultipartUploadCommand,
+  CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand,
   S3Client,
   GetObjectCommand,
   HeadObjectCommand,
@@ -18,6 +19,7 @@ import {
   CopyObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
+  UploadPartCommand,
 } from "@aws-sdk/client-s3";
 
 /**
@@ -28,6 +30,13 @@ import {
 export const S3ENV =
   process.env["S3_ENV_FILE"] ?? "/home/antoinefa/src/_acquisition-shared/s3.env";
 export const BUCKET = "sentropic-geo";
+
+/**
+ * Scaleway Object Storage rejects the AWS SDK's unknown-length `aws-chunked`
+ * PutObject path. Multipart gives every uploaded part its explicit length while
+ * retaining a strict, bounded memory footprint.
+ */
+export const STREAM_PART_BYTES = 8 * 1024 * 1024;
 
 /** Exact public qc-zonage objects (legacy flat and mirrored nested layouts). */
 export function isServedZoneKey(key: string): boolean {
@@ -263,6 +272,34 @@ export async function putBytes(
   );
 }
 
+/**
+ * Cut an arbitrary async stream into bounded multipart buffers. Non-final S3
+ * parts must be at least 5 MiB; 8 MiB keeps headroom for Node and transport.
+ */
+async function* multipartParts(
+  body: AsyncIterable<Uint8Array>,
+  partBytes: number = STREAM_PART_BYTES,
+): AsyncIterable<Buffer> {
+  let chunks: Buffer[] = [];
+  let length = 0;
+  for await (const chunk of body) {
+    const source = Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+    let offset = 0;
+    while (offset < source.byteLength) {
+      const take = Math.min(partBytes - length, source.byteLength - offset);
+      chunks.push(source.subarray(offset, offset + take));
+      offset += take;
+      length += take;
+      if (length === partBytes) {
+        yield Buffer.concat(chunks, length);
+        chunks = [];
+        length = 0;
+      }
+    }
+  }
+  if (length > 0) yield Buffer.concat(chunks, length);
+}
+
 /** PUT an async byte stream without accumulating the object in process memory. */
 export async function putStream(
   s3: S3Client,
@@ -274,14 +311,58 @@ export async function putStream(
   if (isServedZoneKey(key)) {
     throw new Error(`direct served qc-zonage stream write refused: use proof-gated deposit (${key})`);
   }
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: Readable.from(body),
-      ...(contentType ? { ContentType: contentType } : {}),
-    }),
-  );
+  let uploadId: string | undefined;
+  const parts: Array<{ ETag?: string; PartNumber: number }> = [];
+  try {
+    for await (const part of multipartParts(body)) {
+      if (uploadId === undefined) {
+        const started = await s3.send(
+          new CreateMultipartUploadCommand({
+            Bucket: bucket,
+            Key: key,
+            ...(contentType ? { ContentType: contentType } : {}),
+          }),
+        );
+        uploadId = started.UploadId;
+        if (!uploadId) throw new Error(`multipart upload without UploadId: ${key}`);
+      }
+      const partNumber = parts.length + 1;
+      const uploaded = await s3.send(
+        new UploadPartCommand({
+          Bucket: bucket,
+          Key: key,
+          UploadId: uploadId,
+          PartNumber: partNumber,
+          Body: part,
+          // Do not let the SDK select the unsupported unknown-length chunked path.
+          ContentLength: part.byteLength,
+        }),
+      );
+      if (!uploaded.ETag) throw new Error(`multipart part without ETag: ${key}#${partNumber}`);
+      parts.push({ ETag: uploaded.ETag, PartNumber: partNumber });
+    }
+    if (uploadId === undefined) {
+      await putBytes(s3, key, Buffer.alloc(0), contentType, bucket);
+      return;
+    }
+    await s3.send(
+      new CompleteMultipartUploadCommand({
+        Bucket: bucket,
+        Key: key,
+        UploadId: uploadId,
+        MultipartUpload: { Parts: parts },
+      }),
+    );
+  } catch (error) {
+    if (uploadId !== undefined) {
+      try {
+        await s3.send(new AbortMultipartUploadCommand({ Bucket: bucket, Key: key, UploadId: uploadId }));
+      } catch {
+        // The original upload failure is the actionable error; preserve it.
+      }
+    }
+    throw error;
+  }
 }
 
 /** PUT a new object once; an existing snapshot must never be replaced. */
