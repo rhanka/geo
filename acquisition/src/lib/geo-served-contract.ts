@@ -11,12 +11,14 @@ import { createHash } from "node:crypto";
 import {
   GetObjectCommand,
   ListObjectsV2Command,
-  PutObjectCommand,
   type S3Client,
 } from "@aws-sdk/client-s3";
 import { canonicalizeZoneCodeForJoin } from "@sentropic/geo";
 
-import { BUCKET } from "./s3.js";
+// Les écritures passent par le helper générique : une garde du dépôt exige que
+// les PUT bruts restent confinés à `lib/s3.ts` et au gate de preuve, et elle a
+// eu raison de se déclencher sur ce fichier.
+import { BUCKET, putBytesIfAbsent, putBytesIfMatch } from "./s3.js";
 import {
   assertServedZoneGeojson,
   isRealGeometryUrl,
@@ -883,7 +885,7 @@ export function s3GeoServedContractStore(s3: S3Client): GeoServedContractStore {
     },
     async putIfAbsent(key, body) {
       try {
-        await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: "application/json", IfNoneMatch: "*" }));
+        await putBytesIfAbsent(s3, key, body, "application/json", BUCKET);
         return true;
       } catch (error) {
         const metadata = isRecord(error) && isRecord(error["$metadata"]) ? error["$metadata"] : null;
@@ -892,11 +894,7 @@ export function s3GeoServedContractStore(s3: S3Client): GeoServedContractStore {
       }
     },
     async putLatestIfCurrent(key, body, priorEtag) {
-      if (priorEtag === null) {
-        await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: "application/json", IfNoneMatch: "*" }));
-      } else {
-        await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: "application/json", IfMatch: priorEtag }));
-      }
+      await putBytesIfMatch(s3, key, body, priorEtag, "application/json", BUCKET);
     },
   };
 }
