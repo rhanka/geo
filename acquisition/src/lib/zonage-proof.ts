@@ -51,13 +51,21 @@ function isIsoTimestamp(value: unknown): value is string {
   return typeof value === "string" && ISO_TIMESTAMP_RE.test(value) && !Number.isNaN(Date.parse(value));
 }
 
+/** True when the host is object storage (ours), which can never stand as an
+ *  upstream source. Matched on DOT-SEPARATED LABELS, never on a substring: a
+ *  plain `/s3[.:]/` also matches `services3.arcgis.com`, the busiest ArcGIS
+ *  Online host there is, and silently refused every proof built from it. */
+export function isObjectStorageHost(hostname: string): boolean {
+  return hostname.toLowerCase().split(".").some((label) => label === "s3" || label.startsWith("s3-"));
+}
+
 export function isRealGeometryUrl(value: unknown): value is string {
   if (typeof value !== "string") return false;
   try {
     const u = new URL(value);
     // Fragments are permitted (e.g. layer identity), but the actual network URL
     // must remain HTTP(S), and internal storage/local pseudo-sources are rejected.
-    return (u.protocol === "https:" || u.protocol === "http:") && !!u.hostname && !/^(localhost|127\.|::1)/i.test(u.hostname) && !/s3[.:]/i.test(u.hostname);
+    return (u.protocol === "https:" || u.protocol === "http:") && !!u.hostname && !/^(localhost|127\.|::1)/i.test(u.hostname) && !isObjectStorageHost(u.hostname);
   } catch { return false; }
 }
 
