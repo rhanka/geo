@@ -48,6 +48,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import { capturedFetch, capturedText, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
 import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 // Anti-invention value-based (agnostique du NOM de champ) — le MÊME gate que le
@@ -65,6 +67,7 @@ const ALTUS_BASE = "https://gis.altusquebec.com/arcgis/rest/services";
 const HTTP_UA = "sentropic-geo/0.1";
 const HTTP_TIMEOUT_MS = 25_000;
 const MAX_FEATURES = 20_000;
+const CAPTURE_SOURCE = "zones-sigale";
 
 // MRC ArcGIS folder → nom MRC du registre (pour dériver le lot de munis par défaut).
 // N'ajouter une MRC ici qu'après avoir CONSTATÉ son gabarit SIGALE. Les folders
@@ -144,14 +147,20 @@ function parseArgs(argv: string[]): Args {
 
 // ── HTTP ──────────────────────────────────────────────────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
-async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+async function fetchJson<T = unknown>(url: string, slugs: string[] = [], timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
   try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json" } });
+    if (!CAPTURE) throw new Error("capture run absent");
+    const r = await capturedFetch(url, { headers: { "user-agent": HTTP_UA, accept: "application/json" } }, {
+      run: CAPTURE,
+      source: CAPTURE_SOURCE,
+      slugs,
+      attempt: 1,
+      timeoutMs,
+      version: "zones-sigale-run/1",
+    });
     if (!r.ok) return null;
-    return JSON.parse(await r.text()) as T;
-  } catch { return null; } finally { clearTimeout(t); }
+    return JSON.parse(capturedText(r)) as T;
+  } catch { return null; }
 }
 
 async function loadAvailableSigaleCodes(mrc: string): Promise<Set<string>> {
@@ -208,14 +217,14 @@ function pickMuniCodeField(fields: FieldInfo[]): string | null {
 }
 
 // ── Téléchargement paginé (GeoJSON WGS84) ────────────────────────────────────
-async function fetchFeatures(layerUrl: string, outFields: string, where: string, batch: number): Promise<GeoFeature[]> {
+async function fetchFeatures(layerUrl: string, outFields: string, where: string, batch: number, slug: string): Promise<GeoFeature[]> {
   const features: GeoFeature[] = [];
   let offset = 0;
   const size = Math.max(1, Math.min(batch, 2000));
   while (features.length < MAX_FEATURES) {
     const url = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}` +
       `&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${size}&f=geojson`;
-    const data = await fetchJson<GeoFC>(url, HTTP_TIMEOUT_MS);
+    const data = await fetchJson<GeoFC>(url, [slug], HTTP_TIMEOUT_MS);
     if (!data || !Array.isArray(data.features) || data.features.length === 0) break;
     features.push(...data.features);
     offset += data.features.length;
@@ -254,14 +263,14 @@ async function processMuni(
   const serviceUrl = `${ALTUS_BASE}/MRC${mrc}/${mamhCode}_Publique/MapServer`;
   base.serviceUrl = serviceUrl;
 
-  const svc = await fetchJson<{ layers?: ArcLayer[] }>(`${serviceUrl}?f=json`);
+  const svc = await fetchJson<{ layers?: ArcLayer[] }>(`${serviceUrl}?f=json`, [slug]);
   if (!svc || !Array.isArray(svc.layers)) return { ...base, status: "no-service", detail: `service SIGALE introuvable (${serviceUrl})` };
 
   const layer = findZonageLayer(svc.layers);
   if (!layer) return { ...base, status: "no-zonage-layer", detail: `service OK mais aucune couche 'Zonage municipal' (${svc.layers.length} couches)` };
   const layerUrl = `${serviceUrl}/${layer.id}`;
 
-  const li = await fetchJson<{ fields?: FieldInfo[]; maxRecordCount?: number; geometryType?: string }>(`${layerUrl}?f=json`);
+  const li = await fetchJson<{ fields?: FieldInfo[]; maxRecordCount?: number; geometryType?: string }>(`${layerUrl}?f=json`, [slug]);
   const fields = li?.fields ?? [];
   if (fields.length === 0) return { ...base, status: "no-zonage-layer", detail: `couche '${layer.name}' (#${layer.id}) sans champs lisibles` };
   if (li?.geometryType && !/Polygon/i.test(li.geometryType)) return { ...base, status: "no-zonage-layer", detail: `couche '${layer.name}' non-polygonale (${li.geometryType})` };
@@ -279,7 +288,7 @@ async function processMuni(
   let where = "1=1";
   if (muniField) {
     const filt = `${muniField}='${mamhCode.replace(/'/g, "''")}'`;
-    const cnt = await fetchJson<{ count?: number }>(`${layerUrl}/query?where=${encodeURIComponent(filt)}&returnCountOnly=true&f=json`);
+    const cnt = await fetchJson<{ count?: number }>(`${layerUrl}/query?where=${encodeURIComponent(filt)}&returnCountOnly=true&f=json`, [slug]);
     if ((cnt?.count ?? 0) > 0) where = filt;
   }
 
@@ -287,7 +296,7 @@ async function processMuni(
   const batch = Math.max(1, Math.min(li?.maxRecordCount ?? 1000, 2000));
   const sourceUrl = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}` +
     `&outSR=4326&geometryPrecision=6&resultOffset=0&resultRecordCount=${batch}&f=geojson`;
-  const raw = await fetchFeatures(layerUrl, outFields, where, batch);
+  const raw = await fetchFeatures(layerUrl, outFields, where, batch, slug);
   if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `couche '${layer.name}' téléchargée vide (where=${where})` };
 
   // Anti-invention (valeur-par-valeur) : REJET si le champ ne porte pas de vrais codes.
@@ -345,6 +354,8 @@ async function processMuni(
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+let CAPTURE: CaptureRun | null = null;
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
@@ -352,6 +363,8 @@ async function main(): Promise<void> {
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
   const mamhBySlug = loadMamhCodes();
   const slugByMamh = new Map([...mamhBySlug.entries()].map(([slug, code]) => [code, slug]));
+  const s3 = s3Client(); // requis par le run de capture, le check wasServed et le dépôt éventuel
+  CAPTURE = openCaptureRun({ lane: "zones", s3 });
 
   // Lot de munis : --slugs explicite, sinon les services `<code>_Publique`
   // réellement publiés par le dossier MRC###. Pour les MRC historiques déjà
@@ -368,11 +381,13 @@ async function main(): Promise<void> {
       slugs = catalogSlugs;
     } else {
       console.error(`[sigale] MRC ${args.mrc} sans lot par défaut ni services <code>_Publique — préciser --slugs`);
-      process.exit(2);
+      process.exitCode = 2;
+      return;
     }
   }
-  const s3 = s3Client(); // requis même en probe (check wasServed / dépôt éventuel)
   console.error(`[sigale] MRC=${args.mrc} munis=${slugs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto→Zonage"}`);
+  console.error(`[sigale] capture run=${CAPTURE.runId} manifest=s3://${CAPTURE.keys.manifest}`);
+  CAPTURE.log(`[sigale] mrc=${args.mrc} munis=${slugs.length} deposit=${args.deposit}`);
 
   const results: SlugResult[] = [];
   for (let i = 0; i < slugs.length; i++) {
@@ -395,4 +410,16 @@ async function main(): Promise<void> {
   console.error(`rapport → ${out}`);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.message : e); process.exit(1); });
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[sigale] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(typeof process.exitCode === "number" ? process.exitCode : 0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.message : e);
+    await closeCapture(1);
+    process.exit(1);
+  });
