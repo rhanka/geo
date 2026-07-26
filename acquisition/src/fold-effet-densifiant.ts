@@ -59,6 +59,11 @@ const EFFECT_FIELDS = [
   "densite_avant", "densite_avant_millesime", "densite_avant_reglement",
   "densite_apres", "densite_apres_millesime", "densite_apres_reglement",
   "effet_densifiant", "effet_densifiant_delta",
+  // L'artefact porte depuis toujours la méthode (`explicit` vs `deduit`) et la
+  // citation à la page de chaque densité ; le fold les jetait. 36 % des deltas
+  // sont DÉDUITS des classes d'habitation autorisées, pas lus dans une colonne —
+  // un consommateur ne pouvait pas les distinguer, ni citer sa source.
+  "effet_densifiant_methode", "densite_avant_source", "densite_apres_source",
 ] as const;
 
 function arg(argv: string[], key: string): string | undefined {
@@ -185,6 +190,9 @@ function applyEntry(
   props["densite_apres_reglement"] = config.newReglement;
   props["effet_densifiant"] = entry.effet_densifiant;
   props["effet_densifiant_delta"] = entry.effet_densifiant_delta;
+  props["effet_densifiant_methode"] = entry.methode;
+  props["densite_avant_source"] = entry.source_avant;
+  props["densite_apres_source"] = entry.source_apres;
 }
 
 async function main(): Promise<void> {
