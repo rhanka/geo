@@ -43,7 +43,8 @@
  */
 import { pathToFileURL } from "node:url";
 
-import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
+import { getBytes, exists, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
 const SLUG = "quebec";
@@ -115,7 +116,7 @@ async function main(): Promise<void> {
     console.log(`${dryRun ? "DRY " : "OK  "}${SLUG} polygones=${feats.length} cellsChanged=${changed} nonRoutees=${unrouted} key=${key}`);
     for (const [num, n] of [...perArr.entries()].sort()) console.log(`     ${num}\t${n} zones`);
     if (!dryRun && changed > 0) {
-      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+      await putServedZoneAdditive(s3, key, fc, { allowedProps: FIELDS });
     }
   }
   console.log(`DONE ${SLUG}${dryRun ? " (dry-run)" : ""}`);

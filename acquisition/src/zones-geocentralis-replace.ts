@@ -49,7 +49,8 @@ import {
 } from "../../packages/qc-sources/src/capture/index.js";
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
+import { attachGeometryProof, carryForwardServedZoneProperties, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import {
   buildGetFeatureUrl,
   featuresBboxCenter,
@@ -193,6 +194,14 @@ function stamp(): string {
   return new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
 }
 
+/** Preserve the current served contract per zone_code before the central deposit
+ * gate verifies that no property key disappears. */
+function freshFeaturesWithServedProperties(norm: GeoFeature[], current: GeoFeature[]): { features: GeoFeature[]; matched: number; unmatched: number } {
+  const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
+  const carried = carryForwardServedZoneProperties(features, current, canon);
+  return { features, ...carried };
+}
+
 async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | null> {
   if (!(await withRetry(`exists ${key}`, () => exists(s3, key)))) return null;
   const buf = await withRetry(`get ${key}`, () => getBytes(s3, key));
@@ -298,16 +307,18 @@ async function main(): Promise<void> {
       ? `[replace] PREUVE = entrée de capture (run=${run.runId}, cas=s3://${soleEntry.storage_key})`
       : `[replace] PREUVE = agrégat ${captureEntries.length} pages (aucune URL unique ne rend ces octets ; les ${captureEntries.length} pages restent journalisées)`,
   );
-  const targets: string[] = [flatKey];
-  if (subServed) targets.push(subKey);
-  for (const key of targets) {
-    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm }, proof);
-    await withRetry(`put ${key}`, () => putServedZoneGeojson(s3, key, fc));
-    console.error(`[replace] DÉPÔT v2 -> s3://${key}`);
+  const targets: Array<{ key: string; current: GeoFeature[] }> = [{ key: flatKey, current: flatServed ?? servedSource }];
+  if (subServed) targets.push({ key: subKey, current: subServed });
+  for (const target of targets) {
+    const carried = freshFeaturesWithServedProperties(norm, target.current);
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: carried.features }, proof);
+    console.error(`[replace] PROPRIÉTÉS reportées ${target.key}: zones appariées=${carried.matched}/${norm.length} non-appariées=${carried.unmatched}`);
+    await withRetry(`put ${target.key}`, () => putServedZoneGeojson(s3, target.key, fc));
+    console.error(`[replace] DÉPÔT v2 -> s3://${target.key}`);
   }
 
   // ── 6. Readback des octets déposés ──────────────────────────────────────────
-  for (const key of targets) {
+  for (const { key } of targets) {
     const buf = await withRetry(`readback ${key}`, () => getBytes(s3, key));
     const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
     const rb = distinctZoneCodes(fc.features ?? []);
@@ -315,7 +326,10 @@ async function main(): Promise<void> {
     console.error(`[replace] READBACK ${key}: features=${(fc.features ?? []).length} distinct=${rb.raw.size} proof_v2=${okProof ? "OUI" : "NON"} sha=${String(fc.proof?.geometry_source?.sha256 ?? "?").slice(0, 23)}…`);
   }
 
-  // ── 7. STAMP provenance additif — MÊME PASSE (atomicité) ─────────────────────
+  // ── 7. Re-fold additif — MÊME PASSE (atomicité) ─────────────────────────────
+  await reapplyServedZonageEnrichment(slug);
+
+  // ── 8. STAMP provenance additif — source exacte de la nouvelle géométrie ────
   // Un re-dépôt géométrie v2 (putServedZoneGeojson) EFFACE zone_source_url /
   // zone_source_level : il ne reporte pas le stamp additif. On les ré-écrit ICI,
   // dans la même passe, sur CHAQUE clé servie, via le chemin additif sûr — la
@@ -324,7 +338,7 @@ async function main(): Promise<void> {
   // Idempotent, et ne régresse pas la géométrie qui vient d'être posée.
   const zoneSourceUrl = proof.url;      // URL source v2 exacte (== proof.geometry_source.url)
   const zoneSourceLevel = "documented"; // source SIG officielle re-téléchargeable qui recoupe les codes servis
-  for (const key of targets) {
+  for (const { key } of targets) {
     const buf = await withRetry(`get-for-stamp ${key}`, () => getBytes(s3, key));
     const fc = JSON.parse(buf.toString("utf8")) as { type?: unknown; features?: Array<{ geometry?: unknown; properties?: Record<string, unknown> | null }> };
     for (const f of fc.features ?? []) {
@@ -336,7 +350,7 @@ async function main(): Promise<void> {
 
   console.error(`\n=== DÉPÔT TERMINÉ ===`);
   console.error(`  backups: ${backups.map((b) => `s3://${b}`).join("  ")}`);
-  console.error(`  déposé:  ${targets.map((k) => `s3://${k}`).join("  ")}`);
+  console.error(`  déposé:  ${targets.map(({ key }) => `s3://${key}`).join("  ")}`);
   console.error(`  provenance: url=${zoneSourceUrl} level=${zoneSourceLevel} (re-stampée sur ${targets.length} clé(s))`);
   console.error(`  proof:   url=${proof.url}`);
   console.error(`  sha256:  ${proof.sha256}`);

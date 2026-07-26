@@ -17,7 +17,8 @@
  */
 import { pathToFileURL } from "node:url";
 
-import { getBytes, putBytes, exists, s3Client } from "./lib/s3.js";
+import { getBytes, exists, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const NORMS_PREFIX = "normalized/qc-zonage-norms/";
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
@@ -57,12 +58,17 @@ async function grilleNorms(s3: S3, slug: string): Promise<Map<string, Record<str
   return map;
 }
 
-async function zonageKey(s3: S3, slug: string): Promise<string | null> {
-  const flat = `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`;
-  if (await exists(s3, flat)) return flat;
-  const sub = `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
-  if (await exists(s3, sub)) return sub;
-  return null;
+/** Stamp every existing layout: geo-api serves the sub-directory when both
+ * layouts coexist, so stopping at the flat object can report success while the
+ * API still exposes stale data. */
+async function zonageKeys(s3: S3, slug: string): Promise<string[]> {
+  const candidates = [
+    `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`,
+    `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
+  ];
+  const keys: string[] = [];
+  for (const key of candidates) if (await exists(s3, key)) keys.push(key);
+  return keys;
 }
 
 async function main(): Promise<void> {
@@ -83,31 +89,33 @@ async function main(): Promise<void> {
       skipped.push(`${slug} (grille norms vide/absente)`);
       continue;
     }
-    const key = await zonageKey(s3, slug);
-    if (!key) {
+    const keys = await zonageKeys(s3, slug);
+    if (keys.length === 0) {
       skipped.push(`${slug} (polygone qc-zonage non servi)`);
       continue;
     }
-    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-    const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
-    let matched = 0, changed = 0;
-    for (const f of feats) {
-      f.properties = f.properties ?? {};
-      if (strip) {
-        for (const nf of NORM_FIELDS) if (nf in f.properties) { delete f.properties[nf]; changed++; }
-        continue;
+    for (const key of keys) {
+      const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+      const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+      let matched = 0, changed = 0;
+      for (const f of feats) {
+        f.properties = f.properties ?? {};
+        if (strip) {
+          for (const nf of NORM_FIELDS) if (nf in f.properties) { delete f.properties[nf]; changed++; }
+          continue;
+        }
+        const sub = norms!.get(canon(f.properties["zone_code"]));
+        if (!sub) continue;
+        matched++;
+        for (const nf of NORM_FIELDS) {
+          if (f.properties[nf] !== sub[nf]) { f.properties[nf] = sub[nf]; changed++; }
+        }
       }
-      const sub = norms!.get(canon(f.properties["zone_code"]));
-      if (!sub) continue;
-      matched++;
-      for (const nf of NORM_FIELDS) {
-        if (f.properties[nf] !== sub[nf]) { f.properties[nf] = sub[nf]; changed++; }
+      const pct = feats.length ? Math.round((matched / feats.length) * 1000) / 10 : 0;
+      console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) cellsChanged=${changed} key=${key}`);
+      if (!dryRun && changed > 0) {
+        await putServedZoneAdditive(s3, key, fc, { allowedProps: NORM_FIELDS });
       }
-    }
-    const pct = feats.length ? Math.round((matched / feats.length) * 1000) / 10 : 0;
-    console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) cellsChanged=${changed} key=${key}`);
-    if (!dryRun && changed > 0) {
-      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
     }
     ok++;
   }
