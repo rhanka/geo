@@ -1,0 +1,33 @@
+# geo-capture — generic, durable capture runner (SPEC_CAPTURE_ON_CLUSTER §5.2).
+#
+# It contains only Node/TS plus CA certificates: this direct-HTTP job never
+# performs extraction or writes served data. Chromium/Tor remain a distinct
+# obscura variant because adding them here would falsely imply that a generic
+# GET worklist can drive a CDP source safely.
+FROM node:22-bookworm-slim
+
+RUN echo 'APT::Sandbox::User "root";' > /etc/apt/apt.conf.d/00no-sandbox \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /geo
+
+# The file dependency @sentropic/geo must exist BEFORE `npm ci`; all source
+# packages resolve ESM `zod` through /geo/node_modules (a symlink to the only
+# installed dependency tree), since ESM deliberately ignores NODE_PATH.
+COPY packages/geo/ ./packages/geo/
+COPY packages/qc-sources/ ./packages/qc-sources/
+COPY acquisition/package.json acquisition/package-lock.json ./acquisition/
+RUN cd acquisition && npm ci \
+ && ln -s /geo/acquisition/node_modules /geo/node_modules
+COPY acquisition/src/ ./acquisition/src/
+COPY acquisition/tsconfig.json ./acquisition/
+
+COPY deploy/capture-job/run-capture-job.sh /usr/local/bin/run-capture-job.sh
+RUN chmod +x /usr/local/bin/run-capture-job.sh
+
+ENV PATH="/geo/acquisition/node_modules/.bin:${PATH}"
+ENV NODE_PATH="/geo/acquisition/node_modules"
+WORKDIR /geo/acquisition
+ENTRYPOINT ["/usr/local/bin/run-capture-job.sh"]
