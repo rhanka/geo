@@ -28,6 +28,7 @@ import type { CaptureRun } from "./capture-run.js";
 import {
   assertCasKeyMatchesBytes,
   assertCaptureWritableKey,
+  redactCaptureLog,
   redactUrlForManifest,
   CaptureManifestLineSchema,
   type CaptureLane,
@@ -123,9 +124,9 @@ const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 function normalizeError(e: unknown): string {
   if (e instanceof Error) {
     const name = e.name === "AbortError" ? "timeout" : e.name;
-    return `${name}: ${e.message}`.slice(0, 500);
+    return redactCaptureLog(`${name}: ${e.message}`).slice(0, 500);
   }
-  return String(e).slice(0, 500);
+  return redactCaptureLog(String(e)).slice(0, 500);
 }
 
 /**
@@ -306,7 +307,9 @@ export async function capturedFetch(
   // ── 5. dépôt content-addressed (HEAD-skip idempotent) ───────────────────────
   const record = buildRawDocumentRecord({
     source: ctx.source,
-    sourceUrl: url,
+    // Le sidecar est durable lui aussi : il ne doit pas devenir le contournement
+    // de la rédaction du manifeste lorsqu'une URL signée a servi au transport.
+    sourceUrl: redacted.url,
     ...(ctx.title !== undefined ? { title: ctx.title } : {}),
     ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
     body,
@@ -329,8 +332,15 @@ export async function capturedFetch(
       dedup = await run.storeHead(record.storageKey);
       if (!dedup) {
         await run.storePut(record.storageKey, body, record.contentType);
+      }
+      // Le sidecar fait partie de l'objet de capture. Un pod peut mourir entre
+      // le PUT CAS et le PUT meta : une recapture dédupliquée doit alors réparer
+      // ce sibling absent, sinon la mesure v2 refuserait à juste titre le CAS.
+      const metaKey = rawMetaKey(record.storageKey);
+      const metaExists = await run.storeHead(metaKey);
+      if (!metaExists) {
         await run.storePut(
-          rawMetaKey(record.storageKey),
+          metaKey,
           `${JSON.stringify(record, null, 2)}\n`,
           "application/json",
         );
