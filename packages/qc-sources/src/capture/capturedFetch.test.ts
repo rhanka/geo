@@ -428,6 +428,12 @@ describe("capturedFetch — dédup CAS", () => {
     expect(store.puts.filter((k) => k === casKey)).toHaveLength(1);
     expect(run.manifestLines()).toHaveLength(2);
     expect(run.manifestLines().map((l) => l.slugs)).toEqual([["ville-a"], ["ville-b"]]);
+    // Le sidecar est l'identité de l'objet CAS créé au premier fetch. Il ne
+    // devient pas le récit mutable du second fetch : celui-ci vit dans sa ligne
+    // de manifeste distincte.
+    const sidecar = JSON.parse(String(store.objects.get(`${casKey}.meta.json`)!.body)) as { sourceUrl: string; fetchedAt: string };
+    expect(sidecar.sourceUrl).toBe(u1);
+    expect(sidecar.fetchedAt).toBe(first.line.retrieved_at);
   });
 });
 
