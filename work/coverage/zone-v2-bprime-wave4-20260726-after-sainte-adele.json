@@ -1,0 +1,95 @@
+{
+  "contract": "zones-bprime-proof-audit/v1",
+  "generated_at": "2026-07-26T12:19:50.854Z",
+  "scope": {
+    "config": "acquisition/config/immo-vivier-b-20260725.json",
+    "requested_slugs": 1,
+    "declared_vivier_count": 170,
+    "with_lots": true,
+    "offset": 0,
+    "limit": null,
+    "resume": false
+  },
+  "serving_precedence": "nested_when_present_else_flat",
+  "s3_read_timeout": "none (intentional; absence is never inferred from a timeout)",
+  "progress": {
+    "observed_slugs": 1,
+    "complete": true
+  },
+  "summary": {
+    "served_collections": 1,
+    "no_real_source_orphan_or_stamped_null": 0,
+    "read_errors": 0,
+    "exact": true
+  },
+  "no_real_source_collections": [],
+  "rows": [
+    {
+      "slug": "sainte-adele",
+      "zone_key": "normalized/ca-qc-zonage/qc-zonage-sainte-adele.geojson",
+      "zone_layout": "flat",
+      "zone_shadow_keys": [],
+      "lot_stats_key": "normalized/qc-lots/qc-lots-sainte-adele.stats.json",
+      "feature_count": 145,
+      "zone_code_count": 135,
+      "property_key_count": 41,
+      "property_keys": [
+        "affectation",
+        "confidence",
+        "densite_apres",
+        "densite_apres_millesime",
+        "densite_apres_reglement",
+        "densite_avant",
+        "densite_avant_millesime",
+        "densite_avant_reglement",
+        "densite_unit",
+        "densite_value",
+        "effet_densifiant",
+        "effet_densifiant_delta",
+        "facade_min_unit",
+        "facade_min_value",
+        "hauteur_max_unit",
+        "hauteur_max_value",
+        "hauteur_min_unit",
+        "hauteur_min_value",
+        "kind",
+        "marge_arriere_min_unit",
+        "marge_arriere_min_value",
+        "marge_avant_min_unit",
+        "marge_avant_min_value",
+        "marge_laterale_min_unit",
+        "marge_laterale_min_value",
+        "num_zone",
+        "proof",
+        "reglement_millesime",
+        "reglement_numero",
+        "reglement_page_source",
+        "reglement_url",
+        "source",
+        "superficie_min_unit",
+        "superficie_min_value",
+        "usage_dominant",
+        "usage_dominant_source",
+        "zone_code",
+        "zone_geometry_flagged",
+        "zone_geometry_status",
+        "zone_source_level",
+        "zone_source_url"
+      ],
+      "property_value_count": 3737,
+      "source_levels": [
+        "documented"
+      ],
+      "http_source_urls": [
+        "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Azonage_municipal&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2777022%27"
+      ],
+      "invalid_source_url_values": [],
+      "stamped_null": false,
+      "provenance": "source-http",
+      "needs_reacquisition": false,
+      "lot_count": 11176,
+      "assigned_lot_count": 11164,
+      "read_error": null
+    }
+  ]
+}
