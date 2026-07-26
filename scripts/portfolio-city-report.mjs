@@ -26,11 +26,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { latestZoneProvenanceQualityMatrix } from './lib/latest-coverage-matrix.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), '..');
-const COV = path.join(ROOT, 'work', 'coverage');
+const DEFAULT_COV = path.join(ROOT, 'work', 'coverage');
+// Test-only override: production/CLI default remains the repository coverage dir.
+const COV = process.env.PORTFOLIO_COVERAGE_DIR ? path.resolve(process.env.PORTFOLIO_COVERAGE_DIR) : DEFAULT_COV;
 const HISTORY_DIR = path.join(COV, 'portfolio-report-history');
 
 const CONTRACT = 'portfolio-city-report/v1';
@@ -90,7 +93,7 @@ function warn(msg) {
 
 // ---- chargement des sources ------------------------------------------------
 function loadFile(relPath) {
-  const abs = path.join(ROOT, relPath);
+  const abs = path.isAbsolute(relPath) ? relPath : path.join(ROOT, relPath);
   if (!fs.existsSync(abs)) {
     warn(`Source absente: ${relPath} (KPI concernés → unknown)`);
     return { path: relPath, exists: false, sha256: null, data: null, asOf: null };
@@ -128,15 +131,26 @@ function discoverLotZoneScale() {
   return discoverLatest(/^lot-zone-consistency-scale-.*\.json$/);
 }
 
+// La matrice est produite par le runner S3 committé. Son nom daté est l'ordre
+// déterministe ; aucun mtime et aucun repli vers le snapshot historique.
+function discoverProvQuality() {
+  if (!fs.existsSync(COV)) return null;
+  const file = latestZoneProvenanceQualityMatrix(
+    fs.readdirSync(COV, { withFileTypes: true }).filter((entry) => entry.isFile()).map((entry) => entry.name),
+  );
+  return file ? (COV === DEFAULT_COV ? path.join('work', 'coverage', file) : path.join(COV, file)) : null;
+}
+
 // Paths (relatifs à ROOT).
 const readbackRel = discoverReadback();
 const lotZoneScaleRel = discoverLotZoneScale();
+const provQualityRel = discoverProvQuality();
 
 const SRC = {
   zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
   pv: loadFile('work/coverage/pv-completion-city-audit.json'),
   regdens: loadFile('work/coverage/completion-regdens-20260723.json'),
-  provQuality: loadFile('work/coverage/zone-provenance-quality-matrix-20260723-74345365.json'),
+  provQuality: provQualityRel ? loadFile(provQualityRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   immoLotZone: loadFile('work/coverage/immo-lot-zone-assignment-matrix-20260723.json'),
   immoFolded: loadFile('work/coverage/immo-folded-normes-city-matrix.json'),
   immoField: loadFile('work/immo-field-completion-matrices/immo-field-completion-matrix.json'),
@@ -279,30 +293,29 @@ function kpiProvJointure() {
 }
 
 function kpiProvQualite() {
-  const q = SRC.provQuality.data?.validation?.quality_status_partition?.counts;
+  const q = provenanceQualityCounts();
   if (!q) return unknownCell();
-  const acceptable = q.acceptable;
-  const candidate = q.candidate;
-  const orphan = q.orphan;
-  const unk = q.unknown;
+  const { acceptable, candidate, orphan, unknown: unk, v2 } = q;
   return {
     status: 'ok',
-    complete: acceptable, // "acceptable" = meilleur bucket qualité retained (≠ preuve v2)
+    // Une v2 vérifiée est aussi une qualité acceptable; la garder séparée dans
+    // l'affichage évite cependant de faire passer la qualité retained pour v2.
+    complete: acceptable + v2,
     incomplete: candidate + orphan,
     unknown: unk,
     na: 0,
     denominator: UNIVERSE,
     partitionTotal: UNIVERSE,
-    display: `${fmt(acceptable)} acceptable · ${fmt(candidate)} candidate · ${fmt(orphan)} orphan · ${fmt(unk)} unknown`,
+    display: `${fmt(acceptable)} acceptable · ${fmt(v2)} v2 · ${fmt(candidate)} candidate · ${fmt(orphan)} orphan · ${fmt(unk)} unknown`,
     cible: fmt(UNIVERSE),
-    extra: { acceptable, candidate, orphan, unknown: unk },
+    extra: { acceptable, candidate, orphan, unknown: unk, v2 },
   };
 }
 
 function kpiProvV2() {
-  const q = SRC.provQuality.data?.validation?.quality_status_partition?.counts;
+  const q = provenanceQualityCounts();
   if (!q) return unknownCell();
-  const v2 = q.v2 || 0;
+  const v2 = q.v2;
   return {
     status: 'ok',
     complete: v2,
@@ -311,10 +324,31 @@ function kpiProvV2() {
     na: 0,
     denominator: UNIVERSE,
     partitionTotal: UNIVERSE,
-    display: `${fmt(v2)} / ${fmt(UNIVERSE)} v2 · toutes les lignes retained sont not-assessed`,
+    display: `${fmt(v2)} / ${fmt(UNIVERSE)} v2 · preuve capture+CAS vérifiée uniquement`,
     cible: fmt(UNIVERSE),
     extra: { v2 },
   };
+}
+
+function provenanceQualityCounts() {
+  const q = SRC.provQuality.data?.validation?.quality_status_partition?.counts;
+  if (!q || typeof q !== 'object') return null;
+  const names = ['acceptable', 'candidate', 'orphan', 'unknown', 'v2'];
+  const values = {};
+  for (const name of names) {
+    const value = q[name];
+    if (!Number.isInteger(value) || value < 0) {
+      warn(`matrice provenance: counts.${name} absent ou invalide (KPI concernés → unknown)`);
+      return null;
+    }
+    values[name] = value;
+  }
+  const total = Object.values(values).reduce((sum, value) => sum + value, 0);
+  if (total !== UNIVERSE) {
+    warn(`matrice provenance: partition qualité ${total} ≠ univers ${UNIVERSE} (KPI concernés → unknown)`);
+    return null;
+  }
+  return values;
 }
 
 // AJOUT qualité #1 : URL de source servie (unité = collection servie, dénominateur = total readback).
@@ -706,7 +740,7 @@ function renderMarkdown(payload) {
     );
   }
   L.push(
-    '- `acceptable` de provenance = preuve locale retained historique/legacy ; ce n’est PAS une preuve v2. Aucune preuve v2 n’est inférée (0 / 1 106).'
+    '- `acceptable` de provenance n’est PAS une preuve v2. Une v2 est comptée uniquement lorsque le runner rattache le triplet de preuve à une capture et à ses octets CAS rehashés; rien n’est inféré.'
   );
   L.push(
     '- Les slugs `l-assomption`, `l-epiphanie`, `sainte-christine-d-auvergne` ne sont pas des clés villes canoniques : lignes de sources non liées, sans fusion par alias ni crédit de complétion.'
@@ -808,4 +842,7 @@ function main() {
   }
 }
 
-main();
+export { build };
+
+const IS_MAIN = !!process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
+if (IS_MAIN) main();
