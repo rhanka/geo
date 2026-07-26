@@ -40,8 +40,16 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import {
+  capturedFetch,
+  capturedText,
+  CapturedFetchError,
+  type CaptureManifestLine,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { attachGeometryProof, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 import {
   buildGetFeatureUrl,
   featuresBboxCenter,
@@ -56,10 +64,12 @@ import {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MUNIS_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
 const S3_PREFIX = "normalized/ca-qc-zonage/";
-const HTTP_UA = "sentropic-geo/0.1";
+const HTTP_UA = CAPTURE_USER_AGENT;
 const HTTP_TIMEOUT_MS = 30_000;
 const MAX_FEATURES = 20_000;
 const PAGE = 1000;
+/** `<source>` de la clé CAS : identifiant de lane-source, JAMAIS un slug (SPEC §2.1). */
+const CAPTURE_SOURCE = "zones-wfs";
 
 const DEFAULT_WFS_BASE = "https://geoserver.geocentralis.com/geoserver/ows";
 const DEFAULT_MUNI_FIELD = "id_municipalite";
@@ -114,30 +124,53 @@ async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 4): Pro
   throw last;
 }
 
-async function fetchJson<T = unknown>(url: string): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), HTTP_TIMEOUT_MS);
-  try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json" } });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return JSON.parse(await r.text()) as T;
-  } finally { clearTimeout(t); }
+/**
+ * CHOKEPOINT DE CAPTURE (SPEC_CAPTURE_ON_CLUSTER.md §5.1, règle C-0) : plus aucun
+ * `fetch()` nu ici. Chaque tentative — succès, 404, timeout — produit une ligne de
+ * `capture/_runs/<run-id>/manifest.jsonl`, et les octets reçus partent en
+ * content-addressed sous `raw/zones-wfs/cas/<sha256>.json`.
+ */
+async function fetchJson<T = unknown>(
+  run: CaptureRun,
+  url: string,
+  slug: string,
+  attempt: number,
+): Promise<{ data: T; line: CaptureManifestLine }> {
+  const res = await capturedFetch(url, { headers: { "user-agent": HTTP_UA, accept: "application/json" } }, {
+    run,
+    source: CAPTURE_SOURCE,
+    slugs: [slug],
+    attempt,
+    timeoutMs: HTTP_TIMEOUT_MS,
+    version: "zones-geocentralis-replace/1",
+  });
+  if (!res.ok) throw new CapturedFetchError(res.line);
+  return { data: JSON.parse(capturedText(res)) as T, line: res.line };
 }
 
 /** Page through every feature of one muni via WFS startIndex/count (with retry). */
-async function fetchAll(cfg: WfsConfig, code: string): Promise<GeoFeature[]> {
+async function fetchAll(
+  run: CaptureRun,
+  slug: string,
+  cfg: WfsConfig,
+  code: string,
+): Promise<{ feats: GeoFeature[]; entries: CaptureManifestLine[] }> {
   const out: GeoFeature[] = [];
+  const entries: CaptureManifestLine[] = [];
   let start = 0;
   while (out.length < MAX_FEATURES) {
     const url = buildGetFeatureUrl(cfg, code, start, PAGE);
-    const fc = await withRetry(`GetFeature start=${start}`, () => fetchJson<GeoFC>(url));
-    if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) break;
+    let attempt = 0;
+    const r = await withRetry(`GetFeature start=${start}`, () => { attempt += 1; return fetchJson<GeoFC>(run, url, slug, attempt); });
+    entries.push(r.line);
+    const fc = r.data;
+    if (!Array.isArray(fc.features) || fc.features.length === 0) break;
     out.push(...fc.features);
     if (fc.features.length < PAGE) break;
     start += fc.features.length;
     await sleep(120);
   }
-  return out;
+  return { feats: out, entries };
 }
 
 /** Canonicalisation séparateur-insensible pour comparer des codes de zone. */
@@ -167,6 +200,9 @@ async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | nul
   return Array.isArray(fc.features) ? fc.features : [];
 }
 
+/** Le run de capture courant (clôturé par `main`, y compris en ABORT). */
+let CAPTURE: CaptureRun | null = null;
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const { slug, code, cfg, spatialKm } = args;
@@ -174,10 +210,15 @@ async function main(): Promise<void> {
   const muni = munis.find((m) => m.slug === slug);
   const s3 = s3Client();
 
+  // ── 0. Ouverture du run de capture (journalise MÊME en --inspect) ───────────
+  const run = openCaptureRun({ lane: "zones", s3 });
+  CAPTURE = run;
   console.error(`[replace] slug=${slug} id_municipalite=${code} layer=${cfg.layer} field=${cfg.zoneField} mode=${args.deposit ? "DEPOSIT" : "INSPECT"}`);
+  console.error(`[replace] capture run=${run.runId} manifest=s3://${run.keys.manifest}`);
+  run.log(`[replace] slug=${slug} id_municipalite=${code} layer=${cfg.layer} mode=${args.deposit ? "DEPOSIT" : "INSPECT"}`);
 
-  // ── 1. Fetch + gate anti-invention ──────────────────────────────────────────
-  const raw = await fetchAll(cfg, code);
+  // ── 1. Fetch (via le chokepoint) + gate anti-invention ──────────────────────
+  const { feats: raw, entries: captureEntries } = await fetchAll(run, slug, cfg, code);
   if (raw.length === 0) { console.error(`ABORT: 0 feature pour ${cfg.muniField}=${code}`); process.exit(1); }
   const verdict = validateWfsZoneCodes(raw, cfg.zoneField);
   if (!verdict.ok) {
@@ -223,9 +264,11 @@ async function main(): Promise<void> {
   }
 
   if (!args.deposit) {
-    console.error(`\n=== INSPECT OK (aucune écriture) ===`);
+    console.error(`\n=== INSPECT OK (aucune écriture servie) ===`);
     console.error(`  nouvelle couche: ${norm.length} features, ${newCodes.raw.size} codes distincts, recoupement ${covered.length}/${served.canon.size} des servis`);
     console.error(`  dépôt écrirait: plate=OUI${subServed ? " + sous-dossier=OUI" : " (sous-dossier ABSENT → non écrit)"}`);
+    console.error(`  CAPTURE: ${captureEntries.length} ligne(s) -> s3://${run.keys.manifest}`);
+    for (const e of captureEntries) console.error(`    ${e.http_status} ${e.bytes}B ${e.sha256} -> s3://${e.storage_key}`);
     return;
   }
 
@@ -241,7 +284,20 @@ async function main(): Promise<void> {
   }
 
   // ── 5. Dépôt v2 (plate toujours ; sous-dossier si présent) ───────────────────
-  const proof = proofFromFetched({ url: buildGetFeatureUrl(cfg, code, 0, PAGE), type: "wfs", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) });
+  // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : quand la couche tient en UNE page,
+  // l'entrée de manifeste EST la preuve — url appelée, instant mesuré et sha256 des
+  // octets REÇUS, tous trois relus de `manifest.jsonl`, aucun reconstruit.
+  // Multi-pages : les octets servis sont un AGRÉGAT qu'aucune URL unique ne rend ;
+  // on retombe alors sur l'agrégat historique et on le DIT (pas de fausse preuve).
+  const soleEntry = captureEntries.length === 1 ? captureEntries[0]! : null;
+  const proof = soleEntry && soleEntry.sha256 !== null
+    ? proofFromCaptureEntry(soleEntry, { type: "wfs", method: "natif", reliability: "directe" })
+    : proofFromFetched({ url: buildGetFeatureUrl(cfg, code, 0, PAGE), type: "wfs", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) });
+  console.error(
+    soleEntry
+      ? `[replace] PREUVE = entrée de capture (run=${run.runId}, cas=s3://${soleEntry.storage_key})`
+      : `[replace] PREUVE = agrégat ${captureEntries.length} pages (aucune URL unique ne rend ces octets ; les ${captureEntries.length} pages restent journalisées)`,
+  );
   const targets: string[] = [flatKey];
   if (subServed) targets.push(subKey);
   for (const key of targets) {
@@ -285,6 +341,20 @@ async function main(): Promise<void> {
   console.error(`  proof:   url=${proof.url}`);
   console.error(`  sha256:  ${proof.sha256}`);
   console.error(`  retrieved_at=${proof.retrieved_at}`);
+  console.error(`  capture: run=${run.runId} manifest=s3://${run.keys.manifest} (${captureEntries.length} ligne(s))`);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.stack : String(e)); process.exit(1); });
+/** Clôture le run de capture (`run.json`) quel que soit le sort du runner. */
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[replace] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.stack : String(e));
+    await closeCapture(1);
+    process.exit(1);
+  });

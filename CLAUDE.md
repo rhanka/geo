@@ -67,3 +67,8 @@ Concrètement, avant de considérer un travail comme fait :
   réseau — ne pas brider les runs sur ce signal.
 - **Scripts committés** uniquement (pas de bash ad-hoc). **Commits par pathspec**
   (arbre de travail partagé). Branche de travail : `feat/cadre-acquisition`.
+- **Jamais de commande bloquante.** Pas de `while true; do sleep N; …; done`, pas
+  de `until … sleep`, pas de polling qui occupe le shell en attendant un run. Un
+  traitement long se lance en tâche de fond suivie (le harness notifie à la fin,
+  il n'y a rien à surveiller), ou se découpe en lots courts qui écrivent leur
+  avancement au fil de l'eau et reprennent proprement après interruption.
