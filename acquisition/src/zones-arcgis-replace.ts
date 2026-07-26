@@ -67,7 +67,8 @@ import {
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { buildArcGisGeoJsonQueryUrl, normalizeArcGisWhere } from "./lib/arcgis-query.js";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromCaptureEntry, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
+import { attachGeometryProof, carryForwardServedZoneProperties, proofFromCaptureEntry, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REG = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
@@ -221,6 +222,15 @@ function distinctCodesOf(feats: GeoFeature[]): { raw: Set<string>; canon: Set<st
 
 function stamp(): string {
   return new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+}
+
+/** Keep every currently served property for the same zone before the central
+ * schema-loss gate checks the replacement. Fresh source attributes still win;
+ * the existing enrichment is then refreshed by the committed folds. */
+function freshFeaturesWithServedProperties(norm: GeoFeature[], current: GeoFeature[]): { features: GeoFeature[]; matched: number; unmatched: number } {
+  const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
+  const carried = carryForwardServedZoneProperties(features, current, canon);
+  return { features, ...carried };
 }
 
 async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | null> {
@@ -383,17 +393,19 @@ async function main(): Promise<void> {
   // ── 6. Dépôt v2 (layouts existants uniquement : REMPLACE, ne crée pas) ───────
   // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : la porte précédente garantit
   // qu'une seule entrée de manifeste fournit l'URL, l'instant et le sha256.
-  const targets: string[] = [];
-  if (flatServed) targets.push(flatKey);
-  if (subServed) targets.push(subKey);
-  for (const key of targets) {
-    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: norm as Array<{ properties?: Record<string, unknown> | null }> }, proof);
-    await withRetry(`put ${key}`, () => putServedZoneGeojson(s3, key, fc as never));
-    console.error(`[arcgis-replace] DÉPÔT v2 -> s3://${key}`);
+  const targets: Array<{ key: string; current: GeoFeature[] }> = [];
+  if (flatServed) targets.push({ key: flatKey, current: flatServed });
+  if (subServed) targets.push({ key: subKey, current: subServed });
+  for (const target of targets) {
+    const carried = freshFeaturesWithServedProperties(norm, target.current);
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: carried.features }, proof);
+    console.error(`[arcgis-replace] PROPRIÉTÉS reportées ${target.key}: zones appariées=${carried.matched}/${norm.length} non-appariées=${carried.unmatched}`);
+    await withRetry(`put ${target.key}`, () => putServedZoneGeojson(s3, target.key, fc as never));
+    console.error(`[arcgis-replace] DÉPÔT v2 -> s3://${target.key}`);
   }
 
   // ── 7. Readback des octets déposés ──────────────────────────────────────────
-  for (const key of targets) {
+  for (const { key } of targets) {
     const buf = await withRetry(`readback ${key}`, () => getBytes(s3, key));
     const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
     const rb = distinctCodesOf(fc.features ?? []);
@@ -401,7 +413,10 @@ async function main(): Promise<void> {
     console.error(`[arcgis-replace] READBACK ${key}: features=${(fc.features ?? []).length} distinct=${rb.raw.size} proof_v2=${okProof ? "OUI" : "NON"} sha=${String(fc.proof?.geometry_source?.sha256 ?? "?").slice(0, 23)}…`);
   }
 
-  // ── 8. STAMP provenance additif — MÊME PASSE (atomicité) ─────────────────────
+  // ── 8. Re-fold additif — MÊME PASSE (atomicité) ─────────────────────────────
+  await reapplyServedZonageEnrichment(a.slug);
+
+  // ── 9. STAMP provenance additif — source exacte de la nouvelle géométrie ────
   // Un re-dépôt géométrie v2 (putServedZoneGeojson) EFFACE zone_source_url /
   // zone_source_level : il ne reporte pas le stamp additif. On les ré-écrit ICI,
   // dans la même passe, sur CHAQUE clé servie, via le chemin additif sûr — la
@@ -410,7 +425,7 @@ async function main(): Promise<void> {
   // Idempotent, et ne régresse pas la géométrie qui vient d'être posée.
   const zoneSourceUrl = proof.url;      // URL source v2 exacte (== proof.geometry_source.url)
   const zoneSourceLevel = "documented"; // source SIG officielle re-téléchargeable qui recoupe les codes servis
-  for (const key of targets) {
+  for (const { key } of targets) {
     const buf = await withRetry(`get-for-stamp ${key}`, () => getBytes(s3, key));
     const fc = JSON.parse(buf.toString("utf8")) as { type?: unknown; features?: Array<{ geometry?: unknown; properties?: Record<string, unknown> | null }> };
     for (const f of fc.features ?? []) {
@@ -422,7 +437,7 @@ async function main(): Promise<void> {
 
   console.error(`\n=== DÉPÔT TERMINÉ ===`);
   console.error(`  backups: ${backups.map((b) => `s3://${b}`).join("  ")}`);
-  console.error(`  déposé:  ${targets.map((k) => `s3://${k}`).join("  ")}`);
+  console.error(`  déposé:  ${targets.map(({ key }) => `s3://${key}`).join("  ")}`);
   console.error(`  provenance: url=${zoneSourceUrl} level=${zoneSourceLevel} (re-stampée sur ${targets.length} clé(s))`);
   if (abandoned.length > 0) console.error(`  déprécié(abandonné): ${abandoned.sort().join(", ")}  → réassignation par re-fold spatial`);
   console.error(`  proof:   url=${proof.url}`);
