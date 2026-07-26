@@ -16,8 +16,15 @@
 import { pathToFileURL } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import {
+  capturedFetch,
+  capturedText,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
 
 import { exists, getBytes, s3Client } from "./lib/s3.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 
 const PREFIX = "normalized/ca-qc-zonage/";
 const API = process.env["GEO_API"] ?? "https://api.geo.sent-tech.ca";
@@ -76,14 +83,26 @@ function propertySummary(features: Feature[]): Pick<Snapshot, "propertyKeys" | "
   };
 }
 
-async function apiReadback(slug: string, enabled: boolean): Promise<Snapshot["api"]> {
+async function apiReadback(slug: string, enabled: boolean, run: CaptureRun | null): Promise<Snapshot["api"]> {
   if (!enabled) return { status: "not-requested", propertyKeys: [], error: null };
+  if (run === null) return { status: "error", propertyKeys: [], error: "Capture run missing for API readback" };
   try {
-    const response = await fetch(`${API}/collections/qc-zonage-${slug}/items?limit=1`, {
+    // Capture cette lecture OGC pour prouver précisément un décalage cache/API (réponse horodatée + hashée).
+    const response = await capturedFetch(`${API}/collections/qc-zonage-${slug}/items?limit=1`, {
       signal: AbortSignal.timeout(30_000),
+    }, {
+      run,
+      lane: "zones",
+      source: "geo-api-readback",
+      slugs: [slug],
+      timeoutMs: 30_000,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
     });
-    if (!response.ok) return { status: "error", propertyKeys: [], error: `HTTP ${response.status}` };
-    const body = await response.json() as { features?: Feature[] };
+    if (!response.ok || response.bytes === null) {
+      if (response.response !== null) return { status: "error", propertyKeys: [], error: `HTTP ${response.response.status}` };
+      return { status: "error", propertyKeys: [], error: response.line.error ?? "request failed" };
+    }
+    const body = JSON.parse(capturedText(response)) as { features?: Feature[] };
     const props = body.features?.[0]?.properties ?? {};
     return { status: "ok", propertyKeys: Object.keys(props).sort(), error: null };
   } catch (error) {
@@ -91,7 +110,7 @@ async function apiReadback(slug: string, enabled: boolean): Promise<Snapshot["ap
   }
 }
 
-async function snapshot(s3: S3Client, slug: string, api: boolean): Promise<Snapshot> {
+async function snapshot(s3: S3Client, slug: string, api: boolean, run: CaptureRun | null): Promise<Snapshot> {
   const candidate = keys(slug);
   // API resolution order: nested (if present), otherwise flat.
   const key = await exists(s3, candidate.nested)
@@ -103,12 +122,12 @@ async function snapshot(s3: S3Client, slug: string, api: boolean): Promise<Snaps
     return {
       slug, key: null, features: 0, propertyKeys: [], businessPresent: [],
       businessNonNull: Object.fromEntries(BUSINESS_FIELDS.map((field) => [field, 0])),
-      api: await apiReadback(slug, api),
+      api: await apiReadback(slug, api, run),
     };
   }
   const collection = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: Feature[] };
   const features = collection.features ?? [];
-  return { slug, key, features: features.length, ...propertySummary(features), api: await apiReadback(slug, api) };
+  return { slug, key, features: features.length, ...propertySummary(features), api: await apiReadback(slug, api, run) };
 }
 
 async function main(): Promise<void> {
@@ -119,11 +138,12 @@ async function main(): Promise<void> {
   if (!referenceSlug || slugs.length === 0) throw new Error("usage: --reference <non-reacquired-slug> --slugs <a,b> [--api]");
 
   const s3 = s3Client();
-  const reference = await snapshot(s3, referenceSlug, api);
+  const run = api ? openCaptureRun({ lane: "zones" }) : null;
+  const reference = await snapshot(s3, referenceSlug, api, run);
   if (!reference.key) throw new Error(`reference ${referenceSlug} has no served S3 collection`);
   const rows: Array<Snapshot & { missingComparedWithReference: string[]; missingBusinessComparedWithReference: string[]; apiMissingComparedWithS3: string[] }> = [];
   for (const slug of slugs) {
-    const row = await snapshot(s3, slug, api);
+    const row = await snapshot(s3, slug, api, run);
     rows.push({
       ...row,
       missingComparedWithReference: reference.propertyKeys.filter((key) => !row.propertyKeys.includes(key)),
