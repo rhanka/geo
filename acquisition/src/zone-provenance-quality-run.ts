@@ -34,6 +34,10 @@ import {
   type ServedZoneCollection,
   type VerifiedCaptureReceipt,
 } from "./lib/zone-provenance-quality.js";
+import {
+  verifyRawCapturePayload,
+  type RawCaptureVerificationObservation,
+} from "./lib/zone-provenance-raw-capture.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -79,6 +83,7 @@ interface RawVerification {
   receipt: VerifiedCaptureReceipt | null;
   reason: string | null;
   indeterminate: boolean;
+  observation: RawCaptureVerificationObservation | null;
 }
 
 const argv = process.argv.slice(2);
@@ -213,22 +218,14 @@ async function verifyRawCapture(
 ): Promise<RawVerification> {
   try {
     const bytes = await retryS3(`GetObject ${receipt.storage_key}`, (signal) => getBytes(s3, receipt.storage_key, undefined, signal), s3ReadTimeoutMs);
-    const actual = `sha256:${sha256(bytes)}`;
-    if (actual !== receipt.sha256) return { receipt: null, reason: `cas-sha-mismatch:${actual}`, indeterminate: false };
     const metaKey = `${receipt.storage_key}.meta.json`;
-    const meta = JSON.parse((await retryS3(`GetObject ${metaKey}`, (signal) => getBytes(s3, metaKey, undefined, signal), s3ReadTimeoutMs)).toString("utf8")) as {
-      sourceUrl?: unknown; sha256?: unknown; fetchedAt?: unknown; storageKey?: unknown; backfilled?: unknown; provenance?: { backfilled?: unknown };
-    };
-    if (meta.backfilled === true || meta.provenance?.backfilled === true) return { receipt: null, reason: "capture-backfilled", indeterminate: false };
-    if (
-      meta.sourceUrl !== receipt.url ||
-      meta.sha256 !== receipt.sha256.slice("sha256:".length) ||
-      meta.fetchedAt !== receipt.retrieved_at ||
-      meta.storageKey !== receipt.storage_key
-    ) return { receipt: null, reason: "capture-meta-does-not-match-manifest", indeterminate: false };
-    return { receipt: { ...receipt, raw_sha256_verified: true }, reason: null, indeterminate: false };
+    const meta = JSON.parse((await retryS3(`GetObject ${metaKey}`, (signal) => getBytes(s3, metaKey, undefined, signal), s3ReadTimeoutMs)).toString("utf8")) as unknown;
+    const checked = verifyRawCapturePayload(receipt, bytes, meta);
+    return checked.verified
+      ? { receipt: { ...receipt, raw_sha256_verified: true }, reason: null, indeterminate: false, observation: checked.observation }
+      : { receipt: null, reason: checked.reason, indeterminate: false, observation: checked.observation };
   } catch (error) {
-    return { receipt: null, reason: errorText(error), indeterminate: true };
+    return { receipt: null, reason: errorText(error), indeterminate: true, observation: null };
   }
 }
 
@@ -490,7 +487,7 @@ async function main(): Promise<void> {
       read_only_s3: true,
       served_prefix: SERVED_ZONE_PREFIX,
       serving_precedence: "nested_when_present_else_flat",
-      capture_rule: "exact url+retrieved_at+sha256 manifest tuple plus CAS bytes re-hashed and matching metadata; backfilled excluded",
+      capture_rule: "exact url+retrieved_at+sha256 manifest tuple; CAS payload re-hashed; sidecar SHA-256 and storage key match that payload; backfilled excluded. A CAS sidecar sourceUrl/fetchedAt may belong to an earlier deduplicated fetch.",
       checkpoint_strategy: "local atomic batches; removed after successful matrix write; --resume requires the retained checkpoint after interruption",
     },
     quality_status_policy: {
@@ -498,7 +495,7 @@ async function main(): Promise<void> {
       candidate: "Uniform served zone_source_level candidate.",
       orphan: "Uniform served zone_source_level orphan.",
       unknown: "No served collection, unreadable/ambiguous collection, or absent/invalid/non-uniform served source level.",
-      v2: "A complete served v2 proof whose exact url/retrieved_at/sha256 tuple matches a valid capture manifest and CAS bytes re-hashed from S3.",
+      v2: "A complete served v2 proof whose exact url/retrieved_at/sha256 tuple matches a valid capture manifest, whose CAS bytes re-hash to that SHA, and whose non-backfilled sidecar identifies that CAS object.",
     },
     validation: {
       city_identity: {
@@ -562,6 +559,9 @@ async function main(): Promise<void> {
       raw_cas_verifications_attempted: rawChecks.length,
       raw_cas_verifications_verified: rawChecks.filter((check) => check.receipt !== null).length,
       raw_cas_verification_failures: rawCheckFailures,
+      // This is an audit trace, not another authority: it makes a CAS dedup's
+      // first-fetch sidecar observable alongside the exact matched manifest row.
+      raw_cas_verification_observations: rawChecks.flatMap((check) => check.observation ? [check.observation] : []),
     },
     unlinked_served_collections: unlinked,
     proof_without_attachable_capture: proofWithoutCapture,
