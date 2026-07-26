@@ -1,13 +1,21 @@
 import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 
 import {
   isNumericMuniValue,
   muniWhereClause,
   normMuniCode,
+  proofFromGonetCapture,
   resolveMuniValueToTargetSlug,
   resolveMuniValueToSlug,
   validateExplicitZoneField,
 } from "./zones-obscura-run.js";
+import {
+  capturedFetch,
+  CaptureRun,
+  type CaptureHttpResponse,
+  type CaptureObjectStore,
+} from "../../packages/qc-sources/src/capture/index.js";
 
 // Registre + crosswalk minimalistes reproduisant les 2 agrégats MRC réels.
 const CODE_TO_SLUG = new Map<string, string>([
@@ -23,6 +31,54 @@ const SLUG_SET = new Set<string>([
 
 const feats = (field: string, values: Array<string | number | null>): Array<{ properties: Record<string, unknown> }> =>
   values.map((v) => ({ properties: { [field]: v } }));
+
+function inMemoryStore(): CaptureObjectStore {
+  return { head: async () => false, put: async () => undefined };
+}
+
+function responseFromBytes(bytes: Uint8Array): CaptureHttpResponse {
+  return {
+    status: 200,
+    ok: true,
+    url: "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://maps.example.test/MapServer/7/query?f=geojson",
+    headers: { get: (name: string): string | null => name.toLowerCase() === "content-type" ? "application/geo+json" : null },
+    arrayBuffer: async (): Promise<ArrayBuffer> => {
+      const copy = new Uint8Array(bytes.byteLength);
+      copy.set(bytes);
+      return copy.buffer;
+    },
+  };
+}
+
+describe("zones-obscura — preuve GoNet v2", () => {
+  it("hashes received bytes rather than a JSON re-serialization", async () => {
+    // Whitespace and key order are deliberately not what JSON.stringify emits.
+    const received = new TextEncoder().encode('{\n  "zone": "R-1",\n  "meta": { "b": 2, "a": 1 }\n}\n');
+    const url = "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://maps.example.test/MapServer/7/query?f=geojson";
+    const run = new CaptureRun({
+      runId: "zones-20260726T120000Z-test",
+      lane: "zones",
+      store: inMemoryStore(),
+      userAgent: "sentropic-geo/0.1",
+      viaObscura: true,
+      echo: null,
+    });
+    const captured = await capturedFetch(url, undefined, {
+      run,
+      source: "zones-gonet",
+      slugs: ["sutton"],
+      fetchImpl: async (): Promise<CaptureHttpResponse> => responseFromBytes(received),
+    });
+
+    const proof = proofFromGonetCapture(captured.line);
+    const receivedHash = `sha256:${createHash("sha256").update(received).digest("hex")}`;
+    const oldReserializedHash = `sha256:${createHash("sha256").update(JSON.stringify(JSON.parse(new TextDecoder().decode(received)))).digest("hex")}`;
+
+    expect(proof.sha256).toBe(receivedHash);
+    expect(proof.sha256).not.toBe(oldReserializedHash);
+    expect(captured.line.sha256).toBe(receivedHash);
+  });
+});
 
 describe("zones-obscura --muni-field resolver (code MAMH ⊕ nom)", () => {
   it("detecte un discriminant numerique (CODE_MUN)", () => {
