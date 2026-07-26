@@ -1,0 +1,79 @@
+{
+  "contract": "zones-bprime-proof-audit/v1",
+  "generated_at": "2026-07-26T12:23:36.388Z",
+  "scope": {
+    "config": "acquisition/config/immo-vivier-b-20260725.json",
+    "requested_slugs": 1,
+    "declared_vivier_count": 170,
+    "with_lots": true,
+    "offset": 0,
+    "limit": null,
+    "resume": false
+  },
+  "serving_precedence": "nested_when_present_else_flat",
+  "s3_read_timeout": "none (intentional; absence is never inferred from a timeout)",
+  "progress": {
+    "observed_slugs": 1,
+    "complete": true
+  },
+  "summary": {
+    "served_collections": 1,
+    "no_real_source_orphan_or_stamped_null": 0,
+    "read_errors": 0,
+    "exact": true
+  },
+  "no_real_source_collections": [],
+  "rows": [
+    {
+      "slug": "nantes",
+      "zone_key": "normalized/ca-qc-zonage/qc-zonage-nantes.geojson",
+      "zone_layout": "flat",
+      "zone_shadow_keys": [],
+      "lot_stats_key": "normalized/qc-lots/qc-lots-nantes.stats.json",
+      "feature_count": 84,
+      "zone_code_count": 82,
+      "property_key_count": 25,
+      "property_keys": [
+        "affectation",
+        "confidence",
+        "densite_apres",
+        "densite_apres_millesime",
+        "densite_apres_reglement",
+        "densite_avant",
+        "densite_avant_millesime",
+        "densite_avant_reglement",
+        "effet_densifiant",
+        "effet_densifiant_delta",
+        "kind",
+        "num_zone",
+        "proof",
+        "reglement_millesime",
+        "reglement_numero",
+        "reglement_page_source",
+        "reglement_url",
+        "source",
+        "usage_dominant",
+        "usage_dominant_source",
+        "zone_code",
+        "zone_geometry_flagged",
+        "zone_geometry_status",
+        "zone_source_level",
+        "zone_source_url"
+      ],
+      "property_value_count": 2100,
+      "source_levels": [
+        "documented"
+      ],
+      "http_source_urls": [
+        "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI%3D%27Nantes%27&outFields=NO_ZONE&outSR=4326&geometryPrecision=6&resultOffset=0&resultRecordCount=1000&f=geojson"
+      ],
+      "invalid_source_url_values": [],
+      "stamped_null": false,
+      "provenance": "source-http",
+      "needs_reacquisition": false,
+      "lot_count": 1022,
+      "assigned_lot_count": 1022,
+      "read_error": null
+    }
+  ]
+}
