@@ -37,6 +37,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import { capturedFetch, capturedText, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client } from "./lib/s3.js";
 import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
@@ -48,6 +50,7 @@ const HTTP_UA = "sentropic-geo/0.1";
 const HTTP_TIMEOUT_MS = 30_000;
 const MAX_FEATURES = 20_000;
 const PAGE = 1000;
+const CAPTURE_SOURCE = "zones-wfs";
 
 // Geocentralis GeoServer (famille par défaut). Surchargeable en CLI.
 const DEFAULT_WFS_BASE = "https://geoserver.geocentralis.com/geoserver/ows";
@@ -216,23 +219,29 @@ export function featuresBboxCenter(features: GeoFeature[]): { lat: number; lon: 
   return { lat: (miny + maxy) / 2, lon: (minx + maxx) / 2, n };
 }
 
-async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+async function fetchJson<T = unknown>(url: string, slug: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
   try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json" } });
+    if (!CAPTURE) throw new Error("capture run absent");
+    const r = await capturedFetch(url, { headers: { "user-agent": HTTP_UA, accept: "application/json" } }, {
+      run: CAPTURE,
+      source: CAPTURE_SOURCE,
+      slugs: [slug],
+      attempt: 1,
+      timeoutMs,
+      version: "zones-wfs-run/1",
+    });
     if (!r.ok) return null;
-    return JSON.parse(await r.text()) as T;
-  } catch { return null; } finally { clearTimeout(t); }
+    return JSON.parse(capturedText(r)) as T;
+  } catch { return null; }
 }
 
 /** Page through every feature of one muni via WFS startIndex/count. */
-async function fetchMuniFeatures(cfg: WfsConfig, code: string): Promise<GeoFeature[]> {
+async function fetchMuniFeatures(cfg: WfsConfig, slug: string, code: string): Promise<GeoFeature[]> {
   const features: GeoFeature[] = [];
   let startIndex = 0;
   while (features.length < MAX_FEATURES) {
     const url = buildGetFeatureUrl(cfg, code, startIndex, PAGE);
-    const fc = await fetchJson<GeoFC>(url);
+    const fc = await fetchJson<GeoFC>(url, slug);
     if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) break;
     features.push(...fc.features);
     if (fc.features.length < PAGE) break;
@@ -251,7 +260,7 @@ export async function processWfsMuni(
   const base: WfsResult = { slug, code, deposited: false, status: "no-features", detail: "" };
   const layerUrl = `${cfg.base}#${cfg.layer}[${cfg.muniField}=${code}]`;
 
-  const raw = await fetchMuniFeatures(cfg, code);
+  const raw = await fetchMuniFeatures(cfg, slug, code);
   if (raw.length === 0) return { ...base, status: "no-features", detail: `WFS: 0 feature pour ${cfg.muniField}=${code}` };
   const codeVerdict = validateWfsZoneCodes(raw, cfg.zoneField);
   if (!codeVerdict.ok) {
@@ -300,6 +309,8 @@ async function pool<T, R>(items: T[], conc: number, fn: (t: T, i: number) => Pro
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+let CAPTURE: CaptureRun | null = null;
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
@@ -323,9 +334,12 @@ async function main(): Promise<void> {
 
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
-  const s3 = deposit ? s3Client() : null;
+  const s3 = s3Client();
+  CAPTURE = openCaptureRun({ lane: "zones", s3 });
 
   console.error(`[wfs] base=${cfg.base} layer=${cfg.layer} pairs=${pairs.length} deposit=${deposit} conc=${conc}`);
+  console.error(`[wfs] capture run=${CAPTURE.runId} manifest=s3://${CAPTURE.keys.manifest}`);
+  CAPTURE.log(`[wfs] pairs=${pairs.length} deposit=${deposit} base=${cfg.base} layer=${cfg.layer}`);
   let done = 0;
   const results = await pool(pairs, conc, async (pair) => {
     let r: WfsResult;
@@ -348,6 +362,18 @@ async function main(): Promise<void> {
 }
 
 // Run only as CLI entrypoint (keeps pure helpers importable for tests).
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[wfs] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  main().catch((e: unknown) => { console.error(e); process.exit(1); });
+  main()
+    .then(async () => { await closeCapture(0); })
+    .catch(async (e: unknown) => {
+      console.error(e);
+      await closeCapture(1);
+      process.exit(1);
+    });
 }
