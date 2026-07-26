@@ -14,6 +14,16 @@ describe("served zonage geometry proof", () => {
     expect((fc.features[0]!.properties!.proof as any).geometry_source.url).toBe(proof.url);
   });
   it("fails closed when proof URL is not HTTP", () => expect(() => proofFromFetched({ url: "method:t2", type: "pdf-zonage", method: "georeference", reliability: "georeferencee", bytes: "x" })).toThrow(/real HTTP/));
+  it("rejects object storage by host LABEL, not by substring", () => {
+    // Notre stockage : jamais une source amont.
+    expect(isRealGeometryUrl("https://s3.amazonaws.com/bucket/zones.geojson")).toBe(false);
+    expect(isRealGeometryUrl("https://s3-eu-west-1.amazonaws.com/bucket/z.geojson")).toBe(false);
+    expect(isRealGeometryUrl("https://bucket.s3.amazonaws.com/z.geojson")).toBe(false);
+    // Régression : `services3.arcgis.com` CONTIENT "s3." et était refusé — la
+    // source SIG publique la moins chère pour une preuve v2 l'était donc aussi.
+    expect(isRealGeometryUrl("https://services3.arcgis.com/x/ArcGIS/rest/services/Zonage/FeatureServer/0/query?f=geojson")).toBe(true);
+    expect(isRealGeometryUrl("https://services1.arcgis.com/x/ArcGIS/rest/services/Z/FeatureServer/0/query")).toBe(true);
+  });
   it("rejects unsupported or incoherent runtime proof values", () => {
     const base = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
     expect(() => assertGeometryProof({ ...base, type: "invented" })).toThrow(/invalid geometry/);
