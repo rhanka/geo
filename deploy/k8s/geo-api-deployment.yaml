@@ -16,8 +16,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -33,7 +33,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: geo-api
-          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.4
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.5-stream-20260726211332
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -74,10 +74,14 @@ spec:
           resources:
             requests:
               cpu: 75m
-              memory: 512Mi
+              memory: 128Mi
             limits:
               cpu: 500m
-              memory: 2Gi
+              # cgroup-v2 memory.peak on the 955,964,128-byte qc-lots-montreal
+              # object: 195.65 Mi after three concurrent complete scans, with
+              # memory.events max/oom/oom_kill all zero. 256 Mi leaves 60.35 Mi
+              # (30.8%) headroom for the served production API.
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
