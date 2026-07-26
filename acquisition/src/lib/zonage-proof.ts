@@ -137,6 +137,44 @@ export function sameGeometryProof(a: unknown, b: unknown): boolean {
 
 export { isServedZoneKey } from "./s3.js";
 
+export interface ServedZonePropertyFeature {
+  properties?: Record<string, unknown> | null;
+}
+
+/**
+ * Carry the current served properties onto freshly acquired geometries for the
+ * same canonical zone code.  The new source's properties win where it actually
+ * supplies a value; old-only properties remain long enough for the additive
+ * folds to refresh them after a successful geometry deposit.  No value is
+ * invented and no geometry is touched.
+ */
+export function carryForwardServedZoneProperties<T extends ServedZonePropertyFeature>(
+  incoming: T[],
+  current: Iterable<ServedZonePropertyFeature>,
+  canonicalZoneCode: (value: unknown) => string,
+): { matched: number; unmatched: number } {
+  const byCode = new Map<string, Record<string, unknown>>();
+  for (const feature of current) {
+    const props = feature.properties ?? {};
+    const code = canonicalZoneCode(props["zone_code"]);
+    if (!code) continue;
+    // A zone may legitimately have several polygons. Merge their keys so that a
+    // property present on any existing part survives the schema-loss gate.
+    byCode.set(code, { ...(byCode.get(code) ?? {}), ...props });
+  }
+
+  let matched = 0;
+  for (const feature of incoming) {
+    const next = feature.properties ?? {};
+    const code = canonicalZoneCode(next["zone_code"]);
+    const prior = code ? byCode.get(code) : undefined;
+    if (!prior) continue;
+    feature.properties = { ...prior, ...next };
+    matched++;
+  }
+  return { matched, unmatched: incoming.length - matched };
+}
+
 /**
  * Attach the exact same reviewed acquisition proof to collection and each feature,
  * AND stamp the served source identity (`zone_source_url` / `zone_source_level`) that
@@ -218,7 +256,60 @@ export function assertServedZoneGeojson(key: string, fc: ServedZoneGeoJson): voi
 /** Only route for new served-zone writes. It validates proof immediately before S3. */
 export async function putServedZoneGeojson(s3: S3Client, key: string, fc: ServedZoneGeoJson): Promise<void> {
   assertServedZoneGeojson(key, fc);
+  await assertNoServedPropertyKeysLost(s3, key, fc);
   await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: JSON.stringify(fc), ContentType: "application/geo+json" }));
+}
+
+/**
+ * A geometry replacement must never silently turn a served collection into a
+ * poorer schema.  The incoming source is allowed to refresh values and geometry,
+ * but every property key that was already served must still be represented after
+ * the replacement.  This deliberately checks the collection-wide key set rather
+ * than guessing which fields are "raw" versus business enrichment: a new fold
+ * cannot fall through an incomplete hand-maintained allow-list.
+ *
+ * New collections are unaffected.  Existing but malformed collections fail
+ * closed because there is no trustworthy baseline against which to protect the
+ * served contract.
+ */
+async function assertNoServedPropertyKeysLost(
+  s3: S3Client,
+  key: string,
+  incoming: ServedZoneGeoJson,
+): Promise<void> {
+  if (!(await objectHead(s3, key)).exists) return;
+
+  let current: unknown;
+  try {
+    current = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+  } catch (error) {
+    throw new Error(
+      `served qc-zonage deposit refused: cannot read the existing collection ${key} to protect its property contract (${error instanceof Error ? error.message : String(error)}). Repair/read the served object before replacing its geometry.`,
+    );
+  }
+  const keysOf = (value: unknown, label: string): Set<string> => {
+    const features = (value as { features?: unknown })?.features;
+    if (!Array.isArray(features)) {
+      throw new Error(`served qc-zonage deposit refused: existing ${label} ${key} is not a FeatureCollection; cannot compare property keys safely`);
+    }
+    const keys = new Set<string>();
+    for (const feature of features) {
+      const props = (feature as { properties?: unknown } | null)?.properties;
+      if (props !== null && props !== undefined && (typeof props !== "object" || Array.isArray(props))) {
+        throw new Error(`served qc-zonage deposit refused: existing ${label} ${key} has a non-object feature.properties; cannot compare property keys safely`);
+      }
+      for (const property of Object.keys((props ?? {}) as Record<string, unknown>)) keys.add(property);
+    }
+    return keys;
+  };
+  const before = keysOf(current, "collection");
+  const after = keysOf(incoming, "replacement");
+  const lost = [...before].filter((property) => !after.has(property)).sort();
+  if (lost.length > 0) {
+    throw new Error(
+      `served qc-zonage deposit refused: replacement of existing ${key} would remove served property key(s): ${lost.join(", ")}. Preserve the existing properties for matching zone_code values, then re-run the additive enrichment folds (reglement, norms, usage dominant, geometry status, zone source, effet densifiant) before retrying; a geometry deposit may never silently impoverish a served collection.`,
+    );
+  }
 }
 
 /**
@@ -242,6 +333,30 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "zone_geometry_flagged",
   "zone_source_url",
   "zone_source_level",
+  "hauteur_min_value",
+  "hauteur_min_unit",
+  "hauteur_max_value",
+  "hauteur_max_unit",
+  "densite_value",
+  "densite_unit",
+  "marge_avant_min_value",
+  "marge_avant_min_unit",
+  "marge_laterale_min_value",
+  "marge_laterale_min_unit",
+  "marge_arriere_min_value",
+  "marge_arriere_min_unit",
+  "facade_min_value",
+  "facade_min_unit",
+  "superficie_min_value",
+  "superficie_min_unit",
+  "densite_avant",
+  "densite_avant_millesime",
+  "densite_avant_reglement",
+  "densite_apres",
+  "densite_apres_millesime",
+  "densite_apres_reglement",
+  "effet_densifiant",
+  "effet_densifiant_delta",
 ]);
 
 export interface AdditiveOptions {
