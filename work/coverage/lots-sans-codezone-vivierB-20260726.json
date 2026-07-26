@@ -1,0 +1,106 @@
+{
+  "schema_version": "lots-sans-codezone-vivierB/1",
+  "generated_at": "2026-07-26T03:35:01.390Z",
+  "scope": {
+    "immo_city_slugs": 170,
+    "excluded": ["montreal"],
+    "measurement_source": "work/coverage/lot-zone-consistency-scale-20260725.json",
+    "measurement_as_of": "2026-07-25T20:19:03.459Z",
+    "auditable_cities": 140,
+    "auditable_lots": 567925,
+    "auditable_lots_without_code_zone": 47253,
+    "directly_verified_without_zonage": {
+      "cities": 3,
+      "lots": 2065
+    },
+    "total_known_lots_without_code_zone": 49318,
+    "total_known_lots": 569990,
+    "total_known_without_code_zone_pct": 8.65
+  },
+  "ranking_top_20_as_of_20260725": [
+    {"rank": 1, "slug": "saguenay", "lots": 19135, "without_code_zone": 19135, "assigned": 0, "mismatch_pct": null, "status": "inconclusive_zero_assigned"},
+    {"rank": 2, "slug": "varennes", "lots": 8287, "without_code_zone": 5019, "assigned": 3268, "mismatch_pct": 98.68, "status": "measured"},
+    {"rank": 3, "slug": "mont-blanc", "lots": 4996, "without_code_zone": 4996, "assigned": 0, "mismatch_pct": null, "status": "inconclusive_zero_assigned"},
+    {"rank": 4, "slug": "lislet", "lots": 3800, "without_code_zone": 3800, "assigned": 0, "mismatch_pct": null, "status": "inconclusive_zero_assigned"},
+    {"rank": 5, "slug": "saint-boniface", "lots": 3842, "without_code_zone": 1937, "assigned": 1905, "mismatch_pct": 1.73, "status": "measured"},
+    {"rank": 6, "slug": "pont-rouge", "lots": 5906, "without_code_zone": 1841, "assigned": 4065, "mismatch_pct": 3.84, "status": "measured"},
+    {"rank": 7, "slug": "bouchette", "lots": 1726, "without_code_zone": 1726, "assigned": null, "mismatch_pct": null, "status": "not_auditable_no_qc_zonage"},
+    {"rank": 8, "slug": "disraeli--les-appalaches", "lots": 1482, "without_code_zone": 1446, "assigned": 36, "mismatch_pct": 83.33, "status": "measured"},
+    {"rank": 9, "slug": "baie-des-sables", "lots": 1112, "without_code_zone": 1111, "assigned": 1, "mismatch_pct": 100, "status": "measured"},
+    {"rank": 10, "slug": "hemmingford--les-jardins-de-napierville--2", "lots": 1618, "without_code_zone": 1081, "assigned": 537, "mismatch_pct": 8.38, "status": "measured"},
+    {"rank": 11, "slug": "saint-amable", "lots": 5213, "without_code_zone": 1059, "assigned": 4154, "mismatch_pct": 12.08, "status": "measured"},
+    {"rank": 12, "slug": "saint-marcel-de-richelieu", "lots": 593, "without_code_zone": 593, "assigned": 0, "mismatch_pct": null, "status": "inconclusive_zero_assigned"},
+    {"rank": 13, "slug": "saint-aubert", "lots": 2013, "without_code_zone": 590, "assigned": 1423, "mismatch_pct": 1.26, "status": "measured"},
+    {"rank": 14, "slug": "amos", "lots": 515, "without_code_zone": 502, "assigned": 13, "mismatch_pct": 53.85, "status": "measured"},
+    {"rank": 15, "slug": "gaspe", "lots": 1614, "without_code_zone": 420, "assigned": 1194, "mismatch_pct": 1.42, "status": "measured"},
+    {"rank": 16, "slug": "stratford", "lots": 2021, "without_code_zone": 312, "assigned": 1709, "mismatch_pct": 4.21, "status": "measured"},
+    {"rank": 17, "slug": "brome", "lots": 299, "without_code_zone": 299, "assigned": null, "mismatch_pct": null, "status": "not_auditable_no_qc_zonage"},
+    {"rank": 18, "slug": "sainte-cecile-de-milton", "lots": 1518, "without_code_zone": 299, "assigned": 1219, "mismatch_pct": 6.89, "status": "measured"},
+    {"rank": 19, "slug": "huberdeau", "lots": 876, "without_code_zone": 228, "assigned": 648, "mismatch_pct": 4.17, "status": "measured"},
+    {"rank": 20, "slug": "saint-benoit-labre", "lots": 1710, "without_code_zone": 214, "assigned": 1496, "mismatch_pct": 1.87, "status": "measured"}
+  ],
+  "ranking_continuation": {
+    "21_to_30": [
+      ["saint-elie-de-caxton", 211], ["dudswell", 209], ["sutton", 207], ["saint-stanislas-de-kostka", 205], ["la-minerve", 179], ["alma", 159], ["saint-bruno-de-montarville", 138], ["preissac", 121], ["repentigny", 104], ["notre-dame-de-lourdes--lerable", 91]
+    ],
+    "31_to_40": [
+      ["saint-etienne-de-bolton", 87], ["saint-jerome", 86], ["amherst", 84], ["dorval", 71], ["notre-dame-de-lourdes--joliette", 59], ["bolton-ouest", 46], ["saint-felix-de-valois", 45], ["duhamel", 43], ["montcalm", 43], ["tres-saint-redempteur", 40]
+    ],
+    "remaining": "58 villes auditées ont de 1 à 27 lots sans code_zone; 69 villes d'immo ont 0 déficit mesuré; 27 villes de la cohorte n'étaient pas auditable dans la mesure croisée, dont les trois sans qc-zonage vérifiées ci-dessus."
+  },
+  "diagnostics_top_20": [
+    {"slug": "saguenay", "cause": "stage_2_materialization_stale_initially", "zonage_features": 2836, "zonage_codes": 2836, "fold_parquet_with_code": 19135, "served_with_code_at_initial_probe": 0, "evidence": "parquet complet, qc-lots alors nul; avant notre backup un autre flux avait déjà matérialisé 19135/19135"},
+    {"slug": "varennes", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 249, "zonage_codes": 249, "fold_parquet_with_code": 3268, "served_with_code": 3268, "evidence": "parquet et qc-lots synchrones à 39.44%; un re-fold ne peut pas inventer les 5019 restants"},
+    {"slug": "mont-blanc", "cause": "stage_2_materialization_stale_initially; rollback_required", "zonage_features": 101, "zonage_codes": 101, "fold_parquet_with_code": 4878, "served_with_code_at_initial_probe": 0, "evidence": "re-fold 1m=4898/4996 mais mismatch après=3.10%; backup restauré"},
+    {"slug": "lislet", "cause": "geometry_disjoint_current", "zonage_features": 8, "zonage_codes": 7, "fold_parquet_with_code": 0, "served_with_code": 0, "evidence": "dry-run actuel=0/3800"},
+    {"slug": "saint-boniface", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 21, "zonage_codes": 21, "fold_parquet_with_code": 1905, "served_with_code": 1905},
+    {"slug": "pont-rouge", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 77, "zonage_codes": 77, "fold_parquet_with_code": 4065, "served_with_code": 4065},
+    {"slug": "bouchette", "cause": "qc_zonage_not_served", "zonage_features": 0, "zonage_codes": 0, "served_with_code": 0},
+    {"slug": "disraeli--les-appalaches", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 55, "zonage_codes": 55, "fold_parquet_with_code": 36, "served_with_code": 36},
+    {"slug": "baie-des-sables", "cause": "geometry_disjoint_current", "zonage_features": 3, "zonage_codes": 3, "fold_parquet_with_code": 1, "served_with_code": 1, "evidence": "dry-run actuel=1/1112"},
+    {"slug": "hemmingford--les-jardins-de-napierville--2", "cause": "partial_stage_2_staleness_plus_geometry_coverage", "zonage_features": 38, "zonage_codes": 38, "fold_parquet_with_code": 571, "served_with_code": 537, "immediately_materializable_codes": 34},
+    {"slug": "saint-amable", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 104, "zonage_codes": 104, "fold_parquet_with_code": 4154, "served_with_code": 4154},
+    {"slug": "saint-marcel-de-richelieu", "cause": "partial_stage_2_staleness_plus_geometry_coverage", "zonage_features": 3, "zonage_codes": 2, "fold_parquet_with_code": 2, "served_with_code": 0, "immediately_materializable_codes": 2},
+    {"slug": "saint-aubert", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 18, "zonage_codes": 18, "fold_parquet_with_code": 1423, "served_with_code": 1423},
+    {"slug": "amos", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 42, "zonage_codes": 39, "fold_parquet_with_code": 13, "served_with_code": 13},
+    {"slug": "gaspe", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 26, "zonage_codes": 26, "fold_parquet_with_code": 1194, "served_with_code": 1194},
+    {"slug": "stratford", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 50, "zonage_codes": 50, "fold_parquet_with_code": 1709, "served_with_code": 1709},
+    {"slug": "brome", "cause": "qc_zonage_not_served", "zonage_features": 0, "zonage_codes": 0, "served_with_code": 0},
+    {"slug": "sainte-cecile-de-milton", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 37, "zonage_codes": 32, "fold_parquet_with_code": 1219, "served_with_code": 1219},
+    {"slug": "huberdeau", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 24, "zonage_codes": 24, "fold_parquet_with_code": 648, "served_with_code": 648},
+    {"slug": "saint-benoit-labre", "cause": "fold_computed_null_geometry_coverage", "zonage_features": 14, "zonage_codes": 14, "fold_parquet_with_code": 1496, "served_with_code": 1496}
+  ],
+  "cause_distribution_initial": [
+    {"cause": "qc_zonage_not_served", "cities": ["bouchette", "brome", "chibougamau"], "lots_without_code_zone": 2065, "required_acquisition": "polygones de zonage en vigueur couvrant la municipalité, avec code de zone exploitable et preuve source v2"},
+    {"cause": "stage_2_materialization_stale", "cities": ["saguenay", "mont-blanc", "hemmingford--les-jardins-de-napierville--2", "saint-marcel-de-richelieu"], "lots_without_code_zone": 24167, "note": "Saguenay était déjà corrigée avant notre backup; Mont-Blanc a été restaurée après garde-fou; Hemmingford=34 et Saint-Marcel=2 codes immédiatement matérialisables."},
+    {"cause": "fold_computed_null_geometry_coverage", "lots_without_code_zone": 23086, "required_acquisition": "géométrie de zonage complète et millésime exact couvrant les lots; aucune affectation par proximité ou héritage"},
+    {"cause": "served_zonage_without_any_usable_code", "cities": [], "lots_without_code_zone": 0, "note": "aucun gros cas: les zonages servis des villes diagnostiquées ont au moins un code; Lislet (7/8) et Amos (39/42) ont des codes partiels, pas une grille totalement inexploitable."}
+  ],
+  "refolds": [
+    {
+      "slug": "saguenay",
+      "simplify_zones_m": 1,
+      "backup_ts": "2026-07-26T032128710ZZ",
+      "before": {"assigned": 19135, "assigned_pct": 100, "mismatch_pct": 5.3},
+      "after": {"assigned": 19135, "assigned_pct": 100, "mismatch_pct": 5.3},
+      "result": "kept",
+      "net_code_zone_gained": 0,
+      "note": "Le zéro-code de la mesure du 25 juillet avait été corrigé par un flux concurrent avant le backup; notre re-fold vérifie l'état sans régression."
+    },
+    {
+      "slug": "mont-blanc",
+      "simplify_zones_m": 1,
+      "backup_ts": "2026-07-26T033049416ZZ",
+      "before": {"assigned": 0, "assigned_pct": 0, "mismatch_pct": null},
+      "attempt_after": {"assigned": 4898, "assigned_pct": 98.04, "mismatch_pct": 3.1},
+      "final": {"assigned": 0, "assigned_pct": 0, "mismatch_pct": null},
+      "result": "restored",
+      "net_code_zone_gained": 0,
+      "rollback": "OK; quatre artefacts coeur restaurés, contrôlés par taille; aucun layout sous-dossier n'existait."
+    }
+  ],
+  "net_code_zone_gained_retained": 0,
+  "s3_run_guard": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10",
+  "collections_qc_zonage_written": false,
+  "commit": "not committed; not pushed"
+}
