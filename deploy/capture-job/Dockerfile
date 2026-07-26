@@ -27,6 +27,11 @@ COPY acquisition/tsconfig.json ./acquisition/
 COPY deploy/capture-job/run-capture-job.sh /usr/local/bin/run-capture-job.sh
 RUN chmod +x /usr/local/bin/run-capture-job.sh
 
+# The Job runs with runAsNonRoot.  The entrypoint writes only to the fsGroup-
+# owned /scratch EmptyDir supplied by Kubernetes; repository files stay read-only.
+RUN chown -R 1000:1000 /geo
+USER 1000:1000
+
 ENV PATH="/geo/acquisition/node_modules/.bin:${PATH}"
 ENV NODE_PATH="/geo/acquisition/node_modules"
 WORKDIR /geo/acquisition
