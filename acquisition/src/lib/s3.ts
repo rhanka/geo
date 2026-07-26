@@ -249,6 +249,28 @@ export async function putBytes(
   );
 }
 
+/** PUT a new object once; an existing snapshot must never be replaced. */
+export async function putBytesIfAbsent(
+  s3: S3Client,
+  key: string,
+  body: Buffer | Uint8Array | string,
+  contentType?: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  if (isServedZoneKey(key)) {
+    throw new Error(`direct served qc-zonage write refused: immutable destination must not be served (${key})`);
+  }
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      IfNoneMatch: "*",
+      ...(contentType ? { ContentType: contentType } : {}),
+    }),
+  );
+}
+
 /** Delete a single object (idempotent — S3 delete of a missing key is a no-op). */
 export async function deleteObject(
   s3: S3Client,
