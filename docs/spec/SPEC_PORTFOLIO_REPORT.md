@@ -93,7 +93,31 @@ Contraintes d'exécution : **déterministe**, **0 réseau**, **0 S3**, **0 dépl
 | KPI | Source | Définition |
 |---|---|---|
 | **Provenance zones — URL source servie** | `work/coverage/zone-source-readback-audit-*.json` (le plus récent par nom) | Nombre de collections servies dont `zone_source_url` est une URL http réelle (`STAMPED`) / total servi (871). `STAMPED_NULL` (champ présent, null) comptés `incomplete` ; `UNSTAMPED` (champ absent) comptés séparément. Ce KPI signale immédiatement un dé-stampage (ré-acquisition sans re-stamp dans la même passe). |
-| **Zones — cohérence lot-zone** | `work/coverage/lot-zone-consistency.json` | Si le fichier couvre assez de villes (≥ 50 % de l'univers), ville `complete` ssi `mismatch_pct < 5 %`. Sinon → `donnée insuffisante` (aucune extrapolation). |
+| **Zones — cohérence lot-zone** | `work/coverage/lot-zone-consistency-scale-*.json` (le plus récent par nom) ; **repli** sur `work/coverage/lot-zone-consistency.json` si aucune passe à l'échelle n'existe | Si la source couvre assez de villes (≥ 50 % de l'univers, soit 553), ville `complete` ssi `status = "measured"` **ET** `mismatch_pct < 5 %`. Sinon → `donnée insuffisante` (aucune extrapolation). Règles d'exclusion : voir ci-dessous. |
+
+**Registre des villes canoniques** — `work/coverage/coverage-matrix.json` est lu pour son
+**seul ensemble de clés `cities`** (les 1 106 slugs canoniques), jamais pour ses valeurs de
+couverture. Il sert de garde : une ligne de source hors de cet ensemble ne reçoit **aucun
+crédit de complétion** (cf. `l-assomption`, `l-epiphanie`, `sainte-christine-d-auvergne`).
+
+#### Règles NON NÉGOCIABLES du KPI « cohérence lot-zone »
+
+1. **Seuil** : ville `complete` **ssi** `mismatch_pct < 5 %` (strict).
+2. **`inconclusive_zero_assigned` ⇒ `unknown`, jamais `complete`.** Une ville dont aucun lot
+   servi ne porte de `code_zone` a `assigned = 0` : son `mismatch_pct` vaut `null` (0 mécanique
+   si on le calculait). Le compter `complete` créditerait une **absence de donnée** comme une
+   qualité. Ces villes sont `unknown`.
+3. **Ville non auditable ⇒ `unknown`.** L'audit croise deux géométries SERVIES ; sans zonage
+   servi **ou** sans lots servis il n'y a rien à comparer. Jamais `complete`, jamais `N/A`
+   (l'absence de donnée servie est un manque, pas une non-applicabilité).
+4. **Partition fermée sur 1 106** : `complete + incomplete + unknown + N/A = 1 106`, avec
+   `unknown = inconclusive_zero_assigned + non auditables`. `--check` le vérifie.
+5. **Contrôle défensif** : le générateur recalcule `complete` depuis les lignes villes et le
+   confronte à l'agrégat `kpi_threshold_5pct` publié par la source (net des lignes
+   hors-univers) ; tout écart est émis en avertissement, jamais silencieux.
+6. **Contexte lots, séparé du KPI ville** : le mismatch pondéré par les lots et le volume de
+   lots servis **sans `code_zone`** sont rapportés dans le bloc de notes (comme « normes
+   pliées »), **jamais fondus** dans la complétion-ville.
 
 ## Schéma JSON de sortie
 
@@ -135,6 +159,10 @@ avec repli sur le libellé `kpi`.
   joints par ` · `, `complete` en premier, signe explicite (`+`/`-`).
 - Pas de snapshot précédent, KPI `unknown`/`insufficient`, ou champ non numérique →
   Précédent/Δ = `—`.
+- **Le snapshot précédent doit lui-même porter une mesure comparable.** Si le KPI y était
+  `unknown`/`insufficient` (champs `null`), aucun Δ n'est calculable : la cellule vaut `—`,
+  **jamais `0`** (un `0` laisserait croire à une absence de mouvement). Le rapport le DIT
+  explicitement dans les notes plutôt que d'inventer un Δ.
 
 ## Validation (`--check`)
 
