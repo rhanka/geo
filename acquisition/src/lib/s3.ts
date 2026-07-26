@@ -89,12 +89,25 @@ export async function getBytes(
   s3: S3Client,
   key: string,
   bucket: string = BUCKET,
+  abortSignal?: AbortSignal,
 ): Promise<Buffer> {
-  const r = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  const r = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }), { abortSignal });
+  const body = r.Body as AsyncIterable<Buffer> & { destroy?: (error?: Error) => void };
+  const abortError = new Error(`S3 read aborted: ${key}`);
+  const abort = () => body.destroy?.(abortError);
+  if (abortSignal?.aborted) {
+    abort();
+    throw abortError;
+  }
+  abortSignal?.addEventListener("abort", abort, { once: true });
   const chunks: Buffer[] = [];
-  // Body is a Node Readable in the SDK v3 node runtime.
-  for await (const c of r.Body as AsyncIterable<Buffer>) chunks.push(c);
-  return Buffer.concat(chunks);
+  try {
+    // Body is a Node Readable in the SDK v3 node runtime.
+    for await (const c of body) chunks.push(c);
+    return Buffer.concat(chunks);
+  } finally {
+    abortSignal?.removeEventListener("abort", abort);
+  }
 }
 
 /** Read + JSON.parse an object. */
@@ -333,4 +346,45 @@ export async function listSlugs(
     token = r.IsTruncated ? r.NextContinuationToken : undefined;
   } while (token);
   return out;
+}
+
+/**
+ * Paged S3 listing retaining the object identity needed by resumable readers.
+ * `ETag` changes on an overwrite at the same key, unlike a slug-only listing.
+ */
+export interface ListedS3Object {
+  key: string;
+  etag: string | null;
+  last_modified: string | null;
+}
+
+export async function listObjectEntries(
+  s3: S3Client,
+  prefix: string,
+  bucket: string = BUCKET,
+  abortSignal?: AbortSignal,
+): Promise<ListedS3Object[]> {
+  const out: ListedS3Object[] = [];
+  let token: string | undefined;
+  do {
+    const result = await s3.send(
+      new ListObjectsV2Command({
+        Bucket: bucket,
+        Prefix: prefix,
+        ContinuationToken: token,
+        MaxKeys: 1000,
+      }),
+      { abortSignal },
+    );
+    for (const object of result.Contents ?? []) {
+      if (!object.Key) continue;
+      out.push({
+        key: object.Key,
+        etag: object.ETag ?? null,
+        last_modified: object.LastModified?.toISOString() ?? null,
+      });
+    }
+    token = result.IsTruncated ? result.NextContinuationToken : undefined;
+  } while (token);
+  return out.sort((left, right) => left.key.localeCompare(right.key));
 }

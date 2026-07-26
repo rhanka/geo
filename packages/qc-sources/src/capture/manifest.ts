@@ -247,6 +247,13 @@ export function redactUrlForManifest(url: string): { url: string; redacted: bool
 // Ligne de manifeste → preuve v2
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Hôte de stockage objet (le nôtre) : jamais une source amont. Comparé sur les
+ *  LABELS séparés par des points, jamais en sous-chaîne — un `/s3[.:]/` naïf
+ *  matche aussi `services3.arcgis.com`, l'hôte ArcGIS Online le plus courant. */
+function isObjectStorageHost(hostname: string): boolean {
+  return hostname.toLowerCase().split(".").some((label) => label === "s3" || label.startsWith("s3-"));
+}
+
 /** URL http(s) réelle — même critère que `isRealGeometryUrl` côté zonage. */
 function isRealHttpUrl(value: string): boolean {
   try {
@@ -255,7 +262,7 @@ function isRealHttpUrl(value: string): boolean {
       (u.protocol === "https:" || u.protocol === "http:") &&
       !!u.hostname &&
       !/^(localhost|127\.|::1)/i.test(u.hostname) &&
-      !/s3[.:]/i.test(u.hostname)
+      !isObjectStorageHost(u.hostname)
     );
   } catch {
     return false;
