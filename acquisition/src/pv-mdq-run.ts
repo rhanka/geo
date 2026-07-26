@@ -48,7 +48,14 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  capturedFetch,
+  capturedText,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
 import { PV_USER_AGENT } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 
 const HOSTS = ["https://municipalites-du-quebec.ca", "https://municipalites-du-quebec.com"];
 const SCAN_ENDPOINT = "scan.procesverbaux.inc.php";
@@ -93,26 +100,28 @@ function slugAliases(slug: string): string[] {
   return [...out];
 }
 
-async function getJson(url: string): Promise<{ ok: boolean; status: number; body: string }> {
-  const ac = new AbortController();
-  const timer = setTimeout(() => ac.abort(), 20_000);
-  try {
-    const r = await fetch(url, {
-      redirect: "follow",
-      signal: ac.signal,
-      headers: {
-        "User-Agent": PV_USER_AGENT,
-        Accept: "application/json,text/plain,*/*",
-        "Accept-Language": "fr-CA,fr;q=0.9",
-      },
-    });
-    const body = await r.text();
-    return { ok: r.ok, status: r.status, body };
-  } catch (e) {
-    return { ok: false, status: -1, body: e instanceof Error ? e.name : "err" };
-  } finally {
-    clearTimeout(timer);
-  }
+async function getJson(url: string, slug: string, run: CaptureRun): Promise<{ ok: boolean; status: number; body: string }> {
+  const captured = await capturedFetch(url, {
+    redirect: "follow",
+    headers: {
+      "User-Agent": PV_USER_AGENT,
+      Accept: "application/json,text/plain,*/*",
+      "Accept-Language": "fr-CA,fr;q=0.9",
+    },
+  }, {
+    run,
+    lane: "pv",
+    source: "pv-mdq",
+    slugs: [slug],
+    timeoutMs: 20_000,
+    maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  });
+  if (captured.response === null) return { ok: false, status: -1, body: captured.line.error ?? "err" };
+  return {
+    ok: captured.ok,
+    status: captured.response.status,
+    body: captured.bytes === null ? "" : capturedText(captured),
+  };
 }
 
 interface ScanNode {
@@ -143,6 +152,13 @@ interface SlugResult {
 }
 
 async function runSlug(slug: string, args: Args): Promise<SlugResult> {
+  const run = openCaptureRun({ lane: "pv", userAgent: PV_USER_AGENT });
+  let exitCode = 1;
+  const complete = (result: SlugResult): SlugResult => {
+    exitCode = 0;
+    return result;
+  };
+  try {
   // Une panne d'hôte ne DOIT PAS se lire comme « pas sur le portail » : sans cette
   // distinction, un portail tombé produirait un faux « not-on-portal » qu'un agent
   // suivant classerait à tort en dead-end terminal. On exige donc au moins UNE
@@ -152,7 +168,7 @@ async function runSlug(slug: string, args: Args): Promise<SlugResult> {
     for (const alias of slugAliases(slug)) {
       await sleep(args.delayMs);
       const url = `${host}/${alias}/${SCAN_ENDPOINT}`;
-      const r = await getJson(url);
+      const r = await getJson(url, slug, run);
       if (r.status > 0) sawHttpResponse = true;
       if (!r.ok || !r.body.trim().startsWith("{")) continue;
 
@@ -166,7 +182,7 @@ async function runSlug(slug: string, args: Args): Promise<SlugResult> {
       const files = flattenPdfs(tree);
       if (files.length === 0) {
         // Portail réel mais dossier PV VIDE (cas fréquent : section jamais alimentée).
-        return { slug, status: "portal-empty", pairs: 0, host, alias, note: "0 PDF dans l'arbre servi" };
+        return complete({ slug, status: "portal-empty", pairs: 0, host, alias, note: "0 PDF dans l'arbre servi" });
       }
 
       // Les noms sont préfixés ISO (`2026-04-09 …`) → tri décroissant = plus récents d'abord.
@@ -206,7 +222,7 @@ async function runSlug(slug: string, args: Args): Promise<SlugResult> {
         ) + "\n",
       );
 
-      return {
+      return complete({
         slug,
         status: "pairs-ok",
         pairs: pairs.length,
@@ -215,17 +231,20 @@ async function runSlug(slug: string, args: Args): Promise<SlugResult> {
         pvIndexUrl,
         out: outFile,
         note: `servis=${files.length}`,
-      };
+      });
     }
   }
-  return sawHttpResponse
+  return complete(sawHttpResponse
     ? { slug, status: "not-on-portal", pairs: 0 }
     : {
         slug,
         status: "portal-unreachable",
         pairs: 0,
         note: "aucune réponse HTTP (hôte injoignable) — indéterminé, NE PAS conclure au dead-end ; réessayer",
-      };
+      });
+  } finally {
+    await run.finish(exitCode);
+  }
 }
 
 async function main(): Promise<void> {

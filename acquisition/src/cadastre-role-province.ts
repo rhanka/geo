@@ -23,6 +23,13 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync 
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
+import {
+  capturedFetch,
+  CapturedFetchError,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, getBytes, putBytes, listSlugs } from "./lib/s3.js";
 import { norm } from "./cadastre-clip-sda.js";
 import { fetchIndex, parseRole, joinLotsRole } from "./role-foncier.js";
@@ -38,6 +45,8 @@ const ROLE_PREFIX = "registry/role-foncier/";
 const SDA_BOUNDARIES_KEY = "normalized/qc-admin-boundaries/qc-municipalites.geojson";
 
 const MILLESIME = 2026;
+/** UA déjà envoyé par le `fetch` global Node avant sa capture. */
+const NODE_FETCH_USER_AGENT = "undici";
 
 // Alias slug cadastre -> code géo (aligné sur cadastre_clip_sda.ALIAS_SLUG_TO_CODE).
 const ALIAS_SLUG_TO_CODE: Record<string, string> = {
@@ -141,11 +150,26 @@ class CodeResolver {
 // Rôle : fetch XML par code_geo (404/403 -> null, sans lever)
 // ---------------------------------------------------------------------------
 
-async function fetchRoleBytes(codeGeo: string, millesime = MILLESIME): Promise<Buffer | null> {
-  const res = await fetch(XML_URL(codeGeo, millesime));
-  if (res.status === 403 || res.status === 404) return null;
-  if (!res.ok) throw new Error(`role HTTP ${res.status}`);
-  return Buffer.from(await res.arrayBuffer());
+async function fetchRoleBytes(
+  codeGeo: string,
+  slug: string,
+  run: CaptureRun,
+  millesime = MILLESIME,
+): Promise<Buffer | null> {
+  const captured = await capturedFetch(XML_URL(codeGeo, millesime), undefined, {
+    run,
+    lane: "cadastre",
+    source: "cadastre-role-province",
+    slugs: [slug],
+    timeoutMs: null,
+    maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  });
+  if (captured.response?.status === 403 || captured.response?.status === 404) return null;
+  if (!captured.ok || captured.bytes === null) {
+    if (captured.response !== null) throw new Error(`role HTTP ${captured.response.status}`);
+    throw new CapturedFetchError(captured.line);
+  }
+  return Buffer.from(captured.bytes);
 }
 
 // ---------------------------------------------------------------------------
@@ -226,9 +250,13 @@ async function main(): Promise<void> {
     }
   }
 
-  const t0 = Date.now();
-  let processed = 0;
-  for (const slug of allSlugs) {
+  const run = openCaptureRun({ lane: "cadastre", userAgent: NODE_FETCH_USER_AGENT });
+  let exitCode = 1;
+  try {
+
+    const t0 = Date.now();
+    let processed = 0;
+    for (const slug of allSlugs) {
     if (slug in prog.done) continue;
     if (roleSlugs.has(slug)) {
       if (!prog.skip_exists.includes(slug)) prog.skip_exists.push(slug);
@@ -256,7 +284,7 @@ async function main(): Promise<void> {
     // 2) fetch + parse rôle
     let xml: Buffer | null;
     try {
-      xml = await fetchRoleBytes(code, MILLESIME);
+      xml = await fetchRoleBytes(code, slug, run, MILLESIME);
     } catch (e) {
       console.log(`FAIL-FETCH  ${slug.padEnd(44)} code=${code} ${String(e)}`);
       prog.errors.push([slug, `fetch:${String(e)}`]);
@@ -357,13 +385,17 @@ async function main(): Promise<void> {
     };
     saveProg(prog);
     cleanup(lots, out);
-  }
+    }
 
-  console.log(
-    `=== chunk fin : done=${Object.keys(prog.done).length} skip_exists=${prog.skip_exists.length} ` +
-      `no_code=${prog.no_code.length} no_role=${prog.no_role.length} errors=${prog.errors.length} ` +
-      `(sur ${allSlugs.length} slugs) ===`,
-  );
+    console.log(
+      `=== chunk fin : done=${Object.keys(prog.done).length} skip_exists=${prog.skip_exists.length} ` +
+        `no_code=${prog.no_code.length} no_role=${prog.no_role.length} errors=${prog.errors.length} ` +
+        `(sur ${allSlugs.length} slugs) ===`,
+    );
+    exitCode = 0;
+  } finally {
+    await run.finish(exitCode);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
