@@ -98,6 +98,7 @@ async function main(): Promise<void> {
       const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
       const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
       let matched = 0, changed = 0;
+      const propertiesBefore = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
       for (const f of feats) {
         f.properties = f.properties ?? {};
         if (strip) {
@@ -112,7 +113,8 @@ async function main(): Promise<void> {
         }
       }
       const pct = feats.length ? Math.round((matched / feats.length) * 1000) / 10 : 0;
-      console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) cellsChanged=${changed} key=${key}`);
+      const propertiesAfter = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
+      console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) cellsChanged=${changed} properties=${propertiesBefore}->${propertiesAfter} key=${key}`);
       if (!dryRun && changed > 0) {
         await putServedZoneAdditive(s3, key, fc, { allowedProps: NORM_FIELDS });
       }
