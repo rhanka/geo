@@ -12,7 +12,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-import { exists, getBytes, putBytes, s3Client } from "./lib/s3.js";
+import { exists, getBytes, s3Client } from "./lib/s3.js";
+import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const DEFAULT_SLUG = "saint-stanislas-de-kostka";
 const PREFIX = "normalized/ca-qc-zonage/";
@@ -53,6 +54,12 @@ interface FoldConfig {
   newMillesime: string;
   artifact: string;
 }
+
+const EFFECT_FIELDS = [
+  "densite_avant", "densite_avant_millesime", "densite_avant_reglement",
+  "densite_apres", "densite_apres_millesime", "densite_apres_reglement",
+  "effet_densifiant", "effet_densifiant_delta",
+] as const;
 
 function arg(argv: string[], key: string): string | undefined {
   const i = argv.indexOf(`--${key}`);
@@ -218,9 +225,9 @@ async function main(): Promise<void> {
     );
 
     if (!dryRun) {
-      // Write the whole object back, preserving top-level type, crs, and all
-      // untouched collection members.
-      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+      // Additive write proves the freshly served geometry is unchanged while the
+      // verified before/after fields are restored.
+      await putServedZoneAdditive(s3, key, fc, { allowedProps: EFFECT_FIELDS });
     }
   }
   console.log(
@@ -235,4 +242,3 @@ if (invokedDirectly) {
     process.exit(1);
   });
 }
-

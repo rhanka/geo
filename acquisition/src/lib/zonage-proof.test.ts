@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, sameGeometryProof } from "./zonage-proof.js";
+import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, sameGeometryProof } from "./zonage-proof.js";
 import { copyObject, putBytes } from "./s3.js";
 
 describe("served zonage geometry proof", () => {
@@ -49,14 +49,64 @@ describe("served zonage geometry proof", () => {
     expect(sent).toHaveLength(0);
     const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
     const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: [{ properties: { zone_code: "R-1" } }] }, p);
-    await putServedZoneGeojson(s3, key, fc);
-    expect(sent).toHaveLength(1);
+    // This is a first deposit: the loss gate must not read a non-existent object.
+    const { s3: freshS3, sent: freshSent } = fakeS3(null, { missing: true });
+    await putServedZoneGeojson(freshS3, key, fc);
+    expect(freshSent.filter((c) => c.name === PUT)).toHaveLength(1);
+  });
+
+  it("refuses a geometry replacement that drops existing enrichment keys before S3 write", async () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const served = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [0, 0] }, properties: { zone_code: "R-1", reglement_numero: "123", hauteur_max_value: 12 } }],
+    }, p);
+    const replacement = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [1, 1] }, properties: { zone_code: "R-1" } }],
+    }, p);
+    const { s3, sent } = fakeS3(served);
+
+    await expect(putServedZoneGeojson(s3, KEY, replacement)).rejects.toThrow(/would remove served property key\(s\): hauteur_max_value, reglement_numero/);
+    expect(sent.some((c) => c.name === PUT)).toBe(false);
+  });
+
+  it("allows a geometry replacement when the existing property-key contract is retained", async () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const served = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [0, 0] }, properties: { zone_code: "R-1", reglement_numero: "123" } }],
+    }, p);
+    const replacement = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [1, 1] }, properties: { zone_code: "R-1", reglement_numero: "123" } }],
+    }, p);
+    const { s3, sent } = fakeS3(served);
+
+    await putServedZoneGeojson(s3, KEY, replacement);
+    expect(sent.filter((c) => c.name === PUT)).toHaveLength(1);
+  });
+
+  it("carries old-only properties only to freshly acquired features with the same zone code", () => {
+    const incoming = [
+      { properties: { zone_code: "R-1", kind: "fresh" } },
+      { properties: { zone_code: "C-2", kind: "fresh" } },
+    ];
+    const result = carryForwardServedZoneProperties(
+      incoming,
+      [{ properties: { zone_code: "r 1", reglement_numero: "123", kind: "old" } }],
+      (value) => String(value ?? "").toUpperCase().replace(/[^A-Z0-9]/g, ""),
+    );
+
+    expect(result).toEqual({ matched: 1, unmatched: 1 });
+    expect(incoming[0]!.properties).toEqual({ zone_code: "R-1", reglement_numero: "123", kind: "fresh" });
+    expect(incoming[1]!.properties).toEqual({ zone_code: "C-2", kind: "fresh" });
   });
   // ── P0 regression: the "safe" deposit route used to accept a served collection
   // whose features carried NO source stamp at all (proof v2 only). Every served
   // feature must state its source; only an EXPLICIT null is an acceptable "none".
   it("refuses a deposit whose feature has no zone_source_url field at all", async () => {
-    const { s3, sent } = fakeS3(null);
+    const { s3, sent } = fakeS3(null, { missing: true });
     const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
     const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_code: "R-1" } }] }, p);
     delete fc.features[0].properties.zone_source_url;
@@ -66,7 +116,7 @@ describe("served zonage geometry proof", () => {
   });
 
   it("accepts an EXPLICIT null zone_source_url with a valid level (honest null, never a fabricated URL)", async () => {
-    const { s3, sent } = fakeS3(null);
+    const { s3, sent } = fakeS3(null, { missing: true });
     const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
     const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: [{ properties: { zone_code: "R-1" } }] }, p, { url: null, level: "orphan" });
     expect((fc.features[0]!.properties as any).zone_source_url).toBeNull();
