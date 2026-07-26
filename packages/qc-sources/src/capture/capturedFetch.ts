@@ -90,7 +90,8 @@ export interface CapturedFetchContext {
   version?: string;
   robots?: RobotsGate;
   fetchImpl?: CaptureFetchLike;
-  timeoutMs?: number;
+  /** `null` désactive le timeout du chokepoint pour préserver un appel historique sans délai. */
+  timeoutMs?: number | null;
   /** Plafond par objet — garde-fou coût (SPEC §5.2, défaut 100 Mio). */
   maxBytes?: number;
   maxRedirects?: number;
@@ -114,6 +115,8 @@ export interface CapturedFetchResult {
 export const DEFAULT_CAPTURE_TIMEOUT_MS = 30_000;
 export const DEFAULT_CAPTURE_MAX_BYTES = 104_857_600;
 const DEFAULT_MAX_REDIRECTS = 5;
+/** Limite de redirections de `fetch`/Undici, pour préserver un appel nu migré. */
+export const NODE_FETCH_DEFAULT_MAX_REDIRECTS = 20;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
 /** Erreur normalisée, courte, sans secret (règle C-6). */
@@ -197,7 +200,11 @@ export async function capturedFetch(
 
   // ── 2. fetch + chaîne de redirections ───────────────────────────────────────
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ctx.timeoutMs ?? DEFAULT_CAPTURE_TIMEOUT_MS);
+  const timeoutMs = ctx.timeoutMs === undefined ? DEFAULT_CAPTURE_TIMEOUT_MS : ctx.timeoutMs;
+  const timer = timeoutMs === null ? null : setTimeout(() => controller.abort(), timeoutMs);
+  const clearTimer = (): void => {
+    if (timer !== null) clearTimeout(timer);
+  };
   const chain: string[] = [];
   let response: CaptureHttpResponse | null = null;
   let currentUrl = url;
@@ -235,7 +242,7 @@ export async function capturedFetch(
   }
 
   if (response === null) {
-    clearTimeout(timer);
+    clearTimer();
     const error = transportError ?? "no response";
     run.log(`[capture] FAIL ${method} ${redacted.url} — ${error}`);
     const line = await emit({ redirect_chain: chain, error });
@@ -248,7 +255,7 @@ export async function capturedFetch(
 
   // ── 3. réponse non-2xx : pas d'octets, mais la ligne EXISTE ─────────────────
   if (!response.ok) {
-    clearTimeout(timer);
+    clearTimer();
     run.log(`[capture] HTTP ${status} ${method} ${redacted.url}`);
     const line = await emit({
       http_status: status,
@@ -265,7 +272,7 @@ export async function capturedFetch(
   try {
     body = new Uint8Array(await response.arrayBuffer());
   } catch (e) {
-    clearTimeout(timer);
+    clearTimer();
     const error = normalizeError(e);
     run.log(`[capture] FAIL-BODY ${method} ${redacted.url} — ${error}`);
     const line = await emit({
@@ -277,7 +284,7 @@ export async function capturedFetch(
     });
     return { line, ok: false, response, bytes: null, record: null };
   }
-  clearTimeout(timer);
+  clearTimer();
 
   const retrievedAt = new Date().toISOString();
 
