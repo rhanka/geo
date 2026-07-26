@@ -42,6 +42,8 @@ import { pathToFileURL } from "node:url";
 import type { S3Client } from "@aws-sdk/client-s3";
 import type { FeatureCollection } from "geojson";
 
+import { capturedFetch, NODE_FETCH_DEFAULT_MAX_REDIRECTS, type CaptureRequestInit, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { extractGeoRef, type GeoRef } from "./lib/t1-georef.js";
 import {
   extractLabels,
@@ -80,7 +82,8 @@ function arg(name: string): string | undefined {
 }
 function fail(message: string): never {
   console.error(`\n[t1-multiframe] ABORT (anti-invention): ${message}`);
-  process.exit(2);
+  process.exitCode = 2;
+  throw new Error(message);
 }
 
 /** Rectangle page d'un cadre, en FRACTIONS de page, origine haut-gauche. */
@@ -116,14 +119,33 @@ async function main(): Promise<void> {
   const cutoffM = arg("cutoff-m") ? Number(arg("cutoff-m")) : 1500;
   if (!slug || !pdfInput || !dictPath) fail("required: --slug <slug> --pdf <plan.pdf|url> --dict <codes.json>");
   const pdfUrl = /^https?:\/\//.test(pdfInput) ? pdfInput : undefined;
+  const s3 = s3Client();
+  if (pdfUrl) {
+    CAPTURE = openCaptureRun({ lane: "zones", s3 });
+  }
   let pdf = pdfInput;
   let pdfBytes: Buffer;
   let pdfRetrievedAt: string | undefined;
   if (pdfUrl) {
-    const response = await fetch(pdfUrl);
-    if (!response.ok) fail(`PDF fetch failed: ${pdfUrl} (${response.status} ${response.statusText})`);
-    pdfBytes = Buffer.from(await response.arrayBuffer());
-    pdfRetrievedAt = new Date().toISOString();
+    if (!CAPTURE) fail("capture run absent");
+    // Le type du chokepoint préserve seulement les en-têtes et corps qu'il sait
+    // sérialiser honnêtement; ne pas élargir ceci en `RequestInit`.
+    const init: CaptureRequestInit = {};
+    const captured = await capturedFetch(pdfUrl, init, {
+      run: CAPTURE,
+      source: "zones-t1-multiframe",
+      slugs: [slug],
+      version: "t1-build-multiframe/1",
+      // `fetch(pdfUrl)` historique n'avait ni timeout applicatif ni plafond de
+      // redirections inférieur au défaut Node : conserver ce comportement.
+      timeoutMs: null,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+    });
+    if (!captured.ok || captured.bytes === null) {
+      fail(`PDF fetch failed: ${pdfUrl} (${captured.line.http_status ?? captured.line.error ?? "sans réponse"})`);
+    }
+    pdfBytes = Buffer.from(captured.bytes);
+    pdfRetrievedAt = captured.line.retrieved_at ?? undefined;
     pdf = join(tmpdir(), `t1-multiframe-${slug}-${Date.now()}.pdf`);
     writeFileSync(pdf, pdfBytes);
   } else {
@@ -205,7 +227,6 @@ async function main(): Promise<void> {
   if (nonLettered.length) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
 
   // 4. Cadastre + gate spatial ------------------------------------------------
-  const s3 = s3Client();
   const cadBuf = await getBytes(s3, `normalized/qc-cadastre-lots/${slug}.geojson`);
   const cadastre = JSON.parse(cadBuf.toString("utf8")) as FeatureCollection;
   const { center: cadCenter, bbox: cadBbox } = bboxCenter(cadastre);
@@ -289,9 +310,20 @@ async function main(): Promise<void> {
   console.log(JSON.stringify(report, null, 2));
 }
 
+let CAPTURE: CaptureRun | null = null;
+
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (error) { console.error(`[t1-multiframe] WARN clôture capture: ${error instanceof Error ? error.message : String(error)}`); }
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+  main()
+    .then(async () => { await closeCapture(typeof process.exitCode === "number" ? process.exitCode : 0); })
+    .catch(async (error: unknown) => {
+      console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+      await closeCapture(typeof process.exitCode === "number" ? process.exitCode : 1);
+      if (process.exitCode === undefined) process.exitCode = 1;
+    });
 }
