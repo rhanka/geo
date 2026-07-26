@@ -341,6 +341,9 @@ async function main(): Promise<void> {
   const out = arg(argv, "--out");
   const effectDiagnosis = arg(argv, "--effect-diagnosis");
   if (!out || !effectDiagnosis) throw new Error("required: --effect-diagnosis <json> --out <json>");
+  // Le rétrécissement de `out` ne traverse pas la frontière du worker plus bas :
+  // on le fige ici plutôt que de l'assurer à l'appel.
+  const outPath: string = out;
   const maxRaw = arg(argv, "--max");
   const concurrencyRaw = arg(argv, "--concurrency") ?? "3";
   const requestedRaw = arg(argv, "--slugs");
@@ -373,7 +376,7 @@ async function main(): Promise<void> {
       console.error(`[bprime-normes-fold] ${index + 1}/${batch.length} ${slug}`);
       const row = await diagnoseOne(s3, slug, manifest);
       bySlug.set(slug, row);
-      writeProgress(out, candidates.length, [...bySlug.values()]);
+      writeProgress(outPath, candidates.length, [...bySlug.values()]);
     }
   }
   await Promise.all(Array.from({ length: Math.min(concurrency, batch.length) }, worker));
