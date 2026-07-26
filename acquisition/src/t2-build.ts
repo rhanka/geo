@@ -38,7 +38,9 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
+import type { S3Client } from "@aws-sdk/client-s3";
 import type { FeatureCollection } from "geojson";
 
 import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
@@ -46,7 +48,29 @@ import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from ".
 import { buildZones } from "./lib/t1-zones.js";
 import { assertIndependentGcps, buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
 import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
 import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
+
+/** Deposit a freshly georeferenced T2 geometry only with the bytes of its real plan. */
+export async function depositT2ServedZoneGeojson(
+  s3: S3Client,
+  key: string,
+  served: ServedZoneGeoJson,
+  pdfUrl: string,
+  pdfBytes: Buffer,
+  retrievedAt = new Date().toISOString(),
+): Promise<void> {
+  const proof = proofFromFetched({
+    url: pdfUrl,
+    type: "pdf-zonage",
+    method: "georeference",
+    reliability: "georeferencee",
+    bytes: pdfBytes,
+    retrievedAt,
+  });
+  attachGeometryProof(served, proof, { url: pdfUrl, level: "documented" });
+  await putServedZoneGeojson(s3, key, served);
+}
 
 interface Args {
   slug: string;
@@ -205,6 +229,8 @@ async function main(): Promise<void> {
 
   // 1. PDF + page size + manual georef ---------------------------------------
   const pdfPath = await resolvePdf(pdfArg);
+  const pdfBytes = readFileSync(pdfPath);
+  const pdfRetrievedAt = new Date().toISOString();
   const { pageW, pageH } = gcpFile.pageW && gcpFile.pageH
     ? { pageW: gcpFile.pageW, pageH: gcpFile.pageH }
     : pdfPageSize(pdfPath, page);
@@ -506,7 +532,14 @@ async function main(): Promise<void> {
       fail("OCR labels are not verbatim-selectable PDF text; rerun with --dry-run for preview or pass --ocr-reviewed after human code QA");
     }
     const s3Key = `normalized/ca-qc-zonage/qc-zonage-${args.slug}.geojson`;
-    await putBytes(s3, s3Key, JSON.stringify(served), "application/geo+json");
+    await depositT2ServedZoneGeojson(
+      s3,
+      s3Key,
+      served as unknown as ServedZoneGeoJson,
+      pdfArg,
+      pdfBytes,
+      pdfRetrievedAt,
+    );
     await putBytes(
       s3,
       `normalized/ca-qc-zonage/qc-zonage-${args.slug}.stats.json`,
@@ -519,7 +552,9 @@ async function main(): Promise<void> {
   console.log(JSON.stringify(report, null, 2));
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
