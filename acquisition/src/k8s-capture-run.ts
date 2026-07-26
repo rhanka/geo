@@ -8,6 +8,7 @@
  */
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 import {
   CAPTURE_LANES,
@@ -31,7 +32,7 @@ interface Args {
   dryRun: boolean;
 }
 
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.0";
+const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.1";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
@@ -119,6 +120,10 @@ spec:
       imagePullSecrets:
         - name: geo-registry-pull
       securityContext:
+        # The capture image declares USER 1000:1000. EmptyDir is
+        # mounted at /scratch for its redacted temporary log, so grant that
+        # group ownership before the non-root entrypoint starts.
+        fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
@@ -214,9 +219,12 @@ async function main(): Promise<void> {
   process.stderr.write("[capture-orch] Job soumis; le contrôleur Kubernetes gère la concurrence. Aucun polling local.\n");
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.stack ?? error.message : String(error));
-  process.exitCode = 1;
-});
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+    process.exitCode = 1;
+  });
+}
 
 export { jobManifest, parseArgs, worklistKey };

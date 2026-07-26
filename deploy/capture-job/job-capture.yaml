@@ -26,6 +26,7 @@ spec:
       imagePullSecrets:
         - name: geo-registry-pull
       securityContext:
+        fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault

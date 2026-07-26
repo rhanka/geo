@@ -1,4 +1,7 @@
 /** Preuve locale du contrat produit par le Job de capture, sans réseau ni S3. */
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -11,6 +14,7 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import { RobotsCache } from "../../../packages/qc-sources/src/sources/robots-txt.js";
 import { capturedRobotsFetch } from "../capture-worklist-run.js";
+import { jobManifest } from "../k8s-capture-run.js";
 import { verifyRawCapturePayload } from "./zone-provenance-raw-capture.js";
 import { captureReceiptFromManifest } from "./zone-provenance-quality.js";
 
@@ -42,6 +46,26 @@ function response(status: number, body = "", contentType = "application/json"): 
 }
 
 describe("capture worklist job contract", () => {
+  it("declares a non-root image and a writable scratch group in the submitted Job", () => {
+    const manifest = jobManifest({
+      lane: "normes",
+      worklistPath: "/tmp/worklist.json",
+      shards: 1,
+      concurrency: 1,
+      image: "registry.example/geo-capture:test",
+      namespace: "geo",
+      runStamp: "20260726T120000Z",
+      delayMs: 0,
+      maxBytes: 1024,
+      egress: "direct",
+      dryRun: false,
+    }, "registry/capture-worklists/normes-20260726T120000Z.json");
+    expect(manifest).toContain("securityContext:\n        # The capture image declares USER 1000:1000. EmptyDir is\n        # mounted at /scratch for its redacted temporary log, so grant that\n        # group ownership before the non-root entrypoint starts.\n        fsGroup: 1000\n        runAsNonRoot: true");
+
+    const dockerfile = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/Dockerfile"), "utf8");
+    expect(dockerfile).toContain("USER 1000:1000");
+  });
+
   it("produit une capture joinable par la mesure v2 et conserve le 404 sans CAS", async () => {
     const store = fakeStore();
     const run = new CaptureRun({
