@@ -24,6 +24,8 @@ class FakeStore implements Store {
   readonly #data = new Map<string, Uint8Array>();
   /** Record of `get()` calls, to assert GeoJSON payloads stay lazy. */
   readonly getCalls: string[] = [];
+  /** Record of `getStream()` calls, to assert GeoJSON bodies are not buffered. */
+  readonly streamCalls: string[] = [];
   /** Record of `list()` calls, to assert the provider's prefix usage. */
   readonly listCalls: (string | undefined)[] = [];
 
@@ -41,6 +43,12 @@ class FakeStore implements Store {
     return Promise.resolve(this.#data.get(key));
   }
 
+  getStream(key: string): Promise<AsyncIterable<Uint8Array> | undefined> {
+    this.streamCalls.push(key);
+    const bytes = this.#data.get(key);
+    return Promise.resolve(bytes === undefined ? undefined : chunked(bytes, 17));
+  }
+
   has(key: string): Promise<boolean> {
     return Promise.resolve(this.#data.has(key));
   }
@@ -50,6 +58,13 @@ class FakeStore implements Store {
     const keys = [...this.#data.keys()].sort();
     if (prefix === undefined || prefix.length === 0) return Promise.resolve(keys);
     return Promise.resolve(keys.filter((k) => k.startsWith(prefix)));
+  }
+}
+
+/** Deliberately split JSON tokens across chunks, like an S3 body can. */
+async function* chunked(bytes: Uint8Array, size: number): AsyncGenerator<Uint8Array> {
+  for (let offset = 0; offset < bytes.byteLength; offset += size) {
+    yield bytes.subarray(offset, Math.min(offset + size, bytes.byteLength));
   }
 }
 
@@ -263,5 +278,136 @@ describe("StoreProvider via the OGC app", () => {
     provider.invalidate();
     await provider.listCollections();
     expect(store.listCalls).toHaveLength(2);
+  });
+
+  it("streams the exact legacy limit=5000 page without Store#get on the GeoJSON body", async () => {
+    const store = new FakeStore();
+    const features = Array.from({ length: 5001 }, (_, index) => ({
+      type: "Feature" as const,
+      id: `synthetic/${index}`,
+      geometry: null,
+      properties: { geoId: `synthetic/${index}`, sequence: index, payload: "x".repeat(64) },
+    }));
+    const collection = JSON.stringify({ type: "FeatureCollection", features });
+    const meta = JSON.stringify({ ...REF_META, datasetId: "synthetic" });
+    store.seed("synthetic.geojson", collection);
+    store.seed("synthetic.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/synthetic/items?limit=5000`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      type: string;
+      features: { id: string }[];
+      numberMatched: number;
+      numberReturned: number;
+      links: { rel: string; href: string }[];
+    };
+
+    // This is the old materialized-page result: same feature order and OGC
+    // pagination metadata, but the served implementation never builds it.
+    const legacyFeatures = (JSON.parse(collection) as { features: { id: string }[] }).features.slice(0, 5000);
+    expect(body.type).toBe("FeatureCollection");
+    expect(body.features).toEqual(legacyFeatures);
+    expect(body.numberMatched).toBe(5001);
+    expect(body.numberReturned).toBe(5000);
+    expect(body.links.find((link) => link.rel === "next")?.href).toContain("offset=5000");
+    expect(store.streamCalls).toContain("synthetic.geojson");
+    expect(store.getCalls).not.toContain("synthetic.geojson");
+  });
+
+  it("rejects a body that is not a GeoJSON FeatureCollection before a 200 response", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "not-a-collection" });
+    store.seed(
+      "not-a-collection.geojson",
+      JSON.stringify({ type: "NotACollection", features: REF_COLLECTION.features }),
+    );
+    store.seed("not-a-collection.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/not-a-collection/items?limit=1`);
+    expect(res.status).toBe(404);
+  });
+
+  it("accepts a FeatureCollection whose features member precedes type", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "features-first" });
+    store.seed(
+      "features-first.geojson",
+      JSON.stringify({ features: REF_COLLECTION.features, type: "FeatureCollection" }),
+    );
+    store.seed("features-first.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/features-first/items?limit=1`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { numberMatched: number; numberReturned: number };
+    expect(body).toMatchObject({ numberMatched: 2, numberReturned: 1 });
+  });
+
+  it("rejects malformed bytes after a valid features array before a 200 response", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "invalid-suffix" });
+    store.seed(
+      "invalid-suffix.geojson",
+      `${JSON.stringify(REF_COLLECTION)} trailing-garbage`,
+    );
+    store.seed("invalid-suffix.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/invalid-suffix/items?limit=1`);
+    expect(res.status).toBe(404);
+  });
+
+  it("rejects a trailing comma in features before a 200 response", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "trailing-comma" });
+    const feature = JSON.stringify(REF_COLLECTION.features[0]);
+    store.seed(
+      "trailing-comma.geojson",
+      `{"type":"FeatureCollection","features":[${feature},]}`,
+    );
+    store.seed("trailing-comma.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/trailing-comma/items?limit=1`);
+    expect(res.status).toBe(404);
+  });
+
+  it("recognizes an escaped JSON spelling of the features member", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "escaped-features" });
+    store.seed(
+      "escaped-features.geojson",
+      `{"type":"FeatureCollection","feat\\u0075res":${JSON.stringify(REF_COLLECTION.features)}}`,
+    );
+    store.seed("escaped-features.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/escaped-features/items?limit=1`);
+    expect(res.status).toBe(200);
+  });
+
+  it("keeps the legacy last-write-wins behavior for duplicate feature ids", async () => {
+    const store = new FakeStore();
+    const meta = JSON.stringify({ ...REF_META, datasetId: "duplicate-id" });
+    store.seed(
+      "duplicate-id.geojson",
+      JSON.stringify({
+        type: "FeatureCollection",
+        features: [
+          { type: "Feature", id: "same", geometry: null, properties: { geoId: "same", value: "first" } },
+          { type: "Feature", id: "same", geometry: null, properties: { geoId: "same", value: "last" } },
+        ],
+      }),
+    );
+    store.seed("duplicate-id.meta.json", meta);
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/duplicate-id/items/same`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { properties: { value: string } };
+    expect(body.properties.value).toBe("last");
   });
 });
