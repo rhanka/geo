@@ -476,6 +476,23 @@ describe("rédaction et preuve v2", () => {
     expect(fields.sha256).toMatch(/^sha256:[a-f0-9]{64}$/);
   });
 
+  it("un hôte ArcGIS numéroté n'est PAS du stockage objet (label, pas sous-chaîne)", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    // `services3.arcgis.com` contient "s3." : le garde anti-stockage-objet le
+    // refusait, donc la source SIG publique la moins chère ne pouvait pas
+    // produire de preuve v2. Le garde compare désormais les LABELS d'hôte.
+    const url = "https://services3.arcgis.com/abc/ArcGIS/rest/services/Zonage/FeatureServer/0/query?f=geojson";
+    const res = await capturedFetch(url, undefined, {
+      run,
+      source: "zones-arcgis",
+      fetchImpl: fakeFetch({
+        [url]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }),
+      }),
+    });
+    expect(captureProofFields(res.line).url).toBe(url);
+  });
+
   it("une ligne d'échec ne produit AUCUNE preuve (règle C-2)", async () => {
     const store = fakeStore();
     const run = newRun(store);
