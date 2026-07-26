@@ -16,6 +16,13 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  capturedFetch,
+  CapturedFetchError,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const WORK_DIR = join(REPO, "work", "zonage-norms");
@@ -37,33 +44,42 @@ async function main(): Promise<void> {
     throw new Error("required: --slug <slug> --url <pdf-url>");
   }
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 120000);
-  let res: Response;
+  const run = openCaptureRun({ lane: "normes", userAgent: USER_AGENT });
+  let exitCode = 1;
   try {
-    res = await fetch(url, {
-      signal: controller.signal,
+    const captured = await capturedFetch(url, {
       headers: { "user-agent": USER_AGENT, accept: "application/pdf,*/*" },
+    }, {
+      run,
+      lane: "normes",
+      source: "normes-grille-pdf",
+      slugs: [slug],
+      timeoutMs: 120_000,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
     });
+    if (!captured.ok || captured.bytes === null) {
+      if (captured.response !== null) throw new Error(`HTTP ${captured.response.status} for ${url}`);
+      throw new CapturedFetchError(captured.line);
+    }
+    const buf = captured.bytes;
+    const isPdf =
+      buf.length >= 4 && buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46;
+    if (!isPdf) throw new Error(`not a PDF (first bytes ${[...buf.slice(0, 4)].join(",")}) — ${url}`);
+
+    const dir = join(WORK_DIR, slug);
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    const pdfPath = join(dir, "grille.pdf");
+    writeFileSync(pdfPath, buf);
+
+    const info = spawnSync("pdfinfo", [pdfPath], { encoding: "utf8" });
+    const pages = info.stdout?.match(/Pages:\s+(\d+)/)?.[1] ?? "?";
+    console.log(
+      `OK ${slug} downloaded ${(buf.length / 1e6).toFixed(1)} Mo pages=${pages} → ${pdfPath}`,
+    );
+    exitCode = 0;
   } finally {
-    clearTimeout(timer);
+    await run.finish(exitCode);
   }
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  const buf = new Uint8Array(await res.arrayBuffer());
-  const isPdf =
-    buf.length >= 4 && buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46;
-  if (!isPdf) throw new Error(`not a PDF (first bytes ${[...buf.slice(0, 4)].join(",")}) — ${url}`);
-
-  const dir = join(WORK_DIR, slug);
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  const pdfPath = join(dir, "grille.pdf");
-  writeFileSync(pdfPath, buf);
-
-  const info = spawnSync("pdfinfo", [pdfPath], { encoding: "utf8" });
-  const pages = info.stdout?.match(/Pages:\s+(\d+)/)?.[1] ?? "?";
-  console.log(
-    `OK ${slug} downloaded ${(buf.length / 1e6).toFixed(1)} Mo pages=${pages} → ${pdfPath}`,
-  );
 }
 
 main().catch((e) => {
