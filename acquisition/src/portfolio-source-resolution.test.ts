@@ -20,6 +20,26 @@ describe("portfolio provenance matrix resolution", () => {
     expect(latestZoneProvenanceQualityMatrix(["zone-provenance-quality-matrix-current.json"])).toBeNull();
   });
 
+  it("orders on the stamp, never on the content hash", () => {
+    // Régression : le suffixe est un sha de CONTENU. Trier les noms entiers le
+    // laissait départager deux runs du même jour, et le rapport a lu 23 v2 quand
+    // la mesure la plus récente en comptait 36.
+    expect(latestZoneProvenanceQualityMatrix([
+      "zone-provenance-quality-matrix-20260726T090000Z-fe36df91.json",
+      "zone-provenance-quality-matrix-20260726T133000Z-49ebdaa1.json",
+    ])).toBe("zone-provenance-quality-matrix-20260726T133000Z-49ebdaa1.json");
+    // Une date seule vaut le DÉBUT de sa journée : un run horodaté du même jour gagne.
+    expect(latestZoneProvenanceQualityMatrix([
+      "zone-provenance-quality-matrix-20260726-ffffffff.json",
+      "zone-provenance-quality-matrix-20260726T000001Z-00000000.json",
+    ])).toBe("zone-provenance-quality-matrix-20260726T000001Z-00000000.json");
+    // Et une date plus récente bat un horodatage plus ancien.
+    expect(latestZoneProvenanceQualityMatrix([
+      "zone-provenance-quality-matrix-20260726T235959Z-ffffffff.json",
+      "zone-provenance-quality-matrix-20260727-00000000.json",
+    ])).toBe("zone-provenance-quality-matrix-20260727-00000000.json");
+  });
+
   it("never picks a PARTIAL run, however recent", () => {
     // Un run dont des lectures S3 ont échoué sort sous ce nom : il n'a pas
     // mesuré la provenance. Le plus récent l'emporte SAUF celui-là, sinon un
