@@ -66,7 +66,7 @@ import {
 } from "../../packages/qc-sources/src/capture/index.js";
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { buildArcGisGeoJsonQueryUrl, normalizeArcGisWhere } from "./lib/arcgis-query.js";
-import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
+import { s3Client, copyObject, getBytes } from "./lib/s3.js";
 import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
 import { attachGeometryProof, carryForwardServedZoneProperties, proofFromCaptureEntry, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
@@ -234,10 +234,18 @@ function freshFeaturesWithServedProperties(norm: GeoFeature[], current: GeoFeatu
 }
 
 async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | null> {
-  if (!(await withRetry(`exists ${key}`, () => exists(s3, key)))) return null;
-  const buf = await withRetry(`get ${key}`, () => getBytes(s3, key));
-  const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
-  return Array.isArray(fc.features) ? fc.features : [];
+  try {
+    // A HEAD followed by GET doubled the S3 round trips at the identity gate.
+    // GET is authoritative for both existence and the bytes we must compare;
+    // a true 404 is the only absence accepted here.
+    const buf = await withRetry(`get ${key}`, () => getBytes(s3, key));
+    const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
+    return Array.isArray(fc.features) ? fc.features : [];
+  } catch (error) {
+    const detail = error as { name?: unknown; $metadata?: { httpStatusCode?: unknown } };
+    if (detail?.name === "NotFound" || detail?.name === "NoSuchKey" || detail?.$metadata?.httpStatusCode === 404) return null;
+    throw error;
+  }
 }
 
 /** Le run de capture courant (clôturé par `main`, y compris en ABORT). */
@@ -299,8 +307,13 @@ async function main(): Promise<void> {
   // ── 4. Layout servi + gate de recoupement (UNION plate ∪ sous-dossier) ──────
   const flatKey = `${S3_PREFIX}qc-zonage-${a.slug}.geojson`;
   const subKey = `${S3_PREFIX}qc-zonage-${a.slug}/qc-zonage-${a.slug}.geojson`;
-  const flatServed = await readServed(s3, flatKey);
-  const subServed = await readServed(s3, subKey);
+  // The two layouts are independent S3 objects.  Read them concurrently: a
+  // slow legacy shadow lookup must not delay the identity gate for the active
+  // layout, and both results are still required before any decision or write.
+  const [flatServed, subServed] = await Promise.all([
+    readServed(s3, flatKey),
+    readServed(s3, subKey),
+  ]);
   console.error(`[arcgis-replace] layout servi: plate=${flatServed ? `${flatServed.length} feat` : "ABSENT"} sous-dossier=${subServed ? `${subServed.length} feat` : "ABSENT"}`);
   if (!flatServed && !subServed) { console.error(`ABORT: aucune géométrie qc-zonage-${a.slug} servie — ce runner REMPLACE, il ne CRÉE pas`); process.exit(1); }
 
