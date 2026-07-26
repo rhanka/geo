@@ -1,6 +1,6 @@
 /**
  * zones-arcgis-replace.ts — REMPLACEMENT sûr d'une collection qc-zonage SERVIE
- * par une couche ArcGIS FeatureServer MONO-MUNI EN VIGUEUR, avec BACKUP
+ * par une couche ArcGIS FeatureServer EN VIGUEUR, avec BACKUP
  * non-destructif, DOUBLE-LAYOUT (plate + sous-dossier si présents), preuve
  * géométrique v2 (putServedZoneGeojson, type=arcgis / method=natif / reliability=directe)
  * et GATE DE RECOUPEMENT des codes ACTUELLEMENT SERVIS (UNION plate ∪ sous-dossier).
@@ -40,10 +40,17 @@
  * Retry ETIMEDOUT sur chaque appel réseau/S3. Aucun secret loggé.
  *
  * Usage :
- *   npx tsx acquisition/src/zones-arcgis-replace.ts --slug mont-saint-hilaire \
- *     --layer https://services5.arcgis.com/.../FeatureServer/6 --zone-field Numero_Zon --inspect
+ *   npx tsx acquisition/src/zones-arcgis-replace.ts --slug saint-leon-de-standon \
+ *     --layer https://services6.arcgis.com/.../FeatureServer/0 --zone-field no_zone \
+ *     --where "mun_nom='Saint-Léon-de-Standon'" --inspect
  *   npx tsx acquisition/src/zones-arcgis-replace.ts --slug mont-saint-hilaire \
  *     --layer https://services5.arcgis.com/.../FeatureServer/6 --zone-field Numero_Zon --deposit
+ *
+ * `--where` est une clause SQL ArcGIS complète. Une apostrophe dans une valeur
+ * SQL se double (`mun_nom='L''Ange-Gardien'`) ; elle est ensuite encodée dans
+ * l'URL appelée et dans la preuve v2. Un dépôt est refusé si ce filtre produit
+ * plusieurs pages : aucune URL unique ne pourrait alors restituer les octets
+ * hachés dans `proof.geometry_source`.
  */
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -58,8 +65,9 @@ import {
   type CaptureRun,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
+import { buildArcGisGeoJsonQueryUrl, normalizeArcGisWhere } from "./lib/arcgis-query.js";
 import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
-import { attachGeometryProof, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import { attachGeometryProof, proofFromCaptureEntry, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REG = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
@@ -74,21 +82,32 @@ interface MuniEntry { slug: string; name: string; lat: number; lon: number }
 interface GeoFeature { type: "Feature"; geometry: { type?: string; coordinates?: unknown } | null; properties: Record<string, unknown> }
 interface GeoFC { type?: string; features?: GeoFeature[]; proof?: { schema_version?: unknown; geometry_source?: { sha256?: unknown } } }
 
-interface Args { slug: string; layer: string; zoneField: string; zonePrefixField?: string; km: number; deposit: boolean; allowDeprecated: string[] }
+interface Args { slug: string; layer: string; zoneField: string; zonePrefixField?: string; where: string; km: number; deposit: boolean; allowDeprecated: string[] }
 
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string): boolean => argv.includes(`--${k}`);
   const slug = get("slug"); const layer = get("layer"); const zoneField = get("zone-field");
   if (!slug || !layer || !zoneField) {
-    console.error("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--zone-prefix-field <f>] [--km 8] [--allow-deprecated A-16,C-6] [--inspect|--deposit]");
+    console.error("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--where <clause>] [--zone-prefix-field <f>] [--km 8] [--allow-deprecated A-16,C-6] [--inspect|--deposit]");
+    process.exit(2);
+  }
+  const rawWhere = get("where");
+  if (has("where") && (rawWhere === undefined || rawWhere.startsWith("--"))) {
+    console.error("ABORT arguments: --where requiert une clause non vide");
+    process.exit(2);
+  }
+  let where: string;
+  try { where = normalizeArcGisWhere(rawWhere); }
+  catch (e) {
+    console.error(`ABORT arguments: ${e instanceof Error ? e.message : String(e)}`);
     process.exit(2);
   }
   const zonePrefixField = get("zone-prefix-field");
   const allowDeprecatedRaw = get("allow-deprecated");
   const allowDeprecated = allowDeprecatedRaw ? allowDeprecatedRaw.split(",").map((s) => s.trim()).filter(Boolean) : [];
   return {
-    slug, layer, zoneField,
+    slug, layer, zoneField, where,
     ...(zonePrefixField ? { zonePrefixField } : {}),
     km: Number(get("km") ?? 8),
     deposit: has("deposit") && !has("inspect"),
@@ -153,22 +172,16 @@ function* positions(c: unknown): Generator<[number, number]> {
   for (const x of c) yield* positions(x);
 }
 
-/** Query URL (les octets prouvés = la réponse de cette URL, sans paramètre de page). */
-function queryUrl(layer: string, fields: string[]): string {
-  const outFields = [...new Set(fields)].join(",");
-  return `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&f=geojson`;
-}
-
 async function fetchAll(
   run: CaptureRun,
   slug: string,
   layer: string,
   fields: string[],
+  where: string,
 ): Promise<{ feats: GeoFeature[]; entries: CaptureManifestLine[] }> {
   const feats: GeoFeature[] = []; const entries: CaptureManifestLine[] = []; let offset = 0;
-  const outFields = [...new Set(fields)].join(",");
   while (feats.length < MAX_FEATURES) {
-    const u = `${layer}/query?where=1%3D1&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${PAGE}&f=geojson`;
+    const u = buildArcGisGeoJsonQueryUrl(layer, fields, { where, resultOffset: offset, resultRecordCount: PAGE });
     let attempt = 0;
     const r = await withRetry(`GetFeature offset=${offset}`, () => { attempt += 1; return jget(run, u, slug, attempt); });
     entries.push(r.line);
@@ -231,12 +244,12 @@ async function main(): Promise<void> {
   // ── 0. Ouverture du run de capture (journalise MÊME en --inspect) ───────────
   const run = openCaptureRun({ lane: "zones", s3 });
   CAPTURE = run;
-  console.error(`[arcgis-replace] slug=${a.slug} layer=${a.layer} field=${a.zoneField} mode=${a.deposit ? "DEPOSIT" : "INSPECT"}`);
+  console.error(`[arcgis-replace] slug=${a.slug} layer=${a.layer} field=${a.zoneField} where=${JSON.stringify(a.where)} mode=${a.deposit ? "DEPOSIT" : "INSPECT"}`);
   console.error(`[arcgis-replace] capture run=${run.runId} manifest=s3://${run.keys.manifest}`);
   run.log(`[arcgis-replace] slug=${a.slug} layer=${a.layer} field=${a.zoneField} mode=${a.deposit ? "DEPOSIT" : "INSPECT"}`);
 
   // ── 1. Fetch ArcGIS (via le chokepoint) ─────────────────────────────────────
-  const { feats: rawFeats, entries: captureEntries } = await fetchAll(run, a.slug, a.layer, fields);
+  const { feats: rawFeats, entries: captureEntries } = await fetchAll(run, a.slug, a.layer, fields, a.where);
   if (rawFeats.length === 0) { console.error(`ABORT: 0 feature téléchargée`); process.exit(1); }
 
   // schéma serving (zone_code EXPLICITE, jamais deviné)
@@ -331,6 +344,21 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // Une preuve v2 doit pointer sur l'URL QUI A RENDU les octets hachés. Une
+  // agrégation paginée n'a pas d'URL source unique : refuser avant tout backup.
+  if (captureEntries.length !== 1) {
+    console.error(`ABORT preuve v2 exacte: ${captureEntries.length} pages capturées; aucune URL unique ne restitue les octets agrégés (aucun dépôt).`);
+    process.exit(1);
+  }
+  const soleEntry = captureEntries[0]!;
+  const exactCaptureUrl = buildArcGisGeoJsonQueryUrl(a.layer, fields, { where: a.where, resultOffset: 0, resultRecordCount: PAGE });
+  if (soleEntry.url !== exactCaptureUrl) {
+    console.error(`ABORT preuve v2 exacte: URL de capture inattendue; refus de hasher des octets sous une autre URL.`);
+    process.exit(1);
+  }
+  const proof = proofFromCaptureEntry(soleEntry, { type: "arcgis", method: "natif", reliability: "directe" });
+  console.error(`[arcgis-replace] PREUVE = entrée de capture exacte (run=${run.runId}, url=${proof.url}, cas=s3://${soleEntry.storage_key})`);
+
   if (!a.deposit) {
     console.error(`\n=== INSPECT OK (aucune écriture servie) ===`);
     console.error(`  nouvelle couche: ${norm.length} features, ${newCodes.raw.size} codes distincts`);
@@ -353,20 +381,8 @@ async function main(): Promise<void> {
   }
 
   // ── 6. Dépôt v2 (layouts existants uniquement : REMPLACE, ne crée pas) ───────
-  // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : quand la couche tient en UNE page,
-  // l'entrée de manifeste EST la preuve — url appelée, instant mesuré et sha256 des
-  // octets REÇUS, tous trois relus de `manifest.jsonl`, aucun reconstruit.
-  // Multi-pages : les octets servis sont un AGRÉGAT qu'aucune URL unique ne rend ;
-  // on retombe alors sur l'agrégat historique et on le DIT (pas de fausse preuve).
-  const soleEntry = captureEntries.length === 1 ? captureEntries[0]! : null;
-  const proof = soleEntry && soleEntry.sha256 !== null
-    ? proofFromCaptureEntry(soleEntry, { type: "arcgis", method: "natif", reliability: "directe" })
-    : proofFromFetched({ url: queryUrl(a.layer, fields), type: "arcgis", method: "natif", reliability: "directe", bytes: JSON.stringify(rawFeats) });
-  console.error(
-    soleEntry
-      ? `[arcgis-replace] PREUVE = entrée de capture (run=${run.runId}, cas=s3://${soleEntry.storage_key})`
-      : `[arcgis-replace] PREUVE = agrégat ${captureEntries.length} pages (aucune URL unique ne rend ces octets ; les ${captureEntries.length} pages restent journalisées)`,
-  );
+  // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : la porte précédente garantit
+  // qu'une seule entrée de manifeste fournit l'URL, l'instant et le sha256.
   const targets: string[] = [];
   if (flatServed) targets.push(flatKey);
   if (subServed) targets.push(subKey);
