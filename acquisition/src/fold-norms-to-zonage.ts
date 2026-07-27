@@ -58,6 +58,27 @@ export const looseKey = (v: unknown): string => canon(v).replace(/[-_.\s]+/g, ""
  * indiscernables et la densité de l'une serait écrite sur l'autre — un effet
  * densifiant fabriqué. On refuse plutôt que de choisir.
  */
+/**
+ * Clé d'un code dont les DEUX segments ont été remis dans l'ordre de la source.
+ *
+ * Ce n'est PAS une normalisation de forme : c'est une affirmation sémantique, et
+ * elle ne s'arme que pour les municipalités où l'ordre a été LU dans la source.
+ * Les grilles de amherst (« 10F »), saint-basile-le-grand (« ZONE: 102-C ») et
+ * les conventions de nommage de lac-etchemin et sayabec (« un numéro
+ * d'identification auquel est attaché un suffixe ») disent toutes la même chose :
+ * la forme de la municipalité est NUMÉRO puis LETTRE, c'est-à-dire celle du
+ * zonage servi. Le `F-10` de nos normes est une inversion introduite par notre
+ * propre extraction, pas une forme municipale.
+ *
+ * Renvoie `null` si le code n'a pas exactement deux segments : on ne devine pas
+ * l'ordre d'un code qui en a trois.
+ */
+export function invertedKey(v: unknown): string | null {
+  const segments = canon(v).split(/[-_.\s]+/).filter((s) => s.length > 0);
+  if (segments.length !== 2) return null;
+  return `${segments[1]}${segments[0]}`;
+}
+
 export function looseIndex(codes: Iterable<string>): Map<string, string> | null {
   const index = new Map<string, string>();
   for (const code of codes) {
@@ -105,6 +126,10 @@ async function main(): Promise<void> {
   const dryRun = argv.includes("--dry-run");
   const strip = argv.includes("--strip");
   const relaxSeparators = argv.includes("--relax-separators");
+  // L'inversion de segments est une affirmation sur la source : elle n'est
+  // legitime que pour les villes ou l'ordre a ete LU. Elle reste donc opt-in,
+  // par ville, jamais globale.
+  const invertSegments = argv.includes("--invert-segments");
   const slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (slugs.length === 0) {
     console.error("pass --slugs <a,b>");
@@ -131,14 +156,33 @@ async function main(): Promise<void> {
       // discernables sans separateur. Une collision d'un seul cote suffit a
       // l'annuler : mieux vaut ne pas plier que plier sur la mauvaise zone.
       let loose: Map<string, string> | null = null;
-      if (relaxSeparators && !strip) {
-        const normsIndex = looseIndex(norms!.keys());
+      if ((relaxSeparators || invertSegments) && !strip) {
         const zonageIndex = looseIndex(feats.map((f) => canon(f.properties?.["zone_code"])));
-        if (normsIndex === null || zonageIndex === null) {
-          console.log(`REFUS ${slug} (--relax-separators: collision de codes sans separateur) key=${key}`);
+        if (zonageIndex === null) {
+          console.log(`REFUS ${slug} (codes servis indiscernables sans separateur) key=${key}`);
           continue;
         }
-        loose = normsIndex;
+        const index = new Map<string, string>();
+        let collision: string | null = null;
+        for (const code of norms!.keys()) {
+          // Une cle inversee et une cle relachee peuvent viser le meme code
+          // servi : on les indexe ensemble et on refuse au premier conflit.
+          const candidates = [
+            ...(relaxSeparators ? [looseKey(code)] : []),
+            ...(invertSegments ? [invertedKey(code) ?? ""] : []),
+          ].filter((k) => k !== "");
+          for (const candidate of candidates) {
+            const seen = index.get(candidate);
+            if (seen !== undefined && seen !== code) { collision = `${seen} vs ${code}`; break; }
+            index.set(candidate, code);
+          }
+          if (collision !== null) break;
+        }
+        if (collision !== null) {
+          console.log(`REFUS ${slug} (collision de codes normes: ${collision}) key=${key}`);
+          continue;
+        }
+        loose = index;
       }
       let matched = 0, changed = 0;
       const propertiesBefore = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);

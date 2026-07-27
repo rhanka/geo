@@ -1,6 +1,23 @@
 import { describe, expect, it } from "vitest";
 
-import { looseIndex, looseKey } from "./fold-norms-to-zonage.js";
+import { invertedKey, looseIndex, looseKey } from "./fold-norms-to-zonage.js";
+
+describe("invertedKey", () => {
+  it("restores the municipal order read in the source grids", () => {
+    // amherst serves `10-F`; its grid writes `10F`. Our norms hold `F-10`.
+    expect(invertedKey("F-10")).toBe(looseKey("10-F"));
+    // saint-basile-le-grand's grid writes `ZONE: 102-C` verbatim.
+    expect(invertedKey("C-102")).toBe(looseKey("102-C"));
+    // sayabec serves `1 R`, a number then a letter suffix per its by-law.
+    expect(invertedKey("R-1")).toBe(looseKey("1 R"));
+  });
+
+  it("refuses to guess when the code does not have exactly two segments", () => {
+    expect(invertedKey("114-A-ILOT")).toBeNull();
+    expect(invertedKey("C1")).toBeNull();
+    expect(invertedKey("")).toBeNull();
+  });
+});
 
 describe("looseKey", () => {
   it("removes the separators that only differ in FORM", () => {
