@@ -1,16 +1,15 @@
 /**
- * _zone-code-overlap-probe.ts — pourquoi un fold de normes matche 0 polygone
- * alors que les DEUX côtés portent de la donnée.
+ * _zone-code-overlap-probe.ts — vocabulaire verbatim avant tout fold de normes.
  *
- * Sept villes B' ont leurs normes acquises, servies et valuées, et un fold à
- * 0 % : ce n'est pas un défaut d'acquisition, c'est que les codes de zone ne se
- * joignent pas. Cette sonde met les deux vocabulaires côte à côte pour qu'on
- * VOIE l'écart au lieu de le supposer — préfixe, casse, séparateur, zéros de
- * tête, suffixe de secteur.
+ * Lit strictement (sans put/copy/delete) les objets déjà servis et expose le
+ * `zone_code` de chaque layout. Quand les layouts plat et sous-dossier existent
+ * tous les deux, geo-api sert le sous-dossier : c'est celui marqué `effective`.
+ * Les valeurs ne sont ni trimées ni canonisées, afin que les espaces, la casse,
+ * les zéros de tête et les séparateurs restent observables.
  *
- * Lecture seule stricte : n'écrit rien, ne plie rien, ne canonise rien. Décider
- * qu'un `H1` servi « est » un `H-01` de la grille est un jugement, pas une
- * observation, et il ne se prend pas dans une sonde.
+ * Cette sonde ne décide pas qu'un code est l'équivalent sémantique d'un autre.
+ * Une permutation de segments doit être corroborée par la grille/règlement
+ * source avant de pouvoir devenir une règle de jointure dans la lib.
  *
  * Usage :
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
@@ -23,27 +22,53 @@ const NORMS = "normalized/qc-zonage-norms/";
 
 interface FeatureLike { properties?: Record<string, unknown> }
 
-function codes(features: FeatureLike[], fields: string[]): string[] {
-  const out = new Set<string>();
-  for (const feature of features) {
-    for (const field of fields) {
-      const value = feature.properties?.[field];
-      if (typeof value === "string" && value.trim().length > 0) { out.add(value.trim()); break; }
-    }
-  }
-  return [...out].sort();
+interface Vocabulary {
+  key: string;
+  status: "readable" | "missing" | "read_error";
+  effective?: boolean;
+  polygones?: number;
+  zone_code_verbatim?: unknown[];
+  zone_code_non_string?: unknown[];
+  error?: string;
 }
 
-async function readFeatures(s3: ReturnType<typeof s3Client>, keys: string[]): Promise<FeatureLike[] | null> {
-  for (const key of keys) {
-    try {
-      const parsed = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: FeatureLike[] };
-      if (Array.isArray(parsed.features)) return parsed.features;
-    } catch {
-      // clé absente : l'autre layout peut exister, on n'en conclut rien ici
-    }
+function compareVerbatim(a: unknown, b: unknown): number {
+  return JSON.stringify(a).localeCompare(JSON.stringify(b));
+}
+
+/** Keep the source value verbatim; string normalization here would hide the defect. */
+function vocabulary(features: FeatureLike[]): Pick<Vocabulary, "polygones" | "zone_code_verbatim" | "zone_code_non_string"> {
+  const strings = new Set<string>();
+  const nonStrings = new Map<string, unknown>();
+  for (const feature of features) {
+    const value = feature.properties?.["zone_code"];
+    if (typeof value === "string") strings.add(value);
+    else if (value !== null && value !== undefined) nonStrings.set(JSON.stringify(value), value);
   }
-  return null;
+  return {
+    polygones: features.length,
+    zone_code_verbatim: [...strings].sort(),
+    zone_code_non_string: [...nonStrings.values()].sort(compareVerbatim),
+  };
+}
+
+async function readVocabulary(s3: ReturnType<typeof s3Client>, key: string): Promise<Vocabulary> {
+  try {
+    const parsed = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: FeatureLike[] };
+    if (!Array.isArray(parsed.features)) return { key, status: "read_error", error: "GeoJSON sans tableau features" };
+    return { key, status: "readable", ...vocabulary(parsed.features) };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const details = error as { name?: unknown; $metadata?: { httpStatusCode?: unknown } };
+    const missing = details?.name === "NotFound" || details?.name === "NoSuchKey" || details?.$metadata?.httpStatusCode === 404;
+    return { key, status: missing ? "missing" : "read_error", error: message };
+  }
+}
+
+function exactOverlap(served: Vocabulary | undefined, norms: Vocabulary): string[] | undefined {
+  if (served?.status !== "readable" || norms.status !== "readable") return undefined;
+  const servedSet = new Set(served.zone_code_verbatim?.filter((v): v is string => typeof v === "string"));
+  return norms.zone_code_verbatim?.filter((v): v is string => typeof v === "string" && servedSet.has(v));
 }
 
 async function main(): Promise<void> {
@@ -54,21 +79,27 @@ async function main(): Promise<void> {
   const s3 = s3Client();
 
   for (const slug of slugs) {
-    const zon = await readFeatures(s3, [`${ZONAGE}qc-zonage-${slug}.geojson`, `${ZONAGE}qc-zonage-${slug}/qc-zonage-${slug}.geojson`]);
-    const nor = await readFeatures(s3, [`${NORMS}qc-zonage-norms-${slug}.geojson`, `${NORMS}qc-zonage-norms-${slug}/qc-zonage-norms-${slug}.geojson`]);
-    if (!zon || !nor) { console.log(JSON.stringify({ slug, error: `illisible: zonage=${!!zon} normes=${!!nor}` })); continue; }
-
-    const zonCodes = codes(zon, ["zone_code", "code_zone", "ZONE", "zone"]);
-    const norCodes = codes(nor, ["zone_code", "code_zone", "ZONE", "zone"]);
-    const zonSet = new Set(zonCodes);
-    const exact = norCodes.filter((c) => zonSet.has(c));
-
+    const flatKey = `${ZONAGE}qc-zonage-${slug}.geojson`;
+    const nestedKey = `${ZONAGE}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+    const normsKey = `${NORMS}qc-zonage-norms-${slug}.geojson`;
+    const [flat, nested, norms] = await Promise.all([
+      readVocabulary(s3, flatKey),
+      readVocabulary(s3, nestedKey),
+      readVocabulary(s3, normsKey),
+    ]);
+    // geo-api priority: nested layout wins only when it is an actual readable object.
+    const served = nested.status === "readable"
+      ? { ...nested, effective: true }
+      : nested.status === "missing" && flat.status === "readable"
+        ? { ...flat, effective: true }
+        : undefined;
     console.log(JSON.stringify({
       slug,
-      zonage: { polygones: zon.length, codes_distincts: zonCodes.length, echantillon: zonCodes.slice(0, 8) },
-      normes: { lignes: nor.length, codes_distincts: norCodes.length, echantillon: norCodes.slice(0, 8) },
-      recoupement_exact: exact.length,
-    }, null, 1));
+      zonage_layouts: [flat, nested],
+      zonage_effectif: served?.key ?? null,
+      normes: norms,
+      recoupement_exact_verbatim: exactOverlap(served, norms) ?? null,
+    }));
   }
 }
 
