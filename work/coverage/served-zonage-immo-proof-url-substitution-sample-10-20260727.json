@@ -1,0 +1,97 @@
+{
+  "contract": "served-zonage-immo-proof-url-substitution/v1",
+  "audit": {
+    "path": "work/coverage/served-zonage-immo-proof-url-audit-20260727.json",
+    "sha256": "sha256:506e007806a130fc63cb6deb88c73b36d9dfc864f1bc8fdd29636f379c9fbdde"
+  },
+  "mode": "dry-run",
+  "complete": true,
+  "batches": {
+    "batch_size": 10,
+    "read_concurrency": 2
+  },
+  "collections": {
+    "selected": 10,
+    "processed": 10,
+    "substitutable": 0,
+    "applied": 0,
+    "non_corrected": 10,
+    "refused_by_reason": {
+      "manifest-public-url-ambiguous": 4,
+      "envelope-sha256-missing-or-invalid": 5,
+      "public-url-absent-from-envelope-and-manifest": 1
+    }
+  },
+  "results": [
+    {
+      "slug": "abercorn",
+      "key": "normalized/ca-qc-zonage/qc-zonage-abercorn.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "manifest-public-url-ambiguous"
+    },
+    {
+      "slug": "acton-vale",
+      "key": "normalized/ca-qc-zonage/qc-zonage-acton-vale.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "manifest-public-url-ambiguous"
+    },
+    {
+      "slug": "adstock",
+      "key": "normalized/ca-qc-zonage/qc-zonage-adstock.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "envelope-sha256-missing-or-invalid"
+    },
+    {
+      "slug": "albanel",
+      "key": "normalized/ca-qc-zonage/qc-zonage-albanel.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "envelope-sha256-missing-or-invalid"
+    },
+    {
+      "slug": "albertville",
+      "key": "normalized/ca-qc-zonage/qc-zonage-albertville.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "envelope-sha256-missing-or-invalid"
+    },
+    {
+      "slug": "alma",
+      "key": "normalized/ca-qc-zonage/qc-zonage-alma.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "envelope-sha256-missing-or-invalid"
+    },
+    {
+      "slug": "amherst",
+      "key": "normalized/ca-qc-zonage/qc-zonage-amherst.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "public-url-absent-from-envelope-and-manifest"
+    },
+    {
+      "slug": "amqui",
+      "key": "normalized/ca-qc-zonage/qc-zonage-amqui.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "envelope-sha256-missing-or-invalid"
+    },
+    {
+      "slug": "ange-gardien",
+      "key": "normalized/ca-qc-zonage/qc-zonage-ange-gardien.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "manifest-public-url-ambiguous"
+    },
+    {
+      "slug": "arundel",
+      "key": "normalized/ca-qc-zonage/qc-zonage-arundel.geojson",
+      "outcome": "refused",
+      "replacements": 0,
+      "reason": "manifest-public-url-ambiguous"
+    }
+  ]
+}
