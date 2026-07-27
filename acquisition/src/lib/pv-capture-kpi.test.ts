@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   classifyPvCityCapture,
   classifyPvDocumentCapture,
+  sameS3Snapshot,
   type AttachablePvCapture,
   type FailedPvCaptureAttempt,
 } from "./pv-capture-kpi.js";
@@ -36,6 +37,13 @@ function failed(url: string): FailedPvCaptureAttempt {
 }
 
 describe("PV capture KPI", () => {
+  it("refuses a KPI snapshot when a capture manifest changes during its read", () => {
+    const before = [["capture/_runs/pv-a/manifest.jsonl", "etag-a", "2026-07-26T00:00:00.000Z"]] as const;
+    expect(sameS3Snapshot(before, before)).toBe(true);
+    expect(sameS3Snapshot(before, [["capture/_runs/pv-a/manifest.jsonl", "etag-b", "2026-07-26T00:01:00.000Z"]])).toBe(false);
+    expect(sameS3Snapshot(before, [...before, ["capture/_runs/pv-b/manifest.jsonl", "etag-c", "2026-07-26T00:01:00.000Z"]])).toBe(false);
+  });
+
   it("retains a 404 as a failed attempt instead of CAS evidence", () => {
     expect(classifyPvDocumentCapture(URL_A, { attachable: [], failed: [failed(URL_A)] })).toMatchObject({
       state: "sans_octets",

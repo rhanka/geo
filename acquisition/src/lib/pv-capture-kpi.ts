@@ -58,6 +58,19 @@ export interface PvCaptureEvidence {
   failed: readonly FailedPvCaptureAttempt[];
 }
 
+/**
+ * Une mesure S3 ne publie que si les identités (clé, ETag, date) relues sont
+ * celles qui ont borné les lectures. Une clé nouvelle ou un manifeste réécrit
+ * est donc un échec de mesure, jamais un document implicitement absent.
+ */
+export function sameS3Snapshot(
+  before: readonly (readonly [string, string | null, string | null])[],
+  after: readonly (readonly [string, string | null, string | null])[],
+): boolean {
+  return before.length === after.length && before.every((entry, index) =>
+    entry[0] === after[index]?.[0] && entry[1] === after[index]?.[1] && entry[2] === after[index]?.[2]);
+}
+
 function compareCapture(left: AttachablePvCapture, right: AttachablePvCapture): number {
   return left.retrieved_at.localeCompare(right.retrieved_at)
     || left.manifest_key.localeCompare(right.manifest_key)
