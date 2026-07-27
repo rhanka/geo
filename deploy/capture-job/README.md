@@ -51,3 +51,29 @@ Secrets requis (noms seulement) : `geo-s3-credentials` avec `S3_ENDPOINT`,
 `job-capture.yaml` et le CronJob sont des gabarits : utiliser l'orchestrateur
 pour une valeur réelle de `WORKLIST`/image, et ne désuspendre le CronJob qu'après
 validation explicite de la lane.
+
+## Arriéré continu des PV
+
+L'arriéré PV est distinct du CronJob mensuel `cronjob-capture-refresh.yaml` :
+celui-ci reste exclusivement un mécanisme de détection de changement.
+
+`pv-capture-backlog-bootstrap.ts` publie d'abord toutes les worklists sous S3,
+puis un manifeste immuable de campagne et un état CAS. Avec `--apply`, il crée
+un CronJob de ticks courts : chaque tick prend un Lease Kubernetes, relève le
+quota et les Jobs `app=geo-capture`, soumet au plus six Jobs mono-pod, écrit son
+avancement puis sort. Le CronJob se suspend après le rapport terminal.
+
+```bash
+NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
+npx tsx acquisition/src/pv-capture-backlog-bootstrap.ts \
+  --id pv-YYYYMMDD-<snapshot> \
+  --worklist-prefix acquisition/config/pv-capture-YYYYMMDD-<snapshot>-lot- \
+  --image rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag> --apply
+```
+
+Un 404 reste dans le manifeste de run et règle le lot (il ne boucle pas). Un
+Job Failed, en particulier `OOMKilled`, bloque la campagne et la suspend : il
+n'est jamais assimilé à une source absente ni relancé à l'aveugle. Une requête
+interrompue entre son GET et l'écriture de son manifeste demeure ambiguë; le CAS
+évite de perdre les octets, mais une relance HTTP peut être nécessaire pour ne
+pas la sauter. Le contrôleur ne resoumet jamais un lot terminalement observé.

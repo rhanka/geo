@@ -61,12 +61,18 @@ describe("capture worklist job contract", () => {
       dryRun: false,
     }, "registry/capture-worklists/normes-20260726T120000Z.json");
     expect(manifest).toContain("securityContext:\n        # The capture image declares USER 1000:1000. EmptyDir is\n        # mounted at /scratch for its redacted temporary log, so grant that\n        # group ownership before the non-root entrypoint starts.\n        fsGroup: 1000\n        runAsNonRoot: true");
-    expect(manifest).toContain("memory: 384Mi");
+    expect(manifest).toContain("memory: 176Mi");
+    expect(manifest).toContain("memory: 120Mi");
+    expect(manifest).toContain("cpu: 60m");
+    expect(manifest).toContain("cpu: 150m");
 
     const dockerfile = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/Dockerfile"), "utf8");
     expect(dockerfile).toContain("USER 1000:1000");
     const template = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/job-capture.yaml"), "utf8");
-    expect(template).toContain("memory: 384Mi");
+    expect(template).toContain("memory: 176Mi");
+    expect(template).toContain("memory: 120Mi");
+    expect(template).toContain("cpu: 60m");
+    expect(template).toContain("cpu: 150m");
   });
 
   it("produit une capture joinable par la mesure v2 et conserve le 404 sans CAS", async () => {

@@ -24,6 +24,7 @@ import { exists, getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 import {
   classifyPvCityCapture,
   classifyPvDocumentCapture,
+  sameS3Snapshot,
   type AttachablePvCapture,
   type FailedPvCaptureAttempt,
 } from "./lib/pv-capture-kpi.js";
@@ -213,11 +214,20 @@ async function readManifest(s3: ReturnType<typeof s3Client>, key: string): Promi
   return { key, lines: parseManifestJsonl((await getBytes(s3, key)).toString("utf8")) };
 }
 
-function loadProgress(path: string, indexListingSha: string, indexedSlugs: ReadonlySet<string>): Map<string, IndexScan> {
+function loadProgress(
+  path: string,
+  indexListingSha: string,
+  manifestListing: readonly (readonly [string, string | null, string | null])[],
+  indexedSlugs: ReadonlySet<string>,
+): Map<string, IndexScan> {
   if (!existsSync(path)) throw new Error(`--resume demandé mais checkpoint absent: ${path}`);
   const progress = JSON.parse(readFileSync(path, "utf8")) as Progress;
-  if (progress.contract !== "pv-capture-kpi-progress/v1" || progress.index_listing_sha256 !== indexListingSha) {
-    throw new Error("checkpoint incompatible avec le listing des index PV; reprendre sans --resume");
+  if (
+    progress.contract !== "pv-capture-kpi-progress/v1"
+    || progress.index_listing_sha256 !== indexListingSha
+    || !sameS3Snapshot(progress.capture_manifest_listing, manifestListing)
+  ) {
+    throw new Error("checkpoint incompatible avec l'instantané index/manifeste PV; reprendre sans --resume");
   }
   if (!Array.isArray(progress.scans) || progress.scans.some((scan) => !indexedSlugs.has(scan.slug))) {
     throw new Error("checkpoint contient un index hors du listing S3 actuel; reprendre sans --resume");
@@ -306,7 +316,7 @@ async function main(): Promise<void> {
   console.error(`[pv-capture] lignes manifest lues: ${manifestLines.length}`);
 
   const scans = resume
-    ? loadProgress(checkpoint, indexListingSha, new Set(recognizedIndexes.map((entry) => entry.slug)))
+    ? loadProgress(checkpoint, indexListingSha, manifestListing, new Set(recognizedIndexes.map((entry) => entry.slug)))
     : new Map<string, IndexScan>();
   const pending = recognizedIndexes.filter((entry) => !scans.has(entry.slug));
   console.error(`[pv-capture] index à lire: ${pending.length}/${recognizedIndexes.length}${resume ? " (reprise)" : ""}`);
@@ -383,6 +393,22 @@ async function main(): Promise<void> {
     .map((document) => ({ slug: row.city_slug, source: WORKLIST_SOURCE, urls: [document.url] })))
     .sort((left, right) => left.slug.localeCompare(right.slug) || left.urls[0]!.localeCompare(right.urls[0]!));
   const worklists: string[] = [];
+  // Les manifests sont un input de preuve, pas un cache. Reprendre les deux
+  // listings juste avant toute publication interdit un KPI composé de deux
+  // instants S3. Une lecture qui expire reste une erreur, jamais une absence.
+  const finalIndexObjects = await listObjectEntries(s3, PV_INDEX_PREFIX);
+  const finalIndexListing = finalIndexObjects.flatMap((entry) => {
+    const slug = exactIndexKeySlug(entry.key);
+    return slug && citySlugs.has(slug) ? [[entry.key, entry.etag, entry.last_modified] as const] : [];
+  });
+  const finalCaptureObjects = await listObjectEntries(s3, CAPTURE_RUNS_PREFIX);
+  const finalManifestListing = finalCaptureObjects.flatMap((entry) => {
+    const key = captureManifestKeyFromListedRest(entry.key.slice(CAPTURE_RUNS_PREFIX.length));
+    return key === entry.key ? [[entry.key, entry.etag, entry.last_modified] as const] : [];
+  });
+  if (!sameS3Snapshot(indexListing, finalIndexListing) || !sameS3Snapshot(manifestListing, finalManifestListing)) {
+    throw new Error("instantané S3 PV modifié pendant la lecture; KPI/worklists non publiés, relancer la mesure");
+  }
   for (let start = 0; start < missingTargets.length; start += worklistBatch) {
     const lot = String(Math.floor(start / worklistBatch) + 1).padStart(3, "0");
     const path = resolve(CONFIG, `pv-capture-${asOf}-${snapshotSha.slice(0, 16)}-lot-${lot}.json`);
