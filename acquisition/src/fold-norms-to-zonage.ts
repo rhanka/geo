@@ -41,6 +41,35 @@ function arg(argv: string[], k: string): string | undefined {
 
 const canon = (v: unknown): string => String(v ?? "").trim().toUpperCase();
 
+/**
+ * Clé « relâchée » : la même chose sans séparateur. Elle rattrape le seul écart
+ * de FORME qui soit sans perte — `A-10` côté zonage servi contre `A10` côté
+ * grille — sans jamais réordonner de segments. Réordonner (`10-F` -> `F-10`)
+ * serait une affirmation sémantique, pas une normalisation.
+ */
+export const looseKey = (v: unknown): string => canon(v).replace(/[-_.\s]+/g, "");
+
+/**
+ * Index relâché des codes, ou `null` si la relaxation ferait COLLISIONNER deux
+ * codes distincts.
+ *
+ * C'est le garde-fou de tout le mode : sur une municipalité qui sert à la fois
+ * `A-10` et `A10` comme deux zones différentes, retirer le séparateur les rend
+ * indiscernables et la densité de l'une serait écrite sur l'autre — un effet
+ * densifiant fabriqué. On refuse plutôt que de choisir.
+ */
+export function looseIndex(codes: Iterable<string>): Map<string, string> | null {
+  const index = new Map<string, string>();
+  for (const code of codes) {
+    const key = looseKey(code);
+    if (key === "") continue;
+    const seen = index.get(key);
+    if (seen !== undefined && seen !== canon(code)) return null;
+    index.set(key, canon(code));
+  }
+  return index;
+}
+
 /** Map zone_code -> { NORM_FIELDS } depuis la grille servie. */
 async function grilleNorms(s3: S3, slug: string): Promise<Map<string, Record<string, unknown>> | null> {
   const key = `${NORMS_PREFIX}qc-zonage-norms-${slug}.geojson`;
@@ -75,6 +104,7 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
   const strip = argv.includes("--strip");
+  const relaxSeparators = argv.includes("--relax-separators");
   const slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (slugs.length === 0) {
     console.error("pass --slugs <a,b>");
@@ -97,6 +127,19 @@ async function main(): Promise<void> {
     for (const key of keys) {
       const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
       const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+      // Le mode relache n'est arme QUE si les deux vocabulaires restent
+      // discernables sans separateur. Une collision d'un seul cote suffit a
+      // l'annuler : mieux vaut ne pas plier que plier sur la mauvaise zone.
+      let loose: Map<string, string> | null = null;
+      if (relaxSeparators && !strip) {
+        const normsIndex = looseIndex(norms!.keys());
+        const zonageIndex = looseIndex(feats.map((f) => canon(f.properties?.["zone_code"])));
+        if (normsIndex === null || zonageIndex === null) {
+          console.log(`REFUS ${slug} (--relax-separators: collision de codes sans separateur) key=${key}`);
+          continue;
+        }
+        loose = normsIndex;
+      }
       let matched = 0, changed = 0;
       const propertiesBefore = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
       for (const f of feats) {
@@ -105,7 +148,12 @@ async function main(): Promise<void> {
           for (const nf of NORM_FIELDS) if (nf in f.properties) { delete f.properties[nf]; changed++; }
           continue;
         }
-        const sub = norms!.get(canon(f.properties["zone_code"]));
+        const code = canon(f.properties["zone_code"]);
+        let sub = norms!.get(code);
+        if (sub === undefined && loose !== null) {
+          const resolved = loose.get(looseKey(code));
+          if (resolved !== undefined) sub = norms!.get(resolved);
+        }
         if (!sub) continue;
         matched++;
         for (const nf of NORM_FIELDS) {
