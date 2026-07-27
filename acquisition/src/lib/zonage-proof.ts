@@ -378,9 +378,22 @@ export interface AdditiveOptions {
   /** Narrow the ceiling to exactly the keys this fold stamps (defence in depth).
    *  Must be a subset of {@link PROVENANCE_PROP_WHITELIST} or the write fails closed. */
   allowedProps?: Iterable<string>;
+  /**
+   * Narrow, one-shot exception for legacy immo proof envelopes. Each entry
+   * identifies the current S3 URI, its replacement public URL, and the SHA-256
+   * attesting their captured bytes. Only the v1 feature-proof leaf described by
+   * an entry may change; collection proofs and every other field stay immutable.
+   */
+  allowProofArtifactUriSubstitution?: Iterable<ProofArtifactUriSubstitution>;
   /** Take a non-destructive server-side backup of the current served object to
    *  `<key>.additive-prebackup.geojson` before overwriting. Default true. */
   backup?: boolean;
+}
+
+export interface ProofArtifactUriSubstitution {
+  artifactUri: string;
+  replacementUrl: string;
+  sha256: `sha256:${string}`;
 }
 
 /** Canonical JSON: object keys sorted, array order preserved (arrays ARE ordered —
@@ -411,6 +424,83 @@ function jsonEqual(a: unknown, b: unknown): boolean {
 interface AdditiveFeature { geometry?: unknown; properties?: Record<string, unknown> | null }
 interface AdditiveFC { type?: unknown; features?: AdditiveFeature[] }
 
+const PROOF_SHA256_RE = /^sha256:[a-f0-9]{64}$/;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+function isHttpsUrlWithoutQuery(value: unknown): value is string {
+  if (!isRealGeometryUrl(value)) return false;
+  const parsed = new URL(value);
+  return parsed.protocol === "https:" && parsed.search.length === 0;
+}
+
+function proofArtifactUriSubstitutions(options: AdditiveOptions): ProofArtifactUriSubstitution[] {
+  const substitutions = options.allowProofArtifactUriSubstitution
+    ? [...options.allowProofArtifactUriSubstitution]
+    : [];
+  const seen = new Set<string>();
+  for (const substitution of substitutions) {
+    if (
+      !substitution ||
+      typeof substitution.artifactUri !== "string" ||
+      !substitution.artifactUri.startsWith("s3://") ||
+      !isHttpsUrlWithoutQuery(substitution.replacementUrl) ||
+      !PROOF_SHA256_RE.test(substitution.sha256)
+    ) {
+      throw new Error("putServedZoneAdditive: invalid proof artifact_uri substitution attestation");
+    }
+    const tuple = `${substitution.artifactUri}\u0000${substitution.replacementUrl}\u0000${substitution.sha256}`;
+    if (seen.has(tuple)) throw new Error("putServedZoneAdditive: duplicate proof artifact_uri substitution attestation");
+    seen.add(tuple);
+  }
+  return substitutions;
+}
+
+/**
+ * Returns true only for the one legacy v1 proof mutation explicitly attested in
+ * {@link AdditiveOptions.allowProofArtifactUriSubstitution}. Restoring the old
+ * URI before comparison proves that no sibling or nested field changed.
+ */
+function isAttestedProofArtifactUriSubstitution(
+  currentProof: unknown,
+  nextProof: unknown,
+  substitutions: readonly ProofArtifactUriSubstitution[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "1.0") return false;
+  const currentSources = asRecord(current.sources);
+  const nextSources = asRecord(next.sources);
+  const currentGeometry = asRecord(currentSources?.geometry);
+  const nextGeometry = asRecord(nextSources?.geometry);
+  const artifactUri = currentGeometry?.artifact_uri;
+  const replacementUrl = nextGeometry?.artifact_uri;
+  const sha256 = currentGeometry?.sha256;
+  if (
+    typeof artifactUri !== "string" ||
+    !artifactUri.startsWith("s3://") ||
+    !isHttpsUrlWithoutQuery(replacementUrl) ||
+    typeof sha256 !== "string" ||
+    !PROOF_SHA256_RE.test(sha256) ||
+    nextGeometry?.sha256 !== sha256
+  ) return false;
+  const attested = substitutions.some((substitution) =>
+    substitution.artifactUri === artifactUri &&
+    substitution.replacementUrl === replacementUrl &&
+    substitution.sha256 === sha256,
+  );
+  if (!attested) return false;
+  return jsonEqual(current, {
+    ...next,
+    sources: {
+      ...nextSources,
+      geometry: { ...nextGeometry, artifact_uri: artifactUri },
+    },
+  });
+}
+
 /**
  * ADDITIVE provenance write onto an ALREADY SERVED qc-zonage collection.
  *
@@ -425,7 +515,8 @@ interface AdditiveFC { type?: unknown; features?: AdditiveFeature[] }
  *   (c) each feature's GEOMETRY is byte-identical to the served geometry;
  *   (d) every property that DIFFERS from the served object is in the whitelist —
  *       a fold may add/update/delete provenance keys and NOTHING else, so the
- *       `proof` block and every substantive attribute stay untouched.
+ *       `proof` block and every substantive attribute stay untouched, except
+ *       for an explicitly attested legacy v1 artifact_uri replacement.
  * The current served object is re-read from S3 as the baseline (the caller is never
  * trusted for it). Then a non-destructive backup is taken and the bytes are written.
  */
@@ -442,6 +533,7 @@ export async function putServedZoneAdditive(
       throw new Error(`putServedZoneAdditive: "${k}" is not a provenance metadata key; refuse to widen the whitelist`);
     }
   }
+  const substitutions = proofArtifactUriSubstitutions(opts);
   if (fc?.type !== "FeatureCollection" || !Array.isArray(fc.features)) {
     throw new Error("putServedZoneAdditive: payload is not a FeatureCollection");
   }
@@ -484,11 +576,13 @@ export async function putServedZoneAdditive(
         `putServedZoneAdditive: feature ${i} geometry differs from served; new geometry requires putServedZoneGeojson with proof`,
       );
     }
-    // (d) only whitelisted properties may differ (add / update / delete).
+    // (d) only whitelisted properties may differ (add / update / delete), with
+    // the single attested legacy v1 proof-URI substitution below.
     const curProps = (cur.properties ?? {}) as Record<string, unknown>;
     const nxtProps = (nxt.properties ?? {}) as Record<string, unknown>;
     for (const propKey of new Set([...Object.keys(curProps), ...Object.keys(nxtProps)])) {
       if (jsonEqual(curProps[propKey], nxtProps[propKey])) continue;
+      if (propKey === "proof" && isAttestedProofArtifactUriSubstitution(curProps[propKey], nxtProps[propKey], substitutions)) continue;
       if (!allowed.has(propKey)) {
         throw new Error(
           `putServedZoneAdditive: non-provenance property "${propKey}" changed on feature ${i}; refused (geometry/proof and substantive attributes are immutable on this path)`,
