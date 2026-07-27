@@ -47,11 +47,21 @@ async function main(): Promise<void> {
     const features = payload.features ?? [];
     const withDensity = features.filter((f) => filled(f.properties?.["densite_value"]));
     const sample = withDensity[0]?.properties;
+    // `densite_value` vient du pli des NORMES ; `effet_densifiant` vient du pli
+    // du DELTA et porte ses propres compteurs. Une collection peut servir l'un
+    // sans l'autre : ne pas les confondre en lisant un seul champ.
+    const effects = features.reduce<Record<string, number>>((acc, f) => {
+      const effect = f.properties?.["effet_densifiant"];
+      if (!filled(effect)) return acc;
+      acc[String(effect)] = (acc[String(effect)] ?? 0) + 1;
+      return acc;
+    }, {});
     console.log(
       `${slug.padEnd(30)} rendues=${String(features.length).padStart(4)} ` +
       `total=${String(payload.numberMatched ?? "?").padStart(4)} ` +
       `avec_densite=${String(withDensity.length).padStart(4)}` +
-      (sample ? `  ex ${String(sample["zone_code"])}=${String(sample["densite_value"])}` : ""),
+      (sample ? `  ex ${String(sample["zone_code"])}=${String(sample["densite_value"])}` : "") +
+      (Object.keys(effects).length > 0 ? `  effets=${JSON.stringify(effects)}` : ""),
     );
   }
 }
