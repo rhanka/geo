@@ -68,6 +68,13 @@ const EFFECT_FIELDS = [
   "effet_densifiant_methode", "densite_avant_source", "densite_apres_source",
 ] as const;
 
+/**
+ * Marqueurs qui disqualifient une citation : un instrument qui se déclare
+ * PROJET n'est pas en vigueur, et un numéro laissé en gabarit (`xxxx`) ne
+ * désigne aucun règlement. Comparé en minuscules sur la citation entière.
+ */
+const PROJET_MARKERS = ["projet de règlement", "projet de reglement", "numéro xxxx", "numero xxxx"] as const;
+
 function arg(argv: string[], key: string): string | undefined {
   const i = argv.indexOf(`--${key}`);
   return i >= 0 ? argv[i + 1] : undefined;
@@ -141,6 +148,19 @@ export function readEntries(artifact: string): Map<string, Entry> {
       for (const key of ["source_avant", "source_apres"] as const) {
         if (typeof entry[key] !== "string" || !entry[key].trim()) {
           throw new Error(`artifact: ${key} manquante pour effet connu ${entry.zone_code}`);
+        }
+        // Un règlement en PROJET n'a pas force légale : il ne décrit aucun état.
+        // 85 effets de `sutton` sont partis en production sur un document qui
+        // déclarait « Projet de Règlement de zonage numéro xxxx » — un projet, au
+        // numéro même pas rempli. La citation était PRÉSENTE et le garde-fou
+        // précédent la trouvait suffisante ; il ne lisait pas ce qu'elle disait.
+        for (const forbidden of PROJET_MARKERS) {
+          if (entry[key].toLowerCase().includes(forbidden)) {
+            throw new Error(
+              `artifact: ${key} de ${entry.zone_code} cite un PROJET de règlement ("${forbidden}") — ` +
+              `sans force légale, l'effet doit rester 'inconnu'`,
+            );
+          }
         }
       }
     }
