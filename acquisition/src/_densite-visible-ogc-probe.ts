@@ -56,12 +56,20 @@ async function main(): Promise<void> {
       acc[String(effect)] = (acc[String(effect)] ?? 0) + 1;
       return acc;
     }, {});
+    // La provenance est ce qu'immo consomme reellement. Leur ingestion filtre par
+    // une ALLOWLIST POSITIVE qui rejette l'enveloppe ENTIERE des qu'une cle
+    // inconnue apparait : un champ ajoute de mon cote peut donc faire disparaitre
+    // zone_source_url et proof chez eux. On mesure au moins ce que MOI je sers.
+    const provenance = ["zone_source_url", "zone_source_level", "proof", "reglement_numero"]
+      .map((field) => `${field}=${features.filter((f) => filled(f.properties?.[field])).length}`)
+      .join(" ");
     console.log(
       `${slug.padEnd(30)} rendues=${String(features.length).padStart(4)} ` +
       `total=${String(payload.numberMatched ?? "?").padStart(4)} ` +
       `avec_densite=${String(withDensity.length).padStart(4)}` +
       (sample ? `  ex ${String(sample["zone_code"])}=${String(sample["densite_value"])}` : "") +
-      (Object.keys(effects).length > 0 ? `  effets=${JSON.stringify(effects)}` : ""),
+      (Object.keys(effects).length > 0 ? `  effets=${JSON.stringify(effects)}` : "") +
+      `\n${" ".repeat(32)}${provenance}`,
     );
   }
 }
