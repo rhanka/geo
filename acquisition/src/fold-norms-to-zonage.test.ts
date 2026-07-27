@@ -1,6 +1,22 @@
 import { describe, expect, it } from "vitest";
 
-import { invertedKey, looseIndex, looseKey } from "./fold-norms-to-zonage.js";
+import { invertedKey, looseIndex, looseKey, numericPrefixKey } from "./fold-norms-to-zonage.js";
+
+describe("numericPrefixKey", () => {
+  it("keeps the zone number when the grid carries the dominance separately", () => {
+    // matane's grid, p.317: "NUMEROS DE ZONES" / "ET DOMINANCES", listing
+    // "200 201 202 203 204 205" above "R R R L C R".
+    expect(numericPrefixKey("200-R")).toBe("200");
+    expect(numericPrefixKey("225-L")).toBe("225");
+  });
+
+  it("refuses a code whose first segment is not a number", () => {
+    // `A-10` must NOT be truncated to `A`: that would merge every A zone.
+    expect(numericPrefixKey("A-10")).toBeNull();
+    expect(numericPrefixKey("200")).toBeNull();
+    expect(numericPrefixKey("1-H-04")).toBeNull();
+  });
+});
 
 describe("invertedKey", () => {
   it("restores the municipal order read in the source grids", () => {
