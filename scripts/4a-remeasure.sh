@@ -22,6 +22,12 @@ fi
 
 cd "$(dirname "$0")/.."
 
+# `--read-concurrency 2` est ce qui a REELLEMENT debloque ce runner apres six
+# echecs. Ni la session (tmux vs shell), ni la heap ne suffisaient : le point de
+# rupture se deplacait (800/871 puis 400/871), signe d'une contrainte de
+# ressource concurrente et non d'une limite fixe. En lisant deux collections a la
+# fois au lieu du defaut, le balayage complet passe. Ne pas remonter cette valeur
+# sans la remesurer.
 NODE_OPTIONS="--dns-result-order=ipv4first --max-old-space-size=8192" \
 AWS_MAX_ATTEMPTS=10 \
-  npx tsx ./acquisition/src/immo-4a-delta-grille-export.ts >"$out" 2>&1
+  npx tsx ./acquisition/src/immo-4a-delta-grille-export.ts --read-concurrency 2 >"$out" 2>&1
