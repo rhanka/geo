@@ -10,13 +10,15 @@
  *   Add --dry-run to inspect matching without writing.
  */
 import { existsSync, readFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { exists, getBytes, s3Client } from "./lib/s3.js";
 import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const DEFAULT_SLUG = "saint-stanislas-de-kostka";
 const PREFIX = "normalized/ca-qc-zonage/";
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 type Effet = "densifie" | "reduit" | "stable" | "inconnu";
 type Methode = "explicit" | "deduit";
@@ -71,7 +73,7 @@ function arg(argv: string[], key: string): string | undefined {
   return i >= 0 ? argv[i + 1] : undefined;
 }
 
-function configFromArgs(argv: string[]): FoldConfig {
+export function configFromArgs(argv: string[]): FoldConfig {
   const slug = arg(argv, "slug") ?? DEFAULT_SLUG;
   const saintDefaults = slug === DEFAULT_SLUG;
   const oldReglement = arg(argv, "old-reglement") ?? (saintDefaults ? "330-2018" : undefined);
@@ -92,7 +94,10 @@ function configFromArgs(argv: string[]): FoldConfig {
     newReglement,
     oldMillesime,
     newMillesime,
-    artifact: `../work/effet-densifiant/${slug}.json`,
+    // S3 runners are invoked from the repository root. Resolving from this
+    // committed runner (rather than process.cwd()) also preserves that contract
+    // for CI and direct invocations from another working directory.
+    artifact: resolve(ROOT, "work", "effet-densifiant", `${slug}.json`),
   };
 }
 
@@ -159,6 +164,11 @@ export function readEntries(artifact: string): Map<string, Entry> {
   return entries;
 }
 
+/** Cardinality of served feature properties, used to make additive folds observable. */
+export function countFeatureProperties(features: readonly FeatureLike[]): number {
+  return features.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
+}
+
 /**
  * ALL existing S3 keys for the slug, not just the first. geo-api serves the sub-folder
  * key (memory fold-double-key-s3): stamping only the flat key — as the old findKey did —
@@ -198,6 +208,13 @@ function applyEntry(
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
+  // RETRAIT d'un effet déposé. Un effet est une AFFIRMATION sur deux états
+  // datés ; quand la citation ne tient pas — source « avant » qui ne porte pas
+  // le règlement qu'on lui attribue, par exemple — il faut pouvoir la retirer de
+  // la production, pas seulement cesser de la republier. Un effet faux est pire
+  // qu'un effet absent : il ferait qualifier un signal immobilier réel sur une
+  // base fausse, chez un tiers.
+  const withdraw = argv.includes("--withdraw");
   const config = configFromArgs(argv);
   const entries = readEntries(config.artifact);
   const s3 = s3Client();
@@ -209,6 +226,7 @@ async function main(): Promise<void> {
     const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as GeoJsonLike;
     if (fc.type !== "FeatureCollection") throw new Error(`not a FeatureCollection: ${key}`);
     if (!Array.isArray(fc.features)) throw new Error(`features array missing: ${key}`);
+    const propertyCountBefore = countFeatureProperties(fc.features);
 
     const seen = new Set<string>();
     let matched = 0;
@@ -218,7 +236,8 @@ async function main(): Promise<void> {
       if (typeof zone !== "string") continue;
       const entry = entries.get(zone);
       if (!entry) continue;
-      applyEntry(feature.properties, entry, config);
+      if (withdraw) for (const field of EFFECT_FIELDS) delete feature.properties[field];
+      else applyEntry(feature.properties, entry, config);
       seen.add(zone);
       matched++;
     }
@@ -227,9 +246,15 @@ async function main(): Promise<void> {
     if (missing.length > 0) {
       throw new Error(`artifact zones absentes de ${key}: ${missing.join(", ")}`);
     }
+    const propertyCountAfter = countFeatureProperties(fc.features);
+    // Le retrait FAIT BAISSER le compte, et c'est son objet : le garde-fou
+    // anti-appauvrissement ne s'applique qu'au dépôt.
+    if (!withdraw && propertyCountAfter < propertyCountBefore) {
+      throw new Error(`properties servies en baisse ${propertyCountBefore}->${propertyCountAfter} pour ${key}`);
+    }
 
     console.log(
-      `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched} crs=${fc.crs === undefined ? "absent" : "preserved"}`,
+      `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched} properties=${propertyCountBefore}->${propertyCountAfter} crs=${fc.crs === undefined ? "absent" : "preserved"}`,
     );
 
     if (!dryRun) {
