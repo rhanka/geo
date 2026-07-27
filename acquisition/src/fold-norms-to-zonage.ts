@@ -79,6 +79,25 @@ export function invertedKey(v: unknown): string | null {
   return `${segments[1]}${segments[0]}`;
 }
 
+/**
+ * Préfixe NUMÉRIQUE d'un code servi, quand la grille identifie la zone par son
+ * seul numéro et porte la dominance à part.
+ *
+ * C'est la transformation la plus dangereuse des trois, parce qu'elle PERD de
+ * l'information : `200-R` et `200-C` s'effondrent tous deux sur `200`. Elle ne
+ * s'arme donc que par ville, après avoir mesuré qu'aucune collision n'existe, et
+ * après avoir lu la convention dans la source — pour matane, la page 317 de
+ * `corps-vm-89.pdf` titre « NUMÉROS DE ZONES » / « ET DOMINANCES » et aligne
+ * « 200 201 202 203 204 205 » sous « R R R L C R ».
+ *
+ * Renvoie `null` si le code n'est pas un numéro suivi d'un unique segment.
+ */
+export function numericPrefixKey(v: unknown): string | null {
+  const segments = canon(v).split(/[-_.\s]+/).filter((s) => s.length > 0);
+  if (segments.length !== 2) return null;
+  return /^\d+$/.test(segments[0]!) ? segments[0]! : null;
+}
+
 export function looseIndex(codes: Iterable<string>): Map<string, string> | null {
   const index = new Map<string, string>();
   for (const code of codes) {
@@ -130,6 +149,9 @@ async function main(): Promise<void> {
   // legitime que pour les villes ou l'ordre a ete LU. Elle reste donc opt-in,
   // par ville, jamais globale.
   const invertSegments = argv.includes("--invert-segments");
+  // La troncature PERD de l'information : elle exige une mesure de collision
+  // sur les codes SERVIS, pas seulement sur les normes.
+  const numericPrefix = argv.includes("--numeric-prefix");
   const slugs = (arg(argv, "slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (slugs.length === 0) {
     console.error("pass --slugs <a,b>");
@@ -156,11 +178,29 @@ async function main(): Promise<void> {
       // discernables sans separateur. Une collision d'un seul cote suffit a
       // l'annuler : mieux vaut ne pas plier que plier sur la mauvaise zone.
       let loose: Map<string, string> | null = null;
-      if ((relaxSeparators || invertSegments) && !strip) {
-        const zonageIndex = looseIndex(feats.map((f) => canon(f.properties?.["zone_code"])));
+      if ((relaxSeparators || invertSegments || numericPrefix) && !strip) {
+        const servedCodes = feats.map((f) => canon(f.properties?.["zone_code"])).filter((c) => c !== "");
+        const zonageIndex = looseIndex(servedCodes);
         if (zonageIndex === null) {
           console.log(`REFUS ${slug} (codes servis indiscernables sans separateur) key=${key}`);
           continue;
+        }
+        if (numericPrefix) {
+          // Deux codes servis distincts qui tombent sur le meme numero rendent
+          // la densite indecidable : on refuse la ville entiere.
+          const byPrefix = new Map<string, string>();
+          let servedCollision: string | null = null;
+          for (const code of new Set(servedCodes)) {
+            const prefix = numericPrefixKey(code);
+            if (prefix === null) continue;
+            const seen = byPrefix.get(prefix);
+            if (seen !== undefined && seen !== code) { servedCollision = `${seen} vs ${code}`; break; }
+            byPrefix.set(prefix, code);
+          }
+          if (servedCollision !== null) {
+            console.log(`REFUS ${slug} (--numeric-prefix: collision de codes servis: ${servedCollision}) key=${key}`);
+            continue;
+          }
         }
         const index = new Map<string, string>();
         let collision: string | null = null;
@@ -168,7 +208,9 @@ async function main(): Promise<void> {
           // Une cle inversee et une cle relachee peuvent viser le meme code
           // servi : on les indexe ensemble et on refuse au premier conflit.
           const candidates = [
-            ...(relaxSeparators ? [looseKey(code)] : []),
+            // En mode prefixe numerique la grille porte le numero SEUL : sa
+            // propre cle relachee est deja la cle recherchee.
+            ...(relaxSeparators || numericPrefix ? [looseKey(code)] : []),
             ...(invertSegments ? [invertedKey(code) ?? ""] : []),
           ].filter((k) => k !== "");
           for (const candidate of candidates) {
@@ -195,8 +237,11 @@ async function main(): Promise<void> {
         const code = canon(f.properties["zone_code"]);
         let sub = norms!.get(code);
         if (sub === undefined && loose !== null) {
-          const resolved = loose.get(looseKey(code));
-          if (resolved !== undefined) sub = norms!.get(resolved);
+          for (const candidate of [looseKey(code), numericPrefix ? numericPrefixKey(code) : null]) {
+            if (candidate === null) continue;
+            const resolved = loose.get(candidate);
+            if (resolved !== undefined) { sub = norms!.get(resolved); break; }
+          }
         }
         if (!sub) continue;
         matched++;
