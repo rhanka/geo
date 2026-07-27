@@ -134,6 +134,16 @@ export function readEntries(artifact: string): Map<string, Entry> {
     if (!(["explicit", "deduit"] as string[]).includes(entry.methode ?? "")) {
       throw new Error(`artifact: methode invalide pour ${entry.zone_code}`);
     }
+    // A known effect is only usable alongside the document locations that
+    // substantiate both readings. JSON artifacts cross an untyped boundary,
+    // so the Entry interface alone cannot enforce this production invariant.
+    if (entry.effet_densifiant !== "inconnu") {
+      for (const key of ["source_avant", "source_apres"] as const) {
+        if (typeof entry[key] !== "string" || !entry[key].trim()) {
+          throw new Error(`artifact: ${key} manquante pour effet connu ${entry.zone_code}`);
+        }
+      }
+    }
     if (!(["match", "flag"] as string[]).includes(entry.steve_coherence ?? "")) {
       throw new Error(`artifact: steve_coherence invalide pour ${entry.zone_code}`);
     }
