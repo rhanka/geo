@@ -103,6 +103,8 @@ describe("PV deterministic Graphify semantic extraction", () => {
       "Séance du conseil tenue le 1er mai 2023.",
       "Adoption du règlement 222-2026 (2e projet).",
       "Le deuxième projet de règlement 223-2026 est présenté.",
+      "Le deuxième projet du règlement 224-2026 est présenté.",
+      "Le règlement 225-2026 est adopté.",
       "Les règlements 177-2019 et 190-2021 sont abrogés.",
       "Le règlement 612-",
       "Dépôt du règlement 30 avril 2026.",
@@ -114,6 +116,8 @@ describe("PV deterministic Graphify semantic extraction", () => {
     ])).toEqual([
       ["222-2026", "SECOND_PROJET"],
       ["223-2026", "SECOND_PROJET"],
+      ["224-2026", "SECOND_PROJET"],
+      ["225-2026", "ADOPTE"],
     ]);
   });
 

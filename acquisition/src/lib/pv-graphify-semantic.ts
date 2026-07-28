@@ -282,13 +282,14 @@ const REGULATION_DATE_CONTINUATION = new RegExp(`^\\s+(?:${MONTH})\\b`, "iu");
 function regulationQuality(line: string, regulationOffset: number): RegulationLegalQuality {
   const before = normalizeWords(line.slice(Math.max(0, regulationOffset - 100), regulationOffset));
   const after = normalizeWords(line.slice(regulationOffset, regulationOffset + 80));
-  if (/\b(?:premier|1er|1e|1eme) projet de $/u.test(before) || /\b(?:premier|1er|1e|1eme) projet\b/u.test(after)) {
+  if (/\b(?:premier|1er|1e|1eme) projet (?:de|du|d) $/u.test(before) || /\b(?:premier|1er|1e|1eme) projet\b/u.test(after)) {
     return "PREMIER_PROJET";
   }
-  if (/\b(?:second|deuxieme|2e|2eme) projet de $/u.test(before) || /\b(?:second|deuxieme|2e|2eme) projet\b/u.test(after)) {
+  if (/\b(?:second|deuxieme|2e|2eme) projet (?:de|du|d) $/u.test(before) || /\b(?:second|deuxieme|2e|2eme) projet\b/u.test(after)) {
     return "SECOND_PROJET";
   }
   if (/\badoption du $/u.test(before)) return "ADOPTE";
+  if (/\badopte(?:e|es|er)?\b/u.test(after)) return "ADOPTE";
   if (/\bprojet de $/u.test(before)) return "PROJET";
   if (/\bavis d approbation referendaire (?:du )?$/u.test(before)) return "AVIS_APPROBATION_REFERENDAIRE";
   if (/\bversion administrative du $/u.test(before)) return "VERSION_ADMINISTRATIVE";
