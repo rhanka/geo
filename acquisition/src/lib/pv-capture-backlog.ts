@@ -160,6 +160,23 @@ export function sha256(bytes: Uint8Array | string): `sha256:${string}` {
 }
 
 /**
+ * Vérifie l'objet effectivement remis au Job. Cette vérification est répétée
+ * après un crash entre le CAS d'état `planned` et le POST Kubernetes : l'état
+ * ne doit jamais suffire seul à faire confiance à une worklist S3 dérivée.
+ */
+export function assertPvBacklogWorklistBytes(
+  lot: number,
+  worklistKey: string,
+  expectedSha256: `sha256:${string}`,
+  bytes: Uint8Array | string,
+): void {
+  const actual = sha256(bytes);
+  if (actual !== expectedSha256) {
+    throw new Error(`lot ${lot}: worklist ${worklistKey} divergente du hash immuable (${actual} != ${expectedSha256})`);
+  }
+}
+
+/**
  * Identité de document stable entre deux runs : le fragment est une ancre de
  * page, jamais une ressource différente; l'hôte et le port par défaut suivent
  * la normalisation WHATWG. La query est conservée car elle peut identifier un
