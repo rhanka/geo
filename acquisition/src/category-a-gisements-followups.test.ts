@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   discoverFollowups,
+  regulationSearchCatalogs,
   retryableFollowupUrls,
 } from "./category-a-gisements-followups.js";
+import type { CategoryAGisementTarget } from "./category-a-gisements-worklist.js";
 
 describe("category A captured catalog followups", () => {
   it("extracts a hidden WordPress media PDF using its title context", () => {
@@ -114,5 +116,28 @@ describe("category A captured catalog followups", () => {
       ]);
     expect(retryableFollowupUrls("https://web.archive.org/cdx/search/cdx?url=x"))
       .toEqual(["https://web.archive.org/cdx/search/cdx?url=x"]);
+  });
+
+  it("turns a hidden regulation number into municipal and MRC CMS searches", () => {
+    const target: CategoryAGisementTarget = {
+      slug: "petite-riviere-saint-francois",
+      name: "Petite-Rivière-Saint-François",
+      website: "https://www.petiteriviere.com",
+      mrcName: "MRC de Charlevoix",
+      mrcPortals: ["https://mrccharlevoix.ca"],
+    };
+    expect(regulationSearchCatalogs(
+      "https://www.petiteriviere.com/uploads/RÈGLEMENT-NO-641-MODIFIANT-LE-RÈGLEMENT-DE-ZONAGE-603.pdf",
+      target,
+    )).toEqual([
+      "https://mrccharlevoix.ca/?s=603",
+      "https://mrccharlevoix.ca/?s=641",
+      "https://mrccharlevoix.ca/wp-json/wp/v2/media?search=603&per_page=100",
+      "https://mrccharlevoix.ca/wp-json/wp/v2/media?search=641&per_page=100",
+      "https://www.petiteriviere.com/?s=603",
+      "https://www.petiteriviere.com/?s=641",
+      "https://www.petiteriviere.com/wp-json/wp/v2/media?search=603&per_page=100",
+      "https://www.petiteriviere.com/wp-json/wp/v2/media?search=641&per_page=100",
+    ]);
   });
 });

@@ -71,6 +71,57 @@ export function retryableFollowupUrls(url: string): string[] {
   return [...out].sort();
 }
 
+function decodedUrl(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+/**
+ * Once a hidden catalog exposes a regulation number, search that exact number
+ * in both the municipal CMS and the distinct MRC portal. This is how an
+ * original amendment can lead to its certificate of conformity or adoption
+ * notice without treating an upload/Wayback timestamp as a legal date.
+ */
+export function regulationSearchCatalogs(
+  documentUrl: string,
+  target: CategoryAGisementTarget,
+): string[] {
+  const decoded = decodedUrl(documentUrl);
+  if (!STRONG_DOCUMENT_HINT.test(decoded)) return [];
+  const tail = decoded.slice(decoded.lastIndexOf("/") + 1);
+  const tokenPatterns = [
+    /(?:r[eèé]glement|rgl?ment|reg)[^0-9]{0,24}(\d{2,4}(?:[-.]\d{1,4}){0,3})/giu,
+    /(\d{2,4}(?:[-.]\d{1,4}){0,3})[^/]{0,24}zonag/giu,
+    /zonag[^/]{0,24}(\d{2,4}(?:[-.]\d{1,4}){0,3})/giu,
+  ];
+  const tokens = new Set<string>();
+  for (const pattern of tokenPatterns) {
+    for (const match of tail.matchAll(pattern)) {
+      const token = match[1]!;
+      if (/^(?:19|20)\d{2}$/.test(token)) continue;
+      if (!/[-.]/.test(token) && token.length < 3) continue;
+      tokens.add(token);
+    }
+  }
+  const origins = new Set([target.website, ...target.mrcPortals].map((url) => new URL(url).origin));
+  const catalogs = new Set<string>();
+  for (const token of tokens) {
+    for (const base of origins) {
+      const media = new URL("/wp-json/wp/v2/media", base);
+      media.searchParams.set("search", token);
+      media.searchParams.set("per_page", "100");
+      catalogs.add(media.href);
+      const site = new URL("/", base);
+      site.searchParams.set("s", token);
+      catalogs.add(site.href);
+    }
+  }
+  return [...catalogs].sort();
+}
+
 function isOpaqueRetryable(line: CaptureManifestLine): boolean {
   return (
     line.http_status === null
@@ -420,6 +471,11 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
       const slugFound = found.get(slug) ?? new Set<string>();
       for (const url of [...discovered.documents, ...discovered.catalogs]) {
         if (relevantForTarget(url, line.url, target)) slugFound.add(url);
+      }
+      for (const documentUrl of discovered.documents) {
+        for (const catalogUrl of regulationSearchCatalogs(documentUrl, target)) {
+          slugFound.add(catalogUrl);
+        }
       }
       found.set(slug, slugFound);
     }
