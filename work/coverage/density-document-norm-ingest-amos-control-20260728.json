@@ -1,0 +1,80 @@
+{
+  "contract": "density-document-norm-ingest/v2",
+  "generatedAt": "2026-07-28T10:16:39.468Z",
+  "slug": "amos",
+  "deposited": true,
+  "reviewScope": {
+    "corroborationProfileIds": []
+  },
+  "documents": [
+    {
+      "id": "amos-va-964-annexe-2-p1",
+      "disposition": "publishable",
+      "source": {
+        "url": "https://amos.quebec/storage/app/media/decouvrir-amos/administration-et-finances/reglementation/urbanisme/annexe-2-grilles.pdf",
+        "sha256": "sha256:9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa",
+        "storageKey": "raw/normes-density-sibling-document/cas/9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa.pdf",
+        "retrievedAt": "2026-07-28T10:05:37.763Z",
+        "transportHost": "amos.quebec",
+        "owner": "Ville d’Amos",
+        "ownerEvidence": "Page municipale capturée: « Règlement de zonage VA-964 — Annexe – Grilles de spécification »; le règlement VA-964 nomme « Ville d’Amos » et l’annexe 2",
+        "reglement": "Règlement de zonage VA-964 — annexe 2, grille P-1",
+        "legalDate": "2024-09-17",
+        "legalDateEvidence": "Page P-1 native verbatim: « VA-1290 — 17 sept. 2024 »"
+      },
+      "parser": {
+        "family": "amos-va-964-annexe-2-p1",
+        "documentAnchored": true,
+        "projectExcluded": false,
+        "extracted": 1,
+        "refusals": []
+      },
+      "crossValidation": {
+        "matchedNorms": 1,
+        "missingInSig": []
+      },
+      "norms": [
+        {
+          "zoneCode": "P-1",
+          "value": 50,
+          "unit": "cos-max",
+          "raw": "50(1) 50(1)",
+          "proof": "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+          "page": 204
+        }
+      ]
+    }
+  ],
+  "crossValidation": {
+    "sigKey": "normalized/ca-qc-zonage/qc-zonage-amos/qc-zonage-amos.geojson",
+    "sigCodes": 39,
+    "matchedNorms": 1,
+    "conflictingZones": []
+  },
+  "merge": {
+    "existingRows": 40,
+    "outputRows": 41,
+    "inserted": 1,
+    "enriched": 0,
+    "unchanged": 0
+  },
+  "norms": [
+    {
+      "zoneCode": "P-1",
+      "value": 50,
+      "unit": "cos-max",
+      "raw": "50(1) 50(1)",
+      "proof": "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+      "page": 204,
+      "sourceUrl": "https://amos.quebec/storage/app/media/decouvrir-amos/administration-et-finances/reglementation/urbanisme/annexe-2-grilles.pdf",
+      "sourceSha256": "sha256:9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa",
+      "sourceStorageKey": "raw/normes-density-sibling-document/cas/9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa.pdf",
+      "legalDate": "2024-09-17",
+      "legalDateEvidence": "Page P-1 native verbatim: « VA-1290 — 17 sept. 2024 »"
+    }
+  ],
+  "output": {
+    "key": "registry/qc-zonage-norms/qc-zonage-norms-amos.parquet",
+    "backupKey": "registry/qc-zonage-norms/qc-zonage-norms-amos.parquet.pre-density-document-20260728"
+  }
+}
