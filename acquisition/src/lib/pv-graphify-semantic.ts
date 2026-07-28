@@ -224,9 +224,10 @@ function firstMunicipalityEvidence(lines: readonly SourceLine[], officialName: s
 }
 
 const MONTH = "janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre";
-const FRENCH_DATE = new RegExp(`\\b(?:le|du|en date du)\\s+(\\d{1,2}(?:er|e|ème)?\\s+(?:${MONTH})\\s+\\d{4})\\b`, "iu");
+const FRENCH_DATE = new RegExp(`\\b(?:le|du|en date du)\\s+(\\d{1,2}(?:er|e|ème)?\\s*(?:${MONTH})\\s+\\d{4})\\b`, "iu");
 const ISO_DATE = /\b(\d{4}[/-]\d{2}[/-]\d{2})\b/u;
 const NUMERIC_DATE = /\b(\d{1,2}[/-]\d{1,2}[/-]\d{4})\b/u;
+const SESSION_HEADER_MAX_LINE = 80;
 
 function dates(lines: readonly SourceLine[]): DateEvidence[] {
   const found: DateEvidence[] = [];
@@ -239,12 +240,16 @@ function dates(lines: readonly SourceLine[]): DateEvidence[] {
 
 function isCouncilSessionMarker(line: SourceLine): boolean {
   return /\b(?:proc[eè]s[\s-]*verbal|s[ée]ance|session)\b/iu.test(line.text)
-    && /\bconseil\b/iu.test(line.text);
+    && /(?:\bconseil\b|\bmunicipalit[ée](?![\p{L}\p{N}_]))/iu.test(line.text);
 }
 
 function sessionEvidence(lines: readonly SourceLine[]): { marker: SourceLine; date: DateEvidence } | null {
-  const markers = lines.filter(isCouncilSessionMarker);
-  const candidates = dates(lines);
+  // A later reference to an earlier meeting is not this PV's session. Only the
+  // document header is authoritative; missing a late-formatted header is safer
+  // than indexing a prior session as the document's own meeting.
+  const header = lines.filter((line) => line.number <= SESSION_HEADER_MAX_LINE);
+  const markers = header.filter(isCouncilSessionMarker);
+  const candidates = dates(header);
   let selected: { marker: SourceLine; date: DateEvidence; distance: number } | null = null;
   for (const marker of markers) {
     for (const date of candidates) {
@@ -271,13 +276,19 @@ function resolutionEvidence(lines: readonly SourceLine[]): ResolutionEvidence[] 
   return found;
 }
 
-const REGULATION_REFERENCE = /\br[èe]glement\s*(?:n(?:um[ée]ro)?[°o]?\s*)?([A-Z]{0,5}\s*\d{1,6}(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
+const REGULATION_REFERENCE = /\br[èe]glement\b\s*(?:n(?:um[ée]ro)?[°o]?\s*)?([A-Z]{0,5}\s*\d{1,6}(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
+const REGULATION_DATE_CONTINUATION = new RegExp(`^\\s+(?:${MONTH})\\b`, "iu");
 
 function regulationQuality(line: string, regulationOffset: number): RegulationLegalQuality {
   const before = normalizeWords(line.slice(Math.max(0, regulationOffset - 100), regulationOffset));
+  const after = normalizeWords(line.slice(regulationOffset, regulationOffset + 80));
+  if (/\b(?:premier|1er|1e|1eme) projet de $/u.test(before) || /\b(?:premier|1er|1e|1eme) projet\b/u.test(after)) {
+    return "PREMIER_PROJET";
+  }
+  if (/\b(?:second|deuxieme|2e|2eme) projet de $/u.test(before) || /\b(?:second|deuxieme|2e|2eme) projet\b/u.test(after)) {
+    return "SECOND_PROJET";
+  }
   if (/\badoption du $/u.test(before)) return "ADOPTE";
-  if (/\bpremier projet de $/u.test(before)) return "PREMIER_PROJET";
-  if (/\bsecond projet de $/u.test(before)) return "SECOND_PROJET";
   if (/\bprojet de $/u.test(before)) return "PROJET";
   if (/\bavis d approbation referendaire (?:du )?$/u.test(before)) return "AVIS_APPROBATION_REFERENDAIRE";
   if (/\bversion administrative du $/u.test(before)) return "VERSION_ADMINISTRATIVE";
@@ -291,7 +302,10 @@ function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] 
     for (const match of line.text.matchAll(REGULATION_REFERENCE)) {
       const verbatim = match[1]?.trim();
       const offset = match.index ?? -1;
-      if (verbatim && offset >= 0) {
+      const afterReference = offset < 0 ? "" : line.text.slice(offset + match[0].length);
+      const hasBrokenCode = /^\s*[-‐‑‒–—―]\s*(?:$|\D)/u.test(afterReference);
+      const isDayOfMonth = REGULATION_DATE_CONTINUATION.test(afterReference);
+      if (verbatim && offset >= 0 && !hasBrokenCode && !isDayOfMonth) {
         found.push({ line, verbatim, quality: regulationQuality(line.text, offset) });
       }
     }
