@@ -91,6 +91,83 @@ function consolidate(
   };
 }
 
+/**
+ * Amos — the VA-964 Annex 2 page for P-1 prints one COS maximum in two
+ * agreeing use columns. The amendment date is required on that same page:
+ * the surrounding, otherwise undated, annex is never assigned a date by
+ * inference.
+ */
+export function parseAmosDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "amos-va-964-annexe-2-p1";
+  const documentAnchored =
+    /GRILLE\s+DE\s+SPECIFICATIONS/i.test(text)
+    && /\bZONE\s+P-1\b/i.test(text)
+    && /\(1\)\s+Inclut\s+le\s+b[âa]timent\s+principal\s+et\s+les\s+b[âa]timents\s+accessoires\s+rattach[ée]s/i
+      .test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const folded = foldedLine(pageText);
+    const zone = /\bZONE\s+(P-1)\b/i.exec(folded)?.[1]?.toUpperCase() ?? null;
+    if (zone === null) continue;
+    const densityLine = pageText.split(/\r?\n/)
+      .find((line) => /Coefficient\s+d[’']occupation\s+du\s+sol\s+maximum\s*\(%\)/i.test(line));
+    if (!densityLine) continue;
+    const proof = foldedLine(densityLine);
+    const date =
+      /\bVA-1290\s+17\s+sept\.?\s+2024\b/i.exec(folded);
+    if (!date) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "date-amendement-absente-sur-la-page",
+        proof,
+      });
+      continue;
+    }
+    const match =
+      /Coefficient\s+d[’']occupation\s+du\s+sol\s+maximum\s*\(%\)\s*(.*)$/i
+        .exec(proof);
+    if (!match) continue;
+    const raw = match[1]!.trim();
+    const withoutNotes = raw.replace(/\(\s*\d+\s*\)/g, " ");
+    const values = (withoutNotes.match(/\d+(?:[,.]\d+)?/g) ?? [])
+      .map((value) => ({ raw: value, value: decimal(value) }))
+      .filter((entry): entry is { raw: string; value: number } => entry.value !== null);
+    if (values.length === 0) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "cos-maximum-non-numerique",
+        proof,
+      });
+      continue;
+    }
+    const distinct = new Set(values.map((entry) => entry.value));
+    if (distinct.size !== 1) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "maxima-divergents-entre-colonnes-usages",
+        proof,
+      });
+      continue;
+    }
+    readings.push({
+      zoneCode: zone,
+      value: values[0]!.value,
+      unit: "cos-max",
+      raw,
+      proof,
+      page,
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
 /** Municipalité de Champlain — one sheet per numeric zone. */
 export function parseChamplainDensityDocument(text: string): DensityDocumentParseResult {
   const family = "champlain-2009-03-annexe-c";
