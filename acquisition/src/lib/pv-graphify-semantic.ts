@@ -63,6 +63,18 @@ export interface MunicipalityGazetteerEntry {
 export interface MunicipalZoneGazetteer {
   readonly municipality_slug: string;
   readonly codes: readonly string[];
+  /**
+   * Zone matching mode used for this municipality.
+   * - `normalized`: case, separators and spaces normalization are enabled.
+   * - `exact`: only exact literal matching (case + punctuation normalization).
+   * When omitted, exact+safe-normalized is computed from codes.
+   */
+  readonly zone_code_matching?: "normalized" | "exact";
+}
+
+export interface ZoneGazetteerMatchPolicy {
+  readonly mode: "normalized" | "exact";
+  readonly collisions: readonly string[];
 }
 
 /** Lots are opt-in: no cadastral number is emitted without this closed set. */
@@ -135,6 +147,43 @@ function normalizeCode(value: string): string {
     .replace(/\s*([./-])\s*/gu, "$1")
     .replace(/\s+/gu, " ")
     .trim();
+}
+
+function normalizeCodeExact(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLocaleUpperCase("fr-CA")
+    .replace(/[‐‑‒–—―]/gu, "-")
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
+function uniqueSorted(values: readonly string[]): string[] {
+  return [...new Set(values)].sort((left, right) => right.length - left.length || left.localeCompare(right));
+}
+
+export function analyzeZoneGazetteerMatchMode(codes: readonly string[]): ZoneGazetteerMatchPolicy {
+  const byNormalized = new Map<string, Set<string>>();
+  for (const value of codes) {
+    const normalized = normalizeCode(value);
+    if (!normalized) continue;
+    const exact = normalizeCodeExact(value);
+    const current = byNormalized.get(normalized);
+    if (current === undefined) {
+      byNormalized.set(normalized, new Set([exact]));
+      continue;
+    }
+    current.add(exact);
+  }
+  const collisions = uniqueSorted(
+    [...byNormalized.entries()]
+      .filter(([, values]) => values.size > 1)
+      .map(([normalized, values]) => `${normalized}: ${uniqueSorted([...values]).join("|")}`),
+  );
+  return {
+    mode: collisions.length === 0 ? "normalized" : "exact",
+    collisions,
+  };
 }
 
 function escapeRegex(value: string): string {
@@ -332,13 +381,42 @@ function zonePattern(code: string): RegExp {
   return new RegExp(`(?<![A-Z0-9])${parts.join("")}(?![A-Z0-9])`, "giu");
 }
 
+function zonePatternExact(code: string): RegExp {
+  return new RegExp(`(?<![A-Z0-9])${escapeRegex(normalizeCodeExact(code))}(?![A-Z0-9])`, "giu");
+}
+
+interface ZoneMatcher {
+  readonly code: string;
+  readonly pattern: RegExp;
+}
+
+function zoneMatchers(codes: readonly string[], mode: "normalized" | "exact"): ZoneMatcher[] {
+  const normalizedCodes = new Set<string>();
+  for (const code of codes) {
+    if (mode === "normalized") {
+      const normalized = normalizeCode(code);
+      if (normalized) normalizedCodes.add(normalized);
+      continue;
+    }
+    const normalized = normalizeCodeExact(code);
+    if (normalized) normalizedCodes.add(normalized);
+  }
+  return uniqueSorted([...normalizedCodes]).map((code) => ({
+    code,
+    pattern: mode === "exact" ? zonePatternExact(code) : zonePattern(code),
+  }));
+}
+
 function zoneEvidence(lines: readonly SourceLine[], gazetteer: MunicipalZoneGazetteer): Array<{ line: SourceLine; code: string }> {
+  const mode: "normalized" | "exact" = gazetteer.zone_code_matching ?? analyzeZoneGazetteerMatchMode(gazetteer.codes).mode;
+  const matchers = zoneMatchers(gazetteer.codes, mode);
   const found: Array<{ line: SourceLine; code: string }> = [];
-  const codes = [...new Set(gazetteer.codes.map(normalizeCode).filter(Boolean))].sort((left, right) => right.length - left.length || left.localeCompare(right));
   for (const line of lines) {
     if (!/\bzones?\b/iu.test(line.text)) continue;
-    for (const code of codes) {
-      if (zonePattern(code).test(line.text)) found.push({ line, code });
+    for (const { code, pattern } of matchers) {
+      if (pattern.test(line.text)) {
+        found.push({ line, code });
+      }
     }
   }
   return found;

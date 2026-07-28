@@ -19,14 +19,20 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import type { S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+
 import {
   extractPvSemantic,
   type GraphifySemanticExtraction,
   type MunicipalityGazetteerEntry,
+  type MunicipalLotGazetteer,
   type MunicipalZoneGazetteer,
+  analyzeZoneGazetteerMatchMode,
+  type ZoneGazetteerMatchPolicy,
 } from "./lib/pv-graphify-semantic.js";
 import { selectBalancedPvControl, selectPvControlBatch } from "./lib/pv-graphify-control.js";
-import { getBytes, s3Client } from "./lib/s3.js";
+import { BUCKET, exists, getBytes, s3Client } from "./lib/s3.js";
 
 const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -36,7 +42,12 @@ const DEFAULT_CLASSIFICATIONS = [1, 2, 3, 4, 5, 6, 7].map((lot) =>
 );
 const MUNICIPALITIES_PATH = resolve(ROOT, "packages", "geo-sources-americas", "src", "ca-qc", "municipalities", "municipalities.qc.json");
 const ZONE_REGISTRY_PATH = resolve(ROOT, "packages", "geo-sources-americas", "src", "ca-qc-zonage-arcgis", "registry.generated.json");
+const ZONAGE_RESOLUTION_PATH = resolve(ROOT, "acquisition", "data", "zonage-resolution.json");
 const GRAPHIFY_BIN = resolve(ROOT, "node_modules", ".bin", "graphify");
+const LOTS_PREFIX = "normalized/qc-lots/qc-lots-";
+const LOTS_SUFFIX = ".geojson";
+const LOT_NUMBER_FIELDS = ["NO_LOT", "noLot", "no_lot", "lot_id", "lot", "code", "lot_n"];
+const ZONE_FIELD_FALLBACKS = ["zone_code", "zonecode", "zonage", "zone", "zonagemunicipal", "zonagemunicipalid", "no_zone", "num_zone", "code_zone", "zoneid", "zonage_id", "zone_no", "numzonage"];
 
 interface ClassificationLine {
   readonly slug: string;
@@ -51,6 +62,22 @@ interface ZoneRegistryEntry {
   readonly zoneCodeField: string;
 }
 
+interface ZoneGazetteerReport {
+  readonly municipality_slug: string;
+  readonly matching_mode: "normalized" | "exact";
+  readonly zone_code_count: number;
+  readonly collision_count: number;
+  readonly collision_examples: readonly string[];
+  readonly codes: readonly string[];
+}
+
+interface LotGazetteerReport {
+  readonly municipality_slug: string;
+  readonly lot_count: number;
+  readonly served: boolean;
+  readonly lot_numbers: readonly string[];
+}
+
 interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly control: number | null;
@@ -58,6 +85,13 @@ interface ParsedArgs {
   readonly batchSize: number | null;
   readonly batchIndex: number | null;
   readonly output: string;
+}
+
+interface ZoneResolutionEntry {
+  readonly ville: string;
+  readonly collection_id: string | null;
+  readonly couche: string | null;
+  readonly sample_attr: unknown | null;
 }
 
 interface GraphifyRunResult {
@@ -86,6 +120,23 @@ interface ControlDocumentReport {
   }[]>>;
   readonly graphify: GraphifyRunResult;
   readonly manual_verification: "UNVERIFIED";
+}
+
+interface MatchDetail {
+  readonly municipality_slug: string;
+  readonly storage_key: string;
+  readonly entity_type: "Zone" | "LotCadastre";
+  readonly value: string;
+  readonly source_file: string;
+  readonly source_location: string;
+  readonly quote: string;
+}
+
+interface MunicipalizeResult {
+  readonly zone: MunicipalZoneGazetteer | undefined;
+  readonly lot: MunicipalLotGazetteer | undefined;
+  readonly zonePolicy: ZoneGazetteerMatchPolicy | null;
+  readonly lotServed: boolean;
 }
 
 function usage(): never {
@@ -192,6 +243,71 @@ function readZoneRegistry(path: string): ZoneRegistryEntry[] {
   return entries;
 }
 
+function readZoneResolution(path: string): ReadonlyMap<string, ZoneResolutionEntry> {
+  const raw: unknown = JSON.parse(readFileSync(path, "utf8"));
+  if (!Array.isArray(raw)) throw new Error(`zonage-resolution invalide: ${path}`);
+  const entries = new Map<string, ZoneResolutionEntry>();
+  for (const [index, value] of raw.entries()) {
+    if (!isRecord(value)) throw new Error(`zonage-resolution invalide à l'index ${index}`);
+    const city = requiredString(value, "ville", `zonage-resolution[${index}]`);
+    const collectionId = (() => {
+      const rawCollectionId = value.collection_id;
+      return rawCollectionId === null || rawCollectionId === undefined ? null : requiredString(value, "collection_id", `zonage-resolution[${index}]`);
+    })();
+    const couche = value.couche === null || value.couche === undefined
+      ? null
+      : requiredString(value, "couche", `zonage-resolution[${index}]`);
+    const sampleAttr = value.sample_attr === undefined || value.sample_attr === null ? null : value.sample_attr;
+    entries.set(city, {
+      ville: city,
+      collection_id: collectionId,
+      couche: couche,
+      sample_attr: sampleAttr,
+    });
+  }
+  return entries;
+}
+
+function fieldCanonical(field: string): string {
+  return field
+    .normalize("NFKC")
+    .toLocaleLowerCase("fr-CA")
+    .replace(/[^a-z0-9]+/gu, "")
+    .trim();
+}
+
+function zoneCodeLooksValid(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > 50) return false;
+  if (!/[A-Za-z]/u.test(trimmed)) return false;
+  if (!/\d/u.test(trimmed)) return false;
+  return true;
+}
+
+function zoneCodeFieldFromResolution(slug: string, resolutions: ReadonlyMap<string, ZoneResolutionEntry>): string | null {
+  const entry = resolutions.get(slug);
+  if (!entry || typeof entry.sample_attr !== "object" || entry.sample_attr === null) {
+    return null;
+  }
+  const sample = entry.sample_attr as Record<string, unknown>;
+  for (const [field, value] of Object.entries(sample)) {
+    if (zoneCodeLooksValid(value) && fieldCanonical(field) !== "") {
+      return field;
+    }
+  }
+  return null;
+}
+
+function isZoneLikeField(field: string): boolean {
+  const normalized = fieldCanonical(field);
+  return normalized === "zonecode" || normalized === "zone"
+    || normalized === "zonage" || normalized === "zonagemunicipal" || normalized === "zonagemunicipalid"
+    || normalized === "nozone" || normalized === "numzone" || normalized === "codezone"
+    || normalized === "zoneid" || normalized === "zonageid"
+    || ZONE_FIELD_FALLBACKS.some((candidate) => normalized === fieldCanonical(candidate));
+}
+
 function assertS3RunEnvironment(): void {
   if (!process.env.NODE_OPTIONS?.split(/\s+/u).includes("--dns-result-order=ipv4first")) {
     throw new Error("run S3 refusé: préfixer NODE_OPTIONS=--dns-result-order=ipv4first");
@@ -206,6 +322,183 @@ function writeAtomic(path: string, value: unknown): void {
   const temporary = `${path}.${process.pid}.tmp`;
   writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, "utf8");
   renameSync(temporary, path);
+}
+
+function emitDigits(value: string): string | null {
+  const digits = value.replace(/\D/gu, "").trim();
+  return digits ? digits : null;
+}
+
+async function* streamObjectParts(s3: S3Client, key: string): AsyncGenerator<Buffer> {
+  const response = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+  const body = response.Body as AsyncIterable<Buffer> | undefined;
+  if (!body) return;
+  for await (const chunk of body) {
+    yield Buffer.from(chunk);
+  }
+}
+
+/**
+ * Parse a FeatureCollection stream and extract each feature's properties without
+ * materialising the full object in memory.
+ */
+async function collectFeatureProperties(
+  s3: S3Client,
+  key: string,
+  onFeature: (properties: Record<string, unknown>) => void,
+): Promise<void> {
+  let inString = false;
+  let escaped = false;
+  let depth = 0;
+  let expectingPropertyKey = false;
+  let stringBuffer = "";
+  let stringIsKey = false;
+  let awaitingFeaturesColon = false;
+  let awaitingFeaturesArray = false;
+  let inFeatures = false;
+  let featureDepth = 0;
+  let featureBuffer = "";
+  let featureInString = false;
+  let featureEscaped = false;
+  let started = false;
+
+  for await (const chunk of streamObjectParts(s3, key)) {
+    const text = chunk.toString("utf8");
+    for (let index = 0; index < text.length; index++) {
+      const char = text[index]!;
+
+      if (!inFeatures) {
+        if (inString) {
+          if (escaped) {
+            escaped = false;
+          } else if (char === "\\") {
+            escaped = true;
+          } else if (char === "\"") {
+            inString = false;
+            const token = stringBuffer;
+            stringBuffer = "";
+            if (stringIsKey && !awaitingFeaturesColon && !awaitingFeaturesArray && depth === 1 && token === "features") {
+              awaitingFeaturesColon = true;
+            }
+            stringIsKey = false;
+          } else {
+            stringBuffer += char;
+          }
+          continue;
+        }
+
+        if (/^\s$/u.test(char)) {
+          continue;
+        }
+
+        if (awaitingFeaturesColon) {
+          if (char === ":") {
+            awaitingFeaturesColon = false;
+            awaitingFeaturesArray = true;
+            continue;
+          }
+          if (!/\s/u.test(char)) awaitingFeaturesColon = false;
+          else continue;
+        }
+
+        if (awaitingFeaturesArray) {
+          if (char === "[") {
+            awaitingFeaturesArray = false;
+            inFeatures = true;
+            featureDepth = 0;
+            featureBuffer = "";
+            started = true;
+            continue;
+          }
+          if (!/\s/u.test(char)) awaitingFeaturesArray = false;
+          continue;
+        }
+
+        if (char === "{") {
+          depth++;
+          expectingPropertyKey = true;
+          continue;
+        }
+        if (char === "}") {
+          if (depth > 0) depth--;
+          expectingPropertyKey = depth > 0;
+          continue;
+        }
+        if (char === ",") {
+          expectingPropertyKey = depth > 0;
+          continue;
+        }
+        if (char === ":") {
+          expectingPropertyKey = false;
+          continue;
+        }
+        if (char === "\"") {
+          inString = true;
+          stringIsKey = expectingPropertyKey;
+          stringBuffer = "";
+          escaped = false;
+          continue;
+        }
+        continue;
+      }
+
+      if (featureDepth === 0) {
+        if (/^\s$/u.test(char) || char === ",") {
+          continue;
+        }
+        if (char === "]") {
+          return;
+        }
+        if (char === "{") {
+          featureDepth = 1;
+          featureBuffer = "{";
+          featureInString = false;
+          featureEscaped = false;
+          continue;
+        }
+        continue;
+      }
+
+      featureBuffer += char;
+      if (featureInString) {
+        if (featureEscaped) {
+          featureEscaped = false;
+          continue;
+        }
+        if (char === "\\") {
+          featureEscaped = true;
+          continue;
+        }
+        if (char === "\"") {
+          featureInString = false;
+          continue;
+        }
+        continue;
+      }
+
+      if (char === "\"") {
+        featureInString = true;
+        featureEscaped = false;
+        continue;
+      }
+      if (char === "{") featureDepth++;
+      else if (char === "}") {
+        featureDepth--;
+        if (featureDepth === 0) {
+          const parsed = JSON.parse(featureBuffer) as unknown;
+          const feature = isRecord(parsed) ? parsed : null;
+          const props = isRecord(feature?.properties) ? feature.properties : null;
+          if (props) onFeature(props);
+          featureBuffer = "";
+          continue;
+        }
+      }
+    }
+  }
+
+  if (!started) {
+    throw new Error(`Collection non reconnue (tableau de features introuvable): ${key}`);
+  }
 }
 
 async function textFromCapturedPdf(path: string): Promise<string> {
@@ -225,43 +518,139 @@ function servedZoneKeys(slug: string): string[] {
   ];
 }
 
-function codesFromServedCollection(raw: unknown, fields: ReadonlySet<string>): string[] {
-  if (!isRecord(raw) || !Array.isArray(raw.features)) throw new Error("collection de zones servie invalide");
-  const codes = new Set<string>();
-  for (const feature of raw.features) {
-    if (!isRecord(feature) || !isRecord(feature.properties)) continue;
-    for (const field of fields) {
-      const value = feature.properties[field];
-      if (typeof value === "string" && value.trim()) codes.add(value.trim());
-    }
-  }
-  return [...codes].sort((left, right) => left.localeCompare(right));
+function normalizeZoneCodeFromSource(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  return text ? text : null;
 }
 
-/**
- * Never consult another municipality: entries are filtered by the document slug
- * before the sole served collection for that slug is parsed.
- */
+function normalizeLotFromSource(value: unknown): string | null {
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || !Number.isInteger(value)) return null;
+    return String(value);
+  }
+  if (typeof value !== "string") return null;
+  return value.trim() ? emitDigits(value) : null;
+}
+
+async function materializeZoneCodesByField(
+  s3: S3Client,
+  key: string,
+  fields: ReadonlySet<string>,
+): Promise<string[]> {
+  const values = new Set<string>();
+  await collectFeatureProperties(s3, key, (properties) => {
+    for (const field of fields) {
+      const value = normalizeZoneCodeFromSource(properties[field]);
+      if (value) values.add(value);
+    }
+  });
+  return [...values].sort((left, right) => left.localeCompare(right));
+}
+
+async function materializeLotNumbers(s3: S3Client, key: string): Promise<string[]> {
+  const lots = new Set<string>();
+  await collectFeatureProperties(s3, key, (properties) => {
+    for (const field of LOT_NUMBER_FIELDS) {
+      const value = normalizeLotFromSource(properties[field]);
+      if (!value) continue;
+      lots.add(value);
+    }
+  });
+  return [...lots].sort((left, right) => left.localeCompare(right));
+}
+
 async function materializeMunicipalZoneGazetteer(
+  s3: S3Client,
   slug: string,
   registry: readonly ZoneRegistryEntry[],
-): Promise<MunicipalZoneGazetteer | undefined> {
+  resolutions: ReadonlyMap<string, ZoneResolutionEntry>,
+): Promise<{
+  gazetteer: MunicipalZoneGazetteer | undefined;
+  policy: ZoneGazetteerMatchPolicy | null;
+}> {
   const fields = new Set(registry.filter((entry) => entry.citySlug === slug).map((entry) => entry.zoneCodeField));
-  if (fields.size === 0) return undefined;
-  const s3 = s3Client();
-  let bytes: Buffer | null = null;
-  for (const key of servedZoneKeys(slug)) {
+  const resolvedByResolution = zoneCodeFieldFromResolution(slug, resolutions);
+  if (fields.size === 0 && resolvedByResolution !== null) fields.add(resolvedByResolution);
+  let key: string | null = null;
+  for (const candidate of servedZoneKeys(slug)) {
     try {
-      bytes = await getBytes(s3, key);
-      break;
+      const ok = await exists(s3, candidate);
+      if (ok) {
+        key = candidate;
+        break;
+      }
     } catch {
-      // The canonical collection has two supported layouts. Neither fallback
-      // widens the municipality scope.
+      // HEAD-only availability probe may fail for transient network states.
     }
   }
-  if (bytes === null) return undefined;
-  const codes = codesFromServedCollection(JSON.parse(bytes.toString("utf8")) as unknown, fields);
-  return { municipality_slug: slug, codes };
+  if (!key) return { gazetteer: undefined, policy: null };
+  if (fields.size === 0) {
+    const fallback = await inferZoneCodeFieldFromCollection(s3, key);
+    if (!fallback) return { gazetteer: undefined, policy: null };
+    fields.add(fallback);
+  }
+  let codes = await materializeZoneCodesByField(s3, key, fields);
+  if (codes.length === 0 && fields.size > 0) {
+    const fallback = await inferZoneCodeFieldFromCollection(s3, key);
+    if (fallback) {
+      fields.clear();
+      fields.add(fallback);
+      codes = await materializeZoneCodesByField(s3, key, fields);
+    }
+  }
+  if (codes.length === 0) return { gazetteer: undefined, policy: null };
+  const policy = analyzeZoneGazetteerMatchMode(codes);
+  return {
+    gazetteer: { municipality_slug: slug, codes, zone_code_matching: policy.mode },
+    policy,
+  };
+}
+
+async function inferZoneCodeFieldFromCollection(s3: S3Client, key: string): Promise<string | null> {
+  const stats = new Map<string, { present: number; zoneLike: number }>();
+  let features = 0;
+  await collectFeatureProperties(s3, key, (properties) => {
+    features += 1;
+    for (const [field, raw] of Object.entries(properties)) {
+      const value = normalizeZoneCodeFromSource(raw);
+      if (!value) continue;
+      const item = stats.get(field) ?? { present: 0, zoneLike: 0 };
+      item.present += 1;
+      if (zoneCodeLooksValid(value)) item.zoneLike += 1;
+      stats.set(field, item);
+    }
+  });
+  const candidates = [...stats.entries()]
+    .filter(([, values]) => values.zoneLike > 0)
+    .filter(([field]) => isZoneLikeField(field));
+  if (candidates.length === 0) return null;
+  if (stats.has("zone_code")) {
+    const direct = "zone_code";
+    const directStats = stats.get(direct);
+    if (directStats && directStats.zoneLike > 0) return direct;
+  }
+  const prioritized = [...candidates]
+    .map(([field, values]) => ({
+      field,
+      zoneLike: values.zoneLike,
+      ratio: values.zoneLike / Math.max(features, 1),
+      present: values.present,
+    }))
+    .sort((left, right) => (right.zoneLike - left.zoneLike) || (right.present - left.present) || left.field.localeCompare(right.field));
+  return prioritized[0]?.field ?? null;
+}
+
+async function materializeMunicipalLotGazetteer(
+  s3: S3Client,
+  slug: string,
+): Promise<{ gazetteer: MunicipalLotGazetteer | undefined; served: boolean }> {
+  const key = `${LOTS_PREFIX}${slug}${LOTS_SUFFIX}`;
+  const served = await exists(s3, key);
+  if (!served) return { gazetteer: undefined, served: false };
+  const lotNumbers = await materializeLotNumbers(s3, key);
+  if (lotNumbers.length === 0) return { gazetteer: undefined, served: true };
+  return { gazetteer: { municipality_slug: slug, lot_numbers: lotNumbers }, served: true };
 }
 
 async function runGraphify(inputDirectory: string, semanticPath: string, outputDirectory: string): Promise<GraphifyRunResult> {
@@ -326,7 +715,7 @@ function reportCounts(extraction: GraphifySemanticExtraction): Readonly<Record<s
 async function processDocument(
   document: ClassificationLine,
   municipalities: readonly MunicipalityGazetteerEntry[],
-  registry: readonly ZoneRegistryEntry[],
+  gazetteer: MunicipalizeResult,
   workspace: string,
 ): Promise<ControlDocumentReport> {
   const documentDirectory = resolve(workspace, document.slug, document.storage_key.slice(-16));
@@ -337,14 +726,13 @@ async function processDocument(
   writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
   const text = await textFromCapturedPdf(pdfPath);
   writeFileSync(textPath, text, "utf8");
-  const zoneGazetteer = await materializeMunicipalZoneGazetteer(document.slug, registry);
   const semantic = extractPvSemantic({
     source_file: "document.txt",
     source_id: document.storage_key,
     source_url: document.url,
     municipality_slug: document.slug,
     text,
-  }, municipalities, zoneGazetteer);
+  }, municipalities, gazetteer.zone, gazetteer.lot);
   const semanticPath = resolve(documentDirectory, "semantic.json");
   writeAtomic(semanticPath, semantic);
   const graphify = await runGraphify(inputDirectory, semanticPath, documentDirectory);
@@ -374,20 +762,110 @@ async function main(): Promise<void> {
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
   const registry = readZoneRegistry(ZONE_REGISTRY_PATH);
+  const resolutions = readZoneResolution(ZONAGE_RESOLUTION_PATH);
+  const s3 = s3Client();
+  const zoneCache = new Map<string, Promise<{ gazetteer: MunicipalZoneGazetteer | undefined; policy: ZoneGazetteerMatchPolicy | null }>>();
+  const lotCache = new Map<string, Promise<{ gazetteer: MunicipalLotGazetteer | undefined; served: boolean }>>();
+  const zoneReports = new Map<string, ZoneGazetteerReport>();
+  const lotReports = new Map<string, LotGazetteerReport>();
+  async function materializeForSlug(slug: string): Promise<MunicipalizeResult> {
+    let zonePromise = zoneCache.get(slug);
+    if (!zonePromise) {
+      zonePromise = materializeMunicipalZoneGazetteer(s3, slug, registry, resolutions);
+      zoneCache.set(slug, zonePromise);
+    }
+    let lotPromise = lotCache.get(slug);
+    if (!lotPromise) {
+      lotPromise = materializeMunicipalLotGazetteer(s3, slug);
+      lotCache.set(slug, lotPromise);
+    }
+    const [zoneResult, lotResult] = await Promise.all([zonePromise, lotPromise]);
+    if (!zoneReports.has(slug)) {
+      zoneReports.set(slug, {
+        municipality_slug: slug,
+        matching_mode: zoneResult.policy?.mode ?? "normalized",
+        zone_code_count: zoneResult.gazetteer?.codes.length ?? 0,
+        collision_count: zoneResult.policy ? zoneResult.policy.collisions.length : 0,
+        collision_examples: zoneResult.policy ? zoneResult.policy.collisions : [],
+        codes: zoneResult.gazetteer?.codes ?? [],
+      });
+    }
+    if (!lotReports.has(slug)) {
+      lotReports.set(slug, {
+        municipality_slug: slug,
+        lot_count: lotResult.gazetteer ? lotResult.gazetteer.lot_numbers.length : 0,
+        served: lotResult.served,
+        lot_numbers: lotResult.gazetteer?.lot_numbers ?? [],
+      });
+    }
+    return {
+      zone: zoneResult.gazetteer,
+      lot: lotResult.gazetteer,
+      zonePolicy: zoneResult.policy,
+      lotServed: lotResult.served,
+    };
+  }
   const workspace = resolve(ROOT, "work", "graphify", `pv-semantic-${new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z")}`);
   const documents: ControlDocumentReport[] = [];
-  for (const document of selected) documents.push(await processDocument(document, municipalities, registry, workspace));
+  for (const document of selected) {
+    const gazetteer = await materializeForSlug(document.slug);
+    documents.push(await processDocument(document, municipalities, gazetteer, workspace));
+  }
 
   const entityCounts: Record<string, number> = {};
   let graphNodes = 0;
   let graphEdges = 0;
   let graphifyFailures = 0;
+  let documentsWithZone = 0;
+  let documentsWithLot = 0;
+  let zoneEntities = 0;
+  let lotEntities = 0;
+  const matchDetails: MatchDetail[] = [];
   for (const document of documents) {
     for (const [type, count] of Object.entries(document.entity_counts)) entityCounts[type] = (entityCounts[type] ?? 0) + count;
+    if ((document.entity_counts.Zone ?? 0) > 0) documentsWithZone += 1;
+    if ((document.entity_counts.LotCadastre ?? 0) > 0) documentsWithLot += 1;
+    zoneEntities += document.entity_counts.Zone ?? 0;
+    lotEntities += document.entity_counts.LotCadastre ?? 0;
     graphNodes += document.graphify.nodes ?? 0;
     graphEdges += document.graphify.edges ?? 0;
     if (document.graphify.exit_code !== 0) graphifyFailures++;
+    for (const zone of document.entities.Zone ?? []) {
+      matchDetails.push({
+        municipality_slug: document.slug,
+        storage_key: document.storage_key,
+        entity_type: "Zone",
+        value: zone.label,
+        source_file: zone.citation.source_file,
+        source_location: zone.citation.source_location,
+        quote: zone.citation.quote,
+      });
+    }
+    for (const lot of document.entities.LotCadastre ?? []) {
+      matchDetails.push({
+        municipality_slug: document.slug,
+        storage_key: document.storage_key,
+        entity_type: "LotCadastre",
+        value: lot.label,
+        source_file: lot.citation.source_file,
+        source_location: lot.citation.source_location,
+        quote: lot.citation.quote,
+      });
+    }
   }
+  const zoneGazetteer = {
+    municipalities: zoneReports.size,
+    zone_code_count: [...zoneReports.values()].reduce((total, value) => total + value.zone_code_count, 0),
+    with_collisions: [...zoneReports.values()].filter((value) => value.collision_count > 0),
+    entries: [...zoneReports.values()].sort((left, right) => left.municipality_slug.localeCompare(right.municipality_slug)),
+  };
+  const lotGazetteer = {
+    municipalities: lotReports.size,
+    served_municipalities: [...lotReports.values()].filter((value) => value.served).length,
+    total_lot_numbers: [...lotReports.values()].reduce((total, value) => total + value.lot_count, 0),
+    missing: [...lotReports.values()].filter((value) => !value.served).map((value) => value.municipality_slug).sort(),
+    entries: [...lotReports.values()].sort((left, right) => left.municipality_slug.localeCompare(right.municipality_slug)),
+  };
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
@@ -401,11 +879,34 @@ async function main(): Promise<void> {
     selected_documents: documents.length,
     entity_counts: entityCounts,
     graphify: { nodes: graphNodes, edges: graphEdges, failures: graphifyFailures },
+    matches: {
+      zone_entities: zoneEntities,
+      lot_entities: lotEntities,
+      documents_with_zone: documentsWithZone,
+      documents_with_lot: documentsWithLot,
+    },
+    match_details: matchDetails,
+    gazetteers: {
+      zones: zoneGazetteer,
+      lots: lotGazetteer,
+    },
     manual_verification: "UNVERIFIED",
     workspace,
     documents,
   };
   writeAtomic(args.output, report);
+  writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-zones.json"), {
+    generated_at: report.generated_at,
+    municipalities: zoneGazetteer,
+  });
+  writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-lots.json"), {
+    generated_at: report.generated_at,
+    municipalities: lotGazetteer,
+  });
+  writeAtomic(args.output.replace(/\.json$/u, "-match-details.json"), {
+    generated_at: report.generated_at,
+    details: matchDetails,
+  });
   console.log(JSON.stringify({
     report: args.output.slice(ROOT.length + 1),
     selected_documents: report.selected_documents,
