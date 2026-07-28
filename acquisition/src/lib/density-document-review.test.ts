@@ -22,6 +22,9 @@ describe("native density document review", () => {
         verbatim: expect.stringContaining("24 logements / hectare"),
       }),
     ]));
+    expect(review.normValueHits).toEqual(expect.arrayContaining([
+      expect.objectContaining({ rawValues: ["24"], unit: "densite-explicite" }),
+    ]));
     expect(review.dateSignals[0]).toContain("2024-12");
     expect(review.identitySignals[0]).toContain("Municipalité de Ville Test");
   });
@@ -32,6 +35,7 @@ describe("native density document review", () => {
     ));
     expect(review.disposition).toBe("project_excluded");
     expect(review.hits).toEqual([]);
+    expect(review.normValueHits).toEqual([]);
   });
 
   it("should keep a failed native XLS conversion inconclusive instead of guessing", () => {
