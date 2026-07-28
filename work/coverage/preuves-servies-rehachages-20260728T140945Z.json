@@ -1,0 +1,44 @@
+{
+  "contract": "served-zonage-proof-refetch-control/v1",
+  "generated_at": "2026-07-28T14:10:12.077Z",
+  "partition": "work/coverage/preuves-servies-partition-20260728T140515Z.json",
+  "control": "public geo-api proof endpoint refetch; capturedFetch used with an in-memory store, so no S3 object or capture manifest was written and no refetch digest is an attestation",
+  "observations": [
+    {
+      "slug": "armagh",
+      "category": "PREUVE_V2_EXACTE",
+      "public_collection_url": "https://api.geo.sent-tech.ca/collections/qc-zonage-armagh/items?limit=1",
+      "proof_field": "proof.geometry_source.url",
+      "proof_url": "https://services6.arcgis.com/DgGbwYJQAY35Ym3n/arcgis/rest/services/i002_zonage_municipal_en_vigueur_vue/FeatureServer/0/query?where=mun_nom%3D%27Armagh%27&outFields=no_zone&outSR=4326&geometryPrecision=6&resultOffset=0&resultRecordCount=1000&f=geojson",
+      "served_sha256": "sha256:9c1c3c20b8b3aa3efccd8320950208571917155d8df08a8d6077b9f4a6d030e2",
+      "refetch_http_status": 200,
+      "refetch_sha256": "sha256:9c1c3c20b8b3aa3efccd8320950208571917155d8df08a8d6077b9f4a6d030e2",
+      "rehash_matches_served_sha256": true,
+      "control_only": true
+    },
+    {
+      "slug": "laval",
+      "category": "URL_SHA_SANS_CAPTURE",
+      "public_collection_url": "https://api.geo.sent-tech.ca/collections/qc-zonage-laval/items?limit=1",
+      "proof_field": "proof.sources.geometry.artifact_uri",
+      "proof_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+      "served_sha256": "sha256:1ed9579ed1d17e1321d2683dc8f7e614c71f5b031edc22ecd217ac04818b9fd6",
+      "refetch_http_status": 200,
+      "refetch_sha256": "sha256:1ed9579ed1d17e1321d2683dc8f7e614c71f5b031edc22ecd217ac04818b9fd6",
+      "rehash_matches_served_sha256": true,
+      "control_only": true
+    },
+    {
+      "slug": "lassomption",
+      "category": "URL_SHA_SANS_CAPTURE",
+      "public_collection_url": "https://api.geo.sent-tech.ca/collections/qc-zonage-lassomption/items?limit=1",
+      "proof_field": "proof.sources.geometry.artifact_uri",
+      "proof_url": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services/URB_MAJZonageJuillet2021/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "served_sha256": "sha256:efbbf015e86a0d0b2e1f8da31df3f6f642d70f1a82fa42e6d3c779b63dc15b6e",
+      "refetch_http_status": 200,
+      "refetch_sha256": "sha256:efbbf015e86a0d0b2e1f8da31df3f6f642d70f1a82fa42e6d3c779b63dc15b6e",
+      "rehash_matches_served_sha256": true,
+      "control_only": true
+    }
+  ]
+}

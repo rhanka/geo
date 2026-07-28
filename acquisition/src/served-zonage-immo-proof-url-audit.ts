@@ -19,6 +19,7 @@
  * The local state file is written atomically after each 20--30 item batch.
  * It contains no served write and can be resumed after an interruption.
  */
+import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -169,6 +170,14 @@ function option(name: string): string | null {
   return value ? value.slice(equals.length) : null;
 }
 
+function positiveIntegerOption(name: string, fallback: number): number {
+  const value = option(name);
+  if (value === null) return fallback;
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) throw new Error(`--${name} must be a positive integer`);
+  return parsed;
+}
+
 function insideRepo(path: string, name: string): string {
   const resolved = resolve(ROOT, path);
   if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} must resolve inside the repository`);
@@ -263,9 +272,13 @@ function errorText(error: unknown): string {
   return `${String(detail?.name ?? "Error")}: ${String(detail?.message ?? error)}${status ? ` (HTTP ${status})` : ""}`;
 }
 
+export function atomicTemporaryPath(path: string): string {
+  return `${path}.${randomUUID()}.tmp`;
+}
+
 function writeAtomic(path: string, value: unknown): void {
   mkdirSync(dirname(path), { recursive: true });
-  const temporary = `${path}.${process.pid}.tmp`;
+  const temporary = atomicTemporaryPath(path);
   writeFileSync(temporary, JSON.stringify(value, null, 2) + "\n");
   renameSync(temporary, path);
 }
@@ -539,15 +552,21 @@ function report(state: AuditState): Record<string, unknown> {
   };
 }
 
-async function initialState(batchSize: number, selection: AuditSelection): Promise<AuditState> {
-  const s3 = s3Client();
-  const entries = await listObjectEntries(s3, ZONES_PREFIX);
-  const choices = resolveServedChoices(entries.map((entry) => entry.key));
-  const selected = selection.slugs.length === 0 ? choices : choices.filter((choice) => selection.slugs.includes(choice.slug));
+export function selectAuditChoices(choices: readonly ServedChoice[], selection: AuditSelection): ServedChoice[] {
+  if (selection.slugs.length === 0) return [...choices];
+  const selected = choices.filter((choice) => selection.slugs.includes(choice.slug));
   if (selected.length !== selection.slugs.length) {
     const found = new Set(selected.map((choice) => choice.slug));
     throw new Error(`selected served collections not found: ${selection.slugs.filter((slug) => !found.has(slug)).join(",")}`);
   }
+  return selected;
+}
+
+async function initialState(batchSize: number, selection: AuditSelection): Promise<AuditState> {
+  const s3 = s3Client();
+  const entries = await listObjectEntries(s3, ZONES_PREFIX);
+  const choices = resolveServedChoices(entries.map((entry) => entry.key));
+  const selected = selectAuditChoices(choices, selection);
   return {
     contract: "served-zonage-immo-proof-url-audit/v2",
     generated_at: new Date().toISOString(),
@@ -561,10 +580,11 @@ async function initialState(batchSize: number, selection: AuditSelection): Promi
   };
 }
 
-async function scanCollections(state: AuditState, statePath: string): Promise<void> {
+async function scanCollections(state: AuditState, statePath: string, maxBatches: number): Promise<boolean> {
   const s3 = s3Client();
   const batches = Math.ceil(state.collections.choices.length / state.batch_size);
-  while (state.collections.next_batch < batches) {
+  let scanned = 0;
+  while (state.collections.next_batch < batches && scanned < maxBatches) {
     const batch = state.collections.next_batch;
     const choices = state.collections.choices.slice(batch * state.batch_size, (batch + 1) * state.batch_size)
       .filter((choice) => !state.collections.rows[choice.key]);
@@ -576,17 +596,19 @@ async function scanCollections(state: AuditState, statePath: string): Promise<vo
       else state.failures.push({ phase: "collections", key: choice.key, error: errorText(outcome.reason) });
     }
     state.collections.next_batch++;
+    scanned++;
     writeAtomic(statePath, state);
     console.log(`[immo-proof-url-audit] collections batch ${batch + 1}/${batches}: ${choices.length} read, state saved`);
     if (outcomes.some((outcome) => outcome.status === "rejected")) {
       throw new Error("collection read failure; state saved, rerun after resolving S3 failure");
     }
   }
+  return state.collections.next_batch >= batches;
 }
 
-async function scanManifests(state: AuditState, statePath: string): Promise<void> {
+async function scanManifests(state: AuditState, statePath: string, maxBatches: number): Promise<boolean> {
   const targetSlugs = new Set(Object.values(state.collections.rows).filter((row) => row.s3_cases.length > 0).map((row) => row.slug));
-  if (targetSlugs.size === 0) return;
+  if (targetSlugs.size === 0) return true;
   const s3 = s3Client();
   if (state.manifests.keys === null) {
     const entries = await listObjectEntries(s3, CAPTURE_RUNS_PREFIX);
@@ -596,7 +618,8 @@ async function scanManifests(state: AuditState, statePath: string): Promise<void
   }
   const keys = state.manifests.keys;
   const batches = Math.ceil(keys.length / state.batch_size);
-  while (state.manifests.next_batch < batches) {
+  let scanned = 0;
+  while (state.manifests.next_batch < batches && scanned < maxBatches) {
     const batch = state.manifests.next_batch;
     const selected = keys.slice(batch * state.batch_size, (batch + 1) * state.batch_size);
     const outcomes = await mapConcurrent(selected, async (key) => {
@@ -627,12 +650,14 @@ async function scanManifests(state: AuditState, statePath: string): Promise<void
       }
     }
     state.manifests.next_batch++;
+    scanned++;
     writeAtomic(statePath, state);
     console.log(`[immo-proof-url-audit] manifests batch ${batch + 1}/${batches}: ${selected.length} read, state saved`);
     if (outcomes.some((outcome) => outcome.status === "rejected")) {
       throw new Error("manifest read failure; state saved, rerun after resolving S3 failure");
     }
   }
+  return state.manifests.next_batch >= batches;
 }
 
 async function main(): Promise<void> {
@@ -641,6 +666,7 @@ async function main(): Promise<void> {
     throw new Error("--batch-size must be an integer between 20 and 30");
   }
   const stem = option("stem") ?? DEFAULT_STEM;
+  const maxBatches = positiveIntegerOption("max-batches", Number.MAX_SAFE_INTEGER);
   const selection = refusalSelection(option("restamp-plan"), option("refusal-reason"));
   const statePath = resolve(ROOT, `${stem}.state.json`);
   const reportPath = resolve(ROOT, `${stem}.json`);
@@ -650,8 +676,30 @@ async function main(): Promise<void> {
   if (JSON.stringify(state.selection) !== JSON.stringify(selection)) throw new Error("state selection does not match this invocation");
   if (!prior) writeAtomic(statePath, state);
 
-  await scanCollections(state, statePath);
-  await scanManifests(state, statePath);
+  const collectionsComplete = await scanCollections(state, statePath, maxBatches);
+  if (!collectionsComplete) {
+    console.log(JSON.stringify({
+      output: statePath,
+      complete: false,
+      phase: "collections",
+      scanned_collections: Object.keys(state.collections.rows).length,
+      remaining_collections: state.collections.choices.length - Object.keys(state.collections.rows).length,
+      resume: "rerun with the same --stem",
+    }, null, 2));
+    return;
+  }
+  const manifestsComplete = await scanManifests(state, statePath, maxBatches);
+  if (!manifestsComplete) {
+    console.log(JSON.stringify({
+      output: statePath,
+      complete: false,
+      phase: "manifests",
+      scanned_manifests: state.manifests.next_batch * state.batch_size,
+      total_manifests: state.manifests.keys?.length ?? 0,
+      resume: "rerun with the same --stem",
+    }, null, 2));
+    return;
+  }
   const result = report(state);
   writeAtomic(reportPath, result);
   const counts = result.collections as Record<string, unknown>;
@@ -659,7 +707,9 @@ async function main(): Promise<void> {
   if (!result.complete) process.exitCode = 2;
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.stack : String(error));
-  process.exitCode = 1;
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack : String(error));
+    process.exitCode = 1;
+  });
+}
