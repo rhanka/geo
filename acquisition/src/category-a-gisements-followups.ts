@@ -138,8 +138,8 @@ function parseJsonObject(value: unknown, base: string, result: {
   if (!value || typeof value !== "object") return;
   const record = value as Record<string, unknown>;
   const context = stringsOf(record).join(" ");
-  for (const key of ["source_url", "url", "link", "guid", "href"]) {
-    const candidate = record[key];
+  for (const [key, candidate] of Object.entries(record)) {
+    if (!/(?:^|_)(?:source_)?url$|href|link|lien|document|pdf|guid/i.test(key)) continue;
     if (typeof candidate === "string") addCandidate(candidate, context, base, result);
     else if (candidate && typeof candidate === "object") {
       const rendered = (candidate as Record<string, unknown>)["rendered"];
@@ -156,15 +156,53 @@ function parseJsonObject(value: unknown, base: string, result: {
   for (const item of Object.values(record)) parseJsonObject(item, base, result);
 }
 
+function addArcgisLayerQueries(value: unknown, base: string, catalogs: Set<string>): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(base);
+  } catch {
+    return;
+  }
+  const serviceMatch = /(.*\/(?:FeatureServer|MapServer))(?:\/(\d+))?\/?$/i.exec(parsed.pathname);
+  if (!serviceMatch || !value || typeof value !== "object") return;
+  const service = `${parsed.origin}${serviceMatch[1]}`;
+  const addLayer = (id: number): void => {
+    catalogs.add(`${service}/${id}?f=pjson`);
+    const query = new URL(`${service}/${id}/query`);
+    query.searchParams.set("where", "1=1");
+    query.searchParams.set("outFields", "*");
+    query.searchParams.set("returnGeometry", "false");
+    query.searchParams.set("resultRecordCount", "2000");
+    query.searchParams.set("f", "json");
+    catalogs.add(query.href);
+  };
+  const explicitLayer = serviceMatch[2];
+  if (explicitLayer !== undefined) addLayer(Number(explicitLayer));
+  const layers = (value as Record<string, unknown>)["layers"];
+  if (Array.isArray(layers)) {
+    for (const layer of layers) {
+      if (!layer || typeof layer !== "object") continue;
+      const id = (layer as Record<string, unknown>)["id"];
+      if (typeof id === "number" && Number.isInteger(id) && id >= 0) addLayer(id);
+    }
+  }
+}
+
 export function discoverFollowups(text: string, base: string): FollowupDiscovery {
   const result = { documents: new Set<string>(), catalogs: new Set<string>() };
   try {
-    parseJsonObject(JSON.parse(text), base, result);
+    const value: unknown = JSON.parse(text);
+    parseJsonObject(value, base, result);
+    addArcgisLayerQueries(value, base, result.catalogs);
   } catch {
     // HTML/XML/JS sont traités ci-dessous sans interpréter leur structure.
   }
   for (const match of text.matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
     addCandidate(match[1]!.trim(), match[1]!, base, result);
+  }
+  for (const match of text.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const label = match[2]!.replace(/<[^>]+>/g, " ");
+    addCandidate(match[1]!, `${label} ${match[0]!}`, base, result);
   }
   for (const match of text.matchAll(/(?:https?:\\?\/\\?\/|(?:href|src|data-url|data-href)=["'])[^"'<>\s]+/gi)) {
     const raw = match[0]!.replace(/^(?:href|src|data-url|data-href)=["']/, "");
@@ -255,6 +293,15 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
   const missing = scope.map((target) => target.slug).filter((slug) => !completedSlugs.has(slug));
   if (missing.length > 0) {
     throw new Error(`captures non terminales ou absentes: ${missing.join(",")}`);
+  }
+  // VPlus/Modellium est une coquille SPA : l'arbre JSON ne figure pas
+  // nécessairement comme ancre dans le HTML. Le sonder explicitement évite de
+  // répéter le faux négatif déjà mesuré sur Batiscan et d'autres petites villes.
+  for (const target of scope) {
+    const hostname = new URL(target.urls[0]!).hostname.replace(/^www\./, "");
+    const slugFound = found.get(target.slug) ?? new Set<string>();
+    slugFound.add(`https://vplus.modellium.com/api/${hostname}/structure/tree`);
+    found.set(target.slug, slugFound);
   }
   const followups = parseCaptureWorklist(scope.map((target) => ({
     slug: target.slug,

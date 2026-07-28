@@ -45,4 +45,24 @@ describe("category A captured catalog followups", () => {
       "https://services.example/arcgis/rest/services/Zonage/FeatureServer?f=pjson",
     );
   });
+
+  it("follows numeric PDF anchors and ArcGIS Lien fields without inventing a URL", () => {
+    const html = discoverFollowups(
+      '<a href="/files/12345.pdf">Règlement de zonage et ses grilles</a>',
+      "https://mrc.example/centre-documentaire/",
+    );
+    expect(html.documents).toEqual(["https://mrc.example/files/12345.pdf"]);
+
+    const service = discoverFollowups(JSON.stringify({
+      layers: [{ id: 7, name: "Zonage" }],
+    }), "https://services.example/arcgis/rest/services/Zonage/FeatureServer?f=pjson");
+    expect(service.catalogs).toContain(
+      "https://services.example/arcgis/rest/services/Zonage/FeatureServer/7/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=2000&f=json",
+    );
+
+    const rows = discoverFollowups(JSON.stringify({
+      features: [{ attributes: { Code: "A-1", Lien: "https://ville.example/docs/grille-A-1.pdf" } }],
+    }), "https://services.example/FeatureServer/7/query?f=json");
+    expect(rows.documents).toContain("https://ville.example/docs/grille-A-1.pdf");
+  });
 });
