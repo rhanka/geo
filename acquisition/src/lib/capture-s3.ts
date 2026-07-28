@@ -32,8 +32,21 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import { copyObject, deleteObject, exists, putBytes, putStream, s3Client } from "./s3.js";
 
-/** UA honnête et CONSTANT — aucune rotation d'UA dans ce dépôt (SPEC §5.4/§8-D). */
-export const CAPTURE_USER_AGENT = "sentropic-geo/0.1";
+/**
+ * UA de navigateur CONSTANT de la capture web. Il reste délibérément stable :
+ * `CAPTURE_USER_AGENT` permet une compatibilité ponctuelle par environnement,
+ * jamais une rotation par requête (SPEC §5.4/§8-D).
+ */
+export const DEFAULT_CAPTURE_USER_AGENT =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+/** Résout l'UA une fois au démarrage du processus, sans valeur implicite variable. */
+export function captureUserAgentFromEnv(env: NodeJS.ProcessEnv = process.env): string {
+  return env["CAPTURE_USER_AGENT"]?.trim() || DEFAULT_CAPTURE_USER_AGENT;
+}
+
+/** UA réellement transmise au run et au chokepoint pour ce processus. */
+export const CAPTURE_USER_AGENT = captureUserAgentFromEnv();
 
 /** Le port `CaptureObjectStore` au-dessus de `lib/s3.ts`, gardé par préfixe. */
 export function s3CaptureStore(s3: S3Client): CaptureObjectStore {
