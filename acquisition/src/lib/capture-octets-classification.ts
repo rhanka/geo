@@ -11,6 +11,11 @@ export interface CaptureOctetClassification {
   coordinate_features: number | null;
 }
 
+/** Une capture ne peut porter une attestation de géométrie que dans ce cas. */
+export function isGeometryCapture(classification: CaptureOctetClassification): boolean {
+  return classification.classification === "GEOMETRIE";
+}
+
 type JsonRecord = Record<string, unknown>;
 
 function isRecord(value: unknown): value is JsonRecord {
