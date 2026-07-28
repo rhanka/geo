@@ -13,6 +13,7 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *     npx tsx acquisition/src/served-zonage-proof-url-restamp.ts \
  *       --prepare=work/coverage/served-zonage-proof-url-restamp-ready-20260727.json \
+ *       --classification=work/coverage/capture-octets-classification-<UTC>.json \
  *       --run-prefix=zones-20260727T,zones-20260728T --expect-ready=50
  *
  * When Kubernetes sharded one capture into many manifest objects, prepare each
@@ -35,7 +36,7 @@ import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
-import { classifyCapturedOctets, isGeometryCapture, type CaptureOctetClass } from "./lib/capture-octets-classification.js";
+import { type CaptureOctetClass } from "./lib/capture-octets-classification.js";
 import {
   putServedZoneAdditive,
   type ProofArtifactUriSubstitution,
@@ -109,18 +110,26 @@ interface CaptureCandidates {
   excluded: ExcludedCapture[];
 }
 
-interface EligibleCaptureLine {
-  receipt: ManifestCandidate;
-  slugs: string[];
-  contentType: string | null;
+interface ClassificationLine {
+  manifest_key: string;
+  line_index: number;
+  storage_key: string | null;
+  classification: CaptureOctetClass;
+  detail: string;
+}
+
+interface ClassificationReportReference {
+  path: string;
+  sha256: string;
 }
 
 interface Plan {
-  contract: "served-zonage-proof-url-restamp-plan/v2";
+  contract: "served-zonage-proof-url-restamp-plan/v3";
   complete: boolean;
   run_prefix: string;
   generated_at: string;
-  source: "capture-manifest-lines-only";
+  source: "capture-manifest-lines-classified-octets";
+  classification_report: ClassificationReportReference;
   selected_layout: "nested_when_present_else_flat";
   collections: {
     capture_slugs: number;
@@ -233,7 +242,46 @@ function isTargetManifestKey(key: string, runPrefixes: readonly string[]): boole
   return match !== null && runPrefixes.some((prefix) => match[1]!.startsWith(prefix));
 }
 
-async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureCandidates> {
+function classificationIdentity(manifestKey: string, lineIndex: number): string {
+  return `${manifestKey}\u0000${lineIndex}`;
+}
+
+function readClassificationReport(path: string): Map<string, ClassificationLine> {
+  const report = asObject(JSON.parse(readFileSync(path, "utf8")));
+  if (
+    report?.contract !== "capture-octets-classification/v1" ||
+    report.complete !== true ||
+    !Array.isArray(report.lines)
+  ) throw new Error(`classification report is incomplete or incompatible: ${path}`);
+  const byIdentity = new Map<string, ClassificationLine>();
+  for (const value of report.lines) {
+    const line = asObject(value);
+    const lineIndex = line?.line_index;
+    if (
+      typeof line?.manifest_key !== "string" ||
+      typeof lineIndex !== "number" ||
+      !Number.isInteger(lineIndex) ||
+      (typeof line.storage_key !== "string" && line.storage_key !== null) ||
+      (line.classification !== "GEOMETRIE" && line.classification !== "PAGE HTML" && line.classification !== "AUTRE") ||
+      typeof line.detail !== "string"
+    ) throw new Error(`classification report contains an invalid line: ${path}`);
+    const identity = classificationIdentity(line.manifest_key, lineIndex);
+    if (byIdentity.has(identity)) throw new Error(`classification report repeats ${identity}`);
+    byIdentity.set(identity, {
+      manifest_key: line.manifest_key,
+      line_index: lineIndex,
+      storage_key: line.storage_key,
+      classification: line.classification,
+      detail: line.detail,
+    });
+  }
+  return byIdentity;
+}
+
+async function captureCandidatesBySlug(
+  runPrefixInput: string,
+  classifications: ReadonlyMap<string, ClassificationLine>,
+): Promise<CaptureCandidates> {
   const runPrefixes = parseRunPrefixes(runPrefixInput);
   const s3 = s3Client();
   console.error(`[proof-url-restamp] prepare: listing manifests for ${runPrefixes.join(",")}`);
@@ -248,7 +296,8 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
     manifestKey,
     lines: parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8")),
   }), MANIFEST_READ_CONCURRENCY);
-  const eligible: EligibleCaptureLine[] = [];
+  const bySlug = new Map<string, ManifestCandidate[]>();
+  const excluded: ExcludedCapture[] = [];
   for (const outcome of scanned) {
     if (outcome.status === "rejected") throw new Error(`capture manifest read failed: ${errorText(outcome.reason)}`);
     const { manifestKey, lines } = outcome.value;
@@ -256,23 +305,13 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
       if (line.source !== "zones-v1-proof-url" || line.http_status !== 200 || !isHttpsCaptureUrl(line.url)) continue;
       const receipt = captureReceiptFromManifest(line, manifestKey, lineIndex);
       if (receipt === null) continue;
-      eligible.push({ receipt, slugs: [...line.slugs].sort(), contentType: line.content_type });
-    }
-  }
-  // This reads immutable CAS payloads only to classify them.  The proof digest
-  // is still taken exclusively from each manifest receipt below.  Keep this
-  // bounded like the standalone classifier so a short resumable plan can be
-  // produced without serially waiting on every raw body.
-  const classified = await mapConcurrent(eligible, async (entry) => ({
-    ...entry,
-    classification: classifyCapturedOctets(await getBytes(s3, entry.receipt.storage_key), entry.contentType),
-  }), MANIFEST_READ_CONCURRENCY);
-  const bySlug = new Map<string, ManifestCandidate[]>();
-  const excluded: ExcludedCapture[] = [];
-  for (const outcome of classified) {
-    if (outcome.status === "rejected") throw new Error(`capture body classification failed: ${errorText(outcome.reason)}`);
-    const { receipt, slugs, classification } = outcome.value;
-      if (!isGeometryCapture(classification)) {
+      const classification = classifications.get(classificationIdentity(manifestKey, lineIndex));
+      if (classification === undefined) throw new Error(`capture manifest line lacks octet classification: ${manifestKey}:${lineIndex}`);
+      if (classification.storage_key !== receipt.storage_key) {
+        throw new Error(`classification storage key does not match manifest receipt: ${manifestKey}:${lineIndex}`);
+      }
+      const slugs = [...line.slugs].sort();
+      if (classification.classification !== "GEOMETRIE") {
         excluded.push({
           manifest_key: receipt.manifest_key,
           line_index: receipt.line_index,
@@ -289,6 +328,7 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
         entries.push(receipt);
         bySlug.set(slug, entries);
       }
+    }
   }
   excluded.sort((left, right) => left.manifest_key.localeCompare(right.manifest_key) || left.line_index - right.line_index);
   return { bySlug, excluded };
@@ -397,8 +437,16 @@ async function prepareRow(
   }
 }
 
-async function preparePlan(output: string, runPrefix: string, expectedReady: number, offset: number, limit: number | null): Promise<void> {
-  const candidates = await captureCandidatesBySlug(runPrefix);
+async function preparePlan(
+  output: string,
+  runPrefix: string,
+  classifications: ReadonlyMap<string, ClassificationLine>,
+  classificationReport: ClassificationReportReference,
+  expectedReady: number,
+  offset: number,
+  limit: number | null,
+): Promise<void> {
+  const candidates = await captureCandidatesBySlug(runPrefix, classifications);
   console.error(`[proof-url-restamp] prepare: ${candidates.bySlug.size} geometry capture slug(s), ${candidates.excluded.length} non-geometry receipt(s) excluded; listing served collections`);
   const served = selectServedZoneCollections((await listObjectEntries(s3Client(), ZONES_PREFIX)).map((entry) => entry.key));
   const bySlug = new Map(served.map((entry) => [entry.slug, entry.key]));
@@ -433,11 +481,12 @@ async function preparePlan(output: string, runPrefix: string, expectedReady: num
   ready.sort((left, right) => left.slug.localeCompare(right.slug));
   refused.sort((left, right) => left.slug.localeCompare(right.slug));
   const plan: Plan = {
-    contract: "served-zonage-proof-url-restamp-plan/v2",
+    contract: "served-zonage-proof-url-restamp-plan/v3",
     complete: expectedReady === 0 || ready.length === expectedReady,
     run_prefix: runPrefix,
     generated_at: new Date().toISOString(),
-    source: "capture-manifest-lines-only",
+    source: "capture-manifest-lines-classified-octets",
+    classification_report: classificationReport,
     selected_layout: "nested_when_present_else_flat",
     collections: {
       capture_slugs: slugs.length,
@@ -458,10 +507,13 @@ async function preparePlan(output: string, runPrefix: string, expectedReady: num
 function readPlan(path: string): Plan {
   const plan = JSON.parse(readFileSync(path, "utf8")) as Plan;
   if (
-    plan.contract !== "served-zonage-proof-url-restamp-plan/v2" ||
+    plan.contract !== "served-zonage-proof-url-restamp-plan/v3" ||
     plan.complete !== true ||
-    plan.source !== "capture-manifest-lines-only" ||
+    plan.source !== "capture-manifest-lines-classified-octets" ||
     plan.selected_layout !== "nested_when_present_else_flat" ||
+    !asObject(plan.classification_report) ||
+    typeof asObject(plan.classification_report)?.path !== "string" ||
+    typeof asObject(plan.classification_report)?.sha256 !== "string" ||
     !Array.isArray(plan.ready) ||
     !Array.isArray(plan.refused) ||
     !Array.isArray(plan.excluded_capture_lines)
@@ -472,6 +524,10 @@ function readPlan(path: string): Plan {
 function mergePlans(paths: string[], output: string, expectedReady: number): void {
   if (paths.length < 2) throw new Error("--merge-plans requires at least two plans");
   const plans = paths.map(readPlan);
+  const classificationReport = plans[0]!.classification_report;
+  if (plans.some((plan) => plan.classification_report.path !== classificationReport.path || plan.classification_report.sha256 !== classificationReport.sha256)) {
+    throw new Error("merge refused: plans do not use the same complete classification report");
+  }
   const readyBySlug = new Map<string, ReadyRow>();
   const allCaptureSlugs = new Set<string>();
   const refusedBySlug = new Map<string, RefusedRow>();
@@ -493,11 +549,12 @@ function mergePlans(paths: string[], output: string, expectedReady: number): voi
   const ready = [...readyBySlug.values()].sort((left, right) => left.slug.localeCompare(right.slug));
   const refused = [...refusedBySlug.values()].filter((row) => !readyBySlug.has(row.slug)).sort((left, right) => left.slug.localeCompare(right.slug));
   const plan: Plan = {
-    contract: "served-zonage-proof-url-restamp-plan/v2",
+    contract: "served-zonage-proof-url-restamp-plan/v3",
     complete: ready.length === expectedReady,
     run_prefix: plans.map((item) => item.run_prefix).join(","),
     generated_at: new Date().toISOString(),
-    source: "capture-manifest-lines-only",
+    source: "capture-manifest-lines-classified-octets",
+    classification_report: classificationReport,
     selected_layout: "nested_when_present_else_flat",
     collections: {
       capture_slugs: allCaptureSlugs.size,
@@ -632,11 +689,16 @@ async function main(): Promise<void> {
     if (hasFlag("apply") || hasFlag("dry-run")) throw new Error("--prepare is read-only; do not pass --apply or --dry-run");
     const runPrefix = option("run-prefix");
     if (!runPrefix) throw new Error("--run-prefix=<capture-run-prefix> is required with --prepare");
+    const classificationPath = option("classification");
+    if (!classificationPath) throw new Error("--classification=<complete-capture-octets-classification.json> is required with --prepare");
+    const resolvedClassificationPath = insideRepo(classificationPath, "classification");
     const prepareOffset = integerOption("prepare-offset", 0, 0, 10_000);
     const prepareLimit = option("prepare-limit");
     await preparePlan(
       insideRepo(prepare, "prepare"),
       runPrefix,
+      readClassificationReport(resolvedClassificationPath),
+      { path: relative(ROOT, resolvedClassificationPath), sha256: sha256(readFileSync(resolvedClassificationPath)) },
       integerOption("expect-ready", 50, 0, 10_000),
       prepareOffset,
       prepareLimit === null ? null : integerOption("prepare-limit", 1, 1, 10_000),
