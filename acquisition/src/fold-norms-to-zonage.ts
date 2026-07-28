@@ -31,6 +31,7 @@ const NORM_FIELDS = [
   "facade_min_value", "facade_min_unit",
   "superficie_min_value", "superficie_min_unit",
 ] as const;
+const DENSITY_FIELDS = ["densite_value", "densite_unit"] as const;
 
 type S3 = ReturnType<typeof s3Client>;
 
@@ -40,6 +41,66 @@ function arg(argv: string[], k: string): string | undefined {
 }
 
 const canon = (v: unknown): string => String(v ?? "").trim().toUpperCase();
+
+function present(value: unknown): boolean {
+  return value !== null && value !== undefined && !(typeof value === "string" && value.trim() === "");
+}
+
+function finiteDensity(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+export interface DensityOnlyApplyResult {
+  sourceFinite: boolean;
+  newlyDense: boolean;
+  fieldsChanged: number;
+}
+
+/**
+ * Fold one finite, sourced density without manufacturing a diagnostic gain.
+ *
+ * `undefined` and `null` on BOTH sides are a no-op. A finite source may fill an
+ * absent target, but it may never replace a different or malformed existing
+ * value. The unit travels with the value and is likewise conflict-checked.
+ */
+export function applyDensityOnly(
+  properties: Record<string, unknown>,
+  norms: Readonly<Record<string, unknown>>,
+): DensityOnlyApplyResult {
+  const sourceValue = norms["densite_value"];
+  if (!finiteDensity(sourceValue)) {
+    return { sourceFinite: false, newlyDense: false, fieldsChanged: 0 };
+  }
+  const sourceUnit = norms["densite_unit"];
+  if (typeof sourceUnit !== "string" || !sourceUnit.trim()) {
+    throw new Error(`densité source ${sourceValue} sans unité verbatim`);
+  }
+
+  const targetValue = properties["densite_value"];
+  if (present(targetValue) && (!finiteDensity(targetValue) || targetValue !== sourceValue)) {
+    throw new Error(
+      `conflit densité servie: ${String(targetValue)} <> ${sourceValue}`,
+    );
+  }
+  const targetUnit = properties["densite_unit"];
+  if (present(targetUnit) && targetUnit !== sourceUnit) {
+    throw new Error(
+      `conflit unité densité servie: ${String(targetUnit)} <> ${sourceUnit}`,
+    );
+  }
+
+  let fieldsChanged = 0;
+  const newlyDense = !finiteDensity(targetValue);
+  if (targetValue !== sourceValue) {
+    properties["densite_value"] = sourceValue;
+    fieldsChanged++;
+  }
+  if (targetUnit !== sourceUnit) {
+    properties["densite_unit"] = sourceUnit;
+    fieldsChanged++;
+  }
+  return { sourceFinite: true, newlyDense, fieldsChanged };
+}
 
 /**
  * Clé « relâchée » : la même chose sans séparateur. Elle rattrape le seul écart
@@ -144,6 +205,8 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
   const strip = argv.includes("--strip");
+  const densityOnly = argv.includes("--density-only");
+  if (strip && densityOnly) throw new Error("--strip et --density-only sont incompatibles");
   const relaxSeparators = argv.includes("--relax-separators");
   // L'inversion de segments est une affirmation sur la source : elle n'est
   // legitime que pour les villes ou l'ordre a ete LU. Elle reste donc opt-in,
@@ -174,6 +237,9 @@ async function main(): Promise<void> {
     for (const key of keys) {
       const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
       const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+      const densityBefore = feats.filter((feature) =>
+        finiteDensity(feature.properties?.["densite_value"])
+      ).length;
       // Le mode relache n'est arme QUE si les deux vocabulaires restent
       // discernables sans separateur. Une collision d'un seul cote suffit a
       // l'annuler : mieux vaut ne pas plier que plier sur la mauvaise zone.
@@ -226,7 +292,7 @@ async function main(): Promise<void> {
         }
         loose = index;
       }
-      let matched = 0, changed = 0;
+      let matched = 0, changed = 0, densityPolygonsChanged = 0;
       const propertiesBefore = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
       for (const f of feats) {
         f.properties = f.properties ?? {};
@@ -244,6 +310,14 @@ async function main(): Promise<void> {
           }
         }
         if (!sub) continue;
+        if (densityOnly) {
+          const applied = applyDensityOnly(f.properties, sub);
+          if (!applied.sourceFinite) continue;
+          matched++;
+          changed += applied.fieldsChanged;
+          if (applied.newlyDense) densityPolygonsChanged++;
+          continue;
+        }
         matched++;
         for (const nf of NORM_FIELDS) {
           if (f.properties[nf] !== sub[nf]) { f.properties[nf] = sub[nf]; changed++; }
@@ -251,9 +325,19 @@ async function main(): Promise<void> {
       }
       const pct = feats.length ? Math.round((matched / feats.length) * 1000) / 10 : 0;
       const propertiesAfter = feats.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
-      console.log(`${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) cellsChanged=${changed} properties=${propertiesBefore}->${propertiesAfter} key=${key}`);
+      const densityAfter = feats.filter((feature) =>
+        finiteDensity(feature.properties?.["densite_value"])
+      ).length;
+      console.log(
+        `${dryRun ? "DRY " : "OK  "}${slug} polygones=${feats.length} matched=${matched} (${pct}%) ` +
+        `cellsChanged=${changed} densityPolygonsChanged=${densityPolygonsChanged} ` +
+        `densityPolygons=${densityBefore}->${densityAfter} ` +
+        `properties=${propertiesBefore}->${propertiesAfter} key=${key}`,
+      );
       if (!dryRun && changed > 0) {
-        await putServedZoneAdditive(s3, key, fc, { allowedProps: NORM_FIELDS });
+        await putServedZoneAdditive(s3, key, fc, {
+          allowedProps: densityOnly ? DENSITY_FIELDS : NORM_FIELDS,
+        });
       }
     }
     ok++;
