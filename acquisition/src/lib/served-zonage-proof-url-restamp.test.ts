@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   isHttpsCaptureUrl,
+  manifestUrlMatchesServedEnvelope,
   MissingSha256RestampRefusal,
   planMissingSha256ProofRestamp,
   selectEquivalentManifestReceipt,
@@ -67,6 +68,18 @@ describe("missing-SHA v1 proof restamp plan", () => {
   it("accepts an HTTPS geometry endpoint whose query is required by ArcGIS", () => {
     expect(isHttpsCaptureUrl("https://services.example.org/FeatureServer/0/query?where=1%3D1&f=geojson")).toBe(true);
     expect(isHttpsCaptureUrl("http://services.example.org/FeatureServer/0/query?f=geojson")).toBe(false);
+  });
+
+  it("matches an ArcGIS query receipt to the served layer endpoint", () => {
+    const endpoint = "https://services.example.org/arcgis/rest/services/Zonage/FeatureServer/5";
+    const captureUrl = `${endpoint}/query?where=1%3D1&outFields=*&f=geojson`;
+    expect(manifestUrlMatchesServedEnvelope(captureUrl, endpoint)).toBe(true);
+  });
+
+  it("never matches an ArcGIS query receipt to a different served layer endpoint", () => {
+    const captureUrl = "https://services.example.org/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson";
+    const otherEndpoint = "https://services.example.org/arcgis/rest/services/Zonage/FeatureServer/6";
+    expect(manifestUrlMatchesServedEnvelope(captureUrl, otherEndpoint)).toBe(false);
   });
 
   it("chooses one deterministic manifest line when replayed jobs kept the same CAS receipt", () => {

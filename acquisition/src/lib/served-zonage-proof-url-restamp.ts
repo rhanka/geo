@@ -4,6 +4,7 @@
  * re-hashes a source object, because a manifest is the temporal attestation.
  */
 import type { ProofArtifactUriSubstitution } from "./zonage-proof.js";
+import { arcgisLayerEndpointFromCaptureUrl } from "./served-zonage-immo-proof-url-capture-worklist.js";
 
 type JsonObject = Record<string, unknown>;
 
@@ -27,6 +28,20 @@ export function isHttpsCaptureUrl(value: unknown): value is string {
   } catch {
     return false;
   }
+}
+
+/**
+ * A legacy served envelope can name an ArcGIS layer while the immutable
+ * capture receipt names the layer's geometry query.  Match those two forms
+ * only when their canonical layer endpoints are identical; unrelated layers
+ * must remain distinct even when they share an ArcGIS host or service.
+ */
+export function manifestUrlMatchesServedEnvelope(captureUrl: string, servedEnvelopeUrl: unknown): boolean {
+  if (typeof servedEnvelopeUrl !== "string") return false;
+  if (captureUrl === servedEnvelopeUrl) return true;
+  const captureEndpoint = arcgisLayerEndpointFromCaptureUrl(captureUrl);
+  const servedEndpoint = arcgisLayerEndpointFromCaptureUrl(servedEnvelopeUrl);
+  return captureEndpoint !== null && captureEndpoint === servedEndpoint;
 }
 
 interface ManifestReceiptIdentity {
