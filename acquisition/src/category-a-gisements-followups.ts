@@ -17,6 +17,10 @@ import {
   type CaptureManifestLine,
   type CaptureWorklistTarget,
 } from "../../packages/qc-sources/src/capture/index.js";
+import {
+  CATEGORY_A_GISEMENT_TARGETS,
+  type CategoryAGisementTarget,
+} from "./category-a-gisements-worklist.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(import.meta.dirname, "..", "..");
@@ -25,10 +29,12 @@ const ROOT = resolve(import.meta.dirname, "..", "..");
 // parseur natif avant toute route vision.
 const SOURCE = "normes-a-gisements-document";
 const LOT_SIZE = 6;
-const DOCUMENT_HINT =
-  /zonag|urbanis|grille|sp[eé]cification|usages?.{0,16}normes?|annexe|densit|logements?|occupation.{0,10}sol|r[eè]glement|reglement|coefficient|certificat.{0,16}conformit/i;
+const STRONG_DOCUMENT_HINT =
+  /zonag|urbanis|grille|sp[eé]cification|usages?.{0,16}normes?|densit|logements?.{0,16}(?:hectare|ha\b)|occupation.{0,10}sol|coefficient|certificat.{0,16}conformit/i;
 const PAGE_HINT =
-  /zonag|urbanis|grille|annexe|reglement|r[eè]glement|documentation|centre-documentaire|municipalit|arcgis|jmap|geocentri/i;
+  /zonag|urbanis|grille|documentation|centre-documentaire|municipalit|arcgis|jmap|geocentri/i;
+const PROJECT_HINT =
+  /(?:^|[\/_.\s-])(?:premier|second|1er|2e)?[\/_.\s-]*projet(?:s)?[\/_.\s-]*(?:de[\/_.\s-]*)?r[eè]glement|avis[\/_.\s-]+public/i;
 const DOCUMENT_EXT = /\.(?:pdf|xlsx?|docx?)(?:$|[?#])/i;
 const SITEMAP = /(?:sitemap|wp-sitemap|post-sitemap|page-sitemap|wpfd).*\.xml(?:$|[?#])/i;
 const SERVICE = /\/(?:FeatureServer|MapServer)(?:\/\d+)?(?:$|[?#])/i;
@@ -93,15 +99,32 @@ function addCandidate(raw: string, context: string, base: string, result: {
   const url = safeUrl(raw, base);
   if (url === null) return;
   const haystack = `${context} ${url}`;
-  if (DOCUMENT_EXT.test(url) && DOCUMENT_HINT.test(haystack)) {
+  const regulationOnUrbanismPage =
+    /r[eè]glement|reglement/i.test(haystack)
+    && /zonag|urbanis/i.test(base);
+  if (
+    DOCUMENT_EXT.test(url)
+    && !PROJECT_HINT.test(haystack)
+    && (STRONG_DOCUMENT_HINT.test(haystack) || regulationOnUrbanismPage)
+  ) {
     result.documents.add(url);
     return;
   }
+  const fromSitemap = SITEMAP.test(base);
+  const serviceWithSubject = SERVICE.test(url) && STRONG_DOCUMENT_HINT.test(haystack);
+  const incidentalWpRoute =
+    /\/wp-json\//i.test(url)
+    && !/\/wp-json\/wp\/v2\/media(?:[/?#]|$)/i.test(url);
   if (
     SITEMAP.test(url)
-    || /\/wp-json\/|\/storage\/app\/media/i.test(url)
-    || SERVICE.test(url)
-    || (PAGE_HINT.test(haystack) && !/\.(?:png|jpe?g|gif|svg|css|js)(?:$|[?#])/i.test(url))
+    || /\/wp-json\/wp\/v2\/media(?:[/?#]|$)|\/storage\/app\/media/i.test(url)
+    || serviceWithSubject
+    || (
+      !fromSitemap
+      && !incidentalWpRoute
+      && PAGE_HINT.test(haystack)
+      && !/\.(?:png|jpe?g|gif|svg|css|js)(?:$|[?#])/i.test(url)
+    )
   ) {
     result.catalogs.add(url);
     addArcgisFollowups(url, result.catalogs);
@@ -118,7 +141,11 @@ function parseCdx(value: unknown, result: { documents: Set<string>; catalogs: Se
     if (!Array.isArray(rawRow)) continue;
     const original = String(rawRow[originalIndex] ?? "");
     const timestamp = String(rawRow[timestampIndex] ?? "");
-    if (!/^\d{14}$/.test(timestamp) || !DOCUMENT_EXT.test(original) || !DOCUMENT_HINT.test(original)) continue;
+    if (
+      !/^\d{14}$/.test(timestamp)
+      || !DOCUMENT_EXT.test(original)
+      || !STRONG_DOCUMENT_HINT.test(original)
+    ) continue;
     const live = safeUrl(original, original);
     if (live === null) continue;
     result.documents.add(live); // http:// reste volontairement accepté.
@@ -149,7 +176,7 @@ function parseJsonObject(value: unknown, base: string, result: {
   const id = typeof record["id"] === "string" && /^[a-f0-9]{32}$/i.test(record["id"])
     ? record["id"]
     : null;
-  if (id !== null) {
+  if (id !== null && STRONG_DOCUMENT_HINT.test(context)) {
     result.catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${id}?f=json`);
     result.catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${id}/data?f=json`);
   }
@@ -190,23 +217,27 @@ function addArcgisLayerQueries(value: unknown, base: string, catalogs: Set<strin
 
 export function discoverFollowups(text: string, base: string): FollowupDiscovery {
   const result = { documents: new Set<string>(), catalogs: new Set<string>() };
+  let parsedJson = false;
   try {
     const value: unknown = JSON.parse(text);
+    parsedJson = true;
     parseJsonObject(value, base, result);
     addArcgisLayerQueries(value, base, result.catalogs);
   } catch {
     // HTML/XML/JS sont traités ci-dessous sans interpréter leur structure.
   }
-  for (const match of text.matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
-    addCandidate(match[1]!.trim(), match[1]!, base, result);
-  }
-  for (const match of text.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
-    const label = match[2]!.replace(/<[^>]+>/g, " ");
-    addCandidate(match[1]!, `${label} ${match[0]!}`, base, result);
-  }
-  for (const match of text.matchAll(/(?:https?:\\?\/\\?\/|(?:href|src|data-url|data-href)=["'])[^"'<>\s]+/gi)) {
-    const raw = match[0]!.replace(/^(?:href|src|data-url|data-href)=["']/, "");
-    addCandidate(raw, match[0]!, base, result);
+  if (!parsedJson) {
+    for (const match of text.matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
+      addCandidate(match[1]!.trim(), match[1]!, base, result);
+    }
+    for (const match of text.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+      const label = match[2]!.replace(/<[^>]+>/g, " ");
+      addCandidate(match[1]!, `${label} ${match[0]!}`, base, result);
+    }
+    for (const match of text.matchAll(/(?:https?:\\?\/\\?\/|(?:href|src|data-url|data-href)=["'])[^"'<>\s]+/gi)) {
+      const raw = match[0]!.replace(/^(?:href|src|data-url|data-href)=["']/, "");
+      addCandidate(raw, match[0]!, base, result);
+    }
   }
   return {
     documents: [...result.documents].sort(),
@@ -252,6 +283,68 @@ function digest(bytes: Buffer): string {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
+function comparable(value: string): string {
+  return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
+}
+
+function hostWithoutWww(value: string): string {
+  return new URL(value).hostname.replace(/^www\./, "").toLowerCase();
+}
+
+function isOwnerSearch(lineUrl: string, target: CategoryAGisementTarget): boolean {
+  const search = new URL(lineUrl).searchParams.get("search");
+  return search !== null && comparable(search) === comparable(target.name);
+}
+
+function candidateNamesOwner(url: string, target: CategoryAGisementTarget): boolean {
+  const parsed = new URL(url);
+  let path = parsed.pathname + parsed.search;
+  try {
+    path = decodeURIComponent(path);
+  } catch {
+    // Le chemin brut reste comparable si un ancien site contient un % invalide.
+  }
+  return comparable(path).includes(comparable(target.name));
+}
+
+function isMrcDomainCapture(lineUrl: string, target: CategoryAGisementTarget): boolean {
+  const mrcHosts = new Set(target.mrcPortals.map(hostWithoutWww));
+  const parsed = new URL(lineUrl);
+  if (mrcHosts.has(parsed.hostname.replace(/^www\./, "").toLowerCase())) return true;
+  if (parsed.hostname !== "web.archive.org" || !parsed.pathname.includes("/cdx/")) return false;
+  const queried = parsed.searchParams.get("url");
+  if (queried === null) return false;
+  return mrcHosts.has(queried.replace(/\/\*$/, "").replace(/^www\./, "").toLowerCase());
+}
+
+function relevantForTarget(
+  url: string,
+  lineUrl: string,
+  target: CategoryAGisementTarget,
+): boolean {
+  if (!isMrcDomainCapture(lineUrl, target) || isOwnerSearch(lineUrl, target)) return true;
+  if (SITEMAP.test(url)) return true;
+  return candidateNamesOwner(url, target);
+}
+
+async function mapConcurrent<T, R>(
+  values: readonly T[],
+  concurrency: number,
+  fn: (value: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(values.length);
+  let next = 0;
+  const worker = async (): Promise<void> => {
+    for (;;) {
+      const index = next++;
+      if (index >= values.length) return;
+      results[index] = await fn(values[index]!);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, values.length) }, worker));
+  return results;
+}
+
 async function materialize(prefixes: readonly string[]): Promise<CaptureWorklistTarget[][]> {
   const runs = await completedRuns(prefixes);
   const failed = runs.filter((run) => run.exitCode !== 0);
@@ -267,18 +360,33 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
       slugAttempted.add(line.url);
       attempted.set(slug, slugAttempted);
     }
-    if (line.http_status !== 200 || line.storage_key === null || line.sha256 === null) continue;
-    const bytes = await getBytes(s3Client(), line.storage_key);
+  }
+  const s3 = s3Client();
+  const reviewed = await mapConcurrent(lines, 8, async (line): Promise<{
+    line: CaptureManifestLine;
+    discovered: FollowupDiscovery | null;
+  }> => {
+    if (line.http_status !== 200 || line.storage_key === null || line.sha256 === null) {
+      return { line, discovered: null };
+    }
+    const bytes = await getBytes(s3, line.storage_key);
     if (digest(bytes) !== line.sha256) throw new Error(`CAS SHA incohérent: ${line.storage_key}`);
     const prefix = bytes.subarray(0, 64).toString("utf8");
     const contentType = line.content_type ?? "";
     if (!/html|xml|json|text|javascript/i.test(contentType) && !/^\s*(?:<!doctype|<html|<\?xml|[{[])/i.test(prefix)) {
-      continue;
+      return { line, discovered: null };
     }
-    const discovered = discoverFollowups(bytes.toString("utf8"), line.url);
+    return { line, discovered: discoverFollowups(bytes.toString("utf8"), line.url) };
+  });
+  for (const { line, discovered } of reviewed) {
+    if (discovered === null) continue;
     for (const slug of line.slugs) {
+      const target = CATEGORY_A_GISEMENT_TARGETS.find((entry) => entry.slug === slug);
+      if (target === undefined) throw new Error(`profil catégorie A absent: ${slug}`);
       const slugFound = found.get(slug) ?? new Set<string>();
-      for (const url of [...discovered.documents, ...discovered.catalogs]) slugFound.add(url);
+      for (const url of [...discovered.documents, ...discovered.catalogs]) {
+        if (relevantForTarget(url, line.url, target)) slugFound.add(url);
+      }
       found.set(slug, slugFound);
     }
   }
