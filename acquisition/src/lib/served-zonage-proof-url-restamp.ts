@@ -14,6 +14,21 @@ export interface ProofUrlManifestAttestation extends ProofArtifactUriSubstitutio
   line_index: number;
 }
 
+/**
+ * A capture endpoint can need query parameters (notably ArcGIS `f=geojson`).
+ * HTTPS and a hostname are the proof-URL requirements; a query string is part
+ * of the captured source, not a reason to discard its manifest receipt.
+ */
+export function isHttpsCaptureUrl(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" && parsed.hostname.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 export interface MissingSha256RestampPlan {
   next: JsonObject;
   attestations: ProofUrlManifestAttestation[];
