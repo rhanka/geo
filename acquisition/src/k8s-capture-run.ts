@@ -29,6 +29,7 @@ interface Args {
   runStamp: string;
   delayMs: number;
   maxBytes: number;
+  memoryLimitMi: number;
   egress: string;
   dryRun: boolean;
 }
@@ -71,6 +72,7 @@ function parseArgs(argv: string[]): Args {
   if (!/^(direct|tor:[a-z0-9][a-z0-9-]*|proxy:[a-z0-9][a-z0-9-]*)$/.test(egress)) {
     throw new Error("--egress doit être direct | tor:<lane> | proxy:<id>");
   }
+  const memoryLimitMi = integer("memory-limit-mi", option(argv, "memory-limit-mi"), 176, 176);
   return {
     lane: lane(option(argv, "lane")),
     worklistPath,
@@ -82,6 +84,7 @@ function parseArgs(argv: string[]): Args {
     runStamp,
     delayMs: integer("delay-ms", option(argv, "delay-ms"), 2_000, 0),
     maxBytes: integer("max-bytes", option(argv, "max-bytes"), 104_857_600, 1),
+    memoryLimitMi,
     egress,
     dryRun: flag(argv, "dry-run"),
   };
@@ -181,9 +184,10 @@ spec:
               # Le quota laisse 900m de limites CPU: six captures à 150m
               # atteignent ce plafond sans empêcher leur création.
               cpu: 150m
-              # Capture streamée mesurée sur un règlement de 31,664,331 octets:
-              # pic cgroup 136.36 MiB. 176 Mi garde 39.64 Mi (29%) de marge.
-              memory: 176Mi
+              # 176 Mi est le réglage mesuré par défaut. Une couche qui dépasse
+              # ce pic est reprise seule avec --memory-limit-mi, jamais avec
+              # un troisième pod hors quota.
+              memory: ${args.memoryLimitMi}Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
