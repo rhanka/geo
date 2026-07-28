@@ -107,12 +107,14 @@ async function main(): Promise<void> {
   const selected = selectProofUrlRecaptureWorklist(audit.rows as ProofUrlAuditRow[], excluded, offset, limit);
   if (selected.length !== limit) throw new Error(`selection exhausted: requested ${limit}, found ${selected.length}`);
   if (hasFlag("candidates-only")) {
+    const candidates = hasFlag("distinct") ? distinctProofUrlCaptures(selected) : selected;
     if (existsSync(outPath)) throw new Error(`refusing to overwrite existing candidate worklist: ${out}`);
-    writeFileSync(outPath, `${JSON.stringify(selected, null, 2)}\n`, { flag: "wx" });
+    writeFileSync(outPath, `${JSON.stringify(candidates, null, 2)}\n`, { flag: "wx" });
     console.log(JSON.stringify({
       out: outPath,
       candidate_targets: selected.length,
       unique_candidate_urls: new Set(selected.flatMap((target) => target.urls)).size,
+      materialized_targets: candidates.length,
       offset,
       excluded_test_collections: excluded.size,
     }, null, 2));
