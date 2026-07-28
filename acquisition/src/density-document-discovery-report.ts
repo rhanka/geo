@@ -339,6 +339,11 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
   for (const line of lines.filter(isReviewableLine)) {
     if (line.sha256 === null || line.storage_key === null || line.retrieved_at === null) continue;
     if (
+      handledTruncatedUrls.has(line.url)
+      && line.bytes === 1_048_576
+      && line.source !== "normes-density-wayback-document"
+    ) continue;
+    if (
       line.source === "normes-density-wayback-document"
       && line.bytes === 1_048_576
     ) {
