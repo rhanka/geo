@@ -1,0 +1,48 @@
+import { describe, expect, it } from "vitest";
+
+import { discoverFollowups } from "./category-a-gisements-followups.js";
+
+describe("category A captured catalog followups", () => {
+  it("extracts a hidden WordPress media PDF using its title context", () => {
+    const result = discoverFollowups(JSON.stringify([{
+      title: { rendered: "Grille des usages et des normes" },
+      source_url: "https://ville.example/wp-content/uploads/2024/01/12345.pdf",
+    }]), "https://ville.example/wp-json/wp/v2/media");
+    expect(result.documents).toEqual([
+      "https://ville.example/wp-content/uploads/2024/01/12345.pdf",
+    ]);
+  });
+
+  it("keeps both live http and archived CDX document URLs", () => {
+    const result = discoverFollowups(JSON.stringify([
+      ["original", "timestamp", "statuscode"],
+      ["http://ville.example/docs/annexe-grille.pdf", "20240102030405", "200"],
+    ]), "https://web.archive.org/cdx/search/cdx");
+    expect(result.documents).toContain("http://ville.example/docs/annexe-grille.pdf");
+    expect(result.documents).toContain(
+      "https://web.archive.org/web/20240102030405id_/http://ville.example/docs/annexe-grille.pdf",
+    );
+  });
+
+  it("recurses into child sitemaps and ArcGIS item/service metadata", () => {
+    const sitemap = discoverFollowups(
+      "<sitemapindex><sitemap><loc>https://ville.example/post-sitemap.xml</loc></sitemap></sitemapindex>",
+      "https://ville.example/sitemap.xml",
+    );
+    expect(sitemap.catalogs).toContain("https://ville.example/post-sitemap.xml");
+
+    const arcgis = discoverFollowups(JSON.stringify({
+      results: [{
+        id: "0123456789abcdef0123456789abcdef",
+        title: "Zonage municipal",
+        url: "https://services.example/arcgis/rest/services/Zonage/FeatureServer",
+      }],
+    }), "https://www.arcgis.com/sharing/rest/search?f=json");
+    expect(arcgis.catalogs).toContain(
+      "https://www.arcgis.com/sharing/rest/content/items/0123456789abcdef0123456789abcdef/data?f=json",
+    );
+    expect(arcgis.catalogs).toContain(
+      "https://services.example/arcgis/rest/services/Zonage/FeatureServer?f=pjson",
+    );
+  });
+});
