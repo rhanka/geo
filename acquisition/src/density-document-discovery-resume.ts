@@ -57,6 +57,14 @@ function main(): void {
         return row.slug;
       }),
   );
+  const requested = values(argv, "slug");
+  if (requested.length > 0) {
+    for (const slug of requested) {
+      if (!pending.has(slug)) throw new Error(`--slug ${slug} n’est pas pending_capture`);
+    }
+    pending.clear();
+    for (const slug of requested) pending.add(slug);
+  }
   const source = worklistPaths.map((path) =>
     parseDensityDiscoveryWorklist(JSON.parse(readFileSync(path, "utf8"))));
   const resume = buildDensityDiscoveryResumeWorklists(source, pending, firstLot);
