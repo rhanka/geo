@@ -4,6 +4,7 @@ import {
   documentMagic,
   isExcludedDocument,
   sigMetadataUrls,
+  waybackRangeRequests,
 } from "./density-document-discovery-run.js";
 import type { DensityDiscoveryTarget } from "../../packages/qc-sources/src/sources/density-document-discovery.js";
 
@@ -49,5 +50,14 @@ describe("density document discovery cluster runner", () => {
       "https://www.arcgis.com/sharing/rest/content/items/0123456789abcdef0123456789abcdef/data?f=json",
       "https://services1.arcgis.com/abc/ArcGIS/rest/services/Zonage/FeatureServer/0?f=pjson",
     ]));
+  });
+
+  it("should plan bounded Wayback ranges after the truncated first MiB", () => {
+    expect(waybackRangeRequests(2_500_000)).toEqual([
+      { start: 1_048_576, end: 2_097_151, last: false },
+      { start: 2_097_152, end: 2_499_999, last: true },
+    ]);
+    expect(waybackRangeRequests(1_048_576)).toEqual([]);
+    expect(waybackRangeRequests(null)).toHaveLength(64);
   });
 });
