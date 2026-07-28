@@ -44,6 +44,7 @@ import {
   isHttpsCaptureUrl,
   MissingSha256RestampRefusal,
   planMissingSha256ProofRestamp,
+  selectEquivalentManifestReceipt,
   type ProofUrlManifestAttestation,
 } from "./lib/served-zonage-proof-url-restamp.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
@@ -305,7 +306,8 @@ function attestationsForCurrent(
   if (artifacts.length === 0) throw new MissingSha256RestampRefusal("no-s3-artifact-uri-found-in-current-feature-proofs");
   return artifacts.map(({ artifactUri, upstreamUri }) => {
     const matching = candidates.filter((candidate) => candidate.url === upstreamUri);
-    if (matching.length !== 1) {
+    const matchingReceipt = selectEquivalentManifestReceipt(matching);
+    if (matchingReceipt === null) {
       if (matching.length === 0) {
         const nonGeometry = excluded
           .filter((candidate) => candidate.url === upstreamUri)
@@ -318,7 +320,7 @@ function attestationsForCurrent(
       }
       throw new MissingSha256RestampRefusal("manifest-url-ambiguous-for-served-envelope");
     }
-    return { artifactUri, replacementUrl: matching[0]!.url, ...matching[0]! };
+    return { artifactUri, replacementUrl: matchingReceipt.url, ...matchingReceipt };
   });
 }
 
