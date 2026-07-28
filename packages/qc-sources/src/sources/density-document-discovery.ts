@@ -118,6 +118,33 @@ function isHttpUrl(value: string): boolean {
   }
 }
 
+/**
+ * Treat scheme/www aliases of the same path as the same document identity.
+ * Municipal sites routinely redirect between those aliases; accepting one as
+ * "another document" would merely reinterpret the excluded source.
+ */
+export function equivalentDocumentUrl(left: string, right: string): boolean {
+  try {
+    const identity = (value: string): string => {
+      const parsed = new URL(value);
+      const host = parsed.hostname.toLowerCase().replace(/^www\./, "");
+      const port = parsed.port && !(
+        (parsed.protocol === "http:" && parsed.port === "80")
+        || (parsed.protocol === "https:" && parsed.port === "443")
+      ) ? `:${parsed.port}` : "";
+      const path = safeDecodeUrl(parsed.pathname).replace(/\/+$/, "") || "/";
+      parsed.searchParams.delete("utm_source");
+      parsed.searchParams.delete("utm_medium");
+      parsed.searchParams.delete("utm_campaign");
+      parsed.searchParams.sort();
+      return `${host}${port}${path}${parsed.search}`;
+    };
+    return identity(left) === identity(right);
+  } catch {
+    return false;
+  }
+}
+
 function canonicalUrl(value: string): string {
   const parsed = new URL(value);
   parsed.hash = "";
@@ -368,7 +395,7 @@ export function discoverDensityLinks(
     } catch {
       continue;
     }
-    if (excludedSourceUrl && url === canonicalUrl(excludedSourceUrl)) continue;
+    if (excludedSourceUrl && equivalentDocumentUrl(url, excludedSourceUrl)) continue;
     if (seen.has(url)) continue;
     const title = decodeEntities((match[2] ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
     const scored = scoreLink(title, url);

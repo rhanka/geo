@@ -21,6 +21,7 @@ import {
 import {
   buildDensityDiscoverySeeds,
   discoverDensityLinks,
+  equivalentDocumentUrl,
   hasHardProjectMarker,
   interestingCdxDocuments,
   interestingSitemapLocations,
@@ -82,16 +83,7 @@ function sourceTag(strategy: DiscoveryStrategy, kind: "page" | "sitemap" | "cdx"
 }
 
 function isExcludedUrl(url: string, target: DensityDiscoveryTarget): boolean {
-  if (!target.excludedSourceUrl) return false;
-  try {
-    const candidate = new URL(url);
-    const excluded = new URL(target.excludedSourceUrl);
-    candidate.hash = "";
-    excluded.hash = "";
-    return candidate.href === excluded.href;
-  } catch {
-    return false;
-  }
+  return target.excludedSourceUrl !== null && equivalentDocumentUrl(url, target.excludedSourceUrl);
 }
 
 export function isExcludedDocument(result: CapturedFetchResult, target: DensityDiscoveryTarget): boolean {

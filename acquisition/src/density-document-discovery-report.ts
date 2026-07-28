@@ -16,11 +16,12 @@ import {
   type CaptureManifestLine,
 } from "../../packages/qc-sources/src/capture/index.js";
 import {
+  equivalentDocumentUrl,
   parseDensityDiscoveryWorklist,
   type DensityDiscoveryTarget,
 } from "../../packages/qc-sources/src/sources/density-document-discovery.js";
 import { reviewNativeDensityDocument, type NativeDensityReview } from "./lib/density-document-review.js";
-import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
+import { exists, getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 interface Args {
   worklists: string[];
@@ -167,6 +168,10 @@ async function completedRuns(prefixes: readonly string[]): Promise<RunEvidence[]
   for (const manifestKey of [...manifestKeys].sort()) {
     const runId = manifestKey.slice("capture/_runs/".length, -"/manifest.jsonl".length);
     const headerKey = `capture/_runs/${runId}/run.json`;
+    // A manifest is flushed request-by-request while the final run header is
+    // written only by finish(). Its absence means "still active", never absent
+    // evidence and never a failed municipality.
+    if (!(await exists(s3, headerKey))) continue;
     const header = CaptureRunHeaderSchema.parse(JSON.parse((await getBytes(s3, headerKey)).toString("utf8")));
     if (header.finished_at === null || header.exit_code === null) continue;
     const lines = parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8"));
@@ -208,16 +213,21 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
   const s3 = s3Client();
   for (const line of lines.filter(isReviewableLine)) {
     if (line.sha256 === null || line.storage_key === null || line.retrieved_at === null) continue;
-    if (line.sha256 === `sha256:${target.excludedSourceSha256 ?? ""}` || seenSha.has(line.sha256)) continue;
+    const resolvedUrl = line.final_url ?? line.url;
+    if (
+      (target.excludedSourceUrl !== null && equivalentDocumentUrl(resolvedUrl, target.excludedSourceUrl))
+      || line.sha256 === `sha256:${target.excludedSourceSha256 ?? ""}`
+      || seenSha.has(line.sha256)
+    ) continue;
     seenSha.add(line.sha256);
     const bytes = await getBytes(s3, line.storage_key);
     if (digest(bytes) !== line.sha256) {
       blockers.add(`${line.storage_key}:cas-sha-mismatch`);
       continue;
     }
-    const review = reviewNativeDensityDocument(bytes, `${line.final_url ?? line.url}`);
+    const review = reviewNativeDensityDocument(bytes, resolvedUrl);
     candidates.push({
-      url: line.final_url ?? line.url,
+      url: resolvedUrl,
       retrievedAt: line.retrieved_at,
       sha256: line.sha256,
       storageKey: line.storage_key,
@@ -228,7 +238,7 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
       blocker: review.blocker,
       hits: review.hits,
     });
-    if (review.blocker) blockers.add(`${line.final_url ?? line.url}:${review.blocker}`);
+    if (review.blocker) blockers.add(`${resolvedUrl}:${review.blocker}`);
   }
 
   const reviewRequired = candidates.filter((candidate) => candidate.disposition === "candidate_review_required");

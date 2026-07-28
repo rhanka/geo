@@ -4,6 +4,7 @@ import {
   buildDensityDiscoverySeeds,
   densityTextHits,
   discoverDensityLinks,
+  equivalentDocumentUrl,
   hasHardProjectMarker,
   interestingCdxDocuments,
   interestingSitemapLocations,
@@ -75,6 +76,17 @@ describe("density document discovery seeds", () => {
 });
 
 describe("density document discovery link recall", () => {
+  it("should treat scheme and www aliases as the same excluded document", () => {
+    expect(equivalentDocumentUrl(
+      "https://www.municipaliteauclair.ca/media/grille.xls",
+      "http://municipaliteauclair.ca/media/grille.xls",
+    )).toBe(true);
+    expect(equivalentDocumentUrl(
+      "https://municipaliteauclair.ca/media/autre-grille.xls",
+      "https://municipaliteauclair.ca/media/grille.xls",
+    )).toBe(false);
+  });
+
   it("should accept an opaque sibling, a spreadsheet and a zone sheet while excluding a project", () => {
     const html = `
       <a href="/file-18340">Grille des usages et normes</a>
