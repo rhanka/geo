@@ -180,7 +180,10 @@ async function main(): Promise<void> {
   }, null, 2));
 }
 
-const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+// `tsx path/relative.ts` preserves a relative argv[1], whereas import.meta.url
+// is always absolute. Resolve first so the bootstrap cannot silently skip the
+// durable S3 state publication merely because of the chosen CLI launcher.
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
 if (invokedDirectly) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.stack ?? error.message : String(error));
