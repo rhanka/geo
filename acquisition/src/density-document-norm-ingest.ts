@@ -16,6 +16,7 @@ import {
   parseStonehamDensityDocument,
 } from "../../packages/qc-sources/src/sources/density-document-norm-parser.js";
 import {
+  parseAmosDensityDocument,
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
   parseClermontDensityDocument,
@@ -30,6 +31,7 @@ import {
   parseVarennesPpuDensityDocument,
   type DensityDocumentParseResult,
 } from "../../packages/geo/src/zonage/densityDocument.js";
+import { assertClosedDensityDiscoveryReport } from "./lib/density-document-ingest.js";
 import {
   mergeDensityNormRows,
   type DensityNormPatch,
@@ -73,6 +75,7 @@ interface DiscoveryRow {
 
 interface DiscoveryReport {
   scopeCount?: unknown;
+  completedCount?: unknown;
   rows?: DiscoveryRow[];
 }
 
@@ -139,6 +142,19 @@ interface DocumentReview {
 
 const METHOD = "native-text/density-document-verbatim";
 const PROFILES: readonly Profile[] = [
+  {
+    id: "amos-va-964-annexe-2-p1",
+    slug: "amos",
+    sourceUrl: "https://amos.quebec/storage/app/media/decouvrir-amos/administration-et-finances/reglementation/urbanisme/annexe-2-grilles.pdf",
+    sourceSha256: "sha256:9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa",
+    sourceHost: "amos.quebec",
+    owner: "Ville d’Amos",
+    ownerEvidence: "Page municipale capturée: « Règlement de zonage VA-964 — Annexe – Grilles de spécification »; le règlement VA-964 nomme « Ville d’Amos » et l’annexe 2",
+    legalDate: "2024-09-17",
+    legalDateEvidence: "Page P-1 native verbatim: « VA-1290 — 17 sept. 2024 »",
+    reglement: "Règlement de zonage VA-964 — annexe 2, grille P-1",
+    parse: parseAmosDensityDocument,
+  },
   {
     id: "saint-dominique-2017-324",
     slug: "saint-dominique",
@@ -731,9 +747,7 @@ async function main(): Promise<void> {
   }
 
   const discovery = JSON.parse(readFileSync(reportPath, "utf8")) as DiscoveryReport;
-  if (discovery.scopeCount !== 56 || !Array.isArray(discovery.rows)) {
-    throw new Error("rapport de découverte hors périmètre ou incomplet");
-  }
+  assertClosedDensityDiscoveryReport(discovery);
   const row = discovery.rows.find((item) => item.slug === slug);
   if (!row || !Array.isArray(row.candidates)) {
     throw new Error(`${slug}: ligne de découverte absente`);

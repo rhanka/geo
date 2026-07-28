@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  parseAmosDensityDocument,
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
   parseClermontDensityDocument,
@@ -14,6 +15,67 @@ import {
   parseVarennesDensityDocument,
   parseVarennesPpuDensityDocument,
 } from "./densityDocument.js";
+
+describe("parseAmosDensityDocument", () => {
+  const ownerAndPage = [
+    "GRILLE DE SPECIFICATIONS ZONE P-1",
+    "(1) Inclut le bâtiment principal et les bâtiments accessoires rattachés.",
+  ].join("\n");
+
+  it("publishes the verbatim COS when both use columns agree and the page is dated", () => {
+    const parsed = parseAmosDensityDocument([
+      ownerAndPage,
+      "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+      "Amendements No règlement Date adoption VA-1290 17 sept. 2024",
+    ].join("\n"));
+
+    expect(parsed).toMatchObject({
+      documentAnchored: true,
+      projectExcluded: false,
+      refusals: [],
+      norms: [{
+        zoneCode: "P-1",
+        value: 50,
+        unit: "cos-max",
+        raw: "50(1) 50(1)",
+        page: 1,
+      }],
+    });
+  });
+
+  it("refuses an otherwise valid row when its own page is undated", () => {
+    const parsed = parseAmosDensityDocument([
+      ownerAndPage,
+      "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+    ].join("\n"));
+
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("date-amendement-absente-sur-la-page");
+  });
+
+  it("refuses divergent use columns instead of choosing one", () => {
+    const parsed = parseAmosDensityDocument([
+      ownerAndPage,
+      "Coefficient d’occupation du sol maximum (%) 40(1) 50(1)",
+      "VA-1290 17 sept. 2024",
+    ].join("\n"));
+
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("maxima-divergents-entre-colonnes-usages");
+  });
+
+  it("excludes a project document", () => {
+    const parsed = parseAmosDensityDocument([
+      ownerAndPage,
+      "PREMIER PROJET DE RÈGLEMENT",
+      "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+      "VA-1290 17 sept. 2024",
+    ].join("\n"));
+
+    expect(parsed.projectExcluded).toBe(true);
+    expect(parsed.norms).toEqual([]);
+  });
+});
 
 const header = [
   "VILLE DE MONT-LAURIER",
