@@ -160,6 +160,45 @@ export interface ResolvedProofUrlRecaptureWorklist {
 }
 
 /**
+ * Retire les URL déjà mesurées, qu'elles soient fournies sous leur endpoint
+ * ArcGIS ou sous la query effectivement appelée. La sélection reste attachée
+ * au snapshot d'audit: contrairement à un nouvel offset après restamp, elle ne
+ * se décale pas lorsque les succès sortent de l'univers.
+ */
+export function excludeMeasuredProofUrls(
+  targets: readonly CaptureWorklistTarget[],
+  excludedUrls: ReadonlySet<string>,
+): CaptureWorklistTarget[] {
+  return targets.flatMap((target) => {
+    const urls = target.urls.filter((url) => {
+      const endpoint = arcgisLayerEndpointFromCaptureUrl(url);
+      return !excludedUrls.has(url) && (endpoint === null || !excludedUrls.has(endpoint));
+    });
+    return urls.length === 0 ? [] : [{ ...target, urls }];
+  });
+}
+
+/**
+ * Le contrat historique porte un slug par cible. Pour une mesure de survie
+ * d'URL, une URL mutualisée ne doit toutefois déclencher qu'un seul GET: le
+ * premier slug déterministe devient le représentant de capture de cette URL.
+ */
+export function distinctProofUrlCaptures(
+  targets: readonly CaptureWorklistTarget[],
+): CaptureWorklistTarget[] {
+  const seen = new Set<string>();
+  const distinct: CaptureWorklistTarget[] = [];
+  for (const target of targets) {
+    for (const url of target.urls) {
+      if (seen.has(url)) continue;
+      seen.add(url);
+      distinct.push({ ...target, urls: [url] });
+    }
+  }
+  return distinct;
+}
+
+/**
  * Remplace les query ArcGIS candidates par le seul format qui a effectivement
  * renvoyé des features avec coordonnées. Une couche qui refuse les deux
  * formats est retirée de la worklist et conservée dans `probes`, jamais
@@ -173,6 +212,7 @@ export async function resolveArcgisProofUrlRecaptureWorklist(
   probe: (endpoint: string) => Promise<ArcgisGeometryQueryProbe>,
 ): Promise<ResolvedProofUrlRecaptureWorklist> {
   const probes: ArcgisGeometryQueryProbe[] = [];
+  const probesByEndpoint = new Map<string, ArcgisGeometryQueryProbe>();
   const worklist: CaptureWorklistTarget[] = [];
   for (const target of targets) {
     const urls: string[] = [];
@@ -182,8 +222,12 @@ export async function resolveArcgisProofUrlRecaptureWorklist(
         urls.push(url);
         continue;
       }
-      const outcome = await probe(endpoint);
-      probes.push(outcome);
+      let outcome = probesByEndpoint.get(endpoint);
+      if (outcome === undefined) {
+        outcome = await probe(endpoint);
+        probesByEndpoint.set(endpoint, outcome);
+        probes.push(outcome);
+      }
       if (outcome.selected_url !== null) urls.push(outcome.selected_url);
     }
     const uniqueUrls = [...new Set(urls)].sort();

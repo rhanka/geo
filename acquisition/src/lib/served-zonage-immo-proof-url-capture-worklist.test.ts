@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   arcgisGeometryQueryUrl,
+  distinctProofUrlCaptures,
+  excludeMeasuredProofUrls,
   probeArcgisGeometryQuery,
   resolveArcgisProofUrlRecaptureWorklist,
   selectProofUrlRecaptureWorklist,
@@ -31,6 +33,38 @@ describe("selectProofUrlRecaptureWorklist", () => {
     }));
     expect(selectProofUrlRecaptureWorklist(rows, new Set(), 1, 1)).toEqual([
       { slug: "bravo", source: "zones-v1-proof-url", urls: ["https://ville.example/bravo"] },
+    ]);
+  });
+
+  it("excludes an already measured ArcGIS URL in endpoint or query form", () => {
+    const query = "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson";
+    const targets = [{
+      slug: "alpha",
+      source: "zones-v1-proof-url",
+      urls: [query, "https://ville.example/zones"],
+    }];
+    expect(excludeMeasuredProofUrls(
+      targets,
+      new Set(["https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0"]),
+    )).toEqual([{
+      slug: "alpha",
+      source: "zones-v1-proof-url",
+      urls: ["https://ville.example/zones"],
+    }]);
+    expect(excludeMeasuredProofUrls(targets, new Set([query]))).toEqual([{
+      slug: "alpha",
+      source: "zones-v1-proof-url",
+      urls: ["https://ville.example/zones"],
+    }]);
+  });
+
+  it("keeps one deterministic representative capture per shared URL", () => {
+    expect(distinctProofUrlCaptures([
+      { slug: "alpha", source: "zones-v1-proof-url", urls: ["https://ville.example/shared", "https://ville.example/alpha"] },
+      { slug: "bravo", source: "zones-v1-proof-url", urls: ["https://ville.example/shared"] },
+    ])).toEqual([
+      { slug: "alpha", source: "zones-v1-proof-url", urls: ["https://ville.example/shared"] },
+      { slug: "alpha", source: "zones-v1-proof-url", urls: ["https://ville.example/alpha"] },
     ]);
   });
 
@@ -100,5 +134,20 @@ describe("selectProofUrlRecaptureWorklist", () => {
       selected_format: null,
       attempts: [],
     }]);
+  });
+
+  it("probes a shared ArcGIS endpoint only once", async () => {
+    let calls = 0;
+    const query = "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson";
+    const resolved = await resolveArcgisProofUrlRecaptureWorklist([
+      { slug: "alpha", source: "zones-v1-proof-url", urls: [query] },
+      { slug: "bravo", source: "zones-v1-proof-url", urls: [query] },
+    ], async (endpoint) => {
+      calls++;
+      return { endpoint, selected_url: query, selected_format: "geojson", attempts: [] };
+    });
+    expect(calls).toBe(1);
+    expect(resolved.probes).toHaveLength(1);
+    expect(resolved.worklist).toHaveLength(2);
   });
 });
