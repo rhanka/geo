@@ -119,6 +119,11 @@ export function campaignReportKey(id: string): string {
   return `registry/capture-orchestrators/${id}/report.json`;
 }
 
+/** Kubernetes LeaseTime requires a microsecond RFC3339 fraction, not JS's milliseconds. */
+export function kubernetesLeaseTime(now: Date): string {
+  return now.toISOString().replace(/\.(\d{3})Z$/, ".$1000Z");
+}
+
 export function worklistKey(id: string, lot: number): string {
   assertCampaignId(id);
   return `registry/capture-worklists/${id}/lot-${lot.toString().padStart(4, "0")}.json`;

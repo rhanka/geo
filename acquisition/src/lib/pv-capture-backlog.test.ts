@@ -7,6 +7,7 @@ import {
   captureJobName,
   createBacklogManifest,
   createBacklogState,
+  kubernetesLeaseTime,
   markLotSubmitted,
   pendingLots,
   planLot,
@@ -45,6 +46,10 @@ function manifest(lots = 2) {
 }
 
 describe("PV capture backlog", () => {
+  it("sérialise les LeaseTime Kubernetes avec six chiffres de fraction", () => {
+    expect(kubernetesLeaseTime(new Date("2026-07-28T16:32:14.182Z"))).toBe("2026-07-28T16:32:14.182000Z");
+  });
+
   it("caps every wave at six Jobs and fails closed on quota headroom", () => {
     const sixSlots = {
       pods: 7,

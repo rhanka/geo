@@ -17,6 +17,7 @@ import {
   campaignStateKey,
   captureBacklogJobManifest,
   captureBacklogSlots,
+  kubernetesLeaseTime,
   markLotSubmitted,
   pendingLots,
   planLot,
@@ -143,7 +144,7 @@ class KubernetesApi {
           apiVersion: "coordination.k8s.io/v1",
           kind: "Lease",
           metadata: { name, namespace },
-          spec: { holderIdentity: holder, leaseDurationSeconds: seconds, renewTime: now.toISOString() },
+          spec: { holderIdentity: holder, leaseDurationSeconds: seconds, renewTime: kubernetesLeaseTime(now) },
         });
         return true;
       } catch (createError) {
@@ -160,7 +161,7 @@ class KubernetesApi {
         apiVersion: "coordination.k8s.io/v1",
         kind: "Lease",
         metadata: { name, namespace, resourceVersion: previous.metadata?.resourceVersion },
-        spec: { holderIdentity: holder, leaseDurationSeconds: seconds, renewTime: now.toISOString() },
+        spec: { holderIdentity: holder, leaseDurationSeconds: seconds, renewTime: kubernetesLeaseTime(now) },
       });
       return true;
     } catch (error) {
