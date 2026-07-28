@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
+  parseClermontDensityDocument,
   parseDrummondvilleDensityDocument,
   parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
+  parseVarennesDensityDocument,
 } from "./densityDocument.js";
 
 const header = [
@@ -273,5 +275,90 @@ describe("parseHuberdeauDensityDocument", () => {
     expect(parsed.documentAnchored).toBe(true);
     expect(parsed.norms).toEqual([]);
     expect(parsed.refusals[0]?.reason).toBe("densite-conditionnelle-sans-code-zone");
+  });
+});
+
+describe("parseClermontDensityDocument", () => {
+  const clermontHeader = [
+    "VILLE DE CLERMONT",
+    "RÈGLEMENT DE ZONAGE NUMÉRO VC-434-13",
+    "ANNEXE K - GRILLES DES SPÉCIFICATIONS",
+  ].join("\n");
+
+  it("publishes one explicit maximum when all use columns agree", () => {
+    const parsed = parseClermontDensityDocument([
+      clermontHeader,
+      "ZONE 006-Rec",
+      "H1 Logement Nombre minimal de logement 1 1",
+      "Nombre maximal de logement 2 2",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "006-Rec",
+      value: 2,
+      unit: "logements/batiment",
+      raw: "2 | 2",
+    })]);
+  });
+
+  it("refuses divergent maxima instead of choosing a use class", () => {
+    const parsed = parseClermontDensityDocument([
+      clermontHeader,
+      "ZONE 010-H",
+      "Nombre maximal de logement 2 1 -",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason)
+      .toBe("maxima-divergents-entre-colonnes-usages");
+  });
+});
+
+describe("parseVarennesDensityDocument", () => {
+  const varennesPage = [
+    "GRILLE DES USAGES ET NORMES Zone H-403",
+    "file:///C:/PGSYSTEM/Grille/Exe/html1.html 2021-06-01",
+  ].join("\n");
+
+  it("carries the printed zone to the continuation page and keeps an agreeing COS maximum", () => {
+    const parsed = parseVarennesDensityDocument([
+      varennesPage,
+      "\f",
+      "54. Coefficient d'occupation du sol max. 0.8 0.8",
+      "file:///C:/PGSYSTEM/Grille/Exe/html1.html 2021-06-01",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "H-403",
+      value: 0.8,
+      unit: "cos-max",
+      raw: "0.8 | 0.8",
+    })]);
+  });
+
+  it("retains a safe housing maximum while refusing a divergent COS row", () => {
+    const parsed = parseVarennesDensityDocument([
+      "GRILLE DES USAGES ET NORMES Zone H-405",
+      "6. b) Nombre de logements max. 32",
+      "file:///C:/PGSYSTEM/Grille/Exe/html1.html 2021-06-01",
+      "\f",
+      "54. Coefficient d'occupation du sol max. 0.8 2",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "H-405",
+      value: 32,
+      unit: "logements/batiment",
+    })]);
+    expect(parsed.refusals[0]?.reason)
+      .toBe("maxima-divergents-entre-colonnes-usages");
+  });
+
+  it("drops a zone carrying two different valid maximum metrics", () => {
+    const parsed = parseVarennesDensityDocument([
+      "GRILLE DES USAGES ET NORMES Zone H-405",
+      "6. b) Nombre de logements max. 32",
+      "file:///C:/PGSYSTEM/Grille/Exe/html1.html 2021-06-01",
+      "\f",
+      "54. Coefficient d'occupation du sol max. 0.8 0.8",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("valeurs-divergentes-pour-la-zone");
   });
 });

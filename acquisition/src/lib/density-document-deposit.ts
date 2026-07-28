@@ -10,7 +10,7 @@ import { canonZone } from "./zonage-norms.js";
 export interface DensityNormPatch {
   zoneCode: string;
   value: number;
-  unit: "logements/terrain" | "logements/batiment" | "log/ha";
+  unit: "logements/terrain" | "logements/batiment" | "log/ha" | "cos-max";
   raw: string;
   proof: string;
   page: number;
