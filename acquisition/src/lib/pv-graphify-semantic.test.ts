@@ -6,6 +6,7 @@ import { extractPvSemantic } from "./pv-graphify-semantic.js";
 const municipalities = [
   { slug: "albertville", name: "Albertville" },
   { slug: "compton", name: "Compton" },
+  { slug: "arundel", name: "Arundel" },
 ] as const;
 
 function extract(text: string) {
@@ -54,6 +55,22 @@ describe("PV deterministic Graphify semantic extraction", () => {
     const result = extract("Résolution numéro 2026-05-024 : adoption du règlement 227-2026.");
     expect(result.nodes).toEqual([]);
     expect(result.edges).toEqual([]);
+  });
+
+  it("accepts an exact English municipality owner but not an address after the name", () => {
+    const owner = extractPvSemantic({
+      source_file: "input/arundel.txt",
+      municipality_slug: "arundel",
+      text: "Minutes of the council of the Municipality of the Township of Arundel.",
+    }, municipalities);
+    const addressOnly = extractPvSemantic({
+      source_file: "input/arundel.txt",
+      municipality_slug: "arundel",
+      text: "Arundel held a meeting at the municipal office on 5 April 2022.",
+    }, municipalities);
+
+    expect(owner.nodes.map((node) => node.node_type)).toEqual(["Municipality", "Document"]);
+    expect(addressOnly.nodes).toEqual([]);
   });
 
   it("extracts resolution and regulation references with a non-silent legal quality", () => {
