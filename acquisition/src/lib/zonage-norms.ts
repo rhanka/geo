@@ -84,6 +84,9 @@ export const DENSITY_PROVENANCE_COLUMNS = [
   "densite_methode",
   "densite_snapshot",
   "densite_page_source",
+  "densite_proof",
+  "densite_legal_date",
+  "densite_legal_date_evidence",
 ] as const;
 
 /** Build the parquet schema (matches the deployed Sherbrooke product exactly). */
