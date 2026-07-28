@@ -520,7 +520,7 @@ spec:
               resources:
                 requests:
                   # Le tick reste petit face aux Jobs de capture; le quota borne
-                  # la montée progressive dans `captureBacklogSlots`.
+                  # la montée progressive dans captureBacklogSlots.
                   cpu: 10m
                   memory: 16Mi
                 limits:
