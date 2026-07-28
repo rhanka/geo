@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { selectProofUrlRecaptureWorklist } from "./served-zonage-immo-proof-url-capture-worklist.js";
+import {
+  arcgisGeometryQueryUrl,
+  probeArcgisGeometryQuery,
+  resolveArcgisProofUrlRecaptureWorklist,
+  selectProofUrlRecaptureWorklist,
+} from "./served-zonage-immo-proof-url-capture-worklist.js";
 
 describe("selectProofUrlRecaptureWorklist", () => {
   it("selects only untested v1 proofs with simple HTTPS envelope origins", () => {
@@ -27,5 +32,73 @@ describe("selectProofUrlRecaptureWorklist", () => {
     expect(selectProofUrlRecaptureWorklist(rows, new Set(), 1, 1)).toEqual([
       { slug: "bravo", source: "zones-v1-proof-url", urls: ["https://ville.example/bravo"] },
     ]);
+  });
+
+  it("replaces ArcGIS layer descriptions with the GeoJSON query URL", () => {
+    expect(arcgisGeometryQueryUrl("https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0")).toBe(
+      "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+    );
+    expect(arcgisGeometryQueryUrl("https://gis.example/arcgis/rest/services/Zonage/MapServer/17/", "json")).toBe(
+      "https://gis.example/arcgis/rest/services/Zonage/MapServer/17/query?where=1%3D1&outFields=*&f=json",
+    );
+    expect(arcgisGeometryQueryUrl("https://gis.example/arcgis/rest/services/Zonage/FeatureServer")).toBeNull();
+  });
+
+  it("keeps the JSON fallback only when the GeoJSON query did not contain geometry", async () => {
+    const resolved = await resolveArcgisProofUrlRecaptureWorklist([
+      {
+        slug: "arcgis",
+        source: "zones-v1-proof-url",
+        urls: ["https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"],
+      },
+    ], async (endpoint) => ({
+      endpoint,
+      selected_url: "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=json",
+      selected_format: "json",
+      attempts: [
+        { url: "https://example/geojson", http_status: 200, content_type: "application/json", classification: "AUTRE", detail: "json-without-features", coordinate_features: null, transport_error: null },
+        { url: "https://example/json", http_status: 200, content_type: "application/json", classification: "GEOMETRIE", detail: "json-features-with-coordinates", coordinate_features: 1, transport_error: null },
+      ],
+    }));
+    expect(resolved.worklist).toEqual([{
+      slug: "arcgis",
+      source: "zones-v1-proof-url",
+      urls: ["https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=json"],
+    }]);
+    expect(resolved.probes[0]?.selected_format).toBe("json");
+  });
+
+  it("probes f=json exactly once after a non-geometric GeoJSON response", async () => {
+    const urls: string[] = [];
+    const result = await probeArcgisGeometryQuery(
+      "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0",
+      async (url) => {
+        urls.push(url);
+        return url.endsWith("f=geojson")
+          ? new Response(JSON.stringify({ error: { message: "format unsupported" } }), { headers: { "content-type": "application/json" } })
+          : new Response(JSON.stringify({ features: [{ geometry: { rings: [[[-72.5, 46.1], [-72.4, 46.1], [-72.5, 46.1]]] } }] }), { headers: { "content-type": "application/json" } });
+      },
+    );
+    expect(urls).toEqual([
+      "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=json",
+    ]);
+    expect(result.selected_format).toBe("json");
+    expect(result.attempts).toHaveLength(2);
+  });
+
+  it("removes an ArcGIS endpoint that refused both formats instead of retaining its HTML description", async () => {
+    const resolved = await resolveArcgisProofUrlRecaptureWorklist([{
+      slug: "arcgis",
+      source: "zones-v1-proof-url",
+      urls: ["https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"],
+    }], async (endpoint) => ({ endpoint, selected_url: null, selected_format: null, attempts: [] }));
+    expect(resolved.worklist).toEqual([]);
+    expect(resolved.probes).toEqual([{
+      endpoint: "https://services.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0",
+      selected_url: null,
+      selected_format: null,
+      attempts: [],
+    }]);
   });
 });
