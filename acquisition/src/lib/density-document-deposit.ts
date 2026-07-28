@@ -10,13 +10,15 @@ import { canonZone } from "./zonage-norms.js";
 export interface DensityNormPatch {
   zoneCode: string;
   value: number;
-  unit: "logements/terrain" | "log/ha";
+  unit: "logements/terrain" | "logements/batiment" | "log/ha";
   raw: string;
   proof: string;
   page: number;
   sourceUrl: string;
   method: string;
   snapshot: string;
+  legalDate: string;
+  legalDateEvidence: string;
 }
 
 export interface DensityMergeResult {
@@ -38,6 +40,12 @@ function assertPatch(patch: DensityNormPatch): void {
   if (!patch.raw.trim() || !patch.proof.trim()) {
     throw new Error(`density patch ${patch.zoneCode}: verbatim evidence missing`);
   }
+  if (
+    !/^\d{4}(?:-\d{2}(?:-\d{2})?)?$/.test(patch.legalDate)
+    || !patch.legalDateEvidence.trim()
+  ) {
+    throw new Error(`density patch ${patch.zoneCode}: dated legal evidence missing`);
+  }
   if (!patch.sourceUrl.startsWith("https://")) {
     throw new Error(`density patch ${patch.zoneCode}: non-HTTPS source`);
   }
@@ -55,6 +63,9 @@ function densityColumns(patch: DensityNormPatch): Record<string, unknown> {
     densite_source_url: patch.sourceUrl,
     densite_methode: patch.method,
     densite_snapshot: patch.snapshot,
+    densite_proof: patch.proof,
+    densite_legal_date: patch.legalDate,
+    densite_legal_date_evidence: patch.legalDateEvidence,
     densite_page_source: `PAGE ${patch.page} ZONE ${patch.zoneCode}`,
   };
 }
