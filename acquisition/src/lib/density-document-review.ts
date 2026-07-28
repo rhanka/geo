@@ -7,6 +7,10 @@
  * unit. A missing text layer is explicitly inconclusive.
  */
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import {
   densityTextHits,
@@ -34,6 +38,22 @@ export interface NativeDensityReview extends NativeTextResult {
   hits: DensityTextHit[];
 }
 
+export interface NativeExtractionOptions {
+  xlsToXlsx?: (bytes: Buffer) => Buffer;
+}
+
+export interface CapturedWaybackRangePart {
+  start: number;
+  end: number;
+  last: boolean;
+  bytes: Buffer;
+}
+
+export interface WaybackAssembly {
+  bytes: Buffer | null;
+  blocker: string | null;
+}
+
 function kindOf(bytes: Buffer): NativeDocumentKind {
   if (bytes.subarray(0, 5).toString("latin1") === "%PDF-") return "pdf";
   if (bytes.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) return "xlsx";
@@ -45,7 +65,94 @@ function kindOf(bytes: Buffer): NativeDocumentKind {
   return "unknown";
 }
 
-export function extractNativeDocumentText(bytes: Buffer): NativeTextResult {
+/**
+ * Reassemble only contiguous, full responses whose final requested byte is
+ * explicitly marked. Partial/gapped/replayed responses remain inconclusive.
+ */
+export function assembleWaybackPdfRanges(
+  firstMiB: Buffer,
+  parts: readonly CapturedWaybackRangePart[],
+): WaybackAssembly {
+  if (firstMiB.length !== 1_048_576 || kindOf(firstMiB) !== "pdf") {
+    return { bytes: null, blocker: "wayback-first-part-is-not-truncated-pdf-mib" };
+  }
+  const chunks = [firstMiB];
+  let expectedStart = firstMiB.length;
+  let completed = false;
+  for (const part of [...parts].sort((left, right) => left.start - right.start)) {
+    if (part.start !== expectedStart || part.end < part.start) {
+      return { bytes: null, blocker: `wayback-range-gap-at-${expectedStart}` };
+    }
+    const expectedBytes = part.end - part.start + 1;
+    if (part.bytes.length !== expectedBytes) {
+      return {
+        bytes: null,
+        blocker: `wayback-range-size-${part.start}-${part.end}:expected-${expectedBytes}-got-${part.bytes.length}`,
+      };
+    }
+    if (kindOf(part.bytes) === "pdf") {
+      return { bytes: null, blocker: `wayback-range-ignored-at-${part.start}` };
+    }
+    chunks.push(part.bytes);
+    expectedStart += part.bytes.length;
+    if (part.last) {
+      completed = true;
+      break;
+    }
+  }
+  return completed
+    ? { bytes: Buffer.concat(chunks), blocker: null }
+    : { bytes: null, blocker: "wayback-ranges-incomplete" };
+}
+
+function workbookText(bytes: Buffer): string {
+  const workbook = readWorkbook(bytes);
+  return workbook.sheetNames
+    .map((sheet) => [
+      `FEUILLE: ${sheet}`,
+      ...(workbook.sheets[sheet] ?? []).map((row) => row.join("\t")),
+    ].join("\n"))
+    .join("\f");
+}
+
+/** Convert a legacy BIFF/OLE workbook without interpreting any cell value. */
+export function convertLegacyXlsToXlsx(bytes: Buffer): Buffer {
+  const directory = mkdtempSync(join(tmpdir(), "geo-density-xls-"));
+  const input = join(directory, "input.xls");
+  const output = join(directory, "input.xlsx");
+  const profile = pathToFileURL(join(directory, "libreoffice-profile")).href;
+  try {
+    writeFileSync(input, bytes);
+    const result = spawnSync(
+      "libreoffice",
+      [
+        `-env:UserInstallation=${profile}`,
+        "--headless",
+        "--convert-to",
+        "xlsx",
+        "--outdir",
+        directory,
+        input,
+      ],
+      { encoding: "utf8", timeout: 45_000, maxBuffer: 4 * 1024 * 1024 },
+    );
+    if (result.status !== 0) {
+      throw new Error(
+        `libreoffice-exit-${String(result.status)}:${`${result.stderr ?? ""} ${result.stdout ?? ""}`.trim().slice(0, 240)}`,
+      );
+    }
+    return readFileSync(output);
+  } finally {
+    // The directory is uniquely created by this function and contains only
+    // transient analysis artifacts; captured source bytes remain in S3 CAS.
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+export function extractNativeDocumentText(
+  bytes: Buffer,
+  options: NativeExtractionOptions = {},
+): NativeTextResult {
   const kind = kindOf(bytes);
   if (kind === "pdf") {
     const result = spawnSync(
@@ -69,13 +176,7 @@ export function extractNativeDocumentText(bytes: Buffer): NativeTextResult {
   }
   if (kind === "xlsx") {
     try {
-      const workbook = readWorkbook(bytes);
-      const text = workbook.sheetNames
-        .map((sheet) => [
-          `FEUILLE: ${sheet}`,
-          ...(workbook.sheets[sheet] ?? []).map((row) => row.join("\t")),
-        ].join("\n"))
-        .join("\f");
+      const text = workbookText(bytes);
       return text.trim()
         ? { kind, extractor: "xlsx-verbatim-cells", text, blocker: null }
         : { kind, extractor: "xlsx-verbatim-cells", text: null, blocker: "xlsx-without-verbatim-cells" };
@@ -89,7 +190,19 @@ export function extractNativeDocumentText(bytes: Buffer): NativeTextResult {
     }
   }
   if (kind === "xls") {
-    return { kind, extractor: null, text: null, blocker: "legacy-xls-native-parser-unavailable" };
+    try {
+      const text = workbookText((options.xlsToXlsx ?? convertLegacyXlsToXlsx)(bytes));
+      return text.trim()
+        ? { kind, extractor: "xlsx-verbatim-cells", text, blocker: null }
+        : { kind, extractor: "xlsx-verbatim-cells", text: null, blocker: "xls-without-verbatim-cells" };
+    } catch (error) {
+      return {
+        kind,
+        extractor: "xlsx-verbatim-cells",
+        text: null,
+        blocker: `xls-native-convert:${error instanceof Error ? error.message : String(error)}`.slice(0, 300),
+      };
+    }
   }
   if (kind === "text") {
     const text = bytes.toString("utf8");
@@ -100,8 +213,12 @@ export function extractNativeDocumentText(bytes: Buffer): NativeTextResult {
   return { kind, extractor: null, text: null, blocker: "unknown-document-container" };
 }
 
-export function reviewNativeDensityDocument(bytes: Buffer, titleAndUrl = ""): NativeDensityReview {
-  const native = extractNativeDocumentText(bytes);
+export function reviewNativeDensityDocument(
+  bytes: Buffer,
+  titleAndUrl = "",
+  options: NativeExtractionOptions = {},
+): NativeDensityReview {
+  const native = extractNativeDocumentText(bytes, options);
   if (native.text === null) {
     return { ...native, disposition: "native_parse_blocked", hits: [] };
   }
