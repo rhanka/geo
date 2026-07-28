@@ -49,10 +49,12 @@ export {
 export {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
+  parseClermontDensityDocument,
   parseDrummondvilleDensityDocument,
   parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
+  parseVarennesDensityDocument,
   type DensityDocumentParseResult,
   type DensityNormRefusal,
   type VerbatimDensityNorm,
