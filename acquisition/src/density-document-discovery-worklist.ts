@@ -9,7 +9,7 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx acquisition/src/density-document-discovery-worklist.ts --lot 1
  */
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -49,6 +49,13 @@ interface DirectoryFile {
 export interface PreviousSource {
   key: string;
   sha256: string;
+}
+
+interface WorklistProgress {
+  contract: "density-document-discovery-worklist-progress/v1";
+  baselineSha256: string;
+  lot: number;
+  previousSources: Record<string, PreviousSource | null>;
 }
 
 function option(argv: readonly string[], name: string): string | undefined {
@@ -140,6 +147,34 @@ async function previousSource(slug: string): Promise<PreviousSource | null> {
   return null;
 }
 
+function loadProgress(path: string, baselineSha256: string, lot: number): WorklistProgress {
+  if (!existsSync(path)) {
+    return {
+      contract: "density-document-discovery-worklist-progress/v1",
+      baselineSha256,
+      lot,
+      previousSources: {},
+    };
+  }
+  const value = JSON.parse(readFileSync(path, "utf8")) as Partial<WorklistProgress>;
+  if (
+    value.contract !== "density-document-discovery-worklist-progress/v1"
+    || value.baselineSha256 !== baselineSha256
+    || value.lot !== lot
+    || !value.previousSources
+    || typeof value.previousSources !== "object"
+  ) {
+    throw new Error(`checkpoint incompatible: ${path}`);
+  }
+  return value as WorklistProgress;
+}
+
+function writeProgress(path: string, progress: WorklistProgress): void {
+  const temporary = `${path}.tmp`;
+  writeFileSync(temporary, `${JSON.stringify(progress, null, 2)}\n`);
+  renameSync(temporary, path);
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const lot = positiveInteger("lot", option(argv, "lot"));
@@ -155,11 +190,28 @@ async function main(): Promise<void> {
   if (existsSync(outPath)) throw new Error(`refus d'écraser la worklist immuable: ${outPath}`);
 
   const baselineRaw = readFileSync(baselinePath, "utf8");
+  const baselineSha256 = sha256Hex(baselineRaw);
   const rows = stableDensityDiscoveryLots(parseDensityDiscoveryBaseline(JSON.parse(baselineRaw)))[lot - 1] ?? [];
-  const previousSources = new Map<string, PreviousSource | null>();
+  const progressPath = insideRepo(
+    option(argv, "progress")
+      ?? resolve(
+        ROOT,
+        `work/coverage/.density-document-discovery-worklist-progress-${baselineSha256.slice(0, 16)}-lot-${String(lot).padStart(2, "0")}.json`,
+      ),
+    "--progress",
+  );
+  const progress = loadProgress(progressPath, baselineSha256, lot);
+  const previousSources = new Map<string, PreviousSource | null>(
+    Object.entries(progress.previousSources),
+  );
   for (const row of rows) {
-    const previous = await previousSource(row.slug);
-    previousSources.set(row.slug, previous);
+    let previous = previousSources.get(row.slug);
+    if (previous === undefined) {
+      previous = await previousSource(row.slug);
+      previousSources.set(row.slug, previous);
+      progress.previousSources[row.slug] = previous;
+      writeProgress(progressPath, progress);
+    }
     process.stderr.write(
       `[density-worklist] ${row.slug} précédent=${previous ? `s3://${previous.key} sha256:${previous.sha256}` : "SHA INDISPONIBLE"}\n`,
     );
@@ -177,6 +229,7 @@ async function main(): Promise<void> {
     targets: worklist.targets.length,
     baseline_sha256: worklist.baselineSha256,
     previous_sha_available: worklist.targets.filter((target) => target.excludedSourceSha256 !== null).length,
+    progress: progressPath.replace(`${ROOT}/`, ""),
   })}\n`);
 }
 
@@ -187,4 +240,3 @@ if (invokedDirectly) {
     process.exitCode = 1;
   });
 }
-
