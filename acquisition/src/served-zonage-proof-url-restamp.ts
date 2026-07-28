@@ -710,7 +710,7 @@ async function main(): Promise<void> {
     const paths = merge.split(",").map((item) => item.trim()).filter(Boolean).map((item) => insideRepo(item, "merge-plans"));
     const output = option("merge-output");
     if (!output) throw new Error("--merge-output=<path> is required with --merge-plans");
-    mergePlans(paths, insideRepo(output, "merge-output"), integerOption("expect-ready", 50, 1, 10_000));
+    mergePlans(paths, insideRepo(output, "merge-output"), integerOption("expect-ready", 50, 0, 10_000));
     return;
   }
   const stem = option("stem") ?? DEFAULT_STEM;
