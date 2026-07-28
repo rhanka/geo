@@ -47,6 +47,8 @@ export {
   type PolygonalGeometry,
 } from "./zonage/lotZoneJoin.js";
 export {
+  parseChamplainDensityDocument,
+  parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
   type DensityDocumentParseResult,
   type DensityNormRefusal,

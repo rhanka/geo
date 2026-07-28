@@ -12,6 +12,8 @@ const patch: DensityNormPatch = {
   sourceUrl: "https://www.example.municipal/annexe-b.pdf",
   method: "native-text/density-document-verbatim",
   snapshot: "2026-07-28",
+  legalDate: "2026-06-01",
+  legalDateEvidence: "Document municipal: mise à jour 2026-06-01",
 };
 
 describe("mergeDensityNormRows", () => {
@@ -34,6 +36,9 @@ describe("mergeDensityNormRows", () => {
       densite_raw: "4",
       densite_confidence: 1,
       densite_source_url: patch.sourceUrl,
+      densite_proof: patch.proof,
+      densite_legal_date: patch.legalDate,
+      densite_legal_date_evidence: patch.legalDateEvidence,
       densite_page_source: "PAGE 7 ZONE A-1",
     });
   });
@@ -92,5 +97,8 @@ describe("mergeDensityNormRows", () => {
     expect(() =>
       mergeDensityNormRows([], [{ ...patch, proof: "" }]),
     ).toThrow(/verbatim evidence missing/);
+    expect(() =>
+      mergeDensityNormRows([], [{ ...patch, legalDateEvidence: "" }]),
+    ).toThrow(/dated legal evidence missing/);
   });
 });
