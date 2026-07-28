@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { reviewNativeDensityDocument } from "./density-document-review.js";
+import {
+  assembleWaybackPdfRanges,
+  reviewNativeDensityDocument,
+} from "./density-document-review.js";
 
 describe("native density document review", () => {
   it("should surface verbatim density text only as review-required", () => {
@@ -24,13 +27,32 @@ describe("native density document review", () => {
     expect(review.hits).toEqual([]);
   });
 
-  it("should keep an old XLS binary inconclusive instead of guessing", () => {
-    const review = reviewNativeDensityDocument(Buffer.from([
-      0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1,
-    ]));
+  it("should keep a failed native XLS conversion inconclusive instead of guessing", () => {
+    const review = reviewNativeDensityDocument(
+      Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]),
+      "",
+      { xlsToXlsx: () => { throw new Error("corrupt-biff"); } },
+    );
     expect(review).toMatchObject({
       disposition: "native_parse_blocked",
-      blocker: "legacy-xls-native-parser-unavailable",
+      blocker: "xls-native-convert:corrupt-biff",
     });
+  });
+
+  it("should assemble only contiguous Wayback ranges with an explicit last part", () => {
+    const first = Buffer.alloc(1_048_576);
+    first.write("%PDF-1.7");
+    const complete = assembleWaybackPdfRanges(first, [
+      { start: 1_048_576, end: 1_048_578, last: true, bytes: Buffer.from("abc") },
+    ]);
+    expect(complete.bytes?.length).toBe(1_048_579);
+    expect(complete.blocker).toBeNull();
+
+    expect(assembleWaybackPdfRanges(first, [
+      { start: 1_048_577, end: 1_048_579, last: true, bytes: Buffer.from("abc") },
+    ])).toMatchObject({ bytes: null, blocker: "wayback-range-gap-at-1048576" });
+    expect(assembleWaybackPdfRanges(first, [
+      { start: 1_048_576, end: 1_048_578, last: false, bytes: Buffer.from("abc") },
+    ])).toMatchObject({ bytes: null, blocker: "wayback-ranges-incomplete" });
   });
 });
