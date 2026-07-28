@@ -69,7 +69,7 @@ function arcgisLayerEndpoint(value: string): string | null {
 }
 
 /** Retrouve la couche depuis une URL de query produite par cette worklist. */
-function arcgisLayerEndpointFromCaptureUrl(value: string): string | null {
+export function arcgisLayerEndpointFromCaptureUrl(value: string): string | null {
   const direct = arcgisLayerEndpoint(value);
   if (direct !== null) return direct;
   try {
