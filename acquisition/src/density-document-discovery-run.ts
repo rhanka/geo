@@ -47,6 +47,8 @@ const MAX_PAGE_BYTES = 16 * 1024 * 1024;
 const MAX_DOCUMENT_BYTES = 128 * 1024 * 1024;
 const HTML_TIMEOUT_MS = 45_000;
 const DOCUMENT_TIMEOUT_MS = 120_000;
+const WAYBACK_RANGE_BYTES = 1_048_576;
+const MAX_WAYBACK_RANGE_PARTS = 64;
 
 interface PageLead {
   url: string;
@@ -189,6 +191,62 @@ async function capture(
     maxBytes: kind === "document" ? MAX_DOCUMENT_BYTES : MAX_PAGE_BYTES,
     timeoutMs: kind === "document" ? DOCUMENT_TIMEOUT_MS : HTML_TIMEOUT_MS,
     ...(title ? { title } : {}),
+  });
+}
+
+export interface WaybackRangeRequest {
+  start: number;
+  end: number;
+  last: boolean;
+}
+
+/** Bounded requests after Wayback's already-captured first 1 MiB response. */
+export function waybackRangeRequests(totalLength: number | null): WaybackRangeRequest[] {
+  if (totalLength !== null && (!Number.isInteger(totalLength) || totalLength < 0)) return [];
+  const requests: WaybackRangeRequest[] = [];
+  for (let index = 1; index <= MAX_WAYBACK_RANGE_PARTS; index++) {
+    const start = index * WAYBACK_RANGE_BYTES;
+    if (totalLength !== null && start >= totalLength) break;
+    const end = totalLength === null
+      ? start + WAYBACK_RANGE_BYTES - 1
+      : Math.min(totalLength - 1, start + WAYBACK_RANGE_BYTES - 1);
+    requests.push({ start, end, last: totalLength !== null && end === totalLength - 1 });
+  }
+  return requests;
+}
+
+async function captureWaybackRange(
+  ctx: CaptureContext,
+  url: string,
+  request: WaybackRangeRequest,
+  title: string,
+): Promise<CapturedFetchResult> {
+  const source = [
+    "normes-density-wayback-range",
+    String(request.start).padStart(9, "0"),
+    String(request.end).padStart(9, "0"),
+    request.last ? "last" : "more",
+  ].join("-");
+  ctx.run.log(
+    `[density-discovery] ${ctx.target.slug} WAYBACK-RANGE bytes=${request.start}-${request.end} `
+      + `last=${String(request.last)} ${url}`,
+  );
+  return capturedFetch(url, {
+    method: "GET",
+    headers: {
+      "user-agent": ctx.run.userAgent,
+      accept: "application/pdf,application/octet-stream,*/*",
+      range: `bytes=${request.start}-${request.end}`,
+    },
+  }, {
+    run: ctx.run,
+    source,
+    slugs: [ctx.target.slug],
+    robots: ctx.robots,
+    retainBody: true,
+    maxBytes: WAYBACK_RANGE_BYTES + 1,
+    timeoutMs: DOCUMENT_TIMEOUT_MS,
+    title,
   });
 }
 
@@ -354,13 +412,32 @@ async function runTarget(ctx: CaptureContext): Promise<void> {
     if (
       archived.ok
       && archived.bytes !== null
-      && archived.bytes.length === 1_048_576
+      && archived.bytes.length === WAYBACK_RANGE_BYTES
       && documentMagic(archived.bytes) === "pdf"
+      && (lead.archive.length === null || lead.archive.length > WAYBACK_RANGE_BYTES)
     ) {
-      // This is the measured Wayback truncation signature. It remains
-      // inconclusive until the range-capture receipt is implemented; never call
-      // it an absence and never feed the truncated bytes to a parser.
       ctx.run.log(`[density-discovery] ${ctx.target.slug} WAYBACK-TRUNCATED-1MIB ${archivedUrl}`);
+      for (const request of waybackRangeRequests(lead.archive.length)) {
+        const part = await captureWaybackRange(ctx, archivedUrl, request, lead.title);
+        if (!part.ok || part.bytes === null) break;
+        if (documentMagic(part.bytes) === "pdf") {
+          // The archive ignored Range and replayed the first MiB. Preserve the
+          // receipt but stop: concatenating it would fabricate bytes.
+          ctx.run.log(
+            `[density-discovery] ${ctx.target.slug} WAYBACK-RANGE-IGNORED `
+              + `bytes=${request.start}-${request.end} ${archivedUrl}`,
+          );
+          break;
+        }
+        const requestedBytes = request.end - request.start + 1;
+        if (part.bytes.length < requestedBytes) {
+          ctx.run.log(
+            `[density-discovery] ${ctx.target.slug} WAYBACK-RANGE-SHORT `
+              + `requested=${requestedBytes} received=${part.bytes.length} ${archivedUrl}`,
+          );
+          break;
+        }
+      }
     }
   }
 

@@ -18,9 +18,15 @@ import {
 import {
   equivalentDocumentUrl,
   parseDensityDiscoveryWorklist,
+  waybackSnapshotOriginalUrl,
   type DensityDiscoveryTarget,
 } from "../../packages/qc-sources/src/sources/density-document-discovery.js";
-import { reviewNativeDensityDocument, type NativeDensityReview } from "./lib/density-document-review.js";
+import {
+  assembleWaybackPdfRanges,
+  reviewNativeDensityDocument,
+  type CapturedWaybackRangePart,
+  type NativeDensityReview,
+} from "./lib/density-document-review.js";
 import { exists, getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 interface Args {
@@ -41,6 +47,7 @@ interface CandidateEvidence {
   retrievedAt: string;
   sha256: string;
   storageKey: string;
+  storageKeys: string[];
   source: string;
   kind: NativeDensityReview["kind"];
   extractor: NativeDensityReview["extractor"];
@@ -211,26 +218,159 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
   const candidates: CandidateEvidence[] = [];
   const seenSha = new Set<string>();
   const s3 = s3Client();
+  const cas = new Map<string, Buffer>();
+  const readCas = async (line: CaptureManifestLine): Promise<Buffer | null> => {
+    if (line.sha256 === null || line.storage_key === null) return null;
+    let bytes = cas.get(line.storage_key);
+    if (!bytes) {
+      bytes = await getBytes(s3, line.storage_key);
+      cas.set(line.storage_key, bytes);
+    }
+    if (digest(bytes) !== line.sha256) {
+      blockers.add(`${line.storage_key}:cas-sha-mismatch`);
+      return null;
+    }
+    return bytes;
+  };
+
+  const rangeRe = /^normes-density-wayback-range-(\d+)-(\d+)-(last|more)$/;
+  const rangeGroups = new Map<string, CaptureManifestLine[]>();
+  for (const line of lines) {
+    if (!rangeRe.test(line.source) || line.http_status !== 200 || line.storage_key === null) continue;
+    const group = rangeGroups.get(line.url) ?? [];
+    group.push(line);
+    rangeGroups.set(line.url, group);
+  }
+  const handledTruncatedUrls = new Set<string>();
+  for (const [url, rangeLines] of rangeGroups) {
+    const archivedOriginalUrl = waybackSnapshotOriginalUrl(url);
+    if (
+      target.excludedSourceUrl !== null
+      && (
+        equivalentDocumentUrl(url, target.excludedSourceUrl)
+        || (
+          archivedOriginalUrl !== null
+          && equivalentDocumentUrl(archivedOriginalUrl, target.excludedSourceUrl)
+        )
+      )
+    ) continue;
+    const firstLine = lines.find((line) =>
+      line.url === url
+      && line.source === "normes-density-wayback-document"
+      && line.http_status === 200
+      && line.storage_key !== null
+      && line.bytes === 1_048_576);
+    if (!firstLine || firstLine.retrieved_at === null || firstLine.sha256 === null || firstLine.storage_key === null) {
+      blockers.add(`${url}:wayback-range-without-first-part`);
+      continue;
+    }
+    handledTruncatedUrls.add(url);
+    const firstBytes = await readCas(firstLine);
+    const parts: CapturedWaybackRangePart[] = [];
+    const storageKeys = [firstLine.storage_key];
+    for (const line of rangeLines) {
+      const match = rangeRe.exec(line.source);
+      const bytes = await readCas(line);
+      if (!match || bytes === null || line.storage_key === null) continue;
+      parts.push({
+        start: Number(match[1]),
+        end: Number(match[2]),
+        last: match[3] === "last",
+        bytes,
+      });
+      storageKeys.push(line.storage_key);
+    }
+    const assembly = firstBytes === null
+      ? { bytes: null, blocker: "wayback-first-part-cas-invalid" }
+      : assembleWaybackPdfRanges(firstBytes, parts);
+    if (assembly.bytes === null) {
+      const blocker = assembly.blocker ?? "wayback-ranges-incomplete";
+      blockers.add(`${url}:${blocker}`);
+      candidates.push({
+        url,
+        retrievedAt: firstLine.retrieved_at,
+        sha256: firstLine.sha256,
+        storageKey: firstLine.storage_key,
+        storageKeys,
+        source: "normes-density-wayback-ranges",
+        kind: "pdf",
+        extractor: null,
+        disposition: "native_parse_blocked",
+        blocker,
+        hits: [],
+      });
+      continue;
+    }
+    const review = reviewNativeDensityDocument(assembly.bytes, url);
+    const rebuiltSha = digest(assembly.bytes);
+    seenSha.add(rebuiltSha);
+    candidates.push({
+      url,
+      retrievedAt: firstLine.retrieved_at,
+      sha256: rebuiltSha,
+      storageKey: firstLine.storage_key,
+      storageKeys,
+      source: "normes-density-wayback-ranges",
+      kind: review.kind,
+      extractor: review.extractor,
+      disposition: review.disposition,
+      blocker: review.blocker,
+      hits: review.hits,
+    });
+    if (review.blocker) blockers.add(`${url}:${review.blocker}`);
+  }
+
   for (const line of lines.filter(isReviewableLine)) {
     if (line.sha256 === null || line.storage_key === null || line.retrieved_at === null) continue;
-    const resolvedUrl = line.final_url ?? line.url;
     if (
-      (target.excludedSourceUrl !== null && equivalentDocumentUrl(resolvedUrl, target.excludedSourceUrl))
+      line.source === "normes-density-wayback-document"
+      && line.bytes === 1_048_576
+    ) {
+      if (!handledTruncatedUrls.has(line.url)) {
+        const blocker = "wayback-truncated-no-complete-ranges";
+        blockers.add(`${line.url}:${blocker}`);
+        candidates.push({
+          url: line.final_url ?? line.url,
+          retrievedAt: line.retrieved_at,
+          sha256: line.sha256,
+          storageKey: line.storage_key,
+          storageKeys: [line.storage_key],
+          source: line.source,
+          kind: "pdf",
+          extractor: null,
+          disposition: "native_parse_blocked",
+          blocker,
+          hits: [],
+        });
+      }
+      continue;
+    }
+    const resolvedUrl = line.final_url ?? line.url;
+    const archivedOriginalUrl = waybackSnapshotOriginalUrl(resolvedUrl);
+    if (
+      (
+        target.excludedSourceUrl !== null
+        && (
+          equivalentDocumentUrl(resolvedUrl, target.excludedSourceUrl)
+          || (
+            archivedOriginalUrl !== null
+            && equivalentDocumentUrl(archivedOriginalUrl, target.excludedSourceUrl)
+          )
+        )
+      )
       || line.sha256 === `sha256:${target.excludedSourceSha256 ?? ""}`
       || seenSha.has(line.sha256)
     ) continue;
     seenSha.add(line.sha256);
-    const bytes = await getBytes(s3, line.storage_key);
-    if (digest(bytes) !== line.sha256) {
-      blockers.add(`${line.storage_key}:cas-sha-mismatch`);
-      continue;
-    }
+    const bytes = await readCas(line);
+    if (bytes === null) continue;
     const review = reviewNativeDensityDocument(bytes, resolvedUrl);
     candidates.push({
       url: resolvedUrl,
       retrievedAt: line.retrieved_at,
       sha256: line.sha256,
       storageKey: line.storage_key,
+      storageKeys: [line.storage_key],
       source: line.source,
       kind: review.kind,
       extractor: review.extractor,
