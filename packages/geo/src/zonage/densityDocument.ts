@@ -449,13 +449,15 @@ export function parseClermontDensityDocument(text: string): DensityDocumentParse
   for (const [pageIndex, pageText] of pages(text).entries()) {
     const page = pageIndex + 1;
     const zone =
-      /\bZONE\s+(\d{3}-[A-ZÀ-ÖØ-Þ]{1,8}(?:-\d+)*)\b/i.exec(pageText)?.[1] ?? null;
+      /\bZONE\s+(\d{3}(?:\.\d+)?-[A-ZÀ-ÖØ-Þ]{1,8}(?:-\d+)*)\b/i
+        .exec(pageText)?.[1] ?? null;
     const line = pageText.split(/\r?\n/)
       .find((candidate) => /\bNombre\s+maximal\s+de\s+logements?\b/i.test(candidate));
     if (!line) continue;
     const proof = foldedLine(line);
     const match = /\bNombre\s+maximal\s+de\s+logements?\b\s*(.*)$/i.exec(proof);
-    const rawValues = match?.[1]?.match(/\d+(?:[,.]\d+)?/g) ?? [];
+    const withoutNotes = match?.[1]?.replace(/\([^)]*\)/g, " ") ?? "";
+    const rawValues = withoutNotes.match(/\d+(?:[,.]\d+)?/g) ?? [];
     if (rawValues.length === 0) continue;
     if (!zone) {
       refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
