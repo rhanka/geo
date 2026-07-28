@@ -46,6 +46,14 @@ function option(name: string): string | null {
   return value === undefined ? null : value.slice(prefix.length);
 }
 
+function integerOption(name: string, fallback: number, min: number): number {
+  const raw = option(name);
+  if (raw === null) return fallback;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < min) throw new Error(`--${name} must be an integer >= ${min}`);
+  return value;
+}
+
 function insideRepo(path: string, name: string): string {
   const resolved = resolve(ROOT, path);
   if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} must resolve inside the repository`);
@@ -121,12 +129,15 @@ async function main(): Promise<void> {
   if (!input || !output) throw new Error("--in=<classification.json> and --out=<worklist.json> are required");
   const inputPath = insideRepo(input, "in");
   const outputPath = insideRepo(output, "out");
+  const offset = integerOption("offset", 0, 0);
+  const limit = integerOption("limit", Number.MAX_SAFE_INTEGER, 1);
   if (existsSync(outputPath)) throw new Error(`refusing to overwrite existing worklist: ${output}`);
   const report = JSON.parse(readFileSync(inputPath, "utf8")) as ClassificationReport;
   if (report.contract !== "capture-octets-classification/v1" || report.complete !== true || !Array.isArray(report.lines) || !report.lines.every(isClassifiedLine)) {
     throw new Error("classification report must be complete capture-octets-classification/v1 with valid lines");
   }
-  const worklist = buildArcgisRecaptureWorklist(report.lines);
+  const fullWorklist = buildArcgisRecaptureWorklist(report.lines);
+  const worklist = fullWorklist.slice(offset, offset + limit);
   if (worklist.length === 0) throw new Error("classification report has no ArcGIS recapture candidates");
   writeFileSync(outputPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
   const pageHtmlLines = report.lines.filter((line) => line.classification === "PAGE HTML").length;
@@ -135,6 +146,8 @@ async function main(): Promise<void> {
     input: inputPath,
     out: outputPath,
     targets: worklist.length,
+    total_targets: fullWorklist.length,
+    offset,
     page_html_lines: pageHtmlLines,
     other_arcgis_lines: otherArcgisLines,
     format: "geojson",
