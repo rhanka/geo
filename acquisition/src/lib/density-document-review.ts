@@ -61,6 +61,26 @@ export interface WaybackAssembly {
   blocker: string | null;
 }
 
+const LEGAL_DATE =
+  String.raw`(?:\d{1,2}(?:er)?\s+(?:janv(?:ier)?|f[ée]v(?:rier)?|mars|avr(?:il)?|mai|juin|juil(?:let)?|ao[uû]t|sept(?:embre)?|oct(?:obre)?|nov(?:embre)?|d[ée]c(?:embre)?)\.?\s+\d{4}|\d{4}-\d{2}-\d{2})`;
+const FINAL_ADOPTION = new RegExp(
+  String.raw`\bAdoption(?:\s+du\s+r[èe]glement)?\s*:\s*${LEGAL_DATE}\b`,
+  "i",
+);
+const ENTRY_INTO_FORCE = new RegExp(
+  String.raw`\bEntr[ée]e\s+en\s+vigueur\s*:\s*${LEGAL_DATE}\b`,
+  "i",
+);
+
+/**
+ * A chronology row saying "Adoption du projet de règlement" is not itself a
+ * project marker when the same document also prints dated final adoption and
+ * entry into force. A project marker in the source title/URL remains absolute.
+ */
+export function hasDatedFinalAdoption(text: string): boolean {
+  return FINAL_ADOPTION.test(text) && ENTRY_INTO_FORCE.test(text);
+}
+
 function kindOf(bytes: Buffer): NativeDocumentKind {
   if (bytes.subarray(0, 5).toString("latin1") === "%PDF-") return "pdf";
   if (bytes.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) return "xlsx";
@@ -275,7 +295,11 @@ export function reviewNativeDensityDocument(
       .replace(/[^a-z0-9]+/g, " ")
       .includes(foldedName), 12)
     : [];
-  if (hasHardProjectMarker(`${titleAndUrl}\n${native.text.slice(0, 250_000)}`)) {
+  const reviewText = native.text.slice(0, 250_000);
+  const projectExcluded =
+    hasHardProjectMarker(titleAndUrl)
+    || (hasHardProjectMarker(reviewText) && !hasDatedFinalAdoption(reviewText));
+  if (projectExcluded) {
     return {
       ...native,
       disposition: "project_excluded",
