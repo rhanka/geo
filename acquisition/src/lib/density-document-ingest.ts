@@ -24,3 +24,18 @@ export function assertClosedDensityDiscoveryReport(
     throw new Error("rapport de découverte incomplet ou incohérent");
   }
 }
+
+/**
+ * Return a served zone code only when it is byte-for-byte identical to the
+ * code printed by the reviewed document. No punctuation, prefix, case, or
+ * component-order normalization is permitted in this path.
+ */
+export function exactDensitySigZoneCode(
+  documentCode: string,
+  servedCodes: Iterable<string>,
+): string | null {
+  for (const servedCode of servedCodes) {
+    if (servedCode === documentCode) return servedCode;
+  }
+  return null;
+}

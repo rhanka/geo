@@ -26,12 +26,16 @@ import {
   parseMontLaurierZonesHDensityDocument,
   parseMontTremblantDensityDocument,
   parseMontTremblantPlanDensityDocument,
+  parseNotreDameDeLourdesJolietteDensityDocument,
   parseSaintJeromeDensityDocument,
   parseVarennesDensityDocument,
   parseVarennesPpuDensityDocument,
   type DensityDocumentParseResult,
 } from "../../packages/geo/src/zonage/densityDocument.js";
-import { assertClosedDensityDiscoveryReport } from "./lib/density-document-ingest.js";
+import {
+  assertClosedDensityDiscoveryReport,
+  exactDensitySigZoneCode,
+} from "./lib/density-document-ingest.js";
 import {
   mergeDensityNormRows,
   type DensityNormPatch,
@@ -90,6 +94,7 @@ interface Profile {
   legalDate: string | null;
   legalDateEvidence: string;
   reglement: string;
+  exactSigCode?: boolean;
   numericSigBridge?: boolean;
   corroboration?: {
     referenceProfileId: string;
@@ -153,7 +158,22 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2024-09-17",
     legalDateEvidence: "Page P-1 native verbatim: « VA-1290 — 17 sept. 2024 »",
     reglement: "Règlement de zonage VA-964 — annexe 2, grille P-1",
+    exactSigCode: true,
     parse: parseAmosDensityDocument,
+  },
+  {
+    id: "notre-dame-de-lourdes-joliette-02-2023-h16",
+    slug: "notre-dame-de-lourdes--joliette",
+    sourceUrl: "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250312154803-02-2023-reglement-de-zonage-maj-2024-11-27.pdf",
+    sourceSha256: "sha256:9120ec22aea90b90b6d6f9316825adb3a4b3fca3f9ea64723a68e575ae14a9c7",
+    sourceHost: "www.notredamedelourdes.ca",
+    owner: "Municipalité de Notre-Dame-de-Lourdes (MRC de Joliette)",
+    ownerEvidence: "Page 2 native: « MRC DE JOLIETTE — MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES »",
+    legalDate: "2024-11-27",
+    legalDateEvidence: "Page 2 native verbatim: « Dernière mise à jour le : 27 novembre 2024 »",
+    reglement: "Règlement de zonage 02-2023 — annexe C intégrée, grille H-16",
+    exactSigCode: true,
+    parse: parseNotreDameDeLourdesJolietteDensityDocument,
   },
   {
     id: "saint-dominique-2017-324",
@@ -804,8 +824,15 @@ async function main(): Promise<void> {
     if (parsed.documentAnchored && !parsed.projectExcluded && profile.legalDate !== null) {
       const snapshot = candidate.retrievedAt.slice(0, 10);
       for (const norm of parsed.norms) {
-        let sigCode = sigByCanon.get(canonZone(norm.zoneCode));
-        if (!sigCode && profile.numericSigBridge && /^\d+$/.test(norm.zoneCode)) {
+        let sigCode = profile.exactSigCode
+          ? exactDensitySigZoneCode(norm.zoneCode, sigRaw)
+          : sigByCanon.get(canonZone(norm.zoneCode));
+        if (
+          !sigCode
+          && !profile.exactSigCode
+          && profile.numericSigBridge
+          && /^\d+$/.test(norm.zoneCode)
+        ) {
           sigCode = sigByNumber.get(String(Number(norm.zoneCode))) ?? undefined;
         }
         if (!sigCode) {
