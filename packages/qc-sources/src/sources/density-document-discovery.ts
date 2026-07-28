@@ -96,7 +96,13 @@ export interface DensityNormValueHit {
   label: DensityTextHit["label"];
   zoneCodes: string[];
   rawValues: string[];
-  unit: "logements/hectare" | "logements/batiment" | "cos" | "terrain/logement" | "densite-explicite";
+  unit:
+    | "logements/hectare"
+    | "logements/batiment"
+    | "logements/terrain"
+    | "cos"
+    | "terrain/logement"
+    | "densite-explicite";
   verbatim: string;
 }
 
@@ -627,7 +633,7 @@ export function densityNormValueHits(text: string, maxHits = 80): DensityNormVal
   const hits: DensityNormValueHit[] = [];
   for (const [pageIndex, page] of text.split("\f").entries()) {
     const zoneCodes = [...new Set(
-      [...page.matchAll(/\bZONE\s*:\s*([A-Z0-9][A-Z0-9._ -]{0,20})/gi)]
+      [...page.matchAll(/\bZONE\s*:?\s+([A-Z0-9][A-Z0-9._ -]{0,20})/gi)]
         .map((match) => (match[1] ?? "").trim().split(/\s{2,}/)[0] ?? "")
         .filter(Boolean),
     )].slice(0, 12);
@@ -642,6 +648,11 @@ export function densityNormValueHits(text: string, maxHits = 80): DensityNormVal
           label: "logements-hectare",
           unit: "logements/hectare",
           re: /(?:logements?|log\.?|unit[eé]s?)\s*(?:\/|par|[àa])\s*(?:l['’]\s*)?hectare(?:\s+maximum)?\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "nombre-logements",
+          unit: "logements/terrain",
+          re: /nombre\s+de\s+logements?\s*(?:\/|par)\s*terrains?\s*\((?:min|max)[^)]*\)\s*[:=-]?\s*(.+)$/i,
         },
         {
           label: "nombre-logements",
