@@ -101,7 +101,10 @@ async function foldEntry(entry: WorklistEntry, dryRun: boolean): Promise<Record<
       matched += folded.matched;
       changed += folded.changed;
     }
-    if (matched === 0) throw new Error(`${key}: aucun polygone au code exact demandé`);
+    if (matched === 0) {
+      results.push({ key, polygons_matched_exactly: 0, provenance_cells_changed: 0, written: false, skipped: "exact-zone-code-absent" });
+      continue;
+    }
     if (!dryRun && changed > 0) {
       await putServedZoneAdditive(s3, key, fc as never, { allowedProps: LEGAL_DATE_FIELDS });
     }

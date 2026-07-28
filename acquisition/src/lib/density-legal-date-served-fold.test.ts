@@ -24,4 +24,10 @@ describe("foldExactDensityLegalDate", () => {
       { properties: { zone_code: "2 Rec", densite_value: 8.8, densite_legal_date: "2014-01-01" } },
     ], stamp)).toThrow("served legal date conflicts");
   });
+
+  it("reports no match rather than relaxing an absent code", () => {
+    const features = [{ properties: { zone_code: "2 REC", densite_value: 8.8 } }];
+    expect(foldExactDensityLegalDate(features, stamp)).toEqual({ matched: 0, changed: 0 });
+    expect(features[0]!.properties).not.toHaveProperty("densite_legal_date");
+  });
 });
