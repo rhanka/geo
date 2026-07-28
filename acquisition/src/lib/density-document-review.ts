@@ -36,10 +36,14 @@ export interface NativeTextResult {
 export interface NativeDensityReview extends NativeTextResult {
   disposition: NativeReviewDisposition;
   hits: DensityTextHit[];
+  openingVerbatim: string | null;
+  dateSignals: string[];
+  identitySignals: string[];
 }
 
 export interface NativeExtractionOptions {
   xlsToXlsx?: (bytes: Buffer) => Buffer;
+  municipalityName?: string;
 }
 
 export interface CapturedWaybackRangePart {
@@ -220,15 +224,70 @@ export function reviewNativeDensityDocument(
 ): NativeDensityReview {
   const native = extractNativeDocumentText(bytes, options);
   if (native.text === null) {
-    return { ...native, disposition: "native_parse_blocked", hits: [] };
+    return {
+      ...native,
+      disposition: "native_parse_blocked",
+      hits: [],
+      openingVerbatim: null,
+      dateSignals: [],
+      identitySignals: [],
+    };
   }
+  const lines = native.text.split(/\r?\n/);
+  const openingVerbatim = lines.slice(0, 100).join("\n").trim().slice(0, 8_000) || null;
+  const contexts = (predicate: (line: string) => boolean, max: number): string[] => {
+    const out: string[] = [];
+    const seen = new Set<string>();
+    for (let index = 0; index < lines.length && out.length < max; index++) {
+      if (!predicate(lines[index] ?? "")) continue;
+      const context = lines
+        .slice(Math.max(0, index - 1), Math.min(lines.length, index + 2))
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .slice(0, 700);
+      if (!context || seen.has(context)) continue;
+      seen.add(context);
+      out.push(context);
+    }
+    return out;
+  };
+  const dateSignals = contexts(
+    (line) => /entr[eé]e\s+en\s+vigueur|adopt[eé]|codification|mise\s+[àa]\s+jour|r[eè]glement\s+(?:num[eé]ro|n[o°])|\b(?:19|20)\d{2}\b/i.test(line),
+    20,
+  );
+  const foldedName = (options.municipalityName ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const identitySignals = foldedName
+    ? contexts((line) => line
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .includes(foldedName), 12)
+    : [];
   if (hasHardProjectMarker(`${titleAndUrl}\n${native.text.slice(0, 250_000)}`)) {
-    return { ...native, disposition: "project_excluded", hits: [] };
+    return {
+      ...native,
+      disposition: "project_excluded",
+      hits: [],
+      openingVerbatim,
+      dateSignals,
+      identitySignals,
+    };
   }
   const hits = densityTextHits(native.text);
   return {
     ...native,
     disposition: hits.length > 0 ? "candidate_review_required" : "no_density_signal",
     hits,
+    openingVerbatim,
+    dateSignals,
+    identitySignals,
   };
 }
