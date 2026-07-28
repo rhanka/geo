@@ -14,12 +14,19 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { parseCaptureWorklist, type CaptureWorklistTarget } from "../../packages/qc-sources/src/capture/index.js";
+import {
+  parseDensityDiscoveryWorklist,
+  type DensityDiscoveryTarget,
+  type DensityDiscoveryWorklist,
+} from "../../packages/qc-sources/src/sources/density-document-discovery.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const BILAN = resolve(ROOT, "work/coverage/bilan-4a-133-non-connues-20260728T134431Z.json");
 const DEFAULT_OUT = resolve(ROOT, "acquisition/config");
 const SOURCE = "normes-a-gisements-catalog";
 const LOT_SIZE = 6;
+const DENSITY_BASELINE_KEY = "work/coverage/effet-densifiant-bprime-acquisition-universe-20260727.json";
+const DENSITY_BASELINE_SHA256 = "c777ed4a155468e3cb13a8c9b9591d2e770fced97c5d5c5758c264fa3e04767f";
 
 interface TargetSeed {
   slug: string;
@@ -195,26 +202,84 @@ export function categoryAGisementsWorklists(): CaptureWorklistTarget[][] {
     worklist.slice(index * LOT_SIZE, (index + 1) * LOT_SIZE));
 }
 
+export function categoryADensityReviewWorklists(): DensityDiscoveryWorklist[] {
+  const priorTargets = new Map<string, DensityDiscoveryTarget>();
+  for (let lot = 1; lot <= 5; lot++) {
+    const worklist = parseDensityDiscoveryWorklist(JSON.parse(readFileSync(resolve(
+      ROOT,
+      `acquisition/config/density-document-discovery-20260728-lot-${String(lot).padStart(2, "0")}.json`,
+    ), "utf8")));
+    for (const target of worklist.targets) priorTargets.set(target.slug, target);
+  }
+  const extras = new Map<string, Pick<DensityDiscoveryTarget,
+    "mamhCode" | "excludedSourceUrl" | "excludedSourceSha256" | "excludedSourceStorageKey" | "baselineSnapshot"
+  >>([
+    ["lislet", {
+      mamhCode: "17078",
+      excludedSourceUrl: null,
+      excludedSourceSha256: null,
+      excludedSourceStorageKey: null,
+      baselineSnapshot: "2026-07-12",
+    }],
+    ["saint-francois-de-la-riviere-du-sud", {
+      mamhCode: "18060",
+      // Le document servi sous ce slug est précisément celui dont le propriétaire
+      // imprimé doit être ré-audité; il ne peut jamais devenir une "trouvaille".
+      excludedSourceUrl: "https://www.stfrancois.ca/_files/ugd/36c7be_ab9fe17c8935431794f6202fd758f885.pdf",
+      excludedSourceSha256: null,
+      excludedSourceStorageKey: null,
+      baselineSnapshot: "2026-07-12",
+    }],
+    ["saint-alphonse", {
+      mamhCode: "05065",
+      excludedSourceUrl: null,
+      excludedSourceSha256: null,
+      excludedSourceStorageKey: null,
+      baselineSnapshot: "2026-07-28",
+    }],
+  ]);
+  const targets = TARGETS.map((seed): DensityDiscoveryTarget => {
+    const prior = priorTargets.get(seed.slug);
+    if (prior) return prior;
+    const extra = extras.get(seed.slug);
+    if (!extra) throw new Error(`métadonnées de revue absentes: ${seed.slug}`);
+    return { slug: seed.slug, name: seed.name, website: seed.website, ...extra };
+  });
+  const lots = Array.from({ length: Math.ceil(targets.length / LOT_SIZE) }, (_value, index) =>
+    targets.slice(index * LOT_SIZE, (index + 1) * LOT_SIZE));
+  return lots.map((lot, index) => parseDensityDiscoveryWorklist({
+    contract: "density-document-discovery/v1",
+    baselineKey: DENSITY_BASELINE_KEY,
+    baselineSha256: DENSITY_BASELINE_SHA256,
+    lot: index + 1,
+    lots: lots.length,
+    targets: lot,
+  }));
+}
+
 function option(argv: readonly string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
   return index >= 0 ? argv[index + 1] : undefined;
 }
 
 function main(): void {
-  const outDir = resolve(option(process.argv.slice(2), "out-dir") ?? DEFAULT_OUT);
+  const argv = process.argv.slice(2);
+  const outDir = resolve(option(argv, "out-dir") ?? DEFAULT_OUT);
   if (!outDir.startsWith(`${ROOT}/`)) throw new Error("--out-dir doit rester dans le dépôt");
   mkdirSync(outDir, { recursive: true });
-  const lots = categoryAGisementsWorklists();
+  const review = argv.includes("--review");
+  const lots = review ? categoryADensityReviewWorklists() : categoryAGisementsWorklists();
   for (const [index, lot] of lots.entries()) {
     const path = resolve(
       outDir,
-      `density-document-category-a-gisements-20260728-lot-${String(index + 1).padStart(2, "0")}.json`,
+      `density-document-category-a-${review ? "review" : "gisements"}-20260728-lot-${String(index + 1).padStart(2, "0")}.json`,
     );
     writeFileSync(path, `${JSON.stringify(lot, null, 2)}\n`, { flag: "wx" });
-    process.stdout.write(`${path.replace(`${ROOT}/`, "")}\t${lot.length}\t${lot.reduce((sum, target) => sum + target.urls.length, 0)} URL\n`);
+    const count = Array.isArray(lot) ? lot.length : lot.targets.length;
+    const urls = Array.isArray(lot) ? lot.reduce((sum, target) => sum + target.urls.length, 0) : null;
+    process.stdout.write(`${path.replace(`${ROOT}/`, "")}\t${count}${urls === null ? "" : `\t${urls} URL`}\n`);
   }
 }
 
 const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokedDirectly) main();
-

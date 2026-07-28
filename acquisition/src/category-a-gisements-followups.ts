@@ -20,7 +20,10 @@ import {
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(import.meta.dirname, "..", "..");
-const SOURCE = "normes-a-gisements-followup";
+// Le suffixe `-document` permet au rapport natif existant de relire aussi cette
+// passe. Les catalogues texte restent sans signal; les PDF/XLS passent par le
+// parseur natif avant toute route vision.
+const SOURCE = "normes-a-gisements-document";
 const LOT_SIZE = 6;
 const DOCUMENT_HINT =
   /zonag|urbanis|grille|sp[eé]cification|usages?.{0,16}normes?|annexe|densit|logements?|occupation.{0,10}sol|r[eè]glement|reglement|coefficient|certificat.{0,16}conformit/i;
@@ -32,6 +35,7 @@ const SERVICE = /\/(?:FeatureServer|MapServer)(?:\/\d+)?(?:$|[?#])/i;
 
 interface CompletedRun {
   manifestKey: string;
+  exitCode: number;
   lines: CaptureManifestLine[];
 }
 
@@ -199,6 +203,7 @@ async function completedRuns(prefixes: readonly string[]): Promise<CompletedRun[
     if (header.finished_at === null || header.exit_code === null) continue;
     runs.push({
       manifestKey,
+      exitCode: header.exit_code,
       lines: parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8")),
     });
   }
@@ -211,6 +216,10 @@ function digest(bytes: Buffer): string {
 
 async function materialize(prefixes: readonly string[]): Promise<CaptureWorklistTarget[][]> {
   const runs = await completedRuns(prefixes);
+  const failed = runs.filter((run) => run.exitCode !== 0);
+  if (failed.length > 0) {
+    throw new Error(`runs de capture échoués: ${failed.map((run) => run.manifestKey).join(",")}`);
+  }
   const lines = runs.flatMap((run) => run.lines);
   const attempted = new Map<string, Set<string>>();
   const found = new Map<string, Set<string>>();
@@ -242,6 +251,11 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
       `acquisition/config/density-document-category-a-gisements-20260728-lot-${String(lot).padStart(2, "0")}.json`,
     ), "utf8")))).flat();
   const scope = firstLots.flat();
+  const completedSlugs = new Set(lines.flatMap((line) => line.slugs));
+  const missing = scope.map((target) => target.slug).filter((slug) => !completedSlugs.has(slug));
+  if (missing.length > 0) {
+    throw new Error(`captures non terminales ou absentes: ${missing.join(",")}`);
+  }
   const followups = parseCaptureWorklist(scope.map((target) => ({
     slug: target.slug,
     source: SOURCE,
@@ -278,4 +292,3 @@ if (import.meta.url === new URL(process.argv[1]!, "file:").href) {
     process.exitCode = 1;
   });
 }
-
