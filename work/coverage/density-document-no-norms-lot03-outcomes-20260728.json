@@ -1,0 +1,79 @@
+{
+  "contract": "density-document-reviewed-outcomes/v1",
+  "scope": {
+    "count": 8,
+    "worklist": "acquisition/config/density-document-no-norms-20260728-lot-03.json",
+    "run_prefixes": [
+      "normes-20260728T104540Z-d3-"
+    ]
+  },
+  "outcomes": [
+    {
+      "slug": "saint-eustache",
+      "result": "not_folded",
+      "served_polygons": 321,
+      "served_density_polygons": 0,
+      "reason": "Aucun nouveau document n’a été capturé. La grille antérieure publiée sous « anciens règlements de zonage » porte des rapports plancher-terrain, mais imprime notamment « 2 C 55 » là où le SIG servi imprime « 2-C-55 »; aucune ancienne grille ni différence de forme n’a été utilisée comme état de référence.",
+      "evidence_url": "https://www.saint-eustache.ca/storage/app/media/repertoire-reglements/anciens-reglements-zonage/1288-grilles-usages-et%20-normes.pdf",
+      "evidence_verbatim": "88-02-17; RAPPORT PLANCHER-TERRAIN 1.6"
+    },
+    {
+      "slug": "saint-jude",
+      "result": "not_folded",
+      "served_polygons": 81,
+      "served_density_polygons": 0,
+      "reason": "Les annexes B officielles de 2026 portent des coefficients d’emprise au sol, mais aucune date dans les grilles; le règlement parent laisse « AVIS DE MOTION », « ADOPTION » et « ENTRÉE EN VIGUEUR » vides. Un document non daté ne se plie pas.",
+      "evidence_url": "https://www.saint-jude.ca/pdf/urbanisme/R%C3%A8glements/2026/Zonage%20St-Jude%20-%20Annexe%20B%20-%20Grilles%20des%20sp%C3%A9cifications%20%20-%20Zone%20A.pdf",
+      "evidence_verbatim": "ZONE A-101; Coefficient d'emprise au sol (%) Maximum 25"
+    },
+    {
+      "slug": "saint-marcel-de-richelieu",
+      "result": "not_folded",
+      "served_polygons": 3,
+      "served_density_polygons": 0,
+      "reason": "Le règlement officiel 20-442 porte des seuils numériques de densité brute pour la zone 104, mais ce code n’existe pas à l’identique dans le SIG servi, qui ne porte que A-304 et A-307. Aucun préfixe ni rapprochement n’a été fait.",
+      "evidence_verbatim": "21.7 SEUILS MINIMAUX DE DENSITÉ BRUTE ... DANS LA ZONE 104; Nombre de logements à l’hectare 13 13 14"
+    },
+    {
+      "slug": "sainte-anne-de-sorel",
+      "result": "not_folded",
+      "served_polygons": 87,
+      "served_density_polygons": 0,
+      "reason": "Le règlement de zonage consolidé officiel ne porte que des emplois non numériques du mot densité; aucune valeur de densité par code de zone n’a été localisée.",
+      "evidence_url": "https://msads.ca/wp-content/uploads/2023/11/Zonage-Final-Reg-436-2009-MODIF-14_garage-et-remise-reg-571-2023.pdf"
+    },
+    {
+      "slug": "sainte-brigitte-des-saults",
+      "result": "not_folded",
+      "served_polygons": 27,
+      "served_density_polygons": 0,
+      "reason": "Le règlement 453-2021 daté explique le coefficient d’occupation du sol et le nombre de logements, mais la capture ne contient aucune valeur numérique de grille; aucune norme verbatim ne peut être déposée.",
+      "evidence_verbatim": "AVIS DE MOTION : 13 septembre 2021; ADOPTION : 4 octobre 2021"
+    },
+    {
+      "slug": "sainte-seraphine",
+      "result": "not_folded",
+      "served_polygons": 13,
+      "served_density_polygons": 0,
+      "reason": "La grille officielle datée porte des coefficients d’occupation du sol, mais imprime A1, A2, A3, C1, H1, I1, P1 et V1 à V5; aucun de ces codes n’existe à l’identique dans le SIG servi, qui imprime les mêmes familles avec tiret. Aucune normalisation n’a été faite.",
+      "evidence_url": "https://www.munsainteseraphine.ca/fichiersUpload/fichiers/20230321104253-grille-usages-et-normes-annexe-b.pdf",
+      "evidence_verbatim": "Fait partie intégrante du règlement de zonage no 2015-28; 1 JUIN 2015; Zone A1; Coefficient d’occupation du sol maximum 40"
+    },
+    {
+      "slug": "warden",
+      "result": "not_folded",
+      "served_polygons": 28,
+      "served_density_polygons": 0,
+      "reason": "Aucun nouveau document n’a été capturé. La grille antérieure de 2017 porte des valeurs pour R1, R2 et d’autres codes détaillés, tandis que le SIG servi ne porte à l’identique que A, C, P et R; aucune ancienne grille ni correspondance par préfixe n’a été utilisée.",
+      "evidence_url": "https://municipalites-du-quebec.com/warden/docs/reglements/2/Grille%20des%20usages%20et%20des%20normes.pdf",
+      "evidence_verbatim": "ANNEXE B; 2017; Zone R1; Coefficient d’occupation du sol maximum 35 35 35"
+    },
+    {
+      "slug": "yamaska",
+      "result": "not_folded",
+      "served_polygons": 66,
+      "served_density_polygons": 0,
+      "reason": "Le centre documentaire municipal a livré 13 règlements modificatifs; le parseur natif n’y a trouvé aucune valeur de densité. Les documents marqués projet ont été exclus et aucune grille portant une densité n’a été publiée dans ce corpus."
+    }
+  ]
+}
