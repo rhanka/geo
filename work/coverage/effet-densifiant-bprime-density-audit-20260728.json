@@ -1,0 +1,200 @@
+{
+  "contract": "effet-densifiant-bprime-density-audit-report/v1",
+  "observed_on": "2026-07-28",
+  "branch": "feat/cadre-acquisition",
+  "source": {
+    "diagnosis": "/tmp/geo-effet-densifiant-bprime-s3-20260728.json",
+    "density_audit": "/tmp/geo-effet-densifiant-bprime-density-audit-with-norms-20260728.json",
+    "s3_environment": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10"
+  },
+  "scope": {
+    "configured_collections": 170,
+    "served_collections": 141,
+    "served_states": {
+      "known_effect": 7,
+      "unknown_only_excluded": 38,
+      "absent": 96
+    },
+    "fresh_absent_partition": {
+      "no_norms_folded": 51,
+      "norms_present_one_density": 45
+    },
+    "nightly_baseline_norms_present_one_density": 37,
+    "reindexed_delta": [
+      "champlain",
+      "chesterville",
+      "clermont--charlevoix-est",
+      "drummondville",
+      "mont-laurier",
+      "saint-dominique",
+      "saint-jerome",
+      "stoneham-et-tewkesbury"
+    ]
+  },
+  "served_object_measurement": {
+    "target_collections": 45,
+    "target_polygons_served": 6633,
+    "target_polygons_carrying_one_density": 1335,
+    "target_polygons_with_both_densities": 0,
+    "target_polygons_with_both_densities_without_millesime": 0
+  },
+  "closed_partition": {
+    "total": 45,
+    "after_missing_before": {
+      "count": 8,
+      "collections": [
+        "champlain",
+        "chesterville",
+        "clermont--charlevoix-est",
+        "drummondville",
+        "mont-laurier",
+        "saint-dominique",
+        "saint-jerome",
+        "stoneham-et-tewkesbury"
+      ],
+      "reason": "La densité servie est portée par une grille/codification courante, propriétaire vérifié et datée verbatim; aucune densité antérieure distincte n'a été retenue."
+    },
+    "before_missing_after": {
+      "count": 0,
+      "collections": []
+    },
+    "one_density_without_verbatim_date": {
+      "count": 36,
+      "collections": [
+        "amherst",
+        "arundel",
+        "bolton-ouest",
+        "boucherville",
+        "candiac",
+        "chelsea",
+        "coteau-du-lac",
+        "delson",
+        "dollard-des-ormeaux",
+        "dudswell",
+        "east-angus",
+        "gore",
+        "hemmingford--les-jardins-de-napierville--2",
+        "hudson",
+        "lachute",
+        "lawrenceville",
+        "matane",
+        "neuville",
+        "plaisance",
+        "pointe-claire",
+        "portneuf",
+        "repentigny",
+        "richmond",
+        "saint-ambroise-de-kildare",
+        "saint-basile-le-grand",
+        "saint-boniface",
+        "saint-etienne-de-bolton",
+        "saint-felix-de-valois",
+        "saint-gilbert",
+        "saint-mathias-sur-richelieu",
+        "saint-raymond",
+        "sainte-anne-de-la-rochelle",
+        "sainte-cecile-de-milton",
+        "sainte-justine-de-newton",
+        "temiscaming",
+        "waterloo"
+      ],
+      "reason": "La propriété densité porte une valeur, mais aucun raw/proof/source/date légale verbatim propre à cette densité ne permet d'identifier l'avant ou l'après. Un snapshot de capture n'est pas une date légale."
+    },
+    "project_source": {
+      "count": 0,
+      "collections": [],
+      "reason": "Aucune densité actuellement portée dans ces 45 collections n'est attribuée à un document identifié comme projet; les projets rencontrés ont été exclus, non requalifiés."
+    },
+    "other": {
+      "count": 1,
+      "collections": [
+        {
+          "slug": "notre-dame-de-lourdes--lerable",
+          "reason": "Contamination de propriétaire/provenance: la zone servie porte reglement 300-2017 avec une URL municipale « 1er projet », tandis que la norme densité des objets normes vient de notredamedelourdes.ca (MRC de Joliette), URL et reglement 02-2023. Le code H-16 et la valeur 2 pct ont donc été refusés comme densité légalement attribuable à l'univers --lerable."
+        }
+      ]
+    }
+  },
+  "dated_current_after_sources": [
+    {
+      "slug": "champlain",
+      "source_url": "https://www.municipalite.champlain.qc.ca/file-18281",
+      "date_verbatim": "2020-05-04",
+      "date_evidence_verbatim": "Table de codification verbatim: « Modification 04-05-20 — Règlement 2020-03 »",
+      "density_norms_served": 47,
+      "zoning_polygons_served_with_density": 47
+    },
+    {
+      "slug": "chesterville",
+      "source_url": "https://www.chesterville.net/fichiersUpload/fichiers/20240815102439-2024-grilles-agricoles.pdf",
+      "date_verbatim": "2024-08-15",
+      "date_evidence_verbatim": "URL municipale horodatée verbatim: /20240815102439-2024-grilles-agricoles.pdf",
+      "density_norms_served": 24,
+      "zoning_polygons_served_with_density": 33,
+      "note": "La seconde grille courante est https://www.chesterville.net/fichiersUpload/fichiers/20241010160535-2024-grilles-residentielles-autres.pdf, date verbatim 2024-10-10, pour 9 normes supplémentaires."
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "source_url": "http://ville.clermont.qc.ca/public_upload/files/2025/2025-06-25%20Grilles%20de%20zonage%20%C3%A0%20jour.pdf",
+      "date_verbatim": "2025-06-25",
+      "date_evidence_verbatim": "URL municipale verbatim: /2025/2025-06-25 Grilles de zonage à jour.pdf",
+      "density_norms_served": 31,
+      "zoning_polygons_served_with_density": 32
+    },
+    {
+      "slug": "drummondville",
+      "source_url": "https://www.drummondville.ca/wp-content/uploads/2026/07/4300-ZONAGE-Chap-13_Dispositions-particulieres.pdf",
+      "date_verbatim": "2026-05-21",
+      "date_evidence_verbatim": "En-tête verbatim: « modifications ... jusqu'au 21 mai 2026 inclusivement »",
+      "density_norms_served": 2,
+      "zoning_polygons_served_with_density": 2
+    },
+    {
+      "slug": "mont-laurier",
+      "source_url": "https://www.villemontlaurier.qc.ca/storage/app/media/Zones%20H.pdf",
+      "date_verbatim": "2025-06-18",
+      "date_evidence_verbatim": "Document municipal verbatim: « 18-06-2025 134-89 »",
+      "density_norms_served": 1,
+      "zoning_polygons_served_with_density": 1
+    },
+    {
+      "slug": "saint-dominique",
+      "source_url": "https://www.st-dominique.ca/fichiersUpload/fichiers/20260601132149-2017-324-annexe-b-grilles-des-usages.pdf",
+      "date_verbatim": "2026-06-01",
+      "date_evidence_verbatim": "URL municipale verbatim: /20260601132149-2017-324-annexe-b-grilles-des-usages.pdf",
+      "density_norms_served": 50,
+      "zoning_polygons_served_with_density": 50
+    },
+    {
+      "slug": "saint-jerome",
+      "source_url": "https://www.vsj.ca/wp-content/uploads/2025/12/Annexe_2_Grille_0351-000_Zonage_2026_07_14.pdf",
+      "date_verbatim": "2026-07-14",
+      "date_evidence_verbatim": "Nom municipal verbatim: « Annexe_2_Grille_0351-000_Zonage_2026_07_14.pdf »",
+      "density_norms_served": 13,
+      "zoning_polygons_served_with_density": 13
+    },
+    {
+      "slug": "stoneham-et-tewkesbury",
+      "source_url": "https://www.villestoneham.com/storage/app/media/ma-municipalite/affaires-municipales/reglements-municipaux/urbanisme/09-591_grille-des-specifications-codif-adm-maj-juillet-2026.pdf",
+      "date_verbatim": "2026-07",
+      "date_evidence_verbatim": "URL municipale verbatim: 09-591_grille-des-specifications-codif-adm-maj-juillet-2026.pdf",
+      "density_norms_served": 1,
+      "zoning_polygons_served_with_density": 1
+    }
+  ],
+  "control_lot": {
+    "collections": ["champlain", "chesterville", "clermont--charlevoix-est"],
+    "served_object_readback": {
+      "champlain": {"zoning_density_polygons": 47, "norms_density_polygons": 47},
+      "chesterville": {"zoning_density_polygons": 33, "norms_density_polygons": 33},
+      "clermont--charlevoix-est": {"zoning_density_polygons": 32, "norms_density_polygons": 31}
+    },
+    "historical_check": {
+      "champlain": "Le document municipal original daté « Adopté le 6 avril 2009 » (Wayback) reproduit les 47 valeurs de zones communes du courant 2020-05-04; 0 différence.",
+      "chesterville": "Les deux grilles municipales 2017 reproduisent les 33 valeurs des deux grilles 2024; 0 différence. Le document d'amendement 2015 n'a aucune densité publiable.",
+      "clermont--charlevoix-est": "Les documents datés 2021-06 et 2016-06-07 changent la couverture de codes, mais aucune valeur ne diffère pour les codes communs; ce n'est pas une seconde densité pour une même zone."
+    },
+    "result": "3 objets servis relus; 0 seconde densité distincte admissible; aucun dépôt; arrêt avant tout lot suivant."
+  },
+  "deposits": []
+}
