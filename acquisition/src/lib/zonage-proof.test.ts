@@ -474,16 +474,53 @@ describe("additive served-zone provenance write", () => {
     expect(sent.some((command) => command.name === PUT)).toBe(false);
   });
 
-  it("refuses an artifact_uri substitution to a URL with a query string", async () => {
+  // Une query string etait refusee. La regle etait une prudence de FORME, et
+  // elle rendait la classe de sources la plus nombreuse inattestable : un
+  // endpoint ArcGIS nu sert une PAGE HTML, la geometrie n'est atteignable que
+  // par `/query?...f=geojson`. Le garde n'admettait donc que l'URL qui NE sert
+  // PAS les octets attestes. Ce qui est protege est la propriete, pas la forme.
+  it("accepts an attested substitution to the ArcGIS query URL that actually served the bytes", async () => {
     const served: any = clone(twoFeatures());
     for (const feature of served.features) feature.properties.proof = legacyProof();
     const { s3, sent } = fakeS3(served);
     const incoming: any = clone(served);
-    const queryUrl = "https://data.example.org/zoning/alpha.geojson?token=not-to-be-truncated";
+    const queryUrl = "https://services2.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson";
     for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = queryUrl;
 
-    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+    await putServedZoneAdditive(s3, KEY, incoming, {
       allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, queryUrl),
+    });
+    expect(sent.some((command) => command.name === PUT)).toBe(true);
+  });
+
+  // Le fragment n'est JAMAIS transmis au serveur : il ne peut pas faire partie
+  // de ce qui a produit les octets, donc le laisser suggererait qu'il compte.
+  it("refuses an artifact_uri substitution to a URL carrying a fragment", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    const fragmentUrl = "https://data.example.org/zoning/alpha.geojson?f=geojson#layer-3";
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = fragmentUrl;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, fragmentUrl),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  // Un secret publie dans une preuve fuite, et l'URL n'est alors pas rejouable
+  // par le tiers a qui on la donne.
+  it("refuses an artifact_uri substitution to a URL carrying credentials", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    const credentialUrl = "https://user:secret@data.example.org/zoning/alpha.geojson?f=geojson";
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = credentialUrl;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, credentialUrl),
     })).rejects.toThrow();
     expect(sent.some((command) => command.name === PUT)).toBe(false);
   });

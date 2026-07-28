@@ -440,10 +440,40 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 }
 
-function isHttpsUrlWithoutQuery(value: unknown): value is string {
+/**
+ * URL de remplacement acceptable dans une substitution d'`artifact_uri`.
+ *
+ * Cette fonction interdisait toute query string. La règle était une prudence
+ * de forme — « une URL de document nue est stable » — et elle s'est révélée
+ * FAUSSE sur la classe de sources la plus nombreuse.
+ *
+ * Un endpoint ArcGIS `FeatureServer/<n>` rend une PAGE HTML de description de
+ * service. La géométrie n'est atteignable que par
+ * `<endpoint>/query?where=1%3D1&outFields=*&f=geojson`. Interdire la query
+ * revenait donc à n'admettre que l'URL qui NE sert PAS la donnée attestée :
+ * exactement la preuve fabriquée qu'un re-stampage a été arrêté pour éviter
+ * (0 écriture sur 10, 2026-07-28).
+ *
+ * Ce que le garde doit protéger n'est pas la forme de l'URL, c'est la
+ * propriété : « cette URL, fetchée, a rendu des octets dont le SHA-256 est
+ * celui qu'on atteste, et une ligne de manifeste l'enregistre ». La query
+ * string est orthogonale à cette propriété — elle en est même la condition ici.
+ *
+ * Ce qui reste refusé, et pourquoi :
+ *   - `http:` — une attestation ne se rejoue pas sur un canal non authentifié ;
+ *   - les identifiants dans l'URL (`user:pass@`) — un secret dans une preuve
+ *     publiée fuite, et l'URL n'est alors pas rejouable par un tiers ;
+ *   - le fragment (`#…`) — jamais transmis au serveur, donc il ne peut pas
+ *     faire partie de ce qui a produit les octets ; le laisser suggérerait
+ *     qu'il compte.
+ * Les autres gardes de la substitution restent inchangés : l'URI d'origine doit
+ * être `s3://`, le SHA-256 doit venir de la même ligne de manifeste et être
+ * écrit dans la même opération, et toute autre altération de l'enveloppe échoue.
+ */
+function isAttestableReplacementUrl(value: unknown): value is string {
   if (!isRealGeometryUrl(value)) return false;
   const parsed = new URL(value);
-  return parsed.protocol === "https:" && parsed.search.length === 0;
+  return parsed.protocol === "https:" && parsed.hash.length === 0 && parsed.username === "" && parsed.password === "";
 }
 
 function checkedProofArtifactUriAttestations(
@@ -459,7 +489,7 @@ function checkedProofArtifactUriAttestations(
       !substitution ||
       typeof substitution.artifactUri !== "string" ||
       !substitution.artifactUri.startsWith("s3://") ||
-      !isHttpsUrlWithoutQuery(substitution.replacementUrl) ||
+      !isAttestableReplacementUrl(substitution.replacementUrl) ||
       !PROOF_SHA256_RE.test(substitution.sha256)
     ) {
       throw new Error(`putServedZoneAdditive: invalid ${label} attestation`);
@@ -508,7 +538,7 @@ function isAttestedProofArtifactUriSubstitution(
   if (
     typeof artifactUri !== "string" ||
     !artifactUri.startsWith("s3://") ||
-    !isHttpsUrlWithoutQuery(replacementUrl) ||
+    !isAttestableReplacementUrl(replacementUrl) ||
     typeof sha256 !== "string" ||
     !PROOF_SHA256_RE.test(sha256) ||
     nextGeometry?.sha256 !== sha256
@@ -531,7 +561,8 @@ function isAttestedProofArtifactUriSubstitution(
 /**
  * Restoration companion to {@link isAttestedProofArtifactUriSubstitution}.
  * It admits exactly two coupled leaf changes in a v1 feature proof: the legacy
- * `s3://` URI becomes the no-query HTTPS URL captured by the manifest, and the
+ * `s3://` URI becomes the HTTPS URL actually captured by the manifest — query
+ * string included when that is what served the bytes — and the
  * previously ABSENT SHA-256 member is added from that same manifest line.
  * Reconstructing the old proof before comparison makes every other alteration
  * fail closed.
@@ -557,7 +588,7 @@ function isAttestedProofArtifactUriAndSha256Stamp(
     Object.hasOwn(currentGeometry, "sha256") ||
     typeof artifactUri !== "string" ||
     !artifactUri.startsWith("s3://") ||
-    !isHttpsUrlWithoutQuery(replacementUrl) ||
+    !isAttestableReplacementUrl(replacementUrl) ||
     typeof nextGeometry?.sha256 !== "string" ||
     !PROOF_SHA256_RE.test(nextGeometry.sha256)
   ) return false;
