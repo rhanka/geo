@@ -189,7 +189,18 @@ export function planMissingSha256ProofRestamp(
     if (Object.hasOwn(geometry, "sha256")) throw new MissingSha256RestampRefusal("envelope-sha256-present-or-malformed");
     const attestation = byArtifact.get(artifactUri);
     if (!attestation) throw new MissingSha256RestampRefusal(`feature-${index}-s3-artifact-has-no-manifest-attestation`);
-    if (geometry.upstream_uri !== attestation.replacementUrl) {
+    // Troisieme site ou la meme comparaison etait faite par egalite de chaine.
+    // L'enveloppe servie declare l'endpoint ArcGIS NU comme `upstream_uri`, la
+    // ligne de manifeste porte la forme `/query?...f=geojson` -- la seule qui
+    // rende la geometrie. L'egalite stricte refusait donc l'attestation juste.
+    //
+    // Ce que ce controle doit garantir reste ENTIER : que l'attestation porte
+    // bien sur la MEME source que celle declaree par l'enveloppe. C'est ce que
+    // `manifestUrlMatchesServedEnvelope` verifie, en ramenant l'URL de capture
+    // a son endpoint de couche ; deux endpoints differents ne s'apparient
+    // jamais (teste). On remplace une comparaison de CHAINES par une
+    // comparaison d'IDENTITE DE SOURCE, on ne supprime pas le controle.
+    if (!manifestUrlMatchesServedEnvelope(attestation.replacementUrl, geometry.upstream_uri)) {
       throw new MissingSha256RestampRefusal(`feature-${index}-manifest-url-does-not-match-served-envelope`);
     }
     nextGeometry.artifact_uri = attestation.replacementUrl;
