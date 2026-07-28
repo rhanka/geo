@@ -54,6 +54,9 @@ interface CandidateEvidence {
   disposition: NativeDensityReview["disposition"];
   blocker: string | null;
   hits: NativeDensityReview["hits"];
+  openingVerbatim: string | null;
+  dateSignals: string[];
+  identitySignals: string[];
 }
 
 type RowStatus =
@@ -298,10 +301,17 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
         disposition: "native_parse_blocked",
         blocker,
         hits: [],
+        openingVerbatim: null,
+        dateSignals: [],
+        identitySignals: [],
       });
       continue;
     }
-    const review = reviewNativeDensityDocument(assembly.bytes, url);
+    const review = reviewNativeDensityDocument(
+      assembly.bytes,
+      url,
+      { municipalityName: target.name },
+    );
     const rebuiltSha = digest(assembly.bytes);
     seenSha.add(rebuiltSha);
     candidates.push({
@@ -316,6 +326,9 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
       disposition: review.disposition,
       blocker: review.blocker,
       hits: review.hits,
+      openingVerbatim: review.openingVerbatim,
+      dateSignals: review.dateSignals,
+      identitySignals: review.identitySignals,
     });
     if (review.blocker) blockers.add(`${url}:${review.blocker}`);
   }
@@ -341,6 +354,9 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
           disposition: "native_parse_blocked",
           blocker,
           hits: [],
+          openingVerbatim: null,
+          dateSignals: [],
+          identitySignals: [],
         });
       }
       continue;
@@ -364,7 +380,11 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
     seenSha.add(line.sha256);
     const bytes = await readCas(line);
     if (bytes === null) continue;
-    const review = reviewNativeDensityDocument(bytes, resolvedUrl);
+    const review = reviewNativeDensityDocument(
+      bytes,
+      resolvedUrl,
+      { municipalityName: target.name },
+    );
     candidates.push({
       url: resolvedUrl,
       retrievedAt: line.retrieved_at,
@@ -377,6 +397,9 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
       disposition: review.disposition,
       blocker: review.blocker,
       hits: review.hits,
+      openingVerbatim: review.openingVerbatim,
+      dateSignals: review.dateSignals,
+      identitySignals: review.identitySignals,
     });
     if (review.blocker) blockers.add(`${resolvedUrl}:${review.blocker}`);
   }
