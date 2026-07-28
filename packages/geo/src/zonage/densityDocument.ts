@@ -551,6 +551,203 @@ export function parseVarennesDensityDocument(text: string): DensityDocumentParse
 }
 
 /**
+ * Mont-Tremblant — one native sheet per zone. A zone may carry either a
+ * logements/ha row or an explicit prose maximum per building. Repeated use
+ * columns must agree, conditional prose is refused, and competing metrics for
+ * one zone fail closed through the shared consolidation rule.
+ */
+export function parseMontTremblantDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  const family = "mont-tremblant-2008-102-annexe-a";
+  const documentAnchored =
+    /Annexe\s+A\s+du\s+r[èe]glement\s+de\s+zonage\s+\(2008\)-102/i.test(text)
+    && /GRILLE\s+DES\s+USAGES\s+ET\s+DES\s+NORMES/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const zone =
+      /\bZONE\s*:\s*([A-Z]{1,4}-\d{3}(?:[.-]\d+)*)\b/i.exec(pageText)?.[1] ?? null;
+    for (const line of pageText.split(/\r?\n/)) {
+      const proof = foldedLine(line);
+      const row =
+        /\bLogements?\s*\/\s*terrain\s+maximal\s*\(logements?\s*\/\s*ha\)\s*(.*)$/i
+          .exec(proof);
+      if (!row) continue;
+      const withoutNotes = row[1]!.replace(/\(\s*\d+\s*\)/g, " ");
+      const rawValues = withoutNotes.match(/\d+(?:[,.]\d+)?/g) ?? [];
+      if (rawValues.length === 0) continue;
+      if (!zone) {
+        refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
+        continue;
+      }
+      const values = rawValues.map(decimal);
+      if (values.some((value) => value === null) || new Set(values).size !== 1) {
+        refusals.push({
+          page,
+          zoneCode: zone,
+          reason: "maxima-divergents-entre-colonnes-usages",
+          proof,
+        });
+        continue;
+      }
+      readings.push({
+        zoneCode: zone,
+        value: values[0]!,
+        unit: "log/ha",
+        raw: rawValues.join(" | "),
+        proof,
+        page,
+      });
+    }
+
+    const folded = foldedLine(pageText);
+    const prose =
+      /\bLe\s+nombre\s+maximal\s+de\s+logements?\s+par\s+b[âa]timent\s+est\s+fix[ée]\s+[àa]\s+(\d+(?:[,.]\d+)?)([^.]*)\./gi;
+    for (const match of folded.matchAll(prose)) {
+      const proof = match[0]!;
+      if (!zone) {
+        refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
+        continue;
+      }
+      if (match[2]!.trim() !== "") {
+        refusals.push({
+          page,
+          zoneCode: zone,
+          reason: "maximum-conditionnel",
+          proof,
+        });
+        continue;
+      }
+      const value = decimal(match[1]!);
+      if (value === null) {
+        refusals.push({ page, zoneCode: zone, reason: "maximum-non-numerique", proof });
+        continue;
+      }
+      readings.push({
+        zoneCode: zone,
+        value,
+        unit: "logements/batiment",
+        raw: match[1]!,
+        proof,
+        page,
+      });
+    }
+  }
+
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
+/**
+ * Saint-Jérôme — one three-page sheet per zone. The scalar density field can
+ * represent only the explicit COS maximum. A printed minimum followed by "-"
+ * is evidence, but is not converted into a maximum.
+ */
+export function parseSaintJeromeDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  const family = "saint-jerome-0351-000-annexe-2";
+  const documentAnchored =
+    /R[èe]glement\s+num[ée]ro\s+0351-000\s+sur\s+le\s+zonage\s+de\s+la\s+Ville\s+de\s+Saint-\s*J[ée]r[oô]me/i
+      .test(foldedLine(text))
+    && /\bZone\s*:\s*[A-Z]{1,6}-\d{3}/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const zone =
+      /\bZone\s*:\s*([A-Z]{1,6}-\d{3}(?:\.\d+)?)\b/i.exec(pageText)?.[1] ?? null;
+    for (const line of pageText.split(/\r?\n/)) {
+      const proof = foldedLine(line);
+      const label =
+        /\bCoefficient\s+d['’]occupation\s+du\s+sol\s+\(COS\)\s+min\.\/max\.\s*(.*)$/i
+          .exec(proof);
+      if (!label) continue;
+      const pair = /^(\d+(?:[,.]\d+)?|-)\s*\/\s*(\d+(?:[,.]\d+)?|-)(?:\s|$)/.exec(label[1]!);
+      if (!pair) continue;
+      if (!zone) {
+        refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
+        continue;
+      }
+      if (pair[2] === "-") {
+        refusals.push({ page, zoneCode: zone, reason: "cos-maximum-absent", proof });
+        continue;
+      }
+      const value = decimal(pair[2]!);
+      if (value === null) {
+        refusals.push({ page, zoneCode: zone, reason: "cos-maximum-non-numerique", proof });
+        continue;
+      }
+      readings.push({
+        zoneCode: zone,
+        value,
+        unit: "cos-max",
+        raw: pair[2]!,
+        proof,
+        page,
+      });
+    }
+  }
+
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
+function refuseAreaDensityWithoutZone(
+  family: string,
+  text: string,
+  documentAnchored: boolean,
+  densityPattern: RegExp,
+): DensityDocumentParseResult {
+  const projectExcluded = hardProjectMarker(text);
+  const refusals: DensityNormRefusal[] = [];
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const folded = foldedLine(pageText);
+    const match = densityPattern.exec(folded);
+    densityPattern.lastIndex = 0;
+    if (!match) continue;
+    refusals.push({
+      page: pageIndex + 1,
+      zoneCode: null,
+      reason: "densite-affectation-sans-code-zone",
+      proof: match[0]!,
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, [], refusals);
+}
+
+/** Mont-Tremblant plan policy: density is scoped to an area, not a zone. */
+export function parseMontTremblantPlanDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  return refuseAreaDensityWithoutZone(
+    "mont-tremblant-2008-100-plan-urbanisme",
+    text,
+    /Ville\s+de\s+Mont-Tremblant/i.test(text)
+      && /R[èe]glement\s+\(2008\)-100/i.test(text)
+      && /Plan\s+d['’]urbanisme/i.test(text),
+    /\bMaximum\s+de\s+\d+(?:[,.]\d+)?\s+logements?[^.]{0,180}?[àa]\s+l['’]hectare\b/i,
+  );
+}
+
+/** Varennes PPU policy: density is scoped to an affectation, not a zone. */
+export function parseVarennesPpuDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  return refuseAreaDensityWithoutZone(
+    "varennes-706-15-ppu",
+    text,
+    /PROGRAMME\s+PARTICULIER\s+D['’]URBANISME/i.test(text)
+      && /Ville\s+de\s+Varennes/i.test(text),
+    /\b(?:\d+(?:[,.]\d+)?\s+logements?\s+[àa]\s+l['’]hectare|logements?\s+[àa]\s+l['’]hectare\s*:\s*\d+(?:[,.]\d+)?|coefficient\s+d['’]occupation\s+du\s+sol\s+\(COS\))/i,
+  );
+}
+
+/**
  * Ville de Mont-Laurier — règlement de zonage 134, fichier municipal
  * « Zones H.pdf ». A zone page prints one or more use-class columns on the row
  * « Logement / Hectare maximum ». The norm is publishable only when every

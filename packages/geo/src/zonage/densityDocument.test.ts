@@ -8,7 +8,11 @@ import {
   parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
+  parseMontTremblantDensityDocument,
+  parseMontTremblantPlanDensityDocument,
+  parseSaintJeromeDensityDocument,
   parseVarennesDensityDocument,
+  parseVarennesPpuDensityDocument,
 } from "./densityDocument.js";
 
 const header = [
@@ -373,5 +377,106 @@ describe("parseVarennesDensityDocument", () => {
     ].join("\n"));
     expect(parsed.norms).toEqual([]);
     expect(parsed.refusals[0]?.reason).toBe("valeurs-divergentes-pour-la-zone");
+  });
+});
+
+describe("parseMontTremblantDensityDocument", () => {
+  const anchor = [
+    "Annexe A du règlement de zonage (2008)-102",
+    "GRILLE DES USAGES ET DES NORMES",
+  ].join("\n");
+
+  it("keeps agreeing logements/ha columns and strips footnote numbers", () => {
+    const parsed = parseMontTremblantDensityDocument([
+      anchor,
+      "ZONE : TM-680",
+      "Logements/terrain maximal (logements/ha) 2,6 (3) 2,6 (3) 2,6 (3)",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "TM-680",
+      value: 2.6,
+      unit: "log/ha",
+      raw: "2,6 | 2,6 | 2,6",
+    })]);
+  });
+
+  it("publishes an unconditional per-building maximum", () => {
+    const parsed = parseMontTremblantDensityDocument([
+      anchor,
+      "ZONE : CV-325",
+      "(1) Le nombre maximal de logements par bâtiment est fixé à 12.",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "CV-325",
+      value: 12,
+      unit: "logements/batiment",
+    })]);
+  });
+
+  it("refuses divergent columns and conditional prose", () => {
+    const parsed = parseMontTremblantDensityDocument([
+      anchor,
+      "ZONE : RC-400",
+      "Logements/terrain maximal (logements/ha) 65 55",
+      "Le nombre maximal de logements par bâtiment est fixé à 4 à l'exception d'un bâtiment qui peut en avoir 8.",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals.map((refusal) => refusal.reason)).toEqual([
+      "maxima-divergents-entre-colonnes-usages",
+      "maximum-conditionnel",
+    ]);
+  });
+});
+
+describe("parseSaintJeromeDensityDocument", () => {
+  const owner = [
+    "Règlement numéro 0351-000 sur le zonage de la Ville de Saint-Jérôme",
+    "Zone : CUS-406",
+  ].join("\n");
+
+  it("publishes only a numeric COS maximum", () => {
+    const parsed = parseSaintJeromeDensityDocument([
+      owner,
+      "132 Coefficient d'occupation du sol (COS) min./max. 0,5 / 3",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "CUS-406",
+      value: 3,
+      unit: "cos-max",
+      raw: "3",
+    })]);
+  });
+
+  it("does not turn a COS minimum into a maximum", () => {
+    const parsed = parseSaintJeromeDensityDocument([
+      owner,
+      "70 Coefficient d'occupation du sol (COS) min./max. 2,5 / -",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("cos-maximum-absent");
+  });
+});
+
+describe("area density documents", () => {
+  it("refuses the Mont-Tremblant plan density without a zone code", () => {
+    const parsed = parseMontTremblantPlanDensityDocument([
+      "Ville de Mont-Tremblant",
+      "Règlement (2008)-100",
+      "Plan d’urbanisme",
+      "DENSITÉ D’OCCUPATION",
+      "Maximum de 5 logements à l’hectare",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("densite-affectation-sans-code-zone");
+  });
+
+  it("refuses the Varennes PPU density without a zone code", () => {
+    const parsed = parseVarennesPpuDensityDocument([
+      "Ville de Varennes",
+      "PROGRAMME PARTICULIER D’URBANISME",
+      "logements à l’hectare : 30",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("densite-affectation-sans-code-zone");
   });
 });
