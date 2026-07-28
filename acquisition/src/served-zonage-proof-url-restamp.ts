@@ -41,6 +41,7 @@ import {
   type ProofArtifactUriSubstitution,
 } from "./lib/zonage-proof.js";
 import {
+  isHttpsCaptureUrl,
   MissingSha256RestampRefusal,
   planMissingSha256ProofRestamp,
   type ProofUrlManifestAttestation,
@@ -174,16 +175,6 @@ function asObject(value: unknown): JsonObject | null {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as JsonObject : null;
 }
 
-function isHttpsUrlWithoutQuery(value: unknown): value is string {
-  if (typeof value !== "string") return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "https:" && parsed.hostname.length > 0 && parsed.search.length === 0;
-  } catch {
-    return false;
-  }
-}
-
 function sha256(bytes: Buffer): string {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
@@ -256,7 +247,7 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
     if (outcome.status === "rejected") throw new Error(`capture manifest read failed: ${errorText(outcome.reason)}`);
     const { manifestKey, lines } = outcome.value;
     for (const [lineIndex, line] of lines.entries()) {
-      if (line.source !== "zones-v1-proof-url" || line.http_status !== 200 || !isHttpsUrlWithoutQuery(line.url)) continue;
+      if (line.source !== "zones-v1-proof-url" || line.http_status !== 200 || !isHttpsCaptureUrl(line.url)) continue;
       const receipt = captureReceiptFromManifest(line, manifestKey, lineIndex);
       if (receipt === null) continue;
       // This reads the immutable CAS payload only to classify it.  The proof
