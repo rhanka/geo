@@ -58,6 +58,20 @@ describe("density document discovery seeds", () => {
     const cdx = seeds.find((seed) => seed.kind === "cdx");
     expect(cdx?.url).toContain("municipalites-du-quebec.ca%2Fsaint-exemple");
   });
+
+  it("should retain an excluded HTML portal as navigation to another document", () => {
+    const portal = "https://ville.example/reglements-en-vigueur";
+    const seeds = buildDensityDiscoverySeeds({
+      ...target,
+      website: "https://ville.example",
+      excludedSourceUrl: portal,
+    });
+    expect(seeds).toContainEqual({
+      url: portal,
+      strategy: "sibling",
+      kind: "html",
+    });
+  });
 });
 
 describe("density document discovery link recall", () => {

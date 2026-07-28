@@ -201,7 +201,11 @@ async function capture(
 }
 
 function addPage(queue: PageLead[], seen: Set<string>, lead: PageLead, target: DensityDiscoveryTarget): void {
-  if (isExcludedUrl(lead.url, target) || seen.has(lead.url)) return;
+  // An old source URL may be an HTML municipal portal (rather than the grid
+  // bytes themselves). It remains valid navigation evidence for finding a
+  // sibling document. The strict URL/SHA exclusion is applied only when a lead
+  // is promoted to a document below.
+  if (seen.has(lead.url)) return;
   // Follow off-host pages only for an explicit SIG lead. Linked documents may
   // still live on a CDN and are handled separately.
   if (!sameHost(lead.url, target.website) && !isSigUrl(lead.url)) return;
