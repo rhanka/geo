@@ -104,6 +104,27 @@ describe("missing-SHA v1 proof restamp plan", () => {
     expect(() => planMissingSha256ProofRestamp(KEY, current, [wrong])).toThrow(/manifest-url-does-not-match-served-envelope/);
   });
 
+  // Le cas qui bloquait REELLEMENT le re-stampage des 84 collections ArcGIS :
+  // l'enveloppe declare l'endpoint NU, la capture porte la forme `/query`, la
+  // seule qui rende la geometrie. L'egalite de chaine refusait l'attestation
+  // juste ; l'identite de source l'accepte, et un endpoint voisin reste refuse.
+  it("accepts the ArcGIS query receipt for the layer the envelope declares, and only that layer", () => {
+    const endpoint = "https://services.example.org/arcgis/rest/services/Zonage/FeatureServer/5";
+    const current: any = clone(served());
+    for (const feature of current.features) {
+      feature.properties.proof.sources.geometry.upstream_uri = endpoint;
+    }
+    const queryUrl = `${endpoint}/query?where=1%3D1&outFields=*&f=geojson`;
+    const { next } = planMissingSha256ProofRestamp(KEY, current, [{ ...attestation(), replacementUrl: queryUrl }]);
+    const geometry = (next.features as any)[0].properties.proof.sources.geometry;
+    expect(geometry.artifact_uri).toBe(queryUrl);
+    expect(geometry.sha256).toBe(SHA);
+
+    const neighbour = `https://services.example.org/arcgis/rest/services/Zonage/FeatureServer/6/query?where=1%3D1&f=geojson`;
+    expect(() => planMissingSha256ProofRestamp(KEY, current, [{ ...attestation(), replacementUrl: neighbour }]))
+      .toThrow(/manifest-url-does-not-match-served-envelope/);
+  });
+
   it("refuses to overwrite an already-present SHA-256", () => {
     const current: any = clone(served());
     current.features[0].properties.proof.sources.geometry.sha256 = SHA;
