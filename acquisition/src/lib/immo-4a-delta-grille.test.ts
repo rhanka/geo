@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 import {
   IMMO_4A_OUTPUT_PREFIX,
   buildImmo4aArtifact,
+  immo4aContentSha256,
   publishImmo4aArtifact,
+  serializeImmo4aArtifact,
   type Immo4aStore,
   type VivierB,
 } from "./immo-4a-delta-grille.js";
@@ -209,15 +211,47 @@ describe("artefact 4a delta de grille", () => {
     const dry = await publishImmo4aArtifact(options);
     expect(puts).not.toHaveBeenCalled();
     expect(snapshotPuts).not.toHaveBeenCalled();
+    expect(dry.unchanged).toBe(false);
     expect(dry.snapshotKey).toMatch(new RegExp(`^${IMMO_4A_OUTPUT_PREFIX}snapshots/`));
     expect(dry.latestKey).toBe(`${IMMO_4A_OUTPUT_PREFIX}latest.json`);
 
-    await publishImmo4aArtifact({ ...options, dryRun: false });
+    const first = await publishImmo4aArtifact({ ...options, dryRun: false });
     expect(snapshotPuts).toHaveBeenCalledTimes(1);
     expect(snapshotPuts.mock.calls.map(([outputKey]) => outputKey)).toEqual([dry.snapshotKey]);
     expect(puts).toHaveBeenCalledTimes(1);
     expect(puts.mock.calls.map(([outputKey]) => outputKey)).toEqual([dry.latestKey]);
-    await expect(publishImmo4aArtifact({ ...options, dryRun: false })).rejects.toThrow(/snapshot déjà présent/);
+
+    const second = await publishImmo4aArtifact({
+      ...options,
+      dryRun: false,
+      generatedAt: "2026-07-26T16:00:00.000Z",
+    });
+    expect(second.unchanged).toBe(true);
+    expect(second.artifact.generated_at).toBe(NOW);
+    expect(second.snapshotKey).toBe(first.snapshotKey);
+    expect(second.artifactSha256).toBe(first.artifactSha256);
+    expect(second.artifactBytes).toBe(first.artifactBytes);
+    expect(serializeImmo4aArtifact(second.artifact)).toEqual(puts.mock.calls[0]?.[1]);
+    expect(second.contentSha256).toBe(first.contentSha256);
+    expect(snapshotPuts).toHaveBeenCalledTimes(1);
+    expect(puts).toHaveBeenCalledTimes(1);
+  });
+
+  it("sorts records by the validated join key and fingerprints independent of generated_at", async () => {
+    const key = `${PREFIX}qc-zonage-sutton.geojson`;
+    const { store } = memoryStore({
+      [key]: fc([
+        known({ zone_code: "H-02" }),
+        known({ zone_code: "H-01" }),
+      ]),
+    });
+
+    const first = await buildImmo4aArtifact({ ...buildOptions(store), generatedAt: NOW });
+    const second = await buildImmo4aArtifact({ ...buildOptions(store), generatedAt: "2026-07-26T16:00:00.000Z" });
+
+    expect(first.records.map((record) => record.join_key.zone_ref_canon_v1)).toEqual(["H-1", "H-2"]);
+    expect(first.snapshot_id).toBe(second.snapshot_id);
+    expect(immo4aContentSha256(first)).toBe(immo4aContentSha256(second));
   });
 
   it("fails closed when duplicate polygons claim different values for the same join key", async () => {
