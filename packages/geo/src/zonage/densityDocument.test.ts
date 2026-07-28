@@ -300,6 +300,19 @@ describe("parseClermontDensityDocument", () => {
     })]);
   });
 
+  it("preserves a decimal zone code and excludes a parenthetical note number", () => {
+    const parsed = parseClermontDensityDocument([
+      clermontHeader,
+      "ZONE 138.1-Ha (PIIA)",
+      "Nombre maximal de logement 1 (note 7)",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "138.1-Ha",
+      value: 1,
+      raw: "1",
+    })]);
+  });
+
   it("refuses divergent maxima instead of choosing a use class", () => {
     const parsed = parseClermontDensityDocument([
       clermontHeader,

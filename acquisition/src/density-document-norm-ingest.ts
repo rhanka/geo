@@ -78,6 +78,7 @@ interface Profile {
   legalDateEvidence: string;
   reglement: string;
   numericSigBridge?: boolean;
+  corroborationOnly?: boolean;
   parse: (text: string) => DensityDocumentParseResult;
 }
 
@@ -87,6 +88,7 @@ interface DocumentReview {
     | "publishable"
     | "excluded-undated"
     | "excluded-project"
+    | "corroboration-only"
     | "refused-unanchored"
     | "refused-no-publishable-density"
     | "refused-no-sig-overlap";
@@ -405,6 +407,7 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2021-06",
     legalDateEvidence: "Nom municipal verbatim: « grille-des-spcifications-juin-2021.pdf »",
     reglement: "Règlement de zonage VC-434-13 — grilles juin 2021",
+    corroborationOnly: true,
     parse: parseClermontDensityDocument,
   },
   {
@@ -418,6 +421,7 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2016-06-07",
     legalDateEvidence: "Capture Wayback verbatim /web/20160607233854id_/ et grilles « En vigueur le 31 octobre 2013 »",
     reglement: "Règlement de zonage VC-434-13 — grilles archivées",
+    corroborationOnly: true,
     parse: parseClermontDensityDocument,
   },
   {
@@ -636,7 +640,7 @@ async function main(): Promise<void> {
         });
       }
     }
-    allPatches.push(...documentPatches);
+    if (!profile.corroborationOnly) allPatches.push(...documentPatches);
 
     let disposition: DocumentReview["disposition"];
     if (parsed.projectExcluded) disposition = "excluded-project";
@@ -644,6 +648,7 @@ async function main(): Promise<void> {
     else if (profile.legalDate === null) disposition = "excluded-undated";
     else if (parsed.norms.length === 0) disposition = "refused-no-publishable-density";
     else if (documentPatches.length === 0) disposition = "refused-no-sig-overlap";
+    else if (profile.corroborationOnly) disposition = "corroboration-only";
     else disposition = "publishable";
     documents.push({
       id: profile.id,
