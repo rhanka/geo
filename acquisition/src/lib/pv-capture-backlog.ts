@@ -8,6 +8,8 @@
  */
 import { createHash } from "node:crypto";
 
+import type { CaptureWorklistTarget } from "../../../packages/qc-sources/src/capture/index.js";
+
 export const PV_CAPTURE_BACKLOG_CONTRACT = "pv-capture-backlog/v1";
 export const PV_CAPTURE_BACKLOG_STATE_CONTRACT = "pv-capture-backlog-state/v1";
 /** Absolute ceiling: increase only after the progressive controller has proof. */
@@ -49,6 +51,11 @@ export interface PvCaptureBacklogLotState {
   settled_at: string | null;
   /** Les 404 restent dans le manifeste de run; cet échec est infrastructurel. */
   blocked_reason: string | null;
+  /** Worklist réduite et immuable, créée avant le POST si la reprise ôte des CAS déjà présents. */
+  effective_worklist_key?: string | null;
+  effective_worklist_sha256?: `sha256:${string}` | null;
+  /** Nombre d'URLs écartées car déjà prouvées par un CAS durable. */
+  discarded_captured?: number;
 }
 
 export interface PvCaptureBacklogState {
@@ -67,6 +74,17 @@ export interface ObservedCaptureJob {
   name: string;
   status: KubernetesJobStatus;
   failure_reason: string | null;
+}
+
+export interface PvBacklogLotPreparation {
+  worklist_key: string;
+  worklist_sha256: `sha256:${string}`;
+  discarded_captured: number;
+}
+
+export interface DeduplicatedPvBacklogTargets {
+  targets: CaptureWorklistTarget[];
+  discarded_captured: number;
 }
 
 /** Quota réellement disponible au moment du tick, dans les unités Kubernetes. */
@@ -141,6 +159,49 @@ export function sha256(bytes: Uint8Array | string): `sha256:${string}` {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
+/**
+ * Identité de document stable entre deux runs : le fragment est une ancre de
+ * page, jamais une ressource différente; l'hôte et le port par défaut suivent
+ * la normalisation WHATWG. La query est conservée car elle peut identifier un
+ * document distinct.
+ */
+export function canonicalCaptureUrl(value: string): string {
+  const parsed = new URL(value);
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error(`URL de capture non HTTP(S): ${value}`);
+  }
+  parsed.hash = "";
+  return parsed.toString();
+}
+
+/**
+ * Retire, URL par URL, les documents déjà matérialisés dans le CAS. Un lot
+ * vide est un défaut de reprise: le laisser passer ferait réannoncer du débit
+ * sans aucune nouvelle donnée.
+ */
+export function deduplicatePvBacklogTargets(
+  lot: number,
+  targets: readonly CaptureWorklistTarget[],
+  capturedUrls: ReadonlySet<string>,
+): DeduplicatedPvBacklogTargets {
+  if (!Number.isInteger(lot) || lot < 1) throw new Error(`lot PV invalide: ${lot}`);
+  const captured = new Set([...capturedUrls].map(canonicalCaptureUrl));
+  let discarded_captured = 0;
+  const retained: CaptureWorklistTarget[] = [];
+  for (const target of targets) {
+    const urls = target.urls.filter((url) => {
+      const present = captured.has(canonicalCaptureUrl(url));
+      if (present) discarded_captured++;
+      return !present;
+    });
+    if (urls.length > 0) retained.push({ ...target, urls });
+  }
+  if (retained.length === 0) {
+    throw new Error(`lot ${lot} intégralement redondant: ${discarded_captured} documents déjà captés`);
+  }
+  return { targets: retained, discarded_captured };
+}
+
 export function createBacklogManifest(
   args: Omit<PvCaptureBacklogManifest, "contract" | "max_active_jobs"> & { max_active_jobs?: number },
 ): PvCaptureBacklogManifest {
@@ -170,6 +231,9 @@ export function createBacklogState(manifest: PvCaptureBacklogManifest, now: stri
       submitted_at: null,
       settled_at: null,
       blocked_reason: null,
+      effective_worklist_key: null,
+      effective_worklist_sha256: null,
+      discarded_captured: 0,
     })),
     terminal_report_key: null,
     quota_snapshot: null,
@@ -207,6 +271,21 @@ export function assertBacklogState(state: PvCaptureBacklogState, manifest: PvCap
   for (const lot of manifest.lots) {
     const found = state.lots.find((candidate) => candidate.lot === lot.lot);
     if (!found) throw new Error(`état arriéré PV: lot ${lot.lot} absent`);
+    if (found.effective_worklist_key !== undefined && found.effective_worklist_key !== null) {
+      if (!/^registry\/capture-worklists\/[a-z0-9-]+\/resume\/lot-\d{4}-[a-f0-9]{16}\.json$/.test(found.effective_worklist_key)) {
+        throw new Error(`état arriéré PV: lot ${lot.lot} worklist effective invalide`);
+      }
+      if (
+        found.effective_worklist_sha256 === undefined
+        || found.effective_worklist_sha256 === null
+        || !/^sha256:[a-f0-9]{64}$/.test(found.effective_worklist_sha256)
+      ) {
+        throw new Error(`état arriéré PV: lot ${lot.lot} hash worklist effective invalide`);
+      }
+    }
+    if (found.discarded_captured !== undefined && (!Number.isInteger(found.discarded_captured) || found.discarded_captured < 0)) {
+      throw new Error(`état arriéré PV: lot ${lot.lot} nombre écarté invalide`);
+    }
   }
 }
 
@@ -265,15 +344,38 @@ export function reconcileBacklogState(
 }
 
 /** Marque AVANT create le Job déterministe; reprise = même nom, jamais un nouveau lot. */
-export function planLot(state: PvCaptureBacklogState, lot: number, now: string): PvCaptureBacklogState {
+export function planLot(
+  state: PvCaptureBacklogState,
+  lot: number,
+  now: string,
+  preparation?: PvBacklogLotPreparation,
+): PvCaptureBacklogState {
   if (state.phase !== "running") throw new Error(`campagne ${state.campaign_id} ${state.phase}: aucun lancement permis`);
   const found = state.lots.find((candidate) => candidate.lot === lot);
   if (!found || found.status !== "pending") throw new Error(`lot ${lot} non pending`);
+  if (preparation !== undefined) {
+    if (!/^registry\/capture-worklists\/[a-z0-9-]+\/resume\/lot-\d{4}-[a-f0-9]{16}\.json$/.test(preparation.worklist_key)) {
+      throw new Error(`lot ${lot}: clé de worklist réduite invalide`);
+    }
+    if (!/^sha256:[a-f0-9]{64}$/.test(preparation.worklist_sha256)) throw new Error(`lot ${lot}: hash de worklist réduite invalide`);
+    if (!Number.isInteger(preparation.discarded_captured) || preparation.discarded_captured < 1) {
+      throw new Error(`lot ${lot}: nombre de documents écartés invalide`);
+    }
+  }
   return {
     ...state,
     updated_at: now,
     lots: state.lots.map((candidate) => candidate.lot === lot
-      ? { ...candidate, status: "planned" as const, planned_at: now }
+      ? {
+        ...candidate,
+        status: "planned" as const,
+        planned_at: now,
+        ...(preparation === undefined ? {} : {
+          effective_worklist_key: preparation.worklist_key,
+          effective_worklist_sha256: preparation.worklist_sha256,
+          discarded_captured: preparation.discarded_captured,
+        }),
+      }
       : candidate),
   };
 }
@@ -321,8 +423,15 @@ export function verifiedCaptureConcurrency(state: PvCaptureBacklogState, manifes
 }
 
 /** Un Job de lot est toujours mono-pod; 6 lots => au plus 6 pods de capture. */
-export function captureBacklogJobManifest(manifest: PvCaptureBacklogManifest, lot: PvCaptureBacklogLot): string {
+export function captureBacklogJobManifest(
+  manifest: PvCaptureBacklogManifest,
+  lot: PvCaptureBacklogLot,
+  worklistKey: string = lot.worklist_key,
+): string {
   assertBacklogManifest(manifest);
+  if (!/^registry\/capture-worklists\/[a-z0-9-]+\/(?:lot-\d{4}|resume\/lot-\d{4}-[a-f0-9]{16})\.json$/.test(worklistKey)) {
+    throw new Error(`lot ${lot.lot}: clé WORKLIST invalide`);
+  }
   const labels = { app: "geo-capture", lane: "pv", "geo.sentropic.io/capture-backlog": manifest.id };
   return `${JSON.stringify({
     apiVersion: "batch/v1",
@@ -345,7 +454,7 @@ export function captureBacklogJobManifest(manifest: PvCaptureBacklogManifest, lo
             imagePullPolicy: "IfNotPresent",
             env: [
               { name: "LANE", value: "pv" },
-              { name: "WORKLIST", value: lot.worklist_key },
+              { name: "WORKLIST", value: worklistKey },
               { name: "RUN_STAMP", value: lot.job_name },
               { name: "SHARD", value: "0" },
               { name: "SHARDS", value: "1" },

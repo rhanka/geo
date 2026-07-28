@@ -12,7 +12,13 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
-import { planPvProbableTargets, sha256, splitPvCaptureTargets, type PvIndexSnapshot } from "./lib/pv-probable-capture-plan.js";
+import {
+  firstPvCaptureLotForRange,
+  planPvProbableTargets,
+  sha256,
+  splitPvCaptureTargets,
+  type PvIndexSnapshot,
+} from "./lib/pv-probable-capture-plan.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PV_INDEX_PREFIX = "registry/qc-pv/";
@@ -122,6 +128,8 @@ async function main(): Promise<void> {
   const start = integer("start", 0);
   const count = integer("count", 1);
   const lotSize = integer("lot-size", 1);
+  if (!outPrefix.endsWith("lot-")) throw new Error("--out-prefix doit finir par lot-");
+  const firstLot = firstPvCaptureLotForRange(start, lotSize);
   const report = JSON.parse(readFileSync(classificationPath, "utf8")) as ClassificationReport;
   if (report.contract !== "pv-observable-classification/v1" || report.no_document_fetch !== true) {
     throw new Error("--classification doit être le rapport observable PV complet");
@@ -136,10 +144,11 @@ async function main(): Promise<void> {
   const combinedBody = `${JSON.stringify(selected, null, 2)}\n`;
   writeImmutable(combinedOut, combinedBody);
   const worklists = lots.map((lot, index) => {
+    const lotNumber = firstLot + index;
     const body = `${JSON.stringify(lot, null, 2)}\n`;
-    const path = `${outPrefix}${String(index + 1).padStart(3, "0")}.json`;
+    const path = `${outPrefix}${String(lotNumber).padStart(4, "0")}.json`;
     writeImmutable(path, body);
-    return { lot: index + 1, path: path.slice(ROOT.length + 1), targets: lot.length, sha256: sha256(body) };
+    return { lot: lotNumber, path: path.slice(ROOT.length + 1), targets: lot.length, sha256: sha256(body) };
   });
   const plan = {
     contract: "pv-probable-capture-plan/v1",

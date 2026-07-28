@@ -7,6 +7,7 @@ import {
   captureJobName,
   createBacklogManifest,
   createBacklogState,
+  deduplicatePvBacklogTargets,
   kubernetesLeaseTime,
   markLotSubmitted,
   pendingLots,
@@ -46,6 +47,54 @@ function manifest(lots = 2) {
 }
 
 describe("PV capture backlog", () => {
+  it("refuses an entirely captured resumed lot instead of serving it again", () => {
+    const targets = [{
+      slug: "alpha",
+      source: "pv-index",
+      urls: ["https://documents.example/already.pdf"],
+    }];
+
+    expect(() => deduplicatePvBacklogTargets(108, targets, new Set([
+      "https://documents.example/already.pdf",
+    ]))).toThrow("lot 108 intégralement redondant: 1 documents déjà captés");
+  });
+
+  it("reduces a partially captured resumed lot and counts discarded documents", () => {
+    const targets = [{
+      slug: "alpha",
+      source: "pv-index",
+      urls: ["https://documents.example/already.pdf#page=1", "https://documents.example/new.pdf"],
+    }];
+
+    expect(deduplicatePvBacklogTargets(109, targets, new Set([
+      "https://documents.example/already.pdf",
+    ]))).toEqual({
+      targets: [{ slug: "alpha", source: "pv-index", urls: ["https://documents.example/new.pdf"] }],
+      discarded_captured: 1,
+    });
+  });
+
+  it("persists the filtered immutable worklist before submitting its Job", () => {
+    const campaign = manifest();
+    const prepared = {
+      worklist_key: `registry/capture-worklists/${ID}/resume/lot-0001-0123456789abcdef.json`,
+      worklist_sha256: sha256("filtered worklist"),
+      discarded_captured: 1,
+    };
+    const state = planLot(createBacklogState(campaign, NOW), 1, NOW, prepared);
+    expect(state.lots[0]).toMatchObject({
+      status: "planned",
+      effective_worklist_key: prepared.worklist_key,
+      effective_worklist_sha256: prepared.worklist_sha256,
+      discarded_captured: 1,
+    });
+
+    const job = JSON.parse(captureBacklogJobManifest(campaign, campaign.lots[0]!, prepared.worklist_key)) as {
+      spec: { template: { spec: { containers: Array<{ env: Array<{ name: string; value?: string }> }> } } };
+    };
+    expect(job.spec.template.spec.containers[0]!.env.find((entry) => entry.name === "WORKLIST")?.value).toBe(prepared.worklist_key);
+  });
+
   it("sérialise les LeaseTime Kubernetes avec six chiffres de fraction", () => {
     expect(kubernetesLeaseTime(new Date("2026-07-28T16:32:14.182Z"))).toBe("2026-07-28T16:32:14.182000Z");
   });
