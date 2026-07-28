@@ -22,6 +22,7 @@ import {
   planLot,
   reconcileBacklogState,
   stateCounts,
+  verifiedCaptureConcurrency,
   type KubernetesJobStatus,
   type ObservedCaptureJob,
   type PvCaptureBacklogManifest,
@@ -215,7 +216,11 @@ function numberQuantity(value: string | undefined, resource: string): number {
   return Number(match[1]) * (match[2] ? units[match[2]]! : 1);
 }
 
-function quotaSlots(quota: KubernetesResourceQuota, activeCaptureJobs: number): { slots: number; snapshot: Record<string, string> } {
+function quotaSlots(
+  quota: KubernetesResourceQuota,
+  activeCaptureJobs: number,
+  verifiedConcurrency: number,
+): { slots: number; snapshot: Record<string, string> } {
   const hard = quota.status?.hard ?? {};
   const used = quota.status?.used ?? {};
   const snapshot: Record<string, string> = {};
@@ -233,7 +238,7 @@ function quotaSlots(quota: KubernetesResourceQuota, activeCaptureJobs: number): 
       requests_memory_bytes: remaining["requests.memory"]!,
       limits_cpu_milli: remaining["limits.cpu"]!,
       limits_memory_bytes: remaining["limits.memory"]!,
-    }),
+    }, verifiedConcurrency),
     snapshot,
   };
 }
@@ -325,7 +330,8 @@ async function main(): Promise<void> {
     return status === "pending" || status === "active";
   }).length;
   const quota = await k8s.resourceQuota(manifest.namespace, quotaName);
-  const capacity = quotaSlots(quota, activeCaptureJobs);
+  const verifiedConcurrency = verifiedCaptureConcurrency(state, manifest);
+  const capacity = quotaSlots(quota, activeCaptureJobs, verifiedConcurrency);
   state = { ...state, quota_snapshot: capacity.snapshot, updated_at: now.toISOString() };
   stateEtag = await writeState(state, stateEtag);
 
@@ -346,6 +352,7 @@ async function main(): Promise<void> {
     action: lots.length === 0 ? "waiting-quota-or-jobs" : "launched",
     launched_lots: lots,
     active_capture_jobs: activeCaptureJobs,
+    verified_concurrency: verifiedConcurrency,
     quota_slots: capacity.slots,
     counts: stateCounts(state),
     state_key: campaignStateKey(id),

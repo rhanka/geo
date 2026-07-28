@@ -49,9 +49,11 @@ Secrets requis (noms seulement) : `geo-s3-credentials` avec `S3_ENDPOINT`,
 `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, et
 `geo-registry-pull` pour l'image. Aucun secret de modèle n'est requis.
 
-`job-capture.yaml` et le CronJob sont des gabarits : utiliser l'orchestrateur
-pour une valeur réelle de `WORKLIST`/image, et ne désuspendre le CronJob qu'après
-validation explicite de la lane.
+`job-capture.yaml` est le lot de contrôle PV réel (200 URL du snapshot
+`b32de19169bc907c`), à publier d'abord avec
+`pv-capture-worklist-publish.ts`. `cronjob-capture-refresh.yaml` est la
+campagne restante, volontairement appliquée seulement après le verdict du lot
+de contrôle.
 
 ## Arriéré continu des PV
 
@@ -61,8 +63,9 @@ celui-ci reste exclusivement un mécanisme de détection de changement.
 `pv-capture-backlog-bootstrap.ts` publie d'abord toutes les worklists sous S3,
 puis un manifeste immuable de campagne et un état CAS. Avec `--apply`, il crée
 un CronJob de ticks courts : chaque tick prend un Lease Kubernetes, relève le
-quota et les Jobs `app=geo-capture`, soumet au plus six Jobs mono-pod, écrit son
-avancement puis sort. Le CronJob se suspend après le rapport terminal.
+quota et les Jobs `app=geo-capture`, soumet des Jobs mono-pod, écrit son
+avancement puis sort. Il commence à un pod et n'augmente qu'après des lots
+settled sans échec; le CronJob se suspend après le rapport terminal.
 
 ```bash
 NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \

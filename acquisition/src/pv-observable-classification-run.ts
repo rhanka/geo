@@ -16,6 +16,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
+import { classifyPvObservableDocument } from "./lib/pv-observable-classification.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -231,57 +232,7 @@ function isIndexPagePattern(urlText: string, titleText: string, extension: strin
 }
 
 function classify(doc: DocumentObservation): Classification {
-  const extension = extensionOf(doc.url);
-  const urlText = tokenText(urlObservable(doc.url));
-  const titleText = [...doc.titles].map((title) => tokenText(title)).join(" ");
-  const text = `${urlText} ${titleText}`.trim();
-  const textHasSpecificDate = hasSpecificDate(`${urlObservable(doc.url)} ${[...doc.titles].join(" ")}`);
-
-  if (MEDIA_EXTENSIONS.has(extension)) return { class: "non_document", marker: `media_extension:${extension}` };
-  if (IMAGE_EXTENSIONS.has(extension)) return { class: "non_document", marker: `image_extension:${extension}` };
-  if (doc.selfReference) return { class: "non_document", marker: "index_url_self_reference" };
-  const indexMarker = isIndexPagePattern(urlText, titleText, extension, textHasSpecificDate);
-  if (indexMarker !== null) return { class: "non_document", marker: indexMarker };
-
-  const odj = firstMarker(text, [
-    ["ordre_du_jour", /\bordre du jour\b/],
-    ["odj", /\bodj\b/],
-    ["avis_de_convocation", /\bavis de convocation\b/],
-    ["convocation", /\bconvocation\b/],
-    ["agenda", /\bagendas?\b/],
-  ]);
-  if (odj !== null) return { class: "ordre_du_jour", marker: odj };
-
-  const other = firstMarker(text, [
-    ["reglement", /\breglements?\b/],
-    ["avis_public", /\bavis publics?\b/],
-    ["budget", /\bbudgets?\b|\bbudgetaire\b/],
-    ["rapport", /\brapports?\b/],
-    ["annexe", /\bannexes?\b/],
-    ["politique", /\bpolitiques?\b/],
-    ["formulaire", /\bformulaires?\b/],
-    ["communique", /\bcommuniques?\b/],
-    ["calendrier", /\bcalendriers?\b/],
-    ["taxation", /\btaxation\b|\btaxes?\b/],
-    ["permis", /\bpermis\b/],
-    ["appel_offres", /\bappel d offres?\b|\bsoumission\b/],
-    ["contrat", /\bcontrats?\b/],
-    ["certificat", /\bcertificats?\b/],
-  ]);
-  if (other !== null) return { class: "autre_document", marker: other };
-
-  const pv = firstMarker(text, [
-    ["proces_verbal", /\bproces verbaux?\b|\bproces verbal\b/],
-    ["pv", /\bpv\b/],
-    ["seance_ordinaire", /\bseances? ordinaires?\b/],
-    ["seance_extraordinaire", /\bseances? extraordinaires?\b/],
-    ["minutes", /\b(meeting )?minutes\b/],
-  ]);
-  if (pv !== null) return { class: "pv_probable", marker: pv };
-  if (textHasSpecificDate && /\b(so|se)\b/.test(text)) return { class: "pv_probable", marker: "so_se_with_date" };
-  if (textHasSpecificDate && /\b(conseil|council)\b/.test(text)) return { class: "pv_probable", marker: "conseil_with_date" };
-
-  return { class: "indetermine", marker: "no_observable_document_type_marker" };
+  return classifyPvObservableDocument(doc);
 }
 
 function bump(map: Map<string, number>, key: string, amount = 1): void {
