@@ -243,6 +243,13 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
     if (typeof proof.schema_version === "string") schemas.add(proof.schema_version);
     const geometry = asObject(asObject(proof.sources)?.geometry);
     const artifact = geometry?.artifact_uri;
+    const artifactSha256 = geometry?.sha256;
+    if (isPublicHttpsUrl(artifact) && typeof artifactSha256 === "string" && SHA256_RE.test(artifactSha256)) {
+      const identity = `${artifact}\u0000${artifactSha256}`;
+      const current = verifiableCases.get(identity) ?? { url: artifact, sha256: artifactSha256, locations: new Set() };
+      current.locations.add(location);
+      verifiableCases.set(identity, current);
+    }
     if (geometry && typeof artifact === "string" && artifact.startsWith("s3://")) {
       const current = s3Cases.get(artifact) ?? { locations: new Set(), urls: new Map() };
       current.locations.add(location);
