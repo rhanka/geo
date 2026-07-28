@@ -8,8 +8,13 @@ import {
 describe("native density document review", () => {
   it("should surface verbatim density text only as review-required", () => {
     const review = reviewNativeDensityDocument(Buffer.from(
-      JSON.stringify({ zone: "H-12", norme: "Densité nette : 24 logements / hectare" }),
-    ));
+      JSON.stringify({
+        owner: "Municipalité de Ville Test",
+        legal: "Règlement numéro 2024-12 adopté le 4 mars 2024",
+        zone: "H-12",
+        norme: "Densité nette : 24 logements / hectare",
+      }),
+    ), "", { municipalityName: "Ville Test" });
     expect(review.disposition).toBe("candidate_review_required");
     expect(review.hits).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -17,6 +22,8 @@ describe("native density document review", () => {
         verbatim: expect.stringContaining("24 logements / hectare"),
       }),
     ]));
+    expect(review.dateSignals[0]).toContain("2024-12");
+    expect(review.identitySignals[0]).toContain("Municipalité de Ville Test");
   });
 
   it("should exclude a project even when it carries a density value", () => {
