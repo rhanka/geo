@@ -11,11 +11,16 @@
  *   NODE_OPTIONS="--dns-result-order=ipv4first --max-old-space-size=8192" \
  *   AWS_MAX_ATTEMPTS=10 npx tsx acquisition/src/served-zonage-immo-proof-url-audit.ts
  *
+ * To audit one named restamp refusal class rather than the entire served
+ * universe, select it from an immutable restamp plan:
+ *   --restamp-plan=work/coverage/<plan>.json \
+ *   --refusal-reason=no-s3-artifact-uri-found-in-current-feature-proofs
+ *
  * The local state file is written atomically after each 20--30 item batch.
  * It contains no served write and can be resumed after an interruption.
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseManifestJsonl, type CaptureManifestLine } from "../../packages/qc-sources/src/capture/index.js";
@@ -67,9 +72,37 @@ interface VerifiableProofCase {
   locations: Array<"collection.proof" | "feature.properties.proof">;
 }
 
+type ProofForm =
+  | "proof-absent"
+  | "proof-present-but-not-object"
+  | "sources.geometry-absent"
+  | "uniform-https-artifact-uri-with-valid-sha256"
+  | "uniform-https-artifact-uri-sha256-missing-or-malformed"
+  | "uniform-s3-artifact-uri"
+  | "uniform-artifact-uri-absent"
+  | "uniform-other-artifact-uri"
+  | "mixed-geometry-artifact-uri-forms";
+
+type GeometryArtifactForm =
+  | "https-artifact-uri-with-valid-sha256"
+  | "https-artifact-uri-sha256-missing-or-malformed"
+  | "s3-artifact-uri"
+  | "artifact-uri-absent"
+  | "other-artifact-uri";
+
+interface ProofEnvelopeSample {
+  location: "collection.proof" | "feature.properties.proof";
+  proof: JsonObject;
+}
+
 interface CollectionRow extends ServedChoice {
+  proof_values: number;
   proof_envelopes: number;
   proof_schema_versions: string[];
+  proof_form: ProofForm;
+  geometry_artifact_forms: GeometryArtifactForm[];
+  /** One complete, unmodified envelope for every distinct proof shape. */
+  proof_envelope_samples: ProofEnvelopeSample[];
   s3_cases: S3ProofCase[];
   query_cases: QueryProofCase[];
   verifiable_https_sha256_cases: VerifiableProofCase[];
@@ -90,10 +123,15 @@ interface Failure {
 }
 
 interface AuditState {
-  contract: "served-zonage-immo-proof-url-audit/v1";
+  contract: "served-zonage-immo-proof-url-audit/v2";
   generated_at: string;
   read_only_s3: true;
   selection_rule: "nested_when_present_else_flat";
+  selection: {
+    restamp_plan_path: string | null;
+    refusal_reason: string | null;
+    slugs: string[];
+  };
   batch_size: number;
   collections: {
     choices: ServedChoice[];
@@ -106,6 +144,12 @@ interface AuditState {
     by_slug: Record<string, ManifestEvidence[]>;
   };
   failures: Failure[];
+}
+
+interface AuditSelection {
+  restamp_plan_path: string | null;
+  refusal_reason: string | null;
+  slugs: string[];
 }
 
 interface ResolvedS3Case extends S3ProofCase {
@@ -123,6 +167,30 @@ function option(name: string): string | null {
   const equals = `--${name}=`;
   const value = process.argv.slice(2).find((arg) => arg.startsWith(equals));
   return value ? value.slice(equals.length) : null;
+}
+
+function insideRepo(path: string, name: string): string {
+  const resolved = resolve(ROOT, path);
+  if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} must resolve inside the repository`);
+  return resolved;
+}
+
+function refusalSelection(planArgument: string | null, reason: string | null): AuditSelection {
+  if (planArgument === null && reason === null) {
+    return { restamp_plan_path: null, refusal_reason: null, slugs: [] };
+  }
+  if (planArgument === null || reason === null) {
+    throw new Error("--restamp-plan and --refusal-reason must be supplied together");
+  }
+  const planPath = insideRepo(planArgument, "restamp-plan");
+  const plan = asObject(JSON.parse(readFileSync(planPath, "utf8")));
+  if (!Array.isArray(plan?.refused)) throw new Error(`restamp plan has no refused rows: ${planArgument}`);
+  const slugs = plan.refused.flatMap((value) => {
+    const row = asObject(value);
+    return row?.reason === reason && typeof row.slug === "string" ? [row.slug] : [];
+  }).sort();
+  if (slugs.length === 0) throw new Error(`restamp plan has no refusals for ${reason}`);
+  return { restamp_plan_path: relative(ROOT, planPath), refusal_reason: reason, slugs };
 }
 
 function asObject(value: unknown): JsonObject | null {
@@ -148,6 +216,47 @@ function isPublicHttpsUrl(value: unknown): value is string {
   return isPublicHttpUrl(value) && new URL(value).protocol === "https:";
 }
 
+function geometryArtifactForm(geometry: JsonObject): GeometryArtifactForm {
+  const artifactUri = geometry.artifact_uri;
+  if (isPublicHttpsUrl(artifactUri)) {
+    return typeof geometry.sha256 === "string" && SHA256_RE.test(geometry.sha256)
+      ? "https-artifact-uri-with-valid-sha256"
+      : "https-artifact-uri-sha256-missing-or-malformed";
+  }
+  if (typeof artifactUri === "string" && artifactUri.startsWith("s3://")) return "s3-artifact-uri";
+  if (typeof artifactUri !== "string" || artifactUri.length === 0) return "artifact-uri-absent";
+  return "other-artifact-uri";
+}
+
+function proofForm(
+  proofValues: number,
+  proofLocations: readonly { proof: JsonObject; location: "collection.proof" | "feature.properties.proof" }[],
+): { proof_form: ProofForm; geometry_artifact_forms: GeometryArtifactForm[] } {
+  if (proofValues === 0) return { proof_form: "proof-absent", geometry_artifact_forms: [] };
+  if (proofLocations.length === 0) return { proof_form: "proof-present-but-not-object", geometry_artifact_forms: [] };
+  const forms = new Set<GeometryArtifactForm>();
+  let geometryCount = 0;
+  for (const { proof } of proofLocations) {
+    const geometry = asObject(asObject(proof.sources)?.geometry);
+    if (geometry === null) continue;
+    geometryCount++;
+    forms.add(geometryArtifactForm(geometry));
+  }
+  const geometryArtifactForms = [...forms].sort();
+  if (geometryCount === 0) return { proof_form: "sources.geometry-absent", geometry_artifact_forms: geometryArtifactForms };
+  if (geometryArtifactForms.length > 1) return { proof_form: "mixed-geometry-artifact-uri-forms", geometry_artifact_forms: geometryArtifactForms };
+  const form = geometryArtifactForms[0];
+  if (form === "https-artifact-uri-with-valid-sha256") {
+    return { proof_form: "uniform-https-artifact-uri-with-valid-sha256", geometry_artifact_forms: geometryArtifactForms };
+  }
+  if (form === "https-artifact-uri-sha256-missing-or-malformed") {
+    return { proof_form: "uniform-https-artifact-uri-sha256-missing-or-malformed", geometry_artifact_forms: geometryArtifactForms };
+  }
+  if (form === "s3-artifact-uri") return { proof_form: "uniform-s3-artifact-uri", geometry_artifact_forms: geometryArtifactForms };
+  if (form === "artifact-uri-absent") return { proof_form: "uniform-artifact-uri-absent", geometry_artifact_forms: geometryArtifactForms };
+  return { proof_form: "uniform-other-artifact-uri", geometry_artifact_forms: geometryArtifactForms };
+}
+
 function errorText(error: unknown): string {
   const detail = error as { name?: unknown; message?: unknown; $metadata?: { httpStatusCode?: unknown } };
   const status = detail?.$metadata?.httpStatusCode;
@@ -164,12 +273,13 @@ function writeAtomic(path: string, value: unknown): void {
 function readState(path: string): AuditState | null {
   if (!existsSync(path)) return null;
   const state = JSON.parse(readFileSync(path, "utf8")) as AuditState;
-  if (state.contract !== "served-zonage-immo-proof-url-audit/v1") {
+  if (state.contract !== "served-zonage-immo-proof-url-audit/v2") {
     throw new Error(`state incompatible: ${path}`);
   }
   if (state.selection_rule !== "nested_when_present_else_flat") {
     throw new Error(`state has an unsafe layout rule: ${state.selection_rule}`);
   }
+  if (!Array.isArray(state.selection?.slugs)) throw new Error(`state selection is incompatible: ${path}`);
   return state;
 }
 
@@ -226,21 +336,31 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
   }
 
   const proofLocations: Array<{ proof: JsonObject; location: "collection.proof" | "feature.properties.proof" }> = [];
-  const topProof = asObject(collection.proof);
-  if (topProof) proofLocations.push({ proof: topProof, location: "collection.proof" });
+  let proofValues = 0;
+  if (Object.hasOwn(collection, "proof")) {
+    proofValues++;
+    const topProof = asObject(collection.proof);
+    if (topProof) proofLocations.push({ proof: topProof, location: "collection.proof" });
+  }
   for (const feature of collection.features) {
     const properties = asObject(asObject(feature)?.properties);
-    const proof = asObject(properties?.proof);
-    if (proof) proofLocations.push({ proof, location: "feature.properties.proof" });
+    if (properties && Object.hasOwn(properties, "proof")) {
+      proofValues++;
+      const proof = asObject(properties.proof);
+      if (proof) proofLocations.push({ proof, location: "feature.properties.proof" });
+    }
   }
 
   const schemas = new Set<string>();
+  const samples = new Map<string, ProofEnvelopeSample>();
   const s3Cases = new Map<string, { locations: Set<"collection.proof" | "feature.properties.proof">; urls: Map<string, Set<UrlField>> }>();
   const queryCases = new Map<string, { locations: Set<"collection.proof" | "feature.properties.proof">; sha256: string | null }>();
   const verifiableCases = new Map<string, { url: string; sha256: string; locations: Set<"collection.proof" | "feature.properties.proof"> }>();
 
   for (const { proof, location } of proofLocations) {
     if (typeof proof.schema_version === "string") schemas.add(proof.schema_version);
+    const serialized = JSON.stringify(proof);
+    if (!samples.has(serialized)) samples.set(serialized, { location, proof });
     const geometry = asObject(asObject(proof.sources)?.geometry);
     const artifact = geometry?.artifact_uri;
     const artifactSha256 = geometry?.sha256;
@@ -278,10 +398,15 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
     }
   }
 
+  const form = proofForm(proofValues, proofLocations);
+
   return {
     ...choice,
+    proof_values: proofValues,
     proof_envelopes: proofLocations.length,
     proof_schema_versions: [...schemas].sort(),
+    ...form,
+    proof_envelope_samples: [...samples.values()],
     s3_cases: [...s3Cases.entries()].map(([artifact_uri, details]) => ({
       artifact_uri,
       field: "proof.sources.geometry.artifact_uri" as const,
@@ -359,7 +484,10 @@ function resolveRows(state: AuditState): ResolvedCollection[] {
 function report(state: AuditState): Record<string, unknown> {
   const rows = resolveRows(state);
   const total = state.collections.choices.length;
-  const complete = rows.length === total && state.failures.length === 0 && state.manifests.keys !== null && state.manifests.next_batch >= Math.ceil(state.manifests.keys.length / state.batch_size);
+  const manifestsComplete = state.manifests.keys === null
+    ? rows.every((row) => row.s3_cases.length === 0)
+    : state.manifests.next_batch >= Math.ceil(state.manifests.keys.length / state.batch_size);
+  const complete = rows.length === total && state.failures.length === 0 && manifestsComplete;
   const withProof = rows.filter((row) => row.proof_envelopes > 0);
   const withS3 = rows.filter((row) => row.s3_cases.length > 0);
   const withQuery = rows.filter((row) => row.query_cases.length > 0);
@@ -370,12 +498,17 @@ function report(state: AuditState): Record<string, unknown> {
   const ambiguous = withS3.filter((row) => row.resolved_s3_cases.some((item) => item.availability === "manifest-ambiguous"));
   const nested = rows.filter((row) => row.layout === "nested");
   const both = rows.filter((row) => row.alternatives.length > 0);
+  const proofFormPartition = Object.fromEntries([...new Set(rows.map((row) => row.proof_form))].sort().map((form) => [form, {
+    collections: rows.filter((row) => row.proof_form === form).length,
+    slugs: rows.filter((row) => row.proof_form === form).map((row) => row.slug),
+  }]));
   return {
     contract: state.contract,
     generated_at: new Date().toISOString(),
     read_only_s3: true,
     complete,
     selection_rule: state.selection_rule,
+    selection: state.selection,
     batches: { batch_size: state.batch_size, read_concurrency: READ_CONCURRENCY },
     collections: {
       served: total,
@@ -400,21 +533,29 @@ function report(state: AuditState): Record<string, unknown> {
       v2_feature: "features[*].properties.proof.geometry_source.url",
     },
     manifest_lookup: "only unredacted http(s) lines with url + retrieved_at + sha256, indexed by manifest slugs[]; multiple distinct tuples remain ambiguous",
+    proof_form_partition: proofFormPartition,
     failures: state.failures,
     rows,
   };
 }
 
-async function initialState(batchSize: number): Promise<AuditState> {
+async function initialState(batchSize: number, selection: AuditSelection): Promise<AuditState> {
   const s3 = s3Client();
   const entries = await listObjectEntries(s3, ZONES_PREFIX);
+  const choices = resolveServedChoices(entries.map((entry) => entry.key));
+  const selected = selection.slugs.length === 0 ? choices : choices.filter((choice) => selection.slugs.includes(choice.slug));
+  if (selected.length !== selection.slugs.length) {
+    const found = new Set(selected.map((choice) => choice.slug));
+    throw new Error(`selected served collections not found: ${selection.slugs.filter((slug) => !found.has(slug)).join(",")}`);
+  }
   return {
-    contract: "served-zonage-immo-proof-url-audit/v1",
+    contract: "served-zonage-immo-proof-url-audit/v2",
     generated_at: new Date().toISOString(),
     read_only_s3: true,
     selection_rule: "nested_when_present_else_flat",
+    selection,
     batch_size: batchSize,
-    collections: { choices: resolveServedChoices(entries.map((entry) => entry.key)), rows: {}, next_batch: 0 },
+    collections: { choices: selected, rows: {}, next_batch: 0 },
     manifests: { keys: null, next_batch: 0, by_slug: {} },
     failures: [],
   };
@@ -500,11 +641,13 @@ async function main(): Promise<void> {
     throw new Error("--batch-size must be an integer between 20 and 30");
   }
   const stem = option("stem") ?? DEFAULT_STEM;
+  const selection = refusalSelection(option("restamp-plan"), option("refusal-reason"));
   const statePath = resolve(ROOT, `${stem}.state.json`);
   const reportPath = resolve(ROOT, `${stem}.json`);
   const prior = readState(statePath);
-  const state = prior ?? await initialState(batchSize);
+  const state = prior ?? await initialState(batchSize, selection);
   if (state.batch_size !== batchSize) throw new Error(`state batch_size=${state.batch_size}; resume with --batch-size=${state.batch_size}`);
+  if (JSON.stringify(state.selection) !== JSON.stringify(selection)) throw new Error("state selection does not match this invocation");
   if (!prior) writeAtomic(statePath, state);
 
   await scanCollections(state, statePath);
