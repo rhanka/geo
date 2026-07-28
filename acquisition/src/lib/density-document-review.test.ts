@@ -30,6 +30,28 @@ describe("native density document review", () => {
     expect(review.identitySignals[0]).toContain("Municipalité de Ville Test");
   });
 
+  it("routes legacy DOC bytes through native office text extraction", () => {
+    const bytes = Buffer.concat([
+      Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]),
+      Buffer.alloc(32),
+    ]);
+    const review = reviewNativeDensityDocument(
+      bytes,
+      "https://ville.example/RegZArt13.doc",
+      {
+        municipalityName: "Ville Exemple",
+        officeToText: () => [
+          "VILLE EXEMPLE",
+          "Règlement numéro 123",
+          "Zone R-1 — densité maximale 20 logements/ha",
+        ].join("\n"),
+      },
+    );
+    expect(review.kind).toBe("doc");
+    expect(review.extractor).toBe("libreoffice-text");
+    expect(review.disposition).toBe("candidate_review_required");
+  });
+
   it("should exclude a project even when it carries a density value", () => {
     const review = reviewNativeDensityDocument(Buffer.from(
       "<html>Premier projet de règlement — zone H-12 — 24 log./ha</html>",
