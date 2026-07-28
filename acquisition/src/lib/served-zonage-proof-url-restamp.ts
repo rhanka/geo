@@ -86,11 +86,32 @@ function asObject(value: unknown): JsonObject | null {
   return value !== null && typeof value === "object" && !Array.isArray(value) ? value as JsonObject : null;
 }
 
-function isHttpsUrlWithoutQuery(value: unknown): value is string {
+/**
+ * Pré-garde du planificateur, jumelle de `isAttestableReplacementUrl` dans
+ * `zonage-proof.ts`. Elle interdisait elle aussi toute query string, et cette
+ * duplication a coûté un aller-retour complet : le garde d'écriture a été
+ * corrigé (28c09813) et le plan est resté à 0 PRÊTE sur 86, parce que le
+ * planificateur refusait en amont ce que l'écriture acceptait désormais.
+ *
+ * Même raison de fond qu'à l'écriture : un endpoint ArcGIS nu sert une PAGE
+ * HTML de description de service ; la géométrie n'est atteignable que par
+ * `<endpoint>/query?where=1%3D1&f=geojson`. Interdire la query n'admettait que
+ * l'URL qui NE sert PAS les octets attestés.
+ *
+ * Restent refusés, parce qu'ils portent sur la propriété et non sur la forme :
+ * `http:` (canal non authentifié), les identifiants dans l'URL (un secret
+ * publié dans une preuve fuite) et le fragment (jamais transmis au serveur,
+ * donc il ne peut pas faire partie de ce qui a produit les octets).
+ */
+function isAttestableReplacementUrl(value: unknown): value is string {
   if (typeof value !== "string") return false;
   try {
     const parsed = new URL(value);
-    return parsed.protocol === "https:" && parsed.hostname.length > 0 && parsed.search.length === 0;
+    return parsed.protocol === "https:"
+      && parsed.hostname.length > 0
+      && parsed.hash.length === 0
+      && parsed.username === ""
+      && parsed.password === "";
   } catch {
     return false;
   }
@@ -113,7 +134,7 @@ function checkedAttestations(
   for (const entry of entries) {
     if (
       entry.artifactUri !== expectedArtifact ||
-      !isHttpsUrlWithoutQuery(entry.replacementUrl) ||
+      !isAttestableReplacementUrl(entry.replacementUrl) ||
       !SHA256_RE.test(entry.sha256) ||
       typeof entry.storage_key !== "string" || !entry.storage_key.startsWith("raw/") ||
       typeof entry.retrieved_at !== "string" ||
