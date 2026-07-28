@@ -2,7 +2,6 @@
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, basename, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
 
 import { parseCaptureWorklist } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, objectHead, putBytesIfAbsent, s3Client } from "./lib/s3.js";
@@ -180,15 +179,12 @@ async function main(): Promise<void> {
   }, null, 2));
 }
 
-// `tsx path/relative.ts` preserves a relative argv[1], whereas import.meta.url
-// is always absolute. Resolve first so the bootstrap cannot silently skip the
-// durable S3 state publication merely because of the chosen CLI launcher.
-const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
-if (invokedDirectly) {
-  main().catch((error: unknown) => {
-    console.error(error instanceof Error ? error.stack ?? error.message : String(error));
-    process.exitCode = 1;
-  });
-}
+// This is a standalone bootstrap (no module imports it). Do not gate `main`
+// on an ESM loader-specific argv/import-meta comparison: a skipped invocation
+// would leave worklists without their required durable campaign state.
+main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+  process.exitCode = 1;
+});
 
 export { parseArgs, worklistPaths };
