@@ -70,6 +70,47 @@ describe("PV deterministic Graphify semantic extraction", () => {
     expect(result.edges.some((edge) => edge.relation === "resolution_mentions_regulation")).toBe(true);
   });
 
+  it("uses the PV header session rather than a later reference to an earlier meeting", () => {
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Procès-verbal de la séance ordinaire du conseil tenue le 10NOVEMBRE 2025.",
+      "Adoption du procès-verbal de la séance du conseil tenue le 2 octobre 2025.",
+    ].join("\n"));
+
+    expect(result.nodes.filter((node) => node.node_type === "MeetingDate").map((node) => node.label))
+      .toEqual(["10NOVEMBRE 2025"]);
+  });
+
+  it("recognizes a municipal session header that says municipalité rather than conseil", () => {
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Procès-verbal de la séance ordinaire de la Municipalité d’Albertville, tenue le 11 mai 2026.",
+    ].join("\n"));
+
+    expect(result.nodes.filter((node) => node.node_type === "CouncilSession")).toHaveLength(1);
+    expect(result.nodes.find((node) => node.node_type === "MeetingDate")?.label).toBe("11 mai 2026");
+  });
+
+  it("does not create regulation identifiers from plural words, broken codes, or dates", () => {
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Séance du conseil tenue le 1er mai 2023.",
+      "Adoption du règlement 222-2026 (2e projet).",
+      "Le deuxième projet de règlement 223-2026 est présenté.",
+      "Les règlements 177-2019 et 190-2021 sont abrogés.",
+      "Le règlement 612-",
+      "Dépôt du règlement 30 avril 2026.",
+    ].join("\n"));
+
+    expect(result.nodes.filter((node) => node.node_type === "Regulation").map((node) => [
+      node.regulation_number,
+      node.legal_quality,
+    ])).toEqual([
+      ["222-2026", "SECOND_PROJET"],
+      ["223-2026", "SECOND_PROJET"],
+    ]);
+  });
+
   it("resolves zones only against the document municipality's closed served set", () => {
     const text = [
       "MUNICIPALITÉ D’ALBERTVILLE",
