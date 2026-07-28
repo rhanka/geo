@@ -62,4 +62,21 @@ describe("k8s density document discovery orchestrator", () => {
       "--concurrency", "3",
     ])).toThrow(/concurrency/);
   });
+
+  it("should permit only an explicit bounded high-memory OOM retry", () => {
+    expect(parseArgs([
+      "--worklist", "/tmp/lot.json",
+      "--kubeconfig", "/tmp/kube.conf",
+      "--git-sha", "a".repeat(40),
+      "--run-stamp", "20260728T120000Z",
+      "--memory-limit-mi", "768",
+    ]).memoryLimitMi).toBe(768);
+    expect(() => parseArgs([
+      "--worklist", "/tmp/lot.json",
+      "--kubeconfig", "/tmp/kube.conf",
+      "--git-sha", "a".repeat(40),
+      "--run-stamp", "20260728T120000Z",
+      "--memory-limit-mi", "1025",
+    ])).toThrow(/256..1024/);
+  });
 });
