@@ -215,8 +215,15 @@ function isPrintedMunicipalityOwner(line: SourceLine, officialName: string): boo
   const canonicalName = normalizeWords(officialName);
   if (canonicalName === "  ") return false;
   const canonicalLine = normalizeWords(line.text);
-  if (!canonicalLine.includes(canonicalName)) return false;
-  return / (?:municipalite|ville|village|canton|paroisse|conseil\s+(?:municipal|de)) /u.test(canonicalLine);
+  const name = escapeRegex(canonicalName.trim()).replace(/\s+/gu, "\\s+");
+  const ownerPrefix = "(?:municipalite|municipality|ville|city|village|township|canton|paroisse|parish)";
+  const ownerConnectors = "(?:\\s+(?:de|d|du|des|of|the|la|le|township|canton))*";
+  const municipalityBeforeName = new RegExp(`\\b${ownerPrefix}\\b${ownerConnectors}\\s+${name}\\b`, "u");
+  const councilBeforeName = new RegExp(
+    `\\b(?:conseil|council)\\s+(?:municipal\\s+)?(?:de|d|of)${ownerConnectors}\\s+${name}\\b`,
+    "u",
+  );
+  return municipalityBeforeName.test(canonicalLine) || councilBeforeName.test(canonicalLine);
 }
 
 function firstMunicipalityEvidence(lines: readonly SourceLine[], officialName: string): SourceLine | null {
