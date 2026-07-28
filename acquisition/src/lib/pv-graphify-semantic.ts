@@ -404,20 +404,30 @@ export function extractPvSemantic(
   const nodes: GraphifySemanticNode[] = [];
   const edges: GraphifySemanticEdge[] = [];
 
-  let municipalityId: string | null = null;
-  if (owner) {
-    municipalityId = `municipality:qc:${municipality.slug}`;
-    nodes.push(node(
-      municipalityId,
-      municipality.name,
-      "Municipality",
-      document,
-      owner,
-      { registry_id: municipalityId, aliases: [owner.text] },
-    ));
-    nodes.push(node(documentId, document.source_file, "Document", document, owner));
-    edges.push(edge(documentId, municipalityId, "document_refers_municipality", document, owner));
+  // The capture manifest is only an acquisition hint. Without the owner being
+  // printed in the document, even a correctly formatted resolution cannot be
+  // assigned to this municipality.
+  if (!owner) {
+    return {
+      nodes,
+      edges,
+      hyperedges: [],
+      input_tokens: 0,
+      output_tokens: 0,
+    };
   }
+
+  const municipalityId = `municipality:qc:${municipality.slug}`;
+  nodes.push(node(
+    municipalityId,
+    municipality.name,
+    "Municipality",
+    document,
+    owner,
+    { registry_id: municipalityId, aliases: [owner.text] },
+  ));
+  nodes.push(node(documentId, document.source_file, "Document", document, owner));
+  edges.push(edge(documentId, municipalityId, "document_refers_municipality", document, owner));
 
   let sessionId: string | null = null;
   if (session) {
@@ -426,9 +436,7 @@ export function extractPvSemantic(
     const sessionLabel = `Séance du conseil — ${session.date.verbatim}`;
     nodes.push(node(sessionId, sessionLabel, "CouncilSession", document, session.marker));
     nodes.push(node(dateId, session.date.verbatim, "MeetingDate", document, session.date.line));
-    if (owner) {
-      edges.push(edge(documentId, sessionId, "document_describes_council_session", document, session.marker));
-    }
+    edges.push(edge(documentId, sessionId, "document_describes_council_session", document, session.marker));
     edges.push(edge(sessionId, dateId, "session_held_on", document, session.date.line));
   }
 
@@ -461,7 +469,7 @@ export function extractPvSemantic(
     }
   }
 
-  if (zoneGazetteer && owner) {
+  if (zoneGazetteer) {
     for (const zone of zoneEvidence(lines, zoneGazetteer)) {
       const id = `zone:qc:${municipality.slug}:${stableId("value", zone.code).slice("value:".length)}`;
       nodes.push(node(id, zone.code, "Zone", document, zone.line, { zone_code: zone.code }));
