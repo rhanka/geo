@@ -347,6 +347,8 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "hauteur_max_unit",
   "densite_value",
   "densite_unit",
+  "densite_legal_date",
+  "densite_legal_date_evidence",
   "marge_avant_min_value",
   "marge_avant_min_unit",
   "marge_laterale_min_value",
