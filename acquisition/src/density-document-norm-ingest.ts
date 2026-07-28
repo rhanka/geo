@@ -521,6 +521,8 @@ async function main(): Promise<void> {
           ...norm,
           zoneCode: sigCode,
           sourceUrl: profile.sourceUrl,
+          sourceSha256: profile.sourceSha256,
+          sourceStorageKey: candidate.storageKey,
           method: METHOD,
           snapshot,
           legalDate: profile.legalDate,
@@ -616,6 +618,8 @@ async function main(): Promise<void> {
       proof: patch.proof,
       page: patch.page,
       sourceUrl: patch.sourceUrl,
+      sourceSha256: patch.sourceSha256,
+      sourceStorageKey: patch.sourceStorageKey,
       legalDate: patch.legalDate,
       legalDateEvidence: patch.legalDateEvidence,
     })),
@@ -641,6 +645,8 @@ async function main(): Promise<void> {
         || verified["densite_unit"] !== patch.unit
         || verified["densite_raw"] !== patch.raw
         || verified["densite_source_url"] !== patch.sourceUrl
+        || verified["densite_source_sha256"] !== patch.sourceSha256
+        || verified["densite_source_storage_key"] !== patch.sourceStorageKey
         || verified["densite_proof"] !== patch.proof
         || verified["densite_legal_date"] !== patch.legalDate
         || verified["densite_legal_date_evidence"] !== patch.legalDateEvidence
