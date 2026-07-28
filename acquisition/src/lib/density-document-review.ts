@@ -21,7 +21,7 @@ import {
 } from "../../../packages/qc-sources/src/sources/density-document-discovery.js";
 import { readWorkbook } from "./xlsx.js";
 
-export type NativeDocumentKind = "pdf" | "xlsx" | "xls" | "text" | "unknown";
+export type NativeDocumentKind = "pdf" | "xlsx" | "xls" | "docx" | "doc" | "text" | "unknown";
 export type NativeReviewDisposition =
   | "candidate_review_required"
   | "no_density_signal"
@@ -30,7 +30,7 @@ export type NativeReviewDisposition =
 
 export interface NativeTextResult {
   kind: NativeDocumentKind;
-  extractor: "pdftotext-layout" | "xlsx-verbatim-cells" | "utf8" | null;
+  extractor: "pdftotext-layout" | "xlsx-verbatim-cells" | "libreoffice-text" | "utf8" | null;
   text: string | null;
   blocker: string | null;
 }
@@ -46,7 +46,9 @@ export interface NativeDensityReview extends NativeTextResult {
 
 export interface NativeExtractionOptions {
   xlsToXlsx?: (bytes: Buffer) => Buffer;
+  officeToText?: (bytes: Buffer, extension: "doc" | "docx") => string;
   municipalityName?: string;
+  sourceName?: string;
 }
 
 export interface CapturedWaybackRangePart {
@@ -81,11 +83,13 @@ export function hasDatedFinalAdoption(text: string): boolean {
   return FINAL_ADOPTION.test(text) && ENTRY_INTO_FORCE.test(text);
 }
 
-function kindOf(bytes: Buffer): NativeDocumentKind {
+function kindOf(bytes: Buffer, sourceName = ""): NativeDocumentKind {
   if (bytes.subarray(0, 5).toString("latin1") === "%PDF-") return "pdf";
-  if (bytes.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) return "xlsx";
+  if (bytes.subarray(0, 4).equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) {
+    return /\.docx?(?:$|[?#])/i.test(sourceName) ? "docx" : "xlsx";
+  }
   if (bytes.subarray(0, 8).equals(Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]))) {
-    return "xls";
+    return /\.doc(?:$|[?#])/i.test(sourceName) ? "doc" : "xls";
   }
   const prefix = bytes.subarray(0, 128).toString("utf8");
   if (/^\s*(?:<!doctype|<html|<\?xml|[{[])/i.test(prefix)) return "text";
@@ -176,11 +180,47 @@ export function convertLegacyXlsToXlsx(bytes: Buffer): Buffer {
   }
 }
 
+/** Extrait le texte d'un ancien DOC/DOCX sans OCR ni interprétation de valeur. */
+export function convertOfficeDocumentToText(
+  bytes: Buffer,
+  extension: "doc" | "docx",
+): string {
+  const directory = mkdtempSync(join(tmpdir(), "geo-density-doc-"));
+  const input = join(directory, `input.${extension}`);
+  const output = join(directory, "input.txt");
+  const profile = pathToFileURL(join(directory, "libreoffice-profile")).href;
+  try {
+    writeFileSync(input, bytes);
+    const result = spawnSync(
+      "libreoffice",
+      [
+        `-env:UserInstallation=${profile}`,
+        "--headless",
+        "--convert-to",
+        "txt:Text",
+        "--outdir",
+        directory,
+        input,
+      ],
+      { encoding: "utf8", timeout: 45_000, maxBuffer: 4 * 1024 * 1024 },
+    );
+    if (result.status !== 0) {
+      throw new Error(
+        `libreoffice-exit-${String(result.status)}:`
+        + `${`${result.stderr ?? ""} ${result.stdout ?? ""}`.trim().slice(0, 240)}`,
+      );
+    }
+    return readFileSync(output, "utf8");
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 export function extractNativeDocumentText(
   bytes: Buffer,
   options: NativeExtractionOptions = {},
 ): NativeTextResult {
-  const kind = kindOf(bytes);
+  const kind = kindOf(bytes, options.sourceName);
   if (kind === "pdf") {
     const result = spawnSync(
       "pdftotext",
@@ -231,6 +271,21 @@ export function extractNativeDocumentText(
       };
     }
   }
+  if (kind === "doc" || kind === "docx") {
+    try {
+      const text = (options.officeToText ?? convertOfficeDocumentToText)(bytes, kind);
+      return text.trim()
+        ? { kind, extractor: "libreoffice-text", text, blocker: null }
+        : { kind, extractor: "libreoffice-text", text: null, blocker: `${kind}-without-native-text` };
+    } catch (error) {
+      return {
+        kind,
+        extractor: "libreoffice-text",
+        text: null,
+        blocker: `${kind}-native-convert:${error instanceof Error ? error.message : String(error)}`.slice(0, 300),
+      };
+    }
+  }
   if (kind === "text") {
     const text = bytes.toString("utf8");
     return text.trim()
@@ -245,7 +300,7 @@ export function reviewNativeDensityDocument(
   titleAndUrl = "",
   options: NativeExtractionOptions = {},
 ): NativeDensityReview {
-  const native = extractNativeDocumentText(bytes, options);
+  const native = extractNativeDocumentText(bytes, { ...options, sourceName: titleAndUrl });
   if (native.text === null) {
     return {
       ...native,

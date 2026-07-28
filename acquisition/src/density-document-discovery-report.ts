@@ -112,11 +112,17 @@ export function parseArgs(argv: readonly string[]): Args {
 }
 
 function isReviewableLine(line: CaptureManifestLine): boolean {
+  const resolved = line.final_url ?? line.url;
   return (
     line.http_status === 200
     && line.sha256 !== null
     && line.storage_key !== null
     && /-document$|-sig$/.test(line.source)
+    && (
+      /\.(?:pdf|xlsx?|docx?)(?:$|[?#])/i.test(resolved)
+      || /pdf|msword|officedocument|spreadsheet|excel/i.test(line.content_type ?? "")
+      || /^normes-density-wayback-range-/.test(line.source)
+    )
   );
 }
 
