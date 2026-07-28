@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   assertClosedDensityDiscoveryReport,
   exactDensitySigZoneCode,
+  hasDensityCandidateValuePath,
 } from "./density-document-ingest.js";
 
 describe("assertClosedDensityDiscoveryReport", () => {
@@ -41,5 +42,20 @@ describe("exactDensitySigZoneCode", () => {
   it("refuses punctuation normalization and component reordering", () => {
     expect(exactDensitySigZoneCode("Ca 707", servedCodes)).toBeNull();
     expect(exactDensitySigZoneCode("001-F", servedCodes)).toBeNull();
+  });
+});
+
+describe("hasDensityCandidateValuePath", () => {
+  it("accepts a generic native value hit", () => {
+    expect(hasDensityCandidateValuePath([{}], false)).toBe(true);
+  });
+
+  it("allows an explicitly configured strict parser to supply the value proof", () => {
+    expect(hasDensityCandidateValuePath([], true)).toBe(true);
+  });
+
+  it("remains fail-closed without either value path", () => {
+    expect(hasDensityCandidateValuePath([], false)).toBe(false);
+    expect(hasDensityCandidateValuePath(null, true)).toBe(false);
   });
 });

@@ -64,11 +64,11 @@ export interface WaybackAssembly {
 const LEGAL_DATE =
   String.raw`(?:\d{1,2}(?:er)?\s+(?:janv(?:ier)?|f[ée]v(?:rier)?|mars|avr(?:il)?|mai|juin|juil(?:let)?|ao[uû]t|sept(?:embre)?|oct(?:obre)?|nov(?:embre)?|d[ée]c(?:embre)?)\.?\s+\d{4}|\d{4}-\d{2}-\d{2})`;
 const FINAL_ADOPTION = new RegExp(
-  String.raw`\bAdoption(?:\s+du\s+r[èe]glement)?\s*:\s*${LEGAL_DATE}\b`,
+  String.raw`\b(?:Adoption(?:\s+du\s+r[èe]glement)?|R[èe]glement\s+adopt[ée]\s+le)\s*:\s*${LEGAL_DATE}\b`,
   "i",
 );
 const ENTRY_INTO_FORCE = new RegExp(
-  String.raw`\bEntr[ée]e\s+en\s+vigueur\s*:\s*${LEGAL_DATE}\b`,
+  String.raw`\bEntr[ée]e\s+en\s+vigueur(?:\s+le)?\s*:\s*${LEGAL_DATE}\b`,
   "i",
 );
 

@@ -39,3 +39,16 @@ export function exactDensitySigZoneCode(
   }
   return null;
 }
+
+/**
+ * A candidate needs either a generic native value hit or an explicitly
+ * configured strict parser that binds its own zone, value, unit, date, and
+ * document anchors. A malformed discovery field never passes either path.
+ */
+export function hasDensityCandidateValuePath(
+  normValueHits: unknown,
+  strictParserValueProof: boolean,
+): boolean {
+  return Array.isArray(normValueHits)
+    && (normValueHits.length > 0 || strictParserValueProof);
+}
