@@ -128,7 +128,13 @@ async function requestArcgisGeometry(url: string, fetchImpl: ArcgisFetch): Promi
  */
 export async function probeArcgisGeometryQuery(
   endpoint: string,
-  fetchImpl: ArcgisFetch = (url) => fetch(url),
+  // Pas de valeur par defaut : elle etait `(url) => fetch(url)`, et un defaut
+  // commode a suffi a rouvrir la dette de `fetch()` nu que le cliquet ne laisse
+  // que DECROITRE (65 -> 66). Cette sonde interroge des serveurs ArcGIS tiers,
+  // donc elle tombe sous la regle C-0 : tout appel reseau vers une source tierce
+  // passe par le chokepoint de capture. Exiger l'injection rend ce choix VISIBLE
+  // chez l'appelant au lieu de le cacher derriere un defaut.
+  fetchImpl: ArcgisFetch,
 ): Promise<ArcgisGeometryQueryProbe> {
   const geojsonUrl = arcgisGeometryQueryUrl(endpoint, "geojson");
   if (geojsonUrl === null) throw new Error(`not an ArcGIS FeatureServer/<n> or MapServer/<n> endpoint: ${endpoint}`);
@@ -161,7 +167,10 @@ export interface ResolvedProofUrlRecaptureWorklist {
  */
 export async function resolveArcgisProofUrlRecaptureWorklist(
   targets: readonly CaptureWorklistTarget[],
-  probe: (endpoint: string) => Promise<ArcgisGeometryQueryProbe> = probeArcgisGeometryQuery,
+  // Plus de defaut ici non plus : il pointait sur `probeArcgisGeometryQuery`,
+  // dont le defaut etait un `fetch()` nu. La sonde doit venir de l'appelant, qui
+  // seul dispose d'un run de capture ouvert.
+  probe: (endpoint: string) => Promise<ArcgisGeometryQueryProbe>,
 ): Promise<ResolvedProofUrlRecaptureWorklist> {
   const probes: ArcgisGeometryQueryProbe[] = [];
   const worklist: CaptureWorklistTarget[] = [];

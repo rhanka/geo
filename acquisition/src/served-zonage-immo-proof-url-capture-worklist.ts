@@ -10,7 +10,13 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parseCaptureWorklist } from "../../packages/qc-sources/src/capture/index.js";
+import {
+  capturedFetch,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  parseCaptureWorklist,
+} from "../../packages/qc-sources/src/capture/index.js";
+
+import { openCaptureRun } from "./lib/capture-s3.js";
 import {
   probeArcgisGeometryQuery,
   resolveArcgisProofUrlRecaptureWorklist,
@@ -59,7 +65,32 @@ async function main(): Promise<void> {
   const excluded = new Set(sample.selected.map((row) => (row as { slug: string }).slug));
   const selected = selectProofUrlRecaptureWorklist(audit.rows as ProofUrlAuditRow[], excluded, offset, limit);
   if (selected.length !== limit) throw new Error(`selection exhausted: requested ${limit}, found ${selected.length}`);
-  const resolved = await resolveArcgisProofUrlRecaptureWorklist(selected, probeArcgisGeometryQuery);
+  // Les sondes ArcGIS interrogent des serveurs TIERS : regle C-0, elles passent
+  // par le chokepoint de capture. Le `fetch()` nu qui servait de defaut avait
+  // rouvert la dette que le cliquet ne laisse que decroitre.
+  const run = openCaptureRun({ lane: "zones" });
+  const resolved = await resolveArcgisProofUrlRecaptureWorklist(selected, (endpoint) =>
+    probeArcgisGeometryQuery(endpoint, async (url) => {
+      const captured = await capturedFetch(url, {}, {
+        run,
+        lane: "zones",
+        source: "arcgis-geometry-query-probe",
+        // La sonde classifie le CORPS; sans octets elle ne jugerait que sur le
+        // content-type, l'erreur exacte qui a fait passer 93 pages HTML pour de
+        // la geometrie.
+        retainBody: true,
+        timeoutMs: null,
+        maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+      });
+      if (captured.response === null) throw new Error(captured.line.error ?? "capture sans réponse");
+      const bytes = captured.bytes;
+      const response = captured.response;
+      return {
+        status: response.status,
+        headers: response.headers,
+        arrayBuffer: async () => (bytes === null ? new ArrayBuffer(0) : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer),
+      };
+    }));
   const worklist = parseCaptureWorklist(resolved.worklist);
   if (worklist.length === 0) throw new Error("all selected targets were refused by ArcGIS geometry probes");
   const probePath = outPath.endsWith(".json") ? `${outPath.slice(0, -".json".length)}.arcgis-probes.json` : `${outPath}.arcgis-probes.json`;
