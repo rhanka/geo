@@ -568,6 +568,95 @@ describe("additive served-zone provenance write", () => {
     expect(body.proof.geometry_source.url).toBe("https://sig.officiel.example/zones.geojson");
   });
 
+  // Promotion v1 -> v2 : la preuve est deja ouvrable et hachable, il lui manque
+  // seulement l'instant mesure par une capture. 124 collections servies sont
+  // dans cet etat, et c'est le seul chemin pour faire monter le KPI strict.
+  describe("capture attestation (v1 -> v2)", () => {
+    const HTTPS = "https://data.example.org/zoning/alpha.geojson";
+    const AT = "2026-07-28T12:00:00.000Z";
+    const v1Proof = () => ({
+      schema_version: "1.0",
+      sources: { geometry: { status: "available", artifact_uri: HTTPS, sha256: PROOF_SHA256 } },
+    });
+
+    it("adds only retrieved_at when the refetched SHA-256 confirms the served one", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = AT;
+
+      await putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      });
+      expect(sent.some((command) => command.name === PUT)).toBe(true);
+    });
+
+    // Un SHA qui change signifie que le document EN LIGNE a bouge depuis la
+    // preuve. L'absorber en ecrivant le nouveau effacerait ce fait.
+    it("refuses when the attestation carries a different SHA-256 than the served one", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      const other = `sha256:${"c".repeat(64)}` as const;
+      for (const feature of incoming.features) {
+        feature.properties.proof.sources.geometry.retrieved_at = AT;
+        feature.properties.proof.sources.geometry.sha256 = other;
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: other, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses to replace a retrieved_at that is already present", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) {
+        feature.properties.proof = v1Proof();
+        feature.properties.proof.sources.geometry.retrieved_at = "2026-01-01T00:00:00.000Z";
+      }
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = AT;
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses an attestation whose retrieved_at is not an ISO timestamp", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = "2026-07-28";
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: "2026-07-28" }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses to change the artifact_uri under cover of a capture attestation", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) {
+        feature.properties.proof.sources.geometry.retrieved_at = AT;
+        feature.properties.proof.sources.geometry.artifact_uri = "https://data.example.org/zoning/other.geojson";
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+  });
+
   it("can skip the backup when explicitly disabled", async () => {
     const served = twoFeatures();
     const { s3, sent } = fakeS3(served);
