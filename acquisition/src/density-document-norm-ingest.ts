@@ -35,6 +35,7 @@ import {
 import {
   assertClosedDensityDiscoveryReport,
   exactDensitySigZoneCode,
+  hasDensityCandidateValuePath,
 } from "./lib/density-document-ingest.js";
 import {
   mergeDensityNormRows,
@@ -95,6 +96,7 @@ interface Profile {
   legalDateEvidence: string;
   reglement: string;
   exactSigCode?: boolean;
+  strictParserValueProof?: boolean;
   numericSigBridge?: boolean;
   corroboration?: {
     referenceProfileId: string;
@@ -173,6 +175,7 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Page 2 native verbatim: « Dernière mise à jour le : 27 novembre 2024 »",
     reglement: "Règlement de zonage 02-2023 — annexe C intégrée, grille H-16",
     exactSigCode: true,
+    strictParserValueProof: true,
     parse: parseNotreDameDeLourdesJolietteDensityDocument,
   },
   {
@@ -801,8 +804,10 @@ async function main(): Promise<void> {
       || typeof candidate.storageKey !== "string"
       || typeof candidate.retrievedAt !== "string"
       || candidate.disposition !== "candidate_review_required"
-      || !Array.isArray(candidate.normValueHits)
-      || candidate.normValueHits.length === 0
+      || !hasDensityCandidateValuePath(
+        candidate.normValueHits,
+        profile.strictParserValueProof === true,
+      )
     ) {
       throw new Error(`${profile.id}: candidat exact, capturé et porteur de valeurs absent`);
     }
