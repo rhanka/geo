@@ -25,7 +25,7 @@ interface Args {
   dryRun: boolean;
 }
 
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.2-density";
+const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.3-density";
 
 function option(argv: readonly string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
@@ -210,4 +210,3 @@ if (invokedDirectly) {
     process.exitCode = 1;
   });
 }
-
