@@ -1,0 +1,281 @@
+/**
+ * Analyse en lecture seule les catalogues capturés de la passe catégorie A et
+ * matérialise les URLs de suivi sans jamais refaire un fetch local.
+ *
+ * Entrées : manifestes/CAS S3 produits par k8s-capture-run.ts.
+ * Sorties : trois worklists génériques 6/6/5, destinées au même runner cluster.
+ * Les URLs déjà tentées dans n'importe quel préfixe fourni sont exclues.
+ */
+import { createHash } from "node:crypto";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import {
+  CaptureRunHeaderSchema,
+  parseCaptureWorklist,
+  parseManifestJsonl,
+  type CaptureManifestLine,
+  type CaptureWorklistTarget,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
+
+const ROOT = resolve(import.meta.dirname, "..", "..");
+const SOURCE = "normes-a-gisements-followup";
+const LOT_SIZE = 6;
+const DOCUMENT_HINT =
+  /zonag|urbanis|grille|sp[eé]cification|usages?.{0,16}normes?|annexe|densit|logements?|occupation.{0,10}sol|r[eè]glement|reglement|coefficient|certificat.{0,16}conformit/i;
+const PAGE_HINT =
+  /zonag|urbanis|grille|annexe|reglement|r[eè]glement|documentation|centre-documentaire|municipalit|arcgis|jmap|geocentri/i;
+const DOCUMENT_EXT = /\.(?:pdf|xlsx?|docx?)(?:$|[?#])/i;
+const SITEMAP = /(?:sitemap|wp-sitemap|post-sitemap|page-sitemap|wpfd).*\.xml(?:$|[?#])/i;
+const SERVICE = /\/(?:FeatureServer|MapServer)(?:\/\d+)?(?:$|[?#])/i;
+
+interface CompletedRun {
+  manifestKey: string;
+  lines: CaptureManifestLine[];
+}
+
+export interface FollowupDiscovery {
+  documents: string[];
+  catalogs: string[];
+}
+
+function safeUrl(raw: string, base: string): string | null {
+  const decoded = raw
+    .replace(/\\\//g, "/")
+    .replace(/&amp;/g, "&")
+    .replace(/&#0*38;/g, "&")
+    .replace(/[),.;'"]+$/, "");
+  try {
+    const url = new URL(decoded, base);
+    if (!/^https?:$/.test(url.protocol)) return null;
+    url.hash = "";
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+function stringsOf(value: unknown, out: string[] = []): string[] {
+  if (typeof value === "string") out.push(value);
+  else if (Array.isArray(value)) for (const item of value) stringsOf(item, out);
+  else if (value && typeof value === "object") {
+    for (const item of Object.values(value as Record<string, unknown>)) stringsOf(item, out);
+  }
+  return out;
+}
+
+function addArcgisFollowups(url: string, catalogs: Set<string>): void {
+  const parsed = new URL(url);
+  if (parsed.hostname === "www.arcgis.com") {
+    const item = /\/content\/items\/([a-f0-9]{32})(?:\/data)?/i.exec(parsed.pathname)?.[1];
+    if (item) {
+      catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${item}?f=json`);
+      catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${item}/data?f=json`);
+    }
+  }
+  if (!SERVICE.test(url)) return;
+  const clean = new URL(url);
+  clean.search = "";
+  clean.hash = "";
+  clean.searchParams.set("f", "pjson");
+  catalogs.add(clean.href);
+}
+
+function addCandidate(raw: string, context: string, base: string, result: {
+  documents: Set<string>;
+  catalogs: Set<string>;
+}): void {
+  const url = safeUrl(raw, base);
+  if (url === null) return;
+  const haystack = `${context} ${url}`;
+  if (DOCUMENT_EXT.test(url) && DOCUMENT_HINT.test(haystack)) {
+    result.documents.add(url);
+    return;
+  }
+  if (
+    SITEMAP.test(url)
+    || /\/wp-json\/|\/storage\/app\/media/i.test(url)
+    || SERVICE.test(url)
+    || (PAGE_HINT.test(haystack) && !/\.(?:png|jpe?g|gif|svg|css|js)(?:$|[?#])/i.test(url))
+  ) {
+    result.catalogs.add(url);
+    addArcgisFollowups(url, result.catalogs);
+  }
+}
+
+function parseCdx(value: unknown, result: { documents: Set<string>; catalogs: Set<string> }): void {
+  if (!Array.isArray(value) || !Array.isArray(value[0])) return;
+  const header = value[0].map(String);
+  const originalIndex = header.indexOf("original");
+  const timestampIndex = header.indexOf("timestamp");
+  if (originalIndex < 0 || timestampIndex < 0) return;
+  for (const rawRow of value.slice(1)) {
+    if (!Array.isArray(rawRow)) continue;
+    const original = String(rawRow[originalIndex] ?? "");
+    const timestamp = String(rawRow[timestampIndex] ?? "");
+    if (!/^\d{14}$/.test(timestamp) || !DOCUMENT_EXT.test(original) || !DOCUMENT_HINT.test(original)) continue;
+    const live = safeUrl(original, original);
+    if (live === null) continue;
+    result.documents.add(live); // http:// reste volontairement accepté.
+    result.documents.add(`https://web.archive.org/web/${timestamp}id_/${live}`);
+  }
+}
+
+function parseJsonObject(value: unknown, base: string, result: {
+  documents: Set<string>;
+  catalogs: Set<string>;
+}): void {
+  parseCdx(value, result);
+  if (Array.isArray(value)) {
+    for (const item of value) parseJsonObject(item, base, result);
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  const record = value as Record<string, unknown>;
+  const context = stringsOf(record).join(" ");
+  for (const key of ["source_url", "url", "link", "guid", "href"]) {
+    const candidate = record[key];
+    if (typeof candidate === "string") addCandidate(candidate, context, base, result);
+    else if (candidate && typeof candidate === "object") {
+      const rendered = (candidate as Record<string, unknown>)["rendered"];
+      if (typeof rendered === "string") addCandidate(rendered, context, base, result);
+    }
+  }
+  const id = typeof record["id"] === "string" && /^[a-f0-9]{32}$/i.test(record["id"])
+    ? record["id"]
+    : null;
+  if (id !== null) {
+    result.catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${id}?f=json`);
+    result.catalogs.add(`https://www.arcgis.com/sharing/rest/content/items/${id}/data?f=json`);
+  }
+  for (const item of Object.values(record)) parseJsonObject(item, base, result);
+}
+
+export function discoverFollowups(text: string, base: string): FollowupDiscovery {
+  const result = { documents: new Set<string>(), catalogs: new Set<string>() };
+  try {
+    parseJsonObject(JSON.parse(text), base, result);
+  } catch {
+    // HTML/XML/JS sont traités ci-dessous sans interpréter leur structure.
+  }
+  for (const match of text.matchAll(/<loc\b[^>]*>([\s\S]*?)<\/loc>/gi)) {
+    addCandidate(match[1]!.trim(), match[1]!, base, result);
+  }
+  for (const match of text.matchAll(/(?:https?:\\?\/\\?\/|(?:href|src|data-url|data-href)=["'])[^"'<>\s]+/gi)) {
+    const raw = match[0]!.replace(/^(?:href|src|data-url|data-href)=["']/, "");
+    addCandidate(raw, match[0]!, base, result);
+  }
+  return {
+    documents: [...result.documents].sort(),
+    catalogs: [...result.catalogs].sort(),
+  };
+}
+
+function values(argv: readonly string[], name: string): string[] {
+  return argv.flatMap((value, index) => value === `--${name}` && argv[index + 1] ? [argv[index + 1]!] : []);
+}
+
+function option(argv: readonly string[], name: string): string | undefined {
+  return values(argv, name)[0];
+}
+
+async function completedRuns(prefixes: readonly string[]): Promise<CompletedRun[]> {
+  const s3 = s3Client();
+  const manifestKeys = new Set<string>();
+  for (const prefix of prefixes) {
+    for (const entry of await listObjectEntries(s3, `capture/_runs/${prefix}`)) {
+      if (entry.key.endsWith("/manifest.jsonl")) manifestKeys.add(entry.key);
+    }
+  }
+  const runs: CompletedRun[] = [];
+  for (const manifestKey of [...manifestKeys].sort()) {
+    const runId = manifestKey.slice("capture/_runs/".length, -"/manifest.jsonl".length);
+    const headerEntries = await listObjectEntries(s3, `capture/_runs/${runId}/run.json`);
+    if (!headerEntries.some((entry) => entry.key === `capture/_runs/${runId}/run.json`)) continue;
+    const header = CaptureRunHeaderSchema.parse(
+      JSON.parse((await getBytes(s3, `capture/_runs/${runId}/run.json`)).toString("utf8")),
+    );
+    if (header.finished_at === null || header.exit_code === null) continue;
+    runs.push({
+      manifestKey,
+      lines: parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8")),
+    });
+  }
+  return runs;
+}
+
+function digest(bytes: Buffer): string {
+  return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+}
+
+async function materialize(prefixes: readonly string[]): Promise<CaptureWorklistTarget[][]> {
+  const runs = await completedRuns(prefixes);
+  const lines = runs.flatMap((run) => run.lines);
+  const attempted = new Map<string, Set<string>>();
+  const found = new Map<string, Set<string>>();
+  for (const line of lines) {
+    for (const slug of line.slugs) {
+      const slugAttempted = attempted.get(slug) ?? new Set<string>();
+      slugAttempted.add(line.url);
+      attempted.set(slug, slugAttempted);
+    }
+    if (line.http_status !== 200 || line.storage_key === null || line.sha256 === null) continue;
+    const bytes = await getBytes(s3Client(), line.storage_key);
+    if (digest(bytes) !== line.sha256) throw new Error(`CAS SHA incohérent: ${line.storage_key}`);
+    const prefix = bytes.subarray(0, 64).toString("utf8");
+    const contentType = line.content_type ?? "";
+    if (!/html|xml|json|text|javascript/i.test(contentType) && !/^\s*(?:<!doctype|<html|<\?xml|[{[])/i.test(prefix)) {
+      continue;
+    }
+    const discovered = discoverFollowups(bytes.toString("utf8"), line.url);
+    for (const slug of line.slugs) {
+      const slugFound = found.get(slug) ?? new Set<string>();
+      for (const url of [...discovered.documents, ...discovered.catalogs]) slugFound.add(url);
+      found.set(slug, slugFound);
+    }
+  }
+
+  const firstLots = [1, 2, 3].map((lot) =>
+    parseCaptureWorklist(JSON.parse(readFileSync(resolve(
+      ROOT,
+      `acquisition/config/density-document-category-a-gisements-20260728-lot-${String(lot).padStart(2, "0")}.json`,
+    ), "utf8")))).flat();
+  const scope = firstLots.flat();
+  const followups = parseCaptureWorklist(scope.map((target) => ({
+    slug: target.slug,
+    source: SOURCE,
+    urls: [...(found.get(target.slug) ?? [])]
+      .filter((url) => !(attempted.get(target.slug)?.has(url) ?? false))
+      .sort(),
+  })).filter((target) => target.urls.length > 0));
+  const bySlug = new Map(followups.map((target) => [target.slug, target]));
+  return Array.from({ length: Math.ceil(scope.length / LOT_SIZE) }, (_value, index) =>
+    scope.slice(index * LOT_SIZE, (index + 1) * LOT_SIZE)
+      .flatMap((target) => bySlug.get(target.slug) ?? []));
+}
+
+async function main(): Promise<void> {
+  const argv = process.argv.slice(2);
+  const prefixes = values(argv, "run-prefix");
+  if (prefixes.length === 0) throw new Error("au moins un --run-prefix est requis");
+  const outTag = option(argv, "out-tag");
+  if (!outTag || !/^[a-z0-9-]+$/.test(outTag)) throw new Error("--out-tag [a-z0-9-]+ est requis");
+  const lots = await materialize(prefixes);
+  for (const [index, lot] of lots.entries()) {
+    const path = resolve(
+      ROOT,
+      `acquisition/config/density-document-category-a-gisements-${outTag}-lot-${String(index + 1).padStart(2, "0")}.json`,
+    );
+    writeFileSync(path, `${JSON.stringify(lot, null, 2)}\n`, { flag: "wx" });
+    process.stdout.write(`${path.replace(`${ROOT}/`, "")}\t${lot.length}\t${lot.reduce((sum, target) => sum + target.urls.length, 0)} URL\n`);
+  }
+}
+
+if (import.meta.url === new URL(process.argv[1]!, "file:").href) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+    process.exitCode = 1;
+  });
+}
+
