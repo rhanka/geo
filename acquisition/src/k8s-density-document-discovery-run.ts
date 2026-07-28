@@ -11,7 +11,7 @@ import { pathToFileURL } from "node:url";
 
 import { parseDensityDiscoveryWorklist } from "../../packages/qc-sources/src/sources/density-document-discovery.js";
 import { DEFAULT_CAPTURE_USER_AGENT } from "./lib/capture-s3.js";
-import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
+import { putBytesIfAbsentOrEqual, s3Client } from "./lib/s3.js";
 
 interface Args {
   worklistPath: string;
@@ -191,7 +191,7 @@ async function main(): Promise<void> {
     return;
   }
   const canonical = `${JSON.stringify(worklist, null, 2)}\n`;
-  await putBytesIfAbsent(s3Client(), key, canonical, "application/json");
+  await putBytesIfAbsentOrEqual(s3Client(), key, canonical, "application/json");
   const result = spawnSync("kubectl", kubectlApplyArgs(args), {
     input: manifest,
     encoding: "utf8",

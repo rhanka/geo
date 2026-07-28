@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { objectHead, putStream, STREAM_PART_BYTES } from "./s3.js";
+import {
+  objectHead,
+  putBytesIfAbsentOrEqual,
+  putStream,
+  STREAM_PART_BYTES,
+} from "./s3.js";
 
 describe("objectHead", () => {
   it("should return missing only for an explicit S3 404", async () => {
@@ -52,5 +57,33 @@ describe("putStream", () => {
         { ETag: "etag-2", PartNumber: 2 },
       ],
     });
+  });
+});
+
+describe("putBytesIfAbsentOrEqual", () => {
+  it("should accept a pre-existing immutable object only after an exact readback", async () => {
+    async function* body(): AsyncIterable<Buffer> {
+      yield Buffer.from("same");
+    }
+    const s3 = {
+      send: vi.fn()
+        .mockRejectedValueOnce({ name: "PreconditionFailed", $metadata: { httpStatusCode: 412 } })
+        .mockResolvedValueOnce({ Body: body() }),
+    };
+    await expect(putBytesIfAbsentOrEqual(s3 as never, "registry/worklist.json", "same"))
+      .resolves.toBe("existing-equal");
+  });
+
+  it("should reject a pre-existing immutable object with different bytes", async () => {
+    async function* body(): AsyncIterable<Buffer> {
+      yield Buffer.from("other");
+    }
+    const s3 = {
+      send: vi.fn()
+        .mockRejectedValueOnce({ name: "PreconditionFailed", $metadata: { httpStatusCode: 412 } })
+        .mockResolvedValueOnce({ Body: body() }),
+    };
+    await expect(putBytesIfAbsentOrEqual(s3 as never, "registry/worklist.json", "expected"))
+      .rejects.toThrow(/immutable S3 object collision/);
   });
 });
