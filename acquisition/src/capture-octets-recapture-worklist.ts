@@ -28,6 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 type Classification = "GEOMETRIE" | "PAGE HTML" | "AUTRE";
 
 interface ClassifiedLine {
+  run_id: string;
   classification: Classification;
   source: string;
   slugs: string[];
@@ -64,6 +65,7 @@ function isClassifiedLine(value: unknown): value is ClassifiedLine {
   if (!value || typeof value !== "object") return false;
   const line = value as Partial<ClassifiedLine>;
   return (
+    typeof line.run_id === "string" &&
     (line.classification === "GEOMETRIE" || line.classification === "PAGE HTML" || line.classification === "AUTRE") &&
     typeof line.source === "string" &&
     Array.isArray(line.slugs) &&
@@ -90,14 +92,21 @@ interface Candidate {
  * lignes (même ville / même couche), la voie v1 est privilégiée pour garder
  * le rattachement de preuve tout en évitant une seconde collecte identique.
  */
-export function buildArcgisRecaptureWorklist(lines: readonly ClassifiedLine[]): CaptureWorklistTarget[] {
+export function buildArcgisRecaptureWorklist(
+  lines: readonly ClassifiedLine[],
+  format: "geojson" | "json" = "geojson",
+  includeAllNonGeometry = false,
+): CaptureWorklistTarget[] {
   const candidates = new Map<string, Candidate>();
   let unusable = 0;
   for (const line of lines) {
-    const linePriority = priority(line);
+    const linePriority = includeAllNonGeometry && line.classification !== "GEOMETRIE" &&
+      (line.source === "zones-v1-proof-url" || line.source === "zones-arcgis")
+      ? 0
+      : priority(line);
     if (linePriority === null) continue;
     const endpoint = arcgisLayerEndpointFromCaptureUrl(line.url);
-    const queryUrl = endpoint === null ? null : arcgisGeometryQueryUrl(endpoint, "geojson");
+    const queryUrl = endpoint === null ? null : arcgisGeometryQueryUrl(endpoint, format);
     if (queryUrl === null) {
       unusable++;
       continue;
@@ -131,12 +140,19 @@ async function main(): Promise<void> {
   const outputPath = insideRepo(output, "out");
   const offset = integerOption("offset", 0, 0);
   const limit = integerOption("limit", Number.MAX_SAFE_INTEGER, 1);
+  const fallbackFromRun = option("fallback-from-run");
+  const formatRaw = option("format") ?? (fallbackFromRun === null ? "geojson" : "json");
+  if (formatRaw !== "geojson" && formatRaw !== "json") throw new Error("--format must be geojson or json");
+  if (fallbackFromRun !== null && formatRaw !== "json") throw new Error("--fallback-from-run requires --format=json");
   if (existsSync(outputPath)) throw new Error(`refusing to overwrite existing worklist: ${output}`);
   const report = JSON.parse(readFileSync(inputPath, "utf8")) as ClassificationReport;
   if (report.contract !== "capture-octets-classification/v1" || report.complete !== true || !Array.isArray(report.lines) || !report.lines.every(isClassifiedLine)) {
     throw new Error("classification report must be complete capture-octets-classification/v1 with valid lines");
   }
-  const fullWorklist = buildArcgisRecaptureWorklist(report.lines);
+  const eligibleLines = fallbackFromRun === null
+    ? report.lines
+    : report.lines.filter((line) => line.run_id.startsWith(fallbackFromRun));
+  const fullWorklist = buildArcgisRecaptureWorklist(eligibleLines, formatRaw, fallbackFromRun !== null);
   const worklist = fullWorklist.slice(offset, offset + limit);
   if (worklist.length === 0) throw new Error("classification report has no ArcGIS recapture candidates");
   writeFileSync(outputPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
@@ -150,7 +166,8 @@ async function main(): Promise<void> {
     offset,
     page_html_lines: pageHtmlLines,
     other_arcgis_lines: otherArcgisLines,
-    format: "geojson",
+    format: formatRaw,
+    fallback_from_run: fallbackFromRun,
   }, null, 2));
 }
 
