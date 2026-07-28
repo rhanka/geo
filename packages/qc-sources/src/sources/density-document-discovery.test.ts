@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildDensityDiscoveryResumeWorklists,
   buildDensityDiscoverySeeds,
   densityTextHits,
   densityNormValueHits,
@@ -16,6 +17,7 @@ import {
   waybackScope,
   waybackSnapshotOriginalUrl,
   type DensityDiscoveryTarget,
+  type DensityDiscoveryWorklist,
 } from "./density-document-discovery.js";
 
 const target: DensityDiscoveryTarget = {
@@ -45,6 +47,28 @@ describe("density document discovery closed scope", () => {
   it("should create stable short lots of 12,12,12,12,8", () => {
     expect(stableDensityDiscoveryLots(Array.from({ length: 56 }, (_, index) => index)).map((lot) => lot.length))
       .toEqual([12, 12, 12, 12, 8]);
+  });
+
+  it("should resume only measured pending slugs in immutable short lots", () => {
+    const worklists: DensityDiscoveryWorklist[] = [0, 12, 24].map((offset, index) => ({
+      contract: "density-document-discovery/v1",
+      baselineKey: "work/coverage/baseline.json",
+      baselineSha256: "a".repeat(64),
+      lot: index + 1,
+      lots: 3,
+      targets: Array.from({ length: 12 }, (_, item) => ({
+        ...target,
+        slug: `ville-${String(offset + item).padStart(2, "0")}`,
+      })),
+    }));
+    const pending = new Set(Array.from({ length: 25 }, (_, index) => `ville-${String(index).padStart(2, "0")}`));
+    const resume = buildDensityDiscoveryResumeWorklists(worklists, pending, 6);
+    expect(resume.map((lot) => lot.targets.length)).toEqual([9, 8, 8]);
+    expect(resume.map((lot) => lot.lot)).toEqual([6, 7, 8]);
+    expect(resume.every((lot) => lot.lots === 8)).toBe(true);
+    expect(() =>
+      buildDensityDiscoveryResumeWorklists(worklists, new Set(["hors-perimetre"]), 6),
+    ).toThrow(/hors périmètre/);
   });
 });
 
