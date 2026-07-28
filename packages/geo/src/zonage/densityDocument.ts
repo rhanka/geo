@@ -168,6 +168,75 @@ export function parseAmosDensityDocument(text: string): DensityDocumentParseResu
   return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
 }
 
+/**
+ * Notre-Dame-de-Lourdes (MRC de Joliette) — the municipality publishes the
+ * dated zoning by-law with Annex C integrated in the same PDF. Only H-16 has a
+ * single COS maximum repeated identically across every printed use column;
+ * use-specific "Maximum N logements" notes elsewhere are deliberately ignored.
+ */
+export function parseNotreDameDeLourdesJolietteDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  const family = "notre-dame-de-lourdes-joliette-02-2023-annexe-c-h16";
+  const documentAnchored =
+    /R[èe]glement\s+de\s+zonage\s+(?:num[ée]ro\s+)?02-2023/i.test(text)
+    && /MUNICIPALIT[ÉE]\s+DE\s+NOTRE-DAME-DE-LOURDES/i.test(text)
+    && /Derni[èe]re\s+mise\s+[àa]\s+jour\s+le\s*:\s*27\s+novembre\s+2024/i.test(text)
+    && /documents\s+suivants\s+sont\s+annex[ée]s\s+au\s+pr[ée]sent\s+r[èe]glement\s+et\s+en\s+font\s+partie\s+int[ée]grante/i
+      .test(text)
+    && /Annexe\s+C\s*:\s*Grilles\s+des\s+sp[ée]cifications/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const folded = foldedLine(pageText);
+    const zone = /\bZone\s+(H-16)\b/i.exec(folded)?.[1]?.toUpperCase() ?? null;
+    if (zone === null) continue;
+    const densityLine = pageText.split(/\r?\n/)
+      .find((line) => /Coefficient\s+d['’]emprise\s+au\s+sol\s+maximal\s*\(%\)/i.test(line));
+    if (!densityLine) continue;
+    const proof = foldedLine(densityLine);
+    const match =
+      /Coefficient\s+d['’]emprise\s+au\s+sol\s+maximal\s*\(%\)\s*(.*)$/i
+        .exec(proof);
+    if (!match) continue;
+    const raw = match[1]!.trim();
+    const values = (raw.match(/\d+(?:[,.]\d+)?/g) ?? [])
+      .map((value) => ({ raw: value, value: decimal(value) }))
+      .filter((entry): entry is { raw: string; value: number } => entry.value !== null);
+    if (values.length < 2) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "cos-maximum-colonnes-incomplètes",
+        proof,
+      });
+      continue;
+    }
+    const distinct = new Set(values.map((entry) => entry.value));
+    if (distinct.size !== 1) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "maxima-divergents-entre-colonnes-usages",
+        proof,
+      });
+      continue;
+    }
+    readings.push({
+      zoneCode: zone,
+      value: values[0]!.value,
+      unit: "cos-max",
+      raw,
+      proof,
+      page,
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
 /** Municipalité de Champlain — one sheet per numeric zone. */
 export function parseChamplainDensityDocument(text: string): DensityDocumentParseResult {
   const family = "champlain-2009-03-annexe-c";
