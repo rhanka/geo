@@ -1,26 +1,29 @@
-# Template documenté du Job générique de capture (SPEC_CAPTURE_ON_CLUSTER §5.2).
-#
-# Ne pas appliquer les valeurs REPLACE_ME : l'orchestrateur TS génère un Job
-# concret après avoir déposé la worklist en S3. Un Job Indexed borne la
-# concurrence côté cluster, sans polling local; chaque pod reçoit son SHARD.
+# Lot de contrôle PV: 200 URL `pv_probable`, snapshot b32de19169bc907c.
+# Ce Job Indexed ne crée qu'UN pod à la fois (parallelism: 1). Les quatre
+# shards sont donc une mesure de capacité avant toute montée de concurrence.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: geo-capture-REPLACE_ME
+  name: geo-capture-pv-control-20260728-b32de19169bc907c
   namespace: geo
   labels:
     app: geo-capture
-    app.kubernetes.io/part-of: geo
+    lane: pv
+    geo.sentropic.io/capture-control: pv-probable-20260728-b32de19169bc907c
 spec:
   completionMode: Indexed
-  completions: 1
+  completions: 4
   parallelism: 1
-  backoffLimit: 2
-  ttlSecondsAfterFinished: 86400
+  # Un 404 est un résultat du manifeste; un problème de pod doit arrêter le
+  # lot, jamais relancer des GET ambigus derrière le dos de l'opérateur.
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 604800
   template:
     metadata:
       labels:
         app: geo-capture
+        lane: pv
+        geo.sentropic.io/capture-control: pv-probable-20260728-b32de19169bc907c
     spec:
       restartPolicy: Never
       imagePullSecrets:
@@ -32,21 +35,21 @@ spec:
           type: RuntimeDefault
       containers:
         - name: capture
-          image: rg.fr-par.scw.cloud/sentropic-geo/geo-capture:REPLACE_ME
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-capture:pv-probable-20260728-b32de19169bc907c-v1
           imagePullPolicy: IfNotPresent
           env:
             - name: LANE
-              value: "zones"
+              value: "pv"
             - name: WORKLIST
-              value: "registry/capture-worklists/REPLACE_ME.json"
+              value: "registry/capture-worklists/pv-control-20260728-b32de19169bc907c.json"
             - name: RUN_STAMP
-              value: "REPLACE_ME"
+              value: "control-20260728-b32de19169bc907c"
             - name: SHARD
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
             - name: SHARDS
-              value: "1"
+              value: "4"
             - name: DELAY_MS
               value: "2000"
             - name: EGRESS
@@ -70,18 +73,10 @@ spec:
                 name: geo-s3-credentials
           resources:
             requests:
-              # Avec les services résidents, le quota laisse 395m de requêtes:
-              # six captures à 60m utilisent 360m.
               cpu: 60m
-              # Le quota laisse 736Mi de requêtes mémoire après les services:
-              # six captures réservent 720Mi sans abaisser leur limite de 176Mi.
               memory: 120Mi
             limits:
-              # Le quota laisse 900m de limites CPU: six captures à 150m
-              # atteignent ce plafond sans empêcher leur création.
               cpu: 150m
-              # Capture streamée mesurée sur un règlement de 31,664,331 octets:
-              # pic cgroup 136.36 MiB. 176 Mi garde 39.64 Mi (29%) de marge.
               memory: 176Mi
           securityContext:
             allowPrivilegeEscalation: false
