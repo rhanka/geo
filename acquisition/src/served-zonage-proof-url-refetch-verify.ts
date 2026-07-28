@@ -119,6 +119,11 @@ async function main(): Promise<void> {
     throw new Error("--run-prefix=<zones-run> --out=<report.json> are required unless --worklist-out is used");
   }
   if (!/^zones-[A-Za-z0-9-]+$/.test(runPrefix)) throw new Error("--run-prefix must name one zones capture run");
+  const verificationLimit = integerOption("limit", plan.ready.length, 2);
+  const verificationRows = plan.ready.slice(0, verificationLimit);
+  if (verificationRows.length !== verificationLimit) {
+    throw new Error(`plan has only ${verificationRows.length} ready collection(s); ${verificationLimit} requested`);
+  }
   const outputPath = insideRepo(outputArgument, "out");
   if (existsSync(outputPath)) throw new Error(`refusing to overwrite existing report: ${relative(ROOT, outputPath)}`);
 
@@ -134,7 +139,7 @@ async function main(): Promise<void> {
   })))).flatMap(({ manifestKey, lines }) => lines.map((line, lineIndex) => ({ manifestKey, line, lineIndex })));
 
   const observations = [];
-  for (const row of plan.ready) {
+  for (const row of verificationRows) {
     for (const attestation of row.attestations) {
       const matches = manifestLines.flatMap(({ manifestKey, line, lineIndex }) => {
         if (line.http_status !== 200 || !line.slugs.includes(row.slug) || line.url !== attestation.replacementUrl) return [];
