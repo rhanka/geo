@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   parseChamplainDensityDocument,
+  parseChestervilleDensityDocument,
+  parseDrummondvilleDensityDocument,
+  parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
 } from "./densityDocument.js";
@@ -165,5 +168,97 @@ describe("parseLacDesEcorcesDensityDocument", () => {
     ].join("\n"));
     expect(parsed.projectExcluded).toBe(true);
     expect(parsed.norms).toEqual([]);
+  });
+});
+
+describe("parseChestervilleDensityDocument", () => {
+  const chestervilleHeader = [
+    "Municipalité de Chesterville",
+    "Grille des usages et normes",
+  ].join("\n");
+
+  it("publishes only when every printed class has one identical fixed value", () => {
+    const parsed = parseChestervilleDensityDocument([
+      chestervilleHeader,
+      "Zone V1",
+      "Nombre de logement par bâtiment 1/1 1/1",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([expect.objectContaining({
+      zoneCode: "V1",
+      value: 1,
+      unit: "logements/batiment",
+      raw: "1/1 | 1/1",
+    })]);
+  });
+
+  it("refuses ranges, divergent classes, and incomplete PDF operators", () => {
+    const parsed = parseChestervilleDensityDocument([
+      chestervilleHeader,
+      "Zone H1",
+      "Nombre de logement par bâtiment 1/1 2/3 4/",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("plage-logements-incomplete");
+  });
+
+  it("does not scalarize a partial amendment sheet", () => {
+    const parsed = parseChestervilleDensityDocument([
+      "Municipalité de Chesterville",
+      "RÈGLEMENT N° 187",
+      "Amendant le règlement de zonage n° 145",
+      "Zone C1",
+      "Nombre de logement par bâtiment 1/1",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason)
+      .toBe("amendement-partiel-ne-prouve-pas-une-densite-de-zone");
+  });
+});
+
+describe("parseDrummondvilleDensityDocument", () => {
+  const drummondvilleHeader = [
+    "Ville de Drummondville Chapitre 13",
+    "Règlement de zonage No 4300",
+  ].join("\n");
+
+  it("uses the closest preceding zone heading on each page", () => {
+    const parsed = parseDrummondvilleDensityDocument([
+      drummondvilleHeader,
+      "ZONE H-474",
+      "ARTICLE 1335 GÉNÉRALITÉ",
+      "ZONE D’HABITATION H-475",
+      "ARTICLE 1336.04 NOMBRE DE LOGEMENTS PAR TERRAIN",
+      "Le nombre de logements par terrain maximal est établi à 105",
+      "\f",
+      "ZONE H-735",
+      "ZONE H-750",
+      "c) nombre de logements/bâtiment maximal : 8",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([
+      expect.objectContaining({
+        zoneCode: "H-475",
+        value: 105,
+        unit: "logements/terrain",
+      }),
+      expect.objectContaining({
+        zoneCode: "H-750",
+        value: 8,
+        unit: "logements/batiment",
+      }),
+    ]);
+  });
+});
+
+describe("parseHuberdeauDensityDocument", () => {
+  it("keeps conditional municipality-wide density as a refusal, not a zone norm", () => {
+    const parsed = parseHuberdeauDensityDocument([
+      "MUNICIPALITÉ D’HUBERDEAU",
+      "RÈGLEMENT DE ZONAGE NUMÉRO 199-02",
+      "9.8.9 Densité brute",
+      "Le nombre de logements à l’hectare brut ne doit pas excéder 3.3 dans le cas d’un lot",
+    ].join("\n"));
+    expect(parsed.documentAnchored).toBe(true);
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("densite-conditionnelle-sans-code-zone");
   });
 });
