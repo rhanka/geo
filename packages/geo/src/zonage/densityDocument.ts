@@ -136,16 +136,45 @@ interface PositionedCode {
   center: number;
 }
 
+function normalizedHeaderZoneCode(raw: string): string {
+  return raw.normalize("NFD").replace(/\p{M}/gu, "").toUpperCase();
+}
+
 function positionedZoneCodes(lines: readonly string[]): PositionedCode[] {
-  const zonesLine = lines.findIndex((line) => /^\s*ZONES?\s*$/i.test(line));
+  const zonesLine = lines.findIndex((line) => /\bZONES?\b/i.test(line));
   if (zonesLine < 0) return [];
-  for (const line of lines.slice(zonesLine + 1, zonesLine + 8)) {
-    const matches = [...line.matchAll(/\b([A-Z]{1,4}-\d{1,4}(?:[.-][A-Z0-9]+)*)\b/g)];
-    if (matches.length === 0) continue;
-    return matches.map((match) => ({
-      code: match[1]!,
-      center: (match.index ?? 0) + Math.floor(match[0].length / 2),
-    }));
+
+  const headerLines = lines.slice(zonesLine, zonesLine + 8);
+  const complete = headerLines.flatMap((line) =>
+    [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-\d{1,4}(?:[.-][A-Z0-9]+)*)/gu)]
+      .map((match) => ({
+        code: normalizedHeaderZoneCode(match[1]!),
+        center: (match.index ?? 0) + Math.floor(match[0].length / 2),
+      }))
+  );
+  if (complete.length > 0) {
+    return [...new Map(
+      complete
+        .sort((left, right) => left.center - right.center)
+        .map((positioned) => [positioned.code, positioned]),
+    ).values()];
+  }
+
+  for (const [lineIndex, line] of headerLines.entries()) {
+    const prefixes =
+      [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-)(?=\s|$)/gu)];
+    if (prefixes.length === 0) continue;
+    for (const numberLine of headerLines.slice(lineIndex + 1)) {
+      const numbers = [...numberLine.matchAll(/\b(\d{1,4})\b/g)];
+      if (numbers.length !== prefixes.length) continue;
+      return prefixes.map((prefix, index) => {
+        const number = numbers[index]!;
+        return {
+          code: `${normalizedHeaderZoneCode(prefix[1]!)}${number[1]!}`,
+          center: (number.index ?? 0) + Math.floor(number[0].length / 2),
+        };
+      });
+    }
   }
   return [];
 }
