@@ -59,9 +59,17 @@ async function main(): Promise<void> {
   }
 
   const manifest = parseManifestJsonl((await getBytes(s3, keys.manifest)).toString("utf8"));
-  const matches = manifest
+  const directMatches = manifest
     .map((line, index) => ({ line, index }))
-    .filter(({ line }) => line.url === url || line.final_url === url);
+    .filter(({ line }) => line.url === url);
+  // A Wayback response may redirect its `final_url` to the live URL and would
+  // otherwise make one exact live capture look ambiguous. Prefer the requested
+  // manifest URL; accept `final_url` only when no direct line exists.
+  const matches = directMatches.length > 0
+    ? directMatches
+    : manifest
+        .map((line, index) => ({ line, index }))
+        .filter(({ line }) => line.final_url === url);
   if (matches.length !== 1) {
     throw new Error(`capture exacte attendue une fois, trouvée ${matches.length}: ${url}`);
   }
