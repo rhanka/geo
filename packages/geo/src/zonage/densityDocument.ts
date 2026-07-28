@@ -9,7 +9,7 @@
 export interface VerbatimDensityNorm {
   zoneCode: string;
   value: number;
-  unit: "logements/terrain" | "logements/batiment" | "log/ha";
+  unit: "logements/terrain" | "logements/batiment" | "log/ha" | "cos-max";
   raw: string;
   proof: string;
   page: number;
@@ -433,6 +433,119 @@ export function parseHuberdeauDensityDocument(text: string): DensityDocumentPars
     });
   }
   return consolidate(family, documentAnchored, projectExcluded, [], refusals);
+}
+
+/** Clermont — one native grid page per zone, with use-class columns. */
+export function parseClermontDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "clermont-vc-434-13-grilles";
+  const documentAnchored =
+    /VILLE\s+DE\s+CLERMONT/i.test(text)
+    && /R[ÈE]GLEMENT\s+DE\s+ZONAGE\s+NUM[ÉE]RO\s+VC-434-13/i.test(text)
+    && /GRILLES?\s+DES\s+SP[ÉE]CIFICATIONS/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const zone =
+      /\bZONE\s+(\d{3}-[A-ZÀ-ÖØ-Þ]{1,8}(?:-\d+)*)\b/i.exec(pageText)?.[1] ?? null;
+    const line = pageText.split(/\r?\n/)
+      .find((candidate) => /\bNombre\s+maximal\s+de\s+logements?\b/i.test(candidate));
+    if (!line) continue;
+    const proof = foldedLine(line);
+    const match = /\bNombre\s+maximal\s+de\s+logements?\b\s*(.*)$/i.exec(proof);
+    const rawValues = match?.[1]?.match(/\d+(?:[,.]\d+)?/g) ?? [];
+    if (rawValues.length === 0) continue;
+    if (!zone) {
+      refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
+      continue;
+    }
+    const values = rawValues.map(decimal);
+    if (values.some((value) => value === null) || new Set(values).size !== 1) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "maxima-divergents-entre-colonnes-usages",
+        proof,
+      });
+      continue;
+    }
+    readings.push({
+      zoneCode: zone,
+      value: values[0]!,
+      unit: "logements/batiment",
+      raw: rawValues.join(" | "),
+      proof,
+      page,
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
+/**
+ * Varennes — a zone sheet spans two PDF pages. Only explicit maximum rows are
+ * candidates; the zone from the first page remains in scope for its immediate
+ * continuation page. Divergent columns or competing maximum metrics fail
+ * closed through the shared consolidation rule.
+ */
+export function parseVarennesDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "varennes-707-annexe-b-grilles";
+  const documentAnchored =
+    /GRILLE\s+DES\s+USAGES\s+ET\s+NORMES/i.test(text)
+    && /\bZone\s+[A-Z]{1,4}-\d{3,4}\b/i.test(text)
+    && /PGSYSTEM\/Grille\/Exe\/html1\.html/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+  let currentZone: string | null = null;
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const pageZone =
+      /\bGRILLE\s+DES\s+USAGES\s+ET\s+NORMES\b[^\n]*\bZone\s+([A-Z]{1,4}-\d{3,4})\b/i
+        .exec(pageText)?.[1] ?? null;
+    if (pageZone) currentZone = pageZone;
+    for (const line of pageText.split(/\r?\n/)) {
+      const proof = foldedLine(line);
+      const housing =
+        /\b(?:6|10)\.\s*b\)\s*Nombre\s+de\s+logements?\s+max\.\s*(.*)$/i.exec(proof);
+      const cos =
+        /\b54\.\s*Coefficient\s+d['’]occupation\s+du\s+sol\s+max\.\s*(.*)$/i.exec(proof);
+      const match = housing ?? cos;
+      if (!match) continue;
+      const rawValues = match[1]!.match(/\d+(?:[,.]\d+)?/g) ?? [];
+      if (rawValues.length === 0) continue;
+      if (!currentZone) {
+        refusals.push({
+          page,
+          zoneCode: null,
+          reason: "zone-absente-avant-la-regle",
+          proof,
+        });
+        continue;
+      }
+      const values = rawValues.map(decimal);
+      if (values.some((value) => value === null) || new Set(values).size !== 1) {
+        refusals.push({
+          page,
+          zoneCode: currentZone,
+          reason: "maxima-divergents-entre-colonnes-usages",
+          proof,
+        });
+        continue;
+      }
+      readings.push({
+        zoneCode: currentZone,
+        value: values[0]!,
+        unit: housing ? "logements/batiment" : "cos-max",
+        raw: rawValues.join(" | "),
+        proof,
+        page,
+      });
+    }
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
 }
 
 /**
