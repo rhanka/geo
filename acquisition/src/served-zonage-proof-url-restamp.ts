@@ -43,6 +43,7 @@ import {
 } from "./lib/zonage-proof.js";
 import {
   isHttpsCaptureUrl,
+  manifestUrlMatchesServedEnvelope,
   MissingSha256RestampRefusal,
   planMissingSha256ProofRestamp,
   selectEquivalentManifestReceipt,
@@ -361,7 +362,7 @@ function attestationsForCurrent(
   const artifacts = featureArtifacts(current);
   if (artifacts.length === 0) throw new MissingSha256RestampRefusal("no-s3-artifact-uri-found-in-current-feature-proofs");
   return artifacts.map(({ artifactUri, upstreamUri }) => {
-    const matching = candidates.filter((candidate) => candidate.url === upstreamUri);
+    const matching = candidates.filter((candidate) => manifestUrlMatchesServedEnvelope(candidate.url, upstreamUri));
     const matchingReceipt = selectEquivalentManifestReceipt(matching);
     if (matchingReceipt === null) {
       if (matching.length === 0) {
