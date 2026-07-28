@@ -11,6 +11,7 @@ import {
   parseMontLaurierZonesHDensityDocument,
   parseMontTremblantDensityDocument,
   parseMontTremblantPlanDensityDocument,
+  parseNotreDameDeLourdesJolietteDensityDocument,
   parseSaintJeromeDensityDocument,
   parseVarennesDensityDocument,
   parseVarennesPpuDensityDocument,
@@ -70,6 +71,72 @@ describe("parseAmosDensityDocument", () => {
       "PREMIER PROJET DE RÈGLEMENT",
       "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
       "VA-1290 17 sept. 2024",
+    ].join("\n"));
+
+    expect(parsed.projectExcluded).toBe(true);
+    expect(parsed.norms).toEqual([]);
+  });
+});
+
+describe("parseNotreDameDeLourdesJolietteDensityDocument", () => {
+  const datedOwner = [
+    "Règlement de zonage 02-2023",
+    "MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES",
+    "Dernière mise à jour le : 27 novembre 2024",
+    "Les documents suivants sont annexés au présent règlement et en font partie intégrante à toute fin que de droit :",
+    "Annexe C : Grilles des spécifications",
+  ].join("\n");
+
+  it("publishes the verbatim H-16 COS when every printed use column agrees", () => {
+    const parsed = parseNotreDameDeLourdesJolietteDensityDocument([
+      datedOwner,
+      "\fRèglement de zonage 02-2023 Annexe C – Grilles de spécifications",
+      "Zone H-16",
+      "Coefficient d'emprise au sol maximal (%) 2 2 2 2",
+    ].join("\n"));
+
+    expect(parsed).toMatchObject({
+      documentAnchored: true,
+      projectExcluded: false,
+      refusals: [],
+      norms: [{
+        zoneCode: "H-16",
+        value: 2,
+        unit: "cos-max",
+        raw: "2 2 2 2",
+        page: 2,
+      }],
+    });
+  });
+
+  it("refuses an annex whose integrated municipal document has no verbatim date", () => {
+    const parsed = parseNotreDameDeLourdesJolietteDensityDocument([
+      datedOwner.replace("Dernière mise à jour le : 27 novembre 2024", ""),
+      "\fZone H-16",
+      "Coefficient d'emprise au sol maximal (%) 2 2 2 2",
+    ].join("\n"));
+
+    expect(parsed.documentAnchored).toBe(false);
+    expect(parsed.norms).toEqual([]);
+  });
+
+  it("refuses divergent use columns instead of selecting a maximum", () => {
+    const parsed = parseNotreDameDeLourdesJolietteDensityDocument([
+      datedOwner,
+      "\fZone H-16",
+      "Coefficient d'emprise au sol maximal (%) 2 2 3 2",
+    ].join("\n"));
+
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.reason).toBe("maxima-divergents-entre-colonnes-usages");
+  });
+
+  it("excludes a project document", () => {
+    const parsed = parseNotreDameDeLourdesJolietteDensityDocument([
+      datedOwner,
+      "PREMIER PROJET DE RÈGLEMENT",
+      "\fZone H-16",
+      "Coefficient d'emprise au sol maximal (%) 2 2 2 2",
     ].join("\n"));
 
     expect(parsed.projectExcluded).toBe(true);
