@@ -28,7 +28,7 @@ const LOT_SIZE = 6;
 const DENSITY_BASELINE_KEY = "work/coverage/effet-densifiant-bprime-acquisition-universe-20260727.json";
 const DENSITY_BASELINE_SHA256 = "c777ed4a155468e3cb13a8c9b9591d2e770fced97c5d5c5758c264fa3e04767f";
 
-interface TargetSeed {
+export interface CategoryAGisementTarget {
   slug: string;
   name: string;
   website: string;
@@ -36,7 +36,7 @@ interface TargetSeed {
   mrcPortals: string[];
 }
 
-const TARGETS: readonly TargetSeed[] = [
+export const CATEGORY_A_GISEMENT_TARGETS: readonly CategoryAGisementTarget[] = [
   { slug: "lislet", name: "L'Islet", website: "https://www.lislet.com", mrcName: "MRC de L'Islet", mrcPortals: ["https://mrclislet.com"] },
   { slug: "notre-dame-du-rosaire", name: "Notre-Dame-du-Rosaire", website: "https://www.notredamedurosaire.com", mrcName: "MRC de Montmagny", mrcPortals: ["https://www.montmagny.com"] },
   { slug: "saint-francois-de-la-riviere-du-sud", name: "Saint-François-de-la-Rivière-du-Sud", website: "https://www.stfrancois.ca", mrcName: "MRC de Montmagny", mrcPortals: ["https://www.montmagny.com"] },
@@ -127,7 +127,7 @@ function wpCatalogUrls(urls: Set<string>, base: string, ownerSearch: string): vo
   }
 }
 
-function discoveryUrls(target: TargetSeed): string[] {
+function discoveryUrls(target: CategoryAGisementTarget): string[] {
   const urls = new Set<string>();
   wpCatalogUrls(urls, target.website, target.name);
   for (const path of ["/storage/app/media", "/sitemap.xml", "/sitemap_index.xml"]) {
@@ -189,11 +189,11 @@ export function categoryAGisementsWorklists(): CaptureWorklistTarget[][] {
   const expected = (JSON.parse(readFileSync(BILAN, "utf8")) as {
     partitions?: { A?: { collections?: Array<{ slug?: unknown }> } };
   }).partitions?.A?.collections?.map((entry) => entry.slug) ?? [];
-  const configured = TARGETS.map((target) => target.slug);
+  const configured = CATEGORY_A_GISEMENT_TARGETS.map((target) => target.slug);
   if (JSON.stringify(expected) !== JSON.stringify(configured)) {
     throw new Error(`périmètre A différent du bilan: attendu=${expected.join(",")} configuré=${configured.join(",")}`);
   }
-  const worklist = parseCaptureWorklist(TARGETS.map((target) => ({
+  const worklist = parseCaptureWorklist(CATEGORY_A_GISEMENT_TARGETS.map((target) => ({
     slug: target.slug,
     source: SOURCE,
     urls: discoveryUrls(target),
@@ -238,7 +238,7 @@ export function categoryADensityReviewWorklists(): DensityDiscoveryWorklist[] {
       baselineSnapshot: "2026-07-28",
     }],
   ]);
-  const targets = TARGETS.map((seed): DensityDiscoveryTarget => {
+  const targets = CATEGORY_A_GISEMENT_TARGETS.map((seed): DensityDiscoveryTarget => {
     const prior = priorTargets.get(seed.slug);
     if (prior) return prior;
     const extra = extras.get(seed.slug);

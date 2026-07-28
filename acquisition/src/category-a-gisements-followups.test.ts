@@ -65,4 +65,39 @@ describe("category A captured catalog followups", () => {
     }), "https://services.example/FeatureServer/7/query?f=json");
     expect(rows.documents).toContain("https://ville.example/docs/grille-A-1.pdf");
   });
+
+  it("does not inherit a catalog page subject into unrelated links", () => {
+    const result = discoverFollowups(
+      [
+        '<a href="/files/annexe-budget.pdf">Annexe au budget</a>',
+        '<a href="/files/projet-reglement-zonage.pdf">Projet de règlement de zonage</a>',
+        '<a href="/files/reglement-zonage.pdf">Règlement de zonage</a>',
+      ].join(""),
+      "https://mrc.example/reglements-urbanisme/",
+    );
+    expect(result.documents).toEqual(["https://mrc.example/files/reglement-zonage.pdf"]);
+  });
+
+  it("uses sitemaps for child indexes and direct subject documents, not every matching page slug", () => {
+    const result = discoverFollowups(
+      [
+        "<urlset>",
+        "<url><loc>https://mrc.example/reglement-123/</loc></url>",
+        "<url><loc>https://mrc.example/reglement-zonage.pdf</loc></url>",
+        "<url><loc>https://mrc.example/zonage-municipal/</loc></url>",
+        "</urlset>",
+      ].join(""),
+      "https://mrc.example/post-sitemap.xml",
+    );
+    expect(result.documents).toEqual(["https://mrc.example/reglement-zonage.pdf"]);
+    expect(result.catalogs).toEqual([]);
+  });
+
+  it("does not recurse through incidental WordPress API relation routes", () => {
+    const result = discoverFollowups(
+      '<a href="https://mrc.example/wp-json/wp/v2/comments?post=42">urbanisme</a>',
+      "https://mrc.example/",
+    );
+    expect(result.catalogs).toEqual([]);
+  });
 });
