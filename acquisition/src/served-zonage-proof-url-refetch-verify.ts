@@ -19,7 +19,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
+import { parseCaptureWorklist, parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
 import { captureReceiptFromManifest, type CaptureReceipt } from "./lib/zone-provenance-quality.js";
@@ -46,6 +46,14 @@ function option(name: string): string | null {
   const prefix = `--${name}=`;
   const value = process.argv.slice(2).find((arg) => arg.startsWith(prefix));
   return value === undefined ? null : value.slice(prefix.length);
+}
+
+function integerOption(name: string, fallback: number, min: number): number {
+  const raw = option(name);
+  if (raw === null) return fallback;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < min) throw new Error(`--${name} must be an integer >= ${min}`);
+  return value;
 }
 
 function insideRepo(path: string, name: string): string {
@@ -82,17 +90,37 @@ function receiptIdentity(receipt: CaptureReceipt): string {
 
 async function main(): Promise<void> {
   const planArgument = option("plan");
+  const worklistArgument = option("worklist-out");
   const runPrefix = option("run-prefix");
   const outputArgument = option("out");
-  if (!planArgument || !runPrefix || !outputArgument) {
-    throw new Error("--plan=<complete-restamp-plan> --run-prefix=<zones-run> --out=<report.json> are required");
-  }
-  if (!/^zones-[A-Za-z0-9-]+$/.test(runPrefix)) throw new Error("--run-prefix must name one zones capture run");
+  if (!planArgument) throw new Error("--plan=<complete-restamp-plan> is required");
   const planPath = insideRepo(planArgument, "plan");
-  const outputPath = insideRepo(outputArgument, "out");
-  if (existsSync(outputPath)) throw new Error(`refusing to overwrite existing report: ${relative(ROOT, outputPath)}`);
   const plan = readPlan(planPath);
   if (plan.ready.length === 0) throw new Error("plan has no restamped collection to verify");
+  if (worklistArgument !== null) {
+    if (runPrefix !== null || outputArgument !== null) {
+      throw new Error("--worklist-out cannot be combined with --run-prefix or --out");
+    }
+    const limit = integerOption("limit", 2, 2);
+    const selected = plan.ready.slice(0, limit);
+    if (selected.length !== limit) throw new Error(`plan has only ${selected.length} ready collection(s); ${limit} requested`);
+    const worklist = parseCaptureWorklist(selected.map((row) => ({
+      slug: row.slug,
+      source: "zones-v1-proof-url-verify",
+      urls: [...new Set(row.attestations.map((attestation) => attestation.replacementUrl))],
+    })));
+    const worklistPath = insideRepo(worklistArgument, "worklist-out");
+    if (existsSync(worklistPath)) throw new Error(`refusing to overwrite existing worklist: ${relative(ROOT, worklistPath)}`);
+    writeFileSync(worklistPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
+    console.log(JSON.stringify({ output: relative(ROOT, worklistPath), targets: worklist.length }, null, 2));
+    return;
+  }
+  if (!runPrefix || !outputArgument) {
+    throw new Error("--run-prefix=<zones-run> --out=<report.json> are required unless --worklist-out is used");
+  }
+  if (!/^zones-[A-Za-z0-9-]+$/.test(runPrefix)) throw new Error("--run-prefix must name one zones capture run");
+  const outputPath = insideRepo(outputArgument, "out");
+  if (existsSync(outputPath)) throw new Error(`refusing to overwrite existing report: ${relative(ROOT, outputPath)}`);
 
   const s3 = s3Client();
   const manifestKeys = (await listObjectEntries(s3, `capture/_runs/${runPrefix}`))
