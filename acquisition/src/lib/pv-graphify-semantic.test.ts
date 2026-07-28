@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { validateExtraction } from "@sentropic/graphify";
 
-import { extractPvSemantic } from "./pv-graphify-semantic.js";
+import { analyzeZoneGazetteerMatchMode, extractPvSemantic } from "./pv-graphify-semantic.js";
 
 const municipalities = [
   { slug: "albertville", name: "Albertville" },
@@ -159,6 +159,38 @@ describe("PV deterministic Graphify semantic extraction", () => {
       municipality_slug: "albertville",
       text: "MUNICIPALITÉ D’ALBERTVILLE",
     }, municipalities, { municipality_slug: "compton", codes: ["C-15"] })).toThrow("hors scope");
+  });
+
+  it("chooses exact matching when normalized zone codes collide", () => {
+    const result = analyzeZoneGazetteerMatchMode(["C-15", "C -15", "HC-14"]);
+    expect(result.mode).toBe("exact");
+    expect(result.collisions).toEqual(["C-15: C -15|C-15"]);
+  });
+
+  it("does not emit a zone in exact mode when the only close form is non-literal", () => {
+    const result = extractPvSemantic({
+      source_file: "input/albertville.txt",
+      municipality_slug: "albertville",
+      text: [
+        "MUNICIPALITÉ D’ALBERTVILLE",
+        "Séance du conseil tenue le 1er mai 2023.",
+        "La zone C 15 est visée.",
+      ].join("\n"),
+    }, municipalities, {
+      municipality_slug: "albertville",
+      codes: ["C-15"],
+      zone_code_matching: "exact",
+    });
+    expect(result.nodes.filter((node) => node.node_type === "Zone")).toHaveLength(0);
+  });
+
+  it("does not match a zone from another municipality when the code is absent from this municipality's scope", () => {
+    const result = extractPvSemantic({
+      source_file: "input/albertville.txt",
+      municipality_slug: "albertville",
+      text: "MUNICIPALITÉ D’ALBERTVILLE\nSéance du conseil tenue le 1er mai 2023.\nLa zone C-15 est visée.",
+    }, municipalities, { municipality_slug: "albertville", codes: ["HC-14"] });
+    expect(result.nodes.find((node) => node.node_type === "Zone")).toBeUndefined();
   });
 
   it("emits a lot only if the exact cadastral value belongs to the scoped closed set", () => {
