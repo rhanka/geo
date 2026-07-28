@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   assembleWaybackPdfRanges,
+  hasDatedFinalAdoption,
   reviewNativeDensityDocument,
 } from "./density-document-review.js";
 
@@ -36,6 +37,39 @@ describe("native density document review", () => {
     expect(review.disposition).toBe("project_excluded");
     expect(review.hits).toEqual([]);
     expect(review.normValueHits).toEqual([]);
+  });
+
+  it("should not mistake a dated final adoption chronology for a project", () => {
+    const text = [
+      "Municipalité de La Minerve",
+      "Adoption du projet de règlement : 2 avril 2024",
+      "Adoption du règlement : 3 juin 2024",
+      "Entrée en vigueur : 7 août 2024",
+      "ZONE RT-06",
+      "Densité d’occupation au sol maximale : 10 logements à l’hectare",
+    ].join("\n");
+    const review = reviewNativeDensityDocument(
+      Buffer.from(`<html>${text}</html>`),
+      "https://municipalite.example/reglement.pdf",
+    );
+
+    expect(hasDatedFinalAdoption(text)).toBe(true);
+    expect(review.disposition).toBe("candidate_review_required");
+  });
+
+  it("should keep a project marker in the source URL absolute", () => {
+    const text = [
+      "Adoption du règlement : 3 juin 2024",
+      "Entrée en vigueur : 7 août 2024",
+      "ZONE RT-06",
+      "Densité maximale : 10 logements à l’hectare",
+    ].join("\n");
+    const review = reviewNativeDensityDocument(
+      Buffer.from(`<html>${text}</html>`),
+      "https://municipalite.example/projet-de-reglement.pdf",
+    );
+
+    expect(review.disposition).toBe("project_excluded");
   });
 
   it("should keep a failed native XLS conversion inconclusive instead of guessing", () => {
