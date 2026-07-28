@@ -6,7 +6,7 @@
  *   npx tsx acquisition/src/served-zonage-immo-proof-url-capture-worklist.ts \
  *     --out=work/coverage/zonage-proof-url-recapture-20260727-p4.json --limit=32
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,6 +18,8 @@ import {
 
 import { openCaptureRun } from "./lib/capture-s3.js";
 import {
+  distinctProofUrlCaptures,
+  excludeMeasuredProofUrls,
   probeArcgisGeometryQuery,
   resolveArcgisProofUrlRecaptureWorklist,
   selectProofUrlRecaptureWorklist,
@@ -34,6 +36,17 @@ function option(name: string): string | null {
   return value ? value.slice(prefix.length) : null;
 }
 
+function options(name: string): string[] {
+  const prefix = `--${name}=`;
+  return process.argv.slice(2)
+    .filter((arg) => arg.startsWith(prefix))
+    .map((arg) => arg.slice(prefix.length));
+}
+
+function hasFlag(name: string): boolean {
+  return process.argv.slice(2).includes(`--${name}`);
+}
+
 function integerOption(name: string, fallback: number, min: number): number {
   const raw = option(name);
   if (raw === null) return fallback;
@@ -46,6 +59,34 @@ function insideRepo(path: string, name: string): string {
   const resolved = resolve(ROOT, path);
   if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} must resolve inside the repository`);
   return resolved;
+}
+
+function readExcludedUrls(): Set<string> {
+  const excluded = new Set<string>();
+  for (const path of options("exclude-worklist")) {
+    const worklist = parseCaptureWorklist(JSON.parse(readFileSync(insideRepo(path, "exclude-worklist"), "utf8")));
+    for (const target of worklist) for (const url of target.urls) excluded.add(url);
+  }
+  for (const path of options("exclude-probe")) {
+    const report = JSON.parse(readFileSync(insideRepo(path, "exclude-probe"), "utf8")) as { probes?: unknown };
+    if (!Array.isArray(report.probes)) throw new Error(`probe report incompatible: ${path}`);
+    for (const value of report.probes) {
+      if (value === null || typeof value !== "object") throw new Error(`probe report contains an invalid probe: ${path}`);
+      const probe = value as { endpoint?: unknown; selected_url?: unknown; attempts?: unknown };
+      if (typeof probe.endpoint !== "string" || !Array.isArray(probe.attempts)) {
+        throw new Error(`probe report contains an invalid probe: ${path}`);
+      }
+      excluded.add(probe.endpoint);
+      if (typeof probe.selected_url === "string") excluded.add(probe.selected_url);
+      for (const attemptValue of probe.attempts) {
+        if (attemptValue === null || typeof attemptValue !== "object" || typeof (attemptValue as { url?: unknown }).url !== "string") {
+          throw new Error(`probe report contains an invalid attempt: ${path}`);
+        }
+        excluded.add((attemptValue as { url: string }).url);
+      }
+    }
+  }
+  return excluded;
 }
 
 async function main(): Promise<void> {
@@ -65,11 +106,25 @@ async function main(): Promise<void> {
   const excluded = new Set(sample.selected.map((row) => (row as { slug: string }).slug));
   const selected = selectProofUrlRecaptureWorklist(audit.rows as ProofUrlAuditRow[], excluded, offset, limit);
   if (selected.length !== limit) throw new Error(`selection exhausted: requested ${limit}, found ${selected.length}`);
+  if (hasFlag("candidates-only")) {
+    if (existsSync(outPath)) throw new Error(`refusing to overwrite existing candidate worklist: ${out}`);
+    writeFileSync(outPath, `${JSON.stringify(selected, null, 2)}\n`, { flag: "wx" });
+    console.log(JSON.stringify({
+      out: outPath,
+      candidate_targets: selected.length,
+      unique_candidate_urls: new Set(selected.flatMap((target) => target.urls)).size,
+      offset,
+      excluded_test_collections: excluded.size,
+    }, null, 2));
+    return;
+  }
+  const excludedUrls = readExcludedUrls();
+  const unmeasured = excludeMeasuredProofUrls(selected, excludedUrls);
   // Les sondes ArcGIS interrogent des serveurs TIERS : regle C-0, elles passent
   // par le chokepoint de capture. Le `fetch()` nu qui servait de defaut avait
   // rouvert la dette que le cliquet ne laisse que decroitre.
   const run = openCaptureRun({ lane: "zones" });
-  const resolved = await resolveArcgisProofUrlRecaptureWorklist(selected, (endpoint) =>
+  const resolved = await resolveArcgisProofUrlRecaptureWorklist(unmeasured, (endpoint) =>
     probeArcgisGeometryQuery(endpoint, async (url) => {
       const captured = await capturedFetch(url, {}, {
         run,
@@ -91,19 +146,35 @@ async function main(): Promise<void> {
         arrayBuffer: async () => (bytes === null ? new ArrayBuffer(0) : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer),
       };
     }));
-  const worklist = parseCaptureWorklist(resolved.worklist);
-  if (worklist.length === 0) throw new Error("all selected targets were refused by ArcGIS geometry probes");
+  const distinct = distinctProofUrlCaptures(resolved.worklist);
+  const worklist = distinct.length === 0 ? [] : parseCaptureWorklist(distinct);
   const probePath = outPath.endsWith(".json") ? `${outPath.slice(0, -".json".length)}.arcgis-probes.json` : `${outPath}.arcgis-probes.json`;
   if (resolve(probePath) === outPath) throw new Error("probe report path conflicts with --out");
-  writeFileSync(outPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
+  if (worklist.length > 0) writeFileSync(outPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
   writeFileSync(probePath, `${JSON.stringify({
     contract: "arcgis-geometry-worklist-probes/v1",
     generated_at: new Date().toISOString(),
     selected_targets: selected.length,
+    unique_selected_urls: new Set(selected.flatMap((target) => target.urls)).size,
+    excluded_measured_urls: excludedUrls.size,
+    unmeasured_targets: unmeasured.length,
+    unique_unmeasured_urls: new Set(unmeasured.flatMap((target) => target.urls)).size,
+    retained_slug_targets: resolved.worklist.length,
+    unique_retained_urls: worklist.length,
     retained_targets: worklist.length,
     probes: resolved.probes,
   }, null, 2)}\n`, { flag: "wx" });
-  console.log(JSON.stringify({ out: outPath, probe_report: probePath, targets: worklist.length, arcgis_probes: resolved.probes.length, offset, excluded_test_collections: excluded.size }, null, 2));
+  console.log(JSON.stringify({
+    out: worklist.length === 0 ? null : outPath,
+    probe_report: probePath,
+    targets: worklist.length,
+    arcgis_probes: resolved.probes.length,
+    offset,
+    excluded_test_collections: excluded.size,
+    excluded_measured_urls: excludedUrls.size,
+    unmeasured_targets: unmeasured.length,
+    unique_unmeasured_urls: new Set(unmeasured.flatMap((target) => target.urls)).size,
+  }, null, 2));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
