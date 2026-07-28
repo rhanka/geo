@@ -79,9 +79,19 @@ spec:
               cpu: 500m
               # cgroup-v2 memory.peak on the 955,964,128-byte qc-lots-montreal
               # object: 195.65 Mi after three concurrent complete scans, with
-              # memory.events max/oom/oom_kill all zero. 256 Mi leaves 60.35 Mi
-              # (30.8%) headroom for the served production API.
-              memory: 256Mi
+              # memory.events max/oom/oom_kill all zero.
+              #
+              # Ce manifeste disait 256 Mi ; la PRODUCTION tournait à 2048 Mi.
+              # La dérive n'était visible nulle part et coûtait cher : le quota
+              # du namespace compte les LIMITES, donc geo-api réservait à elle
+              # seule la moitié des 4 Gi en n'en demandant que 150 Mi, ce qui
+              # interdisait le 3e pod de capture (cf. tenant-quota.yaml).
+              #
+              # 768 Mi = 3,9x le pic mesuré. Plus large que les 256 Mi mesurés,
+              # nettement plus sobre que les 2048 Mi qui tournaient. Le choix
+              # d'etre au-dessus du pic est deliberé : c'est l'API servie a
+              # immo en production, et sa charge n'est pas la charge du banc.
+              memory: 768Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
