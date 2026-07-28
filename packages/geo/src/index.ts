@@ -48,6 +48,9 @@ export {
 } from "./zonage/lotZoneJoin.js";
 export {
   parseChamplainDensityDocument,
+  parseChestervilleDensityDocument,
+  parseDrummondvilleDensityDocument,
+  parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
   type DensityDocumentParseResult,

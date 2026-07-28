@@ -252,6 +252,176 @@ export function parseLacDesEcorcesDensityDocument(text: string): DensityDocument
 }
 
 /**
+ * Chesterville — one sheet per zone. Cells are printed as ranges per use class
+ * (for example 2/3 or 4/9), so a zone-level scalar exists only when every
+ * printed range is degenerate and all resulting values agree.
+ */
+export function parseChestervilleDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "chesterville-grilles-usages-normes";
+  const documentAnchored =
+    /Municipalit[ée]\s+de\s+Chesterville/i.test(text)
+    && /(?:Grille\s+des\s+usages\s+et\s+normes|R[ÈE]GLEMENT\s+N[°O]\s*187)/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const partialAmendment =
+    /R[ÈE]GLEMENT\s+N[°O]\s*187\b/i.test(text)
+    && /[Aa]mendant\s+le\s+r[èe]glement\s+de\s+zonage/i.test(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const folded = foldedLine(pageText);
+    const zone =
+      /\bZone\s+([A-Z]{1,3}\s*-?\s*\d{1,3})\b/i.exec(folded)?.[1]
+        ?.replace(/\s|-/g, "")
+        .toUpperCase() ?? null;
+    const match =
+      /\bNombre\s+de\s+logements?\s+par\s+b[âa]timent\b\s*(.*)$/i.exec(folded);
+    if (!match) continue;
+    const proof = match[0]!;
+    const rawTail = match[1]!;
+    const ranges = [...rawTail.matchAll(/\b(\d+)\s*\/\s*(\d+)\b/g)];
+    const incompleteRange = /\b\d+\s*\/(?:\s|$)/.test(rawTail);
+    if (ranges.length === 0 && !incompleteRange) continue;
+    if (partialAmendment) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "amendement-partiel-ne-prouve-pas-une-densite-de-zone",
+        proof,
+      });
+      continue;
+    }
+    if (!zone) {
+      refusals.push({ page, zoneCode: null, reason: "zone-absente-sur-la-page", proof });
+      continue;
+    }
+    if (incompleteRange) {
+      refusals.push({ page, zoneCode: zone, reason: "plage-logements-incomplete", proof });
+      continue;
+    }
+    const fixedValues: number[] = [];
+    let nonScalar = false;
+    for (const range of ranges) {
+      const minimum = decimal(range[1]!);
+      const maximum = decimal(range[2]!);
+      if (minimum === null || maximum === null || minimum !== maximum) {
+        nonScalar = true;
+        break;
+      }
+      fixedValues.push(minimum);
+    }
+    if (nonScalar || new Set(fixedValues).size !== 1) {
+      refusals.push({
+        page,
+        zoneCode: zone,
+        reason: "plages-ou-classes-divergentes",
+        proof,
+      });
+      continue;
+    }
+    readings.push({
+      zoneCode: zone,
+      value: fixedValues[0]!,
+      unit: "logements/batiment",
+      raw: ranges.map((range) => `${range[1]}/${range[2]}`).join(" | "),
+      proof,
+      page,
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
+/**
+ * Drummondville chapter 13 — prose rules scoped by the closest preceding zone
+ * heading on the same page. This avoids attributing a rule to an earlier
+ * section merely because both zone codes occur on that page.
+ */
+export function parseDrummondvilleDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "drummondville-4300-chapitre-13";
+  const documentAnchored =
+    /Ville\s+de\s+Drummondville/i.test(text)
+    && /R[èe]glement\s+de\s+zonage\s+N[o°]\s*4300/i.test(text)
+    && /Chapitre\s+13/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    let currentZone: string | null = null;
+    for (const line of pageText.split(/\r?\n/)) {
+      const zoneHeading =
+        /\bZONES?(?:\s+D[’']HABITATION)?\s+([A-Z]{1,4}-\d{1,4}(?:-\d+)*)\b/.exec(line);
+      if (zoneHeading) currentZone = zoneHeading[1]!;
+      const folded = foldedLine(line);
+      const perTerrain =
+        /\bLe\s+nombre\s+de\s+logements?\s+par\s+terrain\s+maximal\s+est\s+[ée]tabli\s+[àa]\s+(\d+(?:[,.]\d+)?)\b/i
+          .exec(folded);
+      const perBuilding =
+        /\bnombre\s+de\s+logements?\s*\/\s*b[âa]timent\s+maximal\s*:\s*(\d+(?:[,.]\d+)?)\b/i
+          .exec(folded);
+      const match = perTerrain ?? perBuilding;
+      if (!match) continue;
+      if (!currentZone) {
+        refusals.push({
+          page,
+          zoneCode: null,
+          reason: "zone-absente-avant-la-regle-sur-la-page",
+          proof: folded,
+        });
+        continue;
+      }
+      const value = decimal(match[1]!);
+      if (value === null) {
+        refusals.push({
+          page,
+          zoneCode: currentZone,
+          reason: "maximum-non-numerique",
+          proof: folded,
+        });
+        continue;
+      }
+      readings.push({
+        zoneCode: currentZone,
+        value,
+        unit: perTerrain ? "logements/terrain" : "logements/batiment",
+        raw: match[1]!,
+        proof: folded,
+        page,
+      });
+    }
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+}
+
+/**
+ * Huberdeau — the captured density clause governs project-integrated housing
+ * under several servicing/riparian conditions and names no zone. It is
+ * evidence, but cannot become a scalar zone norm.
+ */
+export function parseHuberdeauDensityDocument(text: string): DensityDocumentParseResult {
+  const family = "huberdeau-199-02-projet-integre";
+  const documentAnchored =
+    /MUNICIPALIT[ÉE]\s+D[’']HUBERDEAU/i.test(text)
+    && /R[ÈE]GLEMENT\s+(?:DE\s+ZONAGE\s+)?(?:NUM[ÉE]RO\s+)?199-02/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const refusals: DensityNormRefusal[] = [];
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const line = pageText.split(/\r?\n/)
+      .find((candidate) => /nombre\s+de\s+logements?\s+[àa]\s+l’hectare\s+brut/i.test(candidate));
+    if (!line) continue;
+    refusals.push({
+      page: pageIndex + 1,
+      zoneCode: null,
+      reason: "densite-conditionnelle-sans-code-zone",
+      proof: foldedLine(line),
+    });
+  }
+  return consolidate(family, documentAnchored, projectExcluded, [], refusals);
+}
+
+/**
  * Ville de Mont-Laurier — règlement de zonage 134, fichier municipal
  * « Zones H.pdf ». A zone page prints one or more use-class columns on the row
  * « Logement / Hectare maximum ». The norm is publishable only when every
