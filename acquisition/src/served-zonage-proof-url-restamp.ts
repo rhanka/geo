@@ -109,6 +109,12 @@ interface CaptureCandidates {
   excluded: ExcludedCapture[];
 }
 
+interface EligibleCaptureLine {
+  receipt: ManifestCandidate;
+  slugs: string[];
+  contentType: string | null;
+}
+
 interface Plan {
   contract: "served-zonage-proof-url-restamp-plan/v2";
   complete: boolean;
@@ -242,8 +248,7 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
     manifestKey,
     lines: parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8")),
   }), MANIFEST_READ_CONCURRENCY);
-  const bySlug = new Map<string, ManifestCandidate[]>();
-  const excluded: ExcludedCapture[] = [];
+  const eligible: EligibleCaptureLine[] = [];
   for (const outcome of scanned) {
     if (outcome.status === "rejected") throw new Error(`capture manifest read failed: ${errorText(outcome.reason)}`);
     const { manifestKey, lines } = outcome.value;
@@ -251,28 +256,39 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureC
       if (line.source !== "zones-v1-proof-url" || line.http_status !== 200 || !isHttpsCaptureUrl(line.url)) continue;
       const receipt = captureReceiptFromManifest(line, manifestKey, lineIndex);
       if (receipt === null) continue;
-      // This reads the immutable CAS payload only to classify it.  The proof
-      // digest is still taken exclusively from the manifest receipt below.
-      const classification = classifyCapturedOctets(await getBytes(s3, receipt.storage_key), line.content_type);
+      eligible.push({ receipt, slugs: [...line.slugs].sort(), contentType: line.content_type });
+    }
+  }
+  // This reads immutable CAS payloads only to classify them.  The proof digest
+  // is still taken exclusively from each manifest receipt below.  Keep this
+  // bounded like the standalone classifier so a short resumable plan can be
+  // produced without serially waiting on every raw body.
+  const classified = await mapConcurrent(eligible, async (entry) => ({
+    ...entry,
+    classification: classifyCapturedOctets(await getBytes(s3, entry.receipt.storage_key), entry.contentType),
+  }), MANIFEST_READ_CONCURRENCY);
+  const bySlug = new Map<string, ManifestCandidate[]>();
+  const excluded: ExcludedCapture[] = [];
+  for (const outcome of classified) {
+    if (outcome.status === "rejected") throw new Error(`capture body classification failed: ${errorText(outcome.reason)}`);
+    const { receipt, slugs, classification } = outcome.value;
       if (!isGeometryCapture(classification)) {
         excluded.push({
-          manifest_key: manifestKey,
-          line_index: lineIndex,
+          manifest_key: receipt.manifest_key,
+          line_index: receipt.line_index,
           storage_key: receipt.storage_key,
           url: receipt.url,
-          slugs: [...line.slugs].sort(),
+          slugs,
           classification: classification.classification,
           detail: classification.detail,
         });
         continue;
       }
-      const candidate: ManifestCandidate = receipt;
-      for (const slug of line.slugs) {
+      for (const slug of slugs) {
         const entries = bySlug.get(slug) ?? [];
-        entries.push(candidate);
+        entries.push(receipt);
         bySlug.set(slug, entries);
       }
-    }
   }
   excluded.sort((left, right) => left.manifest_key.localeCompare(right.manifest_key) || left.line_index - right.line_index);
   return { bySlug, excluded };
