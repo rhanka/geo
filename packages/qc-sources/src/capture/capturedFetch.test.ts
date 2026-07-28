@@ -13,6 +13,7 @@ import {
   CapturedFetchError,
   type CaptureFetchLike,
   type CaptureHttpResponse,
+  type CaptureRequestInit,
 } from "./capturedFetch.js";
 import {
   assertCasKeyMatchesBytes,
@@ -132,15 +133,17 @@ function streamingHttpResponse(opts: {
 /** Répond selon une table URL → réponse ; enregistre les URL réellement appelées. */
 function fakeFetch(
   table: Record<string, CaptureHttpResponse | (() => Promise<CaptureHttpResponse>)>,
-): CaptureFetchLike & { calls: string[] } {
+): CaptureFetchLike & { calls: string[]; inits: Array<CaptureRequestInit | undefined> } {
   const calls: string[] = [];
-  const impl = async (url: string): Promise<CaptureHttpResponse> => {
+  const inits: Array<CaptureRequestInit | undefined> = [];
+  const impl = async (url: string, init?: CaptureRequestInit): Promise<CaptureHttpResponse> => {
     calls.push(url);
+    inits.push(init);
     const hit = table[url];
     if (!hit) throw new Error(`fakeFetch: URL non prévue ${url}`);
     return typeof hit === "function" ? hit() : hit;
   };
-  return Object.assign(impl, { calls });
+  return Object.assign(impl, { calls, inits });
 }
 
 function newRun(store: CaptureObjectStore, runId = "zones-20260725T120000Z-0"): CaptureRun {
@@ -202,6 +205,25 @@ describe("identité du run", () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe("capturedFetch — succès", () => {
+  it("injecte l'UA du run, sans écraser un header User-Agent explicite", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://exemple.qc.ca/zones.geojson";
+    const fetchImpl = fakeFetch({
+      [url]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }),
+    });
+
+    await capturedFetch(url, undefined, { run, source: "zones-arcgis", fetchImpl });
+    await capturedFetch(url, { headers: { "User-Agent": "caller-configured/1.0" } }, {
+      run,
+      source: "zones-arcgis",
+      fetchImpl,
+    });
+
+    expect(fetchImpl.inits[0]?.headers?.["user-agent"]).toBe(run.userAgent);
+    expect(fetchImpl.inits[1]?.headers?.["User-Agent"]).toBe("caller-configured/1.0");
+  });
+
   it("dépose les octets en CAS, écrit le .meta.json et journalise une ligne bien formée", async () => {
     const store = fakeStore();
     const run = newRun(store);
