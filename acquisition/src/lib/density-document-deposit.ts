@@ -15,6 +15,8 @@ export interface DensityNormPatch {
   proof: string;
   page: number;
   sourceUrl: string;
+  sourceSha256: string;
+  sourceStorageKey: string;
   method: string;
   snapshot: string;
   legalDate: string;
@@ -46,8 +48,12 @@ function assertPatch(patch: DensityNormPatch): void {
   ) {
     throw new Error(`density patch ${patch.zoneCode}: dated legal evidence missing`);
   }
-  if (!patch.sourceUrl.startsWith("https://")) {
-    throw new Error(`density patch ${patch.zoneCode}: non-HTTPS source`);
+  if (!/^https?:\/\//.test(patch.sourceUrl)) {
+    throw new Error(`density patch ${patch.zoneCode}: non-HTTP source`);
+  }
+  const sha = /^sha256:([a-f0-9]{64})$/.exec(patch.sourceSha256)?.[1];
+  if (!sha || !patch.sourceStorageKey.includes(`/cas/${sha}.`)) {
+    throw new Error(`density patch ${patch.zoneCode}: immutable source capture missing`);
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(patch.snapshot)) {
     throw new Error(`density patch ${patch.zoneCode}: invalid snapshot date`);
@@ -61,6 +67,8 @@ function densityColumns(patch: DensityNormPatch): Record<string, unknown> {
     densite_unit: patch.unit,
     densite_confidence: 1,
     densite_source_url: patch.sourceUrl,
+    densite_source_sha256: patch.sourceSha256,
+    densite_source_storage_key: patch.sourceStorageKey,
     densite_methode: patch.method,
     densite_snapshot: patch.snapshot,
     densite_proof: patch.proof,
