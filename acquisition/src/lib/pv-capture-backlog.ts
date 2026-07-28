@@ -323,93 +323,54 @@ export function verifiedCaptureConcurrency(state: PvCaptureBacklogState, manifes
 /** Un Job de lot est toujours mono-pod; 6 lots => au plus 6 pods de capture. */
 export function captureBacklogJobManifest(manifest: PvCaptureBacklogManifest, lot: PvCaptureBacklogLot): string {
   assertBacklogManifest(manifest);
-  return `apiVersion: batch/v1
-kind: Job
-metadata:
-  name: ${lot.job_name}
-  namespace: ${manifest.namespace}
-  labels:
-    app: geo-capture
-    lane: pv
-    geo.sentropic.io/capture-backlog: ${manifest.id}
-spec:
-  completions: 1
-  parallelism: 1
-  # A rerun opaque d'un lot peut refaire des GET déjà durables. Le contrôleur
-  # bloque donc explicitement un échec et n'emploie aucune relance K8s implicite.
-  backoffLimit: 0
-  template:
-    metadata:
-      labels:
-        app: geo-capture
-        lane: pv
-        geo.sentropic.io/capture-backlog: ${manifest.id}
-    spec:
-      restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
-      securityContext:
-        fsGroup: 1000
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
-      containers:
-        - name: capture
-          image: ${manifest.image}
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: LANE
-              value: "pv"
-            - name: WORKLIST
-              value: "${lot.worklist_key}"
-            # Fait remonter l'identité déterministe du lot dans le run_id.
-            - name: RUN_STAMP
-              value: "${lot.job_name}"
-            - name: SHARD
-              value: "0"
-            - name: SHARDS
-              value: "1"
-            - name: DELAY_MS
-              value: "${manifest.delay_ms}"
-            - name: EGRESS
-              value: "${manifest.egress}"
-            - name: MAX_BYTES
-              value: "${manifest.max_bytes}"
-            - name: DRY_RUN
-              value: "0"
-            - name: GEO_CAPTURE_EXECUTION
-              value: "cluster"
-            - name: NODE_OPTIONS
-              value: "--dns-result-order=ipv4first"
-            - name: AWS_MAX_ATTEMPTS
-              value: "10"
-            - name: POD_UID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.uid
-          envFrom:
-            - secretRef:
-                name: geo-s3-credentials
-          resources:
-            requests:
-              cpu: 60m
-              memory: 120Mi
-            limits:
-              cpu: 150m
-              memory: 176Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          volumeMounts:
-            - name: scratch
-              mountPath: /scratch
-      volumes:
-        - name: scratch
-          emptyDir:
-            sizeLimit: 4Gi
-`;
+  const labels = { app: "geo-capture", lane: "pv", "geo.sentropic.io/capture-backlog": manifest.id };
+  return `${JSON.stringify({
+    apiVersion: "batch/v1",
+    kind: "Job",
+    metadata: { name: lot.job_name, namespace: manifest.namespace, labels },
+    spec: {
+      completions: 1,
+      parallelism: 1,
+      // No opaque retry: a failed lot blocks the campaign rather than re-fetching it.
+      backoffLimit: 0,
+      template: {
+        metadata: { labels },
+        spec: {
+          restartPolicy: "Never",
+          imagePullSecrets: [{ name: "geo-registry-pull" }],
+          securityContext: { fsGroup: 1000, runAsNonRoot: true, seccompProfile: { type: "RuntimeDefault" } },
+          containers: [{
+            name: "capture",
+            image: manifest.image,
+            imagePullPolicy: "IfNotPresent",
+            env: [
+              { name: "LANE", value: "pv" },
+              { name: "WORKLIST", value: lot.worklist_key },
+              { name: "RUN_STAMP", value: lot.job_name },
+              { name: "SHARD", value: "0" },
+              { name: "SHARDS", value: "1" },
+              { name: "DELAY_MS", value: String(manifest.delay_ms) },
+              { name: "EGRESS", value: manifest.egress },
+              { name: "MAX_BYTES", value: String(manifest.max_bytes) },
+              { name: "DRY_RUN", value: "0" },
+              { name: "GEO_CAPTURE_EXECUTION", value: "cluster" },
+              { name: "NODE_OPTIONS", value: "--dns-result-order=ipv4first" },
+              { name: "AWS_MAX_ATTEMPTS", value: "10" },
+              { name: "POD_UID", valueFrom: { fieldRef: { fieldPath: "metadata.uid" } } },
+            ],
+            envFrom: [{ secretRef: { name: "geo-s3-credentials" } }],
+            resources: {
+              requests: { cpu: "60m", memory: "120Mi" },
+              limits: { cpu: "150m", memory: "176Mi" },
+            },
+            securityContext: { allowPrivilegeEscalation: false, capabilities: { drop: ["ALL"] } },
+            volumeMounts: [{ name: "scratch", mountPath: "/scratch" }],
+          }],
+          volumes: [{ name: "scratch", emptyDir: { sizeLimit: "4Gi" } }],
+        },
+      },
+    },
+  }, null, 2)}\n`;
 }
 
 /**
