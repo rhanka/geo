@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 
 import { parseManifestJsonl, type CaptureManifestLine } from "../../packages/qc-sources/src/capture/index.js";
 import { classifyCapturedOctets, type CaptureOctetClass } from "./lib/capture-octets-classification.js";
+import { runPvCaptureOctetsClassification } from "./lib/pv-capture-octets-run.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -223,7 +224,13 @@ async function main(): Promise<void> {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main().catch((error: unknown) => {
+  const lane = option("lane") ?? "zones";
+  const runner = lane === "zones"
+    ? main()
+    : lane === "pv"
+      ? runPvCaptureOctetsClassification(process.argv.slice(2))
+      : Promise.reject(new Error("--lane doit être zones ou pv"));
+  runner.catch((error: unknown) => {
     console.error(error instanceof Error ? error.stack : String(error));
     process.exitCode = 1;
   });
