@@ -14,7 +14,7 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import { RobotsCache } from "../../../packages/qc-sources/src/sources/robots-txt.js";
 import { capturedRobotsFetch } from "../capture-worklist-run.js";
-import { jobManifest } from "../k8s-capture-run.js";
+import { jobManifest, kubectlApplyArgs } from "../k8s-capture-run.js";
 import { verifyRawCapturePayload } from "./zone-provenance-raw-capture.js";
 import { captureReceiptFromManifest } from "./zone-provenance-quality.js";
 
@@ -50,6 +50,7 @@ describe("capture worklist job contract", () => {
     const manifest = jobManifest({
       lane: "normes",
       worklistPath: "/tmp/worklist.json",
+      kubeconfig: "/tmp/ovh.conf",
       shards: 1,
       concurrency: 1,
       image: "registry.example/geo-capture:test",
@@ -73,6 +74,12 @@ describe("capture worklist job contract", () => {
     expect(template).toContain("memory: 120Mi");
     expect(template).toContain("cpu: 60m");
     expect(template).toContain("cpu: 150m");
+  });
+
+  it("passes the explicit kubeconfig and namespace to kubectl", () => {
+    expect(kubectlApplyArgs({ kubeconfig: "/tmp/ovh.conf", namespace: "geo" })).toEqual([
+      "--kubeconfig", "/tmp/ovh.conf", "-n", "geo", "apply", "-f", "-",
+    ]);
   });
 
   it("produit une capture joinable par la mesure v2 et conserve le 404 sans CAS", async () => {
