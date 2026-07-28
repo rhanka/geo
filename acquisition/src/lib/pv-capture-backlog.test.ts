@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  assertPvBacklogWorklistBytes,
   captureBacklogCronManifest,
   captureBacklogJobManifest,
   captureBacklogSlots,
@@ -93,6 +94,24 @@ describe("PV capture backlog", () => {
       spec: { template: { spec: { containers: Array<{ env: Array<{ name: string; value?: string }> }> } } };
     };
     expect(job.spec.template.spec.containers[0]!.env.find((entry) => entry.name === "WORKLIST")?.value).toBe(prepared.worklist_key);
+  });
+
+  it("rejects a changed effective worklist when resuming after planned", () => {
+    const campaign = manifest();
+    const prepared = {
+      worklist_key: `registry/capture-worklists/${ID}/resume/lot-0001-0123456789abcdef.json`,
+      worklist_sha256: sha256("immutable worklist"),
+      discarded_captured: 1,
+    };
+    const state = planLot(createBacklogState(campaign, NOW), 1, NOW, prepared);
+    const persisted = state.lots[0]!;
+
+    expect(() => assertPvBacklogWorklistBytes(
+      persisted.lot,
+      persisted.effective_worklist_key!,
+      persisted.effective_worklist_sha256!,
+      "changed worklist",
+    )).toThrow("divergente du hash immuable");
   });
 
   it("sérialise les LeaseTime Kubernetes avec six chiffres de fraction", () => {
