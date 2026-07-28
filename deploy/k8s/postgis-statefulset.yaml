@@ -1,0 +1,112 @@
+# postgis — la base servie par geo-api.
+#
+# Elle tournait en production SANS EXISTER DANS LE DÉPÔT : seul son Service
+# (`geo-postgis-service.yaml`) était committé. Personne n'aurait pu la rebâtir
+# depuis un checkout propre, et sa limite mémoire — qui plafonnait la capture —
+# n'était modifiable que par un `kubectl edit` à la main.
+#
+# Exporté depuis le cluster OVH, à l'identique, sauf la limite mémoire.
+#
+# LIMITE MÉMOIRE : 1536 Mi -> 768 Mi
+#
+# `ResourceQuota` compte les LIMITES, pas les demandes. postgis demandait
+# 160 Mi et réservait 1536 Mi — 9,6× — soit 37,5 % du quota du namespace, ce
+# qui interdisait le 3ᵉ pod de capture. 768 Mi reste 4,8× la demande.
+#
+# ⚠️ Cette valeur n'est PAS mesurée : `kubectl top` est refusé par le RBAC
+# scopé, et le pod affiche 0 redémarrage et aucun `lastState.terminated` —
+# ce qui prouve qu'il n'a jamais été OOM-killed, pas qu'il reste sous 768 Mi.
+# Le jour où un `OOMKilled` apparaît ici, la cause est ce commit.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgis
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: postgis
+    app.kubernetes.io/part-of: geo
+spec:
+  replicas: 1
+  serviceName: geo-postgis
+  podManagementPolicy: OrderedReady
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgis
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      partition: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgis
+        app.kubernetes.io/part-of: geo
+    spec:
+      containers:
+        - name: postgis
+          image: postgis/postgis:16-3.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: geo-postgis-credentials
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: geo-postgis-credentials
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: geo-postgis-credentials
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          livenessProbe:
+            exec:
+              command: ["/bin/sh", "-c", 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"']
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"']
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 30m
+              memory: 160Mi
+            limits:
+              memory: 768Mi
+          volumeMounts:
+            - name: pg-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: pg-data
+        labels:
+          app.kubernetes.io/name: postgis
+          app.kubernetes.io/part-of: geo
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: block-standard
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 5Gi
