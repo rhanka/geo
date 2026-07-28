@@ -13,6 +13,7 @@ import { getBytes, listObjectEntries, objectHead, putBytesIfAbsent, putBytesIfAb
 import {
   assertBacklogManifest,
   assertBacklogState,
+  assertPvBacklogWorklistBytes,
   canonicalCaptureUrl,
   campaignManifestKey,
   campaignReportKey,
@@ -293,20 +294,14 @@ async function putImmutableReport(state: PvCaptureBacklogState, manifest: PvCapt
 async function capturedUrlsForCampaign(
   s3: ReturnType<typeof s3Client>,
   manifest: PvCaptureBacklogManifest,
-  state: PvCaptureBacklogState,
 ): Promise<Set<string>> {
-  const runPrefixes = state.lots
-    .filter((lot) => lot.status === "submitted" || lot.status === "settled" || lot.status === "blocked")
-    .map((stateLot) => {
-      const lot = manifest.lots.find((candidate) => candidate.lot === stateLot.lot);
-      if (!lot) throw new Error(`lot ${stateLot.lot} absent du manifeste`);
-      return `capture/_runs/pv-${lot.job_name}-`;
-    });
-  if (runPrefixes.length === 0) return new Set<string>();
+  // L'état est un pointeur mutable et peut être en retard sur un run écrit
+  // juste avant un crash. Les manifests de la campagne sont la seule preuve
+  // admissible pour une reprise, y compris pour un lot encore `pending`.
   const entries = await listObjectEntries(s3, `capture/_runs/pv-geo-capture-pv-${manifest.id}-`);
   const manifestKeys = entries
     .map((entry) => entry.key)
-    .filter((key) => key.endsWith("/manifest.jsonl") && runPrefixes.some((prefix) => key.startsWith(prefix)));
+    .filter((key) => key.endsWith("/manifest.jsonl"));
   const captured = new Set<string>();
   for (const key of manifestKeys) {
     const lines = parseManifestJsonl((await getBytes(s3, key)).toString("utf8"));
@@ -332,7 +327,7 @@ async function prepareWorklist(
   capturedUrls: ReadonlySet<string>,
 ): Promise<PreparedWorklist> {
   const original = await getBytes(s3, lot.worklist_key);
-  if (sha256(original) !== lot.worklist_sha256) throw new Error(`lot ${lot.lot}: worklist S3 divergente du manifeste immuable`);
+  assertPvBacklogWorklistBytes(lot.lot, lot.worklist_key, lot.worklist_sha256, original);
   const deduplicated = deduplicatePvBacklogTargets(
     lot.lot,
     parseCaptureWorklist(JSON.parse(original.toString("utf8"))),
@@ -376,6 +371,16 @@ function plannedWorklist(
     };
   }
   return { worklist_key: lot.worklist_key, worklist_sha256: lot.worklist_sha256, discarded_captured: 0, remaining_targets: lot.targets };
+}
+
+/** Relit la worklist effective avant chaque POST, y compris après un crash planned. */
+async function verifyPreparedWorklist(
+  s3: ReturnType<typeof s3Client>,
+  lot: PvCaptureBacklogManifest["lots"][number],
+  prepared: PreparedWorklist,
+): Promise<void> {
+  const body = await getBytes(s3, prepared.worklist_key);
+  assertPvBacklogWorklistBytes(lot.lot, prepared.worklist_key, prepared.worklist_sha256, body);
 }
 
 async function main(): Promise<void> {
@@ -435,7 +440,7 @@ async function main(): Promise<void> {
   stateEtag = await writeState(state, stateEtag);
 
   const lots = pendingLots(state, capacity.slots);
-  const capturedUrls = await capturedUrlsForCampaign(s3, manifest, state);
+  const capturedUrls = await capturedUrlsForCampaign(s3, manifest);
   for (const lotNumber of lots) {
     const lot = manifest.lots.find((candidate) => candidate.lot === lotNumber)!;
     const existing = state.lots.find((candidate) => candidate.lot === lotNumber)!;
@@ -459,6 +464,7 @@ async function main(): Promise<void> {
       );
       stateEtag = await writeState(state, stateEtag); // CAS avant POST Kubernetes.
     }
+    await verifyPreparedWorklist(s3, lot, prepared);
     await k8s.createJob(manifest.namespace, captureBacklogJobManifest(manifest, lot, prepared.worklist_key));
     state = markLotSubmitted(state, lotNumber, new Date().toISOString());
     stateEtag = await writeState(state, stateEtag);
