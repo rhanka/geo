@@ -267,6 +267,7 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
     && /[Aa]mendant\s+le\s+r[èe]glement\s+de\s+zonage/i.test(text);
   const readings: VerbatimDensityNorm[] = [];
   const refusals: DensityNormRefusal[] = [];
+  const blockedZones = new Set<string>();
 
   for (const [pageIndex, pageText] of pages(text).entries()) {
     const page = pageIndex + 1;
@@ -275,8 +276,12 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
       /\bZone\s+([A-Z]{1,3}\s*-?\s*\d{1,3})\b/i.exec(folded)?.[1]
         ?.replace(/\s|-/g, "")
         .toUpperCase() ?? null;
+    const densityLine = pageText.split(/\r?\n/)
+      .find((line) => /\bNombre\s+de\s+logements?\s+par\s+b[âa]timent\b/i.test(line));
+    if (!densityLine) continue;
     const match =
-      /\bNombre\s+de\s+logements?\s+par\s+b[âa]timent\b\s*(.*)$/i.exec(folded);
+      /\bNombre\s+de\s+logements?\s+par\s+b[âa]timent\b\s*(.*)$/i
+        .exec(foldedLine(densityLine));
     if (!match) continue;
     const proof = match[0]!;
     const rawTail = match[1]!;
@@ -284,6 +289,7 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
     const incompleteRange = /\b\d+\s*\/(?:\s|$)/.test(rawTail);
     if (ranges.length === 0 && !incompleteRange) continue;
     if (partialAmendment) {
+      if (zone) blockedZones.add(zone);
       refusals.push({
         page,
         zoneCode: zone,
@@ -297,6 +303,7 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
       continue;
     }
     if (incompleteRange) {
+      blockedZones.add(zone);
       refusals.push({ page, zoneCode: zone, reason: "plage-logements-incomplete", proof });
       continue;
     }
@@ -312,6 +319,7 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
       fixedValues.push(minimum);
     }
     if (nonScalar || new Set(fixedValues).size !== 1) {
+      blockedZones.add(zone);
       refusals.push({
         page,
         zoneCode: zone,
@@ -329,7 +337,13 @@ export function parseChestervilleDensityDocument(text: string): DensityDocumentP
       page,
     });
   }
-  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
+  return consolidate(
+    family,
+    documentAnchored,
+    projectExcluded,
+    readings.filter((reading) => !blockedZones.has(reading.zoneCode)),
+    refusals,
+  );
 }
 
 /**

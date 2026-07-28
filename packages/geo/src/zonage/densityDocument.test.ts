@@ -201,6 +201,19 @@ describe("parseChestervilleDensityDocument", () => {
     expect(parsed.refusals[0]?.reason).toBe("plage-logements-incomplete");
   });
 
+  it("does not let a scalar continuation page override a divergent zone sheet", () => {
+    const parsed = parseChestervilleDensityDocument([
+      chestervilleHeader,
+      "Zone C5",
+      "Nombre de logement par bâtiment 1/1 2/3 4/9",
+      "\f",
+      "Zone C5",
+      "Nombre de logement par bâtiment 1/1",
+    ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+    expect(parsed.refusals[0]?.zoneCode).toBe("C5");
+  });
+
   it("does not scalarize a partial amendment sheet", () => {
     const parsed = parseChestervilleDensityDocument([
       "Municipalité de Chesterville",
