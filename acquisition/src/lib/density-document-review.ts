@@ -13,9 +13,11 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import {
+  densityNormValueHits,
   densityTextHits,
   hasHardProjectMarker,
   type DensityTextHit,
+  type DensityNormValueHit,
 } from "../../../packages/qc-sources/src/sources/density-document-discovery.js";
 import { readWorkbook } from "./xlsx.js";
 
@@ -36,6 +38,7 @@ export interface NativeTextResult {
 export interface NativeDensityReview extends NativeTextResult {
   disposition: NativeReviewDisposition;
   hits: DensityTextHit[];
+  normValueHits: DensityNormValueHit[];
   openingVerbatim: string | null;
   dateSignals: string[];
   identitySignals: string[];
@@ -228,6 +231,7 @@ export function reviewNativeDensityDocument(
       ...native,
       disposition: "native_parse_blocked",
       hits: [],
+      normValueHits: [],
       openingVerbatim: null,
       dateSignals: [],
       identitySignals: [],
@@ -276,16 +280,19 @@ export function reviewNativeDensityDocument(
       ...native,
       disposition: "project_excluded",
       hits: [],
+      normValueHits: [],
       openingVerbatim,
       dateSignals,
       identitySignals,
     };
   }
   const hits = densityTextHits(native.text);
+  const normValueHits = densityNormValueHits(native.text);
   return {
     ...native,
     disposition: hits.length > 0 ? "candidate_review_required" : "no_density_signal",
     hits,
+    normValueHits,
     openingVerbatim,
     dateSignals,
     identitySignals,

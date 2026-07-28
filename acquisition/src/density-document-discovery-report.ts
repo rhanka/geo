@@ -54,6 +54,7 @@ interface CandidateEvidence {
   disposition: NativeDensityReview["disposition"];
   blocker: string | null;
   hits: NativeDensityReview["hits"];
+  normValueHits: NativeDensityReview["normValueHits"];
   openingVerbatim: string | null;
   dateSignals: string[];
   identitySignals: string[];
@@ -301,6 +302,7 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
         disposition: "native_parse_blocked",
         blocker,
         hits: [],
+        normValueHits: [],
         openingVerbatim: null,
         dateSignals: [],
         identitySignals: [],
@@ -326,6 +328,7 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
       disposition: review.disposition,
       blocker: review.blocker,
       hits: review.hits,
+      normValueHits: review.normValueHits,
       openingVerbatim: review.openingVerbatim,
       dateSignals: review.dateSignals,
       identitySignals: review.identitySignals,
@@ -354,6 +357,7 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
           disposition: "native_parse_blocked",
           blocker,
           hits: [],
+          normValueHits: [],
           openingVerbatim: null,
           dateSignals: [],
           identitySignals: [],
@@ -397,6 +401,7 @@ async function analyzeTarget(target: DensityDiscoveryTarget, runs: readonly RunE
       disposition: review.disposition,
       blocker: review.blocker,
       hits: review.hits,
+      normValueHits: review.normValueHits,
       openingVerbatim: review.openingVerbatim,
       dateSignals: review.dateSignals,
       identitySignals: review.identitySignals,
