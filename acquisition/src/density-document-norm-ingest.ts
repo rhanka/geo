@@ -1,5 +1,5 @@
 /**
- * Verify and additively deposit density norms from the two legally reviewed NEW
+ * Verify and additively deposit density norms from legally reviewed NEW
  * documents discovered by the closed 56-city campaign.
  *
  * Reads only captured CAS bytes. Native parsers and merge rules live in tested
@@ -13,8 +13,11 @@ import { readFileSync, renameSync, writeFileSync } from "node:fs";
 import {
   parseSaintDominiqueDensityDocument,
   parseStonehamDensityDocument,
-  type DensityNormParseResult,
 } from "../../packages/qc-sources/src/sources/density-document-norm-parser.js";
+import {
+  parseMontLaurierZonesHDensityDocument,
+  type DensityDocumentParseResult,
+} from "../../packages/geo/src/zonage/densityDocument.js";
 import {
   mergeDensityNormRows,
   type DensityNormPatch,
@@ -64,7 +67,7 @@ interface Profile {
   legalDate: string;
   legalDateEvidence: string;
   reglement: string;
-  parse: (text: string) => DensityNormParseResult;
+  parse: (text: string) => DensityDocumentParseResult;
 }
 
 const METHOD = "native-text/density-document-verbatim";
@@ -86,6 +89,15 @@ const PROFILES: Record<string, Profile> = {
     legalDateEvidence: "URL municipale verbatim: 09-591_grille-des-specifications-codif-adm-maj-juillet-2026.pdf",
     reglement: "Règlement de zonage numéro 09-591 — Annexe 2, version intégrée",
     parse: parseStonehamDensityDocument,
+  },
+  "mont-laurier": {
+    sourceUrl: "https://www.villemontlaurier.qc.ca/storage/app/media/Zones%20H.pdf",
+    sourceSha256: "sha256:fcf59bb4466fe4c0fa78693ba6cbb7332a37a6fc654470df87a4750708ab8883",
+    sourceHost: "www.villemontlaurier.qc.ca",
+    legalDate: "2025-06-18",
+    legalDateEvidence: "Document municipal verbatim: « 18-06-2025 134-89 »",
+    reglement: "Règlement de zonage numéro 134 — Zones H",
+    parse: parseMontLaurierZonesHDensityDocument,
   },
 };
 
