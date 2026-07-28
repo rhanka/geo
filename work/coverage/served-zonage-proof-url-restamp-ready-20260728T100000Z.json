@@ -1,0 +1,561 @@
+{
+  "contract": "served-zonage-proof-url-restamp-plan/v3",
+  "complete": true,
+  "run_prefix": "zones-20260728T020639Z",
+  "generated_at": "2026-07-28T09:46:00.718Z",
+  "source": "capture-manifest-lines-classified-octets",
+  "classification_report": {
+    "path": "work/coverage/capture-octets-classification-20260728T094000Z.json",
+    "sha256": "sha256:3e81172aec67c5b337e69409525db5bf999b3b13dc255e50a121cfb127737ef4"
+  },
+  "selected_layout": "nested_when_present_else_flat",
+  "collections": {
+    "capture_slugs": 6,
+    "ready": 2,
+    "refused": 4,
+    "distinct_manifest_lines": 2,
+    "excluded_capture_lines": 44
+  },
+  "ready": [
+    {
+      "slug": "repentigny",
+      "key": "normalized/ca-qc-zonage/qc-zonage-repentigny.geojson",
+      "attestations": [
+        {
+          "artifactUri": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-repentigny.geojson",
+          "replacementUrl": "https://www.donneesquebec.ca/recherche/dataset/d8dffd21-359d-43dd-af8f-32d44a274cfe/resource/74ee6756-9d5d-4c9e-9b0d-8d694aeb1a7d/download/zonage_municipal.geojson",
+          "manifest_key": "capture/_runs/zones-20260728T020639Z-48-36941233-0791-4f75-a613-9ff42c2a3ba7/manifest.jsonl",
+          "line_index": 1,
+          "storage_key": "raw/zones-v1-proof-url/cas/490acd6b6393fe169c045bf64498da4076a6d73feb134d98564715e118d860a5.json",
+          "url": "https://www.donneesquebec.ca/recherche/dataset/d8dffd21-359d-43dd-af8f-32d44a274cfe/resource/74ee6756-9d5d-4c9e-9b0d-8d694aeb1a7d/download/zonage_municipal.geojson",
+          "retrieved_at": "2026-07-28T02:14:42.516Z",
+          "sha256": "sha256:490acd6b6393fe169c045bf64498da4076a6d73feb134d98564715e118d860a5"
+        }
+      ]
+    },
+    {
+      "slug": "saguenay",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saguenay.geojson",
+      "attestations": [
+        {
+          "artifactUri": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-saguenay.geojson",
+          "replacementUrl": "https://www.donneesquebec.ca/recherche/dataset/a086941f-22e3-4fe7-a8dc-fe791229d942/resource/6d5e4aa8-1b9f-4deb-8815-4803ce63007f/download/sag_zonage.geojson",
+          "manifest_key": "capture/_runs/zones-20260728T020639Z-58-66797780-f5df-4b51-912d-3d66ac068c11/manifest.jsonl",
+          "line_index": 1,
+          "storage_key": "raw/zones-v1-proof-url/cas/6f67328e9aff3fd467fd7560d140c8578162662b7630671f85e416373ffe9374.json",
+          "url": "https://www.donneesquebec.ca/recherche/dataset/a086941f-22e3-4fe7-a8dc-fe791229d942/resource/6d5e4aa8-1b9f-4deb-8815-4803ce63007f/download/sag_zonage.geojson",
+          "retrieved_at": "2026-07-28T02:16:22.211Z",
+          "sha256": "sha256:6f67328e9aff3fd467fd7560d140c8578162662b7630671f85e416373ffe9374"
+        }
+      ]
+    }
+  ],
+  "refused": [
+    {
+      "slug": "ristigouche-sud-est",
+      "key": "normalized/ca-qc-zonage/qc-zonage-ristigouche-sud-est.geojson",
+      "reason": "no-s3-artifact-uri-found-in-current-feature-proofs"
+    },
+    {
+      "slug": "riviere-bleue",
+      "key": "normalized/ca-qc-zonage/qc-zonage-riviere-bleue.geojson",
+      "reason": "no-s3-artifact-uri-found-in-current-feature-proofs"
+    },
+    {
+      "slug": "riviere-rouge",
+      "key": "normalized/ca-qc-zonage/qc-zonage-riviere-rouge.geojson",
+      "reason": "no-s3-artifact-uri-found-in-current-feature-proofs"
+    },
+    {
+      "slug": "rouyn-noranda",
+      "key": "normalized/ca-qc-zonage/qc-zonage-rouyn-noranda.geojson",
+      "reason": "capture-octets-not-geometry:PAGE HTML:html-document"
+    }
+  ],
+  "excluded_capture_lines": [
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-0-92c85695-984c-4c04-ad18-f71478658a93/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/3968dbf9b9c9db84e61fd0f46d7488801285f6edcc5ef9edf4ce2294747da844.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC380/38028_Publique/MapServer/51",
+      "slugs": [
+        "manseau"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-1-1c26c346-32aa-4baf-b61b-4609b43fb8b7/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d86c61283057fc0350bd62403570d3c0b90704964fc57eb91caffae23a226f24.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06005_Publique/MapServer/16",
+      "slugs": [
+        "maria"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-10-e4c7d281-9648-4523-96df-d24eaebd0ad6/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "mont-saint-michel"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-11-43d1ab8c-c969-440c-88c8-f836f8cdbb22/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/439fe6020898ca5da2e366b5de67e615b8a41ada3100e9ddf4a6068280b5cac6.html",
+      "url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0",
+      "slugs": [
+        "montreal"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-14-94bfe023-dc9b-43f9-84a1-1f7142888954/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/2ba98cdda0589fc8e79e49be6b2b995372044809289de0cafcd388171a800768.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05040_Publique/MapServer/23",
+      "slugs": [
+        "new-carlisle"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-15-cd2cdc9e-0535-4325-8a61-392ba73a8cf5/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/04e80813f4d30acf64b90e5d7decb9cfe55900ce65e85a22eaacaa4c0ba2f7f2.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05070_Publique/MapServer/32",
+      "slugs": [
+        "new-richmond"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-17-d5137878-b579-4777-9155-b80be0cc771d/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "nominingue"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-2-f5e527d0-9883-471d-b1bb-5abde43787e8/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d594dc9b96a3e1d61136c7cbe2b8c17f7978f26ae256bbda8ef562ace6c6d2d6.html",
+      "url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+      "slugs": [
+        "maricourt"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-21-60e2bef4-c4a5-41ab-bb2f-404ed6bd54cd/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "notre-dame-de-pontmain"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-22-7f6e6c21-2f44-45e0-a720-6553f5cb5f83/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d6fca0928044b7dac2b753108d796c996b43deb20bef19a7f1e9efbf4a049639.html",
+      "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+      "slugs": [
+        "notre-dame-des-bois"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-28-83293ca3-1d51-4885-b721-14d294ac336e/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "notre-dame-du-laus"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-3-b90c7724-cdec-428d-a530-67bc9b5ee9c5/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d6fca0928044b7dac2b753108d796c996b43deb20bef19a7f1e9efbf4a049639.html",
+      "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+      "slugs": [
+        "marston"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-30-6cbe96c8-0bf6-478f-909e-799eb8aa0f5b/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/c5c748902a98e51f9816770e28f3ecc43b9424a4eb77e261d9d03d241c7b2573.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33085_Publique/MapServer/16",
+      "slugs": [
+        "notre-dame-du-sacre-coeur-dissoudun"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-31-e4844fc8-a934-4cbc-af92-9dc3b75130a7/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/831f97914e09ba4a5144495cd3f34dcef6fb08cd75069b7f2ea70834794e1e56.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06020_Publique/MapServer/16",
+      "slugs": [
+        "nouvelle"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-33-7af2711c-0466-418a-95ed-37f04407fcdd/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/13bc5f83df8192e7609326b554ab5628433867f91fa02f9d809e60b9249f3ce4.html",
+      "url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+      "slugs": [
+        "packington"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-36-a1b12913-8fb6-4356-a777-f00d87c625e1/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/6b685b41f3139e69f1576ad89235d60f31ff887790517799c7df8bcfd0eff613.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC380/38055_Publique/MapServer/50",
+      "slugs": [
+        "parisville"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-4-4b324914-6f60-48c3-81d6-09caf59eb279/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/774e3ec49190e10bf7096634d034095dad1f4e12a366a9b64053d9625bf11683.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14",
+      "slugs": [
+        "matapedia"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-40-0acd1a18-e21e-454c-87f7-d7217ab446c3/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d6fca0928044b7dac2b753108d796c996b43deb20bef19a7f1e9efbf4a049639.html",
+      "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+      "slugs": [
+        "piopolis"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-42-1dceffac-2f94-4cba-9d06-da8a33783828/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/13bc5f83df8192e7609326b554ab5628433867f91fa02f9d809e60b9249f3ce4.html",
+      "url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+      "slugs": [
+        "pohenegamook"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-43-3940a829-f203-4bcb-ba76-840d3d851c3d/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/8b725a8c43057cf5c5ba566e09833a8dd0d44346edb4b930c72b71daca046247.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06030_Publique/MapServer/16",
+      "slugs": [
+        "pointe-a-la-croix"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-45-272244cd-605d-453c-8a9a-5db70085e4c3/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/1f6cfdc91ecc2dab3e4f25c43d13347ab4efdd734d7e61e3927df2c6a8b98489.html",
+      "url": "https://services6.arcgis.com/5pdQeGtiJ9B2TCs4/arcgis/rest/services/Zonage_Potton_2021/FeatureServer/0",
+      "slugs": [
+        "potton"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-5-6ba3e5c3-9e3a-46e2-83af-b0ebc25933fe/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d594dc9b96a3e1d61136c7cbe2b8c17f7978f26ae256bbda8ef562ace6c6d2d6.html",
+      "url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+      "slugs": [
+        "melbourne"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-50-9d237c85-90b4-48ed-99aa-9409105ae5f0/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/26ff590f0185d00e054304576aca3d30c544ae4dd23ab5d7b0d1e6a7e0399ee8.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06035_Publique/MapServer/14",
+      "slugs": [
+        "ristigouche-sud-est"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-52-003d9068-08e5-4963-8f10-8ed26de6995c/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/13bc5f83df8192e7609326b554ab5628433867f91fa02f9d809e60b9249f3ce4.html",
+      "url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+      "slugs": [
+        "riviere-bleue"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-54-f972890f-7435-4abc-a3e1-d5e9b068c3f7/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "riviere-rouge"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-56-6c8d77d8-0184-45e7-9401-8b25f1c1d44a/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/9699e4f329165a5f5632b74a1af276f7891d63a8637b93bcbfe4a070a321197d.html",
+      "url": "https://carte.rouyn-noranda.ca/arcgis/rest/services/Donnees_ouvertes/Donnees_ouvertes/MapServer/5",
+      "slugs": [
+        "rouyn-noranda"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-59-4414ecda-e536-4cc8-ae09-454be340ad5a/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/aeb0f31e30963b4885ec7b8df6e16a636b1a5ba12718ac7c3546b574e268aa8c.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33045_Publique/MapServer/16",
+      "slugs": [
+        "saint-agapit"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-6-e202fce8-be82-47a6-9a71-22d823e1ecd9/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d6fca0928044b7dac2b753108d796c996b43deb20bef19a7f1e9efbf4a049639.html",
+      "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+      "slugs": [
+        "milan"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-62-bb283e7e-8877-4bb1-a197-2a0fc3c72974/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "saint-aime-du-lac-des-iles"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-65-caf0276f-41eb-47b6-8d99-d4d7342b54ac/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/352c5c84ef969ad0f635dc9ceead7256012a3ccd7ed18ffa0140206d678d852e.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06050_Publique/MapServer/13",
+      "slugs": [
+        "saint-alexis-de-matapedia"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-66-2a3bd84a-9b9b-4a7d-b4e2-4896c669a37d/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/84ecbe09c1d367f7e9699363df63f94c7bd6fdb04a1c733ae7a72672c5149ae3.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05065_Publique/MapServer/23",
+      "slugs": [
+        "saint-alphonse"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-7-ca4b8a7f-6bec-4635-ac9f-8a64a0754ebe/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/ff2c48d5fefde45e030fbbe9e2bced2cbb281b666b982589a4c66b675c39cc13.html",
+      "url": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0",
+      "slugs": [
+        "mirabel"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-70-9dac4352-f205-46f9-be3e-a8b78984c922/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/0e5736a833b1aa28bba6a2bc0a752f1364337d64ea08cdcf7595aa988b53b947.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06040_Publique/MapServer/13",
+      "slugs": [
+        "saint-andre-de-restigouche"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-71-17a50dd5-1ad4-484f-8d4e-63d109e53c28/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/efaf4d15120a5e3822aee8dae847d191c278786a47ba51f8799fa3f6a50d1def.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33095_Publique/MapServer/18",
+      "slugs": [
+        "saint-antoine-de-tilly"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-73-6fc69332-e321-4307-aead-656d48d0b8a0/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/7346e67a4bac3e1ecb97dac6f95288d247110e647f90c2445917866e3a111db3.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33090_Publique/MapServer/16",
+      "slugs": [
+        "saint-apollinaire"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-74-b39283ec-0cae-48c1-8244-579fd1bf98c1/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/13bc5f83df8192e7609326b554ab5628433867f91fa02f9d809e60b9249f3ce4.html",
+      "url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+      "slugs": [
+        "saint-athanase"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-75-adebb04d-4bab-4645-bec4-bedf25e33563/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/31ffcad07dacd914d5c8eeca64cb786068a3e7cf71f5e27b3ab181fa02c44485.html",
+      "url": "https://services6.arcgis.com/bb3A2FAyAtd6ADTL/arcgis/rest/services/R%C3%A8glementDeZonage_JAN_2026/FeatureServer/109",
+      "slugs": [
+        "saint-augustin-de-desmaures"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-76-318bd35f-078c-4ced-aa5f-fc3d5864aced/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d6fca0928044b7dac2b753108d796c996b43deb20bef19a7f1e9efbf4a049639.html",
+      "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+      "slugs": [
+        "saint-augustin-de-woburn"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-84-e62d2244-917e-48aa-b479-cc67574814c7/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d594dc9b96a3e1d61136c7cbe2b8c17f7978f26ae256bbda8ef562ace6c6d2d6.html",
+      "url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+      "slugs": [
+        "saint-claude"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-9-f07a8e91-04d3-4b67-a24b-b00971e63c31/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/56e4cd72dde97594e9cf52a21e2c4885d08bb874634f0b4ca350539fbbe65114.html",
+      "url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0",
+      "slugs": [
+        "mont-laurier"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-90-57ec60c0-8f30-46a9-9bf1-53b60b7d7072/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/d594dc9b96a3e1d61136c7cbe2b8c17f7978f26ae256bbda8ef562ace6c6d2d6.html",
+      "url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+      "slugs": [
+        "saint-denis-de-brompton"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-95-342f9bf9-b4c7-4a4a-b175-0152566e3723/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/0f93e69801acfd525610ca1ba66d7d5ef50e198c09132b7ebdfc95094e8dd316.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33080_Publique/MapServer/16",
+      "slugs": [
+        "saint-edouard-de-lotbiniere"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-98-6b04026b-9847-4bf7-94e8-688aaef617f6/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/3802e47b2ee1c062d684ef563e1725450966873235ddeaa04bb8a888a1becf59.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05050_Publique/MapServer/23",
+      "slugs": [
+        "saint-elzear--bonaventure"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T020639Z-99-f6ceea85-462e-4e08-89d3-665f441cc449/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/13bc5f83df8192e7609326b554ab5628433867f91fa02f9d809e60b9249f3ce4.html",
+      "url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+      "slugs": [
+        "saint-elzear-de-temiscouata"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    }
+  ]
+}
