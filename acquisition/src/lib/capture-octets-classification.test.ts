@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { classifyCapturedOctets } from "./capture-octets-classification.js";
+import { classifyCapturedOctets, isGeometryCapture } from "./capture-octets-classification.js";
 
 const bytes = (value: unknown): Buffer => Buffer.from(JSON.stringify(value));
 
@@ -47,5 +47,12 @@ describe("classifyCapturedOctets", () => {
       classification: "AUTRE",
       detail: "pdf-bytes",
     });
+  });
+
+  it("permits a proof attestation only for a capture classified as geometry", () => {
+    expect(isGeometryCapture(classifyCapturedOctets(bytes({
+      features: [{ geometry: { x: -72.5, y: 46.1 } }],
+    }), "application/json"))).toBe(true);
+    expect(isGeometryCapture(classifyCapturedOctets(Buffer.from("<!doctype html><html></html>"), "text/html"))).toBe(false);
   });
 });
