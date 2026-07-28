@@ -1,0 +1,72 @@
+{
+  "contract": "density-document-reviewed-outcomes/v1",
+  "scope": {
+    "count": 7,
+    "worklist": "acquisition/config/density-document-no-norms-20260728-lot-04.json",
+    "run_prefixes": [
+      "normes-20260728T102557Z-d4-",
+      "normes-20260728T104355Z-d5-"
+    ]
+  },
+  "outcomes": [
+    {
+      "slug": "mont-blanc",
+      "result": "not_folded",
+      "served_polygons": 101,
+      "served_density_polygons": 0,
+      "reason": "24 fiches officielles portent un code avec espace (par exemple « Zone : Ca 707 »); aucun de ces 24 codes n’existe à l’identique dans le SIG servi, qui emploie des codes avec tiret. Aucun rapprochement n’a été fait.",
+      "evidence_url": "https://mont-blanc.quebec/wp-content/uploads/2024/09/Grille-specifications_Ca-707.pdf",
+      "evidence_verbatim": "Zone : Ca 707; coefficient d'occupation au sol (%) max. 15; 21-04-2017 194-30-2017"
+    },
+    {
+      "slug": "notre-dame-de-lourdes--joliette",
+      "result": "folded",
+      "served_polygons": 43,
+      "served_density_polygons": 1,
+      "served_density_polygons_changed": 1,
+      "evidence_url": "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250312154803-02-2023-reglement-de-zonage-maj-2024-11-27.pdf",
+      "date_verbatim": "Dernière mise à jour le : 27 novembre 2024",
+      "zone_code_verbatim": "H-16",
+      "norm_verbatim": "Coefficient d'emprise au sol maximal (%) 2 2 2 2"
+    },
+    {
+      "slug": "notre-dame-du-bon-conseil--drummond",
+      "result": "not_folded",
+      "served_polygons": 44,
+      "served_density_polygons": 0,
+      "reason": "La grille officielle porte des valeurs de densité, mais aucune date dans le document; le tableau « Date d’adoption / Date d’entrée en vigueur » du règlement parent est vide.",
+      "evidence_url": "https://villagebonconseil.ca/wp-content/uploads/2024/04/148.pdf",
+      "evidence_verbatim": "ZONE P-1; Espace bâti / terrain en % (max.) 80"
+    },
+    {
+      "slug": "pierreville",
+      "result": "not_folded",
+      "served_polygons": 63,
+      "served_density_polygons": 0,
+      "reason": "Aucune norme numérique de densité dans les documents finaux lisibles; deux documents sans couche texte sont restés inconclusifs et les autres occurrences retenues par le filtre étaient des projets ou des plans sans densité."
+    },
+    {
+      "slug": "saguenay",
+      "result": "not_folded",
+      "served_polygons": 2836,
+      "served_density_polygons": 0,
+      "reason": "Le chapitre résidentiel officiel ne porte qu’un renvoi non numérique au « nombre maximum de logements autorisés »; aucune valeur par code de zone. Le PDF de 240761028 octets bloqué par la limite de capture est l’annexe du schéma d’aménagement, pas une grille de zonage.",
+      "evidence_url": "https://infopermis.saguenay.ca/medias/reglements/reglements_de_zonage/chapitre_05_dispositions_aux_usages_residentiels_saguenay.pdf"
+    },
+    {
+      "slug": "saint-alphonse-rodriguez",
+      "result": "not_folded",
+      "served_polygons": 107,
+      "served_density_polygons": 0,
+      "reason": "Aucun nouveau document portant une densité; les pages sœur et sitemap ont échoué au transport, et le règlement déjà acquis ne contient que des emplois non normatifs du mot densité."
+    },
+    {
+      "slug": "saint-aubert",
+      "result": "not_folded",
+      "served_polygons": 18,
+      "served_density_polygons": 0,
+      "reason": "Le seul signal était un faux positif lexical: « panneau de fibre à densité moyenne (MDF) »; aucune norme numérique de densité.",
+      "evidence_url": "https://saint-aubert.net/file-13824"
+    }
+  ]
+}
