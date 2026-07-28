@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { discoverFollowups } from "./category-a-gisements-followups.js";
+import {
+  discoverFollowups,
+  retryableFollowupUrls,
+} from "./category-a-gisements-followups.js";
 
 describe("category A captured catalog followups", () => {
   it("extracts a hidden WordPress media PDF using its title context", () => {
@@ -99,5 +102,17 @@ describe("category A captured catalog followups", () => {
       "https://mrc.example/",
     );
     expect(result.catalogs).toEqual([]);
+  });
+
+  it("retries opaque hosts with explicit http and www variants", () => {
+    expect(retryableFollowupUrls("https://www.batiscan.ca/sitemap.xml"))
+      .toEqual([
+        "http://batiscan.ca/sitemap.xml",
+        "http://www.batiscan.ca/sitemap.xml",
+        "https://batiscan.ca/sitemap.xml",
+        "https://www.batiscan.ca/sitemap.xml",
+      ]);
+    expect(retryableFollowupUrls("https://web.archive.org/cdx/search/cdx?url=x"))
+      .toEqual(["https://web.archive.org/cdx/search/cdx?url=x"]);
   });
 });
