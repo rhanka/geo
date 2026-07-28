@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isHttpsCaptureUrl,
   MissingSha256RestampRefusal,
   planMissingSha256ProofRestamp,
 } from "./served-zonage-proof-url-restamp.js";
@@ -43,6 +44,11 @@ const attestation = () => ({
 });
 
 describe("missing-SHA v1 proof restamp plan", () => {
+  it("accepts an HTTPS geometry endpoint whose query is required by ArcGIS", () => {
+    expect(isHttpsCaptureUrl("https://services.example.org/FeatureServer/0/query?where=1%3D1&f=geojson")).toBe(true);
+    expect(isHttpsCaptureUrl("http://services.example.org/FeatureServer/0/query?f=geojson")).toBe(false);
+  });
+
   it("couples the manifest URL and SHA without changing geometry or sibling proof fields", () => {
     const current = served();
     const { next, attestations } = planMissingSha256ProofRestamp(KEY, current, [attestation()]);
