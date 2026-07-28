@@ -137,14 +137,15 @@ describe("PV capture backlog", () => {
 
   it("emits one mono-pod capture Job with the measured resource ceiling", () => {
     const campaign = manifest();
-    const yaml = captureBacklogJobManifest(campaign, campaign.lots[0]!);
-    expect(yaml).toContain("completions: 1\n  parallelism: 1");
-    expect(yaml).toContain("backoffLimit: 0");
-    expect(yaml).toContain("memory: 120Mi");
-    expect(yaml).toContain("memory: 176Mi");
-    expect(yaml).toContain("cpu: 60m");
-    expect(yaml).toContain("cpu: 150m");
-    expect(yaml).toContain(`value: \"${campaign.lots[0]!.worklist_key}\"`);
+    const job = JSON.parse(captureBacklogJobManifest(campaign, campaign.lots[0]!)) as {
+      spec: { completions: number; parallelism: number; backoffLimit: number; template: { spec: { containers: Array<{ env: Array<{ name: string; value?: string }>; resources: { requests: { cpu: string; memory: string }; limits: { cpu: string; memory: string } } }> } } };
+    };
+    const capture = job.spec.template.spec.containers[0]!;
+    expect(job.spec.completions).toBe(1);
+    expect(job.spec.parallelism).toBe(1);
+    expect(job.spec.backoffLimit).toBe(0);
+    expect(capture.resources).toEqual({ requests: { cpu: "60m", memory: "120Mi" }, limits: { cpu: "150m", memory: "176Mi" } });
+    expect(capture.env.find((entry) => entry.name === "WORKLIST")?.value).toBe(campaign.lots[0]!.worklist_key);
   });
 
   it("emits a separate short CronJob with least-privilege observation and self-suspension", () => {
