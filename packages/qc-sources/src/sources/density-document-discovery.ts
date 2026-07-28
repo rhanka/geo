@@ -91,6 +91,15 @@ export interface DensityTextHit {
   verbatim: string;
 }
 
+export interface DensityNormValueHit {
+  page: number;
+  label: DensityTextHit["label"];
+  zoneCodes: string[];
+  rawValues: string[];
+  unit: "logements/hectare" | "logements/batiment" | "cos" | "terrain/logement" | "densite-explicite";
+  verbatim: string;
+}
+
 const HTTP_RE = /^https?:\/\//i;
 const DOCUMENT_EXT_RE = /\.(?:pdf|xlsx?|xlsm|ods)(?:[?#].*)?$/i;
 const OPAQUE_DOCUMENT_RE =
@@ -551,6 +560,83 @@ export function densityTextHits(text: string, maxHits = 40): DensityTextHit[] {
           .slice(0, 500);
         hits.push({ page: pageIndex + 1, label: pattern.label, verbatim: context });
         if (hits.length >= maxHits) return hits;
+      }
+    }
+  }
+  return hits;
+}
+
+function numericTokens(value: string): string[] {
+  return [...value.matchAll(/(?<![A-Za-zÀ-ÿ])\d+(?:[.,]\d+)?(?:\s*\/\s*\d+(?:[.,]\d+)?)?/g)]
+    .map((match) => match[0]!.replace(/\s+/g, ""));
+}
+
+/**
+ * Stronger than densityTextHits: retain only passages where the native text
+ * carries a numeric norm next to the density label. This still does not decide
+ * legal force or fold anything.
+ */
+export function densityNormValueHits(text: string, maxHits = 80): DensityNormValueHit[] {
+  const hits: DensityNormValueHit[] = [];
+  for (const [pageIndex, page] of text.split("\f").entries()) {
+    const zoneCodes = [...new Set(
+      [...page.matchAll(/\bZONE\s*:\s*([A-Z0-9][A-Z0-9._ -]{0,20})/gi)]
+        .map((match) => (match[1] ?? "").trim().split(/\s{2,}/)[0] ?? "")
+        .filter(Boolean),
+    )].slice(0, 12);
+    const lines = page.split(/\r?\n/);
+    for (const line of lines) {
+      const rules: Array<{
+        label: DensityTextHit["label"];
+        unit: DensityNormValueHit["unit"];
+        re: RegExp;
+      }> = [
+        {
+          label: "logements-hectare",
+          unit: "logements/hectare",
+          re: /(?:logements?|log\.?|unit[eé]s?)\s*(?:\/|par|[àa])\s*(?:l['’]\s*)?hectare(?:\s+maximum)?\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "nombre-logements",
+          unit: "logements/batiment",
+          re: /nombre\s+(?:(?:minimal|maximal|maximum|minimum)\s+)?(?:de\s+)?logements?(?:\s+par\s+b[âa]timent)?\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "nombre-logements",
+          unit: "logements/batiment",
+          re: /nombre\s+de\s+logements?\s+par\s+b[âa]timent\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "cos",
+          unit: "cos",
+          re: /(?:coefficient\s+d['’]\s*occupation\s+du\s+sol|C\.?\s*O\.?\s*S\.?)(?:\s+maximum)?\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "terrain-par-logement",
+          unit: "terrain/logement",
+          re: /superficie\s+minimale\s+(?:de\s+)?terrain\s+par\s+logement\s*[:=-]?\s*(.+)$/i,
+        },
+        {
+          label: "densite",
+          unit: "densite-explicite",
+          re: /densit[eé]\s+(?:brute|nette|r[eé]sidentielle)?\s*[:=-]\s*(.+)$/i,
+        },
+      ];
+      for (const rule of rules) {
+        const match = rule.re.exec(line);
+        if (!match) continue;
+        const values = numericTokens(match[1] ?? "");
+        if (values.length === 0) continue;
+        hits.push({
+          page: pageIndex + 1,
+          label: rule.label,
+          zoneCodes,
+          rawValues: values.slice(0, 24),
+          unit: rule.unit,
+          verbatim: line.trim().replace(/\s+/g, " ").slice(0, 1_200),
+        });
+        if (hits.length >= maxHits) return hits;
+        break;
       }
     }
   }

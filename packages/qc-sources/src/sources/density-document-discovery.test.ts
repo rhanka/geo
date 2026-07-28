@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildDensityDiscoverySeeds,
   densityTextHits,
+  densityNormValueHits,
   discoverDensityLinks,
   equivalentDocumentUrl,
   hasHardProjectMarker,
@@ -178,6 +179,36 @@ describe("native density text signals", () => {
         verbatim: "Zone H-2 COS maximal 0,5",
       },
     ]);
+  });
+
+  it("should require numeric values next to the native density label", () => {
+    const text = [
+      "ZONE: H1",
+      "Nombre de logement par bâtiment     1/1  2/3  4/9",
+      "Coefficient d’occupation du sol maximum",
+      "\fZONE: H-2",
+      "Logement / Hectare maximum          24",
+    ].join("\n");
+    expect(densityNormValueHits(text)).toEqual([
+      expect.objectContaining({
+        page: 1,
+        zoneCodes: ["H1"],
+        rawValues: ["1/1", "2/3", "4/9"],
+        unit: "logements/batiment",
+      }),
+      expect.objectContaining({
+        page: 2,
+        zoneCodes: ["H-2"],
+        rawValues: ["24"],
+        unit: "logements/hectare",
+      }),
+    ]);
+  });
+
+  it("should not promote an empty density row", () => {
+    expect(densityNormValueHits(
+      "ZONE: A-152\nCoefficient d'emprise au sol maximum\nLogement / Hectare maximum\n",
+    )).toEqual([]);
   });
 
   it("should reject every explicit project form before legal validation", () => {
