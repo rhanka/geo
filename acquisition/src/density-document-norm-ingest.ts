@@ -34,6 +34,12 @@ import {
   mergeDensityNormRows,
   type DensityNormPatch,
 } from "./lib/density-document-deposit.js";
+import {
+  densityDocumentDisposition,
+  type DensityDocumentDisposition,
+  type DensityDocumentReference,
+  validateHistoricalCorroboration,
+} from "./lib/density-document-reference-policy.js";
 import { extractNativeDocumentText } from "./lib/density-document-review.js";
 import { readParquetRowsFromBuffer } from "./lib/parquet-read.js";
 import {
@@ -82,20 +88,16 @@ interface Profile {
   legalDateEvidence: string;
   reglement: string;
   numericSigBridge?: boolean;
-  corroborationOnly?: boolean;
+  corroboration?: {
+    referenceProfileId: string;
+    exactMatchRequired: boolean;
+  };
   parse: (text: string) => DensityDocumentParseResult;
 }
 
 interface DocumentReview {
   id: string;
-  disposition:
-    | "publishable"
-    | "excluded-undated"
-    | "excluded-project"
-    | "corroboration-only"
-    | "refused-unanchored"
-    | "refused-no-publishable-density"
-    | "refused-no-sig-overlap";
+  disposition: DensityDocumentDisposition;
   source: {
     url: string;
     sha256: string;
@@ -118,6 +120,12 @@ interface DocumentReview {
   crossValidation: {
     matchedNorms: number;
     missingInSig: string[];
+  };
+  corroboration?: {
+    referenceDocumentId: string;
+    exactMatchRequired: boolean;
+    comparedNorms: number;
+    exactMatches: number;
   };
   norms: Array<{
     zoneCode: string;
@@ -198,6 +206,10 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Table de codification verbatim: « Modification 06-08-18 — Règlement 2018-03 »",
     reglement: "Règlement de zonage 2009-03, codifié au règlement 2018-03",
     numericSigBridge: true,
+    corroboration: {
+      referenceProfileId: "champlain-file-18281",
+      exactMatchRequired: true,
+    },
     parse: parseChamplainDensityDocument,
   },
   {
@@ -212,6 +224,10 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Page titre verbatim: « Adopté le 6 avril 2009 »",
     reglement: "Règlement de zonage 2009-03, original",
     numericSigBridge: true,
+    corroboration: {
+      referenceProfileId: "champlain-file-18281",
+      exactMatchRequired: true,
+    },
     parse: parseChamplainDensityDocument,
   },
   {
@@ -226,6 +242,10 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Nom de document municipal verbatim: « modification règlement de zonage du 19 juin 2014 »",
     reglement: "Règlement 2014-04 modifiant le règlement de zonage 2009-03",
     numericSigBridge: true,
+    corroboration: {
+      referenceProfileId: "champlain-file-18281",
+      exactMatchRequired: true,
+    },
     parse: parseChamplainDensityDocument,
   },
   {
@@ -240,6 +260,10 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Table de codification verbatim: « Modification 01-05-17 — Règlement 2017-02 »",
     reglement: "Règlement 2017-02 modifiant le règlement de zonage 2009-03",
     numericSigBridge: true,
+    corroboration: {
+      referenceProfileId: "champlain-file-18281",
+      exactMatchRequired: true,
+    },
     parse: parseChamplainDensityDocument,
   },
   {
@@ -254,6 +278,10 @@ const PROFILES: readonly Profile[] = [
     legalDateEvidence: "Table de codification verbatim: « Modification 09-07-18 — Règlement 2018-05 »",
     reglement: "Règlement de zonage 2009-03, codifié au règlement 2018-05",
     numericSigBridge: true,
+    corroboration: {
+      referenceProfileId: "champlain-file-18281",
+      exactMatchRequired: true,
+    },
     parse: parseChamplainDensityDocument,
   },
   {
@@ -333,6 +361,10 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2017",
     legalDateEvidence: "Nom municipal verbatim: « annexe-b-grilles-agricole-codification-2017.pdf »",
     reglement: "Règlement de zonage 145 N.S. — annexe B agricole, codification 2017",
+    corroboration: {
+      referenceProfileId: "chesterville-2024-grilles-agricoles",
+      exactMatchRequired: true,
+    },
     parse: parseChestervilleDensityDocument,
   },
   {
@@ -346,6 +378,10 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2017",
     legalDateEvidence: "Nom municipal verbatim: « annexe-b-grilles-residentiel-autres-2017.pdf »",
     reglement: "Règlement de zonage 145 N.S. — annexe B résidentiel et autres 2017",
+    corroboration: {
+      referenceProfileId: "chesterville-2024-grilles-residentielles-autres",
+      exactMatchRequired: true,
+    },
     parse: parseChestervilleDensityDocument,
   },
   {
@@ -411,7 +447,10 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2021-06",
     legalDateEvidence: "Nom municipal verbatim: « grille-des-spcifications-juin-2021.pdf »",
     reglement: "Règlement de zonage VC-434-13 — grilles juin 2021",
-    corroborationOnly: true,
+    corroboration: {
+      referenceProfileId: "clermont-grilles-2025-06-25",
+      exactMatchRequired: false,
+    },
     parse: parseClermontDensityDocument,
   },
   {
@@ -425,7 +464,10 @@ const PROFILES: readonly Profile[] = [
     legalDate: "2016-06-07",
     legalDateEvidence: "Capture Wayback verbatim /web/20160607233854id_/ et grilles « En vigueur le 31 octobre 2013 »",
     reglement: "Règlement de zonage VC-434-13 — grilles archivées",
-    corroborationOnly: true,
+    corroboration: {
+      referenceProfileId: "clermont-grilles-2025-06-25",
+      exactMatchRequired: false,
+    },
     parse: parseClermontDensityDocument,
   },
   {
@@ -666,6 +708,10 @@ async function main(): Promise<void> {
     ?? `../work/coverage/density-document-norm-ingest-${slug ?? "missing"}.json`;
   const deposit = argv.includes("--deposit");
   const legalReviewed = argv.includes("--legal-reviewed");
+  const reviewCorroborationIdsRaw = option(argv, "review-corroboration-ids");
+  const reviewCorroborationIds = reviewCorroborationIdsRaw === undefined
+    ? null
+    : new Set(reviewCorroborationIdsRaw.split(",").map((id) => id.trim()).filter(Boolean));
   if (!slug || profiles.length === 0) {
     throw new Error(
       profileId
@@ -674,6 +720,15 @@ async function main(): Promise<void> {
     );
   }
   if (deposit && !legalReviewed) throw new Error("--deposit exige --legal-reviewed");
+  if (deposit && reviewCorroborationIds !== null) {
+    throw new Error("--review-corroboration-ids est un mode de revue sans dépôt");
+  }
+  if (reviewCorroborationIds !== null) {
+    const knownProfileIds = new Set(profiles.map((profile) => profile.id));
+    for (const id of reviewCorroborationIds) {
+      if (!knownProfileIds.has(id)) throw new Error(`profil de revue inconnu pour ${slug}: ${id}`);
+    }
+  }
 
   const discovery = JSON.parse(readFileSync(reportPath, "utf8")) as DiscoveryReport;
   if (discovery.scopeCount !== 56 || !Array.isArray(discovery.rows)) {
@@ -702,6 +757,7 @@ async function main(): Promise<void> {
   const sigByNumber = sigNumberIndex(sigRaw);
   const documents: DocumentReview[] = [];
   const allPatches: DensityNormPatch[] = [];
+  const reviewedProfiles = new Map<string, DensityDocumentReference>();
 
   for (const profile of profiles) {
     const candidate = row.candidates.find((item) => item.url === profile.sourceUrl);
@@ -755,16 +811,53 @@ async function main(): Promise<void> {
         });
       }
     }
-    if (!profile.corroborationOnly) allPatches.push(...documentPatches);
+    const reviewedProfile: DensityDocumentReference = {
+      id: profile.id,
+      slug: profile.slug,
+      owner: profile.owner,
+      legalDate: profile.legalDate,
+      norms: parsed.norms,
+    };
+    let corroboration: DocumentReview["corroboration"];
+    const activeCorroboration = profile.corroboration
+      && (reviewCorroborationIds === null || reviewCorroborationIds.has(profile.id))
+      ? profile.corroboration
+      : null;
+    if (activeCorroboration) {
+      const reference = reviewedProfiles.get(activeCorroboration.referenceProfileId);
+      if (!reference) {
+        throw new Error(
+          `${profile.id}: référence de corroboration non revue avant ce profil: `
+          + activeCorroboration.referenceProfileId,
+        );
+      }
+      const validated = validateHistoricalCorroboration(
+        reviewedProfile,
+        reference,
+        activeCorroboration.exactMatchRequired,
+      );
+      corroboration = {
+        referenceDocumentId: validated.referenceDocumentId,
+        exactMatchRequired: validated.exactMatchRequired,
+        comparedNorms: validated.comparedNorms,
+        exactMatches: validated.exactMatches,
+      };
+    } else {
+      allPatches.push(...documentPatches);
+    }
+    if (reviewedProfiles.has(profile.id)) {
+      throw new Error(`profil dupliqué: ${profile.id}`);
+    }
+    reviewedProfiles.set(profile.id, reviewedProfile);
 
-    let disposition: DocumentReview["disposition"];
-    if (parsed.projectExcluded) disposition = "excluded-project";
-    else if (!parsed.documentAnchored) disposition = "refused-unanchored";
-    else if (profile.legalDate === null) disposition = "excluded-undated";
-    else if (parsed.norms.length === 0) disposition = "refused-no-publishable-density";
-    else if (documentPatches.length === 0) disposition = "refused-no-sig-overlap";
-    else if (profile.corroborationOnly) disposition = "corroboration-only";
-    else disposition = "publishable";
+    const disposition = densityDocumentDisposition({
+      documentAnchored: parsed.documentAnchored,
+      projectExcluded: parsed.projectExcluded,
+      legalDate: profile.legalDate,
+      parsedNorms: parsed.norms.length,
+      matchedNorms: documentPatches.length,
+      corroborationOnly: corroboration !== undefined,
+    });
     documents.push({
       id: profile.id,
       disposition,
@@ -791,6 +884,7 @@ async function main(): Promise<void> {
         matchedNorms: documentPatches.length,
         missingInSig,
       },
+      ...(corroboration ? { corroboration } : {}),
       norms: documentPatches.map((patch) => ({
         zoneCode: patch.zoneCode,
         value: patch.value,
@@ -806,6 +900,12 @@ async function main(): Promise<void> {
       slug,
       completedDocuments: documents.length,
       totalDocuments: profiles.length,
+      reviewScope: {
+        corroborationProfileIds: reviewCorroborationIds === null
+          ? profiles.filter((candidateProfile) => candidateProfile.corroboration)
+            .map((candidateProfile) => candidateProfile.id)
+          : [...reviewCorroborationIds],
+      },
       documents,
     });
   }
@@ -822,6 +922,11 @@ async function main(): Promise<void> {
     generatedAt: new Date().toISOString(),
     slug,
     deposited: false,
+    reviewScope: {
+      corroborationProfileIds: reviewCorroborationIds === null
+        ? profiles.filter((profile) => profile.corroboration).map((profile) => profile.id)
+        : [...reviewCorroborationIds],
+    },
     documents,
     crossValidation: {
       sigKey: gridResolved,
