@@ -106,22 +106,24 @@ async function main(): Promise<void> {
   const excluded = new Set(sample.selected.map((row) => (row as { slug: string }).slug));
   const selected = selectProofUrlRecaptureWorklist(audit.rows as ProofUrlAuditRow[], excluded, offset, limit);
   if (selected.length !== limit) throw new Error(`selection exhausted: requested ${limit}, found ${selected.length}`);
+  const excludedUrls = readExcludedUrls();
+  const unmeasured = excludeMeasuredProofUrls(selected, excludedUrls);
   if (hasFlag("candidates-only")) {
-    const candidates = hasFlag("distinct") ? distinctProofUrlCaptures(selected) : selected;
+    const candidates = hasFlag("distinct") ? distinctProofUrlCaptures(unmeasured) : unmeasured;
     if (existsSync(outPath)) throw new Error(`refusing to overwrite existing candidate worklist: ${out}`);
     writeFileSync(outPath, `${JSON.stringify(candidates, null, 2)}\n`, { flag: "wx" });
     console.log(JSON.stringify({
       out: outPath,
       candidate_targets: selected.length,
       unique_candidate_urls: new Set(selected.flatMap((target) => target.urls)).size,
+      unique_unmeasured_urls: new Set(unmeasured.flatMap((target) => target.urls)).size,
+      excluded_measured_urls: excludedUrls.size,
       materialized_targets: candidates.length,
       offset,
       excluded_test_collections: excluded.size,
     }, null, 2));
     return;
   }
-  const excludedUrls = readExcludedUrls();
-  const unmeasured = excludeMeasuredProofUrls(selected, excludedUrls);
   // Les sondes ArcGIS interrogent des serveurs TIERS : regle C-0, elles passent
   // par le chokepoint de capture. Le `fetch()` nu qui servait de defaut avait
   // rouvert la dette que le cliquet ne laisse que decroitre.
