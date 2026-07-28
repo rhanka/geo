@@ -69,18 +69,15 @@ const FINAL_ADOPTION = new RegExp(
   String.raw`\b(?:Adoption(?:\s+du\s+r[èe]glement)?|R[èe]glement\s+adopt[ée]\s+le)\s*:\s*${LEGAL_DATE}\b`,
   "i",
 );
-const ENTRY_INTO_FORCE = new RegExp(
-  String.raw`\bEntr[ée]e\s+en\s+vigueur(?:\s+le)?\s*:\s*${LEGAL_DATE}\b`,
-  "i",
-);
-
 /**
  * A chronology row saying "Adoption du projet de règlement" is not itself a
- * project marker when the same document also prints dated final adoption and
- * entry into force. A project marker in the source title/URL remains absolute.
+ * project marker when the same document also prints a dated final adoption.
+ * Entry into force remains a separate legal-review requirement: its absence
+ * must not hide an adopted document from review. A project marker in the source
+ * title/URL remains absolute.
  */
 export function hasDatedFinalAdoption(text: string): boolean {
-  return FINAL_ADOPTION.test(text) && ENTRY_INTO_FORCE.test(text);
+  return FINAL_ADOPTION.test(text);
 }
 
 function kindOf(bytes: Buffer, sourceName = ""): NativeDocumentKind {

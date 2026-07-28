@@ -97,6 +97,27 @@ describe("native density document review", () => {
     expect(review.disposition).toBe("candidate_review_required");
   });
 
+  it("should not reject an adopted regulation because its recitals mention a project", () => {
+    const text = [
+      "MUNICIPALITÉ NOTRE-DAME DU ROSAIRE",
+      "RÈGLEMENT 2026-04 MODIFIANT LE RÈGLEMENT DE ZONAGE NUMÉRO 90-01",
+      "Avis de motion : 2 mars 2026",
+      "Premier projet : 7 avril 2026",
+      "Adoption : 4 mai 2026",
+      "MRC : 12 mai 2026",
+      "QUE le règlement nº 2026-04 soit adopté",
+      "ADOPTÉ",
+      "ARTICLE 3.1 ENTRÉE EN VIGUEUR",
+    ].join("\n");
+    const review = reviewNativeDensityDocument(
+      Buffer.from(`<html>${text}</html>`),
+      "https://municipalite.example/reglement-2026-04.pdf",
+    );
+
+    expect(hasDatedFinalAdoption(text)).toBe(true);
+    expect(review.disposition).toBe("no_density_signal");
+  });
+
   it("should keep a project marker in the source URL absolute", () => {
     const text = [
       "Adoption du règlement : 3 juin 2024",
