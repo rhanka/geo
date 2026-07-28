@@ -17,19 +17,19 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx acquisition/src/_capture-e2e-probe.ts --run zones-20260725T150000Z-0 [--type wfs]
  */
-import { createHash } from "node:crypto";
-
 import {
   captureRunKeys,
   parseManifestJsonl,
   type CaptureManifestLine,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { exists, getBytes, s3Client } from "./lib/s3.js";
+import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
 import {
   assertGeometryProof,
   proofFromCaptureEntry,
   type GeometrySourceType,
 } from "./lib/zonage-proof.js";
+import { captureReceiptFromManifest } from "./lib/zone-provenance-quality.js";
 
 function arg(k: string): string | undefined {
   const i = process.argv.indexOf(`--${k}`);
@@ -58,7 +58,7 @@ async function main(): Promise<void> {
 
   let proven = 0;
   let failed = 0;
-  for (const line of lines) {
+  for (const [lineIndex, line] of lines.entries()) {
     console.error(
       `\n[e2e] ${line.method} ${line.url}\n` +
       `      http_status=${String(line.http_status)} bytes=${String(line.bytes)} dedup=${String(line.dedup)} error=${String(line.error)}`,
@@ -67,32 +67,39 @@ async function main(): Promise<void> {
       console.error(`      → PAS d'octets : aucune preuve v2 dérivable (ligne d'échec, conservée à dessein)`);
       continue;
     }
-    // 1+2. l'objet CAS existe et ses octets hashent bien vers la clé annoncée.
+    // 1. Le reçu doit désigner une clé CAS nommée par son propre SHA. Le
+    // `fetchedAt` du sidecar ne fait pas partie de cette identité : il peut
+    // provenir du premier fetch d'octets dédupliqués.
+    const receipt = captureReceiptFromManifest(line, keys.manifest, lineIndex);
+    if (receipt === null) {
+      console.error(`      ✗ clé CAS incompatible avec le SHA annoncé: s3://${line.storage_key}`);
+      failed++;
+      continue;
+    }
+    // 2. La clé existe, puis les octets relus sont vérifiés par la règle lib.
     if (!(await exists(s3, line.storage_key))) {
       console.error(`      ✗ objet CAS ABSENT: s3://${line.storage_key}`);
       failed++;
       continue;
     }
     const bytes = await getBytes(s3, line.storage_key);
-    const actual = `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
-    if (actual !== line.sha256) {
-      console.error(`      ✗ CAS MENSONGER: annoncé ${line.sha256}, relu ${actual}`);
-      failed++;
-      continue;
-    }
-    console.error(`      ✓ CAS s3://${line.storage_key} (${bytes.length} octets, sha vérifié)`);
     const peek = Number(arg("peek") ?? 0);
     if (peek > 0) console.error(`      … ${bytes.toString("utf8").slice(0, peek)}`);
 
-    // 3. le RawDocumentRecord sibling.
+    // 3. Le RawDocumentRecord sibling confirme l'identité du CAS. Sa date et
+    // son URL peuvent légitimement appartenir au premier fetch dédupliqué.
     const metaKey = `${line.storage_key}.meta.json`;
     if (await exists(s3, metaKey)) {
       const meta = JSON.parse((await getBytes(s3, metaKey)).toString("utf8")) as {
         sourceUrl?: string; sha256?: string; fetchedAt?: string;
       };
-      const okMeta = meta.sha256 === line.sha256.slice("sha256:".length) && meta.fetchedAt === line.retrieved_at;
-      console.error(`      ${okMeta ? "✓" : "✗"} meta s3://${metaKey} sourceUrl=${String(meta.sourceUrl)}`);
-      if (!okMeta) failed++;
+      const checked = verifyRawCapturePayload(receipt, bytes, meta);
+      console.error(`      ${checked.verified ? "✓" : "✗"} CAS s3://${line.storage_key} (${bytes.length} octets, sha vérifié)`);
+      console.error(`      ${checked.verified ? "✓" : "✗"} meta s3://${metaKey} sourceUrl=${String(meta.sourceUrl)} fetchedAt=${String(meta.fetchedAt)}`);
+      if (!checked.verified) {
+        console.error(`          → ${checked.reason}`);
+        failed++;
+      }
     } else {
       console.error(`      ✗ meta ABSENT: s3://${metaKey}`);
       failed++;
