@@ -61,11 +61,18 @@ interface QueryProofCase {
   sha256: string | null;
 }
 
+interface VerifiableProofCase {
+  url: string;
+  sha256: string;
+  locations: Array<"collection.proof" | "feature.properties.proof">;
+}
+
 interface CollectionRow extends ServedChoice {
   proof_envelopes: number;
   proof_schema_versions: string[];
   s3_cases: S3ProofCase[];
   query_cases: QueryProofCase[];
+  verifiable_https_sha256_cases: VerifiableProofCase[];
 }
 
 interface ManifestEvidence {
@@ -135,6 +142,10 @@ function isPublicHttpUrl(value: unknown): value is string {
 function hasQueryString(value: unknown): value is string {
   if (!isPublicHttpUrl(value)) return false;
   return new URL(value).search.length > 0;
+}
+
+function isPublicHttpsUrl(value: unknown): value is string {
+  return isPublicHttpUrl(value) && new URL(value).protocol === "https:";
 }
 
 function errorText(error: unknown): string {
@@ -226,6 +237,7 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
   const schemas = new Set<string>();
   const s3Cases = new Map<string, { locations: Set<"collection.proof" | "feature.properties.proof">; urls: Map<string, Set<UrlField>> }>();
   const queryCases = new Map<string, { locations: Set<"collection.proof" | "feature.properties.proof">; sha256: string | null }>();
+  const verifiableCases = new Map<string, { url: string; sha256: string; locations: Set<"collection.proof" | "feature.properties.proof"> }>();
 
   for (const { proof, location } of proofLocations) {
     if (typeof proof.schema_version === "string") schemas.add(proof.schema_version);
@@ -250,6 +262,13 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
       if (typeof geometrySource?.sha256 === "string") current.sha256 = geometrySource.sha256;
       queryCases.set(url, current);
     }
+    const proofSha256 = geometrySource?.sha256;
+    if (proof.schema_version === "2.0" && isPublicHttpsUrl(url) && typeof proofSha256 === "string" && SHA256_RE.test(proofSha256)) {
+      const identity = `${url}\u0000${proofSha256}`;
+      const current = verifiableCases.get(identity) ?? { url, sha256: proofSha256, locations: new Set() };
+      current.locations.add(location);
+      verifiableCases.set(identity, current);
+    }
   }
 
   return {
@@ -270,6 +289,11 @@ function inspectCollection(choice: ServedChoice, bytes: Buffer): CollectionRow {
       locations: [...details.locations].sort(),
       sha256: details.sha256,
     })).sort((left, right) => left.url.localeCompare(right.url)),
+    verifiable_https_sha256_cases: [...verifiableCases.values()].map((details) => ({
+      url: details.url,
+      sha256: details.sha256,
+      locations: [...details.locations].sort(),
+    })).sort((left, right) => left.url.localeCompare(right.url) || left.sha256.localeCompare(right.sha256)),
   };
 }
 
@@ -332,6 +356,7 @@ function report(state: AuditState): Record<string, unknown> {
   const withProof = rows.filter((row) => row.proof_envelopes > 0);
   const withS3 = rows.filter((row) => row.s3_cases.length > 0);
   const withQuery = rows.filter((row) => row.query_cases.length > 0);
+  const withVerifiableHttpsSha256 = rows.filter((row) => row.verifiable_https_sha256_cases.length > 0);
   const publicAvailable = withS3.filter((row) => row.public_origin_available);
   const correctable = withS3.filter((row) => row.correctable_without_invention);
   const absent = withS3.filter((row) => row.resolved_s3_cases.some((item) => item.availability === "absent"));
@@ -353,6 +378,7 @@ function report(state: AuditState): Record<string, unknown> {
       with_proof: withProof.length,
       with_v1_s3_artifact: withS3.length,
       with_v2_url_query: withQuery.length,
+      with_verifiable_https_url_sha256: withVerifiableHttpsSha256.length,
       v1_s3_cases: withS3.reduce((sum, row) => sum + row.s3_cases.length, 0),
       v2_query_cases: withQuery.reduce((sum, row) => sum + row.query_cases.length, 0),
       s3_public_url_available: publicAvailable.length,
