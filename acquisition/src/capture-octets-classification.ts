@@ -223,15 +223,16 @@ async function main(): Promise<void> {
   }, null, 2));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const lane = option("lane") ?? "zones";
-  const runner = lane === "zones"
-    ? main()
-    : lane === "pv"
-      ? runPvCaptureOctetsClassification(process.argv.slice(2))
-      : Promise.reject(new Error("--lane doit être zones ou pv"));
-  runner.catch((error: unknown) => {
-    console.error(error instanceof Error ? error.stack : String(error));
-    process.exitCode = 1;
-  });
-}
+// This is a standalone report runner (it is not imported by application code).
+// ESM loader-specific argv/import-meta guards can silently skip the required
+// octet-opening pass, so every invocation must execute its requested lane.
+const lane = option("lane") ?? "zones";
+const runner = lane === "zones"
+  ? main()
+  : lane === "pv"
+    ? runPvCaptureOctetsClassification(process.argv.slice(2))
+    : Promise.reject(new Error("--lane doit être zones ou pv"));
+runner.catch((error: unknown) => {
+  console.error(error instanceof Error ? error.stack : String(error));
+  process.exitCode = 1;
+});
