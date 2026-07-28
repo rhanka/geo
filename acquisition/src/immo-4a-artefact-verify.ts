@@ -29,6 +29,7 @@ import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
 import { getBytes, s3Client } from "./lib/s3.js";
+import { immo4aContentSha256, type Immo4aArtifact } from "./lib/immo-4a-delta-grille.js";
 
 const LATEST_KEY = "exports/immo/artefact-4a-delta-grille/v1/latest.json";
 
@@ -137,12 +138,26 @@ async function main(): Promise<void> {
     if (!filled(latest[field])) failures.push(`métadonnée d'artefact absente: ${field}`);
   }
 
+  let contentSha256: string | null = null;
+  try {
+    const artifact = latest as unknown as Immo4aArtifact;
+    contentSha256 = immo4aContentSha256(artifact);
+    const freshnessOnly = { ...latest, generated_at: "2000-01-01T00:00:00.000Z", snapshot_id: "freshness-probe" } as unknown as Immo4aArtifact;
+    if (immo4aContentSha256(freshnessOnly) !== contentSha256) {
+      failures.push("l'empreinte de contenu varie avec une métadonnée de fraîcheur");
+    }
+  } catch (error) {
+    failures.push(`empreinte de contenu impossible à calculer: ${String(error)}`);
+  }
+
   const known = records?.filter((r) => r.effet_densifiant !== "inconnu" && r.effet_densifiant !== undefined) ?? [];
   console.log(JSON.stringify({
     verified: failures.length === 0,
     latest_uri: `s3://sentropic-geo/${LATEST_KEY}`,
     snapshot_key_checked: snapshotKey,
     artifact_sha256: createHash("sha256").update(latestBytes).digest("hex"),
+    content_sha256: contentSha256,
+    generated_at: latest["generated_at"] ?? null,
     bytes: latestBytes.length,
     records: records?.length ?? 0,
     records_effet_connu: known.length,
