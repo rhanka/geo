@@ -70,7 +70,9 @@ export function parseArgs(argv: readonly string[]): Args {
     namespace: option(argv, "namespace") ?? "geo",
     image: option(argv, "image") ?? DEFAULT_IMAGE,
     concurrency: integer("concurrency", option(argv, "concurrency"), 1, 1, 2),
-    memoryLimitMi: integer("memory-limit-mi", option(argv, "memory-limit-mi"), 480, 256, 512),
+    // A measured municipal sitemap / Wayback OOM may be retried with a larger
+    // explicit container limit. Request count and read timeouts are unchanged.
+    memoryLimitMi: integer("memory-limit-mi", option(argv, "memory-limit-mi"), 480, 256, 1024),
     runStamp: stamp,
     gitSha: sha,
     dryRun: flag(argv, "dry-run"),
