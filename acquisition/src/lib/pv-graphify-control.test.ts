@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { selectBalancedPvControl } from "./pv-graphify-control.js";
+import { selectBalancedPvControl, selectPvControlBatch } from "./pv-graphify-control.js";
 
 describe("selectBalancedPvControl", () => {
   it("distributes twenty PV across all seven available municipalities with a maximum gap of one", () => {
@@ -40,5 +40,25 @@ describe("selectBalancedPvControl", () => {
 
     expect(selectBalancedPvControl(candidates, 3).map((candidate) => candidate.storage_key))
       .toEqual(["a-1", "b-1", "a-2"]);
+  });
+
+  it("selects a stable short batch that can be re-run after interruption", () => {
+    const candidates = [
+      { slug: "b", storage_key: "b-2" },
+      { slug: "a", storage_key: "a-2" },
+      { slug: "b", storage_key: "b-1" },
+      { slug: "a", storage_key: "a-1" },
+      { slug: "c", storage_key: "c-1" },
+    ];
+
+    expect(selectPvControlBatch(candidates, 2, 2)).toEqual({
+      batch_index: 2,
+      batch_size: 2,
+      batch_count: 3,
+      candidates: [
+        { slug: "b", storage_key: "b-1" },
+        { slug: "b", storage_key: "b-2" },
+      ],
+    });
   });
 });

@@ -25,7 +25,7 @@ import {
   type MunicipalityGazetteerEntry,
   type MunicipalZoneGazetteer,
 } from "./lib/pv-graphify-semantic.js";
-import { selectBalancedPvControl } from "./lib/pv-graphify-control.js";
+import { selectBalancedPvControl, selectPvControlBatch } from "./lib/pv-graphify-control.js";
 import { getBytes, s3Client } from "./lib/s3.js";
 
 const execFileAsync = promisify(execFile);
@@ -55,6 +55,8 @@ interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly control: number | null;
   readonly all: boolean;
+  readonly batchSize: number | null;
+  readonly batchIndex: number | null;
   readonly output: string;
 }
 
@@ -101,12 +103,24 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   if (!Number.isInteger(control) || control < 1) throw new Error("--control doit être un entier positif");
   const all = argv.includes("--all");
   if (all && values("control").length > 0) throw new Error("--all et --control sont exclusifs");
+  const batchSizeValue = values("batch-size").at(-1);
+  const batchIndexValue = values("batch-index").at(-1);
+  const batchSize = batchSizeValue === undefined ? null : Number(batchSizeValue);
+  const batchIndex = batchIndexValue === undefined ? null : Number(batchIndexValue);
+  if (batchSize !== null && (!all || !Number.isInteger(batchSize) || batchSize < 1)) {
+    throw new Error("--batch-size exige --all et un entier positif");
+  }
+  if (batchIndex !== null && (batchSize === null || !Number.isInteger(batchIndex) || batchIndex < 1)) {
+    throw new Error("--batch-index exige --batch-size et un entier positif");
+  }
   const outputValue = values("out").at(-1);
   const timestamp = new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z");
   return {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
     control: all ? null : control,
     all,
+    batchSize,
+    batchIndex,
     output: resolve(ROOT, outputValue ?? `work/coverage/pv-graphify-semantic-${timestamp}.json`),
   };
 }
@@ -350,8 +364,12 @@ async function processDocument(
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const paths = args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS;
-  const eligible = uniqueEligible(paths.flatMap(readClassificationLines));
-  const selected = args.all ? eligible : selectControl(eligible, args.control!);
+  const eligibleRecords = paths.flatMap(readClassificationLines);
+  const eligible = uniqueEligible(eligibleRecords);
+  const batch = args.all && args.batchSize !== null
+    ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
+    : null;
+  const selected = batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   assertS3RunEnvironment();
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
@@ -375,8 +393,11 @@ async function main(): Promise<void> {
     generated_at: new Date().toISOString(),
     mode: args.all ? "all-eligible" : "balanced-municipality-control",
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
+    eligible_records: eligibleRecords.length,
     eligible_documents: eligible.length,
+    duplicate_eligible_records: eligibleRecords.length - eligible.length,
     eligible_municipalities: new Set(eligible.map((document) => document.slug)).size,
+    ...(batch ? { batch } : {}),
     selected_documents: documents.length,
     entity_counts: entityCounts,
     graphify: { nodes: graphNodes, edges: graphEdges, failures: graphifyFailures },
