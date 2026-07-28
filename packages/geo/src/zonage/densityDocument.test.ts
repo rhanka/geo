@@ -117,6 +117,43 @@ describe("parseLacDesEcorcesDensityDocument", () => {
     ]);
   });
 
+  it("rejoins split zone prefixes and numbers without turning dashes into zero", () => {
+    const parsed = parseLacDesEcorcesDensityDocument([
+      "MUNICIPALITÉ DE LAC-DES-ÉCORCES",
+      "Grille des spécifications",
+      "                                                                 ZONES",
+      "                                  COM-    COM-    COM-    COM-    COM-    COM-",
+      "                                   01      02      03      04      05      06",
+      "Nombre de logements maximum        --      20      --      20      3       20",
+    ].join("\n"));
+
+    expect(parsed.norms.map(({ zoneCode, value }) => ({ zoneCode, value }))).toEqual([
+      { zoneCode: "COM-02", value: 20 },
+      { zoneCode: "COM-04", value: 20 },
+      { zoneCode: "COM-05", value: 3 },
+      { zoneCode: "COM-06", value: 20 },
+    ]);
+  });
+
+  it("collects an accented zone header split across two rows", () => {
+    const parsed = parseLacDesEcorcesDensityDocument([
+      "MUNICIPALITÉ DE LAC-DES-ÉCORCES",
+      "Grille des spécifications",
+      "                                                                                                                                 ZONES",
+      "    CLASSES D’USAGES                             CATÉGORIE ET SOUS-CATÉGORIE D’USAGES                                                          RÉS-27",
+      "                                                                                                  RÉS-23      RÉS-24     RÉS-25     RÉS-26",
+      "                                   Nombre de logements maximum                                        3          3          3            1      8 (4)",
+    ].join("\n"));
+
+    expect(parsed.norms.map(({ zoneCode, value }) => ({ zoneCode, value }))).toEqual([
+      { zoneCode: "RES-23", value: 3 },
+      { zoneCode: "RES-24", value: 3 },
+      { zoneCode: "RES-25", value: 3 },
+      { zoneCode: "RES-26", value: 1 },
+      { zoneCode: "RES-27", value: 8 },
+    ]);
+  });
+
   it("refuses the entire document when its title says project", () => {
     const parsed = parseLacDesEcorcesDensityDocument([
       "MUNICIPALITÉ DE LAC-DES-ÉCORCES",
