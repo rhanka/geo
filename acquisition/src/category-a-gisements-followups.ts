@@ -50,6 +50,34 @@ export interface FollowupDiscovery {
   catalogs: string[];
 }
 
+export function retryableFollowupUrls(url: string): string[] {
+  const parsed = new URL(url);
+  const out = new Set([parsed.href]);
+  if (parsed.hostname === "web.archive.org" || parsed.hostname === "www.arcgis.com") {
+    return [...out];
+  }
+  const variants = [new URL(parsed.href)];
+  const scheme = new URL(parsed.href);
+  scheme.protocol = scheme.protocol === "https:" ? "http:" : "https:";
+  variants.push(scheme);
+  for (const current of [...variants]) {
+    const toggled = new URL(current.href);
+    toggled.hostname = toggled.hostname.startsWith("www.")
+      ? toggled.hostname.slice(4)
+      : `www.${toggled.hostname}`;
+    variants.push(toggled);
+  }
+  for (const variant of variants) out.add(variant.href);
+  return [...out].sort();
+}
+
+function isOpaqueRetryable(line: CaptureManifestLine): boolean {
+  return (
+    line.http_status === null
+    && /^(?:TypeError: fetch failed|timeout:)/i.test(line.error ?? "")
+  );
+}
+
 function safeUrl(raw: string, base: string): string | null {
   const decoded = raw
     .replace(/\\\//g, "/")
@@ -353,12 +381,18 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
   }
   const lines = runs.flatMap((run) => run.lines);
   const attempted = new Map<string, Set<string>>();
+  const attemptCounts = new Map<string, Map<string, number>>();
   const found = new Map<string, Set<string>>();
   for (const line of lines) {
     for (const slug of line.slugs) {
-      const slugAttempted = attempted.get(slug) ?? new Set<string>();
-      slugAttempted.add(line.url);
-      attempted.set(slug, slugAttempted);
+      const slugCounts = attemptCounts.get(slug) ?? new Map<string, number>();
+      slugCounts.set(line.url, (slugCounts.get(line.url) ?? 0) + 1);
+      attemptCounts.set(slug, slugCounts);
+      if (!isOpaqueRetryable(line)) {
+        const slugAttempted = attempted.get(slug) ?? new Set<string>();
+        slugAttempted.add(line.url);
+        attempted.set(slug, slugAttempted);
+      }
     }
   }
   const s3 = s3Client();
@@ -386,6 +420,16 @@ async function materialize(prefixes: readonly string[]): Promise<CaptureWorklist
       const slugFound = found.get(slug) ?? new Set<string>();
       for (const url of [...discovered.documents, ...discovered.catalogs]) {
         if (relevantForTarget(url, line.url, target)) slugFound.add(url);
+      }
+      found.set(slug, slugFound);
+    }
+  }
+  for (const line of lines.filter(isOpaqueRetryable)) {
+    for (const slug of line.slugs) {
+      const slugFound = found.get(slug) ?? new Set<string>();
+      const slugCounts = attemptCounts.get(slug) ?? new Map<string, number>();
+      for (const url of retryableFollowupUrls(line.url)) {
+        if ((slugCounts.get(url) ?? 0) < 2) slugFound.add(url);
       }
       found.set(slug, slugFound);
     }
