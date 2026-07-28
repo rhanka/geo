@@ -392,6 +392,33 @@ export async function putBytesIfAbsent(
 }
 
 /**
+ * Idempotent immutable upload: create once, or accept an already-present object
+ * only when its bytes are exactly equal. A 412 is never treated as success by
+ * omission; the existing object is fully re-read without a caller timeout.
+ */
+export async function putBytesIfAbsentOrEqual(
+  s3: S3Client,
+  key: string,
+  body: Buffer | Uint8Array | string,
+  contentType?: string,
+  bucket: string = BUCKET,
+): Promise<"created" | "existing-equal"> {
+  try {
+    await putBytesIfAbsent(s3, key, body, contentType, bucket);
+    return "created";
+  } catch (error) {
+    const status = (error as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode;
+    if ((error as { name?: string })?.name !== "PreconditionFailed" && status !== 412) throw error;
+    const expected = typeof body === "string" ? Buffer.from(body) : Buffer.from(body);
+    const existing = await getBytes(s3, key, bucket);
+    if (!existing.equals(expected)) {
+      throw new Error(`immutable S3 object collision: s3://${bucket}/${key}`);
+    }
+    return "existing-equal";
+  }
+}
+
+/**
  * PUT conditionné à l'ETag courant — le compare-and-swap d'un POINTEUR mutable.
  *
  * `priorEtag === null` signifie « le pointeur ne doit pas encore exister » et
