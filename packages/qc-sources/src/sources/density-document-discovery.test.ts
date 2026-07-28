@@ -229,6 +229,18 @@ describe("native density text signals", () => {
     ]);
   });
 
+  it("should retain the printed per-terrain unit and a zone header without a colon", () => {
+    expect(densityNormValueHits(
+      "ZONE A-1\nnombre de logements / terrain (max.)  4\n",
+    )).toEqual([
+      expect.objectContaining({
+        zoneCodes: ["A-1"],
+        rawValues: ["4"],
+        unit: "logements/terrain",
+      }),
+    ]);
+  });
+
   it("should not promote an empty density row", () => {
     expect(densityNormValueHits(
       "ZONE: A-152\nCoefficient d'emprise au sol maximum\nLogement / Hectare maximum\n",
