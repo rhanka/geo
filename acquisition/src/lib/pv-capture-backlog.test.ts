@@ -13,6 +13,7 @@ import {
   reconcileBacklogState,
   sha256,
   stateCounts,
+  verifiedCaptureConcurrency,
   worklistKey,
 } from "./pv-capture-backlog.js";
 
@@ -53,9 +54,18 @@ describe("PV capture backlog", () => {
       limits_memory_bytes: 2304 * 1024 ** 2,
     };
     expect(captureBacklogSlots(0, sixSlots)).toBe(6);
-    expect(captureBacklogSlots(5, sixSlots)).toBe(1);
+    expect(captureBacklogSlots(5, sixSlots, 6)).toBe(1);
     expect(captureBacklogSlots(0, { ...sixSlots, requests_memory_bytes: 119 * 1024 ** 2 })).toBe(0);
     expect(captureBacklogSlots(0, { ...sixSlots, pods: 0 })).toBe(0);
+  });
+
+  it("raises concurrency only after a successfully settled prior lot", () => {
+    const campaign = manifest(3);
+    let state = createBacklogState(campaign, NOW);
+    expect(verifiedCaptureConcurrency(state, campaign)).toBe(1);
+    state = markLotSubmitted(planLot(state, 1, NOW), 1, NOW);
+    state = reconcileBacklogState(state, campaign, [{ name: campaign.lots[0]!.job_name, status: "complete", failure_reason: null }], NOW);
+    expect(verifiedCaptureConcurrency(state, campaign)).toBe(2);
   });
 
   it("reuses the deterministic planned Job after a controller crash without skipping the lot", () => {

@@ -28,6 +28,7 @@ interface Args {
   namespace: string;
   delayMs: number;
   maxBytes: number;
+  maxActiveJobs: number;
   egress: string;
   apply: boolean;
 }
@@ -62,6 +63,7 @@ function parseArgs(argv: string[]): Args {
     namespace: option(argv, "namespace") ?? "geo",
     delayMs: integer("delay-ms", option(argv, "delay-ms"), 2_000),
     maxBytes: integer("max-bytes", option(argv, "max-bytes"), 104_857_600),
+    maxActiveJobs: integer("max-active-jobs", option(argv, "max-active-jobs"), 10),
     egress,
     apply: argv.includes("--apply"),
   };
@@ -137,6 +139,7 @@ async function main(): Promise<void> {
     image: args.image,
     delay_ms: args.delayMs,
     max_bytes: args.maxBytes,
+    max_active_jobs: args.maxActiveJobs,
     egress: args.egress,
     lots,
   });

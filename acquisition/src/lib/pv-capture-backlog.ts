@@ -10,7 +10,9 @@ import { createHash } from "node:crypto";
 
 export const PV_CAPTURE_BACKLOG_CONTRACT = "pv-capture-backlog/v1";
 export const PV_CAPTURE_BACKLOG_STATE_CONTRACT = "pv-capture-backlog-state/v1";
-export const MAX_PV_CAPTURE_JOBS = 6;
+/** Absolute ceiling: increase only after the progressive controller has proof. */
+export const MAX_PV_CAPTURE_JOBS = 18;
+export const DEFAULT_PV_CAPTURE_MAX_ACTIVE_JOBS = 10;
 
 export type PvBacklogPhase = "running" | "complete" | "halted";
 export type PvBacklogLotStatus = "pending" | "planned" | "submitted" | "settled" | "blocked";
@@ -34,7 +36,8 @@ export interface PvCaptureBacklogManifest {
   delay_ms: number;
   max_bytes: number;
   egress: string;
-  max_active_jobs: typeof MAX_PV_CAPTURE_JOBS;
+  /** Campaign cap; the live controller starts at one and raises only after completed lots. */
+  max_active_jobs: number;
   lots: PvCaptureBacklogLot[];
 }
 
@@ -78,14 +81,21 @@ export interface PvCaptureQuotaHeadroom {
 /**
  * Borne stricte commune aux Jobs, au quota pods, requests et limits. Chaque
  * lot est mono-pod; cette fonction ne sait donc pas "accidentellement" lancer
- * six Jobs Indexed de six pods chacun.
+ * Jobs Indexed multi-pods : chaque lot PV reste strictement mono-pod.
  */
-export function captureBacklogSlots(activeCaptureJobs: number, headroom: PvCaptureQuotaHeadroom): number {
+export function captureBacklogSlots(
+  activeCaptureJobs: number,
+  headroom: PvCaptureQuotaHeadroom,
+  maxActiveJobs = MAX_PV_CAPTURE_JOBS,
+): number {
   if (!Number.isInteger(activeCaptureJobs) || activeCaptureJobs < 0) throw new Error("nombre de Jobs actifs invalide");
+  if (!Number.isInteger(maxActiveJobs) || maxActiveJobs < 1 || maxActiveJobs > MAX_PV_CAPTURE_JOBS) {
+    throw new Error(`maximum de Jobs invalide (1..${MAX_PV_CAPTURE_JOBS})`);
+  }
   const values = Object.values(headroom);
   if (values.some((value) => !Number.isFinite(value))) throw new Error("headroom quota invalide");
   return Math.max(0, Math.min(
-    MAX_PV_CAPTURE_JOBS - activeCaptureJobs,
+    maxActiveJobs - activeCaptureJobs,
     Math.floor(headroom.pods),
     Math.floor(headroom.requests_cpu_milli / 60),
     Math.floor(headroom.requests_memory_bytes / (120 * 1024 ** 2)),
@@ -126,11 +136,13 @@ export function sha256(bytes: Uint8Array | string): `sha256:${string}` {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
-export function createBacklogManifest(args: Omit<PvCaptureBacklogManifest, "contract" | "max_active_jobs">): PvCaptureBacklogManifest {
+export function createBacklogManifest(
+  args: Omit<PvCaptureBacklogManifest, "contract" | "max_active_jobs"> & { max_active_jobs?: number },
+): PvCaptureBacklogManifest {
   const manifest: PvCaptureBacklogManifest = {
     ...args,
     contract: PV_CAPTURE_BACKLOG_CONTRACT,
-    max_active_jobs: MAX_PV_CAPTURE_JOBS,
+    max_active_jobs: args.max_active_jobs ?? DEFAULT_PV_CAPTURE_MAX_ACTIVE_JOBS,
     lots: [...args.lots].sort((left, right) => left.lot - right.lot),
   };
   assertBacklogManifest(manifest);
@@ -163,7 +175,9 @@ export function assertBacklogManifest(value: PvCaptureBacklogManifest): void {
   if (value.contract !== PV_CAPTURE_BACKLOG_CONTRACT) throw new Error("contrat manifeste arriéré PV invalide");
   assertCampaignId(value.id);
   if (value.lane !== "pv") throw new Error("l'arriéré ne peut lancer que la lane pv");
-  if (value.max_active_jobs !== MAX_PV_CAPTURE_JOBS) throw new Error(`max_active_jobs doit être ${MAX_PV_CAPTURE_JOBS}`);
+  if (!Number.isInteger(value.max_active_jobs) || value.max_active_jobs < 1 || value.max_active_jobs > MAX_PV_CAPTURE_JOBS) {
+    throw new Error(`max_active_jobs doit être 1..${MAX_PV_CAPTURE_JOBS}`);
+  }
   if (!Array.isArray(value.lots) || value.lots.length === 0) throw new Error("manifeste arriéré PV sans lot");
   const expected = value.lots.map((lot) => lot.lot).sort((left, right) => left - right);
   if (new Set(expected).size !== expected.length || expected.some((lot, index) => lot !== index + 1)) {
@@ -290,6 +304,17 @@ export function stateCounts(state: PvCaptureBacklogState): Record<PvBacklogLotSt
   return counts;
 }
 
+/**
+ * A new campaign begins with a single pod. Every higher ceiling requires at
+ * least one additional successfully settled Job; a Pending/Failed Job can
+ * therefore never make the controller increase concurrency.
+ */
+export function verifiedCaptureConcurrency(state: PvCaptureBacklogState, manifest: PvCaptureBacklogManifest): number {
+  assertBacklogState(state, manifest);
+  const settled = state.lots.filter((lot) => lot.status === "settled").length;
+  return Math.min(manifest.max_active_jobs, settled + 1);
+}
+
 /** Un Job de lot est toujours mono-pod; 6 lots => au plus 6 pods de capture. */
 export function captureBacklogJobManifest(manifest: PvCaptureBacklogManifest, lot: PvCaptureBacklogLot): string {
   assertBacklogManifest(manifest);
@@ -384,7 +409,7 @@ spec:
 
 /**
  * Le CronJob est généré avec l'identité exacte du manifeste S3, donc aucun
- * `REPLACE_ME` ne peut pointer par mégarde vers une autre campagne. Il est
+ * identifiant implicite ne peut pointer par mégarde vers une autre campagne. Il est
  * séparé du CronJob mensuel de refresh, qui conserve son rôle de détection.
  */
 export function captureBacklogCronManifest(manifest: PvCaptureBacklogManifest, cronJobName: string): string {
@@ -494,7 +519,8 @@ spec:
                     name: geo-s3-credentials
               resources:
                 requests:
-                  # 288Mi + six captures×120Mi + ce tick×16Mi = 1Gi, le quota.
+                  # Le tick reste petit face aux Jobs de capture; le quota borne
+                  # la montée progressive dans `captureBacklogSlots`.
                   cpu: 10m
                   memory: 16Mi
                 limits:
