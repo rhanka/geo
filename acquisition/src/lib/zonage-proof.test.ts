@@ -234,7 +234,29 @@ const legacyProof = (sha256 = PROOF_SHA256) => ({
   gaps: [],
 });
 
+/** A v1 envelope whose SHA-256 member is truly absent, not null or empty. */
+const legacyProofWithoutSha256 = () => ({
+  schema_version: "1.0",
+  status: "complete",
+  sources: {
+    geometry: {
+      status: "available",
+      artifact_uri: LEGACY_ARTIFACT_URI,
+      upstream_uri: null,
+    },
+    regulation: { status: "unavailable", artifact_uri: null, upstream_uri: null },
+  },
+  zone: null,
+  gaps: [],
+});
+
 const proofArtifactUriSubstitution = (sha256 = PROOF_SHA256, replacementUrl = PUBLIC_ARTIFACT_URL) => ([{
+  artifactUri: LEGACY_ARTIFACT_URI,
+  replacementUrl,
+  sha256,
+}] as const);
+
+const proofArtifactUriAndSha256Stamp = (sha256 = PROOF_SHA256, replacementUrl = PUBLIC_ARTIFACT_URL) => ([{
   artifactUri: LEGACY_ARTIFACT_URI,
   replacementUrl,
   sha256,
@@ -380,6 +402,61 @@ describe("additive served-zone provenance write", () => {
 
     await expect(putServedZoneAdditive(s3, KEY, incoming, {
       allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(),
+    })).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("restores a missing v1 SHA-256 only together with its attested public artifact URL", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProofWithoutSha256();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+    }
+
+    const result = await putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
+    });
+
+    expect(result.features).toBe(served.features.length);
+    const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+    expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
+    expect(body.features.map((feature: any) => feature.properties.proof.sources.geometry)).toEqual(
+      served.features.map((feature: any) => ({
+        ...feature.properties.proof.sources.geometry,
+        artifact_uri: PUBLIC_ARTIFACT_URL,
+        sha256: PROOF_SHA256,
+      })),
+    );
+  });
+
+  it("refuses a missing-SHA stamp unless it also replaces the artifact URI", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProofWithoutSha256();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
+    })).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses a missing-SHA restoration when the served envelope already has a SHA-256", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+    }
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
     })).rejects.toThrow(/non-provenance property "proof"/);
     expect(sent.some((command) => command.name === PUT)).toBe(false);
   });
