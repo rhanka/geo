@@ -509,6 +509,17 @@ export function waybackSnapshotUrl(row: Pick<CdxDocument, "timestamp" | "origina
   return `https://web.archive.org/web/${row.timestamp}id_/${row.originalUrl}`;
 }
 
+export function waybackSnapshotOriginalUrl(value: string): string | null {
+  try {
+    const parsed = new URL(value);
+    if (parsed.hostname.toLowerCase() !== "web.archive.org") return null;
+    const path = safeDecodeUrl(parsed.pathname + parsed.search);
+    return /^\/web\/\d{14}(?:id_)?\/(https?:\/\/.+)$/i.exec(path)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const DENSITY_PATTERNS: ReadonlyArray<{
   label: DensityTextHit["label"];
   re: RegExp;

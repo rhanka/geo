@@ -13,6 +13,7 @@ import {
   sitemapLocations,
   stableDensityDiscoveryLots,
   waybackScope,
+  waybackSnapshotOriginalUrl,
   type DensityDiscoveryTarget,
 } from "./density-document-discovery.js";
 
@@ -120,6 +121,13 @@ describe("density document discovery link recall", () => {
 });
 
 describe("sitemap and CDX discovery", () => {
+  it("should recover the original URL from a raw Wayback snapshot", () => {
+    expect(waybackSnapshotOriginalUrl(
+      "https://web.archive.org/web/20240118122714id_/http://batiscan.ca/docs/grille.pdf",
+    )).toBe("http://batiscan.ca/docs/grille.pdf");
+    expect(waybackSnapshotOriginalUrl("https://ville.example/grille.pdf")).toBeNull();
+  });
+
   it("should follow child sitemaps and retain density documents", () => {
     const urls = sitemapLocations(
       `<sitemapindex>
