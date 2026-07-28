@@ -8,19 +8,23 @@
 import { readFileSync } from "node:fs";
 import { request as httpsRequest } from "node:https";
 
-import { getBytes, objectHead, putBytesIfAbsent, putBytesIfMatch, s3Client } from "./lib/s3.js";
+import { parseCaptureWorklist, parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
+import { getBytes, listObjectEntries, objectHead, putBytesIfAbsent, putBytesIfAbsentOrEqual, putBytesIfMatch, s3Client } from "./lib/s3.js";
 import {
   assertBacklogManifest,
   assertBacklogState,
+  canonicalCaptureUrl,
   campaignManifestKey,
   campaignReportKey,
   campaignStateKey,
   captureBacklogJobManifest,
   captureBacklogSlots,
+  deduplicatePvBacklogTargets,
   kubernetesLeaseTime,
   markLotSubmitted,
   pendingLots,
   planLot,
+  sha256,
   reconcileBacklogState,
   stateCounts,
   verifiedCaptureConcurrency,
@@ -280,6 +284,100 @@ async function putImmutableReport(state: PvCaptureBacklogState, manifest: PvCapt
   return key;
 }
 
+/**
+ * Les runs de ce contrôleur ont un RUN_ID déterministe: le shell de capture
+ * préfixe le RUN_STAMP (nom de Job) par `pv-`. On ne liste donc jamais le
+ * corpus entier: seulement les manifests des lots déjà soumis par CETTE
+ * campagne, y compris ceux bloqués après un Job disparu.
+ */
+async function capturedUrlsForCampaign(
+  s3: ReturnType<typeof s3Client>,
+  manifest: PvCaptureBacklogManifest,
+  state: PvCaptureBacklogState,
+): Promise<Set<string>> {
+  const runPrefixes = state.lots
+    .filter((lot) => lot.status === "submitted" || lot.status === "settled" || lot.status === "blocked")
+    .map((stateLot) => {
+      const lot = manifest.lots.find((candidate) => candidate.lot === stateLot.lot);
+      if (!lot) throw new Error(`lot ${stateLot.lot} absent du manifeste`);
+      return `capture/_runs/pv-${lot.job_name}-`;
+    });
+  if (runPrefixes.length === 0) return new Set<string>();
+  const entries = await listObjectEntries(s3, `capture/_runs/pv-geo-capture-pv-${manifest.id}-`);
+  const manifestKeys = entries
+    .map((entry) => entry.key)
+    .filter((key) => key.endsWith("/manifest.jsonl") && runPrefixes.some((prefix) => key.startsWith(prefix)));
+  const captured = new Set<string>();
+  for (const key of manifestKeys) {
+    const lines = parseManifestJsonl((await getBytes(s3, key)).toString("utf8"));
+    for (const line of lines) {
+      if (line.source === "pv-index" && line.storage_key !== null) captured.add(canonicalCaptureUrl(line.url));
+    }
+  }
+  return captured;
+}
+
+interface PreparedWorklist {
+  worklist_key: string;
+  worklist_sha256: `sha256:${string}`;
+  discarded_captured: number;
+  remaining_targets: number;
+}
+
+/** Prépare une worklist dérivée immuable avant de marquer le lot planned. */
+async function prepareWorklist(
+  s3: ReturnType<typeof s3Client>,
+  manifest: PvCaptureBacklogManifest,
+  lot: PvCaptureBacklogManifest["lots"][number],
+  capturedUrls: ReadonlySet<string>,
+): Promise<PreparedWorklist> {
+  const original = await getBytes(s3, lot.worklist_key);
+  if (sha256(original) !== lot.worklist_sha256) throw new Error(`lot ${lot.lot}: worklist S3 divergente du manifeste immuable`);
+  const deduplicated = deduplicatePvBacklogTargets(
+    lot.lot,
+    parseCaptureWorklist(JSON.parse(original.toString("utf8"))),
+    capturedUrls,
+  );
+  if (deduplicated.discarded_captured === 0) {
+    return {
+      worklist_key: lot.worklist_key,
+      worklist_sha256: lot.worklist_sha256,
+      discarded_captured: 0,
+      remaining_targets: deduplicated.targets.length,
+    };
+  }
+  const body = `${JSON.stringify(deduplicated.targets, null, 2)}\n`;
+  const worklist_sha256 = sha256(body);
+  const worklist_key = `registry/capture-worklists/${manifest.id}/resume/lot-${lot.lot.toString().padStart(4, "0")}-${worklist_sha256.slice("sha256:".length, "sha256:".length + 16)}.json`;
+  await putBytesIfAbsentOrEqual(s3, worklist_key, body, "application/json");
+  return {
+    worklist_key,
+    worklist_sha256,
+    discarded_captured: deduplicated.discarded_captured,
+    remaining_targets: deduplicated.targets.length,
+  };
+}
+
+function plannedWorklist(
+  state: PvCaptureBacklogState,
+  lot: PvCaptureBacklogManifest["lots"][number],
+): PreparedWorklist {
+  const stateLot = state.lots.find((candidate) => candidate.lot === lot.lot);
+  if (!stateLot) throw new Error(`lot ${lot.lot} absent de l'état`);
+  if (stateLot.effective_worklist_key !== undefined && stateLot.effective_worklist_key !== null) {
+    if (stateLot.effective_worklist_sha256 === undefined || stateLot.effective_worklist_sha256 === null) {
+      throw new Error(`lot ${lot.lot}: worklist effective sans hash`);
+    }
+    return {
+      worklist_key: stateLot.effective_worklist_key,
+      worklist_sha256: stateLot.effective_worklist_sha256,
+      discarded_captured: stateLot.discarded_captured ?? 0,
+      remaining_targets: lot.targets - (stateLot.discarded_captured ?? 0),
+    };
+  }
+  return { worklist_key: lot.worklist_key, worklist_sha256: lot.worklist_sha256, discarded_captured: 0, remaining_targets: lot.targets };
+}
+
 async function main(): Promise<void> {
   const id = requireEnv("PV_CAPTURE_BACKLOG_ID");
   const cronJob = requireEnv("PV_CAPTURE_BACKLOG_CRONJOB");
@@ -337,14 +435,31 @@ async function main(): Promise<void> {
   stateEtag = await writeState(state, stateEtag);
 
   const lots = pendingLots(state, capacity.slots);
+  const capturedUrls = await capturedUrlsForCampaign(s3, manifest, state);
   for (const lotNumber of lots) {
     const lot = manifest.lots.find((candidate) => candidate.lot === lotNumber)!;
     const existing = state.lots.find((candidate) => candidate.lot === lotNumber)!;
+    let prepared = plannedWorklist(state, lot);
     if (existing.status === "pending") {
-      state = planLot(state, lotNumber, new Date().toISOString());
+      prepared = await prepareWorklist(s3, manifest, lot, capturedUrls);
+      if (prepared.discarded_captured > 0) {
+        console.log(JSON.stringify({
+          campaign: manifest.id,
+          lot: lotNumber,
+          action: "deduplicated-captured",
+          discarded_captured: prepared.discarded_captured,
+          remaining_targets: prepared.remaining_targets,
+        }));
+      }
+      state = planLot(
+        state,
+        lotNumber,
+        new Date().toISOString(),
+        prepared.discarded_captured > 0 ? prepared : undefined,
+      );
       stateEtag = await writeState(state, stateEtag); // CAS avant POST Kubernetes.
     }
-    await k8s.createJob(manifest.namespace, captureBacklogJobManifest(manifest, lot));
+    await k8s.createJob(manifest.namespace, captureBacklogJobManifest(manifest, lot, prepared.worklist_key));
     state = markLotSubmitted(state, lotNumber, new Date().toISOString());
     stateEtag = await writeState(state, stateEtag);
   }
