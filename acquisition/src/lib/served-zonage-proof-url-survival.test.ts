@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildProofUrlSurvivalReport,
   observationFromProbe,
+  proofUrlCandidateIdentity,
 } from "./served-zonage-proof-url-survival.js";
 
 describe("served zoning proof URL survival", () => {
@@ -68,5 +69,13 @@ describe("served zoning proof URL survival", () => {
       closed: true,
     });
     expect(report.measurements.duplicate_observations).toBe(1);
+  });
+
+  it("matches a legacy annotated URL to the encoded URL journaled by fetch", () => {
+    expect(proofUrlCandidateIdentity(
+      "https://example.test/MapServer/3 [Code_mun=39010]",
+    )).toBe(proofUrlCandidateIdentity(
+      "https://example.test/MapServer/3%20[Code_mun=39010]",
+    ));
   });
 });
