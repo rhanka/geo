@@ -241,10 +241,14 @@ export async function objectHead(
   s3: S3Client,
   key: string,
   bucket: string = BUCKET,
-): Promise<{ exists: boolean; lastModified?: Date }> {
+): Promise<{ exists: boolean; etag?: string; lastModified?: Date }> {
   try {
     const result = await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
-    return { exists: true, ...(result.LastModified ? { lastModified: result.LastModified } : {}) };
+    return {
+      exists: true,
+      ...(result.ETag ? { etag: result.ETag } : {}),
+      ...(result.LastModified ? { lastModified: result.LastModified } : {}),
+    };
   } catch (error) {
     if (isMissingObjectError(error)) return { exists: false };
     throw error;
