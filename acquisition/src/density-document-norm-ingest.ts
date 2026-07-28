@@ -23,7 +23,11 @@ import {
   parseHuberdeauDensityDocument,
   parseLacDesEcorcesDensityDocument,
   parseMontLaurierZonesHDensityDocument,
+  parseMontTremblantDensityDocument,
+  parseMontTremblantPlanDensityDocument,
+  parseSaintJeromeDensityDocument,
   parseVarennesDensityDocument,
+  parseVarennesPpuDensityDocument,
   type DensityDocumentParseResult,
 } from "../../packages/geo/src/zonage/densityDocument.js";
 import {
@@ -489,6 +493,110 @@ const PROFILES: readonly Profile[] = [
     reglement: "Règlement 707 — annexe B, grilles 600",
     parse: parseVarennesDensityDocument,
   },
+  {
+    id: "mont-tremblant-annexe-a-300",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-300.pdf",
+    sourceSha256: "sha256:44ae419b0cf3f6148750db9babf6b66e868024486e9271fd019f4da9e4b54845",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Hôte municipal vdmt.ca et ancre native « Annexe A du règlement de zonage (2008)-102 »",
+    legalDate: "2025-06-23",
+    legalDateEvidence: "Plus récente date native de la table d’amendements: « 2025-06-23 »",
+    reglement: "Règlement de zonage (2008)-102 — annexe A, zones 300",
+    parse: parseMontTremblantDensityDocument,
+  },
+  {
+    id: "mont-tremblant-annexe-a-400",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-400.pdf",
+    sourceSha256: "sha256:7dd021643c87d2ba529d3a75954bfd0ca0ad41cfb208ebab1bacdbc375c58c4b",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Hôte municipal vdmt.ca et ancre native « Annexe A du règlement de zonage (2008)-102 »",
+    legalDate: "2025-08-25",
+    legalDateEvidence: "Plus récente date native de la table d’amendements: « 2025-08-25 »",
+    reglement: "Règlement de zonage (2008)-102 — annexe A, zones 400",
+    parse: parseMontTremblantDensityDocument,
+  },
+  {
+    id: "mont-tremblant-annexe-a-500",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-500.pdf",
+    sourceSha256: "sha256:55c64ef216d361590c9de684380773b51573949676811c6b695e2f9c852d534c",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Hôte municipal vdmt.ca et ancre native « Annexe A du règlement de zonage (2008)-102 »",
+    legalDate: "2022-03-18",
+    legalDateEvidence: "Plus récente date native de la table d’amendements: « 2022-03-18 »",
+    reglement: "Règlement de zonage (2008)-102 — annexe A, zones 500",
+    parse: parseMontTremblantDensityDocument,
+  },
+  {
+    id: "mont-tremblant-annexe-a-600",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-600.pdf",
+    sourceSha256: "sha256:633f875e20f4931565edcd189d7e72204da0bafc0adbd1c1d9a5a9842ab10476",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Hôte municipal vdmt.ca et ancre native « Annexe A du règlement de zonage (2008)-102 »",
+    legalDate: "2025-08-25",
+    legalDateEvidence: "Plus récente date native de la table d’amendements: « 2025-08-25 »",
+    reglement: "Règlement de zonage (2008)-102 — annexe A, zones 600",
+    parse: parseMontTremblantDensityDocument,
+  },
+  {
+    id: "mont-tremblant-annexe-a-800",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-800.pdf",
+    sourceSha256: "sha256:ce11992f959a866b2fe027079243fe994f07e514b9542337fa1c559b90825b54",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Hôte municipal vdmt.ca et ancre native « Annexe A du règlement de zonage (2008)-102 »",
+    legalDate: "2022-10-21",
+    legalDateEvidence: "Plus récente date native de la table d’amendements: « 2022-10-21 »",
+    reglement: "Règlement de zonage (2008)-102 — annexe A, zones 800",
+    parse: parseMontTremblantDensityDocument,
+  },
+  {
+    id: "mont-tremblant-plan-urbanisme-chapitre-7",
+    slug: "mont-tremblant",
+    sourceUrl: "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/plan-urbanisme/plan-urbanisme-chapitre7.pdf",
+    sourceSha256: "sha256:31d8f90677becdaedf83c3a472715d9b2fb3be95ba463f37ee43851088cbf035",
+    sourceHost: "vdmt.ca",
+    owner: "Ville de Mont-Tremblant",
+    ownerEvidence: "Ancre native « Ville de Mont-Tremblant — Règlement (2008)-100 — Plan d’urbanisme »",
+    legalDate: "2019",
+    legalDateEvidence: "Sous la densité TV, mention native « Modifié par : (2019)-100-27 »",
+    reglement: "Règlement (2008)-100 — plan d’urbanisme, chapitre 7",
+    parse: parseMontTremblantPlanDensityDocument,
+  },
+  {
+    id: "saint-jerome-0351-000-annexe-2-2026-07-14",
+    slug: "saint-jerome",
+    sourceUrl: "https://www.vsj.ca/wp-content/uploads/2025/12/Annexe_2_Grille_0351-000_Zonage_2026_07_14.pdf",
+    sourceSha256: "sha256:ae318ddc3b0bef7fdb0f28f46c50f97472b79d6f09f797d808aec878205e495a",
+    sourceHost: "www.vsj.ca",
+    owner: "Ville de Saint-Jérôme",
+    ownerEvidence: "Ancre native « Règlement numéro 0351-000 sur le zonage de la Ville de Saint-Jérôme »",
+    legalDate: "2026-07-14",
+    legalDateEvidence: "Nom municipal verbatim: « Annexe_2_Grille_0351-000_Zonage_2026_07_14.pdf »",
+    reglement: "Règlement de zonage 0351-000 — annexe 2",
+    parse: parseSaintJeromeDensityDocument,
+  },
+  {
+    id: "varennes-ppu-706-15-2021-06-11",
+    slug: "varennes",
+    sourceUrl: "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/PPU_reg706-15_11_juin_2021.pdf",
+    sourceSha256: "sha256:6cf10227116a8b06dd9e2c91b94c3c6c2966915e37dfc82a5a1584a2c831d865",
+    sourceHost: "www.ville.varennes.qc.ca",
+    owner: "Ville de Varennes",
+    ownerEvidence: "Ancre native « Ville de Varennes — PROGRAMME PARTICULIER D’URBANISME »",
+    legalDate: "2021-06-11",
+    legalDateEvidence: "Page titre native verbatim: « 11 juin 2021 »",
+    reglement: "Règlement 706-15 — programme particulier d’urbanisme",
+    parse: parseVarennesPpuDensityDocument,
+  },
 ];
 
 function option(argv: readonly string[], name: string): string | undefined {
@@ -547,8 +655,11 @@ function selectConsistentPatches(
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const slug = option(argv, "slug");
+  const profileId = option(argv, "profile-id");
   const knownSlugs = [...new Set(PROFILES.map((profile) => profile.slug))].sort();
-  const profiles = PROFILES.filter((profile) => profile.slug === slug);
+  const profiles = PROFILES.filter((profile) =>
+    profile.slug === slug && (!profileId || profile.id === profileId)
+  );
   const reportPath = option(argv, "report")
     ?? "../work/coverage/density-document-discovery-report-20260728.json";
   const output = option(argv, "output")
@@ -556,7 +667,11 @@ async function main(): Promise<void> {
   const deposit = argv.includes("--deposit");
   const legalReviewed = argv.includes("--legal-reviewed");
   if (!slug || profiles.length === 0) {
-    throw new Error(`--slug requis parmi: ${knownSlugs.join(", ")}`);
+    throw new Error(
+      profileId
+        ? `profil inconnu pour ${slug ?? "slug absent"}: ${profileId}`
+        : `--slug requis parmi: ${knownSlugs.join(", ")}`,
+    );
   }
   if (deposit && !legalReviewed) throw new Error("--deposit exige --legal-reviewed");
 
