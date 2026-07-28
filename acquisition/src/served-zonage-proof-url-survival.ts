@@ -199,7 +199,10 @@ async function main(): Promise<void> {
     ...await readRunObservations(options("run-stamp"), classifications),
   ];
   const report = buildProofUrlSurvivalReport(candidates, observations);
-  if (!report.complete) throw new Error(`survival partition is not closed: ${report.measurements.missing} candidate(s) missing`);
+  if (!report.complete) {
+    console.error(JSON.stringify({ missing: report.missing }, null, 2));
+    throw new Error(`survival partition is not closed: ${report.measurements.missing} candidate(s) missing`);
+  }
   writeFileSync(outPath, `${JSON.stringify({ ...report, generated_at: new Date().toISOString() }, null, 2)}\n`, { flag: "wx" });
   writeFileSync(markdownPath, markdown(report, outPath), { flag: "wx" });
   console.log(JSON.stringify({

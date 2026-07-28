@@ -65,7 +65,13 @@ export interface SurvivalReport {
 }
 
 export function proofUrlCandidateIdentity(url: string): string {
-  return arcgisLayerEndpointFromCaptureUrl(url) ?? url;
+  const endpoint = arcgisLayerEndpointFromCaptureUrl(url);
+  if (endpoint !== null) return endpoint;
+  try {
+    return new URL(url).toString();
+  } catch {
+    return url;
+  }
 }
 
 export function observationFromProbe(probe: ProbeForSurvival, lot: string, evidence: string): SurvivalObservation {
