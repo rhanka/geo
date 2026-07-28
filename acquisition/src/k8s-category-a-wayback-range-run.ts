@@ -31,6 +31,8 @@ async function main(): Promise<void> {
   const kubeconfig = required(argv, "kubeconfig");
   const namespace = value(argv, "namespace") ?? "geo";
   const image = value(argv, "image") ?? DEFAULT_IMAGE;
+  const gitSha = required(argv, "git-sha");
+  if (!/^[a-f0-9]{40}$/.test(gitSha)) throw new Error("--git-sha doit être un SHA complet");
   const runStamp = required(argv, "run-stamp");
   if (!/^\d{8}T\d{6}Z$/.test(runStamp)) throw new Error("--run-stamp invalide");
   const concurrency = Number(value(argv, "concurrency") ?? "2");
@@ -92,6 +94,8 @@ spec:
                   fieldPath: metadata.uid
             - name: GEO_CAPTURE_EXECUTION
               value: "cluster"
+            - name: GEO_GIT_SHA
+              value: "${gitSha}"
             - name: CAPTURE_USER_AGENT
               value: "${DEFAULT_CAPTURE_USER_AGENT}"
             - name: NODE_OPTIONS
