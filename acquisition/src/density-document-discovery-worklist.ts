@@ -144,6 +144,17 @@ async function previousSource(slug: string): Promise<PreviousSource | null> {
     const bytes = await getBytes(s3, key);
     return { key, sha256: sha256Hex(bytes) };
   }
+  // Historical norms acquisition predates durable capture for most cities.
+  // When the exact staged `grille.pdf` still survives, retain ONLY its digest
+  // in the immutable worklist so a byte-identical mirror cannot be mistaken for
+  // "another document". The discovery runner never opens this local path.
+  const local = resolve(ROOT, "work", "zonage-norms", slug, "grille.pdf");
+  if (existsSync(local)) {
+    return {
+      key: `local-source-sha-only:work/zonage-norms/${slug}/grille.pdf`,
+      sha256: sha256Hex(readFileSync(local)),
+    };
+  }
   return null;
 }
 
