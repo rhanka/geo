@@ -17,11 +17,12 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parseCaptureWorklist, type CaptureWorklistTarget } from "../../packages/qc-sources/src/capture/index.js";
+import { parseCaptureWorklist, parseManifestJsonl, type CaptureWorklistTarget } from "../../packages/qc-sources/src/capture/index.js";
 import {
   arcgisGeometryQueryUrl,
   arcgisLayerEndpointFromCaptureUrl,
 } from "./lib/served-zonage-immo-proof-url-capture-worklist.js";
+import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -59,6 +60,25 @@ function insideRepo(path: string, name: string): string {
   const resolved = resolve(ROOT, path);
   if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} must resolve inside the repository`);
   return resolved;
+}
+
+async function attemptedSlugsForRun(runStamp: string): Promise<Set<string>> {
+  if (!/^zones-\d{8}T\d{6}Z$/.test(runStamp)) {
+    throw new Error("--skip-run-stamp must be a zones-YYYYMMDDTHHMMSSZ run stamp");
+  }
+  const prefix = `capture/_runs/${runStamp}-`;
+  const s3 = s3Client();
+  const manifestKeys = (await listObjectEntries(s3, prefix))
+    .map((entry) => entry.key)
+    .filter((key) => /^capture\/_runs\/zones-\d{8}T\d{6}Z-[^/]+\/manifest\.jsonl$/.test(key));
+  const attempted = new Set<string>();
+  for (const key of manifestKeys) {
+    for (const line of parseManifestJsonl((await getBytes(s3, key)).toString("utf8"))) {
+      if (line.source !== "zones-v1-proof-url" && line.source !== "zones-arcgis") continue;
+      for (const slug of line.slugs) attempted.add(slug);
+    }
+  }
+  return attempted;
 }
 
 function isClassifiedLine(value: unknown): value is ClassifiedLine {
@@ -141,6 +161,7 @@ async function main(): Promise<void> {
   const offset = integerOption("offset", 0, 0);
   const limit = integerOption("limit", Number.MAX_SAFE_INTEGER, 1);
   const fallbackFromRun = option("fallback-from-run");
+  const skipRunStamp = option("skip-run-stamp");
   const formatRaw = option("format") ?? (fallbackFromRun === null ? "geojson" : "json");
   if (formatRaw !== "geojson" && formatRaw !== "json") throw new Error("--format must be geojson or json");
   if (fallbackFromRun !== null && formatRaw !== "json") throw new Error("--fallback-from-run requires --format=json");
@@ -153,7 +174,9 @@ async function main(): Promise<void> {
     ? report.lines
     : report.lines.filter((line) => line.run_id.startsWith(fallbackFromRun));
   const fullWorklist = buildArcgisRecaptureWorklist(eligibleLines, formatRaw, fallbackFromRun !== null);
-  const worklist = fullWorklist.slice(offset, offset + limit);
+  const selectedWorklist = fullWorklist.slice(offset, offset + limit);
+  const attempted = skipRunStamp === null ? new Set<string>() : await attemptedSlugsForRun(skipRunStamp);
+  const worklist = selectedWorklist.filter((target) => !attempted.has(target.slug));
   if (worklist.length === 0) throw new Error("classification report has no ArcGIS recapture candidates");
   writeFileSync(outputPath, `${JSON.stringify(worklist, null, 2)}\n`, { flag: "wx" });
   const pageHtmlLines = report.lines.filter((line) => line.classification === "PAGE HTML").length;
@@ -164,10 +187,12 @@ async function main(): Promise<void> {
     targets: worklist.length,
     total_targets: fullWorklist.length,
     offset,
+    skipped_attempted_targets: selectedWorklist.length - worklist.length,
     page_html_lines: pageHtmlLines,
     other_arcgis_lines: otherArcgisLines,
     format: formatRaw,
     fallback_from_run: fallbackFromRun,
+    skip_run_stamp: skipRunStamp,
   }, null, 2));
 }
 
