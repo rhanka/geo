@@ -58,6 +58,33 @@ describe("mergeDensityNormRows", () => {
     ).toThrow(/existing density conflict/);
   });
 
+  it("preserves unrelated historical duplicate codes while enriching the target", () => {
+    const result = mergeDensityNormRows(
+      [
+        { zone_code: "(2)", hauteur_max_value: 8 },
+        { zone_code: "(2)", hauteur_max_value: 10 },
+        { zone_code: "A-1", superficie_min_value: 1_500 },
+      ],
+      [patch],
+    );
+    expect(result).toMatchObject({ inserted: 0, enriched: 1, unchanged: 0 });
+    expect(result.rows).toHaveLength(3);
+    expect(result.rows.filter((row) => row["zone_code"] === "(2)")).toEqual([
+      { zone_code: "(2)", hauteur_max_value: 8 },
+      { zone_code: "(2)", hauteur_max_value: 10 },
+    ]);
+    expect(result.rows[2]).toMatchObject({ zone_code: "A-1", densite_value: 4 });
+  });
+
+  it("refuses to choose when the targeted zone itself is duplicated", () => {
+    expect(() =>
+      mergeDensityNormRows(
+        [{ zone_code: "A-1" }, { zone_code: "A1" }],
+        [patch],
+      ),
+    ).toThrow(/duplicate existing canonical zone_code targeted/);
+  });
+
   it("refuses divergent duplicate patches and missing proof", () => {
     expect(() =>
       mergeDensityNormRows([], [patch, { ...patch, value: 5 }]),

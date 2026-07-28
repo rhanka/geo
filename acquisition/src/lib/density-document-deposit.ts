@@ -70,12 +70,16 @@ export function mergeDensityNormRows(
 ): DensityMergeResult {
   const rows = existingRows.map((row) => ({ ...row }));
   const rowIndex = new Map<string, number>();
+  const duplicateExisting = new Set<string>();
   for (const [index, row] of rows.entries()) {
     const code = String(row["zone_code"] ?? "").trim();
     if (!code) continue;
     const key = canonZone(code);
+    if (duplicateExisting.has(key)) continue;
     if (rowIndex.has(key)) {
-      throw new Error(`duplicate existing canonical zone_code: ${code}`);
+      rowIndex.delete(key);
+      duplicateExisting.add(key);
+      continue;
     }
     rowIndex.set(key, index);
   }
@@ -98,6 +102,9 @@ export function mergeDensityNormRows(
   let enriched = 0;
   let unchanged = 0;
   for (const [key, patch] of patchByZone) {
+    if (duplicateExisting.has(key)) {
+      throw new Error(`duplicate existing canonical zone_code targeted by density patch: ${patch.zoneCode}`);
+    }
     const index = rowIndex.get(key);
     const additions = densityColumns(patch);
     if (index === undefined) {
