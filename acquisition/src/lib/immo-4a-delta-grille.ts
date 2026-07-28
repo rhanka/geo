@@ -171,6 +171,9 @@ export interface PublishImmo4aArtifactResult {
   snapshotUri: string;
   latestUri: string;
   artifactSha256: string;
+  artifactBytes: number;
+  contentSha256: string;
+  unchanged: boolean;
 }
 
 interface FeatureLike {
@@ -203,6 +206,45 @@ interface MutableCounters extends EffectCounters {}
 
 function sha256(value: Buffer | string): string {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function compareText(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/** Canonical JSON value used for content fingerprints and artifact bytes. */
+function stableValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (!isRecord(value)) return value;
+  const sorted: Record<string, unknown> = {};
+  for (const key of Object.keys(value).sort(compareText)) sorted[key] = stableValue(value[key]);
+  return sorted;
+}
+
+function stableJsonStringify(value: unknown): string {
+  const serialized = JSON.stringify(stableValue(value));
+  if (serialized === undefined) throw new Error("4a: valeur non sérialisable");
+  return serialized;
+}
+
+/**
+ * Fingerprint of the measured content only.  The publication time and the
+ * snapshot label are transport metadata; neither is part of the measurement.
+ */
+export function immo4aContentSha256(artifact: Immo4aArtifact): string {
+  const { generated_at: _generatedAt, snapshot_id: _snapshotId, ...content } = artifact;
+  return sha256(stableJsonStringify({
+    ...content,
+    source_collections: [...content.source_collections].sort(compareSourceCollections),
+    records: [...content.records].sort(compareRecords),
+  }));
+}
+
+/** Keep the consumer-facing JSON readable while making every key order explicit. */
+export function serializeImmo4aArtifact(artifact: Immo4aArtifact): Buffer {
+  const serialized = JSON.stringify(stableValue(artifact), null, 2);
+  if (serialized === undefined) throw new Error("4a: artefact non sérialisable");
+  return Buffer.from(`${serialized}\n`, "utf8");
 }
 
 function hasOwn(record: Record<string, unknown>, key: string): boolean {
@@ -273,7 +315,7 @@ export function selectServedCollections(keys: readonly string[]): SelectedCollec
     const previous = selected.get(candidate.citySlug);
     if (!previous || candidate.layout === "nested") selected.set(candidate.citySlug, candidate);
   }
-  return [...selected.values()].sort((a, b) => a.citySlug.localeCompare(b.citySlug));
+  return [...selected.values()].sort((a, b) => compareText(a.citySlug, b.citySlug));
 }
 
 function validateKnownEffect(
@@ -377,7 +419,42 @@ function recordFingerprint(record: Immo4aRecord): string {
       },
     },
   };
-  return JSON.stringify(comparable);
+  return stableJsonStringify(comparable);
+}
+
+const RECORD_SORT_FIELDS = [
+  "city_slug",
+  "zone_ref_canon_v1",
+  "reglement_number",
+  "zone_ref_verbatim",
+  "delta_id",
+] as const;
+
+function compareSourceCollections(a: Immo4aSourceCollection, b: Immo4aSourceCollection): number {
+  const city = compareText(a.city_slug, b.city_slug);
+  return city !== 0 ? city : compareText(a.collection_s3_uri, b.collection_s3_uri);
+}
+
+function compareRecords(a: Immo4aRecord, b: Immo4aRecord): number {
+  const aValues = [
+    a.join_key.city_slug,
+    a.join_key.zone_ref_canon_v1,
+    a.join_key.reglement_number,
+    a.join_key.zone_ref_verbatim,
+    a.delta_id,
+  ];
+  const bValues = [
+    b.join_key.city_slug,
+    b.join_key.zone_ref_canon_v1,
+    b.join_key.reglement_number,
+    b.join_key.zone_ref_verbatim,
+    b.delta_id,
+  ];
+  for (let i = 0; i < RECORD_SORT_FIELDS.length; i++) {
+    const compared = compareText(aValues[i]!, bValues[i]!);
+    if (compared !== 0) return compared;
+  }
+  return 0;
 }
 
 function dedupeRecords(citySlug: string, records: Immo4aRecord[]): Immo4aRecord[] {
@@ -394,7 +471,7 @@ function dedupeRecords(citySlug: string, records: Immo4aRecord[]): Immo4aRecord[
       );
     }
   }
-  return [...byId.values()].sort((a, b) => a.delta_id.localeCompare(b.delta_id));
+  return [...byId.values()].sort(compareRecords);
 }
 
 function parseCollection(key: string, body: Buffer): FeatureLike[] {
@@ -497,11 +574,6 @@ async function mapConcurrent<T, R>(
   return results;
 }
 
-function snapshotId(generatedAt: string, vivierSha256: string, sources: Immo4aSourceCollection[]): string {
-  const state = sources.map((source) => [source.city_slug, source.object_sha256]).sort();
-  return sha256(JSON.stringify([IMMO_4A_SCHEMA_VERSION, generatedAt, vivierSha256, state])).slice(0, 24);
-}
-
 /**
  * Measure every actually served collection, but project only the B' scope.
  * A city with no known effect is omitted: immo already holds its placeholder
@@ -550,17 +622,17 @@ export async function buildImmo4aArtifact(options: BuildImmo4aArtifactOptions): 
     sources.push(scan.source);
     records.push(...scan.records);
   }
-  records.sort((a, b) => a.delta_id.localeCompare(b.delta_id));
+  records.sort(compareRecords);
   const uniqueRecords = dedupeRecords("B'", records);
   const idSet = new Set(uniqueRecords.map((record) => record.delta_id));
   if (idSet.size !== uniqueRecords.length) throw new Error("4a: delta_id dupliqué entre villes B'");
 
-  const sourceCollections = sources.sort((a, b) => a.city_slug.localeCompare(b.city_slug));
-  return {
+  const sourceCollections = sources.sort(compareSourceCollections);
+  const artifact: Immo4aArtifact = {
     schema_version: IMMO_4A_SCHEMA_VERSION,
     artifact: "geo-4a-delta-grille",
     complete: true,
-    snapshot_id: snapshotId(options.generatedAt, options.vivierSha256, sourceCollections),
+    snapshot_id: "",
     generated_at: options.generatedAt,
     scope: {
       id: "immo-vivier-b-20260725",
@@ -590,6 +662,8 @@ export async function buildImmo4aArtifact(options: BuildImmo4aArtifactOptions): 
     source_collections: sourceCollections,
     records: uniqueRecords,
   };
+  artifact.snapshot_id = immo4aContentSha256(artifact).slice(0, 24);
+  return artifact;
 }
 
 export function immo4aArtifactKeys(snapshotIdValue: string, prefix = IMMO_4A_OUTPUT_PREFIX): {
@@ -611,8 +685,37 @@ export async function publishImmo4aArtifact(
   options: PublishImmo4aArtifactOptions,
 ): Promise<PublishImmo4aArtifactResult> {
   const artifact = await buildImmo4aArtifact(options);
-  const body = Buffer.from(`${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+  const body = serializeImmo4aArtifact(artifact);
+  const contentSha256 = immo4aContentSha256(artifact);
   const { snapshotKey, latestKey } = immo4aArtifactKeys(artifact.snapshot_id, options.outputPrefix);
+  const existingLatestBody = await options.store.get(latestKey);
+  if (existingLatestBody !== null) {
+    let existing: Immo4aArtifact | null = null;
+    try {
+      const parsed: unknown = JSON.parse(existingLatestBody.toString("utf8"));
+      if (isRecord(parsed) && typeof parsed.snapshot_id === "string" && typeof parsed.generated_at === "string") {
+        existing = parsed as unknown as Immo4aArtifact;
+      }
+    } catch {
+      // A malformed latest is not a matching measurement; normal publication
+      // below will fail closed at the immutable snapshot boundary if needed.
+    }
+    if (existing !== null && immo4aContentSha256(existing) === contentSha256) {
+      const existingKeys = immo4aArtifactKeys(existing.snapshot_id, options.outputPrefix);
+      if (options.verbose) console.error(`[4a] contenu inchangé: unchanged=true, snapshot conservé: ${existingKeys.snapshotKey}`);
+      return {
+        artifact: existing,
+        snapshotKey: existingKeys.snapshotKey,
+        latestKey,
+        snapshotUri: `s3://${BUCKET}/${existingKeys.snapshotKey}`,
+        latestUri: `s3://${BUCKET}/${latestKey}`,
+        artifactSha256: sha256(existingLatestBody),
+        artifactBytes: existingLatestBody.length,
+        contentSha256,
+        unchanged: true,
+      };
+    }
+  }
   const result: PublishImmo4aArtifactResult = {
     artifact,
     snapshotKey,
@@ -620,6 +723,9 @@ export async function publishImmo4aArtifact(
     snapshotUri: `s3://${BUCKET}/${snapshotKey}`,
     latestUri: `s3://${BUCKET}/${latestKey}`,
     artifactSha256: sha256(body),
+    artifactBytes: body.length,
+    contentSha256,
+    unchanged: false,
   };
   if (!options.dryRun) {
     if (options.verbose) console.error(`[4a] écriture snapshot immuable: ${snapshotKey}`);

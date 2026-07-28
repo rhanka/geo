@@ -71,9 +71,13 @@ async function main(): Promise<void> {
   });
   console.log(JSON.stringify({
     dry_run: args.dryRun,
+    unchanged: result.unchanged,
+    generated_at: result.artifact.generated_at,
     snapshot_uri: result.snapshotUri,
     latest_uri: result.latestUri,
     artifact_sha256: result.artifactSha256,
+    bytes: result.artifactBytes,
+    content_sha256: result.contentSha256,
     coverage: result.artifact.coverage,
   }, null, 2));
 }
