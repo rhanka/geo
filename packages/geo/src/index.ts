@@ -46,3 +46,9 @@ export {
   type PolygonalFeature,
   type PolygonalGeometry,
 } from "./zonage/lotZoneJoin.js";
+export {
+  parseMontLaurierZonesHDensityDocument,
+  type DensityDocumentParseResult,
+  type DensityNormRefusal,
+  type VerbatimDensityNorm,
+} from "./zonage/densityDocument.js";
