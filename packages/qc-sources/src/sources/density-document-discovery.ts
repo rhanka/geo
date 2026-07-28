@@ -262,6 +262,53 @@ export function parseDensityDiscoveryWorklist(value: unknown): DensityDiscoveryW
   };
 }
 
+/**
+ * Repartition only unfinished targets from immutable worklists. The caller
+ * supplies the measured pending slugs; unknown/out-of-scope slugs are refused.
+ * Original targets (including old-source exclusions) are copied verbatim.
+ */
+export function buildDensityDiscoveryResumeWorklists(
+  worklists: readonly DensityDiscoveryWorklist[],
+  pendingSlugs: ReadonlySet<string>,
+  firstLot: number,
+): DensityDiscoveryWorklist[] {
+  if (!Number.isInteger(firstLot) || firstLot < 1) throw new Error("firstLot invalide");
+  if (worklists.length === 0) throw new Error("worklists source absentes");
+  const baselines = new Set(
+    worklists.map((worklist) => `${worklist.baselineKey}:${worklist.baselineSha256}`),
+  );
+  if (baselines.size !== 1) throw new Error("baselines de reprise incompatibles");
+  const allTargets = worklists.flatMap((worklist) => worklist.targets);
+  const bySlug = new Map(allTargets.map((target) => [target.slug, target]));
+  if (bySlug.size !== allTargets.length) throw new Error("slug dupliqué dans les worklists source");
+  const unknown = [...pendingSlugs].filter((slug) => !bySlug.has(slug));
+  if (unknown.length > 0) throw new Error(`reprise hors périmètre: ${unknown.join(",")}`);
+  const pending = [...pendingSlugs]
+    .sort((left, right) => left.localeCompare(right))
+    .map((slug) => bySlug.get(slug)!);
+  if (pending.length === 0) return [];
+  const lotCount = Math.ceil(pending.length / DENSITY_DISCOVERY_LOT_SIZE);
+  const totalLots = firstLot + lotCount - 1;
+  const first = worklists[0]!;
+  const output: DensityDiscoveryWorklist[] = [];
+  const baseSize = Math.floor(pending.length / lotCount);
+  const largerLots = pending.length % lotCount;
+  let offset = 0;
+  for (let lotIndex = 0; lotIndex < lotCount; lotIndex++) {
+    const size = baseSize + (lotIndex < largerLots ? 1 : 0);
+    output.push(parseDensityDiscoveryWorklist({
+      contract: DENSITY_DISCOVERY_CONTRACT,
+      baselineKey: first.baselineKey,
+      baselineSha256: first.baselineSha256,
+      lot: firstLot + output.length,
+      lots: totalLots,
+      targets: pending.slice(offset, offset + size),
+    }));
+    offset += size;
+  }
+  return output;
+}
+
 function addSeed(
   seeds: DiscoverySeed[],
   seen: Set<string>,
