@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { planPvProbableTargets, splitPvCaptureTargets } from "./pv-probable-capture-plan.js";
+import { firstPvCaptureLotForRange, planPvProbableTargets, splitPvCaptureTargets } from "./pv-probable-capture-plan.js";
 
 describe("PV probable capture plan", () => {
   it("keeps only observable PVs and captures a duplicate URL once", () => {
@@ -17,5 +17,10 @@ describe("PV probable capture plan", () => {
   it("produces contiguous deterministic lots", () => {
     const targets = ["a", "b", "c"].map((slug) => ({ slug, source: "pv-index" as const, urls: [`https://${slug}.example/pv.pdf`] as const }));
     expect(splitPvCaptureTargets(targets, 2).map((lot) => lot.length)).toEqual([2, 1]);
+  });
+
+  it("preserves global lot numbering when resuming an aligned range", () => {
+    expect(firstPvCaptureLotForRange(5_150, 50)).toBe(104);
+    expect(() => firstPvCaptureLotForRange(5_151, 50)).toThrow("non aligné");
   });
 });
