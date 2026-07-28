@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { categoryAGisementsWorklists } from "./category-a-gisements-worklist.js";
+import {
+  categoryADensityReviewWorklists,
+  categoryAGisementsWorklists,
+} from "./category-a-gisements-worklist.js";
 
 describe("category A untried deposits worklists", () => {
   it("keeps the exact 17-slug scope in short 6/6/5 lots", () => {
@@ -41,5 +44,18 @@ describe("category A untried deposits worklists", () => {
       })).toBe(true);
       expect(target.urls.some((url) => new URL(url).hostname === "www.arcgis.com")).toBe(true);
     }
+  });
+
+  it("preserves prior source exclusions in the native review worklists", () => {
+    const targets = categoryADensityReviewWorklists().flatMap((lot) => lot.targets);
+    expect(targets.map((target) => target.slug)).toEqual(
+      categoryAGisementsWorklists().flat().map((target) => target.slug),
+    );
+    expect(targets.find((target) => target.slug === "batiscan")?.excludedSourceSha256).toBe(
+      "773cd3920df0d3384381c4c3c035e82ba8d2fb578bd2cd9937b8df07ded7805b",
+    );
+    expect(targets.find((target) => target.slug === "saint-francois-de-la-riviere-du-sud")?.excludedSourceUrl).toBe(
+      "https://www.stfrancois.ca/_files/ugd/36c7be_ab9fe17c8935431794f6202fd758f885.pdf",
+    );
   });
 });
