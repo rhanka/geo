@@ -35,6 +35,7 @@ import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
+import { classifyCapturedOctets, isGeometryCapture, type CaptureOctetClass } from "./lib/capture-octets-classification.js";
 import {
   putServedZoneAdditive,
   type ProofArtifactUriSubstitution,
@@ -91,8 +92,23 @@ interface RefusedRow {
   reason: string;
 }
 
+interface ExcludedCapture {
+  manifest_key: string;
+  line_index: number;
+  storage_key: string;
+  url: string;
+  slugs: string[];
+  classification: CaptureOctetClass;
+  detail: string;
+}
+
+interface CaptureCandidates {
+  bySlug: Map<string, ManifestCandidate[]>;
+  excluded: ExcludedCapture[];
+}
+
 interface Plan {
-  contract: "served-zonage-proof-url-restamp-plan/v1";
+  contract: "served-zonage-proof-url-restamp-plan/v2";
   complete: boolean;
   run_prefix: string;
   generated_at: string;
@@ -103,9 +119,12 @@ interface Plan {
     ready: number;
     refused: number;
     distinct_manifest_lines: number;
+    excluded_capture_lines: number;
   };
   ready: ReadyRow[];
   refused: RefusedRow[];
+  /** One row per rejected receipt; shared URLs retain their full slug set. */
+  excluded_capture_lines: ExcludedCapture[];
 }
 
 interface Result {
@@ -216,7 +235,7 @@ function isTargetManifestKey(key: string, runPrefixes: readonly string[]): boole
   return match !== null && runPrefixes.some((prefix) => match[1]!.startsWith(prefix));
 }
 
-async function captureCandidatesBySlug(runPrefixInput: string): Promise<Map<string, ManifestCandidate[]>> {
+async function captureCandidatesBySlug(runPrefixInput: string): Promise<CaptureCandidates> {
   const runPrefixes = parseRunPrefixes(runPrefixInput);
   const s3 = s3Client();
   console.error(`[proof-url-restamp] prepare: listing manifests for ${runPrefixes.join(",")}`);
@@ -232,6 +251,7 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<Map<stri
     lines: parseManifestJsonl((await getBytes(s3, manifestKey)).toString("utf8")),
   }), MANIFEST_READ_CONCURRENCY);
   const bySlug = new Map<string, ManifestCandidate[]>();
+  const excluded: ExcludedCapture[] = [];
   for (const outcome of scanned) {
     if (outcome.status === "rejected") throw new Error(`capture manifest read failed: ${errorText(outcome.reason)}`);
     const { manifestKey, lines } = outcome.value;
@@ -239,6 +259,21 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<Map<stri
       if (line.source !== "zones-v1-proof-url" || line.http_status !== 200 || !isHttpsUrlWithoutQuery(line.url)) continue;
       const receipt = captureReceiptFromManifest(line, manifestKey, lineIndex);
       if (receipt === null) continue;
+      // This reads the immutable CAS payload only to classify it.  The proof
+      // digest is still taken exclusively from the manifest receipt below.
+      const classification = classifyCapturedOctets(await getBytes(s3, receipt.storage_key), line.content_type);
+      if (!isGeometryCapture(classification)) {
+        excluded.push({
+          manifest_key: manifestKey,
+          line_index: lineIndex,
+          storage_key: receipt.storage_key,
+          url: receipt.url,
+          slugs: [...line.slugs].sort(),
+          classification: classification.classification,
+          detail: classification.detail,
+        });
+        continue;
+      }
       const candidate: ManifestCandidate = receipt;
       for (const slug of line.slugs) {
         const entries = bySlug.get(slug) ?? [];
@@ -247,7 +282,8 @@ async function captureCandidatesBySlug(runPrefixInput: string): Promise<Map<stri
       }
     }
   }
-  return bySlug;
+  excluded.sort((left, right) => left.manifest_key.localeCompare(right.manifest_key) || left.line_index - right.line_index);
+  return { bySlug, excluded };
 }
 
 function featureArtifacts(current: JsonObject): Array<{ artifactUri: string; upstreamUri: unknown }> {
@@ -272,15 +308,24 @@ function featureArtifacts(current: JsonObject): Array<{ artifactUri: string; ups
 function attestationsForCurrent(
   current: JsonObject,
   candidates: readonly ManifestCandidate[],
+  excluded: readonly ExcludedCapture[],
 ): ProofUrlManifestAttestation[] {
   const artifacts = featureArtifacts(current);
   if (artifacts.length === 0) throw new MissingSha256RestampRefusal("no-s3-artifact-uri-found-in-current-feature-proofs");
   return artifacts.map(({ artifactUri, upstreamUri }) => {
     const matching = candidates.filter((candidate) => candidate.url === upstreamUri);
     if (matching.length !== 1) {
-      throw new MissingSha256RestampRefusal(matching.length === 0
-        ? "manifest-url-not-found-for-served-envelope"
-        : "manifest-url-ambiguous-for-served-envelope");
+      if (matching.length === 0) {
+        const nonGeometry = excluded
+          .filter((candidate) => candidate.url === upstreamUri)
+          .map((candidate) => `${candidate.classification}:${candidate.detail}`)
+          .sort();
+        if (nonGeometry.length > 0) {
+          throw new MissingSha256RestampRefusal(`capture-octets-not-geometry:${[...new Set(nonGeometry)].join("|")}`);
+        }
+        throw new MissingSha256RestampRefusal("manifest-url-not-found-for-served-envelope");
+      }
+      throw new MissingSha256RestampRefusal("manifest-url-ambiguous-for-served-envelope");
     }
     return { artifactUri, replacementUrl: matching[0]!.url, ...matching[0]! };
   });
@@ -325,13 +370,14 @@ async function prepareRow(
   slug: string,
   key: string | null,
   candidates: readonly ManifestCandidate[],
+  excluded: readonly ExcludedCapture[],
 ): Promise<ReadyRow | RefusedRow> {
   if (key === null) return { slug, key: null, reason: "served-collection-not-found" };
   const bytes = await getBytes(s3Client(), key);
   try {
     const current = asObject(JSON.parse(bytes.toString("utf8")));
     if (!current) throw new MissingSha256RestampRefusal("served-object-is-not-a-json-object");
-    const attestations = attestationsForCurrent(current, candidates);
+    const attestations = attestationsForCurrent(current, candidates, excluded);
     const planned = planMissingSha256ProofRestamp(key, current, attestations);
     for (const attestation of planned.attestations) await assertManifestCas(attestation);
     await assertDryRunGuard(key, bytes, planned.next, planned.attestations);
@@ -344,15 +390,28 @@ async function prepareRow(
 
 async function preparePlan(output: string, runPrefix: string, expectedReady: number, offset: number, limit: number | null): Promise<void> {
   const candidates = await captureCandidatesBySlug(runPrefix);
-  console.error(`[proof-url-restamp] prepare: ${candidates.size} capture slug(s); listing served collections`);
+  console.error(`[proof-url-restamp] prepare: ${candidates.bySlug.size} geometry capture slug(s), ${candidates.excluded.length} non-geometry receipt(s) excluded; listing served collections`);
   const served = selectServedZoneCollections((await listObjectEntries(s3Client(), ZONES_PREFIX)).map((entry) => entry.key));
   const bySlug = new Map(served.map((entry) => [entry.slug, entry.key]));
-  const allSlugs = [...candidates.keys()].sort();
+  const allSlugs = [...new Set([...candidates.bySlug.keys(), ...candidates.excluded.flatMap((entry) => entry.slugs)])].sort();
   if (offset > allSlugs.length) throw new Error(`--prepare-offset ${offset} exceeds ${allSlugs.length} capture slugs`);
   const slugs = allSlugs.slice(offset, limit === null ? undefined : offset + limit);
   if (slugs.length === 0) throw new Error("prepare selection is empty");
   console.error(`[proof-url-restamp] prepare: reading ${slugs.length}/${allSlugs.length} served envelope(s), concurrency=${READ_CONCURRENCY}`);
-  const outcomes = await mapConcurrent(slugs, (slug) => prepareRow(slug, bySlug.get(slug) ?? null, candidates.get(slug)!));
+  const excludedBySlug = new Map<string, ExcludedCapture[]>();
+  for (const entry of candidates.excluded) {
+    for (const slug of entry.slugs) {
+      const entries = excludedBySlug.get(slug) ?? [];
+      entries.push(entry);
+      excludedBySlug.set(slug, entries);
+    }
+  }
+  const outcomes = await mapConcurrent(slugs, (slug) => prepareRow(
+    slug,
+    bySlug.get(slug) ?? null,
+    candidates.bySlug.get(slug) ?? [],
+    excludedBySlug.get(slug) ?? [],
+  ));
   const ready: ReadyRow[] = [];
   const refused: RefusedRow[] = [];
   for (let index = 0; index < outcomes.length; index++) {
@@ -365,7 +424,7 @@ async function preparePlan(output: string, runPrefix: string, expectedReady: num
   ready.sort((left, right) => left.slug.localeCompare(right.slug));
   refused.sort((left, right) => left.slug.localeCompare(right.slug));
   const plan: Plan = {
-    contract: "served-zonage-proof-url-restamp-plan/v1",
+    contract: "served-zonage-proof-url-restamp-plan/v2",
     complete: expectedReady === 0 || ready.length === expectedReady,
     run_prefix: runPrefix,
     generated_at: new Date().toISOString(),
@@ -376,9 +435,11 @@ async function preparePlan(output: string, runPrefix: string, expectedReady: num
       ready: ready.length,
       refused: refused.length,
       distinct_manifest_lines: new Set(ready.flatMap((row) => row.attestations.map((item) => `${item.manifest_key}\u0000${item.line_index}`))).size,
+      excluded_capture_lines: candidates.excluded.length,
     },
     ready,
     refused,
+    excluded_capture_lines: candidates.excluded,
   };
   writeAtomic(output, plan);
   console.log(JSON.stringify({ output: relative(ROOT, output), complete: plan.complete, collections: plan.collections }, null, 2));
@@ -388,12 +449,13 @@ async function preparePlan(output: string, runPrefix: string, expectedReady: num
 function readPlan(path: string): Plan {
   const plan = JSON.parse(readFileSync(path, "utf8")) as Plan;
   if (
-    plan.contract !== "served-zonage-proof-url-restamp-plan/v1" ||
+    plan.contract !== "served-zonage-proof-url-restamp-plan/v2" ||
     plan.complete !== true ||
     plan.source !== "capture-manifest-lines-only" ||
     plan.selected_layout !== "nested_when_present_else_flat" ||
     !Array.isArray(plan.ready) ||
-    !Array.isArray(plan.refused)
+    !Array.isArray(plan.refused) ||
+    !Array.isArray(plan.excluded_capture_lines)
   ) throw new Error(`plan incomplete or incompatible: ${path}`);
   return plan;
 }
@@ -422,7 +484,7 @@ function mergePlans(paths: string[], output: string, expectedReady: number): voi
   const ready = [...readyBySlug.values()].sort((left, right) => left.slug.localeCompare(right.slug));
   const refused = [...refusedBySlug.values()].filter((row) => !readyBySlug.has(row.slug)).sort((left, right) => left.slug.localeCompare(right.slug));
   const plan: Plan = {
-    contract: "served-zonage-proof-url-restamp-plan/v1",
+    contract: "served-zonage-proof-url-restamp-plan/v2",
     complete: ready.length === expectedReady,
     run_prefix: plans.map((item) => item.run_prefix).join(","),
     generated_at: new Date().toISOString(),
@@ -433,9 +495,12 @@ function mergePlans(paths: string[], output: string, expectedReady: number): voi
       ready: ready.length,
       refused: refused.length,
       distinct_manifest_lines: new Set(ready.flatMap((row) => row.attestations.map((item) => `${item.manifest_key}\u0000${item.line_index}`))).size,
+      excluded_capture_lines: new Set(plans.flatMap((plan) => plan.excluded_capture_lines.map((entry) => `${entry.manifest_key}\u0000${entry.line_index}`))).size,
     },
     ready,
     refused,
+    excluded_capture_lines: [...new Map(plans.flatMap((plan) => plan.excluded_capture_lines).map((entry) => [`${entry.manifest_key}\u0000${entry.line_index}`, entry])).values()]
+      .sort((left, right) => left.manifest_key.localeCompare(right.manifest_key) || left.line_index - right.line_index),
   };
   writeAtomic(output, plan);
   console.log(JSON.stringify({ output: relative(ROOT, output), complete: plan.complete, collections: plan.collections }, null, 2));
