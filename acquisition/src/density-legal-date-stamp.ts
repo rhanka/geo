@@ -148,7 +148,7 @@ async function verifyLegalSource(entry: StampWorklistEntry): Promise<void> {
   const meta = JSON.parse((await getBytes(s3, `${source.storageKey}.meta.json`)).toString("utf8")) as unknown;
   const verification = verifyRawCapturePayload(receipt, bytes, meta);
   if (!verification.verified) throw new Error(`${entry.slug}: CAS légal invalide: ${String(verification.reason)}`);
-  const native = extractNativeDocumentText(bytes);
+  const native = extractNativeDocumentText(bytes, { sourceName: source.url });
   if (native.text === null) throw new Error(`${entry.slug}: source légale sans texte natif (${String(native.blocker)})`);
   const printed = compactPdfText(native.text);
   if (!printed.includes(compactPdfText(source.ownerVerbatim))) {
