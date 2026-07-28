@@ -9,8 +9,8 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx src/pv-graphify-semantic-run.ts --control=20
  *
- * The default control requires N distinct municipal slugs. It fails before any
- * S3 request when the supplied classification reports cannot provide them.
+ * The default control cycles through every available municipality. This keeps
+ * the municipal distribution as even as the eligible population permits.
  */
 
 import { execFile } from "node:child_process";
@@ -25,6 +25,7 @@ import {
   type MunicipalityGazetteerEntry,
   type MunicipalZoneGazetteer,
 } from "./lib/pv-graphify-semantic.js";
+import { selectBalancedPvControl } from "./lib/pv-graphify-control.js";
 import { getBytes, s3Client } from "./lib/s3.js";
 
 const execFileAsync = promisify(execFile);
@@ -148,18 +149,7 @@ function uniqueEligible(lines: readonly ClassificationLine[]): ClassificationLin
 }
 
 function selectControl(lines: readonly ClassificationLine[], count: number): ClassificationLine[] {
-  const oneByMunicipality = new Map<string, ClassificationLine>();
-  for (const line of lines) {
-    if (!oneByMunicipality.has(line.slug)) oneByMunicipality.set(line.slug, line);
-  }
-  if (oneByMunicipality.size < count) {
-    throw new Error(
-      `lot de contrôle impossible: ${count} municipalités distinctes exigées, ${oneByMunicipality.size} disponibles dans les rapports fournis`,
-    );
-  }
-  return [...oneByMunicipality.values()]
-    .sort((left, right) => left.slug.localeCompare(right.slug) || left.storage_key.localeCompare(right.storage_key))
-    .slice(0, count);
+  return selectBalancedPvControl(lines, count);
 }
 
 function readMunicipalities(path: string): MunicipalityGazetteerEntry[] {
@@ -383,7 +373,7 @@ async function main(): Promise<void> {
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
-    mode: args.all ? "all-eligible" : "distinct-municipality-control",
+    mode: args.all ? "all-eligible" : "balanced-municipality-control",
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_documents: eligible.length,
     eligible_municipalities: new Set(eligible.map((document) => document.slug)).size,
