@@ -57,6 +57,24 @@ describe("native density document review", () => {
     expect(review.disposition).toBe("candidate_review_required");
   });
 
+  it("should recognize the municipal 'Règlement adopté le' chronology variant", () => {
+    const text = [
+      "MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES",
+      "Adoption du projet de règlement : 18 janvier 2023",
+      "Règlement adopté le : 13 février 2023",
+      "Entrée en vigueur le : 13 avril 2023",
+      "Zone H-16",
+      "Densité maximale : 2",
+    ].join("\n");
+    const review = reviewNativeDensityDocument(
+      Buffer.from(`<html>${text}</html>`),
+      "https://municipalite.example/reglement.pdf",
+    );
+
+    expect(hasDatedFinalAdoption(text)).toBe(true);
+    expect(review.disposition).toBe("candidate_review_required");
+  });
+
   it("should keep a project marker in the source URL absolute", () => {
     const text = [
       "Adoption du règlement : 3 juin 2024",
