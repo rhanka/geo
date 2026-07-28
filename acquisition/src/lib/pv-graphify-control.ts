@@ -12,6 +12,13 @@ export interface PvControlCandidate {
   readonly storage_key: string;
 }
 
+export interface PvControlBatch<T extends PvControlCandidate> {
+  readonly batch_index: number;
+  readonly batch_size: number;
+  readonly batch_count: number;
+  readonly candidates: readonly T[];
+}
+
 function stableCandidates<T extends PvControlCandidate>(candidates: readonly T[]): T[] {
   return [...candidates].sort((left, right) =>
     left.slug.localeCompare(right.slug) || left.storage_key.localeCompare(right.storage_key));
@@ -56,4 +63,31 @@ export function selectBalancedPvControl<T extends PvControlCandidate>(
   }
 
   throw new Error(`lot de contrôle impossible: ${count} PV exigés, ${selected.length} sélectionnables`);
+}
+
+/**
+ * Returns an immutable, deterministic all-eligible batch. Re-running the same
+ * index is safe after interruption: it reads the same captured objects and
+ * overwrites only that batch's report.
+ */
+export function selectPvControlBatch<T extends PvControlCandidate>(
+  candidates: readonly T[],
+  batchSize: number,
+  batchIndex: number,
+): PvControlBatch<T> {
+  if (!Number.isInteger(batchSize) || batchSize < 1) {
+    throw new Error("la taille de lot doit être un entier positif");
+  }
+  const ordered = stableCandidates(candidates);
+  const batchCount = Math.ceil(ordered.length / batchSize);
+  if (!Number.isInteger(batchIndex) || batchIndex < 1 || batchIndex > batchCount) {
+    throw new Error(`lot ${batchIndex} invalide: choisir une valeur de 1 à ${batchCount}`);
+  }
+  const start = (batchIndex - 1) * batchSize;
+  return {
+    batch_index: batchIndex,
+    batch_size: batchSize,
+    batch_count: batchCount,
+    candidates: ordered.slice(start, start + batchSize),
+  };
 }
