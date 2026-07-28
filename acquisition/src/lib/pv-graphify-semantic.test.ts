@@ -50,6 +50,12 @@ describe("PV deterministic Graphify semantic extraction", () => {
     expect(result.edges).toEqual([]);
   });
 
+  it("does not emit a municipality-scoped resolution without a printed owner", () => {
+    const result = extract("Résolution numéro 2026-05-024 : adoption du règlement 227-2026.");
+    expect(result.nodes).toEqual([]);
+    expect(result.edges).toEqual([]);
+  });
+
   it("extracts resolution and regulation references with a non-silent legal quality", () => {
     const result = extract([
       "MUNICIPALITÉ D’ALBERTVILLE",
