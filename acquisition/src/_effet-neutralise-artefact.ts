@@ -52,10 +52,13 @@ function main(): void {
     densite_apres: null,
     effet_densifiant: "inconnu",
     effet_densifiant_delta: null,
-    // Les citations partent avec l'affirmation : les garder donnerait a un
-    // relecteur l'impression qu'une preuve subsiste.
-    source_avant: "",
-    source_apres: "",
+    // La citation d'origine part avec l'affirmation — la garder donnerait a un
+    // relecteur l'impression qu'une preuve subsiste. Mais la VIDER est pire : le
+    // schema du rollup exige une chaine non vide, et surtout un champ blanc ne
+    // dit pas POURQUOI il n'y a plus de preuve. On y ecrit donc le motif du
+    // retrait, qui est la seule chose vraie qu'on puisse mettre a cet endroit.
+    source_avant: `RETIRÉ — ${reason}`,
+    source_apres: `RETIRÉ — ${reason}`,
     _neutralise: reason,
   }));
 
