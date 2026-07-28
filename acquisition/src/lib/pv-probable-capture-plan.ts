@@ -68,3 +68,15 @@ export function splitPvCaptureTargets(targets: readonly PvCaptureTarget[], size:
   for (let index = 0; index < targets.length; index += size) lots.push([...targets.slice(index, index + size)]);
   return lots;
 }
+
+/**
+ * Une reprise par offset d'URL doit conserver le numéro global du lot. Sans
+ * cet invariant, une seconde invocation renumérote 1..N et peut publier une
+ * worklist précédente sous un nouveau nom apparent.
+ */
+export function firstPvCaptureLotForRange(start: number, lotSize: number): number {
+  if (!Number.isInteger(start) || start < 0) throw new Error("offset de reprise PV invalide");
+  if (!Number.isInteger(lotSize) || lotSize < 1) throw new Error("taille de lot PV invalide");
+  if (start % lotSize !== 0) throw new Error(`offset PV ${start} non aligné sur les lots de ${lotSize}`);
+  return start / lotSize + 1;
+}
