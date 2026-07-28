@@ -21,6 +21,7 @@ import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
 interface Args {
   lane: CaptureLane;
   worklistPath: string;
+  kubeconfig: string;
   shards: number;
   concurrency: number;
   image: string;
@@ -57,6 +58,8 @@ function lane(raw: string | undefined): CaptureLane {
 function parseArgs(argv: string[]): Args {
   const worklistPath = option(argv, "worklist");
   if (!worklistPath) throw new Error("--worklist <targets.json> est requis");
+  const kubeconfig = option(argv, "kubeconfig");
+  if (!kubeconfig) throw new Error("--kubeconfig <path> est requis");
   const shards = integer("shards", option(argv, "shards"), 1, 1);
   const concurrency = integer("concurrency", option(argv, "concurrency"), 1, 1);
   if (concurrency > shards) throw new Error("--concurrency ne peut pas dépasser --shards");
@@ -71,6 +74,7 @@ function parseArgs(argv: string[]): Args {
   return {
     lane: lane(option(argv, "lane")),
     worklistPath,
+    kubeconfig,
     shards,
     concurrency,
     image: option(argv, "image") ?? DEFAULT_IMAGE,
@@ -195,8 +199,12 @@ spec:
 `;
 }
 
-function apply(manifest: string): void {
-  const result = spawnSync("kubectl", ["apply", "-f", "-"], {
+export function kubectlApplyArgs(args: Pick<Args, "kubeconfig" | "namespace">): string[] {
+  return ["--kubeconfig", args.kubeconfig, "-n", args.namespace, "apply", "-f", "-"];
+}
+
+function apply(args: Args, manifest: string): void {
+  const result = spawnSync("kubectl", kubectlApplyArgs(args), {
     input: manifest,
     encoding: "utf8",
   });
@@ -223,7 +231,7 @@ async function main(): Promise<void> {
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
   await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
-  apply(manifest);
+  apply(args, manifest);
   process.stderr.write("[capture-orch] Job soumis; le contrôleur Kubernetes gère la concurrence. Aucun polling local.\n");
 }
 
