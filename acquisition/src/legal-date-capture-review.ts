@@ -98,7 +98,9 @@ async function reviewLine(
   const bytes = await getBytes(s3, line.storage_key);
   const meta = JSON.parse((await getBytes(s3, `${line.storage_key}.meta.json`)).toString("utf8")) as unknown;
   const verification = verifyRawCapturePayload(receipt, bytes, meta);
-  const native = extractNativeDocumentText(bytes);
+  const native = extractNativeDocumentText(bytes, {
+    sourceName: line.final_url ?? line.url,
+  });
   const text = native.text;
   return {
     ...base,
