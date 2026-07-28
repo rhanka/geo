@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { validateExtraction } from "@sentropic/graphify";
 
 import { extractPvSemantic } from "./pv-graphify-semantic.js";
 
@@ -40,6 +41,7 @@ describe("PV deterministic Graphify semantic extraction", () => {
     expect(result.edges.map((edge) => edge.relation)).toEqual([
       "document_refers_municipality", "document_describes_council_session", "session_held_on",
     ]);
+    expect(validateExtraction(result)).toEqual([]);
   });
 
   it("does not turn the capture scope into an owner: the name must be printed in municipal context", () => {
