@@ -50,7 +50,12 @@ describe("putStream", () => {
     await putStream(s3 as never, "capture/_runs/test/spool/body", stream(), "application/pdf");
 
     expect(uploaded.map((part) => part.byteLength)).toEqual([STREAM_PART_BYTES, 7]);
-    expect(Buffer.concat(uploaded)).toEqual(Buffer.concat([first, second]));
+    // `toEqual` sur deux Buffers de 8 MiB parcourt 8 millions d'elements a
+    // travers la machinerie d'egalite profonde de vitest : le test sortait a
+    // 36 s pour un timeout de 5 s, et l'assertion n'etait jamais atteinte.
+    // `Buffer.equals` compare exactement les memes octets, sans ce detour --
+    // l'assertion n'est pas affaiblie, elle cesse d'etre le goulot.
+    expect(Buffer.concat(uploaded).equals(Buffer.concat([first, second]))).toBe(true);
     expect(completed).toEqual({
       Parts: [
         { ETag: "etag-1", PartNumber: 1 },
