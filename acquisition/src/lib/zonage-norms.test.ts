@@ -50,6 +50,8 @@ describe("density provenance parquet schema", () => {
   it("persists the verbatim proof and legal date columns used by additive density deposits", () => {
     expect(DENSITY_PROVENANCE_COLUMNS).toEqual([
       "densite_source_url",
+      "densite_source_sha256",
+      "densite_source_storage_key",
       "densite_methode",
       "densite_snapshot",
       "densite_page_source",
