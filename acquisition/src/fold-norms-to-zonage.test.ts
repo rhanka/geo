@@ -1,6 +1,47 @@
 import { describe, expect, it } from "vitest";
 
-import { invertedKey, looseIndex, looseKey, numericPrefixKey } from "./fold-norms-to-zonage.js";
+import {
+  applyDensityOnly,
+  invertedKey,
+  looseIndex,
+  looseKey,
+  numericPrefixKey,
+} from "./fold-norms-to-zonage.js";
+
+describe("applyDensityOnly", () => {
+  it("counts a real polygon gain only when a finite sourced density fills an absence", () => {
+    const properties: Record<string, unknown> = {};
+    expect(applyDensityOnly(properties, {
+      densite_value: 25,
+      densite_unit: "log/ha",
+    })).toEqual({ sourceFinite: true, newlyDense: true, fieldsChanged: 2 });
+    expect(properties).toEqual({ densite_value: 25, densite_unit: "log/ha" });
+  });
+
+  it("does not count undefined versus null as a density change", () => {
+    const properties: Record<string, unknown> = {};
+    expect(applyDensityOnly(properties, {
+      densite_value: null,
+      densite_unit: null,
+    })).toEqual({ sourceFinite: false, newlyDense: false, fieldsChanged: 0 });
+    expect(properties).toEqual({});
+  });
+
+  it("keeps an identical served density idempotent", () => {
+    const properties = { densite_value: 4, densite_unit: "logements/terrain" };
+    expect(applyDensityOnly(properties, {
+      densite_value: 4,
+      densite_unit: "logements/terrain",
+    })).toEqual({ sourceFinite: true, newlyDense: false, fieldsChanged: 0 });
+  });
+
+  it("refuses to overwrite a different served density", () => {
+    expect(() => applyDensityOnly(
+      { densite_value: 3, densite_unit: "logements/terrain" },
+      { densite_value: 4, densite_unit: "logements/terrain" },
+    )).toThrow("conflit densité servie");
+  });
+});
 
 describe("numericPrefixKey", () => {
   it("keeps the zone number when the grid carries the dominance separately", () => {
