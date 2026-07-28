@@ -29,6 +29,35 @@ export function isHttpsCaptureUrl(value: unknown): value is string {
   }
 }
 
+interface ManifestReceiptIdentity {
+  storage_key: string;
+  url: string;
+  sha256: string;
+  retrieved_at: string;
+  manifest_key: string;
+  line_index: number;
+}
+
+/**
+ * Replayed capture jobs can emit several immutable manifest lines for the
+ * same CAS body.  They are interchangeable only when the source URL, CAS key
+ * and manifest digest are identical; any competing body remains ambiguous.
+ */
+export function selectEquivalentManifestReceipt<T extends ManifestReceiptIdentity>(receipts: readonly T[]): T | null {
+  if (receipts.length === 0) return null;
+  const identities = new Set(receipts.map((receipt) => JSON.stringify([
+    receipt.storage_key,
+    receipt.url,
+    receipt.sha256,
+  ])));
+  if (identities.size !== 1) return null;
+  return [...receipts].sort((left, right) => (
+    left.retrieved_at.localeCompare(right.retrieved_at) ||
+    left.manifest_key.localeCompare(right.manifest_key) ||
+    left.line_index - right.line_index
+  ))[0]!;
+}
+
 export interface MissingSha256RestampPlan {
   next: JsonObject;
   attestations: ProofUrlManifestAttestation[];
