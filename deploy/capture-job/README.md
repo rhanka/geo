@@ -40,6 +40,7 @@ docker push rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag>
 
 NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
   npx tsx acquisition/src/k8s-capture-run.ts \
+  --kubeconfig "$HOME/.kube/ovh.conf" --namespace geo \
   --lane zones --worklist /path/to/targets.json --shards 1 --concurrency 1 \
   --image rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag>
 ```
