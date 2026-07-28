@@ -81,6 +81,8 @@ export const NORM_FIELDS = [
 
 export const DENSITY_PROVENANCE_COLUMNS = [
   "densite_source_url",
+  "densite_source_sha256",
+  "densite_source_storage_key",
   "densite_methode",
   "densite_snapshot",
   "densite_page_source",
