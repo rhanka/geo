@@ -397,6 +397,24 @@ export interface AdditiveOptions {
    * may introduce a missing SHA. It never replaces or corrects one.
    */
   allowProofArtifactUriAndSha256Stamp?: Iterable<ProofArtifactUriSubstitution>;
+  /**
+   * Narrow, one-shot promotion of a v1 envelope that already carries a public
+   * HTTPS `artifact_uri` and a valid `sha256`, but NO `retrieved_at` — so it is
+   * openable and hashable by a third party, yet attached to no capture.
+   *
+   * A fresh capture of that same URL returned bytes whose SHA-256 EQUALS the one
+   * already served; the only thing added is the instant that capture measured.
+   * Nothing is corrected: if the refetched SHA differed, the source has changed
+   * since the proof was written and the caller must refuse rather than silently
+   * overwrite it — losing that fact would be worse than the missing date.
+   *
+   * This is the third and last additive route on a proof, and each one adds
+   * strictly what was ABSENT: `allowProofArtifactUriSubstitution` proves an
+   * existing SHA unchanged, `allowProofArtifactUriAndSha256Stamp` introduces a
+   * missing SHA, and this one introduces a missing `retrieved_at`. None of them
+   * may ever replace a value that is already there.
+   */
+  allowProofCaptureAttestation?: Iterable<ProofCaptureAttestation>;
   /** Take a non-destructive server-side backup of the current served object to
    *  `<key>.additive-prebackup.geojson` before overwriting. Default true. */
   backup?: boolean;
@@ -406,6 +424,16 @@ export interface ProofArtifactUriSubstitution {
   artifactUri: string;
   replacementUrl: string;
   sha256: `sha256:${string}`;
+}
+
+/** Une capture qui a CONFIRME une preuve v1 : meme URL, meme SHA, plus l'instant mesure. */
+export interface ProofCaptureAttestation {
+  /** L'URL https deja portee par la preuve — inchangee, jamais substituee ici. */
+  artifactUri: string;
+  /** Le SHA-256 deja porte par la preuve, et re-obtenu par la capture. */
+  sha256: `sha256:${string}`;
+  /** L'instant mesure par le chokepoint de capture, jamais un horodatage de fichier. */
+  retrievedAt: string;
 }
 
 /** Canonical JSON: object keys sorted, array order preserved (arrays ARE ordered —
@@ -518,6 +546,31 @@ function proofArtifactUriAndSha256Stamps(options: AdditiveOptions): ProofArtifac
 }
 
 /**
+ * Valide les attestations de capture AVANT toute comparaison, comme les deux
+ * routes voisines : une entree mal formee doit faire echouer l'ecriture, pas
+ * etre ignoree silencieusement — sans quoi un appel qui croit stamper n'aurait
+ * simplement aucun effet et personne ne s'en apercevrait.
+ */
+function proofCaptureAttestations(options: AdditiveOptions): ProofCaptureAttestation[] {
+  const attestations = options.allowProofCaptureAttestation ? [...options.allowProofCaptureAttestation] : [];
+  const seen = new Set<string>();
+  for (const attestation of attestations) {
+    if (
+      !attestation ||
+      !isAttestableReplacementUrl(attestation.artifactUri) ||
+      !PROOF_SHA256_RE.test(attestation.sha256) ||
+      !isIsoTimestamp(attestation.retrievedAt)
+    ) {
+      throw new Error("putServedZoneAdditive: invalid proof capture attestation");
+    }
+    const tuple = `${attestation.artifactUri} ${attestation.sha256} ${attestation.retrievedAt}`;
+    if (seen.has(tuple)) throw new Error("putServedZoneAdditive: duplicate proof capture attestation");
+    seen.add(tuple);
+  }
+  return attestations;
+}
+
+/**
  * Returns true only for the one legacy v1 proof mutation explicitly attested in
  * {@link AdditiveOptions.allowProofArtifactUriSubstitution}. Restoring the old
  * URI before comparison proves that no sibling or nested field changed.
@@ -612,6 +665,64 @@ function isAttestedProofArtifactUriAndSha256Stamp(
 }
 
 /**
+ * Promotion v1 -> v2 d'une preuve deja OUVRABLE et HACHABLE mais rattachee a
+ * aucune capture. Le seul ajout admis est `retrieved_at`; `artifact_uri` et
+ * `sha256` doivent etre IDENTIQUES de part et d'autre.
+ *
+ * L'egalite du SHA est la condition de fond : elle prouve que la capture qui
+ * fournit l'instant a bien rendu LES MEMES OCTETS que ceux deja attestes. Si le
+ * SHA differe, le document en ligne a change depuis la preuve — et ce cas doit
+ * REMONTER, jamais etre absorbe en ecrasant le SHA servi.
+ *
+ * Reconstruire l'ancienne preuve avant comparaison fait echouer fermement toute
+ * autre alteration, exactement comme les deux routes additives voisines.
+ */
+function isAttestedProofCaptureStamp(
+  currentProof: unknown,
+  nextProof: unknown,
+  attestations: readonly ProofCaptureAttestation[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "1.0") return false;
+  const currentSources = asRecord(current.sources);
+  const nextSources = asRecord(next.sources);
+  const currentGeometry = asRecord(currentSources?.geometry);
+  const nextGeometry = asRecord(nextSources?.geometry);
+  const artifactUri = currentGeometry?.artifact_uri;
+  const sha = currentGeometry?.sha256;
+  const retrievedAt = nextGeometry?.retrieved_at;
+  if (
+    !currentGeometry ||
+    // `retrieved_at` deja present : il n'y a rien a ajouter, et le remplacer
+    // reecrirait un instant mesure par une autre capture.
+    Object.hasOwn(currentGeometry, "retrieved_at") ||
+    !isAttestableReplacementUrl(artifactUri) ||
+    typeof sha !== "string" ||
+    !PROOF_SHA256_RE.test(sha) ||
+    // L'URL et le SHA doivent traverser INCHANGES : cette route n'en corrige aucun.
+    nextGeometry?.artifact_uri !== artifactUri ||
+    nextGeometry?.sha256 !== sha ||
+    !isIsoTimestamp(retrievedAt)
+  ) return false;
+  const attested = attestations.some((attestation) =>
+    attestation.artifactUri === artifactUri &&
+    attestation.sha256 === sha &&
+    attestation.retrievedAt === retrievedAt,
+  );
+  if (!attested) return false;
+  const restoredGeometry: Record<string, unknown> = { ...nextGeometry };
+  delete restoredGeometry.retrieved_at;
+  return jsonEqual(current, {
+    ...next,
+    sources: {
+      ...nextSources,
+      geometry: restoredGeometry,
+    },
+  });
+}
+
+/**
  * ADDITIVE provenance write onto an ALREADY SERVED qc-zonage collection.
  *
  * The ONLY sanctioned way for a metadata fold to touch a served-zone key. It does
@@ -646,8 +757,15 @@ export async function putServedZoneAdditive(
   const substitutions = proofArtifactUriSubstitutions(opts);
   const sha256Stamps = proofArtifactUriAndSha256Stamps(opts);
   const substitutionUris = new Set(substitutions.map((item) => item.artifactUri));
+  const captureAttestations = proofCaptureAttestations(opts);
   if (sha256Stamps.some((item) => substitutionUris.has(item.artifactUri))) {
     throw new Error("putServedZoneAdditive: a proof artifact_uri may use either substitution or missing-sha256 restoration, never both");
+  }
+  // Les trois routes additives ajoutent chacune ce qui MANQUE; les cumuler sur
+  // une meme URI signifierait qu'on ne sait pas dans quel etat est la preuve.
+  const stampedUris = new Set(sha256Stamps.map((item) => item.replacementUrl));
+  if (captureAttestations.some((item) => substitutionUris.has(item.artifactUri) || stampedUris.has(item.artifactUri))) {
+    throw new Error("putServedZoneAdditive: a proof artifact_uri may not combine a capture attestation with a substitution or a missing-sha256 restoration");
   }
   if (fc?.type !== "FeatureCollection" || !Array.isArray(fc.features)) {
     throw new Error("putServedZoneAdditive: payload is not a FeatureCollection");
@@ -700,7 +818,8 @@ export async function putServedZoneAdditive(
       if (
         propKey === "proof" && (
           isAttestedProofArtifactUriSubstitution(curProps[propKey], nxtProps[propKey], substitutions) ||
-          isAttestedProofArtifactUriAndSha256Stamp(curProps[propKey], nxtProps[propKey], sha256Stamps)
+          isAttestedProofArtifactUriAndSha256Stamp(curProps[propKey], nxtProps[propKey], sha256Stamps) ||
+          isAttestedProofCaptureStamp(curProps[propKey], nxtProps[propKey], captureAttestations)
         )
       ) continue;
       if (!allowed.has(propKey)) {
