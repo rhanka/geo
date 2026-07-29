@@ -1,0 +1,1578 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T12:25:07.303Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1720,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 5,
+    "MeetingDate": 5,
+    "Regulation": 22,
+    "Resolution": 12,
+    "LotCadastre": 6
+  },
+  "graphify": {
+    "nodes": 86,
+    "edges": 30,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 6,
+    "documents_with_zone": 0,
+    "documents_with_lot": 5
+  },
+  "match_details": [
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/c5699a6c43f3636ab5e3326f6ca2594d5b29e42323e224e815a26a8316c4a0a3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4614549",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:364",
+      "quote": "                          lac Champagneur n’a pas de nom (partie du lot 4 614549);"
+    },
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/c660e362cfb249e99ae0dc61f5111b3144a3e7d4403c882aedd9c4c20245483f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4614337",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:591",
+      "quote": "            ATTENDU        que la Municipalité désire acquérir le terrain lot 4614337, matricule F0686"
+    },
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/cf7003075203e0dee19e1f3d6b4781f12879b898a59fd27aea490109dfe1dc63.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4613952",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:323",
+      "quote": "            ATTENDU          qu’on aurait dû lire le lot 4 613 952 et non 4 614 952;"
+    },
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/da41a0ceecb567a8b653d56f0c139b13ef106948fb84f5856181c77716537911.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4614952",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:53",
+      "quote": "          résidence sur le lot 4 614 952."
+    },
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/da41a0ceecb567a8b653d56f0c139b13ef106948fb84f5856181c77716537911.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4613952",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:337",
+      "quote": "            Molloy, soit le lot 4 6139 52, résident au 236 chemin Brookdale."
+    },
+    {
+      "municipality_slug": "boileau",
+      "storage_key": "raw/pv-index/cas/dd3917928bfc767ec44ef4d0c95824fe01e6750fd29f4cba675bc8fd064560da.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4614320",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:416",
+      "quote": "                propriété sise au 958, chemin Maskinongé – Lot 4 614 320."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 32,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1251,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z",
+  "documents": [
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/Procs-verbal%20-%202026-04-01.pdf",
+      "storage_key": "raw/pv-index/cas/ad6d24e96e1a7fb0efdcea11c73f02ac3382de23ab4172f5d211712f174483f9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "   QUE        l’ordre du jour de la séance ordinaire du conseil du 1er avril 2026 soit adopté avec ajout d’un"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "   QUE        l’ordre du jour de la séance ordinaire du conseil du 1er avril 2026 soit adopté avec ajout d’un"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-192",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "   6.1 Avis de motion – Règlement 26-192 concernant la circulation et le stationnement."
+            }
+          },
+          {
+            "label": "26-193",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "   6.3 Avis de motion – Règlement 26-193 concernant la création d’un fonds de roulement."
+            }
+          },
+          {
+            "label": "19-117",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "        ATTENDU qu’il est nécessaire d’abroger et de remplacer le règlement numéro 19-117 concernant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/712f174483f9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/712f174483f9.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/PV-2016-03-02-sance-extraordinaire-rg-emprunt-achat-niveleuse-FINAL.pdf",
+      "storage_key": "raw/pv-index/cas/b153356dbd662c87c0aec25a0fff66fcf1b90beb4b751a8c3ee7e707e0a4b897.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            Procès-verbal d’une séance extraordinaire du Conseil de la Municipalité de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            Procès-verbal d’une séance extraordinaire du Conseil de la Municipalité de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            Procès-verbal d’une séance extraordinaire du Conseil de la Municipalité de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "            Québec, le 2 mars 2016 à 9 h 00, formant quorum sous la présidence de monsieur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/e707e0a4b897.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/e707e0a4b897.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/Seance-extraordinaire-2022-06-01.pdf",
+      "storage_key": "raw/pv-index/cas/b2ddf643a42035b6c20da9dcf325a8a4a0386865dfd10da450334f7f72a91a34.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/4f7f72a91a34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/4f7f72a91a34.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/51%20-%20Procs-verbal%202%20mai%202024.pdf",
+      "storage_key": "raw/pv-index/cas/b3ea63bf6c2cf161a07a97299d2be50fb771f8cd6e2ae01ea43f1ff966fe0f91.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mai 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     QUE        l’ordre du jour de la séance extraordinaire du conseil du 2 mai 2024 soit adopté tel que"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mai 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     QUE        l’ordre du jour de la séance extraordinaire du conseil du 2 mai 2024 soit adopté tel que"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-04-056",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "     ATTENDU la résolution numéro 2024-04-056, adoptée le 11 avril 2024, ayant pour objet l’octroi d’un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/1ff966fe0f91.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/1ff966fe0f91.pdf/.graphify/.graphify_extract.json — 5 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/pv-sept.pdf",
+      "storage_key": "raw/pv-index/cas/b82e0215e5db8d1f385fba6af97981f5686ae13048fceb26594de1810690739f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/e1810690739f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/e1810690739f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/P-V-2015-06-10.pdf",
+      "storage_key": "raw/pv-index/cas/bab0e7dd7f0b0ba0e1a8446c82bc7138e6e8d1b90140247d1edbcaca853e973b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "15-04-070",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:456",
+              "quote": "                           résolution 15-04-070;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/caca853e973b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/caca853e973b.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau",
+          "namur"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/2022-09-29-Seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/be1a79b633fa3ffff552ae15a5cd6df068cbded5005d84459091de6a136c56e1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                                                     702, chemin de Boileau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                                                     702, chemin de Boileau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/de6a136c56e1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/de6a136c56e1.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/pv-mars-2018.pdf",
+      "storage_key": "raw/pv-index/cas/be4466385737e7d4a2a2611d6478744032e7afc192dc9719a11abd454b010b35.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/bd454b010b35.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/bd454b010b35.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/2022-12-19%20-%20PV%20extra.pdf",
+      "storage_key": "raw/pv-index/cas/c40cf47235253397fce3b869e962d0452b0296864aa0c5bff20c7c119bd3f4f8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                                      702, chemin de Boileau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                                      702, chemin de Boileau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-148",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "7.      Adoption du règlement numéro 2022-148"
+            }
+          },
+          {
+            "label": "19-115",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "MODIFIANT LE RÈGLEMENT NUMÉRO 19-115"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/7c119bd3f4f8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/7c119bd3f4f8.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/2022-09-08-seance-ordinaire-final.pdf",
+      "storage_key": "raw/pv-index/cas/c426ac83bd01043acfca72549bda5a9433ce0cc195a8f836163885b150f52ba4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "220210-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "            nommés par la résolution 220210-21 Serge Béchard et Sylvie Germain ainsi que l’adjointe"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/85b150f52ba4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/85b150f52ba4.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/P-V-2014-09-10.pdf",
+      "storage_key": "raw/pv-index/cas/c5699a6c43f3636ab5e3326f6ca2594d5b29e42323e224e815a26a8316c4a0a3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "10-03-057",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "                            municipalité jusqu’en 2015 (réf.: résolution numéro 10-03-057);"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "14-077",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "                          10.1. Règlement numéro 14-077 «Concernant l’entretien des chemins"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4614549",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:364",
+              "quote": "                          lac Champagneur n’a pas de nom (partie du lot 4 614549);"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/6a8316c4a0a3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/6a8316c4a0a3.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/Pv-2016-09-14-Session-du-14-septembre-2016-a-entriner.pdf",
+      "storage_key": "raw/pv-index/cas/c660e362cfb249e99ae0dc61f5111b3144a3e7d4403c882aedd9c4c20245483f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 4,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "16-08-182",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "                           selon la résolution 16-08-182 de Excavation Miller 2014"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "02-078",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "                10.1 Avis de motion pour modifier le règlement 02-078 sur la délégation des"
+            }
+          },
+          {
+            "label": "14-075",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "                10.2 Avis de motion pour modifier le règlement 14-075 sur le code d’éthique et de"
+            }
+          },
+          {
+            "label": "12-072",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "                10.3 Avis de motion pour modifier le règlement 12-072 sur le code d’éthique et de"
+            }
+          },
+          {
+            "label": "16",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "                  SUBSÉQUENTE, UN RÈGLEMENT NUMÉRO 16-XXX MODIFIANT LE RÈGLEMENT 02-"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4614337",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:591",
+              "quote": "            ATTENDU        que la Municipalité désire acquérir le terrain lot 4614337, matricule F0686"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c4c20245483f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c4c20245483f.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau",
+          "namur"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/Seance-extraordinaire-2022-06-16.pdf",
+      "storage_key": "raw/pv-index/cas/c6fbbfd88226c9fdc17853a726c1318f60de6bdce898b42ed668a539ddb0561d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 juin 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "          Séance extraordinaire du Conseil municipal de Boileau du 16 juin 2022, à la salle de la Bonne"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 juin 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "          Séance extraordinaire du Conseil municipal de Boileau du 16 juin 2022, à la salle de la Bonne"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "220421-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "            résolution 220421-02 à la majorité relative à l'adoption du règlement 22-144 abrogeant et"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "22-144",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "                    Ajout 7.1 Adoption du règlement 22-144 constituant le comité consultatif en urbanisme"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/a539ddb0561d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/a539ddb0561d.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/51%20-%20Procs-verbal%2011%20avril%202024.pdf",
+      "storage_key": "raw/pv-index/cas/c7cc389592b03fbc55d4d94bf2504bdf24bb4cb62038dd0f63dd28380f699b26.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/28380f699b26.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/28380f699b26.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/51%20-%20PV%20-%20Sance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/c8db9ccb32bf2605a7546bc7a9cb68dab50bd5cee3f93dea65a51c9a0a7b4cb2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/1c9a0a7b4cb2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/1c9a0a7b4cb2.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/PV%20-%2001(1).pdf",
+      "storage_key": "raw/pv-index/cas/cf544a2ecda12d221510347e141a8e718a0470bde592d73aa367ecb326758d06.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "220113-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:458",
+              "quote": "                 dans la résolution numéro 220113-10."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "23-150",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "             6.1.1      Avis de motion – Règlement 23-150 fixant le taux de taxation et les tarifs pour 2023"
+            }
+          },
+          {
+            "label": "22-145",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "        le règlement numéro 22-145."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/ecb326758d06.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/ecb326758d06.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau",
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/PV-2016-05-11.pdf",
+      "storage_key": "raw/pv-index/cas/cf7003075203e0dee19e1f3d6b4781f12879b898a59fd27aea490109dfe1dc63.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 6,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "16-03-061",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "    6.6. Pour modifier la résolution 16-03-061"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "16084",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "                10.8. Pour adoption du règlement 16084 sur le jugement Peacock"
+            }
+          },
+          {
+            "label": "16-083",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:614",
+              "quote": "16-05-119   10.7 POUR L’ADOPTION DU RÈGLEMENT 16-083, MODIFIANT LE RÈGLEMENT DE"
+            }
+          },
+          {
+            "label": "00-50",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:625",
+              "quote": "            ATTENDU         que le règlement numéro 00-50 relatif aux permis et certificats a été"
+            }
+          },
+          {
+            "label": "148-2015",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:638",
+              "quote": "            ATTENDU         que la MRC a procédé à l’adoption du règlement numéro 148-2015"
+            }
+          },
+          {
+            "label": "16-084",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:853",
+              "quote": "                                           RÈGLEMENT NO 16-084"
+            }
+          },
+          {
+            "label": "16-086",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1247",
+              "quote": "   16-05-126   12.1. AVIS DE MOTION POUR L’ADOPTION DU RÈGLEMENT 16-086"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4613952",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:323",
+              "quote": "            ATTENDU          qu’on aurait dû lire le lot 4 613 952 et non 4 614 952;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/0109dfe1dc63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/0109dfe1dc63.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "amherst",
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/PV-2016-03-09.pdf",
+      "storage_key": "raw/pv-index/cas/da41a0ceecb567a8b653d56f0c139b13ef106948fb84f5856181c77716537911.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "03-11-257",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "               10.13 Pour modifier la résolution 03-11-257 ¨Barème pour certains services"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4614952",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "          résidence sur le lot 4 614 952."
+            }
+          },
+          {
+            "label": "4613952",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:337",
+              "quote": "            Molloy, soit le lot 4 6139 52, résident au 236 chemin Brookdale."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c77716537911.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c77716537911.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/2025-11-13%20-%20Procs-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/dd3917928bfc767ec44ef4d0c95824fe01e6750fd29f4cba675bc8fd064560da.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MUNICIPALITÉ RÉGIONALE DE COMTÉ DE PAPINEAU"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "  QUE       l’ordre du jour de la séance ordinaire du conseil du 13 novembre 2025 soit adopté avec"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "  QUE       l’ordre du jour de la séance ordinaire du conseil du 13 novembre 2025 soit adopté avec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-08-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "   11.5    Abrogation de la résolution numéro 2025-08-115"
+            }
+          },
+          {
+            "label": "2025-11-161",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:241",
+              "quote": "    CONSIDÉRANT la résolution numéro 2025-11-161 nommant Monsieur Jean-Marc Chevalier au"
+            }
+          },
+          {
+            "label": "2025-09-142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:278",
+              "quote": "    ATTENDU que la résolution numéro 2025-09-142 adoptée à la séance extraordinaire du 25"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-187",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    6.1 Avis de motion – Règlement 25-187 abrogeant et remplaçant le règlement numéro 24-174"
+            }
+          },
+          {
+            "label": "24-174",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    6.1 Avis de motion – Règlement 25-187 abrogeant et remplaçant le règlement numéro 24-174"
+            }
+          },
+          {
+            "label": "20-136",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:408",
+              "quote": "    que mentionné dans le règlement 20-136 relatif aux usages conditionnels ;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4614320",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "                propriété sise au 958, chemin Maskinongé – Lot 4 614 320."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c8fd064560da.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/c8fd064560da.pdf/.graphify/.graphify_extract.json — 11 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/P-V-2015-08-14.pdf",
+      "storage_key": "raw/pv-index/cas/dfb7e8a86ab430eb70182efe5d4b00b69586c762b107fc0196722dad8838b8a2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boileau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/2dad8838b8a2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122233Z/boileau/2dad8838b8a2.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boileau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
