@@ -297,6 +297,22 @@ function firstMunicipalityEvidence(lines: readonly SourceLine[], officialName: s
   return null;
 }
 
+/**
+ * Resolve only municipality owners explicitly printed in the document.  This
+ * is intentionally the same strict, prefix-qualified test used for semantic
+ * extraction: capture metadata and a directory name are never an owner.
+ *
+ * A caller may use the result to report a capture whose manifest scope does
+ * not match the document.  It must not use it for approximate resolution.
+ */
+export function printedMunicipalityOwners(
+  text: string,
+  municipalities: readonly MunicipalityGazetteerEntry[],
+): MunicipalityGazetteerEntry[] {
+  const lines = sourceLines(text);
+  return municipalities.filter((municipality) => firstMunicipalityEvidence(lines, municipality.name) !== null);
+}
+
 const MONTH = "janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre";
 const FRENCH_DATE = new RegExp(`\\b(?:le|du|en date du)\\s+(\\d{1,2}(?:er|e|ème)?\\s*(?:${MONTH})\\s+\\d{4})\\b`, "iu");
 const ISO_DATE = /\b(\d{4}[/-]\d{2}[/-]\d{2})\b/u;

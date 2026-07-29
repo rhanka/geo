@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { validateExtraction } from "@sentropic/graphify";
 
-import { analyzeZoneGazetteerMatchMode, classifyRegulationLegalQuality, extractPvSemantic } from "./pv-graphify-semantic.js";
+import { analyzeZoneGazetteerMatchMode, classifyRegulationLegalQuality, extractPvSemantic, printedMunicipalityOwners } from "./pv-graphify-semantic.js";
 
 const municipalities = [
   { slug: "albertville", name: "Albertville" },
@@ -59,6 +59,12 @@ describe("PV deterministic Graphify semantic extraction", () => {
     const result = extract("Résolution numéro 2026-05-024 : adoption du règlement 227-2026.");
     expect(result.nodes).toEqual([]);
     expect(result.edges).toEqual([]);
+  });
+
+  it("reports only an exact, printed owner when a capture scope is contaminated", () => {
+    const owners = printedMunicipalityOwners("VILLE DE COMPTON\nProcès-verbal de séance.", municipalities);
+    expect(owners.map((owner) => owner.slug)).toEqual(["compton"]);
+    expect(printedMunicipalityOwners("Compton, 3 rue Principale", municipalities)).toEqual([]);
   });
 
   it("accepts an exact English municipality owner but not an address after the name", () => {
