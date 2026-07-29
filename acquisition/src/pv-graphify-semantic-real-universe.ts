@@ -32,7 +32,7 @@ const PV_RUNS_PREFIX = "capture/_runs/pv-";
 const BASE_SUMMARY = resolve(COVERAGE, "pv-graphify-semantic-all-20260728-summary.json");
 const MAX_REPORT_BYTES = 5 * 1024 * 1024;
 const DEFAULT_BATCH_SIZE = 300;
-const REAL_BATCH_REPORT = /^pv-graphify-semantic-real-universe-\d{8}-batch-\d{2}\.json$/u;
+const REAL_BATCH_REPORT = /^pv-graphify-semantic-real-universe-\d{8}-batch-\d{2}(?:-part-\d{2})?\.json$/u;
 const CAS_KEY = /^raw\/pv-index\/cas\/[a-f0-9]{64}\.pdf$/u;
 
 interface GraphifyDocument {
