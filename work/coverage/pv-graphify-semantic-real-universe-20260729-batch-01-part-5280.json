@@ -1,0 +1,1504 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:53:35.046Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5280,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "Resolution": 2,
+    "Regulation": 23,
+    "Zone": 3,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 75,
+    "edges": 28,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 3,
+    "documents_with_zone": 3,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/19c728b34af489ac994b8a24a1cacbf72a6c7355e45385d31b67141861a050c9.pdf",
+      "entity_type": "Zone",
+      "value": "CID-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:14",
+      "quote": "   comme bâtiments industriels dans la zone Cid-1"
+    },
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/40b51e8ba6296d66c8055839fe7e71b70d4b53af42f1d1e71f161a6bb524961c.pdf",
+      "entity_type": "Zone",
+      "value": "CID-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:22",
+      "quote": "8. Adoption du projet de règlement 2026-06 afin de modifier les limites de la zone Cid-1 sur les lots"
+    },
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/40b51e8ba6296d66c8055839fe7e71b70d4b53af42f1d1e71f161a6bb524961c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3511208",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:21",
+      "quote": "   lots 3 511 208, 6 695 881 et 6 695 882"
+    },
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/529ac26367d06acb85aa6379688817c87114a4e15d15c588e7e485fd733a857c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3800946",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:25",
+      "quote": "12. Offre de service – T2 Environnement – caractérisation écologique d’une partie du lot 3 800 946"
+    },
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/7203a7d8304efa0b226a7acfbd0e729a85378cd74d0d3d1a6241ff2e0ea2b5b9.pdf",
+      "entity_type": "Zone",
+      "value": "CID-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:13",
+      "quote": "4. Adoption du second projet de règlement 2026-06 afin de modifier les limites de la zone Cid-1"
+    },
+    {
+      "municipality_slug": "melbourne",
+      "storage_key": "raw/pv-index/cas/7203a7d8304efa0b226a7acfbd0e729a85378cd74d0d3d1a6241ff2e0ea2b5b9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3511208",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:14",
+      "quote": "   sur les lots 3 511 208, 6 695 881 et 6 695 882"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 88,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 1,
+      "total_lot_numbers": 674,
+      "missing": [
+        "mcmasterville"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z",
+  "documents": [
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/05/avis-de-convocation-25-mai-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/c59c2af097bdb4d74415badaa5ecaf5bfb9349c05a3a19bad2277e1325d9dd33.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Séance extraordinaire"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Séance extraordinaire"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/7e1325d9dd33.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/7e1325d9dd33.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/07/odj-seance-7-juillet-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/c7fd7285a9f83df482f29e952b4666cb42282dfb149c6c610e1eaea0aa5ab655.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "              comté de La Vallée-du-Richelieu (MRCVR)"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "              comté de La Vallée-du-Richelieu (MRCVR)"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "AVIS vous est donné par la présente, qu'une séance ordinaire du conseil de cette ville est"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "convoquée pour être tenue au lieu ordinaire des séances dudit Conseil, le 7 juillet 2025, et"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-323",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "       3.3    Autorisation – Modification de la résolution 2024-323 – Signature – Formulaire"
+            }
+          },
+          {
+            "label": "2024-366",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "       8.2    Autorisation – Modification de la résolution 2024-366 – Modification d'un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/aea0aa5ab655.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/aea0aa5ab655.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/05/odj-seance-4-mai-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/c8d38b1071818ce24253553042138d634912138147dfafd7912a892cd655c502.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/892cd655c502.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/892cd655c502.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/04/odj-seance-13-avril-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/db8bb58698caac78a3423969fb06bee80e0d613faa582a0694c2236fc7a6d0c9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "              la tenue des élections municipales partielles et/ou générales de la Ville"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "              la tenue des élections municipales partielles et/ou générales de la Ville"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "      1.3    Approbation du procès-verbal de la séance du conseil municipal tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "             le 16 mars 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "431-01-2026",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "       6.1    Adoption – Règlement numéro 431-01-2026 amendant le règlement"
+            }
+          },
+          {
+            "label": "452-00-2026",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "       6.2    Adoption – Règlement numéro 452-00-2026 relatif à l'occupation et à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/236fc7a6d0c9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/236fc7a6d0c9.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/04/odj-seance-7-avril-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/f05b3b5ca0206197536956810bcc5ea84b5e2d6d327ed1c277ff1c19b1eb1469.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "       10.4   Autorisation – Protocole d'entente entre la municipalité de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "       10.4   Autorisation – Protocole d'entente entre la municipalité de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "       1.3    Approbation du procès-verbal de la séance du conseil municipal tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "              le 17 mars 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "449-00-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "       5.1    Avis de motion – Règlement numéro 449-00-2025 autorisant l'exécution"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/1c19b1eb1469.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/mcmasterville/1c19b1eb1469.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/03/OJ-03-MARS-2025.pdf",
+      "storage_key": "raw/pv-index/cas/03f78ce3d20225bb7c985c6d3e0e20f24eeae8a18a59f5be0a00af7f51414891.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  Municipalité du Canton de Melbourne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/af7f51414891.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/af7f51414891.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2024/12/ODJ-dec-09-Budget-2025.pdf",
+      "storage_key": "raw/pv-index/cas/0a2cd7099872bcce26ad43f0a821c16b66efec3d1bbf36f1d2424d0d37d1ac89.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "   Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "   Municipalité du Canton de Melbourne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/4d0d37d1ac89.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/4d0d37d1ac89.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2026/01/Projet-OJ-FEV-2026.pdf",
+      "storage_key": "raw/pv-index/cas/0c6a993aa4d72f767af0ff3b71c34a88388dfc579b2e0413943da299ec356cb8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "      6. Adoption du projet de règlement numéro 2026-01 relatif à l’entretien et l’occupation des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/a299ec356cb8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/a299ec356cb8.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/05/OJ-06-JUIN-2025.pdf",
+      "storage_key": "raw/pv-index/cas/19c728b34af489ac994b8a24a1cacbf72a6c7355e45385d31b67141861a050c9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "CID-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "   comme bâtiments industriels dans la zone Cid-1"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/141861a050c9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/141861a050c9.pdf/.graphify/.graphify_extract.json — 3 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne",
+          "saint-francois-xavier-de-brompton",
+          "windsor"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/11/OJ-11-NOV-2025.pdf",
+      "storage_key": "raw/pv-index/cas/203cc9be5200b3c397317ce2032a13b71d5b1e6c848fca8c3efd75738eafccb6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-02",
+            "legal_quality": "CERTIFICAT_CONFORMITE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "5. Certificat de conformité - Règlement numéro 2025-02 visant à modifier le règlement de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/75738eafccb6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/75738eafccb6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/08/Projet-OJ-AOUT-2025-1.pdf",
+      "storage_key": "raw/pv-index/cas/3d0a509a40cdae8e06eb238356bb427ccc007a0b7d411e729407842b0d75cd3f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "5. Adoption du premier projet de règlement numéro 2025-01 visant à modifier le règlement de"
+            }
+          },
+          {
+            "label": "2025-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "7. Adoption du projet de règlement numéro 2025-02 visant à modifier le règlement de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/842b0d75cd3f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/842b0d75cd3f.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2026/05/Projet-OJ-MAI-2026-1.pdf",
+      "storage_key": "raw/pv-index/cas/40b51e8ba6296d66c8055839fe7e71b70d4b53af42f1d1e71f161a6bb524961c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-01",
+            "legal_quality": "CERTIFICAT_CONFORMITE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Certificat de conformité - Règlement numéro 2026-01 relatif à l'entretien et l'occupation"
+            }
+          },
+          {
+            "label": "2026-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "5. Règlement 2026-04 visant à modifier le règlement sur le plan d'urbanisme numéro 2008-01 de"
+            }
+          },
+          {
+            "label": "2026-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "6. Règlement 2026-05 visant à modifier le règlement de zonage numéro 2008-02 et ses"
+            }
+          },
+          {
+            "label": "2026-06",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "7. Avis de motion et présentation du règlement numéro 2026-06 visant à modifier le règlement de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "CID-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "8. Adoption du projet de règlement 2026-06 afin de modifier les limites de la zone Cid-1 sur les lots"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3511208",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "   lots 3 511 208, 6 695 881 et 6 695 882"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/1a6bb524961c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/1a6bb524961c.pdf/.graphify/.graphify_extract.json — 8 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/08/OJ-09-SEPT-2025.pdf",
+      "storage_key": "raw/pv-index/cas/529ac26367d06acb85aa6379688817c87114a4e15d15c588e7e485fd733a857c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Adoption du second projet de règlement numéro 2025-01 visant à modifier le règlement de"
+            }
+          },
+          {
+            "label": "2025-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "5. Adoption du règlement numéro 2025-02 visant à modifier le règlement de construction"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3800946",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "12. Offre de service – T2 Environnement – caractérisation écologique d’une partie du lot 3 800 946"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/85fd733a857c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/85fd733a857c.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2026/01/Projet-OJ-2026-01-2.pdf",
+      "storage_key": "raw/pv-index/cas/5f20ffbd3655208380ab458bdaac5cb08a78a95d0f1c94f2627a7c9e23b2041c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      7. Règlement numéro 2025-03, un règlement fixant les taux de taxes et les tarifs pour l'exercice"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/7c9e23b2041c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/7c9e23b2041c.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/01/OJ-01-JAN-2025.pdf",
+      "storage_key": "raw/pv-index/cas/68118b36899ba39140135697fda8c595e574ecee7bcaea92cecf5ed191c8976f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-09",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Adoption du second projet de règlement numéro 2024-09 visant à modifier le règlement de zonage"
+            }
+          },
+          {
+            "label": "2024-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "8. Règlement numéro 2024-07, un règlement relatif au traitement des élus municipaux - adoption"
+            }
+          },
+          {
+            "label": "2024-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "9. Règlement numéro 2024-08, un règlement fixant les taux de taxes et les tarifs pour l'exercice financier"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/5ed191c8976f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/5ed191c8976f.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2026/03/Projet-OJ-Mars-2026-1.pdf",
+      "storage_key": "raw/pv-index/cas/6b8acf2f0bd20c8dba0d4e77b8cae2b0d40ac349cb4dac5eb23bdf931f6d4cc1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "     4. Règlement numéro 2026-01 relatif à l'entretien et l'occupation des immeubles - adoption"
+            }
+          },
+          {
+            "label": "2026-03",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "     8. Avis de motion et présentation du projet de Règlement numéro 2026-03 - un règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/df931f6d4cc1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/df931f6d4cc1.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "maricourt",
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/11/OJ-12-DEC-2025.pdf",
+      "storage_key": "raw/pv-index/cas/70984d90c5643003a911d2dc4d8bd3bd86ee06bd88525e7dd2f7500cf2b7b6f3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "CERTIFICAT_CONFORMITE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "   4. Certificat de conformité - Règlement numéro 2025-01 visant à modifier le règlement de zonage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/500cf2b7b6f3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/500cf2b7b6f3.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2026/05/Projet-OJ-JUIN-2026.pdf",
+      "storage_key": "raw/pv-index/cas/7203a7d8304efa0b226a7acfbd0e729a85378cd74d0d3d1a6241ff2e0ea2b5b9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-06",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Adoption du second projet de règlement 2026-06 afin de modifier les limites de la zone Cid-1"
+            }
+          },
+          {
+            "label": "2026-07",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "10. Avis de motion et présentation du règlement numéro 2026-07 relatif au taux de droit de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "CID-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Adoption du second projet de règlement 2026-06 afin de modifier les limites de la zone Cid-1"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3511208",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "   sur les lots 3 511 208, 6 695 881 et 6 695 882"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/ff2e0ea2b5b9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/ff2e0ea2b5b9.pdf/.graphify/.graphify_extract.json — 6 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/09/OJ-10-OCT-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8da1f3757f379e1aee48d48d40db5afe1d44d8e35e27e0b4a63d3cc1e648fc7f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "4. Adoption du règlement numéro 2025-01 visant à modifier le règlement de zonage numéro"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/3cc1e648fc7f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/3cc1e648fc7f.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne",
+          "racine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "melbourne",
+      "municipality_name": "Melbourne",
+      "url": "https://melbournecanton.ca/wp-content/uploads/2025/07/OJ-07-JUILLET-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a55bbec848fddfcb4c3474d9f137f45cbceab51d0a5509a463bf555b8821e524.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Melbourne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Municipalité du Canton de Melbourne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/555b8821e524.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185318Z/melbourne/555b8821e524.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "melbourne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
