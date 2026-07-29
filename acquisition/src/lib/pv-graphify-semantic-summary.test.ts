@@ -99,4 +99,30 @@ describe("summarizePvGraphifySemantic", () => {
       entity_counts: { Document: 1 },
     });
   });
+
+  it("excludes a document refused by the owner guard even when Graphify emitted nodes", () => {
+    const summary = summarizePvGraphifySemantic([
+      { path: "classification.json", value: { lines: [
+        { classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME", storage_key: "cas/foreign-owner" },
+      ] } },
+    ], [
+      { path: "graphify.json", value: { documents: [
+        {
+          storage_key: "cas/foreign-owner",
+          outcome: "CONTAMINATION_OWNER_MISMATCH",
+          entity_counts: { Document: 1, Regulation: 1 },
+          graphify: { exit_code: 0, nodes: 2, edges: 1 },
+        },
+      ] } },
+    ]);
+
+    expect(summary).toMatchObject({
+      processed_pvs: 1,
+      indexed_pvs: 0,
+      unindexed_pvs: 1,
+      zero_node_pvs: 0,
+      graph: { nodes: 0, edges: 0 },
+      entity_counts: {},
+    });
+  });
 });

@@ -47,6 +47,8 @@ function isSupersededEarlyCheckpoint(name: string): boolean {
 
 interface GraphifyDocument {
   readonly storage_key: string;
+  /** Null only for legacy confirmed-only reports without a terminal outcome. */
+  readonly outcome: string | null;
   readonly graphify: { readonly exit_code: number; readonly nodes: number; readonly edges: number };
 }
 
@@ -148,6 +150,7 @@ function parseGraphifyDocument(value: unknown, where: string): GraphifyDocument 
   if (!isRecord(graphify)) throw new Error(`${where}.graphify doit être un objet`);
   return {
     storage_key: requiredString(value, "storage_key", where),
+    outcome: value.outcome === undefined ? null : requiredString(value, "outcome", where),
     graphify: {
       exit_code: requiredInteger(graphify, "exit_code", `${where}.graphify`),
       nodes: requiredInteger(graphify, "nodes", `${where}.graphify`),
@@ -200,6 +203,7 @@ function successfulGraph(documents: ReadonlyMap<string, GraphifyDocument>): Inde
   let edges = 0;
   const indexed = new Map<string, GraphifyDocument>();
   for (const [key, document] of documents) {
+    if (document.outcome !== null && document.outcome !== "INDEXED") continue;
     if (document.graphify.exit_code !== 0 || document.graphify.nodes === 0) continue;
     indexed.set(key, document);
     nodes += document.graphify.nodes;

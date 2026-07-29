@@ -107,6 +107,8 @@ interface ParsedArgs {
   readonly storageKeys: readonly string[];
   readonly batchSize: number | null;
   readonly batchIndex: number | null;
+  /** Explicit historical index used when a new captured campaign is outside the snapshot population. */
+  readonly dedupeSnapshot: string | null;
   readonly output: string;
 }
 
@@ -206,7 +208,7 @@ interface UnverdictList {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N | --unverdict-list=PATH --unverdict-offset=N --unverdict-limit=N | --ocr-stage=PATH] [--concurrency=1..4] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH --dedupe-snapshot=PATH] [--universe=PATH --universe-offset=N --universe-limit=N | --unverdict-list=PATH --unverdict-offset=N --unverdict-limit=N | --ocr-stage=PATH] [--concurrency=1..4] [--out=PATH]");
   process.exit(0);
 }
 
@@ -273,6 +275,12 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   if (all && values("control").length > 0) throw new Error("--all et --control sont exclusifs");
   const batchSizeValue = values("batch-size").at(-1);
   const batchIndexValue = values("batch-index").at(-1);
+  const dedupeSnapshotValues = values("dedupe-snapshot");
+  if (dedupeSnapshotValues.length > 1) throw new Error("--dedupe-snapshot ne peut apparaître qu'une fois");
+  const dedupeSnapshot = dedupeSnapshotValues[0] === undefined ? null : resolve(ROOT, dedupeSnapshotValues[0]);
+  if (dedupeSnapshot !== null && !dedupeSnapshot.startsWith(`${ROOT}/`)) {
+    throw new Error("--dedupe-snapshot doit rester dans le dépôt");
+  }
   const batchSize = batchSizeValue === undefined ? null : Number(batchSizeValue);
   const batchIndex = batchIndexValue === undefined ? null : Number(batchIndexValue);
   if (batchSize !== null && (!all || !Number.isInteger(batchSize) || batchSize < 1)) {
@@ -298,6 +306,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
     storageKeys,
     batchSize,
     batchIndex,
+    dedupeSnapshot,
     output: resolve(ROOT, outputValue ?? `work/coverage/pv-graphify-semantic-${timestamp}.json`),
   };
 }
@@ -500,6 +509,31 @@ function indexedStorageKeysFromExistingReports(): Set<string> {
       indexed.add(requiredString(document, "storage_key", `${path}.documents[${index}]`));
     }
   }
+  return indexed;
+}
+
+/**
+ * A capture campaign added after the durable CAS snapshot must still reject
+ * every key already indexed by either of the two complete historical sources:
+ * the snapshot's indexed graph and every real-universe batch report.
+ */
+function indexedStorageKeysForExternalCampaign(snapshotPath: string): Set<string> {
+  const snapshot = readSmallJson(snapshotPath);
+  if (!isRecord(snapshot) || snapshot.contract !== "pv-graphify-semantic-real-universe/v1") {
+    throw new Error(`snapshot de dédoublage invalide: ${snapshotPath}`);
+  }
+  const indexedGraph = snapshot.indexed_graph;
+  if (!isRecord(indexedGraph) || !Array.isArray(indexedGraph.storage_keys)) {
+    throw new Error(`snapshot de dédoublage sans indexed_graph.storage_keys: ${snapshotPath}`);
+  }
+  const indexed = new Set<string>();
+  for (const [index, value] of indexedGraph.storage_keys.entries()) {
+    if (typeof value !== "string" || !/^raw\/pv-index\/cas\/[a-f0-9]{64}\.(?:pdf|html|bin)$/u.test(value)) {
+      throw new Error(`${snapshotPath}.indexed_graph.storage_keys[${index}] invalide`);
+    }
+    indexed.add(value);
+  }
+  for (const key of indexedStorageKeysFromExistingReports()) indexed.add(key);
   return indexed;
 }
 
@@ -1102,6 +1136,37 @@ async function processDocument(
       : printedOwnerSlugs.length > 0
         ? { status: "CONTAMINATION_OWNER_MISMATCH", printed_owner_slugs: printedOwnerSlugs }
         : { status: "NOT_CONFIRMED", printed_owner_slugs: [] };
+    // Owner scope is a precondition, not a post-hoc label on a Graphify
+    // result.  A foreign or unproven owner must never materialize semantic
+    // entities, even locally, because a later aggregation could otherwise
+    // mistake successful Graphify output for an indexed PV.
+    if (ownerScope.status !== "CONFIRMED") {
+      const outcome: DocumentOutcome = ownerScope.status === "CONTAMINATION_OWNER_MISMATCH"
+        ? "CONTAMINATION_OWNER_MISMATCH"
+        : "OWNER_NOT_CONFIRMED";
+      return {
+        slug: document.slug,
+        municipality_name: document.municipality_name,
+        url: document.url,
+        storage_key: document.storage_key,
+        source_file: materialized.source_file,
+        text_provenance: materialized.text_provenance,
+        ...(materialized.ocr ? { ocr: materialized.ocr } : {}),
+        entity_counts: {},
+        entities: {},
+        graphify: {
+          exit_code: 0,
+          stdout: "",
+          stderr: "Graphify non lancé: le propriétaire imprimé ne confirme pas le scope municipal.",
+          nodes: 0,
+          edges: 0,
+        },
+        outcome,
+        owner_scope: ownerScope,
+        failure_reason: null,
+        manual_verification: "UNVERIFIED",
+      };
+    }
     const semantic = extractPvSemantic({
       source_file: materialized.source_file,
       source_id: document.storage_key,
@@ -1114,13 +1179,9 @@ async function processDocument(
     const graphify = await runGraphify(inputDirectory, semanticPath, documentDirectory);
     const outcome: DocumentOutcome = graphify.exit_code !== 0
       ? "GRAPHIFY_FAILED"
-      : ownerScope.status === "CONTAMINATION_OWNER_MISMATCH"
-        ? "CONTAMINATION_OWNER_MISMATCH"
-        : ownerScope.status === "NOT_CONFIRMED"
-          ? "OWNER_NOT_CONFIRMED"
-          : graphify.nodes > 0
-            ? "INDEXED"
-            : "GRAPHIFY_FAILED";
+      : graphify.nodes > 0
+        ? "INDEXED"
+        : "GRAPHIFY_FAILED";
     return {
       slug: document.slug,
       municipality_name: document.municipality_name,
@@ -1174,9 +1235,11 @@ async function main(): Promise<void> {
   const batch = args.universe === null && args.unverdictList === null && args.ocrStage === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const indexedStorageKeys = args.universe === null
-    ? new Set<string>()
-    : new Set([...realUniverse!.initiallyIndexedStorageKeys, ...indexedStorageKeysFromExistingReports()]);
+  const indexedStorageKeys = args.universe !== null
+    ? new Set([...realUniverse!.initiallyIndexedStorageKeys, ...indexedStorageKeysFromExistingReports()])
+    : args.dedupeSnapshot !== null
+      ? indexedStorageKeysForExternalCampaign(args.dedupeSnapshot)
+      : new Set<string>();
   const eligibleByStorageKey = new Map(eligible.map((document) => [document.storage_key, document]));
   const requestedStorageKeys = args.universe === null
     ? null
@@ -1200,12 +1263,12 @@ async function main(): Promise<void> {
     ? selectStorageKeys(eligible, args.storageKeys)
     : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   const skippedIndexedStorageKeys = args.universe === null
-    ? []
+    ? requested.map((document) => document.storage_key).filter((storageKey) => indexedStorageKeys.has(storageKey))
     : requestedStorageKeys!.filter((storageKey) => indexedStorageKeys.has(storageKey));
   const selected = unverdictList !== null
     ? requested
     : args.universe === null
-    ? requested
+    ? requested.filter((document) => !indexedStorageKeys.has(document.storage_key))
     : requested.filter((document) => !indexedStorageKeys.has(document.storage_key));
   assertS3RunEnvironment();
   if (args.universe !== null && requestedStorageKeys!.length === 0) {
@@ -1393,6 +1456,13 @@ async function main(): Promise<void> {
         selected: selected.length,
         skipped_indexed_cas_keys: skippedIndexedStorageKeys,
         concurrency: args.concurrency,
+      },
+    }),
+    ...(args.dedupeSnapshot === null ? {} : {
+      dedupe: {
+        snapshot: args.dedupeSnapshot.slice(ROOT.length + 1),
+        indexed_cas_keys_in_union: indexedStorageKeys.size,
+        skipped_duplicate_cas_keys: skippedIndexedStorageKeys,
       },
     }),
     ...(args.unverdictList === null ? {} : {
