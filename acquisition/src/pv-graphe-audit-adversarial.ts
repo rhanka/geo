@@ -303,7 +303,7 @@ function markdown(report: Record<string, unknown>): string {
   const ownership = report.ownership_audit as { readonly zones: { readonly passed: number; readonly sample_size: number }; readonly lots: { readonly passed: number; readonly sample_size: number }; readonly outside_municipality: readonly unknown[] };
   const citations = report.citation_relocalization as { readonly passed: number; readonly sample_size: number; readonly failures: readonly unknown[] };
   const dates = report.meeting_date_verbatim as { readonly passed: number; readonly sample_size: number; readonly failures: readonly unknown[] };
-  const regulations = report.regulation_legal_quality as { readonly total: number; readonly with_legal_quality: number; readonly silent: number; readonly unsafe_non_adopted_as_adopted: readonly { readonly municipality_slug: string; readonly label: string; readonly quote: string; readonly citation: CitationVerification }[]; readonly quality_distribution: Readonly<Record<string, number>> };
+  const regulations = report.regulation_legal_quality as { readonly total: number; readonly with_legal_quality: number; readonly silent: number; readonly rejected_pdf_anchors: readonly unknown[]; readonly unsafe_non_adopted_as_adopted: readonly { readonly municipality_slug: string; readonly label: string; readonly quote: string; readonly citation: CitationVerification }[]; readonly stale_reported_non_adopted_as_adopted: readonly unknown[]; readonly quality_distribution: Readonly<Record<string, number>>; readonly replay_partition: Readonly<Record<string, number>> };
   const zero = report.zero_node_documents as { readonly total: number; readonly findings: readonly ZeroNodeFinding[] };
   const zeroLines = zero.findings.map((finding) => `- \`${finding.municipality_slug}\` · \`${finding.storage_key}\` — ${finding.reason}`).join("\n");
   const zeroSummary = zero.total === 0 ? "aucun texte muet" : `textes présents et non vides dans les ${zero.total} cas`;
@@ -314,7 +314,7 @@ function markdown(report: Record<string, unknown>): string {
     + `Généré en UTC: ${report.generated_at}\n\n`
     + `- Appariements municipaux: Zones ${ownership.zones.passed}/${ownership.zones.sample_size}; lots ${ownership.lots.passed}/${ownership.lots.sample_size}; hors municipalité: ${ownership.outside_municipality.length}.\n`
     + `- Citations relocalisables: ${citations.passed}/${citations.sample_size}; échecs: ${citations.failures.length}. Dates verbatim: ${dates.passed}/${dates.sample_size}; échecs: ${dates.failures.length}.\n`
-    + `- Regulations: ${regulations.with_legal_quality}/${regulations.total} portent une qualité; muettes: ${regulations.silent}; qualités: ${Object.entries(regulations.quality_distribution).map(([key, value]) => `${key}=${value}`).join(", ")}; non-adopté marqué ADOPTE: ${regulations.unsafe_non_adopted_as_adopted.length}.\n`
+    + `- Regulations: qualité juridique ${regulations.with_legal_quality}/${regulations.total}; muettes: ${regulations.silent}; partition de replay: ${Object.entries(regulations.replay_partition).map(([key, value]) => `${key}=${value}`).join(", ")}; non-adopté marqué ADOPTE au replay: ${regulations.unsafe_non_adopted_as_adopted.length}; étiquettes historiques à régénérer: ${regulations.stale_reported_non_adopted_as_adopted.length}.\n`
     + `- Documents muets: ${zero.total}; ${zeroSummary}.\n\n`
     + `## Documents muets\n\n${zeroLines}\n`
     + `\n## Signaux réglementaires à corriger\n\n${regulationLines}\n`;
@@ -450,15 +450,30 @@ function main(): void {
   const dateFailures = dateSample.filter((entry) => !entry.label_is_verbatim_in_quote || !entry.citation.quote_matches_source_line);
 
   const regulations = entities.filter((row) => row.entity_type === "Regulation");
-  const validQualities = new Set(["ADOPTE", "PROJET", "PREMIER_PROJET", "SECOND_PROJET", "AVIS_APPROBATION_REFERENDAIRE", "VERSION_ADMINISTRATIVE", "CODIFICATION", "INCONNUE"]);
+  const validQualities = new Set(["ADOPTE", "PROJET", "PREMIER_PROJET", "SECOND_PROJET", "AVIS_DE_MOTION", "ADOPTION_MENTIONNEE", "AVIS_APPROBATION_REFERENDAIRE", "DEPOT_CERTIFICAT", "CERTIFICAT_CONFORMITE", "ENTREE_EN_VIGUEUR", "VERSION_ADMINISTRATIVE", "CODIFICATION", "INCONNUE"]);
   const qualityDistribution: Record<string, number> = {};
   const silentRegulations: EntityRow[] = [];
   const invalidRegulationQualities: EntityRow[] = [];
+  const rejectedPdfAnchors: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly quote: string; readonly reason: string }> = [];
   const requalifiedRegulations: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly reported_legal_quality: string | null; readonly replayed_legal_quality: string }> = [];
   const unsafeRegulations: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly legal_quality: string; readonly quote: string; readonly citation: CitationVerification }> = [];
+  const staleReportedUnsafeRegulations: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly legal_quality: string; readonly quote: string; readonly citation: CitationVerification }> = [];
   for (const regulation of regulations) {
     const reportedQuality = regulation.entity.legal_quality ?? null;
-    const quality = classifyRegulationLegalQuality(regulation.entity.citation.quote ?? "", regulation.entity.label);
+    const source = sourceText(sourcePathFor(regulation.document, regulation.document.document.source_file));
+    let quality: string;
+    try {
+      quality = classifyRegulationLegalQuality(source.lines.join("\n"), regulation.entity.label);
+    } catch (error: unknown) {
+      rejectedPdfAnchors.push({
+        storage_key: regulation.document.document.storage_key,
+        municipality_slug: regulation.document.document.slug,
+        label: regulation.entity.label,
+        quote: regulation.entity.citation.quote ?? "",
+        reason: error instanceof Error ? error.message : String(error),
+      });
+      continue;
+    }
     if (!reportedQuality) silentRegulations.push(regulation);
     qualityDistribution[quality] = (qualityDistribution[quality] ?? 0) + 1;
     if (!validQualities.has(quality)) invalidRegulationQualities.push(regulation);
@@ -471,18 +486,39 @@ function main(): void {
         replayed_legal_quality: quality,
       });
     }
-    const quote = normalized(regulation.entity.citation.quote ?? "");
-    const nonAdoptedContext = /\b(?:premier|1er|1e|1eme|second|deuxieme|2e|2eme) projet\b|\bprojet de\b|\bavis d approbation referendaire\b|\bversion administrative\b|\bcodification\b/u.test(quote);
-    if (quality === "ADOPTE" && nonAdoptedContext) {
+    const clause = regulation.entity.citation.quote ?? "";
+    const quote = normalized(clause);
+    const nonAdoptedContext = /\b(?:premier|1er|1e|1eme|second|deuxieme|2e|2eme) projet\b|\bprojet de\b|\bavis (?:d approbation referendaire|de motion)\b|\b(?:version administrative|codification|depot (?:d un |du |d )?certificat|certificat de conformite|entree en vigueur|en vigueur)\b/u.test(quote);
+    const clauseQuality = classifyRegulationLegalQuality(clause, regulation.entity.label);
+    if (clauseQuality === "ADOPTE" && nonAdoptedContext) {
       unsafeRegulations.push({
         storage_key: regulation.document.document.storage_key,
         municipality_slug: regulation.document.document.slug,
         label: regulation.entity.label,
-        legal_quality: quality,
+        legal_quality: clauseQuality,
         quote: regulation.entity.citation.quote ?? "",
         citation: verifyCitation(regulation.document, regulation.entity.citation),
       });
     }
+    if (reportedQuality === "ADOPTE" && nonAdoptedContext) {
+      staleReportedUnsafeRegulations.push({
+        storage_key: regulation.document.document.storage_key,
+        municipality_slug: regulation.document.document.slug,
+        label: regulation.entity.label,
+        legal_quality: reportedQuality,
+        quote: regulation.entity.citation.quote ?? "",
+        citation: verifyCitation(regulation.document, regulation.entity.citation),
+      });
+    }
+  }
+
+  const replayPartition = {
+    ...qualityDistribution,
+    ANCRE_PDF_REJETEE: rejectedPdfAnchors.length,
+  };
+  const replayPartitionTotal = Object.values(replayPartition).reduce((total, count) => total + count, 0);
+  if (replayPartitionTotal !== regulations.length) {
+    throw new Error(`partition de replay réglementaire incomplète: ${replayPartitionTotal}/${regulations.length}`);
   }
 
   const zeroNodeDocuments = loadedDocuments.filter((document) => (document.document.graphify.nodes ?? 0) === 0)
@@ -544,12 +580,15 @@ function main(): void {
     },
     regulation_legal_quality: {
       total: regulations.length,
-      with_legal_quality: regulations.length - silentRegulations.length,
+      with_legal_quality: regulations.length - silentRegulations.length - rejectedPdfAnchors.length,
       silent: silentRegulations.length,
+      rejected_pdf_anchors: rejectedPdfAnchors,
       invalid_quality_values: invalidRegulationQualities.map((row) => ({ storage_key: row.document.document.storage_key, municipality_slug: row.document.document.slug, label: row.entity.label, legal_quality: row.entity.legal_quality ?? null })),
       quality_distribution: qualityDistribution,
+      replay_partition: replayPartition,
       requalified_from_report: requalifiedRegulations,
       unsafe_non_adopted_as_adopted: unsafeRegulations,
+      stale_reported_non_adopted_as_adopted: staleReportedUnsafeRegulations,
     },
     zero_node_documents: {
       total: zeroNodeDocuments.length,

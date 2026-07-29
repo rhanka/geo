@@ -99,6 +99,7 @@ export type RegulationLegalQuality =
   | "PREMIER_PROJET"
   | "SECOND_PROJET"
   | "AVIS_DE_MOTION"
+  | "ADOPTION_MENTIONNEE"
   | "AVIS_APPROBATION_REFERENDAIRE"
   | "DEPOT_CERTIFICAT"
   | "CERTIFICAT_CONFORMITE"
@@ -349,11 +350,18 @@ function resolutionEvidence(lines: readonly SourceLine[]): ResolutionEvidence[] 
   return found;
 }
 
-// A prefix is either attached to its digits (`RV26`) or separated by a code
-// operator (`R-2026`).  A free-standing word before a number is never a code:
-// without that restriction `Règlement de 19` becomes the fabricated `DE 19`.
-const REGULATION_REFERENCE = /\br[èe]glement\b\s*(?:n(?:um[ée]ro)?[°o]?\s*)?((?:[A-Z]{1,5}(?:[-./]\s*)?\d{1,6}|\d{1,6})(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
+const REGULATION_REFERENCE = /\br[èe]glement\b\s*(?:n(?:um[ée]ro)?[°o]?\s*)?((?:[A-Z]{1,5}\s*(?:[./-]\s*)?\d{1,6}|\d{1,6})(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
 const REGULATION_DATE_CONTINUATION = new RegExp(`^\\s+(?:${MONTH})\\b`, "iu");
+const REGULATION_CODE_PREFIXES = new Set(["R", "RV", "SQ", "PU"]);
+
+function isAcceptedRegulationCode(value: string): boolean {
+  const prefix = /^([A-Za-z]+)\s*(?:[./-]\s*)?\d/u.exec(value)?.[1];
+  if (prefix === undefined) return true;
+  // PDF text can turn prose such as `de 19` into a fake code.  The closed
+  // prefix set preserves the established `R`, `RV`, `SQ`, and `PU` forms
+  // while refusing words (even when a heading happens to be uppercase).
+  return REGULATION_CODE_PREFIXES.has(prefix.toLocaleUpperCase("fr-CA"));
+}
 
 function hasRegulationReference(line: string): boolean {
   return line.matchAll(REGULATION_REFERENCE).next().done === false;
@@ -383,9 +391,12 @@ function regulationQuality(line: string, regulationOffset: number, contextAfter 
   }
   if (/\bversion administrative (?:de|du|d) $/u.test(before)) return "VERSION_ADMINISTRATIVE";
   if (/\bcodification (?:de|du|d) $/u.test(before)) return "CODIFICATION";
-  if (/\badoption (?:de|du|d|le|la|les|un|une) $/u.test(before)) return "ADOPTE";
-  if (/\badoption $/u.test(before) && !/\bavis d adoption $/u.test(before)) return "ADOPTE";
-  if (/\b(?:adopter|adopte) (?:de|du|d|le|la|les|un|une) $/u.test(before)) return "ADOPTE";
+  // A heading or proposed wording that merely mentions adoption is kept
+  // distinct from the established affirmative adoption clauses below.
+  if (/\badoption(?: (?:de|d|le|la|les|un|une))? $/u.test(before) || /\b(?:adopter|adopte) (?:de|du|d|le|la|les|un|une) $/u.test(before)) {
+    return "ADOPTION_MENTIONNEE";
+  }
+  if (/\badoption du $/u.test(before)) return "ADOPTE";
   if (/\bsera? adopte\b/u.test(after) || /\bseront adoptes\b/u.test(after)) return "INCONNUE";
   if (/\badopte(?:e|es|er)?\b/u.test(after)) return "ADOPTE";
   return "INCONNUE";
@@ -404,7 +415,7 @@ function qualityFromAdjacentLines(
   if (previous && !hasRegulationReference(previous.text)) {
     const joined = `${previous.text}\n${current.text}`;
     const quality = regulationQuality(joined, previous.text.length + 1 + regulationOffset);
-    if (quality !== "INCONNUE") return { quality, statusLine: previous };
+    if (quality !== "INCONNUE" && quality !== "ADOPTE") return { quality, statusLine: previous };
   }
 
   const next = lines[lineIndex + 1];
@@ -413,7 +424,7 @@ function qualityFromAdjacentLines(
     // This wider range is limited to the immediately adjacent physical line;
     // it lets a PDF-wrapped status finish after a long regulation title.
     const quality = regulationQuality(joined, regulationOffset, 400);
-    if (quality !== "INCONNUE") return { quality, statusLine: next };
+    if (quality !== "INCONNUE" && quality !== "ADOPTE") return { quality, statusLine: next };
   }
   return { quality: "INCONNUE", statusLine: current };
 }
@@ -429,7 +440,7 @@ function rawRegulationEvidence(lines: readonly SourceLine[]): RegulationEvidence
       // rejoin physical lines and never emit the left fragment as a code.
       const hasDanglingCodeOperator = /^\s*[-‐‑‒–—―]\s*$/u.test(afterReference);
       const isDayOfMonth = REGULATION_DATE_CONTINUATION.test(afterReference);
-      if (verbatim && offset >= 0 && !hasDanglingCodeOperator && !isDayOfMonth) {
+      if (verbatim && offset >= 0 && isAcceptedRegulationCode(verbatim) && !hasDanglingCodeOperator && !isDayOfMonth) {
         const classified = qualityFromAdjacentLines(lines, lineIndex, offset);
         found.push({ line, statusLine: classified.statusLine, verbatim, quality: classified.quality });
       }
@@ -440,9 +451,10 @@ function rawRegulationEvidence(lines: readonly SourceLine[]): RegulationEvidence
 
 /**
  * A document may mention one exact regulation before its agenda item later
- * names the same regulation's status.  Keep the last explicit status for that
- * exact normalized code only; this is a document-local consolidation, never a
- * prefix, neighbour, or hyphen-fragment resolution.
+ * names the same regulation's procedural status.  A bare initial occurrence
+ * can inherit only a later non-adoption status for that exact normalized code:
+ * distant adoption wording is not evidence that the bare mention was adopted.
+ * This is never a prefix, neighbour, or hyphen-fragment resolution.
  */
 function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] {
   const grouped = new Map<string, RegulationEvidence[]>();
@@ -452,8 +464,11 @@ function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] 
     values.push(evidence);
     grouped.set(code, values);
   }
-  return [...grouped.values()]
-    .map((evidences) => [...evidences].reverse().find((evidence) => evidence.quality !== "INCONNUE") ?? evidences[0]!);
+  return [...grouped.values()].map((evidences) => {
+    const first = evidences[0]!;
+    if (first.quality !== "INCONNUE") return first;
+    return [...evidences].reverse().find((evidence) => evidence.quality !== "INCONNUE" && evidence.quality !== "ADOPTE") ?? first;
+  });
 }
 
 /**

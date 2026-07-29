@@ -220,7 +220,7 @@ describe("PV deterministic Graphify semantic extraction", () => {
     expect(classifyRegulationLegalQuality(
       "ADOPTION - RÈGLEMENT NUMÉRO 1953-24 DÉCRÉTANT UNE DÉPENSE DE 101",
       "1953-24",
-    )).toBe("ADOPTE");
+    )).toBe("ADOPTION_MENTIONNEE");
     // work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt:2509
     expect(classifyRegulationLegalQuality(
       "0277/03/26 Dépôt d'un certificat relatif au règlement no RV26-5821 décrétant des",
@@ -231,6 +231,15 @@ describe("PV deterministic Graphify semantic extraction", () => {
       "      règlement 006-2025 (Domaine du stade).",
       "Projet de règlement 006-2025.",
     ].join("\n"), "006-2025")).toBe("PROJET");
+    // work/graphify/pv-semantic-20260728T215541Z/abercorn/6e7440290da2.pdf/input/document.txt:27,144
+    expect(classifyRegulationLegalQuality([
+      "3.1. Règlement numéro 397-2026 concernant l’imposition de la taxe",
+      "D’adopter le Règlement numéro 397-2026 concernant l’imposition de la taxe",
+    ].join("\n"), "397-2026")).toBe("ADOPTION_MENTIONNEE");
+    expect(classifyRegulationLegalQuality([
+      "Règlement numéro 991-2026 concernant la tarification.",
+      "Il est adopté après la période de questions.",
+    ].join("\n"), "991-2026")).toBe("INCONNUE");
     // work/graphify/pv-semantic-20260728T181500Z/albertville/2750b3b1d90a.pdf/input/document.txt:422-423
     expect(classifyRegulationLegalQuality([
       "Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement",
@@ -241,6 +250,10 @@ describe("PV deterministic Graphify semantic extraction", () => {
   it("rejects reported PDF-hyphen fragments rather than manufacturing a regulation identifier", () => {
     // work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt:274-275
     expect(() => classifyRegulationLegalQuality("Règlement      de    19).", "de 19")).toThrow("absente");
+    expect(() => classifyRegulationLegalQuality("Règlement - 2014.", "-2014")).toThrow("absente");
+    expect(classifyRegulationLegalQuality("MODIFIANT LE RÈGLEMENT SQ 2021-005", "SQ 2021-005")).toBe("INCONNUE");
+    expect(classifyRegulationLegalQuality("Règlement RV-2026 modifiant le règlement précédent", "RV-2026")).toBe("INCONNUE");
+    expect(classifyRegulationLegalQuality("règlement r-2026 modifiant le règlement précédent", "R-2026")).toBe("INCONNUE");
 
     const result = extract([
       "MUNICIPALITÉ D’ALBERTVILLE",
