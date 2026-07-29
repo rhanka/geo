@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  assertContiguousWorklistLots,
   assertPvBacklogWorklistBytes,
   captureBacklogCronManifest,
   captureBacklogJobManifest,
@@ -48,6 +49,11 @@ function manifest(lots = 2) {
 }
 
 describe("PV capture backlog", () => {
+  it("accepts globally offset but contiguous worklist names", () => {
+    expect(() => assertContiguousWorklistLots([112, 113, 114, 115, 116, 117])).not.toThrow();
+    expect(() => assertContiguousWorklistLots([112, 114])).toThrow("non contiguë");
+  });
+
   it("refuses an entirely captured resumed lot instead of serving it again", () => {
     const targets = [{
       slug: "alpha",

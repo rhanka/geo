@@ -147,6 +147,19 @@ export function worklistKey(id: string, lot: number): string {
   return `registry/capture-worklists/${id}/lot-${lot.toString().padStart(4, "0")}.json`;
 }
 
+/**
+ * Les numéros de fichier conservent l'offset global du plan (0112, …), tandis
+ * qu'une nouvelle campagne numérote ses Jobs de 1. La seule contrainte de
+ * publication est donc une suite ascendante sans trou, pas un départ à 1.
+ */
+export function assertContiguousWorklistLots(lots: readonly number[]): void {
+  const first = lots[0];
+  if (first === undefined || !Number.isInteger(first) || first < 1) throw new Error("numérotation de worklists invalide");
+  if (lots.some((lot, index) => !Number.isInteger(lot) || lot !== first + index)) {
+    throw new Error("numérotation de worklists non contiguë");
+  }
+}
+
 export function captureJobName(id: string, lot: number): string {
   assertCampaignId(id);
   if (!Number.isInteger(lot) || lot < 1 || lot > 9_999) throw new Error(`lot PV invalide: ${lot}`);
