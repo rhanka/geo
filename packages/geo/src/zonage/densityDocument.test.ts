@@ -13,6 +13,7 @@ import {
   parseMontTremblantPlanDensityDocument,
   parseNotreDameDeLourdesJolietteDensityDocument,
   parseSaintJeromeDensityDocument,
+  parseTresSaintRedempteurDensityDocument,
   parseVarennesDensityDocument,
   parseVarennesPpuDensityDocument,
 } from "./densityDocument.js";
@@ -234,6 +235,66 @@ describe("parseChamplainDensityDocument", () => {
       "GRILLE DE SPÉCIFICATIONS ZONE : 102 RÉSIDENTIELLE",
       "Nombre maximum de logements Largeur minimale de la façade 6m",
     ].join("\n"));
+    expect(parsed.norms).toEqual([]);
+  });
+});
+
+describe("parseTresSaintRedempteurDensityDocument", () => {
+  const owner = [
+    'MUNICIPALITÉ DE TRÈS-SAINT-RÉDEMPTEUR   Annexe "C" du règlement',
+    "GRILLE DES USAGES ET DES NORMES   de zonage numéro 155",
+  ].join("\n");
+  const positioned = (cells: Array<[number, string]>): string => {
+    const line: string[] = [];
+    for (const [column, value] of cells) {
+      while (line.length < column) line.push(" ");
+      for (const [offset, character] of [...value].entries()) line[column + offset] = character;
+    }
+    return line.join("");
+  };
+
+  it("publishes only numeric dwelling maxima under their measured zone columns", () => {
+    const parsed = parseTresSaintRedempteurDensityDocument([
+      owner,
+      positioned([[0, "ZONES"], [40, "A-1"], [50, "A-2"], [60, "RC-7"], [70, "PA-16"]]),
+      positioned([[0, "Logement / bâtiment"], [30, "max."], [40, "1"], [50, "2"], [60, "4"]]),
+    ].join("\n"));
+
+    expect(parsed).toMatchObject({
+      documentAnchored: true,
+      projectExcluded: false,
+      refusals: [],
+      norms: [
+        { zoneCode: "A-1", value: 1, unit: "logements/batiment", raw: "1", page: 1 },
+        { zoneCode: "A-2", value: 2, unit: "logements/batiment", raw: "2", page: 1 },
+        { zoneCode: "RC-7", value: 4, unit: "logements/batiment", raw: "4", page: 1 },
+      ],
+    });
+  });
+
+  it("does not shift a value into an adjacent blank zone cell", () => {
+    const parsed = parseTresSaintRedempteurDensityDocument([
+      owner,
+      positioned([[0, "ZONES"], [40, "RB-11"], [50, "Cons-"], [60, "RC-14"], [70, "PA-18"]]),
+      positioned([[50, "13"]]),
+      positioned([[0, "Logement / bâtiment"], [30, "max."], [40, "1"], [60, "3"]]),
+    ].join("\n"));
+
+    expect(parsed.norms).toEqual([
+      expect.objectContaining({ zoneCode: "RB-11", value: 1 }),
+      expect.objectContaining({ zoneCode: "RC-14", value: 3 }),
+    ]);
+  });
+
+  it("excludes a project document", () => {
+    const parsed = parseTresSaintRedempteurDensityDocument([
+      owner,
+      "PREMIER PROJET DE RÈGLEMENT",
+      positioned([[0, "ZONES"], [40, "A-1"], [50, "A-2"]]),
+      positioned([[0, "Logement / bâtiment"], [30, "max."], [40, "1"], [50, "1"]]),
+    ].join("\n"));
+
+    expect(parsed.projectExcluded).toBe(true);
     expect(parsed.norms).toEqual([]);
   });
 });

@@ -292,37 +292,36 @@ function positionedZoneCodes(lines: readonly string[]): PositionedCode[] {
 
   const headerLines = lines.slice(zonesLine, zonesLine + 8);
   const complete = headerLines.flatMap((line) =>
-    [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-\d{1,4}(?:[.-][A-Z0-9]+)*)/gu)]
+    [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-\d{1,4}(?:[.-][A-Z0-9]+)*)/giu)]
       .map((match) => ({
         code: normalizedHeaderZoneCode(match[1]!),
         center: (match.index ?? 0) + Math.floor(match[0].length / 2),
       }))
   );
-  if (complete.length > 0) {
-    return [...new Map(
-      complete
-        .sort((left, right) => left.center - right.center)
-        .map((positioned) => [positioned.code, positioned]),
-    ).values()];
-  }
+  const positioned = [...complete];
 
   for (const [lineIndex, line] of headerLines.entries()) {
     const prefixes =
-      [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-)(?=\s|$)/gu)];
+      [...line.matchAll(/([A-ZÀ-ÖØ-Þ]{1,4}-)(?=\s|$)/giu)];
     if (prefixes.length === 0) continue;
     for (const numberLine of headerLines.slice(lineIndex + 1)) {
       const numbers = [...numberLine.matchAll(/\b(\d{1,4})\b/g)];
       if (numbers.length !== prefixes.length) continue;
-      return prefixes.map((prefix, index) => {
+      positioned.push(...prefixes.map((prefix, index) => {
         const number = numbers[index]!;
         return {
           code: `${normalizedHeaderZoneCode(prefix[1]!)}${number[1]!}`,
           center: (number.index ?? 0) + Math.floor(number[0].length / 2),
         };
-      });
+      }));
+      break;
     }
   }
-  return [];
+  return [...new Map(
+    positioned
+      .sort((left, right) => left.center - right.center)
+      .map((positioned) => [positioned.code, positioned]),
+  ).values()];
 }
 
 function cellAtCenters(
@@ -339,6 +338,65 @@ function cellAtCenters(
     : Math.floor((previous + center) / 2);
   const end = next === undefined ? line.length : Math.floor((center + next) / 2);
   return line.slice(start, end).trim();
+}
+
+/**
+ * Très-Saint-Rédempteur — the original Annex C of zoning by-law 155 prints
+ * several exact zone codes in columns and one "Logement / bâtiment max." row.
+ * Blank cells stay absent; a value is never borrowed from a neighbouring
+ * column.
+ */
+export function parseTresSaintRedempteurDensityDocument(
+  text: string,
+): DensityDocumentParseResult {
+  const family = "tres-saint-redempteur-155-annexe-c";
+  const documentAnchored =
+    /MUNICIPALIT[ÉE]\s+DE\s+TR[ÈE]S-SAINT-R[ÉE]DEMPTEUR/i.test(text)
+    && /Annexe\s*["«]?C["»]?\s+du\s+r[èe]glement/i.test(text)
+    && /de\s+zonage\s+num[ée]ro\s+155/i.test(text)
+    && /GRILLE\s+DES\s+USAGES\s+ET\s+DES\s+NORMES/i.test(text);
+  const projectExcluded = hardProjectMarker(text);
+  const readings: VerbatimDensityNorm[] = [];
+  const refusals: DensityNormRefusal[] = [];
+
+  for (const [pageIndex, pageText] of pages(text).entries()) {
+    const page = pageIndex + 1;
+    const lines = pageText.split(/\r?\n/);
+    const codes = positionedZoneCodes(lines);
+    if (codes.length === 0) continue;
+    const densityLine = lines.find((line) =>
+      /Logement\s*\/\s*b[âa]timent\s+max\./i.test(line)
+    );
+    if (!densityLine) continue;
+    const label = /Logement\s*\/\s*b[âa]timent\s+max\./i.exec(densityLine);
+    if (!label || label.index === undefined) continue;
+    const labelEnd = label.index + label[0].length;
+
+    for (const [index, zone] of codes.entries()) {
+      const raw = cellAtCenters(densityLine, labelEnd, codes, index);
+      if (raw === "") continue;
+      const value = decimal(raw);
+      const proof = `Logement / bâtiment max. ${raw}`;
+      if (value === null) {
+        refusals.push({
+          page,
+          zoneCode: zone.code,
+          reason: "maximum-non-numerique",
+          proof,
+        });
+        continue;
+      }
+      readings.push({
+        zoneCode: zone.code,
+        value,
+        unit: "logements/batiment",
+        raw,
+        proof,
+        page,
+      });
+    }
+  }
+  return consolidate(family, documentAnchored, projectExcluded, readings, refusals);
 }
 
 /**
