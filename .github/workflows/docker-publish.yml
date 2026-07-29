@@ -119,3 +119,77 @@ jobs:
             tag="${source_ref##*:}"
             docker buildx imagetools create --tag "${GHCR_IMAGE}:${tag}" "${source_ref}"
           done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # geo-capture — le runner de capture qui tourne sur le cluster.
+  #
+  # ⚠️ CETTE IMAGE N'AVAIT AUCUN PIPELINE. Celle que le cluster executait,
+  # `rg.fr-par.scw.cloud/sentropic-geo/geo-capture:6140585ed14a-pvbacklog-v1`,
+  # avait ete construite A LA MAIN et poussee sur Scaleway. Consequence: elle est
+  # restee bloquee sur du code ANTERIEUR au correctif df491b69 (serialisation des
+  # Lease en microtime), et ses CronJobs echouaient en HTTP 400 toutes les deux
+  # minutes sans que personne ne puisse les mettre a jour de facon rejouable.
+  # C'est la meme maladie que le CronJob `geo-pv-backlog` disparu du namespace et
+  # que le quota absent du depot: du reel qui n'existe nulle part en versionne.
+  #
+  # ⭐ GHCR UNIQUEMENT, PAS DE SCALEWAY. Personne ne tire encore cette image
+  # depuis Scaleway; la doubler recreerait exactement la dependance croisee que le
+  # proprietaire demande de fermer. Une image neuve n'a aucune raison de naitre du
+  # mauvais cote.
+  #
+  # Job SEPARE et non matrice avec geo-api: l'equipe k8s demande que le passage de
+  # geo-api a GHCR soit une PR distincte, apres que sa bascule kubeconfig soit
+  # verte. Les melanger ferait basculer les deux ensemble.
+  build-and-push-capture:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+      image: ghcr.io/rhanka/geo-capture
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Le SHA court, jamais `:latest` seul. Un tag mouvant peut pointer ailleurs
+      # demain sans que rien ne le signale — c'est ce qui tient sentropic-preprod
+      # en panne. Le deploiement, lui, s'epingle PAR DIGEST (sortie `digest`).
+      - name: Compute capture image tag
+        id: tags
+        run: |
+          short="$(git rev-parse --short HEAD)"
+          requested="${{ inputs.tag }}"
+          tag="${requested:-$short}"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "tags=ghcr.io/rhanka/geo-capture:${tag}" >> "$GITHUB_OUTPUT"
+          echo "Will build: ghcr.io/rhanka/geo-capture:${tag}"
+
+      - name: Build and push geo-capture
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./deploy/capture-job/Dockerfile
+          platforms: linux/amd64
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+          tags: ${{ steps.tags.outputs.tags }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Le digest est ce qu'on epingle dans les manifestes. L'afficher ici evite
+      # d'avoir a le retrouver a la main dans les logs du build.
+      - name: Report immutable digest
+        run: |
+          echo "ghcr.io/rhanka/geo-capture@${{ steps.build.outputs.digest }}"
