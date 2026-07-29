@@ -7,16 +7,15 @@
  * `dedup: false`; if the manifest is absent, the result is null, never zero.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
-import { basename, dirname, relative, resolve } from "node:path";
+import { basename, relative, resolve } from "node:path";
 
+import { CaptureRunHeaderSchema, CaptureManifestLineSchema, type CaptureManifestLine, type CaptureRunHeader } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, objectHead, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(import.meta.dirname, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
 const MAX_BYTES = 5 * 1024 * 1024;
 const TARGET_PV_URLS = 45_751;
-
-type JsonObject = Record<string, unknown>;
 
 interface ClassifiedLine {
   manifest_key: string;
@@ -38,26 +37,8 @@ interface ClassificationReport {
   lines: unknown;
 }
 
-interface ManifestLine extends JsonObject {
-  url?: unknown;
-  storage_key?: unknown;
-  dedup?: unknown;
-  source?: unknown;
-  run_id?: unknown;
-  requested_at?: unknown;
-  retrieved_at?: unknown;
-  http_status?: unknown;
-  slugs?: unknown;
-}
-
-interface RunHeader extends JsonObject {
-  run_id?: unknown;
-  worklist?: unknown;
-  started_at?: unknown;
-  finished_at?: unknown;
-  exit_code?: unknown;
-  counts?: JsonObject;
-}
+type ManifestLine = CaptureManifestLine;
+type RunHeader = CaptureRunHeader;
 
 interface LoadedReport {
   path: string;
@@ -71,6 +52,18 @@ interface ObjectRead {
   present: boolean;
   bytes: number | null;
   value: string | null;
+}
+
+interface MarginalYieldRow extends Record<string, unknown> {
+  lot: string;
+  kind: "pv_probable" | "ordre_du_jour";
+  campaign: string;
+  chronological_started_at: string | null;
+  url_attempted: number;
+  confirmed_at_opening: number;
+  cas_keys_new: number | null;
+  new_cas_per_attempted_url: number | null;
+  municipalities: Array<Record<string, unknown>>;
 }
 
 function assertSmall(path: string, bytes: number): void {
@@ -101,16 +94,12 @@ function parseManifest(text: string, key: string): ManifestLine[] {
   const lines: ManifestLine[] = [];
   for (const [index, raw] of text.split(/\r?\n/).entries()) {
     if (!raw.trim()) continue;
-    let parsed: unknown;
     try {
-      parsed = JSON.parse(raw) as unknown;
+      const parsed: unknown = JSON.parse(raw);
+      lines.push(CaptureManifestLineSchema.parse(parsed));
     } catch (error) {
-      throw new Error(`${key}:${index + 1}: JSON invalide: ${String(error)}`);
+      throw new Error(`${key}:${index + 1}: ligne de manifeste invalide: ${String(error)}`);
     }
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      throw new Error(`${key}:${index + 1}: ligne non-objet`);
-    }
-    lines.push(parsed as ManifestLine);
   }
   return lines;
 }
@@ -271,23 +260,43 @@ async function main(): Promise<void> {
   const runCache = new Map<string, RunHeader | null>();
 
   async function manifest(key: string): Promise<ManifestLine[] | null> {
-    if (manifestCache.has(key)) return manifestCache.get(key)!;
+    const cached = manifestCache.get(key);
+    if (cached !== undefined) return cached;
+    if (manifestCache.has(key)) return null;
     const read = await readSmallObject(s3, key);
-    const value = read.present ? parseManifest(read.value!, key) : null;
+    if (!read.present) {
+      manifestCache.set(key, null);
+      return null;
+    }
+    if (read.value === null) throw new Error(`${key}: contenu du manifeste absent`);
+    const value = parseManifest(read.value, key);
     manifestCache.set(key, value);
     return value;
   }
 
   async function runHeader(manifestKey: string): Promise<RunHeader | null> {
     const key = `${manifestKey.slice(0, -"manifest.jsonl".length)}run.json`;
-    if (runCache.has(key)) return runCache.get(key)!;
+    const cached = runCache.get(key);
+    if (cached !== undefined) return cached;
+    if (runCache.has(key)) return null;
     const read = await readSmallObject(s3, key);
-    const value = read.present ? JSON.parse(read.value!) as RunHeader : null;
+    if (!read.present) {
+      runCache.set(key, null);
+      return null;
+    }
+    if (read.value === null) throw new Error(`${key}: contenu de l'en-tête absent`);
+    let value: RunHeader;
+    try {
+      const parsed: unknown = JSON.parse(read.value);
+      value = CaptureRunHeaderSchema.parse(parsed);
+    } catch (error) {
+      throw new Error(`${key}: en-tête run invalide: ${String(error)}`);
+    }
     runCache.set(key, value);
     return value;
   }
 
-  const rows: Array<Record<string, unknown>> = [];
+  const rows: MarginalYieldRow[] = [];
   for (const report of reports) {
     const name = basename(report.path);
     const kind = reportKind(name);

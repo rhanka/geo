@@ -164,7 +164,7 @@ async function main(): Promise<void> {
       casKeys.add(line.storage_key as string);
       const manifestKey = line.manifest_key as string;
       const manifestLineByIndex = manifestByClassification.get(lineKey(manifestKey, line.line_index as number));
-      const manifestLine = manifestLineByIndex?.url === line.url && manifestLineByIndex.storage_key === line.storage_key
+      const manifestLine = manifestLineByIndex !== undefined && manifestLineByIndex.url === line.url && manifestLineByIndex.storage_key === line.storage_key
         ? manifestLineByIndex
         : manifestByClassification.get(urlKey(manifestKey, line.url as string));
       if (!manifestLine) throw new Error(`ligne de classification absente du manifeste: ${line.manifest_key}:${line.line_index}`);
