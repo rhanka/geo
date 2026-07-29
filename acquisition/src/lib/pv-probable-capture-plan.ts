@@ -19,6 +19,15 @@ export interface PvCaptureTarget {
   readonly urls: readonly [string];
 }
 
+export interface PvTerritorialCaptureSelection {
+  readonly targets: readonly PvCaptureTarget[];
+  /** Municipalités de référence, sans exception MRC ou nom affiché. */
+  readonly municipalitySlugs: ReadonlySet<string>;
+  /** Municipalités qui ont déjà au moins un PV indexé dans la partition fermée. */
+  readonly coveredMunicipalitySlugs: ReadonlySet<string>;
+  readonly count: number;
+}
+
 /**
  * Version observable d'un index PV S3. L'ETag et la date font partie du
  * snapshot: deux contenus différents sous la même clé ne sont pas un même
@@ -114,6 +123,61 @@ export function planPvProbableTargets(scans: readonly PvIndexSnapshot[]): PvCapt
     planned.push({ slug, source: "pv-index", urls: [url] });
   }
   return planned.sort((left, right) => left.slug.localeCompare(right.slug) || left.urls[0].localeCompare(right.urls[0]));
+}
+
+/**
+ * Maximises territorial opening before document volume: one candidate is taken
+ * for every municipality without an indexed PV before a second candidate from
+ * any municipality is considered. Within an equally valuable tier, the
+ * already deterministic PV plan order is preserved.
+ */
+export function selectPvProbableTargetsForUncoveredMunicipalities(
+  selection: PvTerritorialCaptureSelection,
+): PvCaptureTarget[] {
+  if (!Number.isInteger(selection.count) || selection.count < 1) {
+    throw new Error("nombre de cibles territoriales PV invalide");
+  }
+  const municipalities = new Set(selection.municipalitySlugs);
+  if (municipalities.size === 0) throw new Error("référentiel municipal PV vide");
+  const covered = new Set(selection.coveredMunicipalitySlugs);
+  for (const slug of covered) {
+    if (!municipalities.has(slug)) throw new Error(`municipalité couverte hors référentiel: ${slug}`);
+  }
+  const bySlug = new Map<string, PvCaptureTarget[]>();
+  for (const target of selection.targets) {
+    if (!municipalities.has(target.slug)) throw new Error(`cible PV hors référentiel municipal: ${target.slug}`);
+    const targets = bySlug.get(target.slug) ?? [];
+    targets.push(target);
+    bySlug.set(target.slug, targets);
+  }
+  const uncovered = [...municipalities].filter((slug) => !covered.has(slug)).sort();
+  const result: PvCaptureTarget[] = [];
+  const append = (target: PvCaptureTarget): boolean => {
+    if (result.length === selection.count) return false;
+    result.push(target);
+    return result.length < selection.count;
+  };
+
+  // The first pass is the territorial objective itself: each selected target
+  // opens a currently uncovered municipality whenever such a candidate exists.
+  for (const slug of uncovered) {
+    const first = bySlug.get(slug)?.[0];
+    if (first !== undefined && !append(first)) return result;
+  }
+  // Preserve the same priority when the requested campaign is larger than the
+  // number of available municipalities: exhaust additional candidates from
+  // uncovered municipalities before returning to already covered territory.
+  for (const slug of uncovered) {
+    for (const target of bySlug.get(slug)?.slice(1) ?? []) {
+      if (!append(target)) return result;
+    }
+  }
+  for (const slug of [...covered].sort()) {
+    for (const target of bySlug.get(slug) ?? []) {
+      if (!append(target)) return result;
+    }
+  }
+  throw new Error(`cibles PV territoriales insuffisantes: ${result.length}/${selection.count}`);
 }
 
 export function splitPvCaptureTargets(targets: readonly PvCaptureTarget[], size: number): PvCaptureTarget[][] {
