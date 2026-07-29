@@ -829,9 +829,9 @@ export async function putServedZoneAdditive(
       }
     }
   }
-  // Non-destructive backup of the current served object before overwriting. The
-  // backup key carries a suffix before `.geojson`, so it is NOT a served-zone key
-  // and the generic copy gate accepts it (single, overwriteable "before this write").
+  // Non-destructive backup of the current served object before overwriting. The backup suffix excludes this key from the producer selector (`[a-z0-9-]+`), but OGC API serves it as a collection.
+  // Measured 2026-07-29: `qc-zonage-sutton.additive-prebackup` returned HTTP 200 (95 features; 85 with `effet_densifiant` other than `inconnu`).
+  // The generic copy gate accepts it (single, overwriteable "before this write").
   if (opts.backup !== false) {
     await copyObject(s3, key, `${key.replace(/\.geojson$/, "")}.additive-prebackup.geojson`);
   }

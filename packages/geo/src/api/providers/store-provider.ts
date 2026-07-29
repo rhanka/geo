@@ -99,7 +99,8 @@ export class StoreProvider implements FeatureProvider {
       this.#indexOne(geojsonKey, keySet),
     );
     for (const entry of entries) {
-      map.set(entry.info.id, entry);
+      const existing = map.get(entry.info.id);
+      map.set(entry.info.id, existing ? selectServedEntry(existing, entry) : entry);
     }
     return map;
   }
@@ -246,6 +247,34 @@ function stemOf(geojsonKey: string): string {
   const slash = geojsonKey.lastIndexOf("/");
   const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
   return base.slice(0, -GEOJSON_SUFFIX.length);
+}
+
+type CollectionLayout = "flat" | "nested";
+
+/** The nested layout is `<slug>/<slug>.geojson`; prefixes are not layouts. */
+function collectionLayout(geojsonKey: string): CollectionLayout {
+  const lastSlash = geojsonKey.lastIndexOf("/");
+  if (lastSlash === -1) return "flat";
+  const parentStart = geojsonKey.lastIndexOf("/", lastSlash - 1) + 1;
+  const parent = geojsonKey.slice(parentStart, lastSlash);
+  return parent === stemOf(geojsonKey) ? "nested" : "flat";
+}
+
+/**
+ * Served-contract rule: when a collection exists in both layouts, use nested.
+ * Equal layouts keep the prior sorted, last-key-wins behavior.
+ */
+function selectServedEntry(
+  existing: StoreCollectionEntry,
+  candidate: StoreCollectionEntry,
+): StoreCollectionEntry {
+  if (stemOf(existing.geojsonKey) !== stemOf(candidate.geojsonKey)) return candidate;
+  const existingLayout = collectionLayout(existing.geojsonKey);
+  const candidateLayout = collectionLayout(candidate.geojsonKey);
+  if (existingLayout !== candidateLayout) {
+    return candidateLayout === "nested" ? candidate : existing;
+  }
+  return candidate;
 }
 
 async function mapLimit<T, U>(
