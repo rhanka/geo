@@ -11,6 +11,8 @@ import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSyn
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { classifyRegulationLegalQuality } from "./lib/pv-graphify-semantic.js";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
@@ -438,15 +440,23 @@ function main(): void {
   const qualityDistribution: Record<string, number> = {};
   const silentRegulations: EntityRow[] = [];
   const invalidRegulationQualities: EntityRow[] = [];
+  const requalifiedRegulations: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly reported_legal_quality: string | null; readonly replayed_legal_quality: string }> = [];
   const unsafeRegulations: Array<{ readonly storage_key: string; readonly municipality_slug: string; readonly label: string; readonly legal_quality: string; readonly quote: string; readonly citation: CitationVerification }> = [];
   for (const regulation of regulations) {
-    const quality = regulation.entity.legal_quality;
-    if (!quality) {
-      silentRegulations.push(regulation);
-      continue;
-    }
+    const reportedQuality = regulation.entity.legal_quality ?? null;
+    const quality = classifyRegulationLegalQuality(regulation.entity.citation.quote ?? "", regulation.entity.label);
+    if (!reportedQuality) silentRegulations.push(regulation);
     qualityDistribution[quality] = (qualityDistribution[quality] ?? 0) + 1;
     if (!validQualities.has(quality)) invalidRegulationQualities.push(regulation);
+    if (reportedQuality !== quality) {
+      requalifiedRegulations.push({
+        storage_key: regulation.document.document.storage_key,
+        municipality_slug: regulation.document.document.slug,
+        label: regulation.entity.label,
+        reported_legal_quality: reportedQuality,
+        replayed_legal_quality: quality,
+      });
+    }
     const quote = normalized(regulation.entity.citation.quote ?? "");
     const nonAdoptedContext = /\b(?:premier|1er|1e|1eme|second|deuxieme|2e|2eme) projet\b|\bprojet de\b|\bavis d approbation referendaire\b|\bversion administrative\b|\bcodification\b/u.test(quote);
     if (quality === "ADOPTE" && nonAdoptedContext) {
@@ -524,6 +534,7 @@ function main(): void {
       silent: silentRegulations.length,
       invalid_quality_values: invalidRegulationQualities.map((row) => ({ storage_key: row.document.document.storage_key, municipality_slug: row.document.document.slug, label: row.entity.label, legal_quality: row.entity.legal_quality ?? null })),
       quality_distribution: qualityDistribution,
+      requalified_from_report: requalifiedRegulations,
       unsafe_non_adopted_as_adopted: unsafeRegulations,
     },
     zero_node_documents: {
