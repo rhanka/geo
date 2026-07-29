@@ -210,6 +210,61 @@ describe("PV deterministic Graphify semantic extraction", () => {
     ]);
   });
 
+  it("classifies the named adversarial-report clauses without promoting procedural steps to adoption", () => {
+    // work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/f08496638483.pdf/input/document.txt:427
+    expect(classifyRegulationLegalQuality(
+      "AVIS DE MOTION - RÈGLEMENT NUMÉRO 1959-24 CRÉANT UNE RÉSERVE",
+      "1959-24",
+    )).toBe("AVIS_DE_MOTION");
+    // work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/714967e1a29d.pdf/input/document.txt:466
+    expect(classifyRegulationLegalQuality(
+      "ADOPTION - RÈGLEMENT NUMÉRO 1953-24 DÉCRÉTANT UNE DÉPENSE DE 101",
+      "1953-24",
+    )).toBe("ADOPTE");
+    // work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt:2509
+    expect(classifyRegulationLegalQuality(
+      "0277/03/26 Dépôt d'un certificat relatif au règlement no RV26-5821 décrétant des",
+      "RV26-5821",
+    )).toBe("DEPOT_CERTIFICAT");
+    // work/graphify/pv-semantic-20260728T215129Z/acton-vale/cdda0fa62055.pdf/input/document.txt:29,35
+    expect(classifyRegulationLegalQuality([
+      "      règlement 006-2025 (Domaine du stade).",
+      "Projet de règlement 006-2025.",
+    ].join("\n"), "006-2025")).toBe("PROJET");
+    // work/graphify/pv-semantic-20260728T181500Z/albertville/2750b3b1d90a.pdf/input/document.txt:422-423
+    expect(classifyRegulationLegalQuality([
+      "Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement",
+      "des matières résiduelles de la MRC de la Matapédia et de la Mitis dûment en vigueur.",
+    ].join("\n"), "2024-05")).toBe("ENTREE_EN_VIGUEUR");
+  });
+
+  it("rejects reported PDF-hyphen fragments rather than manufacturing a regulation identifier", () => {
+    // work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt:274-275
+    expect(() => classifyRegulationLegalQuality("Règlement      de    19).", "de 19")).toThrow("absente");
+
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Règlement 324-",
+      "2014.",
+    ].join("\n"));
+    expect(result.nodes.filter((node) => node.node_type === "Regulation")).toEqual([]);
+  });
+
+  it("keeps an adjacent legal-status marker as a relocalizable citation", () => {
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement",
+      "des matières résiduelles de la MRC de la Matapédia et de la Mitis dûment en vigueur.",
+    ].join("\n"));
+    const regulation = result.nodes.find((node) => node.regulation_number === "2024-05");
+
+    expect(regulation?.legal_quality).toBe("ENTREE_EN_VIGUEUR");
+    expect(regulation?.citations.map((item) => [item.source_location, item.quote])).toEqual([
+      ["input/albertville-2023-05-01.txt:line:2", "Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement"],
+      ["input/albertville-2023-05-01.txt:line:3", "des matières résiduelles de la MRC de la Matapédia et de la Mitis dûment en vigueur."],
+    ]);
+  });
+
   it("resolves zones only against the document municipality's closed served set", () => {
     const text = [
       "MUNICIPALITÉ D’ALBERTVILLE",
