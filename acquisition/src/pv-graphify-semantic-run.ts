@@ -1046,6 +1046,19 @@ async function main(): Promise<void> {
     missing: [...lotReports.values()].filter((value) => !value.served).map((value) => value.municipality_slug).sort(),
     entries: [...lotReports.values()].sort((left, right) => left.municipality_slug.localeCompare(right.municipality_slug)),
   };
+  const compactGazetteers = {
+    zones: {
+      municipalities: zoneGazetteer.municipalities,
+      zone_code_count: zoneGazetteer.zone_code_count,
+      municipalities_with_collisions: zoneGazetteer.with_collisions.map((entry) => entry.municipality_slug),
+    },
+    lots: {
+      municipalities: lotGazetteer.municipalities,
+      served_municipalities: lotGazetteer.served_municipalities,
+      total_lot_numbers: lotGazetteer.total_lot_numbers,
+      missing: lotGazetteer.missing,
+    },
+  };
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
@@ -1086,26 +1099,27 @@ async function main(): Promise<void> {
     },
     match_details: matchDetails,
     gazetteers: {
-      zones: zoneGazetteer,
-      lots: lotGazetteer,
+      ...(args.universe === null ? { zones: zoneGazetteer, lots: lotGazetteer } : compactGazetteers),
     },
     manual_verification: "UNVERIFIED",
     workspace,
     documents,
   };
   writeAtomic(args.output, report);
-  writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-zones.json"), {
-    generated_at: report.generated_at,
-    municipalities: zoneGazetteer,
-  });
-  writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-lots.json"), {
-    generated_at: report.generated_at,
-    municipalities: lotGazetteer,
-  });
-  writeAtomic(args.output.replace(/\.json$/u, "-match-details.json"), {
-    generated_at: report.generated_at,
-    details: matchDetails,
-  });
+  if (args.universe === null) {
+    writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-zones.json"), {
+      generated_at: report.generated_at,
+      municipalities: zoneGazetteer,
+    });
+    writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-lots.json"), {
+      generated_at: report.generated_at,
+      municipalities: lotGazetteer,
+    });
+    writeAtomic(args.output.replace(/\.json$/u, "-match-details.json"), {
+      generated_at: report.generated_at,
+      details: matchDetails,
+    });
+  }
   console.log(JSON.stringify({
     report: args.output.slice(ROOT.length + 1),
     selected_documents: report.selected_documents,
