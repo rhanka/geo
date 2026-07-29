@@ -9,8 +9,8 @@
  *     --campaign=pv-probable-... \
  *     --classification=work/coverage/pv-capture-octets-classification-...json
  */
-import { readFileSync, statSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 import { CaptureRunHeaderSchema, parseCaptureWorklist, parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
 import {
@@ -130,6 +130,18 @@ function parseCandidateWorklist(path: string): { path: string; urls: Set<string>
   };
 }
 
+function writeImmutableLocalReport(path: string, body: string): void {
+  const absolute = insideRepo(path);
+  if (existsSync(absolute)) {
+    const size = statSync(absolute).size;
+    if (size > MAX_LOCAL_REPORT_BYTES) throw new Error(`${path}: ${size} octets > plafond de lecture ${MAX_LOCAL_REPORT_BYTES}`);
+    if (readFileSync(absolute, "utf8") === body) return;
+    throw new Error(`refus d'écraser le rapport immuable: ${path}`);
+  }
+  mkdirSync(dirname(absolute), { recursive: true });
+  writeFileSync(absolute, body, { flag: "wx" });
+}
+
 async function submittedWorklistUrls(
   s3: ReturnType<typeof s3Client>,
   manifest: PvCaptureBacklogManifest,
@@ -228,6 +240,7 @@ async function main(): Promise<void> {
   const campaign = required("campaign");
   const classificationPaths = values("classification");
   const candidateWorklistPath = optional("candidate-worklist");
+  const submittedWorklistUrlsOut = optional("submitted-worklist-urls-out");
   const worklistIntersectionOnly = process.argv.slice(2).includes("--worklist-intersection-only");
   const s3 = s3Client();
   const manifest = JSON.parse((await getBytes(s3, campaignManifestKey(campaign))).toString("utf8")) as PvCaptureBacklogManifest;
@@ -235,6 +248,28 @@ async function main(): Promise<void> {
   if (manifest.id !== campaign || state.campaign_id !== campaign) throw new Error("manifeste ou état rattaché à une autre campagne");
   assertBacklogManifest(manifest);
   assertBacklogState(state, manifest);
+  if (submittedWorklistUrlsOut !== null) {
+    if (classificationPaths.length > 0 || candidateWorklistPath !== null || worklistIntersectionOnly) {
+      throw new Error("--submitted-worklist-urls-out ne se combine ni à une classification ni à une worklist candidate");
+    }
+    const submitted = await submittedWorklistUrls(s3, manifest, state);
+    const urls = [...submitted.urls].sort();
+    const body = `${JSON.stringify({
+      contract: "pv-capture-submitted-worklist-urls/v1",
+      campaign,
+      submitted_or_planned_lots: submitted.lotCount,
+      unique_urls: urls.length,
+      urls,
+    }, null, 2)}\n`;
+    writeImmutableLocalReport(submittedWorklistUrlsOut, body);
+    process.stdout.write(`${JSON.stringify({
+      report: submittedWorklistUrlsOut,
+      campaign,
+      submitted_or_planned_lots: submitted.lotCount,
+      unique_urls: urls.length,
+    }, null, 2)}\n`);
+    return;
+  }
   if (worklistIntersectionOnly) {
     if (classificationPaths.length > 0) throw new Error("--worklist-intersection-only ne prend pas de rapport de classification");
     if (candidateWorklistPath === null) throw new Error("--worklist-intersection-only requiert --candidate-worklist=...");
