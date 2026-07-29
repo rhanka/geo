@@ -58,6 +58,16 @@ interface Municipality {
 }
 
 interface PdfMetadata {
+  // La cle voyage AVEC la mesure. Sans elle, l'appelant ne pouvait rejoindre les
+  // deux listes que PAR POSITION — et il les a jointes dans deux ordres
+  // differents: `metadata` suit l'ordre de premiere apparition des lignes
+  // d'echec, tandis que `uniqueDocuments` re-trie les cles par `localeCompare`.
+  // Chaque document recevait donc le nombre de pages et la taille d'un AUTRE.
+  // Detecte le 2026-07-29 par une lane qui a refuse d'OCRiser des octets dont la
+  // taille ne correspondait pas a l'inventaire: 10 ecarts sur 10, dans les deux
+  // sens. Le CAS lui-meme est SAIN (30 cles sur 30 verifiees: sha256(octets) ==
+  // nom du fichier); c'est cette jointure qui mentait.
+  readonly storage_key: string;
   readonly content_length: number | null;
   readonly page_count: number | null;
   readonly pdfinfo_exit_code: number | null;
@@ -247,29 +257,30 @@ async function inspectPdf(s3: S3Client, key: string): Promise<PdfMetadata> {
   try {
     const head = await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }));
     if (!Number.isSafeInteger(head.ContentLength) || (head.ContentLength as number) < 1) {
-      return { content_length: head.ContentLength ?? null, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: null, title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "HeadObject sans taille positive" };
+      return { storage_key: key, content_length:head.ContentLength ?? null, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: null, title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "HeadObject sans taille positive" };
     }
     contentLength = head.ContentLength as number;
   } catch (error) {
-    return { content_length: null, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: compact(String(error)), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "HeadObject en échec" };
+    return { storage_key: key, content_length:null, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: compact(String(error)), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "HeadObject en échec" };
   }
   if (contentLength > MAX_FULL_OBJECT_BYTES) {
-    return { content_length: contentLength, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: null, title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "objet > 5 MiB: lecture intégrale interdite par le protocole" };
+    return { storage_key: key, content_length:contentLength, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: null, title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "objet > 5 MiB: lecture intégrale interdite par le protocole" };
   }
   let bytes: Buffer;
   try {
     bytes = await readRange(s3, key, contentLength);
   } catch (error) {
-    return { content_length: contentLength, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: compact(String(error)), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "lecture S3 en échec" };
+    return { storage_key: key, content_length:contentLength, page_count: null, pdfinfo_exit_code: null, pdfinfo_error: compact(String(error)), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "lecture S3 en échec" };
   }
   const result = spawnSync("pdfinfo", ["-"], { input: bytes, encoding: "utf8", maxBuffer: 128 * 1024 });
   if (result.error) {
-    return { content_length: contentLength, page_count: null, pdfinfo_exit_code: result.status, pdfinfo_error: compact(result.error.message), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "pdfinfo indisponible" };
+    return { storage_key: key, content_length:contentLength, page_count: null, pdfinfo_exit_code: result.status, pdfinfo_error: compact(result.error.message), title: null, creator: null, producer: null, pdf_version: null, encrypted: null, unknown_reason: "pdfinfo indisponible" };
   }
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";
   const pages = pageCount(stdout);
   return {
+    storage_key: key,
     content_length: contentLength,
     page_count: pages,
     pdfinfo_exit_code: result.status,
@@ -310,12 +321,18 @@ function uniqueDocuments(rows: readonly FailureRow[], metadata: readonly PdfMeta
   const byKey = new Map<string, FailureRow[]>();
   for (const row of rows) byKey.set(row.storage_key, [...(byKey.get(row.storage_key) ?? []), row]);
   const keys = [...byKey.keys()].sort((left, right) => left.localeCompare(right));
-  return keys.map((key, index) => {
+  // JOINTURE PAR CLE, JAMAIS PAR POSITION. `metadata` arrive dans l'ordre de
+  // premiere apparition des lignes d'echec; `keys` est retrie par localeCompare.
+  // Les indexer ensemble donnait a chaque document la mesure d'un AUTRE.
+  const byStorageKey = new Map(metadata.map((entry) => [entry.storage_key, entry]));
+  return keys.map((key) => {
     const sourceRows = byKey.get(key)!;
     const first = sourceRows[0]!;
     const muni = municipalities.get(first.slug);
+    const measured = byStorageKey.get(key);
+    if (measured === undefined) throw new Error(`aucune mesure pour la clé ${key}`);
     return {
-      ...metadata[index]!,
+      ...measured,
       storage_key: key,
       slug: first.slug,
       municipality_name: first.municipality_name,
