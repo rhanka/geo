@@ -8,6 +8,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
+import { canonicalCaptureUrl } from "./lib/pv-capture-backlog.js";
 import {
   partitionPvCaptureTargetsByMunicipality,
   planPvProbableTargets,
@@ -43,10 +44,22 @@ interface PartitionReport {
   };
 }
 
+interface SubmittedWorklistUrlsReport {
+  readonly contract: "pv-capture-submitted-worklist-urls/v1";
+  readonly campaign: unknown;
+  readonly unique_urls: unknown;
+  readonly urls: unknown;
+}
+
 function value(name: string): string | null {
   const prefix = `--${name}=`;
   const found = process.argv.slice(2).find((arg) => arg.startsWith(prefix));
   return found === undefined ? null : found.slice(prefix.length);
+}
+
+function values(name: string): string[] {
+  const prefix = `--${name}=`;
+  return process.argv.slice(2).flatMap((arg) => arg.startsWith(prefix) ? [arg.slice(prefix.length)] : []);
 }
 
 function required(name: string): string {
@@ -86,6 +99,29 @@ function stringSet(values: readonly { readonly slug: unknown }[] | readonly Muni
     if (typeof value.slug !== "string" || !value.slug) throw new Error(`${name}: slug municipal invalide`);
     if (result.has(value.slug)) throw new Error(`${name}: slug municipal dupliqué: ${value.slug}`);
     result.add(value.slug);
+  }
+  return result;
+}
+
+function submittedWorklistUrls(paths: readonly string[]): Set<string> {
+  const result = new Set<string>();
+  for (const path of paths) {
+    const report = readSmallJson(path, "exclude-submitted-url-report") as SubmittedWorklistUrlsReport;
+    if (
+      report.contract !== "pv-capture-submitted-worklist-urls/v1"
+      || typeof report.campaign !== "string"
+      || !Number.isInteger(report.unique_urls)
+      || !Array.isArray(report.urls)
+      || report.urls.length !== report.unique_urls
+    ) {
+      throw new Error(`--exclude-submitted-url-report: contrat invalide: ${path}`);
+    }
+    for (const url of report.urls) {
+      if (typeof url !== "string" || canonicalCaptureUrl(url) !== url) {
+        throw new Error(`--exclude-submitted-url-report: URL canonique invalide: ${path}`);
+      }
+      result.add(url);
+    }
   }
   return result;
 }
@@ -146,6 +182,7 @@ async function main(): Promise<void> {
   const outPrefix = insideRepo(required("out-prefix"), "out-prefix");
   const combinedOut = insideRepo(required("combined-out"), "combined-out");
   const outPlan = insideRepo(required("out-plan"), "out-plan");
+  const excludedUrlReportPaths = values("exclude-submitted-url-report");
   const count = integer("count", 1);
   const lotSize = integer("lot-size", 1);
   if (!outPrefix.endsWith("lot-")) throw new Error("--out-prefix doit finir par lot-");
@@ -159,6 +196,7 @@ async function main(): Promise<void> {
   if (!Array.isArray(municipalities)) throw new Error("--municipalities doit être un tableau municipal");
   const municipalitySlugs = stringSet(municipalities as MunicipalReference[], "référentiel municipal");
   const covered = stringSet(partition.municipal_coverage?.municipality_slugs ?? [], "partition municipale");
+  const excludedUrls = submittedWorklistUrls(excludedUrlReportPaths);
   if (partition.municipal_coverage.reference_municipalities !== municipalitySlugs.size) {
     throw new Error("partition municipale: taille du référentiel divergente");
   }
@@ -168,8 +206,9 @@ async function main(): Promise<void> {
   const snapshot = await readSnapshot(classification);
   const candidates = planPvProbableTargets(snapshot.scans);
   const candidatePartition = partitionPvCaptureTargetsByMunicipality(candidates, municipalitySlugs);
+  const eligibleCandidates = candidatePartition.recognized.filter((target) => !excludedUrls.has(canonicalCaptureUrl(target.urls[0])));
   const selected = selectPvProbableTargetsForUncoveredMunicipalities({
-    targets: candidatePartition.recognized,
+    targets: eligibleCandidates,
     municipalitySlugs,
     coveredMunicipalitySlugs: covered,
     count,
@@ -195,6 +234,11 @@ async function main(): Promise<void> {
     expected_pv_probable: candidates.length,
     pv_probable_with_reference_municipality: candidatePartition.recognized.length,
     pv_probable_without_reference_municipality: candidatePartition.unrecognized.length,
+    submitted_worklist_exclusions: {
+      reports: excludedUrlReportPaths,
+      unique_urls: excludedUrls.size,
+      pv_probable_excluded: candidatePartition.recognized.length - eligibleCandidates.length,
+    },
     municipal_coverage: {
       reference_municipalities: municipalitySlugs.size,
       municipalities_with_at_least_one_indexed_pv: covered.size,
