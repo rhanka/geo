@@ -29,7 +29,33 @@ import {
  */
 export const S3ENV =
   process.env["S3_ENV_FILE"] ?? "/home/antoinefa/src/_acquisition-shared/s3.env";
-export const BUCKET = "sentropic-geo";
+/**
+ * CIBLE S3 DECLAREE DANS LE DEPOT — `acquisition/config/s3-target.json`.
+ *
+ * `endpoint`, `region` et `bucket` NE SONT PAS DES SECRETS. Ils vivaient
+ * pourtant dans un fichier gitignore parce que les CLES les accompagnaient,
+ * donc ils etaient invisibles — et c'est ce qui a permis de lire l'ancien
+ * bucket Scaleway pendant une heure apres la migration OVH sans aucun signal.
+ * Seules `S3_ACCESS_KEY` / `S3_SECRET_KEY` restent hors du depot, en trois
+ * exemplaires a synchroniser ensemble (.env local, GitHub secrets, secret kube
+ * `geo-s3-credentials`); aucun des trois ne fait foi sur les autres.
+ */
+export interface S3Target { endpoint: string; region: string; bucket: string }
+
+let cachedTarget: S3Target | null = null;
+
+export function s3Target(): S3Target {
+  if (cachedTarget !== null) return cachedTarget;
+  const path = new URL("../../config/s3-target.json", import.meta.url);
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as Partial<S3Target>;
+  if (!parsed.endpoint || !parsed.region || !parsed.bucket) {
+    throw new Error("acquisition/config/s3-target.json: endpoint, region et bucket sont requis");
+  }
+  cachedTarget = { endpoint: parsed.endpoint, region: parsed.region, bucket: parsed.bucket };
+  return cachedTarget;
+}
+
+export const BUCKET = s3Target().bucket;
 
 /**
  * Scaleway Object Storage rejects the AWS SDK's unknown-length `aws-chunked`
@@ -83,9 +109,39 @@ export function loadEnv(path: string = S3ENV): Record<string, string> {
  */
 export function s3Client(envPath: string = S3ENV): S3Client {
   const env = existsSync(envPath) ? loadEnv(envPath) : process.env;
+  const target = s3Target();
+  const endpoint = env["S3_ENDPOINT"];
+  const region = env["S3_REGION"];
+  // ⛔ LE GARDE QUI MANQUAIT, ET QUI REND L'ERREUR IMPOSSIBLE PLUTOT QUE DOCUMENTEE.
+  //
+  // Le 2026-07-29 le bucket a migre de Scaleway vers OVH. Le cluster a bascule,
+  // le fichier de creds LOCAL est reste sur `https://s3.fr-par.scw.cloud`, et
+  // les lectures ont continue pendant une heure contre l'ANCIEN bucket — sans le
+  // moindre signal, parce que la copie etait identique a l'octet: tout marchait
+  // et rendait les bons SHA. Une ecriture aurait ete perdue en silence, sur un
+  // bucket que plus personne ne lit.
+  //
+  // Comparer l'endpoint effectif a la cible DECLAREE DANS LE DEPOT transforme ce
+  // defaut muet en refus bruyant. C'est la seule facon de le rendre visible: rien
+  // dans la donnee ne distingue les deux clouds.
+  if (endpoint !== undefined && endpoint !== target.endpoint) {
+    throw new Error(
+      `S3 endpoint ${endpoint} ne correspond pas a la cible declaree ${target.endpoint} ` +
+        `(acquisition/config/s3-target.json). Une bascule de cloud se declare DANS LE DEPOT; ` +
+        `les cles suivent dans .env local, GitHub secrets et le secret kube geo-s3-credentials.`,
+    );
+  }
+  if (region !== undefined && region !== target.region) {
+    throw new Error(
+      `S3 region ${region} ne correspond pas a la cible declaree ${target.region} ` +
+        `(acquisition/config/s3-target.json)`,
+    );
+  }
   return new S3Client({
-    endpoint: env["S3_ENDPOINT"],
-    region: env["S3_REGION"] || "fr-par",
+    // La cible fait foi: un fichier de creds qui ne la porte pas ne peut plus
+    // envoyer les octets ailleurs par omission.
+    endpoint: target.endpoint,
+    region: target.region,
     forcePathStyle: true,
     credentials: {
       accessKeyId: env["S3_ACCESS_KEY"]!,
