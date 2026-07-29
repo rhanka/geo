@@ -52,6 +52,7 @@ interface DocumentReport {
 interface BatchReport {
   readonly workspace: string;
   readonly documents: readonly DocumentReport[];
+  readonly supersedes_storage_keys?: readonly string[];
 }
 
 interface Summary {
@@ -305,6 +306,7 @@ function markdown(report: Record<string, unknown>): string {
   const regulations = report.regulation_legal_quality as { readonly total: number; readonly with_legal_quality: number; readonly silent: number; readonly unsafe_non_adopted_as_adopted: readonly { readonly municipality_slug: string; readonly label: string; readonly quote: string; readonly citation: CitationVerification }[]; readonly quality_distribution: Readonly<Record<string, number>> };
   const zero = report.zero_node_documents as { readonly total: number; readonly findings: readonly ZeroNodeFinding[] };
   const zeroLines = zero.findings.map((finding) => `- \`${finding.municipality_slug}\` · \`${finding.storage_key}\` — ${finding.reason}`).join("\n");
+  const zeroSummary = zero.total === 0 ? "aucun texte muet" : `textes présents et non vides dans les ${zero.total} cas`;
   const regulationLines = regulations.unsafe_non_adopted_as_adopted.length === 0
     ? "Aucun."
     : regulations.unsafe_non_adopted_as_adopted.map((finding) => `- \`${finding.municipality_slug}\` · ${finding.label} · ${finding.citation.source_location}: « ${finding.quote} »`).join("\n");
@@ -313,21 +315,32 @@ function markdown(report: Record<string, unknown>): string {
     + `- Appariements municipaux: Zones ${ownership.zones.passed}/${ownership.zones.sample_size}; lots ${ownership.lots.passed}/${ownership.lots.sample_size}; hors municipalité: ${ownership.outside_municipality.length}.\n`
     + `- Citations relocalisables: ${citations.passed}/${citations.sample_size}; échecs: ${citations.failures.length}. Dates verbatim: ${dates.passed}/${dates.sample_size}; échecs: ${dates.failures.length}.\n`
     + `- Regulations: ${regulations.with_legal_quality}/${regulations.total} portent une qualité; muettes: ${regulations.silent}; qualités: ${Object.entries(regulations.quality_distribution).map(([key, value]) => `${key}=${value}`).join(", ")}; non-adopté marqué ADOPTE: ${regulations.unsafe_non_adopted_as_adopted.length}.\n`
-    + `- Documents muets: ${zero.total}; textes présents et non vides dans les 15 cas.\n\n`
+    + `- Documents muets: ${zero.total}; ${zeroSummary}.\n\n`
     + `## Documents muets\n\n${zeroLines}\n`
     + `\n## Signaux réglementaires à corriger\n\n${regulationLines}\n`;
 }
 
 function main(): void {
   const summary = readJson<Summary>(SUMMARY_PATH);
-  const loadedDocuments: LoadedDocument[] = [];
+  const loadedDocumentsByStorage = new Map<string, LoadedDocument>();
   const zoneGazetteers = new Map<string, Set<string>>();
   const lotGazetteers = new Map<string, Set<string>>();
   const details: MatchDetail[] = [];
 
   for (const reportPath of summary.source_reports) {
     const batch = readJson<BatchReport>(resolve(ROOT, reportPath));
-    for (const document of batch.documents) loadedDocuments.push({ report_path: reportPath, workspace: batch.workspace, document });
+    const supersedes = new Set(batch.supersedes_storage_keys ?? []);
+    const documentKeys = new Set<string>();
+    for (const document of batch.documents) {
+      documentKeys.add(document.storage_key);
+      if (loadedDocumentsByStorage.has(document.storage_key) && !supersedes.has(document.storage_key)) {
+        throw new Error(`PV indexé deux fois dans les rapports Graphify: ${document.storage_key}`);
+      }
+      loadedDocumentsByStorage.set(document.storage_key, { report_path: reportPath, workspace: batch.workspace, document });
+    }
+    for (const storageKey of supersedes) {
+      if (!documentKeys.has(storageKey)) throw new Error(`${reportPath}.supersedes_storage_keys référence un document absent du rapport: ${storageKey}`);
+    }
     const hasZoneOrLot = batch.documents.some((document) => (document.entity_counts.Zone ?? 0) > 0 || (document.entity_counts.LotCadastre ?? 0) > 0);
     if (!hasZoneOrLot) continue;
     const zonePath = reportSibling(resolve(ROOT, reportPath), "-gazetteer-zones.json");
@@ -348,6 +361,7 @@ function main(): void {
     details.push(...detailFile.details);
   }
 
+  const loadedDocuments = [...loadedDocumentsByStorage.values()];
   const documentByStorage = new Map(loadedDocuments.map((document) => [document.document.storage_key, document]));
   const auditOwnership = (entityType: "Zone" | "LotCadastre", sampleSize: number): { readonly sample: OwnershipSample[]; readonly outside: OwnershipSample[] } => {
     const candidates = details.filter((detail) => detail.entity_type === entityType);
