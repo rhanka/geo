@@ -1,0 +1,194 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:33:32.980Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6260,
+    "limit": 20,
+    "requested": 20,
+    "selected": 3,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/fb7ceb1c6db4d53de011fd294c1060bf48ceb6aad01f22c0398c2ef53e8f1d85.pdf",
+      "raw/pv-index/cas/fb7ff6a43a39882e348d6f44981d12e13247b0816f4fccc386b254c6c15006d5.pdf",
+      "raw/pv-index/cas/fb887c759b2187f77341070d13cf25be493755fdc5a726edae071cde521d45ac.pdf",
+      "raw/pv-index/cas/fb9b100ec7558787c7a33a3d8d1737efe4b805f30f4f9dc3cfbafd29c9fdce7a.pdf",
+      "raw/pv-index/cas/fba2bacf1d7a2f22ee97c0cbe532188a0186f1722814766d95bc017d6ff1b9c6.pdf",
+      "raw/pv-index/cas/fbc46ba67f05b8ffa3b32befd5abca43c30aba14a50f7e1ccaf59926c2a0336d.pdf",
+      "raw/pv-index/cas/fbc6fcf79ac2ffaa0015f38683f99dba2f01cb3318a44fd4f879a9eb284a2a57.pdf",
+      "raw/pv-index/cas/fbc8d27bb24e30420558395aba80e0aad76adae0520c32227a3cd8f3d798fde0.pdf",
+      "raw/pv-index/cas/fbd0aafd61dcf713bbab6d361820232882c11b8f57d5591101f4dc13d4c359a7.pdf",
+      "raw/pv-index/cas/fbd4ce045408ca31cd23dd8f4389644cc75b6addf50feed642eea37ea01d4095.pdf",
+      "raw/pv-index/cas/fbd5d56ea5254fc2dd2b95a8f733ea0608a9ce584c4f78870dd01f5411c2f78a.pdf",
+      "raw/pv-index/cas/fbde4f3df176d5ad74b9410921faeb7787e13873d40089cef06540e13f1120e3.pdf",
+      "raw/pv-index/cas/fbe1648aa92a0e5eac12d6e843bfe7227c38f21388b6d6652e63bdb5b034c518.pdf",
+      "raw/pv-index/cas/fbe80fe9de292eb769223b2a8f671e4c24951919cfe747be5e96329dcc9231b6.pdf",
+      "raw/pv-index/cas/fbef063b48e68815c60c244c388d09fabe6e22901862fcd0d52eb6a7636f3cd7.pdf",
+      "raw/pv-index/cas/fbf4db6cd39a2f2256ac028ec970ab4b88c3e5c76823e31827feb10d4af40456.pdf",
+      "raw/pv-index/cas/fc0738ff28a3db2d4ed608d0464ae8a93ff23ae8f59fe1ed5d126a2eb5c1a8eb.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 3,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 1
+  },
+  "graphify": {
+    "nodes": 3,
+    "edges": 1,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 261,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 7971,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z",
+  "documents": [
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154831-2017-03-21-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fb7f9be09aa648b4fa03c0261ea00fe64bd1aec9bb3c10870eaf5ea6528dbd0a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/chute-aux-outardes/5ea6528dbd0a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/chute-aux-outardes/5ea6528dbd0a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bonaventure",
+      "municipality_name": "Bonaventure",
+      "url": "https://villebonaventure.ca/wp-content/uploads/2026/04/Ordre-du-jour-6-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/fc03eb6ac384e1661291d7563295d821660b39e1f6ed6db09d2b0959c2e643e9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/bonaventure/0959c2e643e9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/bonaventure/0959c2e643e9.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/06/oj20240702.pdf",
+      "storage_key": "raw/pv-index/cas/fc13abc797ad509815acf0d177bbcc53c1d4ebed4423d4b50af2f77064b1e472.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "010-2024",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   10.1 - Adoption du règlement 010-2024 concernant le traitement des élus"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/acton-vale/f77064b1e472.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193328Z/acton-vale/f77064b1e472.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
