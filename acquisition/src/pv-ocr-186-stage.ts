@@ -409,7 +409,11 @@ async function main(): Promise<void> {
       }
       const head = await objectHead(s3, document.storage_key);
       if (!head.exists || head.contentLength === undefined || head.contentLength !== document.content_length) {
-        throw new Error("objet CAS absent ou taille différente de l'inventaire autorisé");
+        throw new Error(
+          `objet CAS non réconcilié (exists=${String(head.exists)}, ` +
+          `content_length=${head.contentLength === undefined ? "unknown" : String(head.contentLength)}, ` +
+          `inventory=${document.content_length})`,
+        );
       }
       const verifiedPages = document.page_count ?? await boundedPdfPageCount(s3, document.storage_key, head.contentLength);
       verifiedPagesForFailure = verifiedPages;
