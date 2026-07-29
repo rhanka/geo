@@ -26,7 +26,8 @@ const COVERAGE = resolve(ROOT, "work", "coverage");
 const TRIAGE = resolve(COVERAGE, "pv-extraction-failures-triage-20260729T115007Z.json");
 const INVENTORY = resolve(COVERAGE, "pv-ocr-inventaire-pages-20260729T122121Z.json");
 const MAX_LOCAL_JSON_BYTES = 5 * 1024 * 1024;
-const LOT_SIZE = 20;
+const DEFAULT_LOT_SIZE = 20;
+const MAX_LOT_SIZE = 186;
 const MISMATCH_STOP = 3;
 
 type JsonRecord = Record<string, unknown>;
@@ -76,6 +77,15 @@ function repeatedArg(name: string): string[] {
   return values;
 }
 
+function optionalPositiveIntegerArg(name: string, fallback: number, maximum: number): number {
+  const values = process.argv.slice(2).filter((value) => value.startsWith(`--${name}=`)).map((value) => value.slice(name.length + 3));
+  if (values.length === 0) return fallback;
+  if (values.length !== 1 || !/^[1-9][0-9]*$/u.test(values[0]!)) throw new Error(`--${name}=entier positif requis une seule fois`);
+  const parsed = Number(values[0]);
+  if (!Number.isSafeInteger(parsed) || parsed > maximum) throw new Error(`--${name}: entier entre 1 et ${maximum} requis`);
+  return parsed;
+}
+
 function record(value: unknown, where: string): JsonRecord {
   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error(`${where}: objet requis`);
   return value as JsonRecord;
@@ -104,7 +114,7 @@ function readSmallJson(path: string): JsonRecord {
 
 function priorLotCasKeys(path: string): Set<string> {
   const prior = readSmallJson(path);
-  if (!Array.isArray(prior.documents) || prior.documents.length !== LOT_SIZE) {
+  if (!Array.isArray(prior.documents) || prior.documents.length !== DEFAULT_LOT_SIZE) {
     throw new Error(`${path}: documents[20] requis pour la déduplication du lot antérieur`);
   }
   const keys = prior.documents.map((value, index) => {
@@ -113,18 +123,19 @@ function priorLotCasKeys(path: string): Set<string> {
     expectedSha256(key);
     return key;
   });
-  if (new Set(keys).size !== LOT_SIZE) throw new Error(`${path}: clés CAS du lot antérieur dupliquées`);
+  if (new Set(keys).size !== DEFAULT_LOT_SIZE) throw new Error(`${path}: clés CAS du lot antérieur dupliquées`);
   return new Set(keys);
 }
 
-function initialSampleSelection(): DocumentSelection {
+function initialSampleSelection(limit: number): DocumentSelection {
   if (statSync(TRIAGE).size > MAX_LOCAL_JSON_BYTES) throw new Error(`${TRIAGE}: lecture > 5 MiB interdite`);
   const triage = readSmallJson(TRIAGE);
   const sample = record(triage.sample, "triage.sample");
   if (sample.inspected_documents !== 30 || !Array.isArray(sample.documents) || sample.documents.length !== 30) {
     throw new Error("triage: l'échantillon pur-scan attendu de 30 documents est invalide");
   }
-  const documents = sample.documents.slice(0, LOT_SIZE).map((value, index) => {
+  if (limit > sample.documents.length) throw new Error(`triage: --limit ne peut excéder les ${sample.documents.length} documents de l'échantillon initial`);
+  const documents = sample.documents.slice(0, limit).map((value, index) => {
     const document = record(value, `triage.sample.documents[${index}]`);
     const key = string(document.storage_key, `triage.sample.documents[${index}].storage_key`);
     expectedSha256(key);
@@ -146,7 +157,7 @@ function initialSampleSelection(): DocumentSelection {
   };
 }
 
-function dedupedInventorySelection(priorReports: readonly string[]): DocumentSelection {
+function dedupedInventorySelection(priorReports: readonly string[], limit: number): DocumentSelection {
   if (priorReports.length === 0) throw new Error("au moins un --prior-report est requis pour la sélection sur inventaire");
   if (new Set(priorReports).size !== priorReports.length) throw new Error("--prior-report ne peut pas être répété");
   const inventory = readSmallJson(INVENTORY);
@@ -188,18 +199,18 @@ function dedupedInventorySelection(priorReports: readonly string[]): DocumentSel
     .sort((left, right) => left.first_selection_offset - right.first_selection_offset || left.storage_key.localeCompare(right.storage_key));
   if (remaining.length !== candidates.length - priorKeys.size) throw new Error(`${INVENTORY}: déduplication incohérente, obtenue ${remaining.length}`);
   return {
-    description: "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs",
+    description: `les ${Math.min(limit, remaining.length)} clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs`,
     prior_lot_reports: priorReports.map((report) => report.slice(ROOT.length + 1)),
     source_inventory: "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
     candidate_cas_keys: candidates.length,
     prior_lot_collisions_avoided: collisions.length,
     remaining_after_dedupe: remaining.length,
-    documents: remaining.slice(0, LOT_SIZE).map(({ first_selection_offset: _offset, ...document }) => document),
+    documents: remaining.slice(0, limit).map(({ first_selection_offset: _offset, ...document }) => document),
   };
 }
 
-function selectedDocuments(priorReports: readonly string[]): DocumentSelection {
-  return priorReports.length === 0 ? initialSampleSelection() : dedupedInventorySelection(priorReports);
+function selectedDocuments(priorReports: readonly string[], limit: number): DocumentSelection {
+  return priorReports.length === 0 ? initialSampleSelection(limit) : dedupedInventorySelection(priorReports, limit);
 }
 
 function compactError(error: unknown): string {
@@ -252,6 +263,7 @@ function writeAtomic(path: string, value: unknown): void {
 async function main(): Promise<void> {
   const output = resolve(ROOT, requiredArg("out"));
   const priorReportArgs = repeatedArg("prior-report");
+  const requested = optionalPositiveIntegerArg("limit", DEFAULT_LOT_SIZE, MAX_LOT_SIZE);
   if (!output.startsWith(`${COVERAGE}/`)) throw new Error("--out doit rester sous work/coverage");
   if (existsSync(output)) throw new Error(`artefact déjà présent: ${output}`);
   const priorReports = priorReportArgs.map((report) => resolve(ROOT, report));
@@ -260,7 +272,7 @@ async function main(): Promise<void> {
   const workspace = resolve(ROOT, "work", "graphify", basename(output, ".json"));
   mkdirSync(workspace, { recursive: true });
   const results: GuardResult[] = [];
-  const selection = selectedDocuments(priorReports);
+  const selection = selectedDocuments(priorReports, requested);
   for (const document of selection.documents) {
     const result = await downloadAndHash(document, workspace);
     results.push(result);
@@ -291,7 +303,7 @@ async function main(): Promise<void> {
       mismatch_stop_threshold: MISMATCH_STOP,
       stopped_for_integrity_incident: stopped,
     },
-    summary: { requested: LOT_SIZE, attempted: results.length, sha_passed: passed, cas_sha_mismatch: mismatches, get_failed: getFailed },
+    summary: { requested, attempted: results.length, sha_passed: passed, cas_sha_mismatch: mismatches, get_failed: getFailed },
     local_visual_workspace: workspace,
     documents: results,
   };
