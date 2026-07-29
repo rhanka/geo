@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSyn
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { parseCaptureWorklist } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 import { canonicalCaptureUrl } from "./lib/pv-capture-backlog.js";
 import {
@@ -49,6 +50,10 @@ interface SubmittedWorklistUrlsReport {
   readonly campaign: unknown;
   readonly unique_urls: unknown;
   readonly urls: unknown;
+}
+
+interface CaptureWorklistTarget {
+  readonly slug: unknown;
 }
 
 function value(name: string): string | null {
@@ -126,6 +131,20 @@ function submittedWorklistUrls(paths: readonly string[]): Set<string> {
   return result;
 }
 
+function excludedMunicipalitySlugs(paths: readonly string[]): Set<string> {
+  const result = new Set<string>();
+  for (const path of paths) {
+    const targets = parseCaptureWorklist(readSmallJson(path, "exclude-municipality-worklist"));
+    for (const target of targets as readonly CaptureWorklistTarget[]) {
+      if (typeof target.slug !== "string" || !target.slug.trim()) {
+        throw new Error(`--exclude-municipality-worklist: slug municipal invalide: ${path}`);
+      }
+      result.add(target.slug);
+    }
+  }
+  return result;
+}
+
 function parseIndex(slug: string, raw: unknown): PvIndexSnapshot {
   if (raw === null || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`index PV invalide pour ${slug}`);
   const index = raw as Record<string, unknown>;
@@ -183,6 +202,7 @@ async function main(): Promise<void> {
   const combinedOut = insideRepo(required("combined-out"), "combined-out");
   const outPlan = insideRepo(required("out-plan"), "out-plan");
   const excludedUrlReportPaths = values("exclude-submitted-url-report");
+  const excludedMunicipalityWorklistPaths = values("exclude-municipality-worklist");
   const count = integer("count", 1);
   const lotSize = integer("lot-size", 1);
   if (!outPrefix.endsWith("lot-")) throw new Error("--out-prefix doit finir par lot-");
@@ -197,6 +217,7 @@ async function main(): Promise<void> {
   const municipalitySlugs = stringSet(municipalities as MunicipalReference[], "référentiel municipal");
   const covered = stringSet(partition.municipal_coverage?.municipality_slugs ?? [], "partition municipale");
   const excludedUrls = submittedWorklistUrls(excludedUrlReportPaths);
+  const excludedMunicipalities = excludedMunicipalitySlugs(excludedMunicipalityWorklistPaths);
   if (partition.municipal_coverage.reference_municipalities !== municipalitySlugs.size) {
     throw new Error("partition municipale: taille du référentiel divergente");
   }
@@ -210,7 +231,7 @@ async function main(): Promise<void> {
   const selected = selectPvProbableTargetsForUncoveredMunicipalities({
     targets: eligibleCandidates,
     municipalitySlugs,
-    coveredMunicipalitySlugs: covered,
+    coveredMunicipalitySlugs: new Set([...covered, ...excludedMunicipalities]),
     count,
   });
   const lots = splitPvCaptureTargets(selected, lotSize);
@@ -238,6 +259,10 @@ async function main(): Promise<void> {
       reports: excludedUrlReportPaths,
       unique_urls: excludedUrls.size,
       pv_probable_excluded: candidatePartition.recognized.length - eligibleCandidates.length,
+    },
+    excluded_municipality_worklists: {
+      worklists: excludedMunicipalityWorklistPaths,
+      unique_municipalities: excludedMunicipalities.size,
     },
     municipal_coverage: {
       reference_municipalities: municipalitySlugs.size,
