@@ -12,7 +12,7 @@
 import { readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { CaptureRunHeaderSchema, parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
+import { CaptureRunHeaderSchema, parseCaptureWorklist, parseManifestJsonl } from "../../packages/qc-sources/src/capture/index.js";
 import {
   assertBacklogManifest,
   assertBacklogState,
@@ -71,6 +71,12 @@ function values(name: string): string[] {
   return process.argv.slice(2).flatMap((argument) => argument.startsWith(prefix) ? [argument.slice(prefix.length)] : []);
 }
 
+function optional(name: string): string | null {
+  const prefix = `--${name}=`;
+  const value = process.argv.slice(2).find((argument) => argument.startsWith(prefix))?.slice(prefix.length);
+  return value && value.trim() ? value : null;
+}
+
 function insideRepo(path: string): string {
   const absolute = resolve(ROOT, path);
   if (!absolute.startsWith(`${ROOT}/`)) throw new Error(`rapport hors dépôt refusé: ${path}`);
@@ -99,6 +105,41 @@ function parseClassificationReport(path: string): ClassificationEvidence {
     return { url: canonicalCaptureUrl(line.url), storage_key: line.storage_key, origin: path };
   });
   return { path, manifest_key: `${parsed.scope.run_prefix}/manifest.jsonl`, observations };
+}
+
+function parseCandidateWorklist(path: string): { path: string; urls: Set<string> } {
+  const absolute = insideRepo(path);
+  const size = statSync(absolute).size;
+  if (size > MAX_LOCAL_REPORT_BYTES) throw new Error(`${path}: ${size} octets > plafond de lecture ${MAX_LOCAL_REPORT_BYTES}`);
+  const targets = parseCaptureWorklist(JSON.parse(readFileSync(absolute, "utf8")));
+  return {
+    path,
+    urls: new Set(targets.flatMap((target) => target.urls.map(canonicalCaptureUrl))),
+  };
+}
+
+async function submittedWorklistUrls(
+  s3: ReturnType<typeof s3Client>,
+  manifest: PvCaptureBacklogManifest,
+  state: PvCaptureBacklogState,
+): Promise<{ lotCount: number; urls: Set<string> }> {
+  const stateByLot = new Map(state.lots.map((lot) => [lot.lot, lot]));
+  const keys = manifest.lots.flatMap((lot) => {
+    const stateLot = stateByLot.get(lot.lot);
+    // planned is included deliberately: a crash after the state CAS and before
+    // its submitted marker must not reopen a worklist already handed to a Job.
+    if (!stateLot || stateLot.status === "pending") return [];
+    return [stateLot.effective_worklist_key ?? lot.worklist_key];
+  });
+  const urls = new Set<string>();
+  for (const key of new Set(keys)) {
+    const head = await objectHead(s3, key);
+    if (!head.exists || head.contentLength === undefined) throw new Error(`worklist soumise absente ou sans taille: ${key}`);
+    if (head.contentLength > MAX_S3_MANIFEST_BYTES) throw new Error(`${key}: ${head.contentLength} octets > plafond de lecture ${MAX_S3_MANIFEST_BYTES}`);
+    const targets = parseCaptureWorklist(JSON.parse((await getBytes(s3, key)).toString("utf8")));
+    for (const target of targets) for (const url of target.urls) urls.add(canonicalCaptureUrl(url));
+  }
+  return { lotCount: keys.length, urls };
 }
 
 async function readS3Manifest(s3: ReturnType<typeof s3Client>, key: string): Promise<RunEvidence> {
@@ -166,12 +207,36 @@ function assertSameObservations(report: ClassificationEvidence, source: RunEvide
 async function main(): Promise<void> {
   const campaign = required("campaign");
   const classificationPaths = values("classification");
+  const candidateWorklistPath = optional("candidate-worklist");
+  const worklistIntersectionOnly = process.argv.slice(2).includes("--worklist-intersection-only");
   const s3 = s3Client();
   const manifest = JSON.parse((await getBytes(s3, campaignManifestKey(campaign))).toString("utf8")) as PvCaptureBacklogManifest;
   const state = JSON.parse((await getBytes(s3, campaignStateKey(campaign))).toString("utf8")) as PvCaptureBacklogState;
   if (manifest.id !== campaign || state.campaign_id !== campaign) throw new Error("manifeste ou état rattaché à une autre campagne");
   assertBacklogManifest(manifest);
   assertBacklogState(state, manifest);
+  if (worklistIntersectionOnly) {
+    if (classificationPaths.length > 0) throw new Error("--worklist-intersection-only ne prend pas de rapport de classification");
+    if (candidateWorklistPath === null) throw new Error("--worklist-intersection-only requiert --candidate-worklist=...");
+    const candidate = parseCandidateWorklist(candidateWorklistPath);
+    const submitted = await submittedWorklistUrls(s3, manifest, state);
+    const intersections = [...candidate.urls].filter((url) => submitted.urls.has(url)).sort();
+    if (intersections.length > 0) {
+      throw new Error(`${candidate.path}: ${intersections.length} URL(s) intersectent les worklists soumises de ${campaign}`);
+    }
+    process.stdout.write(`${JSON.stringify({
+      contract: "pv-capture-worklist-intersection/v1",
+      campaign,
+      candidate: {
+        worklist: candidate.path,
+        unique_urls: candidate.urls.size,
+        submitted_or_planned_lots: submitted.lotCount,
+        unique_submitted_or_planned_urls: submitted.urls.size,
+        url_intersection_with_submitted: intersections.length,
+      },
+    }, null, 2)}\n`);
+    return;
+  }
   const reports = classificationPaths.map(parseClassificationReport);
   const campaignRuns = await campaignObservations(s3, manifest);
   const sourceRuns = new Map<string, RunEvidence>();
@@ -210,6 +275,18 @@ async function main(): Promise<void> {
     ...reports.flatMap((report) => report.observations),
   ];
   const observedUrls = new Set(observations.map((observation) => observation.url));
+  const candidate = candidateWorklistPath === null ? null : parseCandidateWorklist(candidateWorklistPath);
+  const submitted = candidate === null ? null : await submittedWorklistUrls(s3, manifest, state);
+  const previousUrls = new Set([
+    ...observedUrls,
+    ...(submitted === null ? [] : submitted.urls),
+  ]);
+  const candidateIntersections = candidate === null
+    ? []
+    : [...candidate.urls].filter((url) => previousUrls.has(url)).sort();
+  if (candidate !== null && candidateIntersections.length > 0) {
+    throw new Error(`${candidate.path}: ${candidateIntersections.length} URL(s) intersectent des lots déjà soumis de ${campaign}`);
+  }
   const durableObservations = observations.filter((observation) => observation.storage_key !== null);
   const durableUrls = new Set(durableObservations.map((observation) => observation.url));
   const casKeys = new Set(durableObservations.map((observation) => observation.storage_key!));
@@ -245,6 +322,13 @@ async function main(): Promise<void> {
       unique_cas_keys: casKeys.size,
       nonterminal_source_runs: [...allRuns.values()].filter((run) => run.finished_at === null || run.exit_code === null).length,
       nonzero_exit_source_runs: [...allRuns.values()].filter((run) => run.exit_code !== null && run.exit_code !== 0).length,
+    },
+    candidate: candidate === null ? null : {
+      worklist: candidate.path,
+      unique_urls: candidate.urls.size,
+      submitted_or_observed_urls: previousUrls.size,
+      submitted_or_planned_lots: submitted!.lotCount,
+      url_intersection_with_submitted: candidateIntersections.length,
     },
   }, null, 2)}\n`);
 }
