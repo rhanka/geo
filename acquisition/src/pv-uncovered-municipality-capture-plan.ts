@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
 import {
+  partitionPvCaptureTargetsByMunicipality,
   planPvProbableTargets,
   selectPvProbableTargetsForUncoveredMunicipalities,
   sha256,
@@ -166,8 +167,9 @@ async function main(): Promise<void> {
   }
   const snapshot = await readSnapshot(classification);
   const candidates = planPvProbableTargets(snapshot.scans);
+  const candidatePartition = partitionPvCaptureTargetsByMunicipality(candidates, municipalitySlugs);
   const selected = selectPvProbableTargetsForUncoveredMunicipalities({
-    targets: candidates,
+    targets: candidatePartition.recognized,
     municipalitySlugs,
     coveredMunicipalitySlugs: covered,
     count,
@@ -191,6 +193,8 @@ async function main(): Promise<void> {
     classification_snapshot: classification.source_snapshot.sha256,
     classification_recomputed_from_fresh_index: snapshot.listing.classificationWasStale,
     expected_pv_probable: candidates.length,
+    pv_probable_with_reference_municipality: candidatePartition.recognized.length,
+    pv_probable_without_reference_municipality: candidatePartition.unrecognized.length,
     municipal_coverage: {
       reference_municipalities: municipalitySlugs.size,
       municipalities_with_at_least_one_indexed_pv: covered.size,
