@@ -1,0 +1,134 @@
+{
+  "contract": "pv-capture-ordre-du-jour-campaign-report/v1",
+  "generated_at": "2026-07-29T22:46:18.245Z",
+  "scope": {
+    "lane": "pv",
+    "source": "pv-index",
+    "lots": 6,
+    "attempts": 300
+  },
+  "lots": [
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0001.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0001-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 2,
+        "HTTP_AUTRE": 5,
+        "PAGE_HTML": 1,
+        "PDF_SANS_COUCHE_TEXTE": 4,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 37,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 1
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-",
+      "attempts": 50,
+      "counts": {
+        "AUTRE": 1,
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_AUTRE": 2,
+        "PAGE_HTML": 3,
+        "PDF_SANS_COUCHE_TEXTE": 3,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 40
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_404": 1,
+        "HTTP_AUTRE": 4,
+        "PAGE_HTML": 2,
+        "PDF_SANS_COUCHE_TEXTE": 5,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 32,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 5
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0004.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0004-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_403": 1,
+        "PDF_SANS_COUCHE_TEXTE": 9,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 37,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0005.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0005-",
+      "attempts": 50,
+      "counts": {
+        "HTTP_403": 1,
+        "HTTP_404": 2,
+        "HTTP_AUTRE": 1,
+        "PAGE_HTML": 1,
+        "PDF_SANS_COUCHE_TEXTE": 8,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 37
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_404": 1,
+        "HTTP_AUTRE": 3,
+        "PAGE_HTML": 4,
+        "PDF_SANS_COUCHE_TEXTE": 5,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 34,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+      }
+    }
+  ],
+  "aggregate": {
+    "counts": {
+      "AUTRE": 1,
+      "DOCUMENT_LISIBLE_NON_PV": 6,
+      "HTTP_403": 2,
+      "HTTP_404": 4,
+      "HTTP_AUTRE": 15,
+      "PAGE_HTML": 11,
+      "PDF_SANS_COUCHE_TEXTE": 34,
+      "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 217,
+      "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 10
+    },
+    "confirmed": 217,
+    "http_404": 4,
+    "http_403": 2,
+    "denominator": 294,
+    "stop_rate_percent": 73.81,
+    "expected_confirmation_percent": 76.7,
+    "unique_cas_keys": 279,
+    "new_cas_keys": 279
+  },
+  "dead_hosts": [
+    {
+      "host": "litchfield-qc.ca",
+      "http_404": 1,
+      "status": "hote_mort"
+    },
+    {
+      "host": "plessisville.quebec",
+      "http_404": 1,
+      "status": "hote_mort"
+    },
+    {
+      "host": "www.riviere-rouge.ca",
+      "http_404": 1,
+      "status": "hote_mort"
+    },
+    {
+      "host": "www.saintambroise.ca",
+      "http_404": 1,
+      "status": "hote_mort"
+    }
+  ]
+}
