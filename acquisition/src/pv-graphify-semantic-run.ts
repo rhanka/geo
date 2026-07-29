@@ -82,6 +82,8 @@ interface LotGazetteerReport {
 interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly universe: string | null;
+  readonly universeOffset: number;
+  readonly universeLimit: number | null;
   readonly control: number | null;
   readonly all: boolean;
   readonly storageKeys: readonly string[];
@@ -158,7 +160,7 @@ interface MunicipalizeResult {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N] [--out=PATH]");
   process.exit(0);
 }
 
@@ -174,6 +176,17 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   if (universeValues.length > 1) throw new Error("--universe ne peut apparaître qu'une fois");
   const universe = universeValues[0] === undefined ? null : resolve(ROOT, universeValues[0]);
   if (universe !== null && !universe.startsWith(`${ROOT}/`)) throw new Error("--universe doit rester dans le dépôt");
+  const universeOffsetValue = values("universe-offset").at(-1);
+  const universeLimitValue = values("universe-limit").at(-1);
+  const universeOffset = universeOffsetValue === undefined ? 0 : Number(universeOffsetValue);
+  const universeLimit = universeLimitValue === undefined ? null : Number(universeLimitValue);
+  if (!Number.isInteger(universeOffset) || universeOffset < 0) throw new Error("--universe-offset doit être un entier positif ou nul");
+  if (universeLimit !== null && (!Number.isInteger(universeLimit) || universeLimit < 1)) {
+    throw new Error("--universe-limit doit être un entier positif");
+  }
+  if (universe === null && (universeOffsetValue !== undefined || universeLimitValue !== undefined)) {
+    throw new Error("--universe-offset et --universe-limit exigent --universe");
+  }
   if (storageKeys.some((key) => !key)) throw new Error("--storage-key doit être une clé CAS non vide");
   if (new Set(storageKeys).size !== storageKeys.length) throw new Error("--storage-key ne peut pas être répété");
   if (universe !== null && (values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined)) {
@@ -200,6 +213,8 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   return {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
     universe,
+    universeOffset,
+    universeLimit,
     control: universe === null ? (all ? null : control) : null,
     all,
     storageKeys,
@@ -870,11 +885,12 @@ async function main(): Promise<void> {
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
   const selected = args.universe !== null
-    ? eligible
+    ? eligible.slice(args.universeOffset, args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit)
     : args.storageKeys.length > 0
     ? selectStorageKeys(eligible, args.storageKeys)
     : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   assertS3RunEnvironment();
+  if (selected.length === 0) throw new Error("la sélection Graphify est vide");
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
   const registry = readZoneRegistry(ZONE_REGISTRY_PATH);
@@ -1018,6 +1034,9 @@ async function main(): Promise<void> {
       ? "real-cas-universe-batch"
       : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
     ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
+    ...(args.universe === null ? {} : {
+      universe_selection: { offset: args.universeOffset, limit: args.universeLimit, selected: selected.length },
+    }),
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_records: eligibleRecords.length,
     eligible_documents: eligible.length,
