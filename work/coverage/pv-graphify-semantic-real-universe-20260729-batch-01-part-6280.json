@@ -1,0 +1,254 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:33:56.297Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6280,
+    "limit": 20,
+    "requested": 20,
+    "selected": 4,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/fc1e74515b5d7aa7ec303b8ad865ae60252144c2fd05bc9f4cb3e6ca725850da.pdf",
+      "raw/pv-index/cas/fc28a342d288ece34174b5132c77c7dcb9a75b0bdb33e244c095f9c654035dec.pdf",
+      "raw/pv-index/cas/fc3192d1888e23419560bb32b065d0780985c136a2b75e70a2176347315b891c.pdf",
+      "raw/pv-index/cas/fc3551f47d15864b4033cda6d657fe8543e3a6ba92ee697c1449ed52adaff8c3.pdf",
+      "raw/pv-index/cas/fc3e7bbc7dd48ee744f3d4200cb37042dfb5082094f5c20b01cb806b9fb0d53a.pdf",
+      "raw/pv-index/cas/fc4771d05241e3b0089cadc46319c7e6ab3dca605cb20cbbae6f71ceca54be6b.pdf",
+      "raw/pv-index/cas/fc4df45f9fd978a78dabe51c9a6311a30fb44431107e861ca466b7a9810da4b4.pdf",
+      "raw/pv-index/cas/fc56d12f3575d25915bad25d17f297cdc6b62e638d4df82c67bcbc8494274244.pdf",
+      "raw/pv-index/cas/fc5c10610f4d877d8cce4c57ef086efa7cd469a58e36039c99e105c9c6af0511.pdf",
+      "raw/pv-index/cas/fc60c0b142211d1a64745d7da372e6e41bfc46344a5c56f65d50b9d2600fbe36.pdf",
+      "raw/pv-index/cas/fc63e577902582c49e467622bfc2b54d08972412ce98abaadb62ba0e243c5e87.pdf",
+      "raw/pv-index/cas/fc6c0b8ef6b5c84a6d34667a8bbd1920a32ce28ae2021a954dd94f020b9349b9.pdf",
+      "raw/pv-index/cas/fc82944c568e7a29b9b693c248cf3890276aff1d0b465238c29f187d4a592e10.pdf",
+      "raw/pv-index/cas/fc848c8b8bf795a1fcdef8619fb73bf40cbb98cdd2020579c34b743d4314808f.pdf",
+      "raw/pv-index/cas/fcbe6e4ff7b1ea17bd9e7c52dac6f5ad9f77e3b0083e414de74bfd642717811b.pdf",
+      "raw/pv-index/cas/fcc33ddaf39b309ca7bf32958c225bf7d47bed64d6247af0f3b303c19978d820.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 4,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "Regulation": 2
+  },
+  "graphify": {
+    "nodes": 6,
+    "edges": 2,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 117,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 3,
+      "total_lot_numbers": 2058,
+      "missing": [
+        "beloeil"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z",
+  "documents": [
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251114114516-public-notice-extraordinary-meeting-november-17.pdf",
+      "storage_key": "raw/pv-index/cas/fc22691974cc8d71f094d8bfc434f9879c4e868cd0770cfe10c61741e51702ae.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/bolton-ouest/1741e51702ae.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/bolton-ouest/1741e51702ae.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beloeil",
+      "municipality_name": "Beloeil",
+      "url": "https://beloeil.ca/wp-content/uploads/2026/05/conseil_20260511_extra_doc_web.pdf",
+      "storage_key": "raw/pv-index/cas/fc4a50c23fafffd1bd3463b0072ab27db303ad425351c0e4ac9bd20fe4bd35aa.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beloeil",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/beloeil/d20fe4bd35aa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/beloeil/d20fe4bd35aa.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beloeil"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-05-08%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fc784cb0f28ec3bcf5703231b3d5689f4d4208068f669e6c8b3d8abaa26249f5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/duhamel-ouest/8abaa26249f5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/duhamel-ouest/8abaa26249f5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2024/05/PV-2024-05-06.pdf",
+      "storage_key": "raw/pv-index/cas/fcc4a72bd34b365b3d2f0c4b0a8c50aff3e30e2e649653454593799cda1d30c8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "509",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "                   Il faut vaut abroger le règlement 509 et reprendre le processus"
+            }
+          },
+          {
+            "label": "512",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                   Avis de motion et dépôt du projet de règlement 512"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/bearn/799cda1d30c8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193351Z/bearn/799cda1d30c8.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
