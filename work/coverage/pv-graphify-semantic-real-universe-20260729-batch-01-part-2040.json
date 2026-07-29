@@ -1,0 +1,1560 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T12:24:23.601Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2040,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "Regulation": 22,
+    "Resolution": 5,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "LotCadastre": 2,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 84,
+    "edges": 36,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 2,
+    "documents_with_zone": 1,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "bowman",
+      "storage_key": "raw/pv-index/cas/c17bb106e9623c27892d4b00b6478947ed53f22d1fa9238acfc5e51864591dfe.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6027471",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:245",
+      "quote": "QUE la municipalité acquière par voie de cession les lots 6 027 471 et 6 027 473, qui"
+    },
+    {
+      "municipality_slug": "bowman",
+      "storage_key": "raw/pv-index/cas/d66180e50983ffafd2a7136a69e2a297aed4df298fb102ea77d44613f3de0774.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6026716",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:384",
+      "quote": "municipal d’autoriser la demande de derogation mineure pour le lot 6 026 716, situe au"
+    },
+    {
+      "municipality_slug": "bowman",
+      "storage_key": "raw/pv-index/cas/db5c2aadb2ff61ee3bf2455c6a7898515d04499b75465f83445ad62dd1ef568f.pdf",
+      "entity_type": "Zone",
+      "value": "10-V",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:240",
+      "quote": "l’ajout de la colonne de la nouvelle zone 11-R à droite de la colonne de la zone 10-V."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 9,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 933,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z",
+  "documents": [
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%204%20mai%202021(2).pdf",
+      "storage_key": "raw/pv-index/cas/aab077aa27d9d107cb20c64156cc55e1251e66d63982ee695d2be14b9c190ad2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2019-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": "   RÈGLEMENT 2019-03 – POLITIQUE DE GESTION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e14b9c190ad2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e14b9c190ad2.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "notre-dame-du-laus"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2029%20novembre%202021_brouillon%20.pdf",
+      "storage_key": "raw/pv-index/cas/aba5af76a40ee67baea426ecc49d7517232c1fa84a6e6718f55c53dd9e72d296.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/53dd9e72d296.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/53dd9e72d296.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2029%20novembre%202021_web(1).pdf",
+      "storage_key": "raw/pv-index/cas/abc7a724ee30f87c8a29f34f4bc304a41b01d8b91e2848fa4266f304f7fb9fda.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/f304f7fb9fda.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/f304f7fb9fda.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20-%201%20octobre%202025_WEB.pdf",
+      "storage_key": "raw/pv-index/cas/ac3b73f3d0f9e1a4f89e9e232c175c8d759915d8f6b28c4b1571db33892f7719.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-09-155",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "QUE la Municipalité de Bowman appuie la résolution numéro 2025-09-155 de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/db33892f7719.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/db33892f7719.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "notre-dame-de-la-salette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%208%20avril%202025_BROUILLON(1).pdf",
+      "storage_key": "raw/pv-index/cas/b0e1ccbc74654219347ed8d5d418ef3c37da2f35d52f6bf44783f32ca58832f1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:358",
+              "quote": "2025-04-056 ADOPTION DU RÈGLEMENT 2025-04 SUR LES ANIMAUX"
+            }
+          },
+          {
+            "label": "2025-05",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1100",
+              "quote": " 2025-04-057 ADOPTION DU PROJET DE RÈGLEMENT 2025-05 SUR LE CODE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/f32ca58832f1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/f32ca58832f1.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "blainville",
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%201%20mars%202022_web.pdf",
+      "storage_key": "raw/pv-index/cas/b31cd1cedc2e7d11dad3e594a86ba8622a1d95b44574629c452595b358786b88.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "      3.2       Rapport en vertu du règlement 2021-03;"
+            }
+          },
+          {
+            "label": "2022-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "ATTENDU QUE le règlement 2022-04 abroge et remplace le règlement 2018-01;"
+            }
+          },
+          {
+            "label": "2018-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "ATTENDU QUE le règlement 2022-04 abroge et remplace le règlement 2018-01;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/95b358786b88.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/95b358786b88.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "montpellier",
+          "papineauville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%205%20janvier%202021(2).pdf",
+      "storage_key": "raw/pv-index/cas/b75aa9c2f2708bf77cefc1bf0638af0066afc6cb266bb3dba699e1ee59f1272b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "159-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "ATTENDU QUE            le règlement numéro 159-2017 édictant le Schéma"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e1ee59f1272b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e1ee59f1272b.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2016%20dcembre%202025_WEB_1.pdf",
+      "storage_key": "raw/pv-index/cas/b84bdea00995d551788d1f87ccda211fa50f35f9122354b637cc367de086aa46.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance extraordinaire du Conseil de la Municipalité de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Bowman, tenue le 16 décembre 2025, à 19 h, au lieu habituel des sessions"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/367de086aa46.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/367de086aa46.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%205%20septembre_web.pdf",
+      "storage_key": "raw/pv-index/cas/bb85d5104b979a549a822d546283b15c75c93742cde1ba3c5fa554a0cfcf63cf.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": " Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Bowman,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": " tenue le 5 septembre 2023, à 19 h, au lieu habituel des sessions dudit conseil,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/54a0cfcf63cf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/54a0cfcf63cf.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20-%209%20dcembre%202025_WEB.pdf",
+      "storage_key": "raw/pv-index/cas/bbe01853e4c987453f600c19951ab92c2adfc6fa791334683211c968bd6fbe11.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/c968bd6fbe11.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/c968bd6fbe11.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%201%20fevrier%202022_web.pdf",
+      "storage_key": "raw/pv-index/cas/c0d778dbbcc29850b34c51c88f8f10f8d7a1bbe599170102f6419bdf4a9e7558.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "    3.2        Rapport en vertu du règlement 2021-03;"
+            }
+          },
+          {
+            "label": "2016-06",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "    3.4        Avis de motion concernant la modification du règlement 2016-06"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "DÉONTOLOGIE DES ÉLUS ET DU RÈGLEMENT 2018-04 – RÉVISION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/9bdf4a9e7558.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/9bdf4a9e7558.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "val-des-bois"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%205%20avril%202022_WEB.pdf",
+      "storage_key": "raw/pv-index/cas/c17bb106e9623c27892d4b00b6478947ed53f22d1fa9238acfc5e51864591dfe.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "    3.2 Règlement 2021-03;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6027471",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:245",
+              "quote": "QUE la municipalité acquière par voie de cession les lots 6 027 471 et 6 027 473, qui"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e51864591dfe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/e51864591dfe.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "duhamel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%203%20mai%202022_web.pdf",
+      "storage_key": "raw/pv-index/cas/cd72c5037968bfb81ef9a24c8066ddf9ddc2f86ea96260a1f43798eb34297cfa.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/98eb34297cfa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/98eb34297cfa.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "val-des-bois"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2011%20JUIN%202024_WEB.pdf",
+      "storage_key": "raw/pv-index/cas/ce3287e0037c30048b24bee2fb3d8c679a98151af28a9879baa7ea08e80dda29.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Bowman,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "tenue le 11 juin 2024, à 19 h, au lieu habituel des sessions dudit conseil, sis au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/ea08e80dda29.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/ea08e80dda29.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "val-des-bois"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2013%20mai%202025_web.pdf",
+      "storage_key": "raw/pv-index/cas/d66180e50983ffafd2a7136a69e2a297aed4df298fb102ea77d44613f3de0774.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC de Papineau"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-086",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "ATTENDU QUE la résolution numéro 2025-04-086 adoptée par le Conseil des maires de la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6026716",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:384",
+              "quote": "municipal d’autoriser la demande de derogation mineure pour le lot 6 026 716, situe au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/4613f3de0774.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/4613f3de0774.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "notre-dame-de-la-salette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2010%20janvier%202023_web.pdf",
+      "storage_key": "raw/pv-index/cas/d83710173bf06577007479bfec9812af2ad1dd2704ccc588a100fe8618b7ff1f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": " Procès-verbal de la séance ordinaire du Conseil de la Municipalité de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": " Bowman, tenue le 10 janvier 2023, à 19 h, au lieu habituel des sessions"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    4.4 Adoption du règlement 2023-01 relatif à la taxation 2023;"
+            }
+          },
+          {
+            "label": "2022-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "règlement 2022-01, ainsi que tous les règlements antérieurs relatifs à la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/fe8618b7ff1f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/fe8618b7ff1f.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%206%20juillet%202021(1).pdf",
+      "storage_key": "raw/pv-index/cas/d90441a981169730d84d759959c1405ea79a908ad308dbb76b3b0ede04093553.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2011-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:127",
+              "quote": "présenté une demande de dérogation mineure conformément au règlement 2011-03;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/0ede04093553.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/0ede04093553.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%2010%20SEPTEMBRE%202024_web.pdf",
+      "storage_key": "raw/pv-index/cas/db5c2aadb2ff61ee3bf2455c6a7898515d04499b75465f83445ad62dd1ef568f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 5,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 septembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Bowman,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 septembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "tenue le 10 septembre 2024, à 19 h, au lieu habituel des sessions dudit conseil, sis"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-08-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:266",
+              "quote": "(résolution no 2022-08-115) et qu’une mise à jour s’impose à la suite de l’adoption de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "185-2022",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:197",
+              "quote": "règlement 185-2022 remplaçant le règlement numéro 179-2021 modifiant le règlement"
+            }
+          },
+          {
+            "label": "04",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "Projet de règlement numéro 04PC-2024"
+            }
+          },
+          {
+            "label": "179-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "règlement 185-2022 remplaçant le règlement numéro 179-2021 modifiant le règlement"
+            }
+          },
+          {
+            "label": "01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:139",
+              "quote": "Projet de règlement numéro 01PU-2024"
+            }
+          },
+          {
+            "label": "05",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:188",
+              "quote": "Projet de règlement numéro 05Z-2024"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "10-V",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:240",
+              "quote": "l’ajout de la colonne de la nouvelle zone 11-R à droite de la colonne de la zone 10-V."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/d62dd1ef568f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/d62dd1ef568f.pdf/.graphify/.graphify_extract.json — 11 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%209%20JUILLET%202024_WEB.pdf",
+      "storage_key": "raw/pv-index/cas/dba55084629c7bb887a4040646b3fd4b260ad8388e85ba8bcf428a0972e361c2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Bowman,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "tenue le 9 juillet 2024, à 19 h, au lieu habituel des sessions dudit conseil, sis au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/8a0972e361c2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/8a0972e361c2.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "cantley",
+          "denholm",
+          "val-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bowman",
+      "municipality_name": "Bowman",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/bowman/_publication/fichiers/PROCES%20VERBAL%20DU%203%20octobre_web(1).pdf",
+      "storage_key": "raw/pv-index/cas/ded68e3849786135cb8e32feaece8ef0320102ba0b12fd85a3c60ca03bb6f9d0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bowman",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Mrc de Papineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Bowman,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "tenue le 3 octobre 2023, à 19 h, au lieu habituel des sessions dudit conseil, sis"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2016-06-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "résolution 2016-06-115 du conseil des maires de la MRC de Papineau) ;"
+            }
+          },
+          {
+            "label": "2020-02-030",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "ATTENDU         qu’en vertu de sa résolution 2020-02-030, le conseil des maires"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2010-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "   3.2 Avis de motion abrogeant le règlement 2010-03;"
+            }
+          },
+          {
+            "label": "2023-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "   4.8 Règlement 2023-04 modifiant le règlement 2016-02 décrétant"
+            }
+          },
+          {
+            "label": "2016-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "   4.8 Règlement 2023-04 modifiant le règlement 2016-02 décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/0ca03bb6f9d0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T122132Z/bowman/0ca03bb6f9d0.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bowman",
+          "plaisance"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
