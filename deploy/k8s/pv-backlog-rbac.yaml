@@ -1,0 +1,75 @@
+# RBAC des CronJobs de capture PV.
+#
+# ⚠️ CE MANIFESTE EXISTE PARCE QU'IL MANQUAIT, ET QUE SON ABSENCE ETAIT MUETTE.
+#
+# Le runner `pv-capture-backlog-run.ts` prend un Lease (`coordination.k8s.io`)
+# pour garantir qu'une seule execution du backlog tourne a la fois. Aucun Role
+# ne l'y autorisait :
+#
+#   leases.coordination.k8s.io "geo-pv-backlog-…-lock" is forbidden:
+#   User "system:serviceaccount:geo:geo-pv-backlog-pv-control-20260728-02-sa"
+#   cannot get resource "leases" in API group "coordination.k8s.io"   HTTP 403
+#
+# Le CronJob se declenchait toutes les 2 minutes, echouait, et recommencait —
+# pendant SEPT HEURES. Rien ne le signalait : un CronJob qui echoue ne reveille
+# personne, et `kubectl get cronjob` affiche `False` dans SUSPEND comme si tout
+# allait bien. C'est la meme famille de defaut silencieux que le cache de
+# geo-api masquant des retraits, ou les preuves dont le sha256 etait absent :
+# ca ne casse pas bruyamment, ca ne fait simplement rien.
+#
+# ⚠️ LE VRAI DEFAUT EST PLUS LARGE, ET CE FICHIER NE LE CORRIGE PAS ENTIEREMENT.
+# Ces CronJobs ont ete crees a la volee sur le cluster, sans manifeste dans le
+# depot — exactement comme le CronJob `geo-pv-backlog` qui a DISPARU du namespace
+# sans laisser de trace, parce que personne ne pouvait le rejouer. Il y en a
+# quatre aujourd'hui, tous en `*/2 * * * *`. Les rendre reproductibles suppose de
+# decider combien il en faut, ce qui est un arbitrage du proprietaire, pas une
+# correction technique. Ce manifeste ferme le trou de droits ; il ne legitime pas
+# la multiplication des CronJobs.
+#
+# Le Role est volontairement MINIMAL : uniquement les verbes qu'exige le verrou.
+# Un `leases` en `create`/`get`/`update` suffit ; on n'ajoute ni `list`, ni
+# `delete`, ni quoi que ce soit sur d'autres ressources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-pv-backlog-lease
+  namespace: geo
+  labels:
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pv-capture
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "create", "update"]
+---
+# Le RoleBinding vise les ServiceAccounts des CronJobs PV. Ils sont nommes par
+# campagne (`geo-pv-backlog-<lane>-<id>-sa`), donc la liste doit etre tenue a
+# jour quand une campagne est creee. C'est verbeux a dessein : un binding par
+# nom explicite se relit, alors qu'un binding sur un groupe entier accorderait
+# ces droits a tout ce qui passe dans le namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-pv-backlog-lease
+  namespace: geo
+  labels:
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pv-capture
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: geo-pv-backlog-lease
+# ⚠️ Ces trois-la EXISTENT sur le cluster, verifie avant d'ecrire ce fichier.
+# `geo-pv-backlog-pv-control-20260728-01-sa` n'existe PAS malgre son CronJob :
+# lier un sujet fantome ne casse rien et ne fait rien, ce qui en ferait
+# exactement le genre de ligne qu'on croit active alors qu'elle dort.
+subjects:
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-control-20260728-02-sa
+    namespace: geo
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-ordre-du-jour-20260728-01-sa
+    namespace: geo
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+    namespace: geo
