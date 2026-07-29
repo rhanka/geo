@@ -280,6 +280,32 @@ describe("StoreProvider via the OGC app", () => {
     expect(store.listCalls).toHaveLength(2);
   });
 
+  it("serves the nested layout when flat and nested keys share a collection id", async () => {
+    const store = new FakeStore();
+    store.seed(
+      "qc-zonage-x.geojson",
+      JSON.stringify({
+        type: "FeatureCollection",
+        features: [{ type: "Feature", id: "flat", geometry: null, properties: { layout: "flat" } }],
+      }),
+    );
+    store.seed(
+      "qc-zonage-x/qc-zonage-x.geojson",
+      JSON.stringify({
+        type: "FeatureCollection",
+        features: [{ type: "Feature", id: "nested", geometry: null, properties: { layout: "nested" } }],
+      }),
+    );
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections/qc-zonage-x/items`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { features: { id: string; properties: { layout: string } }[] };
+    expect(body.features).toEqual([
+      { type: "Feature", id: "nested", geometry: null, properties: { layout: "nested" } },
+    ]);
+  });
+
   it("streams the exact legacy limit=5000 page without Store#get on the GeoJSON body", async () => {
     const store = new FakeStore();
     const features = Array.from({ length: 5001 }, (_, index) => ({
