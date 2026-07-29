@@ -73,7 +73,15 @@ spec:
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3
-  suspend: false
+  # SUSPENDU A DESSEIN. Avec le digest 60f048b5 l'image fonctionne: le pod lit
+  # bien la cible S3, joint le bucket OVH et va jusqu'au registre. Il s'arrete
+  # alors sur `rapport terminal deja present mais divergent` pour
+  # `registry/capture-orchestrators/pv-probable-20260728-b32de19169bc/report.json`
+  # — la campagne de ce CronJob est TERMINEE, et le garde d'immuabilite refuse de
+  # reecrire son rapport terminal. Il a raison: relancer cette campagne-la ne
+  # capturerait rien de neuf et effacerait sa trace.
+  # Reactiver ce CronJob n'a de sens qu'avec un NOUVEL identifiant de campagne.
+  suspend: true
   jobTemplate:
     spec:
       backoffLimit: 0
