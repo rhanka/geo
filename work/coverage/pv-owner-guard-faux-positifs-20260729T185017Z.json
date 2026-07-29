@@ -1,0 +1,129 @@
+{
+  "contract": "pv-owner-guard-faux-positifs/v1",
+  "generated_at": "2026-07-29T18:50:17Z",
+  "phase": "step-1-hebertville-station-only",
+  "mode": "read-only-s3-cas-pdf",
+  "constraints": {
+    "s3_environment": {
+      "NODE_OPTIONS": "--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS": "10"
+    },
+    "maximum_read_bytes": 5000000,
+    "writes": [
+      "work/coverage/pv-owner-guard-faux-positifs-20260729T185017Z.json",
+      "work/coverage/pv-owner-guard-faux-positifs-20260729T185017Z.md"
+    ],
+    "s3_writes": false,
+    "indexing": false
+  },
+  "scope": {
+    "slug": "hebertville-station",
+    "reported_refusals": 8,
+    "manifest_observations": 10,
+    "manifest_unique_cas": 10,
+    "manifest_evidence": {
+      "key": "capture/_runs/pv-20260728T210840Z-0-a5a9ae69-0862-4578-9d57-0860a45027b7/manifest.jsonl",
+      "lines": [107, 108, 109, 110, 111, 112, 113, 114, 115, 116]
+    },
+    "note": "Le compte de 8 refus fourni dans la mission ne permet pas d'identifier ses huit clés sans lire les artefacts live interdits pv-graphify-semantic-real-universe-*. Le rapprochement read-only des manifestes terminaux donne actuellement 10 CAS distinctes au scope; les 10 sont donc ouvertes ci-dessous, sans en attribuer arbitrairement 8 au classement."
+  },
+  "owner_guard_replay": {
+    "implementation": "acquisition/src/pv-graphify-semantic-run.ts:955-962, via printedMunicipalityOwners de acquisition/src/lib/pv-graphify-semantic.ts:308-313",
+    "result": {
+      "confirmed_scope": 0,
+      "contamination_owner_mismatch": 10,
+      "not_confirmed": 0
+    },
+    "conclusion": "CONTAMINATION_REELLE pour les six CAS ayant un en-tête textuel explicite: cet en-tête nomme Hébertville, pas Hébertville-Station. Quatre CAS n'ont pas d'en-tête municipal extractible; leurs mentions de propriétaire lues par la garde sont conservées séparément et leurs en-têtes sont unknown, conformément au contrat anti-invention."
+  },
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/0f50568c6fb21a1831fee09218e5cf4ac4a82bec4a58f953157bde72155b65d8.pdf",
+      "bytes": 134811,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/01/odj2026-01-19.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "line": 1, "verbatim": "MUNICIPALITÉ D'HÉBERTVILLE" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8eed43180aa4f6bbd0f230a92a1d1c154c69f87df342dfac6a051e46d2bef7de.pdf",
+      "bytes": 126322,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/07/odj2026-07-06cp.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "lines": [1, 2], "verbatim": "Municipalité\\nd’Hébertville" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9afc18e70788c8ab053f3ddfbb03d837004bc668677b589cd520a5327a223468.pdf",
+      "bytes": 124252,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/05/Ordre-du-jour-4-mai.pdf",
+      "printed_owner_slugs": ["alma", "hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "unknown", "reason": "aucun en-tête municipal extractible par pdftotext; la mention d'Hébertville page 1 ligne 17 est un point d'ordre du jour, pas un en-tête" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a16182723bd29dc303612168fcb5dc74367421a03dddbec7d0a14329f72f81ab.pdf",
+      "bytes": 159898,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/05/Ordre-du-jour-20-mai.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "line": 1, "verbatim": "MUNICIPALITÉ D'HÉBERTVILLE" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ac78d82b8511d4a8e3dc1fb41fc588ec15666e369ccf379ddf6a4c127e5c48e4.pdf",
+      "bytes": 176137,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/02/odj20260216spec.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "line": 1, "verbatim": "MUNICIPALITÉ D'HÉBERTVILLE" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b718e6c8d8f172b0f6d485197fed619e318bdab769927081db6bea3b350f7ba2.pdf",
+      "bytes": 128915,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/05/Ordre-du-jour_1-juin.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "unknown", "reason": "aucun en-tête municipal extractible par pdftotext; la mention d'Hébertville page 1 ligne 18 est un point d'ordre du jour, pas un en-tête" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/bc223bdae5c84cfccdfe9747cf27c6ce4efc9dc0d2778d34a6a5a63d84a51eda.pdf",
+      "bytes": 125392,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/04/Ordre-du-jour-13-avril-2026_Modifie.pdf",
+      "printed_owner_slugs": ["hebertville", "saint-bruno"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "unknown", "reason": "aucun en-tête municipal extractible par pdftotext; « Municipalité de Saint-Bruno » est aux pages 1 lignes 45-46 dans le libellé d'un acte d'échange, pas un en-tête" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/de89c9117878d8d4b1d7cdf263fa4c7f6023445c5ecf0817a058d5511d7a0625.pdf",
+      "bytes": 102958,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/06/Ordre-du-jour-8-juin.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "lines": [1, 2], "verbatim": "MUNICIPALITÉ\\nD'HÉBERTVILLE" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ed8e23ce9e76f73a83608a448d4f04e8f71529358337239e1b2f86ea954a18c0.pdf",
+      "bytes": 137502,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/02/2-odj2026-02-02cp.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "unknown", "reason": "aucun en-tête municipal extractible par pdftotext; la mention d'Hébertville pages 1 lignes 26-28 est un point d'ordre du jour, pas un en-tête" }
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f346eea33216f6d69d14a709fae22b8a22c4da071104718e84132ec06a741fbc.pdf",
+      "bytes": 120066,
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/06/odj150626spec-modifie.pdf",
+      "printed_owner_slugs": ["hebertville"],
+      "owner_scope": "CONTAMINATION_OWNER_MISMATCH",
+      "header": { "status": "read", "page": 1, "lines": [1, 2], "verbatim": "MUNICIPALITÉ\\nD'HÉBERTVILLE" }
+    }
+  ],
+  "truncation": {
+    "observed": false,
+    "conclusion": "Aucun en-tête lu ne dit Hébertville-Station; aucune troncature ne peut donc expliquer les refus documentés. La garde ne doit pas être assouplie sur cette preuve.",
+    "relevant_guard_locations": [
+      "acquisition/src/pv-graphify-semantic-run.ts:955-962",
+      "acquisition/src/lib/pv-graphify-semantic.ts:308-313"
+    ]
+  }
+}
