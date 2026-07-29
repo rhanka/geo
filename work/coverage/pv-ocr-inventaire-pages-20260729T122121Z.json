@@ -1,0 +1,6126 @@
+{
+  "contract": "pv-ocr-inventaire-pages/v1",
+  "generated_at": "2026-07-29T12:25:52.357Z",
+  "input_commit": "14c60a04",
+  "analysis_script": "acquisition/src/_pv-ocr-pages-inventory.ts",
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "source_snapshot": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "read_only": true,
+  "ocr_launched": false,
+  "graphify_or_indexing_launched": false,
+  "pdf_metadata_tool": "pdfinfo -",
+  "pdf_metadata_only": true,
+  "captured_documents": 6382,
+  "captured_share_percent": 2.9,
+  "failure_rows": 194,
+  "unique_failed_documents": 186,
+  "duplicate_failure_rows": 8,
+  "pages": {
+    "documents": 186,
+    "known_documents": 183,
+    "unknown_documents": 3,
+    "known_pages_total": 1053,
+    "total_pages": null,
+    "median_known_documents": 5,
+    "median_all_documents": null,
+    "min_known": 1,
+    "max_known": 26,
+    "max_all_documents": null,
+    "distribution_by_band": [
+      {
+        "label": "1-5",
+        "count": 98
+      },
+      {
+        "label": "6-20",
+        "count": 82
+      },
+      {
+        "label": "21-50",
+        "count": 3
+      },
+      {
+        "label": "51+",
+        "count": 0
+      }
+    ]
+  },
+  "cost_usd": {
+    "price_per_page_usd": "0.001",
+    "known_pages_cost_usd": "1.053",
+    "unknown_at_known_median_extrapolation_usd": "0.015",
+    "range_lower_usd": "1.053",
+    "range_upper_usd": "1.068",
+    "range_upper_is_extrapolation": true
+  },
+  "municipal_impact": {
+    "distinct_affected_municipalities": 18,
+    "municipalities_without_another_indexed_document": 16,
+    "indexed_evidence_documents": 815,
+    "snapshot_indexed_pvs": 815,
+    "municipalities": [
+      {
+        "slug": "aguanish",
+        "name": "Aguanish",
+        "mrc": "Minganie",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "albertville",
+        "name": "Albertville",
+        "mrc": "La Matapédia",
+        "failed_documents": 45,
+        "other_indexed_documents": 46,
+        "has_other_indexed_document": true
+      },
+      {
+        "slug": "alleyn-et-cawood",
+        "name": "Alleyn-et-Cawood",
+        "mrc": "Pontiac",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "amherst",
+        "name": "Amherst",
+        "mrc": "Les Laurentides",
+        "failed_documents": 4,
+        "other_indexed_documents": 11,
+        "has_other_indexed_document": true
+      },
+      {
+        "slug": "ascot-corner",
+        "name": "Ascot Corner",
+        "mrc": "Le Haut-Saint-François",
+        "failed_documents": 5,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "baie-comeau",
+        "name": "Baie-Comeau",
+        "mrc": "Manicouagan",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "baie-des-sables",
+        "name": "Baie-des-Sables",
+        "mrc": "La Matanie",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "baie-johan-beetz",
+        "name": "Baie-Johan-Beetz",
+        "mrc": "Minganie",
+        "failed_documents": 16,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "baie-sainte-catherine",
+        "name": "Baie-Sainte-Catherine",
+        "mrc": "Charlevoix-Est",
+        "failed_documents": 4,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "baie-trinite",
+        "name": "Baie-Trinité",
+        "mrc": "Manicouagan",
+        "failed_documents": 87,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "beauharnois",
+        "name": "Beauharnois",
+        "mrc": "Beauharnois-Salaberry",
+        "failed_documents": 2,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "berthier-sur-mer",
+        "name": "Berthier-sur-Mer",
+        "mrc": "Montmagny",
+        "failed_documents": 9,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "berthierville",
+        "name": "Berthierville",
+        "mrc": "D'Autray",
+        "failed_documents": 2,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "bury",
+        "name": "Bury",
+        "mrc": "Le Haut-Saint-François",
+        "failed_documents": 2,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "carignan",
+        "name": "Carignan",
+        "mrc": "La Vallée-du-Richelieu",
+        "failed_documents": 2,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "charlemagne",
+        "name": "Charlemagne",
+        "mrc": "L'Assomption",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "clermont--abitibi-ouest",
+        "name": "Clermont",
+        "mrc": "Abitibi-Ouest",
+        "failed_documents": 1,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      },
+      {
+        "slug": "cloridorme",
+        "name": "Cloridorme",
+        "mrc": "La Côte-de-Gaspé",
+        "failed_documents": 2,
+        "other_indexed_documents": 0,
+        "has_other_indexed_document": false
+      }
+    ]
+  },
+  "offset_concentration": [
+    {
+      "offset_start": 0,
+      "offset_end_inclusive": 99,
+      "failure_rows": 14,
+      "unique_documents": 12,
+      "distinct_municipalities": 8,
+      "municipalities_by_count": [
+        {
+          "value": "ascot-corner",
+          "count": 2
+        },
+        {
+          "value": "baie-sainte-catherine",
+          "count": 2
+        },
+        {
+          "value": "beauharnois",
+          "count": 2
+        },
+        {
+          "value": "berthierville",
+          "count": 2
+        },
+        {
+          "value": "aguanish",
+          "count": 1
+        },
+        {
+          "value": "albertville",
+          "count": 1
+        },
+        {
+          "value": "baie-trinite",
+          "count": 1
+        },
+        {
+          "value": "berthier-sur-mer",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Beauharnois-Salaberry",
+          "count": 2
+        },
+        {
+          "value": "Charlevoix-Est",
+          "count": 2
+        },
+        {
+          "value": "D'Autray",
+          "count": 2
+        },
+        {
+          "value": "Le Haut-Saint-François",
+          "count": 2
+        },
+        {
+          "value": "La Matapédia",
+          "count": 1
+        },
+        {
+          "value": "Manicouagan",
+          "count": 1
+        },
+        {
+          "value": "Minganie",
+          "count": 1
+        },
+        {
+          "value": "Montmagny",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 12
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 12
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+          "count": 2
+        },
+        {
+          "value": "ascot-corner.com",
+          "count": 2
+        },
+        {
+          "value": "ville.beauharnois.qc.ca",
+          "count": 2
+        },
+        {
+          "value": "www.ville.berthierville.qc.ca",
+          "count": 2
+        },
+        {
+          "value": "baie-trinite.quebec",
+          "count": 1
+        },
+        {
+          "value": "berthiersurmer.ca",
+          "count": 1
+        },
+        {
+          "value": "www.aguanish.org",
+          "count": 1
+        },
+        {
+          "value": "www.municipalite-albertville.ca",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 8,
+      "unique_producer_values": 1,
+      "unique_creator_values": 1,
+      "unique_url_host_values": 8,
+      "cause_unique_common_dimension": null
+    },
+    {
+      "offset_start": 100,
+      "offset_end_inclusive": 199,
+      "failure_rows": 8,
+      "unique_documents": 8,
+      "distinct_municipalities": 5,
+      "municipalities_by_count": [
+        {
+          "value": "bury",
+          "count": 2
+        },
+        {
+          "value": "carignan",
+          "count": 2
+        },
+        {
+          "value": "cloridorme",
+          "count": 2
+        },
+        {
+          "value": "charlemagne",
+          "count": 1
+        },
+        {
+          "value": "clermont--abitibi-ouest",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "La Côte-de-Gaspé",
+          "count": 2
+        },
+        {
+          "value": "La Vallée-du-Richelieu",
+          "count": 2
+        },
+        {
+          "value": "Le Haut-Saint-François",
+          "count": 2
+        },
+        {
+          "value": "Abitibi-Ouest",
+          "count": 1
+        },
+        {
+          "value": "L'Assomption",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 6
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C360i",
+          "count": 1
+        },
+        {
+          "value": "SECnvtToPDF V1.0",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 6
+        },
+        {
+          "value": "KM_C360i",
+          "count": 1
+        },
+        {
+          "value": "TOSHIBA e-STUDIO2508A",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "carignan-22793.kxcdn.com",
+          "count": 2
+        },
+        {
+          "value": "municipalitecloridorme.ca",
+          "count": 2
+        },
+        {
+          "value": "municipalitedebury.qc.ca",
+          "count": 2
+        },
+        {
+          "value": "clermont.ao.ca",
+          "count": 1
+        },
+        {
+          "value": "www.charlemagne.ca",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 5,
+      "unique_producer_values": 3,
+      "unique_creator_values": 3,
+      "unique_url_host_values": 5,
+      "cause_unique_common_dimension": null
+    },
+    {
+      "offset_start": 200,
+      "offset_end_inclusive": 299,
+      "failure_rows": 50,
+      "unique_documents": 50,
+      "distinct_municipalities": 3,
+      "municipalities_by_count": [
+        {
+          "value": "albertville",
+          "count": 45
+        },
+        {
+          "value": "amherst",
+          "count": 4
+        },
+        {
+          "value": "alleyn-et-cawood",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "La Matapédia",
+          "count": 45
+        },
+        {
+          "value": "Les Laurentides",
+          "count": 4
+        },
+        {
+          "value": "Pontiac",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 20
+        },
+        {
+          "value": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+          "count": 9
+        },
+        {
+          "value": "SECnvtToPDF V1.0",
+          "count": 5
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 3
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C451i",
+          "count": 2
+        },
+        {
+          "value": "Xerox AltaLink C8170",
+          "count": 2
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 2
+        },
+        {
+          "value": "Adobe PSL 1.2e for Canon",
+          "count": 1
+        },
+        {
+          "value": "Adobe PSL 1.3e for Canon",
+          "count": 1
+        },
+        {
+          "value": "Brother Scanner System Image Conversion",
+          "count": 1
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C300i",
+          "count": 1
+        },
+        {
+          "value": "Scanner System Image Conversion",
+          "count": 1
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 1
+        },
+        {
+          "value": "Xerox AltaLink C8155",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 29
+        },
+        {
+          "value": "TOSHIBA e-STUDIO2508A",
+          "count": 5
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 3
+        },
+        {
+          "value": "KM_C451i",
+          "count": 2
+        },
+        {
+          "value": "Xerox AltaLink C8170",
+          "count": 2
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 2
+        },
+        {
+          "value": "Brother Scanner System : ADS-2800W",
+          "count": 1
+        },
+        {
+          "value": "Canon iR-ADV C5235  PDF",
+          "count": 1
+        },
+        {
+          "value": "Canon iR-ADV C5740  PDF",
+          "count": 1
+        },
+        {
+          "value": "KM_C300i",
+          "count": 1
+        },
+        {
+          "value": "Scanner System",
+          "count": 1
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 1
+        },
+        {
+          "value": "Xerox AltaLink C8155",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "www.municipalite-albertville.ca",
+          "count": 45
+        },
+        {
+          "value": "municipalite.amherst.qc.ca",
+          "count": 4
+        },
+        {
+          "value": "alleyn-cawood.ca",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 3,
+      "unique_producer_values": 14,
+      "unique_creator_values": 13,
+      "unique_url_host_values": 3,
+      "cause_unique_common_dimension": null
+    },
+    {
+      "offset_start": 300,
+      "offset_end_inclusive": 399,
+      "failure_rows": 5,
+      "unique_documents": 5,
+      "distinct_municipalities": 1,
+      "municipalities_by_count": [
+        {
+          "value": "ascot-corner",
+          "count": 5
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Le Haut-Saint-François",
+          "count": 5
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 5
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 5
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "ascot-corner.com",
+          "count": 5
+        }
+      ],
+      "unique_mrc_values": 1,
+      "unique_producer_values": 1,
+      "unique_creator_values": 1,
+      "unique_url_host_values": 1,
+      "cause_unique_common_dimension": "municipality"
+    },
+    {
+      "offset_start": 600,
+      "offset_end_inclusive": 699,
+      "failure_rows": 1,
+      "unique_documents": 1,
+      "distinct_municipalities": 1,
+      "municipalities_by_count": [
+        {
+          "value": "baie-comeau",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Manicouagan",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "www.ville.baie-comeau.qc.ca",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 1,
+      "unique_producer_values": 1,
+      "unique_creator_values": 1,
+      "unique_url_host_values": 1,
+      "cause_unique_common_dimension": "municipality"
+    },
+    {
+      "offset_start": 800,
+      "offset_end_inclusive": 899,
+      "failure_rows": 1,
+      "unique_documents": 1,
+      "distinct_municipalities": 1,
+      "municipalities_by_count": [
+        {
+          "value": "baie-des-sables",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "La Matanie",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "SECnvtToPDF V1.0",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "TOSHIBA e-STUDIO2508A",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "vplus-documents.s3.ca-central-1.amazonaws.com",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 1,
+      "unique_producer_values": 1,
+      "unique_creator_values": 1,
+      "unique_url_host_values": 1,
+      "cause_unique_common_dimension": "municipality"
+    },
+    {
+      "offset_start": 900,
+      "offset_end_inclusive": 999,
+      "failure_rows": 21,
+      "unique_documents": 21,
+      "distinct_municipalities": 3,
+      "municipalities_by_count": [
+        {
+          "value": "baie-johan-beetz",
+          "count": 16
+        },
+        {
+          "value": "baie-sainte-catherine",
+          "count": 4
+        },
+        {
+          "value": "baie-trinite",
+          "count": 1
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Minganie",
+          "count": 16
+        },
+        {
+          "value": "Charlevoix-Est",
+          "count": 4
+        },
+        {
+          "value": "Manicouagan",
+          "count": 1
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 11
+        },
+        {
+          "value": "SECnvtToPDF V1.0",
+          "count": 3
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 3
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C451i",
+          "count": 1
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 1
+        },
+        {
+          "value": "Xerox AltaLink C8155",
+          "count": 1
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 11
+        },
+        {
+          "value": "TOSHIBA e-STUDIO2508A",
+          "count": 3
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 3
+        },
+        {
+          "value": "KM_C451i",
+          "count": 1
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 1
+        },
+        {
+          "value": "Xerox AltaLink C8155",
+          "count": 1
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "www.baiejohanbeetz.qc.ca",
+          "count": 16
+        },
+        {
+          "value": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+          "count": 4
+        },
+        {
+          "value": "baie-trinite.quebec",
+          "count": 1
+        }
+      ],
+      "unique_mrc_values": 3,
+      "unique_producer_values": 7,
+      "unique_creator_values": 7,
+      "unique_url_host_values": 3,
+      "cause_unique_common_dimension": null
+    },
+    {
+      "offset_start": 1000,
+      "offset_end_inclusive": 1099,
+      "failure_rows": 86,
+      "unique_documents": 86,
+      "distinct_municipalities": 1,
+      "municipalities_by_count": [
+        {
+          "value": "baie-trinite",
+          "count": 86
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Manicouagan",
+          "count": 86
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 36
+        },
+        {
+          "value": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+          "count": 13
+        },
+        {
+          "value": "SECnvtToPDF V1.0",
+          "count": 11
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 4
+        },
+        {
+          "value": "Adobe PSL 1.2e for Canon",
+          "count": 3
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 3
+        },
+        {
+          "value": "Brother Scanner System Image Conversion",
+          "count": 2
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C451i",
+          "count": 2
+        },
+        {
+          "value": "Xerox AltaLink C8170",
+          "count": 2
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 2
+        },
+        {
+          "value": "Acrobat Distiller 25.0 (Windows)",
+          "count": 1
+        },
+        {
+          "value": "Adobe PSL 1.3e for Canon\u0000",
+          "count": 1
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C300i",
+          "count": 1
+        },
+        {
+          "value": "KONICA MINOLTA bizhub C308",
+          "count": 1
+        },
+        {
+          "value": "Microsoft: Print To PDF",
+          "count": 1
+        },
+        {
+          "value": "PDFCreator 2.1.2.0",
+          "count": 1
+        },
+        {
+          "value": "PDFlib+PDI 8.0.4p2 (ppc Linux)",
+          "count": 1
+        },
+        {
+          "value": "PFUPDF Engine 1.3.21",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 50
+        },
+        {
+          "value": "TOSHIBA e-STUDIO2508A",
+          "count": 11
+        },
+        {
+          "value": "VersaLink C7125 Color MFP",
+          "count": 4
+        },
+        {
+          "value": "Canon iR-ADV C5235  PDF",
+          "count": 3
+        },
+        {
+          "value": "VersaLink C7025",
+          "count": 3
+        },
+        {
+          "value": "Brother Scanner System : ADS-2800W",
+          "count": 2
+        },
+        {
+          "value": "KM_C451i",
+          "count": 2
+        },
+        {
+          "value": "Xerox AltaLink C8170",
+          "count": 2
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 2
+        },
+        {
+          "value": "Canon iR-ADV C3930  PDF",
+          "count": 1
+        },
+        {
+          "value": "KM_C300i",
+          "count": 1
+        },
+        {
+          "value": "KM_C308",
+          "count": 1
+        },
+        {
+          "value": "PDFCreator 2.1.2.0",
+          "count": 1
+        },
+        {
+          "value": "PFU ScanSnap Home 2.22.2 #iX1600",
+          "count": 1
+        },
+        {
+          "value": "TOSHIBA e-STUDIO5525AC",
+          "count": 1
+        },
+        {
+          "value": "Xerox WorkCentre EC7856",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "baie-trinite.quebec",
+          "count": 86
+        }
+      ],
+      "unique_mrc_values": 1,
+      "unique_producer_values": 18,
+      "unique_creator_values": 16,
+      "unique_url_host_values": 1,
+      "cause_unique_common_dimension": "municipality"
+    },
+    {
+      "offset_start": 1500,
+      "offset_end_inclusive": 1599,
+      "failure_rows": 8,
+      "unique_documents": 8,
+      "distinct_municipalities": 1,
+      "municipalities_by_count": [
+        {
+          "value": "berthier-sur-mer",
+          "count": 8
+        }
+      ],
+      "mrc_by_count": [
+        {
+          "value": "Montmagny",
+          "count": 8
+        }
+      ],
+      "pdfinfo_producer_by_count": [
+        {
+          "value": "unknown",
+          "count": 5
+        },
+        {
+          "value": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+          "count": 1
+        },
+        {
+          "value": "PDFCreator 2.1.2.0",
+          "count": 1
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 1
+        }
+      ],
+      "pdfinfo_creator_by_count": [
+        {
+          "value": "unknown",
+          "count": 6
+        },
+        {
+          "value": "PDFCreator 2.1.2.0",
+          "count": 1
+        },
+        {
+          "value": "Xerox WorkCentre 7970",
+          "count": 1
+        }
+      ],
+      "url_host_by_count": [
+        {
+          "value": "berthiersurmer.ca",
+          "count": 8
+        }
+      ],
+      "unique_mrc_values": 1,
+      "unique_producer_values": 4,
+      "unique_creator_values": 3,
+      "unique_url_host_values": 1,
+      "cause_unique_common_dimension": "municipality"
+    }
+  ],
+  "failed_documents": [
+    {
+      "content_length": 450089,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "SKM_C360i24121910570",
+      "creator": "KM_C360i",
+      "producer": "KONICA MINOLTA bizhub C360i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80.pdf",
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "mrc": "La Vallée-du-Richelieu",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2018-07-04.pdf",
+      "url_host": "carignan-22793.kxcdn.com",
+      "selection_offsets": [
+        130
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-131.json"
+      ]
+    },
+    {
+      "content_length": 555651,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638.pdf",
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "mrc": "La Côte-de-Gaspé",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3246/005_pv_11-mars-2024.pdf",
+      "url_host": "municipalitecloridorme.ca",
+      "selection_offsets": [
+        179
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-180.json"
+      ]
+    },
+    {
+      "content_length": 1834745,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669.pdf",
+      "slug": "charlemagne",
+      "municipality_name": "Charlemagne",
+      "mrc": "L'Assomption",
+      "url": "https://www.charlemagne.ca/storage/app/media/la-ville/S%C3%A9ances%20du%20conseil/Officiel_Proc%C3%A8s-verbal_250121.pdf",
+      "url_host": "www.charlemagne.ca",
+      "selection_offsets": [
+        144
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-145.json"
+      ]
+    },
+    {
+      "content_length": 4247612,
+      "page_count": 11,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad.pdf",
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "mrc": "Beauharnois-Salaberry",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/Proces-verbal-2026-01-13-Signe-1.pdf",
+      "url_host": "ville.beauharnois.qc.ca",
+      "selection_offsets": [
+        55
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-56.json"
+      ]
+    },
+    {
+      "content_length": 3420856,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-13-juillet-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        43,
+        950
+      ],
+      "selection_offset_hundreds": [
+        0,
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-44.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 3015949,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67.pdf",
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "mrc": "La Côte-de-Gaspé",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3096/proces-verbal-speciale-16-aout-2023.pdf",
+      "url_host": "municipalitecloridorme.ca",
+      "selection_offsets": [
+        180
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-181.json"
+      ]
+    },
+    {
+      "content_length": 2921085,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e.pdf",
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "mrc": "La Vallée-du-Richelieu",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2020-03-04.pdf",
+      "url_host": "carignan-22793.kxcdn.com",
+      "selection_offsets": [
+        131
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-132.json"
+      ]
+    },
+    {
+      "content_length": 4680487,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-9-septembre-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1838121,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/12/Proces-verbal-extraordinaire-20-aout-2021.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        72
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-73.json"
+      ]
+    },
+    {
+      "content_length": 3721089,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/modification_du_calendrier_des_seances.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        0,
+        8,
+        208
+      ],
+      "selection_offset_hundreds": [
+        0,
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-01.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-09.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-209.json"
+      ]
+    },
+    {
+      "content_length": 1449335,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/0a68441cb9e88af81cb6381d466d6d5811cca380d87274bcc5a2c52078d6f274.pdf",
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "mrc": "D'Autray",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260216_seance_extraordinaire_fevrier.pdf",
+      "url_host": "www.ville.berthierville.qc.ca",
+      "selection_offsets": [
+        73
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-74.json"
+      ]
+    },
+    {
+      "content_length": 2077833,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/0a9763b27e3bf3c079e42db81f6aeddc84d4e568681fdbe01ef6bd00216d89e4.pdf",
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "mrc": "D'Autray",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260112_seance_ordinaire_janvier.pdf",
+      "url_host": "www.ville.berthierville.qc.ca",
+      "selection_offsets": [
+        74
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-75.json"
+      ]
+    },
+    {
+      "content_length": 1234021,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/0e5b85866b573e4945b46e8453a3e043c1ad656a7d5493f1de5ce03771e64880.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-11-novembre-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3073869,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/0fbf17867f967f440e39ff41833e21b03d458c347f97c5d910cc0d83db9fac99.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/06/Proces-verbal-5-mai-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 3788385,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1016312daa0d7fe5e349cf968bfd65bc93b4373c10f8cb2a502e2e2cdcbc77e1.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/vt-2025_avis-public.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        209
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-210.json"
+      ]
+    },
+    {
+      "content_length": 1971081,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/108d8b71b5d473b759c1589ef118fcfd0536a4e5f068a9e59548e01f8d3140d1.pdf",
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/04/2026-03-30_SE-FR.pdf",
+      "url_host": "municipalitedebury.qc.ca",
+      "selection_offsets": [
+        114
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-115.json"
+      ]
+    },
+    {
+      "content_length": 2828790,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/10a0d5254ce8dfac2ce9098fe540f7ccbd31f82f00020af94da8b7c6642da53f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-SEANCE-CONSEIL-2021-09-09-SIGNER.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3465967,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/146e92391093c8a94d5369365f9dab3db9fcb62ae3391c3b713c72b3749eb373.pdf",
+      "slug": "ascot-corner",
+      "municipality_name": "Ascot Corner",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://ascot-corner.com/wp-content/uploads/2026/03/PV_2026-02-02.pdf",
+      "url_host": "ascot-corner.com",
+      "selection_offsets": [
+        19,
+        310
+      ],
+      "selection_offset_hundreds": [
+        0,
+        300
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-20.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-311.json"
+      ]
+    },
+    {
+      "content_length": 646738,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/15b174f5e0214c24905dd0775f417ecf47a5667730e2fe209a851a360f0f904a.pdf",
+      "slug": "ascot-corner",
+      "municipality_name": "Ascot Corner",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://ascot-corner.com/wp-content/uploads/2026/06/PV_2026-05-04.pdf",
+      "url_host": "ascot-corner.com",
+      "selection_offsets": [
+        20,
+        310
+      ],
+      "selection_offset_hundreds": [
+        0,
+        300
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-21.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-311.json"
+      ]
+    },
+    {
+      "content_length": 3554463,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/17f8afbd9014d25a5aa71f69d05653c5f38df47bf856af171b496e8d3b7a11d1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-12-janvier-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 7293200,
+      "page_count": null,
+      "pdfinfo_exit_code": null,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": null,
+      "encrypted": null,
+      "unknown_reason": "objet > 5 MiB: lecture intégrale interdite par le protocole",
+      "storage_key": "raw/pv-index/cas/19057f3ac44f4a4f2430d43271b26fde4a534a38b79bfa0c0b037bef8e68a855.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-signer-10-sept-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2412155,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1982cb1ac68310f0b1e780870ab4600115dfcd91ede5872f6e361568a804abc3.pdf",
+      "slug": "ascot-corner",
+      "municipality_name": "Ascot Corner",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://ascot-corner.com/wp-content/uploads/2026/05/PV_2026-04-07.pdf",
+      "url_host": "ascot-corner.com",
+      "selection_offsets": [
+        310
+      ],
+      "selection_offset_hundreds": [
+        300
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-311.json"
+      ]
+    },
+    {
+      "content_length": 2461083,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/19a7e2b369beed9e462f65f0572218e9135238757cf2a3f7ee804c88a6e73f5f.pdf",
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "mrc": "Abitibi-Ouest",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_seance_ordinaire_10_mars_2026.pdf",
+      "url_host": "clermont.ao.ca",
+      "selection_offsets": [
+        172
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-173.json"
+      ]
+    },
+    {
+      "content_length": 3609697,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1b6e2fd261811de29c0bb6f6ccdfe5cc472cd1427e24b90af8de53372959d529.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/03/2026-02-03-PV.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 2348219,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1bcaa08ae67814e61e7bcecd4cdd5e653252588eccadf3b1dfa78754134ff03f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-conseil-2021-04-14-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1616503,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1f787dbaf0408067f7f53c3485aa104b3e83ea701faca1b2c89b2f9b363c3438.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-29-aout-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3399855,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1fc20a14c5fc1ab74e3d54f61077d65974e416033d37ec1f37f82ebe98344637.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2024-04_-_Demande_participation_referendum.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        210
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-211.json"
+      ]
+    },
+    {
+      "content_length": 2041596,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/1fdb0d57e3804daefa96e0e27cfa34843292dd9e30e836ebf62a5e5d9e7f3f78.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2025-04_-_entree_en_vigueur.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        211
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-212.json"
+      ]
+    },
+    {
+      "content_length": 2074169,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/203e9abf00856a31a5110bda0a67ead59f434d8408349486bc9eea87af28b99a.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "mrc": "Les Laurentides",
+      "url": "https://municipalite.amherst.qc.ca/wp-content/uploads/2021/12/Registre-dons.pdf",
+      "url_host": "municipalite.amherst.qc.ca",
+      "selection_offsets": [
+        270
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-271.json"
+      ]
+    },
+    {
+      "content_length": 2558059,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/216ba358843b15755a7684d135b983e57bcbac3c1bf93fed289174343b92e942.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_special_15-09-2025.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        212
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-213.json"
+      ]
+    },
+    {
+      "content_length": 2790259,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/22ea1238f9b79dc1831c1fe1b733b2b6bfd4ad5498bddeba19f67ac292682ee4.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-signer-8-nov-2023.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2429899,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2476bd66574597bd0b765f864f14dd4c0160ae7892479d680ef59a1d3d569822.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-23-aout-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1891721,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/257061d4dba1c1c6e807a93091a232375dbe4a7b81bcc439eee547a3e7d862c3.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-15-juin-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2142735,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/264d7e745e9a8f2a9e3453d06a915269b89a42a86d1bec0d205dfebc8b2d23d9.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-2-decembre-2020-seance-extraordinaire-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3395503,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/26bf95a5cc002261828d3a8727a4dfc916e234d1665a96f296828b460538ab5b.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/12/Xerox-Scan_12102025152152.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 1847689,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/27de081a6cd7b5230a9ea920368e7c487a4480d77f877be9827d798ba59483f6.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-mars-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 621538,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2962effbfb58b4357e7a9c53d501d3dacb39bdabd15c8b9f51af41e9ef982eb8.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-10-mars-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2210633,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2b237a67d51a2a01f7eca2a39546f340ab52de187c4d8abb37364e59e4751a00.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-signer-1-oct-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2067049,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2b260c900691c0cccea0935d2359bddb958eb170db92eae053464419546646ff.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "mrc": "Charlevoix-Est",
+      "url": "https://0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com/ugd/0e2fb2_e7982240a49c406e9c466ffb80f4022a.pdf",
+      "url_host": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+      "selection_offsets": [
+        41,
+        950
+      ],
+      "selection_offset_hundreds": [
+        0,
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-42.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 3569009,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2f162ac9d1a1009b2f6476fb61eeed90d53cb9435dca8bd273fa253ba9750d80.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "mrc": "Les Laurentides",
+      "url": "https://municipalite.amherst.qc.ca/wp-content/uploads/2020/12/Registre-public-des-dons.pdf",
+      "url_host": "municipalite.amherst.qc.ca",
+      "selection_offsets": [
+        271
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-272.json"
+      ]
+    },
+    {
+      "content_length": 3970194,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/2faa831e5ce07da0dd97391a7bcc290ed11eae81e7bf12d2a3e0b59d92263a39.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/rapport_financier_2024.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        214
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-215.json"
+      ]
+    },
+    {
+      "content_length": 3699273,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/32abf22b756ac4a10a9c1b2d61746086b5cb24b2f020df02e049d136b2202a58.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-10-decembre-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2557147,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/374eca06e7e72ba2ee95859ada14688886c9b9073d898bc69ea54b22e57d537b.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/01/Proces-verbal-15-decembre-2025.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 4431863,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/376b3e8f3f59594f220510b4f183e90db1ddd91d9e970fcef38e0a41b773b776.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_public_derogation_mineure_mme_christine_paquet.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        217
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-218.json"
+      ]
+    },
+    {
+      "content_length": 2815469,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3892c1154799e60221377735882deb75d1ae182e4b961964c01c413d8d26b41a.pdf",
+      "slug": "ascot-corner",
+      "municipality_name": "Ascot Corner",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://ascot-corner.com/wp-content/uploads/2026/02/PV_2026-01-05.pdf",
+      "url_host": "ascot-corner.com",
+      "selection_offsets": [
+        310
+      ],
+      "selection_offset_hundreds": [
+        300
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-311.json"
+      ]
+    },
+    {
+      "content_length": 2030393,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/39d2eac1ac5ff813a57151ca578f62113f26e413f9994b4270e43138221059d5.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-10-avril-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2176313,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3a05111a979fa52aa47441af967f428a7ca285164905ce1d2abbc6dd59d32d4e.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-15-janvier-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2432283,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3b3bc995201134802634063567a7c5efc25cf834817cb2783b27968f1f1b8eab.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2026-02_-_avis_public_de_consultation_13-04-2026.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        218
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-219.json"
+      ]
+    },
+    {
+      "content_length": 1204149,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3d159e61a5c44a30d83713eed5ade4770cc552ed08f0c234a263d3cbf62c8ef3.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/sceance_ccu_du_10_mars_2026_-_reglement_2026-01_pour_abrogation_2011-01.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        219
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-220.json"
+      ]
+    },
+    {
+      "content_length": 2470523,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3d510b6b5078f18617067077663d89d7395e45f3b55dc3c1dd4b8c20748f7894.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-7-fevrier-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2713195,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3e3704683b4d4e55cf8b21427c81d39837a8da1ea3336b9a9e5936507ab1e302.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/parade_de_noel_2025.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        220
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-221.json"
+      ]
+    },
+    {
+      "content_length": 3773953,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3f3cb11aaf10368109d40db83f15224d5d2d38d005ee3647970a27418be71908.pdf",
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "mrc": "Beauharnois-Salaberry",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/PV_2025-09-09_Signe-1.pdf",
+      "url_host": "ville.beauharnois.qc.ca",
+      "selection_offsets": [
+        56
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-57.json"
+      ]
+    },
+    {
+      "content_length": 2753410,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/3f41dd128a4e440ca17091b982d25f7f2c9c9f6f4add18bf6e42bbe9c6774e09.pdf",
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "mrc": "Manicouagan",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2024/09/2024-09-16-Seance-ordinaire-resol.-309-a-337.pdf",
+      "url_host": "www.ville.baie-comeau.qc.ca",
+      "selection_offsets": [
+        600
+      ],
+      "selection_offset_hundreds": [
+        600
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-601.json"
+      ]
+    },
+    {
+      "content_length": 1140757,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/410a4290544245169663095dacb5855e47a70fde1fda41bc297023c7c1243f4f.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/07/Lundi-1er-juin-2020.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 4053985,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/41731f860fbc55c0f46cc153346d5f9846753b8b7a055053cee3b6b8d066ee71.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/04/Lundi-2-mars-2020.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 1306965,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/41b37bd79625ab8293f927d2172ad7274e56132fdbe7f98c12dfcad6239d5040.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_public_derogation_mineure_Municipalite_dAlbertville.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        221
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-222.json"
+      ]
+    },
+    {
+      "content_length": 3130833,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/428ac3179da9b7ee786488d3632d9c29adb06b34afc24bb3dca177910892d56e.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Reglement_2024-07-Taxation_et_tarification.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        222
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-223.json"
+      ]
+    },
+    {
+      "content_length": 3423217,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/443b37b00736441afc9ff1089d7ad22d8aae921c412d9b8a56ab131011785215.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-11-mai-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 851922,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/44441dd939838d9133e81ac5535ac029b66f1ea4ab8938d9932fff0edd7dbd1f.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/12/Proces-verbal-2-aout-2021.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 2830541,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4578f505ed9b22dd46302a7a280625d6d4be200dcc80eb1c3c074d1490ce247e.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2026-05_-_entree_en_vigueur_modalite_publication_avis_public.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        223
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-224.json"
+      ]
+    },
+    {
+      "content_length": 1154837,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/45a9831b06e46695e7f1e707e4aad6849e98887b677d330ef2cc9a5be72086f3.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-9-fevrier-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2537227,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/46e74ad0a35dab014d3d52e77477f955242bd18bacf4a78804eea461bfa425b0.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-23-mars-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2304939,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4894967308b63fb499c785a27ad43a9340bcd3568eb29320a525d050108dbc3b.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-du-16-decembre-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1094341,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/49781a5c82a3a9cecc70535745710f805dceb1649d13b84c9b2c9a893f837abe.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-ordinaire-11-mars-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 814152,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": "Syntax Warning: Invalid least number of objects reading page offset hints table",
+      "title": "Municipalité B-T_20220322_102318",
+      "creator": "PDFCreator 2.1.2.0",
+      "producer": "PDFCreator 2.1.2.0",
+      "pdf_version": "1.5",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4a5306566cbce5ec56f4176f9fe39c36aba53192b5ea8f4f3a081432b52d3b95.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/12/Mardi-3-novembre-2020.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 1410071,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4b9987ca49a81ea20faf752dbb480c551fa688b85f5efee2ef0b9506dd4833a0.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/01/Lundi-13-janvier-2020.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 4044481,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4d6ef8f9f28a6a1ce68e5e95ce34af1300d924e58c8a244d091466077c1b69f2.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2024-03_-_Referendum_PHV_Augmentation_aide_entreprise.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        224
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-225.json"
+      ]
+    },
+    {
+      "content_length": 1133686,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4d88da062fdf6dc535d97f76f7542c364f4e9cb296796402e3ee343c59325270.pdf",
+      "slug": "aguanish",
+      "municipality_name": "Aguanish",
+      "mrc": "Minganie",
+      "url": "https://www.aguanish.org/sites/aguanish.org/files/regie_interne_seances_du_conseil.pdf",
+      "url_host": "www.aguanish.org",
+      "selection_offsets": [
+        0,
+        4
+      ],
+      "selection_offset_hundreds": [
+        0
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-01.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-05.json"
+      ]
+    },
+    {
+      "content_length": 1244470,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4e33f9f07b7a67f6d4bed1c7d6cf0f0f5b524251daa739146ae3ca3951dca7fc.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-extraordinaire-2020-11-19-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3286414,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": "Syntax Warning: Invalid least number of objects reading page offset hints table",
+      "title": "Municipalité B-T_20210513_104921",
+      "creator": "PDFCreator 2.1.2.0",
+      "producer": "PDFCreator 2.1.2.0",
+      "pdf_version": "1.5",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/4e4c9125c0653b7bcf2c7a0f4efe5eff0af333e68ed51d32c441de3f8b286fba.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-ordinaire-conseil-10-fev-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2643195,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/510683ee2926bc6d9ba5dd4c61de812f18b01f060d5f8cd556a858911d1c882f.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/05/Proces-verbal-14-avril-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 921636,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/5154828c54c083b15636c03055c7927e4d471faf7fcae5515099ad4276808f59.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-17-janvier-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 4170273,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/55d8ff39f7a7fc9a5b32e5c61f896d356dec1eb4f73d84d74ed798ce987ec6dc.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-14-juin-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2107168,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/56047f2e4c87c6319e762d5af90d487abd06a072a6ac3f0a494bb620ebf80012.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_special_25-11-2024.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        225
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-226.json"
+      ]
+    },
+    {
+      "content_length": 3467727,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/574a5df750d9d45be610a4c199e3c6a74f6de27bec7cff3c4486afb15362d437.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-signe-du-15-juillet.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 4248247,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/586c98487a354568858904be3e7152be92d7005867e93679d8e5116cb4f967b4.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-21-sept-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 4574281,
+      "page_count": 12,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/59db530110a90cc9754b04e476286f56419b3480db0e24b29bf7e73417b96ccd.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/entree_en_vigueur_2026-03_reglement_applicable_par_sq.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        226
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-227.json"
+      ]
+    },
+    {
+      "content_length": 4919067,
+      "page_count": 12,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/5a219dbacfa898eb6276733e9a4dd914e9115b73df09d05e41c13044518d8095.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/01/Proces-verbal-13-janvier-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 1948892,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/5a8822fd1f1c36e34fffb3b5eede67142d1c69ae37009b849169a61a8d878740.pdf",
+      "slug": "ascot-corner",
+      "municipality_name": "Ascot Corner",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://ascot-corner.com/wp-content/uploads/2026/04/PV_2026-03-02.pdf",
+      "url_host": "ascot-corner.com",
+      "selection_offsets": [
+        310
+      ],
+      "selection_offset_hundreds": [
+        300
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-311.json"
+      ]
+    },
+    {
+      "content_length": 3013549,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/5e301d95942492c364c3b120d6764fbebb98f5d53c72f2ab4406779015f3a1c9.pdf",
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "mrc": "Le Haut-Saint-François",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/02/2026-01_26_SE_FR-1.pdf",
+      "url_host": "municipalitedebury.qc.ca",
+      "selection_offsets": [
+        115
+      ],
+      "selection_offset_hundreds": [
+        100
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-116.json"
+      ]
+    },
+    {
+      "content_length": 3070822,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/5fe96fcfb2dece46ef0a57ef1b0de5446a2195edb06a8b6fa927e53dc5056eb4.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "mrc": "Charlevoix-Est",
+      "url": "https://0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com/ugd/0e2fb2_f36221c713634beda506c133d217acea.pdf",
+      "url_host": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+      "selection_offsets": [
+        42,
+        950
+      ],
+      "selection_offset_hundreds": [
+        0,
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-43.json",
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 2408603,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6075a8acdebf86412b566e2c6b3c17f5b11136b6bdc3c823014f9e5628c92478.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-fevrier-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1400997,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/62419977f43068b3429c1a8b26b5814b3423e6635e833e33013d382d9c0857c6.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-du-8-decembre-signe-2021.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 772562,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/63a5ccae4f0183664ccc35f3001eb9319ca63a6469f5ab1dba96f63abe7902ce.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-4-oct2021-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1264485,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/65fe2314a38d50310e61d8734c740259f859d4a8695c2263ac73d9166791c785.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-14-mai-2025-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 4852556,
+      "page_count": 11,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/68df849e3604b5153e31dbacf0e5fab46dbbbb4f35976e61e914f70900ec181d.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-PV-10-juillet-2024-signedocx.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 3249167,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6adc5b57ac0666827721ef855b1fb7c0ad29683fecd940fb0c99bebe77e1d168.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-extraordinaire-26-mars-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 2977933,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6b022c34da8f17c29b1242c519309162babca262a246ade3b5f752249086b41c.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/11/Lundi-5-octobre-2020.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 139955,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "2026-03-30_SE-FR",
+      "creator": "KM_C300i",
+      "producer": "KONICA MINOLTA bizhub C300i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6b11b28d15ac64093863e8a01e3d0fc510b4eba0f3a6ffb81cbaa1c9d1004a99.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-13-sept-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 130862,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "SBUR2843IMP14060307290",
+      "creator": "KM_C300i",
+      "producer": "KONICA MINOLTA bizhub C300i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6bab666b9a567883dd452d9d63da2e068385b9aca5577d4dd14009faac0caf2d.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_public_derogation_mineure_Benoit_Bastien_et_Annie_Brazeau.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        227
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-228.json"
+      ]
+    },
+    {
+      "content_length": 6745215,
+      "page_count": null,
+      "pdfinfo_exit_code": null,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": null,
+      "encrypted": null,
+      "unknown_reason": "objet > 5 MiB: lecture intégrale interdite par le protocole",
+      "storage_key": "raw/pv-index/cas/6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/04/Proces-verbal-7-avril-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 5636223,
+      "page_count": null,
+      "pdfinfo_exit_code": null,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": null,
+      "encrypted": null,
+      "unknown_reason": "objet > 5 MiB: lecture intégrale interdite par le protocole",
+      "storage_key": "raw/pv-index/cas/6d9dea567f9457ae965fe539e5dbc154dc843fe9362d67066b6cbec776fd4635.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-11-janvier-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 4117077,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "DOC052225-05222025093920.pdf",
+      "creator": "TOSHIBA e-STUDIO5525AC",
+      "producer": "Acrobat Distiller 25.0 (Windows)",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6dfdffcff5f65bb7f3deb7d5578de63ed71a54ac2d9d9ec735ecef5d87f822be.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-13-nov-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 564638,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/6f8bd9e77ed0979686d69b7573260910e02babaa400c0f4fe41ef75a13d12768.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-2022-11-09-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 276605,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/70590e77d100f71eb82c9e8f75b56ee822004ca92b68f5d8ec18b5d2134d367c.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/entree_en_vigueur_2026-06_gestion_contractuelle.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        228
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-229.json"
+      ]
+    },
+    {
+      "content_length": 4221386,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Brother Scanner System : ADS-2800W",
+      "producer": "Brother Scanner System Image Conversion",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/7125181ca9e141653e1789b7004468318d7ed740bd5ae81d4775b91006ccbbfc.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 635130,
+      "page_count": 12,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/73e3496f686843f5b050c11c1f813abf1e6aa7ad42a1e69a80c2b768b4953b4c.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/10/Proces-verbal-4-octobre-2021.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 879836,
+      "page_count": 18,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/75d6960ca9928f232cd032ac5b467e001150dd5238df94c7bc4330300cff348a.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_special_18-12-2024.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        229
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-230.json"
+      ]
+    },
+    {
+      "content_length": 385931,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/774aa1996b0da861171fc0547a59523b32e5747db2f02909c13abafee56dc5f0.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-ordinaire-12-aout-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1332555,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Brother Scanner System : ADS-2800W",
+      "producer": "Brother Scanner System Image Conversion",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/776fafb8a82a7cf2ade7c61da15f4baa04d9eadf901c265ee53eb5ac28a95b7a.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_role_et_compte_de_taxe_2025.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        231
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-232.json"
+      ]
+    },
+    {
+      "content_length": 768537,
+      "page_count": 14,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre 7970",
+      "producer": "Xerox WorkCentre 7970",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/777b5efbb0b614c1f6f09151e83d0d14d869ab37f1a2733d470f4648a606a62d.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/12/Proces-verbal-extraordinaire-28-octobre-2021.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 1245895,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Scanner System",
+      "producer": "Scanner System Image Conversion",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/77c116cc57de2ef236fdd6668c982dcc2bb26f4d78db53ef650178f28038fea6.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2025-04_-_demande_participation_referendum.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        232
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-233.json"
+      ]
+    },
+    {
+      "content_length": 292468,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8155",
+      "producer": "Xerox AltaLink C8155",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/77d41c86eef3c29a750dc5c0a05361444ca719fe75a94631a099c996060e9139.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2024-04_-_Consultation_publique.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        233
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-234.json"
+      ]
+    },
+    {
+      "content_length": 37032,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8155",
+      "producer": "Xerox AltaLink C8155",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/12/Proces-verbal-09-decembre-2025.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        900
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-901.json"
+      ]
+    },
+    {
+      "content_length": 1570916,
+      "page_count": 17,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "PV_2026-02-02",
+      "creator": "KM_C451i",
+      "producer": "KONICA MINOLTA bizhub C451i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/7c61af5f27dd266d482c23f80cb45e5c572a9fd735a01b68f5896de4291eccb6.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_special_14-03-2024.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        234
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-235.json"
+      ]
+    },
+    {
+      "content_length": 2056479,
+      "page_count": 20,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "PV_2026-05-04",
+      "creator": "KM_C451i",
+      "producer": "KONICA MINOLTA bizhub C451i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/7d93595e8715d9cec5ee3ed4aebe6acc7c469b92df17811115ca1488710f9aaa.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2026-04_-_code_dethique_et_deontologie.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        235
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-236.json"
+      ]
+    },
+    {
+      "content_length": 481228,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "PFU ScanSnap Home 2.22.2 #iX1600",
+      "producer": "PFUPDF Engine 1.3.21",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/8035839f384b49983ba791b1ec035c9a4da67d77d0407a8eb75e03c0141d1a79.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-ordinaire-9-juin-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 940603,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/81b7eb86344395e0935a12c299d7d70bf3849df7c2aef60bebb566d71e4118c2.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Avis_public_derogation_mineure_Municipalite_dAlbertville_Erables.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        236
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-237.json"
+      ]
+    },
+    {
+      "content_length": 736611,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/8211973e31f7ef5bd55825c2d2121aa59af503e8bc9005e979e2cc5dfd4ef15c.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "mrc": "Montmagny",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/04/Mardi-2-mars-2021.pdf",
+      "url_host": "berthiersurmer.ca",
+      "selection_offsets": [
+        1500
+      ],
+      "selection_offset_hundreds": [
+        1500
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json"
+      ]
+    },
+    {
+      "content_length": 599203,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/828a1e8f9ec866c9583f18e6db550f4d18ba8ba85d316978a4c5b6736fe638f0.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Proces-verbal-25-07-09.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 503575,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/8447342ac0228c0679fe5ee4c22763c0436ac29aeb2c8b1a6b3edf8547904919.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Reglements_2024-03_-_Entree_en_vigueur.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        237
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-238.json"
+      ]
+    },
+    {
+      "content_length": 697699,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/846ffee0879028676024ae5ef40b595c0be5992afe12802adb5100ca05cd8068.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Rapport_financier_2023.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        238
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-239.json"
+      ]
+    },
+    {
+      "content_length": 749412,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/84bc6df581dda51f36dd6cbd3fce599ca45edc63dd7abcaa2351578d286aa6e4.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-signer-2025-08-06.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 808259,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/85b2a1d5e52045a34577ccc34b536de3987c631e110ff1ec70fa0c060a302167.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-12-octobre-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 608128,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/8855e2530bfb9424d561a113393f2e58e1b9ad133fcb07e73f22b2e2e97747b7.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-13-janvier-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 956043,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/8adb0073dc6c8be2bd7e31439c475c34054be45c17f5a41ef8109edd9e0314cc.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2026-02_-_avis_public_de_consultation.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        240
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-241.json"
+      ]
+    },
+    {
+      "content_length": 567327,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/901dec5248bed1e1dfbb57145552909c5dd2e66c6d1a988b9296a1a753d4d35c.pdf",
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "mrc": "La Matanie",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/pv_signe___-_30-05-2025.pdf",
+      "url_host": "vplus-documents.s3.ca-central-1.amazonaws.com",
+      "selection_offsets": [
+        800
+      ],
+      "selection_offset_hundreds": [
+        800
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-801.json"
+      ]
+    },
+    {
+      "content_length": 562053,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/90885f681f06aef642f8efc6a120c0f9f68ef34c01941d19bf00df0e9dd961df.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-29-mars-2023.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1000
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1001.json"
+      ]
+    },
+    {
+      "content_length": 1405704,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/91b72771ddee9afbb004a23a13b0380dea4881f4ce67c39b3a179350c7dbb213.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_special_14-08-2025.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        242
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-243.json"
+      ]
+    },
+    {
+      "content_length": 634946,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/936fb59d8b2c7aa2640fe3c0868753e5dbaa2360c54387f82560bc0912b1fb40.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-11-octobre-2023-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 537890,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/94bceed47202fe79976feb55aa27ca9498c4de1471b50d5fbaf49a3c7412b0dd.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/09/Poces-verbal-7-juin-2021.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 981626,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/94c2c6cfa5eeec563e6e96db06bc4a85729a35395f9f1feb1d5eecf2ff81cc52.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Budget_2025_et_plan_triennal.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        243
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-244.json"
+      ]
+    },
+    {
+      "content_length": 904486,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/9598518915a0be3d980d1d3fb720c3a47e709a84ebc3cbf48e4b91fadaca5d21.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-11-dec-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 604926,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/98e8907342e98430481b07b949f6e5ae5b2552a4e43b903794da5ebaa9000e30.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-seance-11-juin-2025-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 526494,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/995fde203e900a7df4a84beb291d4d96576218ef77b773e1d3aee54df9fd4ec9.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/10/Proces-verbal-2-aout-2021.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 839878,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/99a2c5a28cbb499ee533208114da0d3a23b8883ed5d806aa2a304682fe88307c.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-12-nov-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 728386,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/9bbad081fd1bd13963327b5472937d8179ff5e1efdca419b37e20545d1fc4fe1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-26-janvier-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 555136,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/9ddda163c12ae08de4638dcf6244d0aa6b4aeb760b238d7cb810b5c03f4335a3.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-14-dec-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 946470,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/9f229c65c2a0908f8453f37d27e18636204babb069be1fc4b70c7b5261768b9d.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-3-juin-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 886092,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a13f6e6598b5ab65899d2fd1a1a7bd42b6ac38d3e4eb1169d775006f5d2f7242.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/entree_en_vigueur_2026-01_abrogation_2011-01_site_patrimonial.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        244
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-245.json"
+      ]
+    },
+    {
+      "content_length": 572100,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a4c5ee477a36710c8f4d49af253d87e19a9cfe179d8b277bd835c8905a3961bf.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Reglement_2024-04_-_Entree_en_vigueur.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        245
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-246.json"
+      ]
+    },
+    {
+      "content_length": 506295,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a708b06875e57df80d25abe114e8b84e70c2019f0ddf1b83f5c9389c0f23b65d.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 744292,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a8235f92301997ecd866424248c147790fed5935e40cbe00e7669d746c224004.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-du-30-novembre-2021-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 553538,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a88d8163d2a6bc93a31e16a2d4028495350d81eb9c61c1b69b90701ab193f550.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-2023-12-22-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 629723,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/a8a4fa797d45a417578db6dcd89bf1bff29e573a6e51a6e13516ae6a4e794a7f.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "mrc": "Les Laurentides",
+      "url": "https://municipalite.amherst.qc.ca/wp-content/uploads/2022/12/Declaration-registre-de-dons-annee-2022.pdf",
+      "url_host": "municipalite.amherst.qc.ca",
+      "selection_offsets": [
+        273
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-274.json"
+      ]
+    },
+    {
+      "content_length": 623106,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ad6de726be0971e27c11021b4d69217a232ec8247c3d22e6c719651ad72737f9.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-seance-9-oct-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 673178,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ae180ebadd7e7abbd4bf9b0d6dac9d2e12a1c78c7eccb58d3386710a19d8c43a.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_special_15-12-2025-_budget__taxes_pt_2026.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        246
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-247.json"
+      ]
+    },
+    {
+      "content_length": 583105,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/aea6eb9bd1e9282c4cfa059cb8fa176b974441b169facb0c7f74d5d37e6531a4.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-signer-12-juillet-2023.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 764282,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b0131ac5b8951f04c036fd17e92095abbe9c4216b47877a52d8663d7f670d0a1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-mai-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 613441,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b454239b23f71d5720806e3b0155bc41b2836ed0767e79bafe013b26abfd2525.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/04/Proces-verbal-17-mars-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 925958,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b4e6a372aed1df30ffecbf5bba2f6abde8a165514b2b9de0927b576c32f9a5d8.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-10-aout-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 799652,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b51de60291b1d78ed93e0fd718a2521e389b58838620f7ea9e3cdfd48b71af15.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Reglements_2023-06_et_2023-07_-_Entree_en_vigueur.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        247
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-248.json"
+      ]
+    },
+    {
+      "content_length": 786341,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b6275659705ab1e779816c456912a7cdc8677e7efccbfcf67d917086f096c364.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-seance-extraordinaire-15-oct-2025.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 598743,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/b7cd1dae02188ef779d13f3f8da5d0c0ef0124cc3eab3dc793b3806643c2dd3f.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Parade_de_Noel.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        248
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-249.json"
+      ]
+    },
+    {
+      "content_length": 572673,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ba35d4587ed57731bbf67358196a7ca7335b67b54d8ca5de6ff6f37dfa4e8c32.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-16-mars-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 763355,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/bc0b61642a9517f1b4b2772d33bad1911c8613c2938da9b180038977d352f069.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-14-08-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 916813,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/bc806f871488cf1361f36f33d030ed00d15eacd604149de9d6d8d86e778dd8ea.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-14-oct-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 611748,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": "3-Heights™ PDF Merge Split Shell 6.12.1.11 (http://www.pdf-tools.com)",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c10c2e0dedc12ac7ed2b9f1f03e7f54269e631f218c1840e147333be951eeca5.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-25-aout-2022-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 513153,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c2c54bb2fb763eb6c2d19a579cef8cc77621f5e0ac6a7e051b1b4a5a5b1b7b5c.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/depot_role_2026.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        250
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-251.json"
+      ]
+    },
+    {
+      "content_length": 579201,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "TOSHIBA e-STUDIO2508A",
+      "producer": "SECnvtToPDF V1.0",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c445a145ac8be1c76a4b35f99f635b40b56c326535a527dabdd6bc39fc07cacf.pdf",
+      "slug": "alleyn-et-cawood",
+      "municipality_name": "Alleyn-et-Cawood",
+      "mrc": "Pontiac",
+      "url": "https://alleyn-cawood.ca/download_file/view/2154a724-bdba-49dc-b5c9-83ab05aef8b3/186",
+      "url_host": "alleyn-cawood.ca",
+      "selection_offsets": [
+        267
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-268.json"
+      ]
+    },
+    {
+      "content_length": 57493,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C3930  PDF",
+      "producer": "Adobe PSL 1.3e for Canon\u0000",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c53ab9669229d8bd794d6679cab008a15656f1aa9a5655d5bca399898fef5e0b.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-18-aout-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 264396,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c5a836e46df3dbf4020c171c6d5a51146236ef4487d0640a87f08946ec09bb87.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "mrc": "Charlevoix-Est",
+      "url": "https://0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com/ugd/0e2fb2_9f3a301d637943c7baf0a31ac611624a.pdf",
+      "url_host": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 192228,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "SKM_C30820121510070",
+      "creator": "KM_C308",
+      "producer": "KONICA MINOLTA bizhub C308",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c698cb1dc3da569279b41382aee663b5142140ef31dd0a5f0400e31040ac9f9f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-12-mai-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 32754,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c76b1a33c1454a666d335d3b1d2f86efd88feb588b11747e6c4d4bd00f1ddfac.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_public_derogation_mineure_municipalite_dalbertville_chemin_des_herons.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        251
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-252.json"
+      ]
+    },
+    {
+      "content_length": 221783,
+      "page_count": 1,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c7bd4445af5a20844566d7b47a59bc128f1c66b3f990d1f327dc84f1f6de89bb.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2025-04_-_consultation_publique_1er_projet.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        252
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-253.json"
+      ]
+    },
+    {
+      "content_length": 2495697,
+      "page_count": 25,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "PV_2026-04-07",
+      "creator": "KM_C451i",
+      "producer": "KONICA MINOLTA bizhub C451i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c882aa9d212a666885f126a2a64928f15dc5141158e0a32f0aebdb106ddca070.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-13-mars-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 1986324,
+      "page_count": 20,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "PV_2026-01-05",
+      "creator": "KM_C451i",
+      "producer": "KONICA MINOLTA bizhub C451i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c8aedfb0435d8fc4d6404cbcb55351e048c1c103cc50d1e68e9b5fe72fc7181f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-2022-02-15-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 1472213,
+      "page_count": 15,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "PV_2026-03-02",
+      "creator": "KM_C451i",
+      "producer": "KONICA MINOLTA bizhub C451i",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c932456f2a81b73198659dab65fabfed49b3c43c846dfb6f52935925fd44a5cf.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/09/Proces-verbal-5-juillet-2021.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 1193004,
+      "page_count": 15,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C5235  PDF",
+      "producer": "Adobe PSL 1.2e for Canon",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/c9bcb4d24ff71e5b5bf33adc7e80525f0fd666c728e298c2c0e2d90b6e3f4232.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-13-avril-2022-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 162244,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C5235  PDF",
+      "producer": "Adobe PSL 1.2e for Canon",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/cbba4a486fde33c2a481476569cec49e43898423f24b33c988fcb1795aa77cb7.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-avril-2026.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 2612843,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": null,
+      "producer": null,
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ce30007511991d078ee4e89291c6cf041d884a13679500b5c20c6777822d160e.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-conseil-16-mai-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 640448,
+      "page_count": 24,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8170",
+      "producer": "Xerox AltaLink C8170",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ce872f6eb65b42a538eaec007a46f5b4f9360dc7205eacfc433bf7301282f256.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-13-decembre-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 1163550,
+      "page_count": 26,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8170",
+      "producer": "Xerox AltaLink C8170",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ce9431e51d3d140feb8edf2bf575cf81d69aaf5256e70916b5da02a83a0256f1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-13-mai-2026-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 947972,
+      "page_count": 13,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C5740  PDF",
+      "producer": "Adobe PSL 1.3e for Canon",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/d2fe86fcf2df503c02ba4ef7008834856f0c186bbbc98903b0a851389e695086.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/entree_en_vigueur_2026-02_entretien_des_batiments.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        253
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-254.json"
+      ]
+    },
+    {
+      "content_length": 1522460,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Brother Scanner System : ADS-2800W",
+      "producer": "Brother Scanner System Image Conversion",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-11-fevrier-2026.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 186169,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8170",
+      "producer": "Xerox AltaLink C8170",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ddfd2020e6a4a4fa4d3b846da152507a74b7bbadfddd613579b2948649e7f28b.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/entree_en_vigueur_2026-04_code_dethique_des_elus.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        255
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-256.json"
+      ]
+    },
+    {
+      "content_length": 1274326,
+      "page_count": 11,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox AltaLink C8170",
+      "producer": "Xerox AltaLink C8170",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/dee33b80885c2f1522e60574502836d46df1adbe6892162872e41c7dd7f96e44.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Reglements_2024-01_et_2024-02_-_Entree_en_vigueur.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        256
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-257.json"
+      ]
+    },
+    {
+      "content_length": 232813,
+      "page_count": 7,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Xerox WorkCentre EC7856",
+      "producer": "PDFlib+PDI 8.0.4p2 (ppc Linux)",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e1e75733f5f748c0854bb6dd458bddbf63306b5f33846016707449a4d3441535.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-11-08-2021-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 1413238,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e30ae7bb82b2dc305b9bd994e263588d6ed6db4d5b5b3accd0c02611dfbd3795.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/10/Proces-verbal-13-septembre-2021.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 1551740,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": "df61e305-31c5-4d89-b452-c7ab67dbbe8b",
+      "creator": null,
+      "producer": "Microsoft: Print To PDF",
+      "pdf_version": "1.7",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e42c290dc8aed5ecdb704fa08c10adf9f146d8bc3e72ff9d730e898957a281f1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-seance-11-sept-2024-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 302391,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e4581f0dd11ada19a6d89cde83699ca670bbcc41ff10598da407fcdd442039ab.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "mrc": "Charlevoix-Est",
+      "url": "https://0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com/ugd/0e2fb2_a434534974c344feb75a5f10fa1a243c.pdf",
+      "url_host": "0e2fb21e-b848-456e-91b8-afefdae33650.usrfiles.com",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 1550913,
+      "page_count": 5,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e491b51eb5702a9531f0554a3378fe64da07dc13e98af7d36628ed66dba3cf88.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-signer-14-janvier-2026.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 3908923,
+      "page_count": 11,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e658f46b7951431c8be8fd804c34177f054b04a4b8810e578c93bfa1a787a3d0.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-12-avril-2023-signer.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 3950387,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e752ca2f680aaa1ec49dd314eef350fdf37f60c85916c9f285a458b15746480d.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Depot_Role_2025.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        257
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-258.json"
+      ]
+    },
+    {
+      "content_length": 2629791,
+      "page_count": 6,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/e9949d90deceda40983c2d304555b353cbd7abba56c486ebf9959d62623a5258.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/11/Proces-verbal-2-octobre-2025.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 200756,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7025",
+      "producer": "VersaLink C7025",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/eba2e6ff2fdb2cc2808b5fd8c478835f05819d86a12a63d572567ba382a272e3.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "mrc": "Minganie",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/02/Proces-verbal-21-janvier-2026.pdf",
+      "url_host": "www.baiejohanbeetz.qc.ca",
+      "selection_offsets": [
+        950
+      ],
+      "selection_offset_hundreds": [
+        900
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-951.json"
+      ]
+    },
+    {
+      "content_length": 411729,
+      "page_count": 15,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ebbcf51d5d5dba307beb089bc6fdeab610007909f96cd4d20245d7aa8f8ebf47.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-signe-19-mars-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 100455,
+      "page_count": 3,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7025",
+      "producer": "VersaLink C7025",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/eee9dff0aeb777e52dc5c5cb92cf40a1b99ddb0e7a6a50ee4ca7552d22f0536a.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extra-5dec-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 72193,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7025",
+      "producer": "VersaLink C7025",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ef416799b623c77a9df122bc05a4d891f70c516a611c89b37be7dcebd53e3553.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2025-05_-_entree_en_vigueur_reglements_applicables_sq.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        258
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-259.json"
+      ]
+    },
+    {
+      "content_length": 3655547,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/f1e3255817042d1d9cd29b614a40992f56d071c25aa62a0f46ae8a69bed3cacf.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "mrc": "Les Laurentides",
+      "url": "https://municipalite.amherst.qc.ca/wp-content/uploads/2025/07/Registre-des-declarations-de-dons-2024.pdf",
+      "url_host": "municipalite.amherst.qc.ca",
+      "selection_offsets": [
+        275
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-276.json"
+      ]
+    },
+    {
+      "content_length": 52586,
+      "page_count": 2,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7025",
+      "producer": "VersaLink C7025",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/f24fc7825a972c66864bc0824d4071d2393b61cee1ce78ed290dfec444e1aa9a.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/2-pv-seance-extraordinaire-16-dec-2024.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 411518,
+      "page_count": 4,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7025",
+      "producer": "VersaLink C7025",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/f6ee876974ea7d979eee61593d85b971236febac1013ddc203eb0cb8a26c3745.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-ordinaire-2020-02-12signe-jl58.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 501676,
+      "page_count": 18,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/f92b5aeb80de2bb4cbd3147ea21c8e1421c4b50f8a8ab6c5828ec014e1d23fc3.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/avis_role_et_compte_de_taxe_2026.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        259
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-260.json"
+      ]
+    },
+    {
+      "content_length": 3362058,
+      "page_count": 8,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "VersaLink C7125 Color MFP",
+      "producer": "VersaLink C7125 Color MFP",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/fa6718439c2b80c926c524b497dc368ba1ee87ddc2cdecf30d7dd675be14500e.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-du-13-mai-2020-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 618432,
+      "page_count": 10,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C5235  PDF",
+      "producer": "Adobe PSL 1.2e for Canon",
+      "pdf_version": "1.4",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ff2b10c64786a8b17492bc03137fc08d77a5a7e614039823dac354b6643bfef2.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "mrc": "Manicouagan",
+      "url": "https://baie-trinite.quebec/s/PV-seance-14-juillet-signe.pdf",
+      "url_host": "baie-trinite.quebec",
+      "selection_offsets": [
+        1050
+      ],
+      "selection_offset_hundreds": [
+        1000
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-1051.json"
+      ]
+    },
+    {
+      "content_length": 602870,
+      "page_count": 9,
+      "pdfinfo_exit_code": 0,
+      "pdfinfo_error": null,
+      "title": null,
+      "creator": "Canon iR-ADV C5235  PDF",
+      "producer": "Adobe PSL 1.2e for Canon",
+      "pdf_version": "1.6",
+      "encrypted": "no",
+      "unknown_reason": null,
+      "storage_key": "raw/pv-index/cas/ffc02505b9e21b6012e1ea5274b12cf0ce5c7984c911eff703382da2931a3b50.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "mrc": "La Matapédia",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Modification_du_calendriers_des_seances.pdf",
+      "url_host": "www.municipalite-albertville.ca",
+      "selection_offsets": [
+        260
+      ],
+      "selection_offset_hundreds": [
+        200
+      ],
+      "source_reports": [
+        "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-261.json"
+      ]
+    }
+  ]
+}
