@@ -84,6 +84,7 @@ interface ParsedArgs {
   readonly universe: string | null;
   readonly universeOffset: number;
   readonly universeLimit: number | null;
+  readonly concurrency: number;
   readonly control: number | null;
   readonly all: boolean;
   readonly storageKeys: readonly string[];
@@ -160,7 +161,7 @@ interface MunicipalizeResult {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N] [--concurrency=1..4] [--out=PATH]");
   process.exit(0);
 }
 
@@ -180,12 +181,16 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   const universeLimitValue = values("universe-limit").at(-1);
   const universeOffset = universeOffsetValue === undefined ? 0 : Number(universeOffsetValue);
   const universeLimit = universeLimitValue === undefined ? null : Number(universeLimitValue);
+  const concurrency = Number(values("concurrency").at(-1) ?? "1");
   if (!Number.isInteger(universeOffset) || universeOffset < 0) throw new Error("--universe-offset doit être un entier positif ou nul");
   if (universeLimit !== null && (!Number.isInteger(universeLimit) || universeLimit < 1)) {
     throw new Error("--universe-limit doit être un entier positif");
   }
   if (universe === null && (universeOffsetValue !== undefined || universeLimitValue !== undefined)) {
     throw new Error("--universe-offset et --universe-limit exigent --universe");
+  }
+  if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 4) {
+    throw new Error("--concurrency doit être un entier de 1 à 4");
   }
   if (storageKeys.some((key) => !key)) throw new Error("--storage-key doit être une clé CAS non vide");
   if (new Set(storageKeys).size !== storageKeys.length) throw new Error("--storage-key ne peut pas être répété");
@@ -215,6 +220,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
     universe,
     universeOffset,
     universeLimit,
+    concurrency,
     control: universe === null ? (all ? null : control) : null,
     all,
     storageKeys,
@@ -287,6 +293,20 @@ function uniqueEligible(lines: readonly ClassificationLine[]): ClassificationLin
   }
   return [...byObject.values()].sort((left, right) =>
     left.slug.localeCompare(right.slug) || left.storage_key.localeCompare(right.storage_key));
+}
+
+async function mapConcurrent<T, R>(items: readonly T[], concurrency: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const output = new Array<R>(items.length);
+  let next = 0;
+  const worker = async (): Promise<void> => {
+    for (;;) {
+      const index = next++;
+      if (index >= items.length) return;
+      output[index] = await fn(items[index]!);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker));
+  return output;
 }
 
 function selectControl(lines: readonly ClassificationLine[], count: number): ClassificationLine[] {
@@ -938,14 +958,13 @@ async function main(): Promise<void> {
     };
   }
   const workspace = resolve(ROOT, "work", "graphify", `pv-semantic-${new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z")}`);
-  const documents: ControlDocumentReport[] = [];
-  for (const document of selected) {
+  const documents = await mapConcurrent(selected, args.concurrency, async (document): Promise<ControlDocumentReport> => {
     try {
       const gazetteer = await materializeForSlug(document.slug);
-      documents.push(await processDocument(document, municipalities, gazetteer, workspace));
+      return processDocument(document, municipalities, gazetteer, workspace);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      documents.push({
+      return {
         slug: document.slug,
         municipality_name: document.municipality_name,
         url: document.url,
@@ -958,9 +977,9 @@ async function main(): Promise<void> {
         owner_scope: { status: "NOT_CONFIRMED", printed_owner_slugs: [] },
         failure_reason: message.slice(-4000),
         manual_verification: "UNVERIFIED",
-      });
+      };
     }
-  }
+  });
 
   const entityCounts: Record<string, number> = {};
   let graphNodes = 0;
@@ -1035,7 +1054,7 @@ async function main(): Promise<void> {
       : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
     ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : {
-      universe_selection: { offset: args.universeOffset, limit: args.universeLimit, selected: selected.length },
+      universe_selection: { offset: args.universeOffset, limit: args.universeLimit, selected: selected.length, concurrency: args.concurrency },
     }),
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_records: eligibleRecords.length,
