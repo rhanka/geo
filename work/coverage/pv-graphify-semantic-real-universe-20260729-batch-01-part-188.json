@@ -1,0 +1,394 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:32:28.577Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 187,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 25,
+    "Regulation": 3,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 33,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/3f7e629c43f33b3716a45c73f6419170e2ddf2e9f9918a9e2b22f726961a0b1b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4487586",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:327",
+      "quote": "   (lot 4 487 586) – Offre d’achat."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 27,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2078,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z",
+  "documents": [
+    {
+      "slug": "cookshire-eaton",
+      "municipality_name": "Cookshire-Eaton",
+      "url": "https://cookshire-eaton.qc.ca/wp-content/uploads/2026/05/2026-04-07-PV-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/3f7e629c43f33b3716a45c73f6419170e2ddf2e9f9918a9e2b22f726961a0b1b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 25,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cookshire-Eaton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "Session ordinaire du conseil sous la présidence de madame la mairesse"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "Daphné Raymond tenue le 7 avril 2026 à 19 h 30 au 220, rue Principale Est"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-04-0718",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "Résolution 2026-04-0718"
+            }
+          },
+          {
+            "label": "2026-04-0719",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "Résolution 2026-04-0719"
+            }
+          },
+          {
+            "label": "2026-04-0720",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:177",
+              "quote": "Résolution 2026-04-0720"
+            }
+          },
+          {
+            "label": "2026-04-0721",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:206",
+              "quote": "Résolution 2026-04-0721"
+            }
+          },
+          {
+            "label": "2026-04-0722",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:218",
+              "quote": "Résolution 2026-04-0722"
+            }
+          },
+          {
+            "label": "2026-04-0723",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:232",
+              "quote": "Résolution 2026-04-0723"
+            }
+          },
+          {
+            "label": "2026-04-0724",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "Résolution 2026-04-0724"
+            }
+          },
+          {
+            "label": "2026-04-0725",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "Résolution 2026-04-0725"
+            }
+          },
+          {
+            "label": "2026-04-0726",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:300",
+              "quote": "Résolution 2026-04-0726"
+            }
+          },
+          {
+            "label": "2026-04-0727",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:329",
+              "quote": "Résolution 2026-04-0727"
+            }
+          },
+          {
+            "label": "2026-03-0710",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:366",
+              "quote": "Annulé (mandat octroyé selon la résolution 2026-03-0710)."
+            }
+          },
+          {
+            "label": "2026-04-0728",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "Résolution 2026-04-0728"
+            }
+          },
+          {
+            "label": "2026-04-0729",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:390",
+              "quote": "Résolution 2026-04-0729"
+            }
+          },
+          {
+            "label": "2026-04-0730",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:436",
+              "quote": "Résolution 2026-04-0730"
+            }
+          },
+          {
+            "label": "2026-04-0731",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:461",
+              "quote": "Résolution 2026-04-0731"
+            }
+          },
+          {
+            "label": "2026-04-0732",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:477",
+              "quote": "Résolution 2026-04-0732"
+            }
+          },
+          {
+            "label": "2026-04-0733",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:508",
+              "quote": "Résolution 2026-04-0733"
+            }
+          },
+          {
+            "label": "2026-04-0734",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:532",
+              "quote": "Résolution 2026-04-0734"
+            }
+          },
+          {
+            "label": "2026-04-0735",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:571",
+              "quote": "Résolution 2026-04-0735"
+            }
+          },
+          {
+            "label": "2026-04-0736",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:584",
+              "quote": "Résolution 2026-04-0736"
+            }
+          },
+          {
+            "label": "2026-04-0737",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:601",
+              "quote": "Résolution 2026-04-0737"
+            }
+          },
+          {
+            "label": "2026-04-0738",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:613",
+              "quote": "Résolution 2026-04-0738"
+            }
+          },
+          {
+            "label": "2026-04-0739",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:632",
+              "quote": "Résolution 2026-04-0739"
+            }
+          },
+          {
+            "label": "2026-04-0740",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:645",
+              "quote": "Résolution 2026-04-0740"
+            }
+          },
+          {
+            "label": "2026-04-0741",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:699",
+              "quote": "Résolution 2026-04-0741"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "400-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "   1) Règlement numéro 400-2026 concernant l’occupation et l’entretien"
+            }
+          },
+          {
+            "label": "399-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "     N.3)   Règlement numéro 399-2026 amendant le règlement relatif à la"
+            }
+          },
+          {
+            "label": "431-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:415",
+              "quote": "puisse appliquer le Règlement no 431-16 régissant l’écoulement des eaux"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4487586",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:327",
+              "quote": "   (lot 4 487 586) – Offre d’achat."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/cookshire-eaton/f726961a0b1b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/cookshire-eaton/f726961a0b1b.pdf/.graphify/.graphify_extract.json — 33 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 33,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cookshire-eaton",
+          "sherbrooke"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
