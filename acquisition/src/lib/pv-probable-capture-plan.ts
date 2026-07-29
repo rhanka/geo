@@ -28,6 +28,11 @@ export interface PvTerritorialCaptureSelection {
   readonly count: number;
 }
 
+export interface PvCaptureTargetMunicipalityPartition {
+  readonly recognized: readonly PvCaptureTarget[];
+  readonly unrecognized: readonly PvCaptureTarget[];
+}
+
 /**
  * Version observable d'un index PV S3. L'ETag et la date font partie du
  * snapshot: deux contenus différents sous la même clé ne sont pas un même
@@ -123,6 +128,24 @@ export function planPvProbableTargets(scans: readonly PvIndexSnapshot[]): PvCapt
     planned.push({ slug, source: "pv-index", urls: [url] });
   }
   return planned.sort((left, right) => left.slug.localeCompare(right.slug) || left.urls[0].localeCompare(right.urls[0]));
+}
+
+/**
+ * An operational index slug is not always a canonical reference-municipality
+ * slug (for example, a city name can need an MRC disambiguator). Keep that
+ * distinction explicit: territorial coverage is never credited by guessing a
+ * correspondence from a display name.
+ */
+export function partitionPvCaptureTargetsByMunicipality(
+  targets: readonly PvCaptureTarget[],
+  municipalitySlugs: ReadonlySet<string>,
+): PvCaptureTargetMunicipalityPartition {
+  const recognized: PvCaptureTarget[] = [];
+  const unrecognized: PvCaptureTarget[] = [];
+  for (const target of targets) {
+    (municipalitySlugs.has(target.slug) ? recognized : unrecognized).push(target);
+  }
+  return { recognized, unrecognized };
 }
 
 /**
