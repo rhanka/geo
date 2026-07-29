@@ -1,0 +1,655 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:56:39.132Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4300,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 18,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 18
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "CouncilSession": 2,
+    "MeetingDate": 2,
+    "Resolution": 1
+  },
+  "graphify": {
+    "nodes": 9,
+    "edges": 6,
+    "failures": 18
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 44,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 749,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z",
+  "documents": [
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3474/11_pv_12-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/65cff9658cf87c8a9fcd2ac7038e88835b98158d370c40d96672825f5a57eb5c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cloridorme",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE CLORIDORME"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE CLORIDORME"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "tenue le 12 mai 2025 à 19h00 à l’hôtel de ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "TECQ 2019-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "9.8 : Résolution TECQ 2019-2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/825f5a57eb5c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/825f5a57eb5c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cloridorme"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/49/proces-verbaux/3658/proces-verbal-du-12-janvier-2026-final.pdf",
+      "storage_key": "raw/pv-index/cas/65ded20fc1fdf4da41a7b624fbcd0fa246dae92cb8d29b30409d370625335468.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/370625335468.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/370625335468.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3260/017_pv_15-octobre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/6db6e3cc923034012b084951b838b1d6df97346edd457095f9d03f93898096e2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/3f93898096e2.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/3f93898096e2.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3527/16_pv_14-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/72486c4e6b9be593aeb90b98699b784aeea1d66433af9c6193d66a2890362b25.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/6a2890362b25.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/6a2890362b25.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3469/06_pv_10-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/76e601b6693604ce1d73c3686ab750df92254c8c96c993d96f2030c67608cda3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/30c67608cda3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/30c67608cda3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3382/022_pv_11-decembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/77f033d72b1f15e304c67dff14529da0c791fc4e5e845a7e4111d178f0600677.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d178f0600677.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d178f0600677.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3089/proces-verbal-speciale-31-mai-2023.pdf",
+      "storage_key": "raw/pv-index/cas/7a7f371e760d9ecc99e4327fd9db985edefea51c38c0425fc3844b2144652f6f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/4b2144652f6f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/4b2144652f6f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3097/proces-verbal-du-21-aout-2023.pdf",
+      "storage_key": "raw/pv-index/cas/7aac1cc79f95c73b4129d0ef174fc839666862b5b5f968e34bc52bade9ca3142.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/2bade9ca3142.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/2bade9ca3142.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3577/21_pv_16-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/801c26d79ab66209d50b4259c55a3c1ecf12727ac69dea354592eda82ef5f566.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/eda82ef5f566.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/eda82ef5f566.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3259/016_pv_9-octobre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/8348e13e6fff0c953dad5feb05490157d300c4f4da152150cac7e1e8b6a2ed68.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/e1e8b6a2ed68.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/e1e8b6a2ed68.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3102/proces-verbal-speciale-19-decembre-42023.pdf",
+      "storage_key": "raw/pv-index/cas/8546016dd63dbd6dc9379141cd356beb1a9ac425e8bbd1497e8f92a1e653d868.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/92a1e653d868.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/92a1e653d868.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3103/proces-verbal-11-decembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/8892e506bc7f6529dc18248a30e05a367b3139f0a5ffc153aaab94bcec4e55eb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/94bcec4e55eb.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/94bcec4e55eb.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3580/17_pv_18-aout-2025.pdf",
+      "storage_key": "raw/pv-index/cas/893f82296bdc0782165f91efbd26e69b3f5455f33bbb43bc8d6ad021faa36b73.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d021faa36b73.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d021faa36b73.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3249/010_pv_4-juin-2024.pdf",
+      "storage_key": "raw/pv-index/cas/8978eb068d36075b78a9ce102b279e4db340e5c436730c3ff59d05aaae04479f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/05aaae04479f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/05aaae04479f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3383/021_pv_9-decembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/8ab67a0f18e41219390daed5e297b0e21cdab997378c7194cdaafa670887234d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/fa670887234d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/fa670887234d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3473/12_pv_21-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8f633199535968d7b7b3605bd35bde5492771020af7b791d0fa61755f05906f9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cloridorme",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE CLORIDORME"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE CLORIDORME"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "municipal tenue le 21 mai 2025 à 18h30 à l’hôtel de ville"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/1755f05906f9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/1755f05906f9.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cloridorme"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/29/proces-verbaux/3090/proces-verbal-speciale-26-avril-2023.pdf",
+      "storage_key": "raw/pv-index/cas/90feddc908cfd52ad5f4b22e9b362ed33f271d31851f530147f9d0ca2ce28d11.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d0ca2ce28d11.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/d0ca2ce28d11.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3244/003_pv_19-fevrier-2024.pdf",
+      "storage_key": "raw/pv-index/cas/92f6817b2605c4d57e13e7b8d971d63c6b8861257f173df02745147fae700b5a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/147fae700b5a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/147fae700b5a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/20/proces-verbaux/3250/009_pv_29-mai-2024.pdf",
+      "storage_key": "raw/pv-index/cas/980a182bb32702dd5f5ce2a976a91e82914a695961d7bb29abf873e32331de21.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/73e32331de21.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/73e32331de21.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3587/22_pv_17-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a71f932fabc5286c83130e05de1375e5cf2c337c6c0f5f17bb70c6af8dfbde59.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/c6af8dfbde59.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T175632Z/cloridorme/c6af8dfbde59.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
