@@ -7,6 +7,10 @@ const municipalities = [
   { slug: "albertville", name: "Albertville" },
   { slug: "compton", name: "Compton" },
   { slug: "arundel", name: "Arundel" },
+  { slug: "armagh", name: "Armagh" },
+  { slug: "dunham", name: "Dunham" },
+  { slug: "dolbeau-mistassini", name: "Dolbeau-Mistassini" },
+  { slug: "dorval", name: "Dorval" },
 ] as const;
 
 function extract(text: string) {
@@ -73,6 +77,33 @@ describe("PV deterministic Graphify semantic extraction", () => {
     expect(addressOnly.nodes).toEqual([]);
   });
 
+  it("recognizes an owner split over adjacent PDF extraction lines without fuzzy matching", () => {
+    const result = extractPvSemantic({
+      source_file: "input/dolbeau-mistassini.txt",
+      municipality_slug: "dolbeau-mistassini",
+      text: [
+        "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL",
+        "DE DOLBEAU-MISTASSINI, TENUE LE 18 JUILLET 2024 À ONZE HEURES.",
+      ].join("\n"),
+    }, municipalities);
+
+    const municipality = result.nodes.find((node) => node.node_type === "Municipality");
+    expect(municipality?.citations[0]).toMatchObject({
+      source_location: "input/dolbeau-mistassini.txt:line:1",
+      quote: "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL",
+    });
+  });
+
+  it("recognizes the general French Cité owner prefix", () => {
+    const result = extractPvSemantic({
+      source_file: "input/dorval.txt",
+      municipality_slug: "dorval",
+      text: "CITÉ DE DORVAL\nProcès-verbal d’une séance du conseil municipal.",
+    }, municipalities);
+
+    expect(result.nodes.map((node) => node.node_type)).toEqual(["Municipality", "Document"]);
+  });
+
   it("extracts resolution and regulation references with a non-silent legal quality", () => {
     const result = extract([
       "MUNICIPALITÉ D’ALBERTVILLE",
@@ -135,6 +166,44 @@ describe("PV deterministic Graphify semantic extraction", () => {
       ["223-2026", "SECOND_PROJET"],
       ["224-2026", "SECOND_PROJET"],
       ["225-2026", "ADOPTE"],
+    ]);
+  });
+
+  it("keeps the named Armagh and Dunham draft regulations non-adopted despite nearby adoption words", () => {
+    const armagh = extractPvSemantic({
+      source_file: "input/armagh.txt",
+      municipality_slug: "armagh",
+      text: "MUNICIPALITÉ D’ARMAGH\nCONSIDÉRANT le projet de Règlement no 199-2022 adopté par le conseil",
+    }, municipalities);
+    const dunham = extractPvSemantic({
+      source_file: "input/dunham.txt",
+      municipality_slug: "dunham",
+      text: "VILLE DE DUNHAM\nprojet de Règlement no 489-24 adoptée lors de la séance",
+    }, municipalities);
+
+    expect(armagh.nodes.find((node) => node.regulation_number === "199-2022")?.legal_quality).toBe("PROJET");
+    expect(dunham.nodes.find((node) => node.regulation_number === "489-24")?.legal_quality).toBe("PROJET");
+  });
+
+  it("prioritizes every non-effective regulation qualifier over a nearby adoption", () => {
+    const result = extract([
+      "MUNICIPALITÉ D’ALBERTVILLE",
+      "Premier projet de règlement 101-2024 adopté.",
+      "Second projet de règlement 102-2024 adopté.",
+      "Avis d’approbation référendaire du règlement 103-2024 adopté.",
+      "Version administrative du règlement 104-2024 adopté.",
+      "Codification du règlement 105-2024 adopté.",
+    ].join("\n"));
+
+    expect(result.nodes.filter((node) => node.node_type === "Regulation").map((node) => [
+      node.regulation_number,
+      node.legal_quality,
+    ])).toEqual([
+      ["101-2024", "PREMIER_PROJET"],
+      ["102-2024", "SECOND_PROJET"],
+      ["103-2024", "AVIS_APPROBATION_REFERENDAIRE"],
+      ["104-2024", "VERSION_ADMINISTRATIVE"],
+      ["105-2024", "CODIFICATION"],
     ]);
   });
 

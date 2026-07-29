@@ -265,7 +265,7 @@ function isPrintedMunicipalityOwner(line: SourceLine, officialName: string): boo
   if (canonicalName === "  ") return false;
   const canonicalLine = normalizeWords(line.text);
   const name = escapeRegex(canonicalName.trim()).replace(/\s+/gu, "\\s+");
-  const ownerPrefix = "(?:municipalite|municipality|ville|city|village|township|canton|paroisse|parish)";
+  const ownerPrefix = "(?:municipalite(?:\\s+de\\s+paroisse)?|municipality|ville|cite|city|village|township|canton|paroisse|parish)";
   const ownerConnectors = "(?:\\s+(?:de|d|du|des|of|the|la|le|township|canton))*";
   const municipalityBeforeName = new RegExp(`\\b${ownerPrefix}\\b${ownerConnectors}\\s+${name}\\b`, "u");
   const councilBeforeName = new RegExp(
@@ -276,7 +276,18 @@ function isPrintedMunicipalityOwner(line: SourceLine, officialName: string): boo
 }
 
 function firstMunicipalityEvidence(lines: readonly SourceLine[], officialName: string): SourceLine | null {
-  return lines.find((line) => isPrintedMunicipalityOwner(line, officialName)) ?? null;
+  for (const [index, line] of lines.entries()) {
+    if (isPrintedMunicipalityOwner(line, officialName)) return line;
+    const continuation = lines[index + 1];
+    if (!continuation) continue;
+
+    // `pdftotext -layout` can place the municipal name on the next physical
+    // line. Rejoin that exact adjacent source text before matching, but retain
+    // the first original line as evidence so the citation stays relocalizable.
+    const joined = { number: line.number, text: `${line.text} ${continuation.text}` };
+    if (isPrintedMunicipalityOwner(joined, officialName)) return line;
+  }
+  return null;
 }
 
 const MONTH = "janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre";
@@ -338,18 +349,21 @@ const REGULATION_DATE_CONTINUATION = new RegExp(`^\\s+(?:${MONTH})\\b`, "iu");
 function regulationQuality(line: string, regulationOffset: number): RegulationLegalQuality {
   const before = normalizeWords(line.slice(Math.max(0, regulationOffset - 100), regulationOffset));
   const after = normalizeWords(line.slice(regulationOffset, regulationOffset + 80));
+  // A legal-status clause attached to the regulation controls the result. Its
+  // nearby "adopté" can only record adoption of that draft, never turn the
+  // draft itself into a legally effective regulation.
   if (/\b(?:premier|1er|1e|1eme) projet (?:de|du|d) $/u.test(before) || /\b(?:premier|1er|1e|1eme) projet\b/u.test(after)) {
     return "PREMIER_PROJET";
   }
   if (/\b(?:second|deuxieme|2e|2eme) projet (?:de|du|d) $/u.test(before) || /\b(?:second|deuxieme|2e|2eme) projet\b/u.test(after)) {
     return "SECOND_PROJET";
   }
+  if (/\bprojet (?:de|du|d) $/u.test(before)) return "PROJET";
+  if (/\bavis d approbation referendaire (?:de|du|d) $/u.test(before)) return "AVIS_APPROBATION_REFERENDAIRE";
+  if (/\bversion administrative (?:de|du|d) $/u.test(before)) return "VERSION_ADMINISTRATIVE";
+  if (/\bcodification (?:de|du|d) $/u.test(before)) return "CODIFICATION";
   if (/\badoption du $/u.test(before)) return "ADOPTE";
   if (/\badopte(?:e|es|er)?\b/u.test(after)) return "ADOPTE";
-  if (/\bprojet de $/u.test(before)) return "PROJET";
-  if (/\bavis d approbation referendaire (?:du )?$/u.test(before)) return "AVIS_APPROBATION_REFERENDAIRE";
-  if (/\bversion administrative du $/u.test(before)) return "VERSION_ADMINISTRATIVE";
-  if (/\bcodification du $/u.test(before)) return "CODIFICATION";
   return "INCONNUE";
 }
 

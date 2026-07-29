@@ -75,6 +75,15 @@ function graphifyDocument(value: unknown, where: string): GraphifyDocument {
   };
 }
 
+function supersededStorageKeys(value: Record<string, unknown>, where: string): ReadonlySet<string> {
+  const raw = value.supersedes_storage_keys;
+  if (raw === undefined) return new Set();
+  const keys = requiredArray(value, "supersedes_storage_keys", where)
+    .map((key, index) => requiredString({ key }, "key", `${where}.supersedes_storage_keys[${index}]`));
+  if (new Set(keys).size !== keys.length) throw new Error(`${where}.supersedes_storage_keys contient une clé dupliquée`);
+  return new Set(keys);
+}
+
 /**
  * Rebuild the PV semantic aggregate from its short classification and Graphify
  * reports. Every input is reconciled by immutable CAS storage key so a repeated
@@ -99,17 +108,25 @@ export function summarizePvGraphifySemantic(
   }
 
   const documents = new Map<string, GraphifyDocument>();
-  for (const report of graphifyReports) {
+  for (const report of [...graphifyReports].sort((left, right) => left.path.localeCompare(right.path))) {
     if (!isRecord(report.value)) throw new Error(`${report.path} doit être un objet`);
+    const supersedes = supersededStorageKeys(report.value, report.path);
+    const reportDocumentKeys = new Set<string>();
     for (const [index, value] of requiredArray(report.value, "documents", report.path).entries()) {
       const document = graphifyDocument(value, `${report.path}.documents[${index}]`);
-      if (documents.has(document.storageKey)) {
+      reportDocumentKeys.add(document.storageKey);
+      if (documents.has(document.storageKey) && !supersedes.has(document.storageKey)) {
         throw new Error(`PV indexé deux fois dans les rapports Graphify: ${document.storageKey}`);
       }
       if (!eligible.has(document.storageKey)) {
         throw new Error(`PV Graphify absent de l'univers de classification: ${document.storageKey}`);
       }
       documents.set(document.storageKey, document);
+    }
+    for (const storageKey of supersedes) {
+      if (!reportDocumentKeys.has(storageKey)) {
+        throw new Error(`${report.path}.supersedes_storage_keys référence un document absent du rapport: ${storageKey}`);
+      }
     }
   }
 
@@ -124,8 +141,11 @@ export function summarizePvGraphifySemantic(
       graphifyFailures += 1;
       continue;
     }
+    if (document.nodes === 0) {
+      zeroNodePvs += 1;
+      continue;
+    }
     indexedPvs += 1;
-    if (document.nodes === 0) zeroNodePvs += 1;
     nodes += document.nodes;
     edges += document.edges;
     for (const [type, count] of Object.entries(document.entityCounts)) {
