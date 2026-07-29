@@ -15,7 +15,7 @@
 
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,11 +33,15 @@ import {
   type ZoneGazetteerMatchPolicy,
 } from "./lib/pv-graphify-semantic.js";
 import { selectBalancedPvControl, selectPvControlBatch } from "./lib/pv-graphify-control.js";
+import { readReadyPvRealUniverse } from "./lib/pv-graphify-real-universe.js";
 import { BUCKET, exists, getBytes, s3Client } from "./lib/s3.js";
 
 const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
+const COVERAGE = resolve(ROOT, "work", "coverage");
+const MAX_REPORT_BYTES = 5 * 1024 * 1024;
+const REAL_BATCH_REPORT = /^pv-graphify-semantic-real-universe-\d{8}-batch-\d{2}(?:-part-\d+)?\.json$/u;
 const DEFAULT_CLASSIFICATIONS = [1, 2, 3, 4, 5, 6, 7].map((lot) =>
   resolve(ROOT, "work", "coverage", `pv-capture-octets-classification-20260728-campaign-lot-${String(lot).padStart(4, "0")}.json`),
 );
@@ -56,6 +60,11 @@ interface ClassificationLine {
   readonly url: string;
   readonly storage_key: string;
   readonly classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME";
+}
+
+interface RealUniverseSelection {
+  readonly candidates: readonly ClassificationLine[];
+  readonly initiallyIndexedStorageKeys: ReadonlySet<string>;
 }
 
 interface ZoneRegistryEntry {
@@ -259,31 +268,48 @@ function readClassificationLines(path: string): ClassificationLine[] {
 }
 
 /** Read the committed S3-CAS universe without treating it as a classification. */
-function readRealUniverseBatch(path: string): ClassificationLine[] {
-  const raw: unknown = JSON.parse(readFileSync(path, "utf8"));
-  if (!isRecord(raw) || raw.contract !== "pv-graphify-semantic-real-universe/v1") {
-    throw new Error(`univers PV réel invalide: ${path}`);
+function readSmallJson(path: string): unknown {
+  const { size } = statSync(path);
+  if (size > MAX_REPORT_BYTES) throw new Error(`${path}: ${size} octets > plafond de lecture ${MAX_REPORT_BYTES}`);
+  return JSON.parse(readFileSync(path, "utf8")) as unknown;
+}
+
+function readRealUniverseBatch(path: string): RealUniverseSelection {
+  const raw = readSmallJson(path);
+  const candidates = readReadyPvRealUniverse(raw, path).map((document) => ({
+    ...document,
+    classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME" as const,
+  }));
+  if (!isRecord(raw)) throw new Error(`univers PV réel invalide: ${path}`);
+  const indexedGraph = raw.indexed_graph;
+  if (!isRecord(indexedGraph) || !Array.isArray(indexedGraph.storage_keys)) {
+    throw new Error(`univers PV réel sans clés déjà indexées: ${path}`);
   }
-  const batch = raw.batch;
-  if (!isRecord(batch) || !Array.isArray(batch.selected_documents)) {
-    throw new Error(`univers PV réel sans batch sélectionné: ${path}`);
+  const initiallyIndexedStorageKeys = new Set<string>();
+  for (const [index, value] of indexedGraph.storage_keys.entries()) {
+    if (typeof value !== "string" || !value) throw new Error(`${path}.indexed_graph.storage_keys[${index}] invalide`);
+    initiallyIndexedStorageKeys.add(value);
   }
-  const selected: ClassificationLine[] = [];
-  for (const [index, value] of batch.selected_documents.entries()) {
-    if (!isRecord(value)) throw new Error(`${path}.batch.selected_documents[${index}] invalide`);
-    selected.push({
-      slug: requiredString(value, "slug", `${path}.batch.selected_documents[${index}]`),
-      municipality_name: requiredString(value, "municipality_name", `${path}.batch.selected_documents[${index}]`),
-      url: requiredString(value, "url", `${path}.batch.selected_documents[${index}]`),
-      storage_key: requiredString(value, "storage_key", `${path}.batch.selected_documents[${index}]`),
-      classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
-    });
+  return { candidates, initiallyIndexedStorageKeys };
+}
+
+function indexedStorageKeysFromExistingReports(): Set<string> {
+  const indexed = new Set<string>();
+  const reports = readdirSync(COVERAGE)
+    .filter((name) => REAL_BATCH_REPORT.test(name))
+    .sort((left, right) => left.localeCompare(right));
+  for (const name of reports) {
+    const path = resolve(COVERAGE, name);
+    const value = readSmallJson(path);
+    if (!isRecord(value) || value.contract !== "pv-graphify-semantic-control/v1" || !Array.isArray(value.documents)) {
+      throw new Error(`rapport Graphify réel invalide: ${path}`);
+    }
+    for (const [index, document] of value.documents.entries()) {
+      if (!isRecord(document) || document.outcome !== "INDEXED") continue;
+      indexed.add(requiredString(document, "storage_key", `${path}.documents[${index}]`));
+    }
   }
-  if (selected.length === 0) throw new Error(`univers PV réel sans document indexable: ${path}`);
-  if (new Set(selected.map((document) => document.storage_key)).size !== selected.length) {
-    throw new Error(`univers PV réel avec clé CAS dupliquée: ${path}`);
-  }
-  return selected;
+  return indexed;
 }
 
 function uniqueEligible(lines: readonly ClassificationLine[]): ClassificationLine[] {
@@ -896,19 +922,29 @@ async function processDocument(
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  const realUniverse = args.universe === null ? null : readRealUniverseBatch(args.universe);
   const paths = args.universe === null
     ? (args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS)
     : [];
-  const eligibleRecords = args.universe === null ? paths.flatMap(readClassificationLines) : readRealUniverseBatch(args.universe);
+  const eligibleRecords = args.universe === null ? paths.flatMap(readClassificationLines) : realUniverse!.candidates;
   const eligible = uniqueEligible(eligibleRecords);
   const batch = args.universe === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const selected = args.universe !== null
+  const requested = args.universe !== null
     ? eligible.slice(args.universeOffset, args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit)
     : args.storageKeys.length > 0
     ? selectStorageKeys(eligible, args.storageKeys)
     : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
+  const indexedStorageKeys = args.universe === null
+    ? new Set<string>()
+    : new Set([...realUniverse!.initiallyIndexedStorageKeys, ...indexedStorageKeysFromExistingReports()]);
+  const skippedIndexedStorageKeys = args.universe === null
+    ? []
+    : requested.filter((document) => indexedStorageKeys.has(document.storage_key)).map((document) => document.storage_key);
+  const selected = args.universe === null
+    ? requested
+    : requested.filter((document) => !indexedStorageKeys.has(document.storage_key));
   assertS3RunEnvironment();
   if (selected.length === 0) throw new Error("la sélection Graphify est vide");
 
@@ -1067,7 +1103,14 @@ async function main(): Promise<void> {
       : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
     ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : {
-      universe_selection: { offset: args.universeOffset, limit: args.universeLimit, selected: selected.length, concurrency: args.concurrency },
+      universe_selection: {
+        offset: args.universeOffset,
+        limit: args.universeLimit,
+        requested: requested.length,
+        selected: selected.length,
+        skipped_indexed_cas_keys: skippedIndexedStorageKeys,
+        concurrency: args.concurrency,
+      },
     }),
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_records: eligibleRecords.length,
