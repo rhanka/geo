@@ -1,0 +1,3659 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:50:26.854Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4220,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "Resolution": 239,
+    "Regulation": 40,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "LotCadastre": 7,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 333,
+    "edges": 31,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 7,
+    "documents_with_zone": 1,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/81b8e25a8764b5eee9aa66b5aa6c5f0449cceffec8013950dce9473696b9e59a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6522487",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:96",
+      "quote": "                                  concernant le lot 6 522 487 situé sur le"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/81b8e25a8764b5eee9aa66b5aa6c5f0449cceffec8013950dce9473696b9e59a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5535796",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:99",
+      "quote": "                                  concernant le lot 5 535 796 situé au 262,"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/8d02797a89de40adea2e8f62c05583917d9b626f117e2774cbcbfe4feaf443f3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5535622",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:122",
+      "quote": "                           une portion du lot 5 535 622 avec le lot"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/8d02797a89de40adea2e8f62c05583917d9b626f117e2774cbcbfe4feaf443f3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5535623",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:617",
+      "quote": "       lotissement sur une portion du lot 5 535 622 avec le lot 5 535 623 –"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/9723575d0666a46851882b25922e9851c95a09e2f916172547a59b72ed58818e.pdf",
+      "entity_type": "Zone",
+      "value": "AF13",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:438",
+      "quote": "       concernant les usages autorisés dans la zone AF13"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/97251bc1672ad20a6eefd67a5729ef57669bf88b9f5a38ce930126309ada4834.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6460134",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:79",
+      "quote": "       10.1 Demande dérogation mineure pour le morcellement du lot 6 460 134 pte, situé sur la 1re Avenue"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/995353e5b6fd0eb604103d0ba6d0e139297febbccb0d0d1145a1a0ae4f2ff721.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6421523",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:113",
+      "quote": "                        concernant le lot 6 421 523 situé sur le"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/995353e5b6fd0eb604103d0ba6d0e139297febbccb0d0d1145a1a0ae4f2ff721.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5536418",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:116",
+      "quote": "                        conditionnel concernant les lots 5 536 418 et"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 121,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1112,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z",
+  "documents": [
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2026/04/PV-2-MARS-2026.pdf",
+      "storage_key": "raw/pv-index/cas/6b44566d9ff47ea7158e160c003307a54e55ae4df9b598ef3c1e93c8eeace141.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 22,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-01"
+            }
+          },
+          {
+            "label": "2026-03-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-02"
+            }
+          },
+          {
+            "label": "2026-03-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-03"
+            }
+          },
+          {
+            "label": "2026-03-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-04"
+            }
+          },
+          {
+            "label": "2026-03-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-05"
+            }
+          },
+          {
+            "label": "2026-03-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-07"
+            }
+          },
+          {
+            "label": "2026-03-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:267",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-08"
+            }
+          },
+          {
+            "label": "2026-03-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:331",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-09"
+            }
+          },
+          {
+            "label": "2026-03-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-10"
+            }
+          },
+          {
+            "label": "2026-03-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:396",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-11"
+            }
+          },
+          {
+            "label": "2026-03-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-12"
+            }
+          },
+          {
+            "label": "2026-03-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:451",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-13"
+            }
+          },
+          {
+            "label": "2026-03-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:485",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-14"
+            }
+          },
+          {
+            "label": "2026-03-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:542",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-15"
+            }
+          },
+          {
+            "label": "2026-03-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:567",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-16"
+            }
+          },
+          {
+            "label": "2026-03-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:614",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-17"
+            }
+          },
+          {
+            "label": "2026-03-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:666",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-18"
+            }
+          },
+          {
+            "label": "2026-03-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:720",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-19"
+            }
+          },
+          {
+            "label": "2026-03-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:775",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-20"
+            }
+          },
+          {
+            "label": "2026-03-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:835",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-21"
+            }
+          },
+          {
+            "label": "2026-03-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:875",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-22"
+            }
+          },
+          {
+            "label": "2026-03-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:935",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-03-23"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "621",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "                         Règlement : Règlement No 621 – Décrétant"
+            }
+          },
+          {
+            "label": "620",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:324",
+              "quote": "       D’ADOPTER            le Règlement numéro 620 relatif à l’occupation"
+            }
+          },
+          {
+            "label": "580",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:961",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:961",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/93c8eeace141.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/93c8eeace141.pdf/.graphify/.graphify_extract.json — 28 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 28,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/04/PV-17-MARS-2025.pdf",
+      "storage_key": "raw/pv-index/cas/6e2194b02c8f6ca7b2fe7606552f4ea0545ce265357559ff747352ccd6f71592.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-03-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-03-25"
+            }
+          },
+          {
+            "label": "2025-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-03-26"
+            }
+          },
+          {
+            "label": "2025-03-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-03-27"
+            }
+          },
+          {
+            "label": "2025-03-28",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:180",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-03-28"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "613",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "                      Règlement No 613 – Règlement décrétant une dépense et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/52ccd6f71592.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/52ccd6f71592.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "melbourne",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/05/0.-ORDRE-DU-JOUR-MAI-2025-INTERNET1.pdf",
+      "storage_key": "raw/pv-index/cas/6e8fdab820c531d7acf2875a73224d1fef132ffed174e7a366127d3e37ba78c7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                      Séance régulière"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                      Séance régulière"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/7d3e37ba78c7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/7d3e37ba78c7.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/01/PV-9-DECEMBRE-2024-A-12h00.pdf",
+      "storage_key": "raw/pv-index/cas/7740e94ac45dad3cedcd06ec71f86196ba41bea6084b780e0d816f760dbe7e0a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-12-31",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-12-31"
+            }
+          },
+          {
+            "label": "2024-12-32",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-12-32"
+            }
+          },
+          {
+            "label": "2024-12-33",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-12-33"
+            }
+          },
+          {
+            "label": "2024-12-34",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-12-34"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/6f760dbe7e0a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/6f760dbe7e0a.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-7-MARS-2022-2.pdf",
+      "storage_key": "raw/pv-index/cas/79130a98d81e9bedca48a0f82168d3ea9abe9f42ead6391fa9450fc552573fac.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 20,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-03-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-01"
+            }
+          },
+          {
+            "label": "2022-03-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:118",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-02"
+            }
+          },
+          {
+            "label": "2022-03-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-03"
+            }
+          },
+          {
+            "label": "2022-03-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-04"
+            }
+          },
+          {
+            "label": "2022-03-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-05"
+            }
+          },
+          {
+            "label": "2022-03-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:324",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-08"
+            }
+          },
+          {
+            "label": "2022-03-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:349",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-09"
+            }
+          },
+          {
+            "label": "2022-03-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:415",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-10"
+            }
+          },
+          {
+            "label": "2022-03-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:451",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-11"
+            }
+          },
+          {
+            "label": "2022-03-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:477",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-12"
+            }
+          },
+          {
+            "label": "2022-03-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:509",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-13"
+            }
+          },
+          {
+            "label": "2022-03-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:563",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-14"
+            }
+          },
+          {
+            "label": "2022-03-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:627",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-15"
+            }
+          },
+          {
+            "label": "2022-03-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:688",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-16"
+            }
+          },
+          {
+            "label": "2022-03-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:734",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-17"
+            }
+          },
+          {
+            "label": "2022-03-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:757",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-18"
+            }
+          },
+          {
+            "label": "2022-03-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:813",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-19"
+            }
+          },
+          {
+            "label": "2022-03-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:853",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-20"
+            }
+          },
+          {
+            "label": "2022-03-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:886",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-21"
+            }
+          },
+          {
+            "label": "2022-03-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:978",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-03-22"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "585",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "                              8.1   Adoption du Règlement No 585 – Règlement"
+            }
+          },
+          {
+            "label": "586",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                              8.2   Adoption du Règlement No 586 – Règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/0fc552573fac.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/0fc552573fac.pdf/.graphify/.graphify_extract.json — 24 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-11-OCTOBRE-2022.pdf",
+      "storage_key": "raw/pv-index/cas/7a6db3e89009a2f330c455fe747cdbc361937397d2deebe06cb2a87e92f065a6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-10-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-20"
+            }
+          },
+          {
+            "label": "2022-10-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-21"
+            }
+          },
+          {
+            "label": "2022-10-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-22"
+            }
+          },
+          {
+            "label": "2022-10-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-23"
+            }
+          },
+          {
+            "label": "2022-10-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-24"
+            }
+          },
+          {
+            "label": "2022-10-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:248",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-10-25"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/a87e92f065a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/a87e92f065a6.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2026/05/PV-7-AVRIL-2026.pdf",
+      "storage_key": "raw/pv-index/cas/7d60a6cf1a2ef87d02f4083e7e149dc52deb14a506e64e0ed901da04cf4e5f4f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 26,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-04-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-01"
+            }
+          },
+          {
+            "label": "2026-04-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-02"
+            }
+          },
+          {
+            "label": "2026-04-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:178",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-03"
+            }
+          },
+          {
+            "label": "2026-04-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-04"
+            }
+          },
+          {
+            "label": "2026-04-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:224",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-05"
+            }
+          },
+          {
+            "label": "2026-04-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:248",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-07"
+            }
+          },
+          {
+            "label": "2026-04-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:318",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-10"
+            }
+          },
+          {
+            "label": "2026-04-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:328",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-11"
+            }
+          },
+          {
+            "label": "2026-04-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:387",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-12"
+            }
+          },
+          {
+            "label": "2026-04-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:447",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-14"
+            }
+          },
+          {
+            "label": "2026-04-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:483",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-15"
+            }
+          },
+          {
+            "label": "2026-04-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:513",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-16"
+            }
+          },
+          {
+            "label": "2026-04-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:539",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-17"
+            }
+          },
+          {
+            "label": "2026-04-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:589",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-18"
+            }
+          },
+          {
+            "label": "2026-04-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:628",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-19"
+            }
+          },
+          {
+            "label": "2026-04-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:654",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-20"
+            }
+          },
+          {
+            "label": "2026-04-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:721",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-21"
+            }
+          },
+          {
+            "label": "2026-04-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:778",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-22"
+            }
+          },
+          {
+            "label": "2026-04-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:821",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-23"
+            }
+          },
+          {
+            "label": "2026-04-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:876",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-24"
+            }
+          },
+          {
+            "label": "2026-04-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:930",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-25"
+            }
+          },
+          {
+            "label": "2026-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:970",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-26"
+            }
+          },
+          {
+            "label": "2026-04-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1026",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-27"
+            }
+          },
+          {
+            "label": "2026-04-28",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1074",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-28"
+            }
+          },
+          {
+            "label": "2026-04-29",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1116",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-29"
+            }
+          },
+          {
+            "label": "2026-04-30",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1173",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-04-30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "622",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "                           : Règlement No 622 relatif au code d’éthique et"
+            }
+          },
+          {
+            "label": "621",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:319",
+              "quote": "       Adoption de Règlement : Règlement No 621 – Décrétant une"
+            }
+          },
+          {
+            "label": "581",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:814",
+              "quote": "                            Règlement no 581 en vigueur, à savoir :"
+            }
+          },
+          {
+            "label": "580",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1201",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1201",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/da04cf4e5f4f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/da04cf4e5f4f.pdf/.graphify/.graphify_extract.json — 33 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 33,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-7-FEVRIER-2022-1.pdf",
+      "storage_key": "raw/pv-index/cas/7eb0f12ed90c6c8c05b9bf712f92faad713577368a74ec54aae41a71d90a604d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 19,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       2022, la séance du conseil est tenue à huis clos."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          },
+          {
+            "label": "2022-02-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-01"
+            }
+          },
+          {
+            "label": "2022-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-02"
+            }
+          },
+          {
+            "label": "2022-02-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-03"
+            }
+          },
+          {
+            "label": "2022-02-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-04"
+            }
+          },
+          {
+            "label": "2022-02-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:166",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-05"
+            }
+          },
+          {
+            "label": "2022-02-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-06"
+            }
+          },
+          {
+            "label": "2022-02-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-07"
+            }
+          },
+          {
+            "label": "2022-02-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:216",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-08"
+            }
+          },
+          {
+            "label": "2022-02-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:280",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-12"
+            }
+          },
+          {
+            "label": "2022-02-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:319",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-13"
+            }
+          },
+          {
+            "label": "2022-02-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-14"
+            }
+          },
+          {
+            "label": "2022-02-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:388",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-15"
+            }
+          },
+          {
+            "label": "2022-02-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:407",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-16"
+            }
+          },
+          {
+            "label": "2022-02-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:424",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-17"
+            }
+          },
+          {
+            "label": "2022-02-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:532",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-18"
+            }
+          },
+          {
+            "label": "2022-02-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:552",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-19"
+            }
+          },
+          {
+            "label": "2022-02-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:636",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-20"
+            }
+          },
+          {
+            "label": "2022-02-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:684",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-02-21"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "585",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "                                 règlement : Règlement No 585 – Règlement"
+            }
+          },
+          {
+            "label": "586",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "                                 règlement : Règlement No 586 – Portant sur la"
+            }
+          },
+          {
+            "label": "557",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:339",
+              "quote": "       CONSIDÉRANT QUE      l’article 9 du règlement 557 prévoit une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/1a71d90a604d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/1a71d90a604d.pdf/.graphify/.graphify_extract.json — 26 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 26,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-15-AOUT-2022.pdf",
+      "storage_key": "raw/pv-index/cas/81b8e25a8764b5eee9aa66b5aa6c5f0449cceffec8013950dce9473696b9e59a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 15,
+        "Regulation": 4,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-08-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-01"
+            }
+          },
+          {
+            "label": "2022-08-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-02"
+            }
+          },
+          {
+            "label": "2022-08-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-03"
+            }
+          },
+          {
+            "label": "2022-08-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-04"
+            }
+          },
+          {
+            "label": "2022-08-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-05"
+            }
+          },
+          {
+            "label": "2022-08-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-06"
+            }
+          },
+          {
+            "label": "2022-08-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:238",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-07"
+            }
+          },
+          {
+            "label": "2022-08-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:266",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-08"
+            }
+          },
+          {
+            "label": "2022-08-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:298",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-09"
+            }
+          },
+          {
+            "label": "2022-08-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-11"
+            }
+          },
+          {
+            "label": "2022-08-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:401",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-12"
+            }
+          },
+          {
+            "label": "2022-08-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:423",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-13"
+            }
+          },
+          {
+            "label": "2022-08-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:468",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-14"
+            }
+          },
+          {
+            "label": "2022-08-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:544",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-16"
+            }
+          },
+          {
+            "label": "2022-08-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:591",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-08-17"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "589",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "                            8.5   Adoption du règlement No 589 : Règlement"
+            }
+          },
+          {
+            "label": "446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "                                  modifiant le règlement numéro 446 intitulé"
+            }
+          },
+          {
+            "label": "590",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "                            11.1 Adoption du règlement No 590 : Règlement"
+            }
+          },
+          {
+            "label": "555",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:508",
+              "quote": "       règlement numéro 555, concernant les limites de vitesse sur le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6522487",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "                                  concernant le lot 6 522 487 situé sur le"
+            }
+          },
+          {
+            "label": "5535796",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "                                  concernant le lot 5 535 796 situé au 262,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/473696b9e59a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/473696b9e59a.pdf/.graphify/.graphify_extract.json — 23 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 23,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-24-JANVIER-2022-19H-1.pdf",
+      "storage_key": "raw/pv-index/cas/8a32af56f6aa60541971c35282ee2beed1d5557a2ac019c7c64f41e1aed6230a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       2022, la séance extraordinaire du conseil est tenue à huis clos."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          },
+          {
+            "label": "2022-01-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-19"
+            }
+          },
+          {
+            "label": "2022-01-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-20"
+            }
+          },
+          {
+            "label": "2022-01-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-21"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/41e1aed6230a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/41e1aed6230a.pdf/.graphify/.graphify_extract.json — 8 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/03/PV-3-FEVRIER-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8cf1ad221952e079891aaf1d8a4b168880d92f7bb6587975063edef013cd03ce.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 14,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-02-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-01"
+            }
+          },
+          {
+            "label": "2025-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-02"
+            }
+          },
+          {
+            "label": "2025-02-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-03"
+            }
+          },
+          {
+            "label": "2025-02-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-04"
+            }
+          },
+          {
+            "label": "2025-02-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:193",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-05"
+            }
+          },
+          {
+            "label": "2025-02-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:242",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-07"
+            }
+          },
+          {
+            "label": "2025-02-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-08"
+            }
+          },
+          {
+            "label": "2025-02-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-09"
+            }
+          },
+          {
+            "label": "2024-02-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:327",
+              "quote": "       CONSIDÉRANT           la Résolution numéro 2024-02-12 Nomination"
+            }
+          },
+          {
+            "label": "2025-02-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:462",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-11"
+            }
+          },
+          {
+            "label": "2025-02-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:578",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-12"
+            }
+          },
+          {
+            "label": "2025-02-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:623",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-13"
+            }
+          },
+          {
+            "label": "2025-02-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:674",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-14"
+            }
+          },
+          {
+            "label": "2025-02-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:715",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-02-15"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "611",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:89",
+              "quote": "                                     le Règlement No 611 : Règlement pour"
+            }
+          },
+          {
+            "label": "612",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "                                 règlement : Règlement No 612 – Règlement"
+            }
+          },
+          {
+            "label": "580",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:745",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:745",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/def013cd03ce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/def013cd03ce.pdf/.graphify/.graphify_extract.json — 20 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 20,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-4-MARS-2024.pdf",
+      "storage_key": "raw/pv-index/cas/8d02797a89de40adea2e8f62c05583917d9b626f117e2774cbcbfe4feaf443f3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 27,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-03-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-01"
+            }
+          },
+          {
+            "label": "2024-03-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-02"
+            }
+          },
+          {
+            "label": "2024-03-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-03"
+            }
+          },
+          {
+            "label": "2024-03-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-04"
+            }
+          },
+          {
+            "label": "2024-03-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:211",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-05"
+            }
+          },
+          {
+            "label": "2024-03-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:224",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-06"
+            }
+          },
+          {
+            "label": "2024-03-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-07"
+            }
+          },
+          {
+            "label": "2024-03-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:340",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-08"
+            }
+          },
+          {
+            "label": "2024-03-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-09"
+            }
+          },
+          {
+            "label": "2023-12-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:377",
+              "quote": "       CONSIDÉRANT           la résolution numéro 2023-12-07 adoptant le"
+            }
+          },
+          {
+            "label": "2024-03-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:405",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-10"
+            }
+          },
+          {
+            "label": "2024-03-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:447",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-11"
+            }
+          },
+          {
+            "label": "2024-03-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:512",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-13"
+            }
+          },
+          {
+            "label": "2024-01-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:517",
+              "quote": "       CONSIDÉRANT          la résolution numéro 2024-01-18 Participation"
+            }
+          },
+          {
+            "label": "2024-03-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:546",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-14"
+            }
+          },
+          {
+            "label": "2024-03-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:574",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-15"
+            }
+          },
+          {
+            "label": "2024-03-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:614",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-16"
+            }
+          },
+          {
+            "label": "2024-03-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:663",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-17"
+            }
+          },
+          {
+            "label": "2024-03-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:700",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-18"
+            }
+          },
+          {
+            "label": "2024-03-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:745",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-19"
+            }
+          },
+          {
+            "label": "2024-03-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:808",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-20"
+            }
+          },
+          {
+            "label": "2024-03-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:856",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-21"
+            }
+          },
+          {
+            "label": "2024-03-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:884",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-22"
+            }
+          },
+          {
+            "label": "2024-03-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:904",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-23"
+            }
+          },
+          {
+            "label": "2024-03-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:927",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-24"
+            }
+          },
+          {
+            "label": "2024-03-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:960",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-25"
+            }
+          },
+          {
+            "label": "2024-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:995",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-03-26"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "607",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "                           règlement : Règlement No 607 – Règlement"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5535622",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "                           une portion du lot 5 535 622 avec le lot"
+            }
+          },
+          {
+            "label": "5535623",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:617",
+              "quote": "       lotissement sur une portion du lot 5 535 622 avec le lot 5 535 623 –"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/fe4feaf443f3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/fe4feaf443f3.pdf/.graphify/.graphify_extract.json — 32 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 32,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2026/01/PV-1-DECEMBRE-2025.pdf",
+      "storage_key": "raw/pv-index/cas/92034707bf19d7b94f2b349f4ada5c57d65b1959c636a5dcfd296a62c6fef9da.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 23,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-12-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-01"
+            }
+          },
+          {
+            "label": "2019-087",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "                                  final conformément à la résolution 2019-087"
+            }
+          },
+          {
+            "label": "2025-12-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-02"
+            }
+          },
+          {
+            "label": "2025-12-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-03"
+            }
+          },
+          {
+            "label": "2025-12-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-04"
+            }
+          },
+          {
+            "label": "2025-12-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:188",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-05"
+            }
+          },
+          {
+            "label": "2025-12-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:207",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-06"
+            }
+          },
+          {
+            "label": "2025-12-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:252",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-07"
+            }
+          },
+          {
+            "label": "2025-12-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:267",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-08"
+            }
+          },
+          {
+            "label": "2025-12-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:301",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-09"
+            }
+          },
+          {
+            "label": "2025-12-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:353",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-10"
+            }
+          },
+          {
+            "label": "2025-12-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:377",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-11"
+            }
+          },
+          {
+            "label": "2025-12-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:410",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-12"
+            }
+          },
+          {
+            "label": "2025-12-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:442",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-13"
+            }
+          },
+          {
+            "label": "2025-12-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:482",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-14"
+            }
+          },
+          {
+            "label": "2025-12-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:526",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-15"
+            }
+          },
+          {
+            "label": "2025-12-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:568",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-16"
+            }
+          },
+          {
+            "label": "2025-12-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:609",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-17"
+            }
+          },
+          {
+            "label": "2025-12-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:646",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-18"
+            }
+          },
+          {
+            "label": "2025-12-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:793",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-19"
+            }
+          },
+          {
+            "label": "2025-12-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:839",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-20"
+            }
+          },
+          {
+            "label": "2025-12-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:858",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-21"
+            }
+          },
+          {
+            "label": "2025-12-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:904",
+              "quote": "       RÉSOLUTION NUMÉRO 2025-12-22"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "580",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:928",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:928",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/6a62c6fef9da.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/6a62c6fef9da.pdf/.graphify/.graphify_extract.json — 27 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 27,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "windsor"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-2-OCTOBRE-2023-1.pdf",
+      "storage_key": "raw/pv-index/cas/9723575d0666a46851882b25922e9851c95a09e2f916172547a59b72ed58818e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 18,
+        "Regulation": 3,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-10-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-01"
+            }
+          },
+          {
+            "label": "2023-10-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-02"
+            }
+          },
+          {
+            "label": "2023-10-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-03"
+            }
+          },
+          {
+            "label": "2023-10-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-04"
+            }
+          },
+          {
+            "label": "2023-10-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-05"
+            }
+          },
+          {
+            "label": "2023-10-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:209",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-07"
+            }
+          },
+          {
+            "label": "2023-10-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-08"
+            }
+          },
+          {
+            "label": "2023-10-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:289",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-09"
+            }
+          },
+          {
+            "label": "2023-10-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:330",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-10"
+            }
+          },
+          {
+            "label": "2023-10-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-11"
+            }
+          },
+          {
+            "label": "2023-10-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:406",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-12"
+            }
+          },
+          {
+            "label": "2023-10-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:435",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-13"
+            }
+          },
+          {
+            "label": "2023-10-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:484",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-14"
+            }
+          },
+          {
+            "label": "2023-10-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:523",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-15"
+            }
+          },
+          {
+            "label": "2023-10-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:564",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-16"
+            }
+          },
+          {
+            "label": "2023-10-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:586",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-17"
+            }
+          },
+          {
+            "label": "2023-10-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:609",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-18"
+            }
+          },
+          {
+            "label": "2023-10-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:643",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-10-19"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "602",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "                              8.1    Adoption de règlement : Règlement No 602"
+            }
+          },
+          {
+            "label": "534",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "                                     modifiant le Règlement numéro 534"
+            }
+          },
+          {
+            "label": "601",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:466",
+              "quote": "                            projet de Règlement numéro 601;"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "AF13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:438",
+              "quote": "       concernant les usages autorisés dans la zone AF13"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/9b72ed58818e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/9b72ed58818e.pdf/.graphify/.graphify_extract.json — 24 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2026/05/0.-ORDRE-DU-JOUR-MAI-2026-INTERNET.pdf",
+      "storage_key": "raw/pv-index/cas/97251bc1672ad20a6eefd67a5729ef57669bf88b9f5a38ce930126309ada4834.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     SÉANCE RÉGULIÈRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     SÉANCE RÉGULIÈRE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "622",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "       8.1   Adoption de règlement : Règlement No 622 - Relatif au code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "582",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "             élus municipaux, remplaçant le Règlement numéro 582"
+            }
+          },
+          {
+            "label": "623",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "       10.2 Avis de motion et dépôt d’un projet de règlement : Règlement No 623 – Règlement visant à"
+            }
+          },
+          {
+            "label": "624",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "       10.3 Avis de motion et dépôt d’un projet de règlement : Règlement No 624 – Règlement visant à"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6460134",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "       10.1 Demande dérogation mineure pour le morcellement du lot 6 460 134 pte, situé sur la 1re Avenue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/26309ada4834.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/26309ada4834.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/03/0.-ORDRE-DU-JOUR-MARS-2025-EXTRA-Internet.pdf",
+      "storage_key": "raw/pv-index/cas/97cf59fa5c54a5196f239cd9c3f16972d6c69cbfdd1ee168c6e1e738318f3e56.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   Séance extraordinaire"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   Séance extraordinaire"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "613",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "3. Avis de motion et dépôt d’un projet de Règlement : Règlement No 613 – Règlement décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/e738318f3e56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/e738318f3e56.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-6-JUIN-2022.pdf",
+      "storage_key": "raw/pv-index/cas/995353e5b6fd0eb604103d0ba6d0e139297febbccb0d0d1145a1a0ae4f2ff721.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 30,
+        "Regulation": 4,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-06-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-01"
+            }
+          },
+          {
+            "label": "2022-06-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:164",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-02"
+            }
+          },
+          {
+            "label": "2022-06-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-03"
+            }
+          },
+          {
+            "label": "2022-06-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-04"
+            }
+          },
+          {
+            "label": "2022-06-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-05"
+            }
+          },
+          {
+            "label": "2022-06-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:232",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-06"
+            }
+          },
+          {
+            "label": "2022-06-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:245",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-07"
+            }
+          },
+          {
+            "label": "2022-05-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "                              adopté la résolution 2022-05-21 autorisant"
+            }
+          },
+          {
+            "label": "2022-06-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:288",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-08"
+            }
+          },
+          {
+            "label": "2022-06-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:325",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-09"
+            }
+          },
+          {
+            "label": "2022-06-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:351",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-10"
+            }
+          },
+          {
+            "label": "2022-06-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:388",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-11"
+            }
+          },
+          {
+            "label": "2022-06-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-12"
+            }
+          },
+          {
+            "label": "2022-06-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:423",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-13"
+            }
+          },
+          {
+            "label": "2022-06-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:451",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-14"
+            }
+          },
+          {
+            "label": "2022-06-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:496",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-15"
+            }
+          },
+          {
+            "label": "2022-06-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-16"
+            }
+          },
+          {
+            "label": "2022-06-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:568",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-17"
+            }
+          },
+          {
+            "label": "2022-06-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:626",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-19"
+            }
+          },
+          {
+            "label": "2022-06-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:671",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-20"
+            }
+          },
+          {
+            "label": "2022-06-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:705",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-21"
+            }
+          },
+          {
+            "label": "2022-06-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:750",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-22"
+            }
+          },
+          {
+            "label": "2022-06-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:781",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-23"
+            }
+          },
+          {
+            "label": "2022-06-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:821",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-24"
+            }
+          },
+          {
+            "label": "2022-06-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:942",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-26"
+            }
+          },
+          {
+            "label": "2022-06-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:979",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-27"
+            }
+          },
+          {
+            "label": "2022-06-28",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1008",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-28"
+            }
+          },
+          {
+            "label": "2022-06-29",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1043",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-29"
+            }
+          },
+          {
+            "label": "2022-06-30",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1075",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-30"
+            }
+          },
+          {
+            "label": "2022-06-31",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1110",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-06-31"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "588",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "                        Règlement No 588 modifiant le règlement"
+            }
+          },
+          {
+            "label": "451",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "                        No 588 modifiant le règlement numéro 451"
+            }
+          },
+          {
+            "label": "589",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "                        Règlement No 589 modifiant le règlement"
+            }
+          },
+          {
+            "label": "446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "                        No 589 modifiant le règlement 446 intitulé"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6421523",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "                        concernant le lot 6 421 523 situé sur le"
+            }
+          },
+          {
+            "label": "5536418",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "                        conditionnel concernant les lots 5 536 418 et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/a0ae4f2ff721.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/a0ae4f2ff721.pdf/.graphify/.graphify_extract.json — 38 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 38,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-18-DECEMBRE-2023-A-12h00.pdf",
+      "storage_key": "raw/pv-index/cas/99ae30483fff3f45488d2ae4585bedb0ea510235d9b6e44f4ba6cb8f71f41993.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-12-24"
+            }
+          },
+          {
+            "label": "2023-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-12-25"
+            }
+          },
+          {
+            "label": "2023-12-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-12-26"
+            }
+          },
+          {
+            "label": "2023-12-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "       RÉSOLUTION NUMÉRO 2023-12-27"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/cb8f71f41993.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/cb8f71f41993.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2025/01/0.-ORDRE-DU-JOUR-JANVIER-2025-INTERNET.pdf",
+      "storage_key": "raw/pv-index/cas/9c2875a9c30a51c6302fd1bec08eedc77f7f8198815d88146b06b39a46894752.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                       Séance régulière"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                       Séance régulière"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "611",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "       8.1   Adoption de règlement : Règlement No 611 – Règlement pour déterminer les taux de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/b39a46894752.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/b39a46894752.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-27-JANVIER-2022-1.pdf",
+      "storage_key": "raw/pv-index/cas/9e9a92c31a15d58a87721f0e60674c3746caf8e517d83d1e2349826afc8b4b34.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       2022, la séance extraordinaire du conseil est tenue à huis clos."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          },
+          {
+            "label": "2022-01-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-25"
+            }
+          },
+          {
+            "label": "2022-01-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-27"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "584",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "                      3.   Adoption du Règlement No 584 – Règlement pour"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/826afc8b4b34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174833Z/cleveland/826afc8b4b34.pdf/.graphify/.graphify_extract.json — 8 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
