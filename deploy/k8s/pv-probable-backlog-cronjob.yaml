@@ -1,0 +1,122 @@
+# Contrôleur durable de la campagne de fond PV.
+#
+# Il ne lance qu'un tick court toutes les deux minutes; l'état et les worklists
+# restent dans le stockage objet. L'image est épinglée par digest pour que le
+# correctif de sérialisation des Lease ne puisse jamais être remplacé à notre
+# insu par un tag réécrit.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+  namespace: geo
+  labels:
+    app: geo-capture-backlog
+    geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+  namespace: geo
+  labels:
+    app: geo-capture-backlog
+    geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["resourcequotas"]
+    verbs: ["get"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    resourceNames: ["geo-pv-backlog-pv-probable-20260728-b32de19169bc"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    resourceNames: ["geo-pv-backlog-pv-probable-20260728-b32de19169bc-lock"]
+    verbs: ["get", "update"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+  namespace: geo
+  labels:
+    app: geo-capture-backlog
+    geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
+subjects:
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+    namespace: geo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+  namespace: geo
+  labels:
+    app: geo-capture-backlog
+    geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 600
+      template:
+        metadata:
+          labels:
+            app: geo-capture-backlog
+            geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
+        spec:
+          serviceAccountName: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: orchestrator
+              image: ghcr.io/rhanka/geo-capture@sha256:841781d5b76f07b54368c9a7165f80c119af6ac604897ad87cb5675f968b7111
+              imagePullPolicy: IfNotPresent
+              command: ["tsx", "src/pv-capture-backlog-run.ts"]
+              env:
+                - name: PV_CAPTURE_BACKLOG_ID
+                  value: "pv-probable-20260728-b32de19169bc"
+                - name: PV_CAPTURE_BACKLOG_CRONJOB
+                  value: "geo-pv-backlog-pv-probable-20260728-b32de19169bc"
+                - name: PV_CAPTURE_BACKLOG_QUOTA
+                  value: "tenant-quota"
+                - name: NODE_OPTIONS
+                  value: "--dns-result-order=ipv4first"
+                - name: AWS_MAX_ATTEMPTS
+                  value: "10"
+              envFrom:
+                - secretRef:
+                    name: geo-s3-credentials
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
