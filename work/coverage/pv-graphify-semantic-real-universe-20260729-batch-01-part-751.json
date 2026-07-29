@@ -1,0 +1,3900 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T05:01:00.008Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 750,
+    "limit": 50,
+    "requested": 50,
+    "selected": 50,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 50,
+  "indexing": {
+    "indexed_pvs": 50,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 50,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 50,
+    "Document": 50,
+    "Regulation": 88,
+    "LotCadastre": 4,
+    "CouncilSession": 13,
+    "MeetingDate": 13,
+    "Resolution": 7
+  },
+  "graphify": {
+    "nodes": 225,
+    "edges": 76,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 4,
+    "documents_with_zone": 0,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "baie-des-sables",
+      "storage_key": "raw/pv-index/cas/57335d824395152e61ecf6ddd7e96e1d07682c31d81d768dc0ca765eb1ba7c0f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5935385",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:68",
+      "quote": "Monsieur René D’Astous pour l’immeuble situé au 105 route 132, sur le lot 5 935 385 du cadastre du"
+    },
+    {
+      "municipality_slug": "baie-des-sables",
+      "storage_key": "raw/pv-index/cas/57335d824395152e61ecf6ddd7e96e1d07682c31d81d768dc0ca765eb1ba7c0f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6355689",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:244",
+      "quote": "sur le lot 6 355 689 du cadastre du Québec, situé au 538 5e Rang Ouest, le tout tel qu’illustré aux"
+    },
+    {
+      "municipality_slug": "baie-des-sables",
+      "storage_key": "raw/pv-index/cas/5c873895a5937a5f3b7d54ab62cbabab6f9849c66527d3c70db1b7a0d10bdadc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5933542",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:52",
+      "quote": "     13.1. Fabrique de Baie-des-Sables – Réponse à la demande de cession de terrain (lot 5 933 542)"
+    },
+    {
+      "municipality_slug": "baie-des-sables",
+      "storage_key": "raw/pv-index/cas/62e97a8e63f7a354eaee0c4b7ce34f61a01d849522eed4bbf3d2a0e66d8da48d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5935387",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:185",
+      "quote": "                                        situés au 113, route 132, sur le lot 5 935 387 du cadastre du"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 3,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1112,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z",
+  "documents": [
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2024-09-09.pdf",
+      "storage_key": "raw/pv-index/cas/56983406153cc013df6a07effe8299bebc8b82b5bb82858f25cbedfb9b0b34f2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/edfb9b0b34f2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/edfb9b0b34f2.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2022-08-11_a_18h30.pdf",
+      "storage_key": "raw/pv-index/cas/57335d824395152e61ecf6ddd7e96e1d07682c31d81d768dc0ca765eb1ba7c0f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "              LA MUNICIPALITÉ DE BAIE-DES-SABLES EN VERTU DU RÈGLEMENT 2008-04 – LOT 6"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5935385",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "Monsieur René D’Astous pour l’immeuble situé au 105 route 132, sur le lot 5 935 385 du cadastre du"
+            }
+          },
+          {
+            "label": "6355689",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:244",
+              "quote": "sur le lot 6 355 689 du cadastre du Québec, situé au 538 5e Rang Ouest, le tout tel qu’illustré aux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/765eb1ba7c0f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/765eb1ba7c0f.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2013-02-04.pdf",
+      "storage_key": "raw/pv-index/cas/5849a89ccea56934675863d5bacf17792f8c35f19a2e322efb161ab123bb960a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 JANVIER 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal du 14 janvier dernier ;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 JANVIER 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "2013-028       ADOPTION DU PROCÈS-VERBAL DU 14 JANVIER 2013"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-06-2",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "Considérant qu’un premier projet de règlement numéro 2008-06-2 modifiant le règlement de zonage a"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1ab123bb960a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1ab123bb960a.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "saint-damase--la-matapedia",
+          "saint-damase--les-maskoutains"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2019-01-14.pdf",
+      "storage_key": "raw/pv-index/cas/58679a59671267f73594bbe1b160cb201280e565896770a871327ee6860a24aa.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-05",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "     6.1. Adoption du Règlement numéro 2018-05 fixant les taux de taxation, de tarification, de compensation pour les"
+            }
+          },
+          {
+            "label": "2019-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "     6.5. Présentation et avis de motion – Projet de Règlement numéro 2019-01 déterminant les modalités de publication"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "          avec le Règlement numéro 2018-04 créant une réserve financière pour le paiement des vidanges et des"
+            }
+          },
+          {
+            "label": "2005-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "règlement numéro 2005-06. L’unité de base est établie selon les critères décrits dans le règlement numéro 2006-02 relatif"
+            }
+          },
+          {
+            "label": "2006-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "règlement numéro 2005-06. L’unité de base est établie selon les critères décrits dans le règlement numéro 2006-02 relatif"
+            }
+          },
+          {
+            "label": "2016-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:321",
+              "quote": "en fonction d’une réserve financière conformément au règlement numéro 2016-01 de la municipalité. Pour l’année 2019,"
+            }
+          },
+          {
+            "label": "2006-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:328",
+              "quote": "fixe le tarif de compensation de base à 118 $ l’unité conformément au règlement numéro 2006-11 sur la gestion et la"
+            }
+          },
+          {
+            "label": "2005-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:415",
+              "quote": "Règlement numéro 2005-08 relatif aux branchements à l’égout et à l’aqueduc."
+            }
+          },
+          {
+            "label": "2008-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:430",
+              "quote": "sont ceux prescrits par le Règlement numéro 2008-11 concernant l’inspection des bâtiments, ainsi que l’émission des"
+            }
+          },
+          {
+            "label": "2008-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:433",
+              "quote": "Les frais pour l’étude d’une demande de dérogation mineure sont ceux prescrits par le Règlement numéro 2008-10 sur les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7ee6860a24aa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7ee6860a24aa.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/2012-09-10-proces-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/5884bf405f96c2199dec732032691ddb9e559536d61c99d047ae8fa73587083b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2012-192",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:488",
+              "quote": "Considérant la résolution numéro 2012-192 de la Municipalité de Les Méchins en vue d’obtenir une"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2012-03",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "   10.1. Lecture et adoption du règlement numéro 2012-03 décrétant un programme de crédit de taxes foncières en vue de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8fa73587083b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8fa73587083b.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "les-mechins",
+          "saint-damase--la-matapedia",
+          "saint-damase--les-maskoutains"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2015-07-06.pdf",
+      "storage_key": "raw/pv-index/cas/59408ceed7edf7e1992a7b1d67c8d71c7fabea8ea508d9969d2878062638ee65.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-06-4",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   6.1. Dépôt du procès-verbal de correction relatif au règlement numéro 2008-06-4 modifiant le règlement de zonage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/78062638ee65.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/78062638ee65.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2019-06-03.pdf",
+      "storage_key": "raw/pv-index/cas/5a3e505ceb0ef5710cd5cd1bf9225667434bb41e80414ae4d848c52fd135536c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2013-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:498",
+              "quote": "payés par la municipalité conformément au règlement numéro 2013-01 sur les frais de déplacement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/c52fd135536c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/c52fd135536c.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2020-10-05.pdf",
+      "storage_key": "raw/pv-index/cas/5bcd431bb0217bc39667aa2524334a904545668ab8a7f5f0bb229f4be63a3728.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2017-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:408",
+              "quote": "son Règlement numéro 2017-01 concernant la tarification de certaines interventions du service régional"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/9f4be63a3728.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/9f4be63a3728.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2024-02-05.pdf",
+      "storage_key": "raw/pv-index/cas/5c873895a5937a5f3b7d54ab62cbabab6f9849c66527d3c70db1b7a0d10bdadc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 JANVIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal de la séance ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 JANVIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "2024-026          ADOPTION DU PROCÈS-VERBAL DU 15 JANVIER 2024"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5933542",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "     13.1. Fabrique de Baie-des-Sables – Réponse à la demande de cession de terrain (lot 5 933 542)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b7a0d10bdadc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b7a0d10bdadc.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "lassomption"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2017-10-02.pdf",
+      "storage_key": "raw/pv-index/cas/5cc687cd7c1ec971ac9850bb560fe3924324fdac5d21d0bcb7084e3855482456.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2016-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:456",
+              "quote": "déneigement du Règlement numéro 2016-08 sur la qualité de vie, particulièrement l’interdiction du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4e3855482456.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4e3855482456.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "saint-gabriel",
+          "saint-gabriel-de-rimouski"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2016-07-04.pdf",
+      "storage_key": "raw/pv-index/cas/5eb3e4f61aee38554152b4ab2c4dde188429109b0d9aff58bb5ef2cbdf97dc46.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 JUIN 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal du 6 juin dernier;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 JUIN 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "2016-106       ADOPTION DU PROCÈS-VERBAL DU 6 JUIN 2016"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/f2cbdf97dc46.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/f2cbdf97dc46.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2017-05-01.pdf",
+      "storage_key": "raw/pv-index/cas/60788448f88dd26213aa32068ac883e2f69e16279da488ba733cd7c83a926e78.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2014-173",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:343",
+              "quote": "Considérant la résolution numéro 2014-173, datée du 6 octobre 2014, adoptée par la municipalité afin"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d7c83a926e78.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d7c83a926e78.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "metis-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2020-11-23.pdf",
+      "storage_key": "raw/pv-index/cas/61c3b0b184c52156d56213de7e99a7e1f736e911404e78f227391b42e6bdc605.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1b42e6bdc605.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1b42e6bdc605.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2018-12-03.pdf",
+      "storage_key": "raw/pv-index/cas/623dbcb9b3f87e6e243d8b3b55f59e5c89ca72c12ee2aadb63b1a7a981e56035.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-04",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "     9.2. Présentation et avis de motion - Règlement numéro 2018-04 créant une réserve financière pour le paiement des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a7a981e56035.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a7a981e56035.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "metis-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2017-12-04.pdf",
+      "storage_key": "raw/pv-index/cas/623e018c03604dbbabc2808d697dcb5f5ebb9e34f0669c6e98406ecf8b394766.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/6ecf8b394766.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/6ecf8b394766.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2013-09-09.pdf",
+      "storage_key": "raw/pv-index/cas/627da793ef2b92c08be3d6a24869d1989b2319cbf0c04a9a42da5bde59b987aa.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 AOÛT 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal du 12 août dernier;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 AOÛT 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "2013-154       ADOPTION DU PROCÈS-VERBAL DU 12 AOÛT 2013"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2013-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "AVIS DE MOTION – RÈGLEMENT NUMÉRO 2013-01"
+            }
+          },
+          {
+            "label": "2007-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:145",
+              "quote": "remplaçant le règlement numéro 2007-03 sur les frais de déplacement des élus et des employés"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5bde59b987aa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5bde59b987aa.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2018-12-17_A_19H15.pdf",
+      "storage_key": "raw/pv-index/cas/629170c328f78632cce7bd41ce7ce99221a4c739148d1a6adac5b440fdb3f4f1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-05",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "   3.  Présentation du Projet de règlement numéro 2018-05 fixant les taux de taxation, de tarification, de compensations"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "   5. Adoption du Règlement numéro 2018-04 créant une réserve financière pour le paiement des vidanges et des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b440fdb3f4f1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b440fdb3f4f1.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PVdocx.pdf",
+      "storage_key": "raw/pv-index/cas/62e97a8e63f7a354eaee0c4b7ce34f61a01d849522eed4bbf3d2a0e66d8da48d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026-04-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "                              Les membres du conseil confirment avoir fait la lecture du procès-verbal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026-04-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "            2026-04-02        Il est proposé par Madame Marie-Claude Saucier et résolu à l’unanimité"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5935387",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "                                        situés au 113, route 132, sur le lot 5 935 387 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a0e66d8da48d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a0e66d8da48d.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "montreal",
+          "quebec",
+          "saint-leandre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2022-06-22_A_17H.pdf",
+      "storage_key": "raw/pv-index/cas/658dfcfab90d097641633f9275132998520530bdc589b39223a7acafdf6be408.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/acafdf6be408.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/acafdf6be408.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PV%20ADOPTE%20SIGNE(2).pdf",
+      "storage_key": "raw/pv-index/cas/6641a7e491874d7455212f75230b38acbedd5b7d74f9bf4126198d3a76488dda.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "                              Les membres du conseil confirment avoir fait la lecture du procès-verbal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "            2026-02-02        Il est proposé par Pierre Marquis et résolu à l’unanimité d’adopter le"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-189",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:345",
+              "quote": "            CONSIDÉRANT QUE                  le conseil municipal, par la résolution 2025-189 du 8 décembre"
+            }
+          },
+          {
+            "label": "2025-084",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:353",
+              "quote": "            CONSIDÉRANT                      cependant la résolution 2025-084 qui autorisait un épandage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8d3a76488dda.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8d3a76488dda.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2018-07-09_A_18H30_ASSEMBLEE_PUBLIQUE_DE_CONSULTATION.pdf",
+      "storage_key": "raw/pv-index/cas/66a2bd2f90881a002e6d05fda2a4160237c8586f0bb1593f01b1353a3f6f60e0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-04-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "    Projet de règlement 2008-04-1 modifiant le règlement sur les projets particuliers de"
+            }
+          },
+          {
+            "label": "2008-05-4",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "    Projet de règlement 2008-05-4 modifiant le plan d’urbanisme numéro 2008-05 afin de mettre"
+            }
+          },
+          {
+            "label": "2008-06-5",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "    Premier projet de règlement 2008-06-5 modifiant le règlement de zonage numéro 2008-06"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/353a3f6f60e0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/353a3f6f60e0.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2023-08-07.pdf",
+      "storage_key": "raw/pv-index/cas/674cbe9fd7c28747cc102924cc284cd735edee1152a1296e41cf05f9c539f809.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-05-6",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:312",
+              "quote": "publique, le « Projet de règlement numéro 2008-05-6 modifiant le plan d’urbanisme numéro 2008-05"
+            }
+          },
+          {
+            "label": "2008-06-8",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:342",
+              "quote": "publique, le « Premier projet de règlement numéro 2008-06-8 modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "2008-07-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:365",
+              "quote": "publique, le « Projet de règlement numéro 2008-07-3 modifiant le règlement de lotissement numéro"
+            }
+          },
+          {
+            "label": "2008-10-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:395",
+              "quote": "le « Projet de règlement numéro 2008-10-1 modifiant le règlement sur les dérogations mineures aux"
+            }
+          },
+          {
+            "label": "2008-11-7",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:421",
+              "quote": "publique, le « Projet de règlement numéro 2008-11-7 modifiant le règlement concernant l’inspection"
+            }
+          },
+          {
+            "label": "2023-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "le « Projet de Règlement numéro 2023-02 relatif à la démolition d’immeubles de la Municipalité de Baie-"
+            }
+          },
+          {
+            "label": "2023-03",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:467",
+              "quote": "publique, le « Projet de Règlement numéro 2023-03 sur la garde d’animaux dans le périmètre"
+            }
+          },
+          {
+            "label": "2021-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:468",
+              "quote": "d’urbanisation abrogeant et remplaçant le règlement 2021-03 sur la garde d’animaux de ferme dans le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/05f9c539f809.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/05f9c539f809.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "matane"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/2012-06-04-proces-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/67b6370fe0b82f7f03807a999b9584f5a07fabb06a4dbedb6742c69eb9ff8c91.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2007-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:529",
+              "quote": "conformément au règlement numéro 2007-03 sur les frais de déplacement des élus et des employés"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/c69eb9ff8c91.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/c69eb9ff8c91.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "matane"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2024-07-08.pdf",
+      "storage_key": "raw/pv-index/cas/67fc7658c8993cf3bcba21923bd821d190aaf026b93d9c2ce1e38c1aca210538.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 JUIN 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal de la séance ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 JUIN 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "2024-095          ADOPTION DU PROCÈS-VERBAL DU 3 JUIN 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8c1aca210538.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/8c1aca210538.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2017-12-18_A_19H15.pdf",
+      "storage_key": "raw/pv-index/cas/6a68682d35629e995204779a4aa5082e125df83951fd1dbd966a7623434e7ccc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2017-04",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   3.   Présentation du Projet de règlement numéro 2017-04 fixant les taux de taxation, de tarification, de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7623434e7ccc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7623434e7ccc.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2022-05-02_A_18H_ASSEMBLEE_PUBLIQUE_DE_CONSULTATION.pdf",
+      "storage_key": "raw/pv-index/cas/6e8880a12a448809eaa0992da043ad0927238cbf71d7d15733eb5de96c68df87.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5de96c68df87.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5de96c68df87.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2014-04-17_A_19H00_ASSEMBLEE_PUBLIQUE_DE_CONSULTATION.pdf",
+      "storage_key": "raw/pv-index/cas/6eac9dce1a19ec043aca7dfc9751fc9b9ae44139f9e72337b9934191d0b8ae70.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-05-3",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "    Règlement numéro 2008-05-3 modifiant le plan d’urbanisme numéro 2008-05"
+            }
+          },
+          {
+            "label": "2008-06-3",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "    Règlement numéro 2008-06-3 modifiant le règlement de zonage numéro 2008-06 (1er projet)"
+            }
+          },
+          {
+            "label": "2008-09-2",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    Règlement numéro 2008-09-2 modifiant le règlement numéro 2008-09 sur les conditions"
+            }
+          },
+          {
+            "label": "2008-09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    Règlement numéro 2008-09-2 modifiant le règlement numéro 2008-09 sur les conditions"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4191d0b8ae70.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4191d0b8ae70.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2018-08-13.pdf",
+      "storage_key": "raw/pv-index/cas/73ff2302df98c4c1028965e148265f172c4c01aa6617489c53e9a8f64c2f3e26.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2008-04-1",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "Il est proposé par Madame Véronique Lamarre et résolu d’adopter le Règlement numéro 2008-04-1"
+            }
+          },
+          {
+            "label": "2008-05-4",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:429",
+              "quote": "Il est proposé par Madame Nicole Marcheterre et résolu d’adopter le Règlement numéro 2008-05-4"
+            }
+          },
+          {
+            "label": "2008-06-5",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:455",
+              "quote": "Il est proposé par Madame Nicole Marcheterre et résolu d’adopter le Règlement numéro 2008-06-5"
+            }
+          },
+          {
+            "label": "2008-11-4",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "               10.1.4. Règlement numéro 2008-11-4 modifiant le règlement concernant l’inspection des bâtiments ainsi"
+            }
+          },
+          {
+            "label": "2018-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "AVIS DE MOTION – RÈGLEMENT NUMÉRO 2018-02"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a8f64c2f3e26.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a8f64c2f3e26.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "matane",
+          "metis-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2018-05-07.pdf",
+      "storage_key": "raw/pv-index/cas/74edcd8e0e058209287b2a42a94fcae6fd7cff6e1edfef0de02e67993ce98b8b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/67993ce98b8b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/67993ce98b8b.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2020-10-19.pdf",
+      "storage_key": "raw/pv-index/cas/75534f6dcb80f6de92c30ea050cf01897215c6eddc919fc539187942324bc79c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7942324bc79c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7942324bc79c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2016-01-11.pdf",
+      "storage_key": "raw/pv-index/cas/76ee5fe8243dd4de9783855d624601b579a2a1c64490d310afc3d45cceb8b1a6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2016-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:418",
+              "quote": "AVIS DE MOTION – RÈGLEMENT NUMÉRO 2016-01"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d45cceb8b1a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d45cceb8b1a6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "matane"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2025-03-03.pdf",
+      "storage_key": "raw/pv-index/cas/778031861691c6bb1d0c945ef9fb03cb8c6d94018234d5d1a173bff4d5c765e7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/bff4d5c765e7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/bff4d5c765e7.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PV%20adopte%20du%2011%20mai%202026.pdf",
+      "storage_key": "raw/pv-index/cas/783bc5cd6ac73256999792e3dedf70649f91fac30b9f373d716dbc5bf884ba69.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026-05-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "                               Les membres du conseil confirment avoir fait la lecture du procès-verbal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026-05-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "            2026-05-02         Il est proposé par Madame Nicole Marcheterre et résolu à l’unanimité"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-06",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "                4.2.      ADOPTION DU RÈGLEMENT              2025-06   ÉDICTANT LE   CODE   D’ÉTHIQUE ET DE"
+            }
+          },
+          {
+            "label": "2022-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:521",
+              "quote": "                   Le présent règlement remplace le règlement no 2022-01."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/bc5bf884ba69.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/bc5bf884ba69.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "price"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/pv_du_7_juillet_2025.pdf",
+      "storage_key": "raw/pv-index/cas/795939c172e37f09f03397f7236a05604690c49af4a0425263bf511fce4d9479.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "                    6.1. ADOPTION DU RÈGLEMENT 2025-01 PORTANT SUR LE CONTRÔLE ET LE SUIVI"
+            }
+          },
+          {
+            "label": "2007-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:350",
+              "quote": "            Ce règlement remplace et abroge le règlement numéro 2007-04, décrétant les règles de"
+            }
+          },
+          {
+            "label": "2025-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:368",
+              "quote": "                   6.2.      AVIS DE MOTION – RÈGLEMENT 2025-02 CONCERNANT LA DÉLÉGATION DE"
+            }
+          },
+          {
+            "label": "2025-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:389",
+              "quote": "                   6.3.      AVIS DE MOTION – RÈGLEMENT 2025-03 SUR LE DROIT DE PRÉEMPTION VISANT À"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/511fce4d9479.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/511fce4d9479.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2019-12-02.pdf",
+      "storage_key": "raw/pv-index/cas/7b08349c13ef2663baa0673a1009f1e51bcafada6b643d64adead0aa0b216e93.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2019-08",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "     6.3. Adoption – Règlement numéro 2019-08 sur la gestion contractuelle"
+            }
+          },
+          {
+            "label": "2012-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:276",
+              "quote": "Raymonde Bernier demandent à la municipalité de revoir son Règlement numéro 2012-02 imposant un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d0aa0b216e93.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/d0aa0b216e93.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "metis-sur-mer",
+          "saint-damase--la-matapedia",
+          "saint-damase--les-maskoutains"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal%20du%202025-10-02%20signe.pdf",
+      "storage_key": "raw/pv-index/cas/7c60e15d4be45961cddcfd8e31bf9c430ab14b883d06d28f69f0a1f39f4b9c63.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "            Les membres du conseil confirment avoir fait la lecture du procès-verbal avant la séance."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "                               ➢ de la séance du 8 septembre 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-08-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "                             Monsieur Alain Thibault dépose au conseil la résolution 2025-08-22 de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-05",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "                   6.2.      AVIS DE MOTION – RÈGLEMENT 2025-05 DÉCRÉTANT UN PROGRAMME DE CRÉDIT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a1f39f4b9c63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a1f39f4b9c63.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "price",
+          "saint-ulric"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2024-06-03.pdf",
+      "storage_key": "raw/pv-index/cas/7c76291ceff6dddef34685da9d6e7a2b34f2d32dc6effcde78ba5780a2e19c3c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal de la séance ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "2024-085          ADOPTION DU PROCÈS-VERBAL DU 6 MAI 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:303",
+              "quote": "certains immeubles situés sur son territoire, conformément au Règlement numéro 2024-01;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5780a2e19c3c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5780a2e19c3c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "amqui",
+          "baie-des-sables",
+          "cap-chat",
+          "causapscal",
+          "lac-au-saumon",
+          "les-mechins",
+          "matane",
+          "metis-sur-mer",
+          "mont-joli",
+          "price",
+          "saint-donat--la-mitis",
+          "saint-donat--matawinie",
+          "saint-gabriel",
+          "saint-gabriel-de-rimouski",
+          "saint-maxime-du-mont-louis",
+          "saint-moise",
+          "saint-rene",
+          "saint-rene-de-matane",
+          "saint-tharcisius",
+          "saint-ulric",
+          "saint-vianney",
+          "sainte-angele-de-merici",
+          "sainte-anne-des-monts",
+          "sainte-felicite--la-matanie",
+          "sainte-felicite--lislet",
+          "sainte-luce",
+          "sayabec",
+          "val-brillant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2020-02-03.pdf",
+      "storage_key": "raw/pv-index/cas/7ebc52ab695f3efd3445c827563e6353329c01c8420b7516cafc1c5dbe8ba07b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2020-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "     6.2. Adoption du Règlement numéro 2020-01 sur les frais de déplacement des élus et des employés municipaux"
+            }
+          },
+          {
+            "label": "2013-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "ATTENDU que le conseil municipal désire abroger le « Règlement numéro 2013-01 sur les frais de déplacement des élus et"
+            }
+          },
+          {
+            "label": "2019-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:277",
+              "quote": "Considérant le Règlement numéro 2019-08 sur la gestion contractuelle;"
+            }
+          },
+          {
+            "label": "2019-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:338",
+              "quote": "dépense réalisée dans le cadre du Règlement numéro 2019-07 décrétant l’acquisition d’un camion de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1c5dbe8ba07b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/1c5dbe8ba07b.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "metis-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PV%20du%208%20decembre%202025%20-%2020h(1).pdf",
+      "storage_key": "raw/pv-index/cas/7f632839a35df8d53093daf3930d5b29154d730b07d6a1b1e4fe4e8e2b9e6ebb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-07",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "            6.     AVIS DE MOTION, DÉPÔT ET PRÉSENTATION DU RÈGLEMENT 2025-07"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4e8e2b9e6ebb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/4e8e2b9e6ebb.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2023-12-04.pdf",
+      "storage_key": "raw/pv-index/cas/7f66efbf6f60febec4d064ebfc74a68a7d101a85728483a9cf3eb77a6b907dba.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b77a6b907dba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/b77a6b907dba.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2017-07-24.pdf",
+      "storage_key": "raw/pv-index/cas/7fcc970eb4a8eaebadb8c51f5fe985b0ddb52d44cd15ee4d69c96ebe84f936b0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/6ebe84f936b0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/6ebe84f936b0.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PV%20FINAL%20SIGNE(1).pdf",
+      "storage_key": "raw/pv-index/cas/8348280383ee4dc7b2a59111ee696d52858a2421edee5d8669245d18b349e84b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "            Les membres du conseil confirment avoir fait la lecture du procès-verbal avant la séance."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "            2026-01-02         Il est proposé par Marie-Claude Saucier et résolu à l’unanimité d’adopter"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-07",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "                   5.3.      ADOPTION DU RÈGLEMENT 2025-07 – FIXANT LES TAUX DE TAXATION ET DE"
+            }
+          },
+          {
+            "label": "2005-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "            du règlement numéro 2005-06. L’unité de base est établie selon les critères décrits dans le"
+            }
+          },
+          {
+            "label": "2006-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:215",
+              "quote": "            règlement numéro 2006-02 relatif à la tarification du service d’aqueduc et d’égout."
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "            immeubles assujettis à ce service conformément au Règlement numéro 2018-04 créant une"
+            }
+          },
+          {
+            "label": "2006-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:254",
+              "quote": "            l’unité conformément au règlement numéro 2006-11 sur la gestion et la tarification des matières"
+            }
+          },
+          {
+            "label": "2020-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:316",
+              "quote": "            frais exigibles sont ceux prescrits par le Règlement numéro 2020-05 concernant la tarification de"
+            }
+          },
+          {
+            "label": "2005-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:341",
+              "quote": "            sont ceux prescrits par le Règlement numéro 2005-08 relatif aux branchements à l’égout et à"
+            }
+          },
+          {
+            "label": "2012-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:344",
+              "quote": "            prescrits par le Règlement numéro 2012-02 imposant un tarif pour l’ouverture et la fermeture des"
+            }
+          },
+          {
+            "label": "2008-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:348",
+              "quote": "            réglementation d’urbanisme sont ceux prescrits par le Règlement numéro 2008-11 concernant"
+            }
+          },
+          {
+            "label": "2026-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:604",
+              "quote": "                   9.1.      ADOPTION DU RÈGLEMENT NUMÉRO 2026-01 SUR L’OCCUPATION ET L’ENTRETIEN"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5d18b349e84b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/5d18b349e84b.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "saint-leandre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2014-11-03.pdf",
+      "storage_key": "raw/pv-index/cas/83a57ace7da1aae23740b294a3b624123c5aa1d71bb4857c67b77fa7b5a308d9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "98-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:542",
+              "quote": "Considérant le règlement numéro 98-03 créant le comité consultatif d’urbanisme (CCU) de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7fa7b5a308d9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7fa7b5a308d9.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "metis-sur-mer",
+          "nouvelle"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2020-06-01.pdf",
+      "storage_key": "raw/pv-index/cas/84c77aeb440c4246f6ea302e34add0ff93c539692f27ace3342b04f2a48cce98.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2013-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:665",
+              "quote": "payés par la municipalité conformément au règlement numéro 2013-01 sur les frais de déplacement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/04f2a48cce98.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/04f2a48cce98.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/Proces-verbal_du_2025-01-13.pdf",
+      "storage_key": "raw/pv-index/cas/8778cafef81c36e9281efee9a85f9776eb824749f56bc82fbac560bb189281d1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-03",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "     6.1. Adoption du Règlement numéro 2024-03 sur la régie interne des séances du conseil municipal"
+            }
+          },
+          {
+            "label": "2024-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "     6.2. Adoption du Règlement numéro 2024-04 fixant les taux de taxation et de tarification pour les services"
+            }
+          },
+          {
+            "label": "95-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:506",
+              "quote": "Le présent règlement abroge et remplace le « Règlement numéro 95-01 pour fixer une période de questions lors des sessions"
+            }
+          },
+          {
+            "label": "2005-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:625",
+              "quote": "règlement numéro 2005-06. L’unité de base est établie selon les critères décrits dans le règlement numéro 2006-02 relatif"
+            }
+          },
+          {
+            "label": "2006-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:625",
+              "quote": "règlement numéro 2005-06. L’unité de base est établie selon les critères décrits dans le règlement numéro 2006-02 relatif"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:645",
+              "quote": "Règlement numéro 2018-04 créant une réserve financière pour le paiement des vidanges et des dispositions des boues"
+            }
+          },
+          {
+            "label": "2016-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:660",
+              "quote": "fonction d’une réserve financière conformément au règlement numéro 2016-01 de la municipalité. Pour l’année 2025, le"
+            }
+          },
+          {
+            "label": "2005-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:769",
+              "quote": "Règlement numéro 2005-08 relatif aux branchements à l’égout et à l’aqueduc."
+            }
+          },
+          {
+            "label": "2008-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:777",
+              "quote": "sont ceux prescrits par le Règlement numéro 2008-11 concernant l’inspection des bâtiments ainsi que l’émission des"
+            }
+          },
+          {
+            "label": "2008-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:780",
+              "quote": "Les frais pour l’étude d’une demande de dérogation mineure sont ceux prescrits par le Règlement numéro 2008-10 sur les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/60bb189281d1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/60bb189281d1.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2015-05-04.pdf",
+      "storage_key": "raw/pv-index/cas/87f246d710173dd916cf5ad71caa8229c0f953cb4b7b22dbcac8a250ec769675.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a250ec769675.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a250ec769675.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2019-09-09.pdf",
+      "storage_key": "raw/pv-index/cas/898d09ab169b02f63b7422775cc9ecdab0a030a487373be784077ddd4a3351cd.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7ddd4a3351cd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/7ddd4a3351cd.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2015-01-12.pdf",
+      "storage_key": "raw/pv-index/cas/8a6fce6612f73ea7db9097e34c871d61078c125e37a40373e883a6602de852a6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE LA MATANIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2011-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:293",
+              "quote": "Considérant que le Règlement numéro 2011-05 relatif au traitement des élus municipaux prévoit une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a6602de852a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/a6602de852a6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "matane"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PV%20du%208%20decembre%202025%20-%2019h(1).pdf",
+      "storage_key": "raw/pv-index/cas/8ac51fca00f60ad8305d3981ad372f93cfcd08adabaef4c66d0033cabc4e2e0c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                  PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "            Les membres du conseil confirment avoir fait la lecture du procès-verbal avant la séance."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                               ➢ de la séance du 10 novembre 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "TECQ 2024-2028",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "                   6.1.      RÉSOLUTION TECQ 2024-2028 – ADOPTION DE LA PROGRAMMATION"
+            }
+          },
+          {
+            "label": "2025-042",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "                                       résolution 2025-042 ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:256",
+              "quote": "            ATTENDU                   le Règlement numéro 2018-04 créant une réserve financière pour le"
+            }
+          },
+          {
+            "label": "2016-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:260",
+              "quote": "            ATTENDU                   le Règlement numéro 2016-01 créant une réserve financière pour le"
+            }
+          },
+          {
+            "label": "2026-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:675",
+              "quote": "                                     Le projet de règlement numéro 2026-01 a été déposé et présenté lors"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/33cabc4e2e0c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/33cabc4e2e0c.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-des-sables",
+      "municipality_name": "Baie-des-Sables",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/PROCES-VERBAL_DU_2013-07-08.pdf",
+      "storage_key": "raw/pv-index/cas/8ada72ead53b0c4b6230756d79df21ad090b6976716306bf0be948b48e95adce.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-des-Sables",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DE MATANE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 JUIN 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "Considérant que les membres du conseil ont pris connaissance du procès-verbal du 3 juin dernier;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 JUIN 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "2013-122       ADOPTION DU PROCÈS-VERBAL DU 3 JUIN 2013"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2005-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "règlement numéro 2005-06;"
+            }
+          },
+          {
+            "label": "2007-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:235",
+              "quote": "déplacement seront payés par la municipalité conformément au règlement numéro 2007-03 sur les frais"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/48b48e95adce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045456Z/baie-des-sables/48b48e95adce.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-des-sables",
+          "saint-adelme"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
