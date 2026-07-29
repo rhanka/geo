@@ -95,9 +95,12 @@ interface LotGazetteerReport {
 interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly universe: string | null;
+  readonly unverdictList: string | null;
   readonly ocrStage: string | null;
   readonly universeOffset: number;
   readonly universeLimit: number | null;
+  readonly unverdictOffset: number;
+  readonly unverdictLimit: number | null;
   readonly concurrency: number;
   readonly control: number | null;
   readonly all: boolean;
@@ -127,20 +130,22 @@ type DocumentOutcome =
   | "OWNER_NOT_CONFIRMED"
   | "CONTAMINATION_OWNER_MISMATCH"
   | "GRAPHIFY_FAILED"
-  | "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED";
+  | "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+  | "UNKNOWN_NO_TERMINAL_PV_MANIFEST"
+  | "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE";
 
 interface OwnerScopeReport {
-  readonly status: "CONFIRMED" | "NOT_CONFIRMED" | "CONTAMINATION_OWNER_MISMATCH";
+  readonly status: "CONFIRMED" | "NOT_CONFIRMED" | "CONTAMINATION_OWNER_MISMATCH" | "UNAVAILABLE_NO_MUNICIPAL_SCOPE";
   readonly printed_owner_slugs: readonly string[];
 }
 
 interface ControlDocumentReport {
-  readonly slug: string;
-  readonly municipality_name: string;
-  readonly url: string;
+  readonly slug: string | null;
+  readonly municipality_name: string | null;
+  readonly url: string | null;
   readonly storage_key: string;
-  readonly source_file: string;
-  readonly text_provenance: "NATIVE" | "OCR";
+  readonly source_file: string | null;
+  readonly text_provenance: "NATIVE" | "OCR" | "UNAVAILABLE";
   readonly ocr?: {
     readonly artifact_key: string;
     readonly provider: "mistral-ocr";
@@ -183,8 +188,25 @@ interface MunicipalizeResult {
   readonly lotServed: boolean;
 }
 
+interface UnverdictReadyDocument extends ClassificationLine {
+  readonly source_status: "READY";
+  readonly source_observations: number;
+}
+
+interface UnverdictAbsentScopeDocument {
+  readonly storage_key: string;
+  readonly source_status: "NO_TERMINAL_PV_MANIFEST" | "AMBIGUOUS_MANIFEST_SCOPE";
+  readonly source_observations: number;
+}
+
+type UnverdictDocument = UnverdictReadyDocument | UnverdictAbsentScopeDocument;
+
+interface UnverdictList {
+  readonly documents: readonly UnverdictDocument[];
+}
+
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N | --ocr-stage=PATH] [--concurrency=1..4] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N | --unverdict-list=PATH --unverdict-offset=N --unverdict-limit=N | --ocr-stage=PATH] [--concurrency=1..4] [--out=PATH]");
   process.exit(0);
 }
 
@@ -197,17 +219,25 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   const all = argv.includes("--all");
   const storageKeys = values("storage-key");
   const universeValues = values("universe");
+  const unverdictListValues = values("unverdict-list");
   const ocrStageValues = values("ocr-stage");
   if (universeValues.length > 1) throw new Error("--universe ne peut apparaître qu'une fois");
+  if (unverdictListValues.length > 1) throw new Error("--unverdict-list ne peut apparaître qu'une fois");
   if (ocrStageValues.length > 1) throw new Error("--ocr-stage ne peut apparaître qu'une fois");
   const universe = universeValues[0] === undefined ? null : resolve(ROOT, universeValues[0]);
+  const unverdictList = unverdictListValues[0] === undefined ? null : resolve(ROOT, unverdictListValues[0]);
   const ocrStage = ocrStageValues[0] === undefined ? null : resolve(ROOT, ocrStageValues[0]);
   if (universe !== null && !universe.startsWith(`${ROOT}/`)) throw new Error("--universe doit rester dans le dépôt");
+  if (unverdictList !== null && !unverdictList.startsWith(`${ROOT}/`)) throw new Error("--unverdict-list doit rester dans le dépôt");
   if (ocrStage !== null && !ocrStage.startsWith(`${ROOT}/`)) throw new Error("--ocr-stage doit rester dans le dépôt");
   const universeOffsetValue = values("universe-offset").at(-1);
   const universeLimitValue = values("universe-limit").at(-1);
+  const unverdictOffsetValue = values("unverdict-offset").at(-1);
+  const unverdictLimitValue = values("unverdict-limit").at(-1);
   const universeOffset = universeOffsetValue === undefined ? 0 : Number(universeOffsetValue);
   const universeLimit = universeLimitValue === undefined ? null : Number(universeLimitValue);
+  const unverdictOffset = unverdictOffsetValue === undefined ? 0 : Number(unverdictOffsetValue);
+  const unverdictLimit = unverdictLimitValue === undefined ? null : Number(unverdictLimitValue);
   const concurrency = Number(values("concurrency").at(-1) ?? "1");
   if (!Number.isInteger(universeOffset) || universeOffset < 0) throw new Error("--universe-offset doit être un entier positif ou nul");
   if (universeLimit !== null && (!Number.isInteger(universeLimit) || universeLimit < 1)) {
@@ -216,16 +246,24 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   if (universe === null && (universeOffsetValue !== undefined || universeLimitValue !== undefined)) {
     throw new Error("--universe-offset et --universe-limit exigent --universe");
   }
+  if (unverdictList === null && (unverdictOffsetValue !== undefined || unverdictLimitValue !== undefined)) {
+    throw new Error("--unverdict-offset et --unverdict-limit exigent --unverdict-list");
+  }
+  if (!Number.isInteger(unverdictOffset) || unverdictOffset < 0) throw new Error("--unverdict-offset doit être un entier positif ou nul");
+  if (unverdictLimit !== null && (!Number.isInteger(unverdictLimit) || unverdictLimit < 1)) {
+    throw new Error("--unverdict-limit doit être un entier positif");
+  }
   if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 4) {
     throw new Error("--concurrency doit être un entier de 1 à 4");
   }
   if (storageKeys.some((key) => !key)) throw new Error("--storage-key doit être une clé CAS non vide");
   if (new Set(storageKeys).size !== storageKeys.length) throw new Error("--storage-key ne peut pas être répété");
-  if (universe !== null && (values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined)) {
-    throw new Error("--universe est exclusif de --classification, --storage-key, --all et --control");
+  if ((universe !== null || unverdictList !== null) && (values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined)) {
+    throw new Error("--universe et --unverdict-list sont exclusifs de --classification, --storage-key, --all et --control");
   }
-  if (ocrStage !== null && (universe !== null || values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined || universeOffsetValue !== undefined || universeLimitValue !== undefined)) {
-    throw new Error("--ocr-stage est exclusif de --universe, --classification, --storage-key, --all, --control et des offsets");
+  if (universe !== null && unverdictList !== null) throw new Error("--universe et --unverdict-list sont exclusifs");
+  if (ocrStage !== null && (universe !== null || unverdictList !== null || values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined || universeOffsetValue !== undefined || universeLimitValue !== undefined || unverdictOffsetValue !== undefined || unverdictLimitValue !== undefined)) {
+    throw new Error("--ocr-stage est exclusif de --universe, --unverdict-list, --classification, --storage-key, --all, --control et des offsets");
   }
   if (storageKeys.length > 0 && (all || controlValue !== undefined)) {
     throw new Error("--storage-key est exclusif de --all et --control");
@@ -248,11 +286,14 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   return {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
     universe,
+    unverdictList,
     ocrStage,
     universeOffset,
     universeLimit,
+    unverdictOffset,
+    unverdictLimit,
     concurrency,
-    control: universe === null && ocrStage === null ? (all ? null : control) : null,
+    control: universe === null && unverdictList === null && ocrStage === null ? (all ? null : control) : null,
     all,
     storageKeys,
     batchSize,
@@ -360,6 +401,86 @@ function readRealUniverseBatch(path: string): RealUniverseSelection {
     candidates,
     initiallyIndexedStorageKeys,
     populationStorageKeys: [...populationStorageKeys].sort((left, right) => left.localeCompare(right)),
+  };
+}
+
+function isUnverdictReadyDocument(document: UnverdictDocument): document is UnverdictReadyDocument {
+  return document.source_status === "READY";
+}
+
+/**
+ * Read the committed, CAS-keyed queue left after the initial universe sweep.
+ * Non-READY keys deliberately remain in the selection so the report can give
+ * their documented lack of municipal scope an explicit terminal verdict.
+ */
+function readUnverdictList(path: string): UnverdictList {
+  const raw = readSmallJson(path);
+  if (!isRecord(raw) || raw.contract !== "pv-graphify-semantic-unverdict-list/v1") {
+    throw new Error(`liste sans verdict invalide: ${path}`);
+  }
+  const documents = raw.documents;
+  if (!Array.isArray(documents) || documents.length === 0) throw new Error(`liste sans verdict vide: ${path}`);
+  const seen = new Set<string>();
+  const selected: UnverdictDocument[] = [];
+  for (const [index, rawDocument] of documents.entries()) {
+    if (!isRecord(rawDocument)) throw new Error(`${path}.documents[${index}] invalide`);
+    const where = `${path}.documents[${index}]`;
+    const storageKey = requiredString(rawDocument, "storage_key", where);
+    if (!/^raw\/pv-index\/cas\/[a-f0-9]{64}\.pdf$/u.test(storageKey)) throw new Error(`${where}.storage_key invalide`);
+    if (seen.has(storageKey)) throw new Error(`${path}: clé CAS dupliquée ${storageKey}`);
+    seen.add(storageKey);
+    const sourceStatus = requiredString(rawDocument, "source_status", where);
+    const sourceObservations = rawDocument.source_observations;
+    if (!Number.isInteger(sourceObservations) || typeof sourceObservations !== "number" || sourceObservations < 0) {
+      throw new Error(`${where}.source_observations invalide`);
+    }
+    if (sourceStatus === "READY") {
+      selected.push({
+        storage_key: storageKey,
+        slug: requiredString(rawDocument, "slug", where),
+        municipality_name: requiredString(rawDocument, "municipality_name", where),
+        url: requiredString(rawDocument, "url", where),
+        classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+        source_status: "READY",
+        source_observations: sourceObservations,
+      });
+      continue;
+    }
+    if (sourceStatus === "NO_TERMINAL_PV_MANIFEST" || sourceStatus === "AMBIGUOUS_MANIFEST_SCOPE") {
+      selected.push({ storage_key: storageKey, source_status: sourceStatus, source_observations: sourceObservations });
+      continue;
+    }
+    throw new Error(`${where}.source_status invalide: ${sourceStatus}`);
+  }
+  return { documents: selected };
+}
+
+function explicitScopeAbsence(document: UnverdictAbsentScopeDocument): ControlDocumentReport {
+  const noTerminalManifest = document.source_status === "NO_TERMINAL_PV_MANIFEST";
+  return {
+    slug: null,
+    municipality_name: null,
+    url: null,
+    storage_key: document.storage_key,
+    source_file: null,
+    text_provenance: "UNAVAILABLE",
+    entity_counts: {},
+    entities: {},
+    graphify: {
+      exit_code: 2,
+      stdout: "",
+      stderr: noTerminalManifest
+        ? "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite."
+        : "Les manifestes PV donnent des scopes municipaux incompatibles; lecture du PDF hors scope interdite.",
+      nodes: 0,
+      edges: 0,
+    },
+    outcome: noTerminalManifest ? "UNKNOWN_NO_TERMINAL_PV_MANIFEST" : "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE",
+    owner_scope: { status: "UNAVAILABLE_NO_MUNICIPAL_SCOPE", printed_owner_slugs: [] },
+    failure_reason: noTerminalManifest
+      ? `Aucun manifeste PV terminal (observations: ${document.source_observations}); aucun scope municipal n'est prouvé.`
+      : `Scope municipal ambigu entre manifestes terminaux (observations: ${document.source_observations}); aucun scope municipal n'est prouvé.`,
+    manual_verification: "UNVERIFIED",
   };
 }
 
@@ -1041,13 +1162,16 @@ async function processDocument(
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const realUniverse = args.universe === null ? null : readRealUniverseBatch(args.universe);
+  const unverdictList = args.unverdictList === null ? null : readUnverdictList(args.unverdictList);
   const ocrStage = args.ocrStage === null ? null : readOcrStage(args.ocrStage);
-  const paths = args.universe === null
+  const paths = args.universe === null && args.unverdictList === null
     ? (args.ocrStage === null ? (args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS) : [])
     : [];
-  const eligibleRecords = ocrStage ?? (args.universe === null ? paths.flatMap(readClassificationLines) : realUniverse!.candidates);
+  const eligibleRecords = unverdictList !== null
+    ? unverdictList.documents.filter(isUnverdictReadyDocument)
+    : ocrStage ?? (args.universe === null ? paths.flatMap(readClassificationLines) : realUniverse!.candidates);
   const eligible = uniqueEligible(eligibleRecords);
-  const batch = args.universe === null && args.ocrStage === null && args.all && args.batchSize !== null
+  const batch = args.universe === null && args.unverdictList === null && args.ocrStage === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
   const indexedStorageKeys = args.universe === null
@@ -1060,7 +1184,12 @@ async function main(): Promise<void> {
       args.universeOffset,
       args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit,
     );
-  const requested = args.ocrStage !== null
+  const requested = unverdictList !== null
+    ? unverdictList.documents.slice(
+      args.unverdictOffset,
+      args.unverdictLimit === null ? undefined : args.unverdictOffset + args.unverdictLimit,
+    )
+    : args.ocrStage !== null
     ? eligible
     : args.universe !== null
     ? requestedStorageKeys!.flatMap((storageKey) => {
@@ -1073,14 +1202,19 @@ async function main(): Promise<void> {
   const skippedIndexedStorageKeys = args.universe === null
     ? []
     : requestedStorageKeys!.filter((storageKey) => indexedStorageKeys.has(storageKey));
-  const selected = args.universe === null
+  const selected = unverdictList !== null
+    ? requested
+    : args.universe === null
     ? requested
     : requested.filter((document) => !indexedStorageKeys.has(document.storage_key));
   assertS3RunEnvironment();
   if (args.universe !== null && requestedStorageKeys!.length === 0) {
     throw new Error(`fenêtre de l'univers vide: offset=${args.universeOffset}`);
   }
-  if (selected.length === 0 && args.universe === null) throw new Error("la sélection Graphify est vide");
+  if (unverdictList !== null && selected.length === 0) {
+    throw new Error(`fenêtre de la liste sans verdict vide: offset=${args.unverdictOffset}`);
+  }
+  if (selected.length === 0 && args.universe === null && unverdictList === null) throw new Error("la sélection Graphify est vide");
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
   const registry = readZoneRegistry(ZONE_REGISTRY_PATH);
@@ -1133,6 +1267,7 @@ async function main(): Promise<void> {
   }
   const workspace = resolve(ROOT, "work", "graphify", `pv-semantic-${new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z")}`);
   const documents = await mapConcurrent(selected, args.concurrency, async (document): Promise<ControlDocumentReport> => {
+    if ("source_status" in document && document.source_status !== "READY") return explicitScopeAbsence(document);
     try {
       const gazetteer = await materializeForSlug(document.slug);
       return processDocument(document, municipalities, gazetteer, workspace);
@@ -1171,6 +1306,8 @@ async function main(): Promise<void> {
     CONTAMINATION_OWNER_MISMATCH: 0,
     GRAPHIFY_FAILED: 0,
     DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED: 0,
+    UNKNOWN_NO_TERMINAL_PV_MANIFEST: 0,
+    UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE: 0,
   };
   for (const document of documents) {
     outcomes[document.outcome]++;
@@ -1178,6 +1315,7 @@ async function main(): Promise<void> {
       graphifyFailures++;
       continue;
     }
+    if (document.slug === null) throw new Error(`document sans scope municipal mais graphify réussi: ${document.storage_key}`);
     for (const [type, count] of Object.entries(document.entity_counts)) entityCounts[type] = (entityCounts[type] ?? 0) + count;
     if ((document.entity_counts.Zone ?? 0) > 0) documentsWithZone += 1;
     if ((document.entity_counts.LotCadastre ?? 0) > 0) documentsWithLot += 1;
@@ -1239,11 +1377,14 @@ async function main(): Promise<void> {
     generated_at: new Date().toISOString(),
     mode: args.ocrStage !== null
       ? "ocr-artifact-stage"
+      : args.unverdictList !== null
+      ? "unverdict-cas-batch"
       : args.universe !== null
       ? "real-cas-universe-batch"
       : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
     ...(args.ocrStage === null ? {} : { ocr_stage: args.ocrStage.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
+    ...(args.unverdictList === null ? {} : { unverdict_list: args.unverdictList.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : {
       universe_selection: {
         offset: args.universeOffset,
@@ -1251,6 +1392,15 @@ async function main(): Promise<void> {
         requested: requestedStorageKeys!.length,
         selected: selected.length,
         skipped_indexed_cas_keys: skippedIndexedStorageKeys,
+        concurrency: args.concurrency,
+      },
+    }),
+    ...(args.unverdictList === null ? {} : {
+      unverdict_selection: {
+        offset: args.unverdictOffset,
+        limit: args.unverdictLimit,
+        requested: requested.length,
+        selected: selected.length,
         concurrency: args.concurrency,
       },
     }),
@@ -1267,7 +1417,7 @@ async function main(): Promise<void> {
       failed_pvs: documents.length - outcomes.INDEXED,
       outcomes,
       owner_contaminations: documents
-        .filter((document) => document.outcome === "CONTAMINATION_OWNER_MISMATCH")
+        .filter((document) => document.outcome === "CONTAMINATION_OWNER_MISMATCH" && document.slug !== null)
         .map((document) => ({
           storage_key: document.storage_key,
           manifest_scope_slug: document.slug,
@@ -1284,14 +1434,14 @@ async function main(): Promise<void> {
     },
     match_details: matchDetails,
     gazetteers: {
-      ...(args.universe === null ? { zones: zoneGazetteer, lots: lotGazetteer } : compactGazetteers),
+      ...(args.universe === null && args.unverdictList === null ? { zones: zoneGazetteer, lots: lotGazetteer } : compactGazetteers),
     },
     manual_verification: "UNVERIFIED",
     workspace,
     documents,
   };
   writeAtomic(args.output, report);
-  if (args.universe === null) {
+  if (args.universe === null && args.unverdictList === null) {
     writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-zones.json"), {
       generated_at: report.generated_at,
       municipalities: zoneGazetteer,
