@@ -1,0 +1,243 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:30:28.210Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 110,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 2,
+    "Regulation": 1,
+    "LotCadastre": 4
+  },
+  "graphify": {
+    "nodes": 11,
+    "edges": 4,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 4,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/04edd5ab32ac9a19e79a08e56fb7e2e0c49c4032bcd703be48a8adcb3979913c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6052495",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:391",
+      "quote": "367), pour l'immeuble situé aux 3605-3665, rue de Châteauneuf, lot 6 052 495, à certaines"
+    },
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/04edd5ab32ac9a19e79a08e56fb7e2e0c49c4032bcd703be48a8adcb3979913c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4537478",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:440",
+      "quote": "soit les lots 4 537 478 et 4 537 488 du cadastre du Québec, circonscription foncière de"
+    },
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/04edd5ab32ac9a19e79a08e56fb7e2e0c49c4032bcd703be48a8adcb3979913c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4533221",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:446",
+      "quote": "à la Ville, soit le lot 4 533 221 du cadastre du Québec, circonscription foncière de Laprairie"
+    },
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/04edd5ab32ac9a19e79a08e56fb7e2e0c49c4032bcd703be48a8adcb3979913c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4537690",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:499",
+      "quote": "Ville, soit les lots 4 537 690 et 5 701 948 du cadastre du Québec, circonscription foncière de"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 306,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 24823,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z",
+  "documents": [
+    {
+      "slug": "brossard",
+      "municipality_name": "Brossard",
+      "url": "https://brossard.ca/app/uploads/2026/01/20260428_Proces-verbal_CM_Ratifie.pdf",
+      "storage_key": "raw/pv-index/cas/04edd5ab32ac9a19e79a08e56fb7e2e0c49c4032bcd703be48a8adcb3979913c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Brossard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "sous la présidence du conseiller Patrick Langlois, le 28 avril 2026, à 19 h 30, à la salle du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "251001-399",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:593",
+              "quote": "Considérant que par la résolution 251001-399, la Ville a approuvé le projet d’entente"
+            }
+          },
+          {
+            "label": "260120-012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:935",
+              "quote": "De remplacer la résolution no 260120-012 adoptée par le conseil municipal lors de sa séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "830",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:641",
+              "quote": " 8.7                    DÉROGATION AU RÈGLEMENT 830 (ARTICLE 5) – CONTRAT"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6052495",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:391",
+              "quote": "367), pour l'immeuble situé aux 3605-3665, rue de Châteauneuf, lot 6 052 495, à certaines"
+            }
+          },
+          {
+            "label": "4537478",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "soit les lots 4 537 478 et 4 537 488 du cadastre du Québec, circonscription foncière de"
+            }
+          },
+          {
+            "label": "4533221",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:446",
+              "quote": "à la Ville, soit le lot 4 533 221 du cadastre du Québec, circonscription foncière de Laprairie"
+            }
+          },
+          {
+            "label": "4537690",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:499",
+              "quote": "Ville, soit les lots 4 537 690 et 5 701 948 du cadastre du Québec, circonscription foncière de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/brossard/adcb3979913c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/brossard/adcb3979913c.pdf/.graphify/.graphify_extract.json — 11 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "brossard",
+          "longueuil"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
