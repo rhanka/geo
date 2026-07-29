@@ -21,6 +21,12 @@ export interface PvGraphifySemanticSummary {
 
 interface GraphifyDocument {
   readonly storageKey: string;
+  /**
+   * Legacy reports predate an explicit outcome.  Their inputs were the
+   * already-confirmed control population, so retain them; a modern report
+   * must explicitly say INDEXED before it contributes to the graph.
+   */
+  readonly outcome: string | null;
   readonly exitCode: number;
   readonly nodes: number;
   readonly edges: number;
@@ -68,6 +74,7 @@ function graphifyDocument(value: unknown, where: string): GraphifyDocument {
   }
   return {
     storageKey: requiredString(value, "storage_key", where),
+    outcome: value.outcome === undefined ? null : requiredString(value, "outcome", where),
     exitCode: requiredNonNegativeInteger(graphify, "exit_code", `${where}.graphify`),
     nodes: requiredNonNegativeInteger(graphify, "nodes", `${where}.graphify`),
     edges: requiredNonNegativeInteger(graphify, "edges", `${where}.graphify`),
@@ -137,6 +144,7 @@ export function summarizePvGraphifySemantic(
   let edges = 0;
   const entityCounts: Record<string, number> = {};
   for (const document of documents.values()) {
+    if (document.outcome !== null && document.outcome !== "INDEXED") continue;
     if (document.exitCode !== 0) {
       graphifyFailures += 1;
       continue;
