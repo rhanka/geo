@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   firstPvCaptureLotForRange,
   planPvProbableTargets,
+  partitionPvCaptureTargetsByMunicipality,
   pvIndexListingSha256,
   selectPvProbableTargetsForUncoveredMunicipalities,
   splitPvCaptureTargets,
@@ -70,5 +71,17 @@ describe("PV probable capture plan", () => {
       "https://beta.example/one.pdf",
       "https://alpha.example/two.pdf",
     ]);
+  });
+
+  it("does not guess a reference municipality for an operational index slug", () => {
+    const targets = [
+      { slug: "canonical", source: "pv-index" as const, urls: ["https://canonical.example/pv.pdf"] as const },
+      { slug: "operational-name", source: "pv-index" as const, urls: ["https://operational.example/pv.pdf"] as const },
+    ];
+
+    expect(partitionPvCaptureTargetsByMunicipality(targets, new Set(["canonical"]))).toEqual({
+      recognized: [targets[0]],
+      unrecognized: [targets[1]],
+    });
   });
 });
