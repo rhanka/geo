@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { validateExtraction } from "@sentropic/graphify";
 
-import { analyzeZoneGazetteerMatchMode, extractPvSemantic } from "./pv-graphify-semantic.js";
+import { analyzeZoneGazetteerMatchMode, classifyRegulationLegalQuality, extractPvSemantic } from "./pv-graphify-semantic.js";
 
 const municipalities = [
   { slug: "albertville", name: "Albertville" },
@@ -183,6 +183,9 @@ describe("PV deterministic Graphify semantic extraction", () => {
 
     expect(armagh.nodes.find((node) => node.regulation_number === "199-2022")?.legal_quality).toBe("PROJET");
     expect(dunham.nodes.find((node) => node.regulation_number === "489-24")?.legal_quality).toBe("PROJET");
+    expect(classifyRegulationLegalQuality("CONSIDÉRANT le projet de Règlement no 199-2022 adopté par le conseil", "199 - 2022")).toBe("PROJET");
+    expect(classifyRegulationLegalQuality("projet de Règlement no 489-24 adoptée lors de la séance", "489-24")).toBe("PROJET");
+    expect(classifyRegulationLegalQuality("Règlement 016-2024 « Règlement numéro 016-2024 relatif au", "016-2024")).toBe("INCONNUE");
   });
 
   it("prioritizes every non-effective regulation qualifier over a nearby adoption", () => {
