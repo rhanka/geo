@@ -1,0 +1,1701 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:53:49.898Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3080,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/006710a9417ee66676dad2b442e8636ad63e8b512db025aae0a50cf3291d38a1.pdf",
+      "raw/pv-index/cas/0131b38d8c3c1addd80647410a9ebe2fab8643cf9a79ef4bcc35fcd17172d828.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 16,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 16,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 16,
+    "Document": 16,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 26,
+    "Regulation": 30,
+    "LotCadastre": 5,
+    "Zone": 7
+  },
+  "graphify": {
+    "nodes": 102,
+    "edges": 42,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 7,
+    "lot_entities": 5,
+    "documents_with_zone": 1,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/0377beb6a66e93f340c3936f26cfed76a99df53f54633863fff98dfc80411953.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4583004",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:210",
+      "quote": "                donne accès au lot 4 583 004, propriété de la Ville;"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/0377beb6a66e93f340c3936f26cfed76a99df53f54633863fff98dfc80411953.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4585482",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:349",
+      "quote": "                CONSIDÉRANT la demande de dérogation mineure sur le lot 4 585 482 du cadastre"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/0377beb6a66e93f340c3936f26cfed76a99df53f54633863fff98dfc80411953.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4584815",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:791",
+      "quote": "                395, rue Pichette (lot 4 584 815 du cadastre officiel du Québec);"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/0377beb6a66e93f340c3936f26cfed76a99df53f54633863fff98dfc80411953.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4584319",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:904",
+      "quote": "                documents inhérents à la cession de l’immeuble identifié comme étant le lot 4 584 319"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "CO-002",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:59",
+      "quote": "    Greffier              492-16 relativement à l’agrandissement de la zone CO-002 à même la zone H-"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "H-305",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:62",
+      "quote": "                          492-16 relativement aux usages de la zone H-305"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "H-309",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:64",
+      "quote": "                          492-16 relativement à la création de la zone H-311 à même la zone H-309"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "H-311",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:64",
+      "quote": "                          492-16 relativement à la création de la zone H-311 à même la zone H-309"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "H-321",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:67",
+      "quote": "                          zone H-321"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "M-274",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:69",
+      "quote": "                          492-16 relativement à la création de la zone M-274 à même les zones H-305 et"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "entity_type": "Zone",
+      "value": "H-301",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:120",
+      "quote": "                   LES ZONES H-305 ET H-301"
+    },
+    {
+      "municipality_slug": "chateau-richer",
+      "storage_key": "raw/pv-index/cas/07e365e5f5c45c3aa3bab7f991e0659eaa1b7825e5ed9ba47700375d3208313e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5742731",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:256",
+      "quote": "                résidence unifamiliale isolée au 6, chemin du Boisé (lot 5 742 731) ;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 96,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 3616,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z",
+  "documents": [
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2010-12-06.pdf",
+      "storage_key": "raw/pv-index/cas/fad26857538f4a2e5d6d012e65b889e13d998fc16ade2a3bdc9323225f52d0fe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "-2006Nomination de la firme d’ingénieurs suite à l’appel d’offres 2010-01"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "-2006Nomination de la firme d’ingénieurs suite à l’appel d’offres 2010-01"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 décembre 2010",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "          Séance régulière du Conseil municipal, tenue au Centre communautaire à 19h."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 décembre 2010",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Le 6 décembre 2010"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "10-1980",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "          Scotstown de 20 500 $, cf. résolution 10-1980) ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2010-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "                       Avis de motion concernant le règlement 2010-02 pour la rémunéra-"
+            }
+          },
+          {
+            "label": "2010-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "                       Avis de motion concernant le règlement 2010-03 afin de fixer les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/23225f52d0fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/23225f52d0fe.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2016-06-06.pdf",
+      "storage_key": "raw/pv-index/cas/fbc8d27bb24e30420558395aba80e0aad76adae0520c32227a3cd8f3d798fde0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "16-2688",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:171",
+              "quote": "16-2688            La séance est levée à 20h par Louis Désy sous la résolution 16-2688."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/d8f3d798fde0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/d8f3d798fde0.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2018-07-021.pdf",
+      "storage_key": "raw/pv-index/cas/fc6c0b8ef6b5c84a6d34667a8bbd1920a32ce28ae2021a954dd94f020b9349b9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-03",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "                        Adoption règlement 2018-03 – Amendement règlement de lotisse-"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "                        Adoption règlement 2018-04 – Amendement plan d’urbanisme"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/4f020b9349b9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/4f020b9349b9.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville",
+          "la-patrie",
+          "notre-dame-des-bois",
+          "saint-isidore--la-nouvelle-beauce",
+          "saint-isidore--roussillon",
+          "saint-isidore-de-clifton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-08-04.pdf",
+      "storage_key": "raw/pv-index/cas/ff2a0cd978dfad74ed035c909a0ff00d8126d62fd14e4384363880707cc51e95.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2471",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "    14-2477          La séance est levée à 20h00 par Louis Désy sous la résolution 14-2471."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/80707cc51e95.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chartierville/80707cc51e95.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=8cf9f13f-59de-428c-9527-6b58c814a441",
+      "storage_key": "raw/pv-index/cas/01c44f06a8b707359aa72eed3a98683249b0c7eda9eda4775a5889f1cf57d416.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                         MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                         MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/89f1cf57d416.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/89f1cf57d416.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=b4d96659-8043-4cc3-9958-c0cb9cc2fdf7",
+      "storage_key": "raw/pv-index/cas/0377beb6a66e93f340c3936f26cfed76a99df53f54633863fff98dfc80411953.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 7,
+        "Regulation": 1,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                M.R.C. DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                M.R.C. DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2015-0405-142 / 7975",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "                12.7 Modification / résolution 2015-0405-142 / 7975, avenue Royale / PIIA"
+            }
+          },
+          {
+            "label": "2015-0704-110",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "                CONSIDÉRANT qu’en vertu de la résolution n° 2015-0704-110, le Conseil mandatait"
+            }
+          },
+          {
+            "label": "2015-0405-150",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:278",
+              "quote": "                CONSIDÉRANT qu’en vertu de sa résolution n° 2015-0405-150, le Conseil"
+            }
+          },
+          {
+            "label": "2015-0326-008",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:386",
+              "quote": "                CONSIDÉRANT que selon la résolution numéro 2015-0326-008 en date du"
+            }
+          },
+          {
+            "label": "2015-0405-142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:583",
+              "quote": "                 de modifier la résolution n° 2015-0405-142 de la Ville pour y autoriser le changement"
+            }
+          },
+          {
+            "label": "2015-1505-156",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:815",
+              "quote": "                QUE la présente résolution remplace la résolution numéro 2015-1505-156."
+            }
+          },
+          {
+            "label": "2015-0106-162",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1032",
+              "quote": "                Pour la résolution numéro 2015-0106-162"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "482-15",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "                13.1  Adoption du règlement numéro 482-15"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4583004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "                donne accès au lot 4 583 004, propriété de la Ville;"
+            }
+          },
+          {
+            "label": "4585482",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:349",
+              "quote": "                CONSIDÉRANT la demande de dérogation mineure sur le lot 4 585 482 du cadastre"
+            }
+          },
+          {
+            "label": "4584815",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:791",
+              "quote": "                395, rue Pichette (lot 4 584 815 du cadastre officiel du Québec);"
+            }
+          },
+          {
+            "label": "4584319",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:904",
+              "quote": "                documents inhérents à la cession de l’immeuble identifié comme étant le lot 4 584 319"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/8dfc80411953.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/8dfc80411953.pdf/.graphify/.graphify_extract.json — 14 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=81dcb4f0-57ef-4db6-b163-c2887fba628f",
+      "storage_key": "raw/pv-index/cas/03be9d46fa1d3fb4d3cdcb0c9cb14aa2710ff538fd3828bbbcb96171138f9ce4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 5,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2017-0307-226",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "                CONSIDÉRANT que par sa résolution n° 2017-0307-226, la Ville de Château-Richer"
+            }
+          },
+          {
+            "label": "2018-0511-400",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:320",
+              "quote": "                CONSIDÉRANT la résolution no 2018-0511-400 autorisant l’affichage d’un poste"
+            }
+          },
+          {
+            "label": "2017-1303-090",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:341",
+              "quote": "                CONSIDÉRANT l’adoption de la résolution no 2017-1303-090 désignant M. Steeve"
+            }
+          },
+          {
+            "label": "2018-0110-364",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:389",
+              "quote": "                CONSIDÉRANT la résolution no 2018-0110-364 du 1er octobre 2018 octroyant un"
+            }
+          },
+          {
+            "label": "2018-1012-441",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "                10 décembre 2018 par la résolution no 2018-1012-441;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "538-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "                 CONSIDÉRANT que l’ordre du jour respecte le Règlement no 538-18 relatif à la"
+            }
+          },
+          {
+            "label": "499-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "                 abrogeant le règlement no 499-16 ;"
+            }
+          },
+          {
+            "label": "565-19",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "                D’ADOPTER le règlement no 565-19 sur les modalités de publication des avis"
+            }
+          },
+          {
+            "label": "566-19",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:287",
+              "quote": "                D’ADOPTER le règlement no 566-19 relatif au budget et à l’établissement de la"
+            }
+          },
+          {
+            "label": "361-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "                CONSIDÉRANT l’article 6 du Règlement no 361-03 concernant les nuisances et"
+            }
+          },
+          {
+            "label": "184.6",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:431",
+              "quote": "                Transmission du projet de règlement no 184.6 - Modification au Schéma"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/6171138f9ce4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/6171138f9ce4.pdf/.graphify/.graphify_extract.json — 13 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0772c6e4-5a08-49b2-9a6f-bec1bc1f6486",
+      "storage_key": "raw/pv-index/cas/050301f5b5fcbff7fff94b1298c46ad43c3cbe8575c2d02bd7e6d980f8330d78.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                           MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                           MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "CO-002",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "    Greffier              492-16 relativement à l’agrandissement de la zone CO-002 à même la zone H-"
+            }
+          },
+          {
+            "label": "H-305",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                          492-16 relativement aux usages de la zone H-305"
+            }
+          },
+          {
+            "label": "H-309",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "                          492-16 relativement à la création de la zone H-311 à même la zone H-309"
+            }
+          },
+          {
+            "label": "H-311",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "                          492-16 relativement à la création de la zone H-311 à même la zone H-309"
+            }
+          },
+          {
+            "label": "H-321",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "                          zone H-321"
+            }
+          },
+          {
+            "label": "M-274",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                          492-16 relativement à la création de la zone M-274 à même les zones H-305 et"
+            }
+          },
+          {
+            "label": "H-301",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "                   LES ZONES H-305 ET H-301"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/d980f8330d78.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/d980f8330d78.pdf/.graphify/.graphify_extract.json — 9 nodes, 25 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 25
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=47da554b-bda7-44e7-be45-5da9b60ab90c",
+      "storage_key": "raw/pv-index/cas/07e365e5f5c45c3aa3bab7f991e0659eaa1b7825e5ed9ba47700375d3208313e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-0701-006",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "                       11.5 Modification à la résolution no 2019-0701-006"
+            }
+          },
+          {
+            "label": "N 2019-0701-006",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:548",
+              "quote": "                11.5 – MODIFICATION À LA RÉSOLUTION N 2019-0701-006"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "538-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "                 CONSIDÉRANT que l’ordre du jour respecte le Règlement no 538-18 relatif à la"
+            }
+          },
+          {
+            "label": "499-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "                 abrogeant le règlement no 499-16 ;"
+            }
+          },
+          {
+            "label": "568-19",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "                      7.1      Règlement no 568-19 modifiant le règlement n° 429-11 intitulé"
+            }
+          },
+          {
+            "label": "429-11",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "                      7.1      Règlement no 568-19 modifiant le règlement n° 429-11 intitulé"
+            }
+          },
+          {
+            "label": "527-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:635",
+              "quote": "                l’article 10 du Règlement n° 527-17 intitulé « Règlement concernant la sécurité,"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5742731",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:256",
+              "quote": "                résidence unifamiliale isolée au 6, chemin du Boisé (lot 5 742 731) ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/375d3208313e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/375d3208313e.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=5343fbfe-6b60-41af-92a5-0ba0ed8fcd9a",
+      "storage_key": "raw/pv-index/cas/08b72590e1462a617dd59e20f9509eb98d7c1c029ee9cb2c805d9ed4bd2bdca2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                        MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                        MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2016-0407-228",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1666",
+              "quote": "                Richer par sa résolution n° 2016-0407-228;"
+            }
+          },
+          {
+            "label": "2016-0808-264",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1668",
+              "quote": "                CONSIDÉRANT qu’en vertu de la résolution n° 2016-0808-264 datée du 8 août"
+            }
+          },
+          {
+            "label": "2016-0704-229",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1816",
+              "quote": "                CONSIDÉRANT qu’en vertu de la résolution n° 2016-0704-229 adoptée le 7 avril"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "499-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "                 CONSIDÉRANT que l’ordre du jour respecte le Règlement numéro 499-16 relatif"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1878",
+              "quote": "                modifications audit règlement 501-16 afin de modifier l’Annexe A et de retirer"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9ed4bd2bdca2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9ed4bd2bdca2.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=149b11c5-852b-4962-802a-60fd3143c2dd",
+      "storage_key": "raw/pv-index/cas/08cdeb7b35bf2604482acd15c6c5e5a5f47a5c36137abbb3040f9811f2e52fdf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                     MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                     MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "538-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "                CONSIDÉRANT que l’ordre du jour respecte le Règlement n° 538-18 relatif à la"
+            }
+          },
+          {
+            "label": "499-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                abrogeant le Règlement n° 499-16 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9811f2e52fdf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9811f2e52fdf.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=1a92724d-9034-4f12-a22f-56e30e7b57db",
+      "storage_key": "raw/pv-index/cas/0a53a9dab2a35f5a2ab133e7b5cd08a4e2e9188d3f91c6b771cdfcc785d8614f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/fcc785d8614f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/fcc785d8614f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=962d94ab-3939-4b16-a4fd-16bdd81677e7",
+      "storage_key": "raw/pv-index/cas/0b0e42ce65c58f08d10f27bef66b0ea90bd391cb64760e0028cd22c4719836bf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                                      MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "621-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "                règlement 621-24 décrétant une dépense n’excédant pas 1 855 000 $ et un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/22c4719836bf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/22c4719836bf.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=8c73548a-5421-434d-9b98-9fac492d29ca",
+      "storage_key": "raw/pv-index/cas/0d18c9f08bc05a32e84ccb80fdcd322ad304f7b1b66992a303319c9a82b723f0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                   M.R.C. DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                   M.R.C. DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2015-0704-099",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "                              2.2     Modification apportée / résolution numéro 2015-0704-099"
+            }
+          },
+          {
+            "label": "2015-0903-056",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:139",
+              "quote": "                  CONSIDÉRANT que par sa résolution numéro 2015-0903-056 en date du 9 mars 2015,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9c9a82b723f0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/9c9a82b723f0.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=42afea2c-a712-4351-b220-b631cbe5dbe1",
+      "storage_key": "raw/pv-index/cas/0efde2461658596572c8cca7842bdb2b4a4c3c3f9534eb75ef0fc8db9ae8cf93.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                         MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                         MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/c8db9ae8cf93.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/c8db9ae8cf93.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=31468759-5bc9-4028-80de-e9489b5579c9",
+      "storage_key": "raw/pv-index/cas/10bcd53635fbb97cdd8540e05f2fb5a44b28efa571c27bddec962bc880796178.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "    Greffier"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "    Greffier"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-1511-199",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1122",
+              "quote": "                CONSIDÉRANT l’adoption de la résolution no 2021-1511-199 prenant acte de la"
+            }
+          },
+          {
+            "label": "2021-1511-203",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1181",
+              "quote": "                directeur général adjoint et greffier (résolution 2021-1511-203) ;"
+            }
+          },
+          {
+            "label": "2021-1511-205",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1228",
+              "quote": "                CONSIDÉRANT l’adoption des résolutions no 2021-1511-205, 2021-1511-206,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "538-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "                CONSIDÉRANT que l’ordre du jour respecte le Règlement n° 538-18 relatif à la"
+            }
+          },
+          {
+            "label": "499-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "                abrogeant le Règlement n° 499-16 ;"
+            }
+          },
+          {
+            "label": "595-22",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:484",
+              "quote": "                D’ADOPTER le règlement n° 595-22 relatif au code d’éthique et de déontologie"
+            }
+          },
+          {
+            "label": "548-18",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "                              Richer, remplaçant le règlement 548-18 adopté aux mêmes fins"
+            }
+          },
+          {
+            "label": "596-22",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:528",
+              "quote": "\f                D’ADOPTER le règlement no 596-22 imposant des taxes et exigeant des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/2bc880796178.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/2bc880796178.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=425de359-0a02-44df-ad9d-b0d29f6d0f6d",
+      "storage_key": "raw/pv-index/cas/11f610e72b86585b134c26ed746c1520f8a64060dc8264b6515cb981856dbb15.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/b981856dbb15.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/b981856dbb15.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateau-richer",
+      "municipality_name": "Château-Richer",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=f7b229df-3ceb-4a0f-9ea4-926f779d66b7",
+      "storage_key": "raw/pv-index/cas/13c05f4d90c7882da4db4ae647f4904cb264acc469e840945c63c8bdf7e2c7db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Château-Richer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                                     MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                                     MRC DE LA CÔTE-DE-BEAUPRÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-0108-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:161",
+              "quote": "                CONSIDÉRANT que le conseil, par la résolution 2022-0108-231, s’engage à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "620-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                4- Adoption du Règlement no 620-24 abrogeant le Règlement no 618-24"
+            }
+          },
+          {
+            "label": "618-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                4- Adoption du Règlement no 620-24 abrogeant le Règlement no 618-24"
+            }
+          },
+          {
+            "label": "621-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "                5- Adoption du Règlement no 621-24 décrétant une dépense n’excédant pas"
+            }
+          },
+          {
+            "label": "622-24",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "                6- Avis de motion et dépôt du projet de Règlement no 622-24 décrétant une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/c8bdf7e2c7db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T155215Z/chateau-richer/c8bdf7e2c7db.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateau-richer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
