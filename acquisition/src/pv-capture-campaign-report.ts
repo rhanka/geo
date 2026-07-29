@@ -102,6 +102,10 @@ function lineKey(manifestKey: string, lineIndex: number): string {
   return `${manifestKey}\u0000${lineIndex}`;
 }
 
+function urlKey(manifestKey: string, url: string): string {
+  return `${manifestKey}\u0000url\u0000${url}`;
+}
+
 async function manifestEvidence(
   s3: ReturnType<typeof s3Client>,
   report: ClassificationEvidence,
@@ -117,6 +121,7 @@ async function manifestEvidence(
     if (body.byteLength > MAX_REPORT_BYTES) throw new Error(`${key}: ${body.byteLength} octets > plafond de lecture ${MAX_REPORT_BYTES}`);
     for (const [index, line] of parseManifestJsonl(body.toString("utf8")).entries()) {
       result.set(lineKey(key, index + 1), line);
+      result.set(urlKey(key, line.url), line);
     }
   }
   return result;
@@ -157,9 +162,19 @@ async function main(): Promise<void> {
   for (const line of allLines) {
     if (line.storage_key !== null) {
       casKeys.add(line.storage_key as string);
-      const manifestLine = manifestByClassification.get(lineKey(line.manifest_key as string, line.line_index as number));
+      const manifestKey = line.manifest_key as string;
+      const manifestLineByIndex = manifestByClassification.get(lineKey(manifestKey, line.line_index as number));
+      const manifestLine = manifestLineByIndex?.url === line.url && manifestLineByIndex.storage_key === line.storage_key
+        ? manifestLineByIndex
+        : manifestByClassification.get(urlKey(manifestKey, line.url as string));
       if (!manifestLine) throw new Error(`ligne de classification absente du manifeste: ${line.manifest_key}:${line.line_index}`);
-      if (manifestLine.storage_key !== line.storage_key) throw new Error(`storage_key divergent: ${line.manifest_key}:${line.line_index}`);
+      if (manifestLine.storage_key !== line.storage_key) {
+        throw new Error(
+          `storage_key divergent: ${line.manifest_key}:${line.line_index} ` +
+            `classification=${line.storage_key} manifeste=${manifestLine.storage_key} ` +
+            `classification_url=${line.url} manifeste_url=${manifestLine.url}`,
+        );
+      }
       if (manifestLine.dedup === false) newCasKeys.add(line.storage_key as string);
     }
     if (line.classification === "HTTP_404") increment(deadHosts, hostOf(line.url as string));
