@@ -1,0 +1,143 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:26:07.789Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 45,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 3
+  },
+  "graphify": {
+    "nodes": 5,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 23,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 549,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042553Z",
+  "documents": [
+    {
+      "slug": "barkmere",
+      "municipality_name": "Barkmere",
+      "url": "https://barkmere.ca/wp-content/uploads/2025/10/PV_AOUT_2025_DG.pdf",
+      "storage_key": "raw/pv-index/cas/006f7066b1c072704f61367d826844de42dfdd00e787163ba87b5716ba53377c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Barkmere",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL                       MINUTES OF THE ORDINARY MEETING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL                       MINUTES OF THE ORDINARY MEETING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "294",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "    5.1 Projet de règlement 294 – Avis de motion et                            5.1 Draft by-law 294 – Notice of motion and presentation"
+            }
+          },
+          {
+            "label": "293",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "\f   6.2 Règlement 293 – Arrêt du processus d’adoption                               6.2 By-law 293 – Termination of the adoption process"
+            }
+          },
+          {
+            "label": "250",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "5.1 RÈGLEMENT 294 MODIFIANT LE RÈGLEMENT 250 AFIN                   5.1 BY-LAW 294 AMENDING BY-LAW 250 TO PROHIBIT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042553Z/barkmere/5716ba53377c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042553Z/barkmere/5716ba53377c.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "barkmere"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
