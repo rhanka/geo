@@ -4,6 +4,7 @@ import {
   firstPvCaptureLotForRange,
   planPvProbableTargets,
   pvIndexListingSha256,
+  selectPvProbableTargetsForUncoveredMunicipalities,
   splitPvCaptureTargets,
   stablePvIndexListing,
 } from "./pv-probable-capture-plan.js";
@@ -49,5 +50,25 @@ describe("PV probable capture plan", () => {
 
     expect(() => stablePvIndexListing(pvIndexListingSha256(firstListing), firstListing, finalListing))
       .toThrow("versions divergentes pour registry/qc-pv/alpha/index.json");
+  });
+
+  it("opens uncovered municipalities before taking a second document", () => {
+    const targets = [
+      { slug: "alpha", source: "pv-index" as const, urls: ["https://alpha.example/one.pdf"] as const },
+      { slug: "alpha", source: "pv-index" as const, urls: ["https://alpha.example/two.pdf"] as const },
+      { slug: "beta", source: "pv-index" as const, urls: ["https://beta.example/one.pdf"] as const },
+      { slug: "covered", source: "pv-index" as const, urls: ["https://covered.example/one.pdf"] as const },
+    ];
+
+    expect(selectPvProbableTargetsForUncoveredMunicipalities({
+      targets,
+      municipalitySlugs: new Set(["alpha", "beta", "covered"]),
+      coveredMunicipalitySlugs: new Set(["covered"]),
+      count: 3,
+    }).map((target) => target.urls[0])).toEqual([
+      "https://alpha.example/one.pdf",
+      "https://beta.example/one.pdf",
+      "https://alpha.example/two.pdf",
+    ]);
   });
 });
