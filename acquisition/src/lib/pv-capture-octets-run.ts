@@ -159,7 +159,14 @@ function report(runPrefix: string, manifests: number, lines: readonly Classified
 export async function runPvCaptureOctetsClassification(argv: readonly string[]): Promise<void> {
   const runPrefix = value(argv, "run-prefix");
   const output = value(argv, "out");
-  if (!runPrefix || !/^pv-[a-z0-9-]+$/.test(runPrefix)) throw new Error("--run-prefix=pv-... est requis");
+  // Le RUN_ID est fabrique par deploy/capture-job/run-capture-job.sh comme
+  // `${LANE}-${RUN_STAMP}-${SHARD}-${POD_ATTEMPT}` avec RUN_STAMP=%Y%m%dT%H%M%SZ:
+  // le `T` et le `Z` sont MAJUSCULES par construction. Ce garde en minuscules
+  // seules rejetait donc tout run reellement produit par le cluster, et la
+  // classification des octets s'arretait sur ses propres captures. Les deux
+  // gardes freres (`_capture-e2e-probe.ts`, `served-zonage-proof-url-refetch-verify.ts`)
+  // acceptent deja `[A-Za-z0-9-]`.
+  if (!runPrefix || !/^pv-[A-Za-z0-9-]+$/.test(runPrefix)) throw new Error("--run-prefix=pv-... est requis");
   if (!output) throw new Error("--out=work/coverage/...json est requis");
   const outPath = insideRepo(output, "out");
   const s3 = s3Client();

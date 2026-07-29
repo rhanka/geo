@@ -24,6 +24,15 @@ RUN cd acquisition && npm ci \
 COPY acquisition/src/ ./acquisition/src/
 COPY acquisition/tsconfig.json ./acquisition/
 
+# La CIBLE S3 est declaree dans le depot (commit 0ea922ac) et `s3Client()` REFUSE
+# de demarrer sans elle — c'est precisement ce qu'on veut: lire le mauvais cloud
+# etait totalement silencieux. Mais l'image ne copiait que `src/`, donc le premier
+# Job epingle par digest est mort en `ENOENT .../config/s3-target.json` avant tout
+# appel reseau. Le garde a fait son travail; c'est l'image qui etait incomplete.
+# Ce fichier SEUL, pas `config/` entier: les 2 179 fichiers de config sont des
+# plans et worklists que le Job recoit par WORKLIST, il n'en lit aucun au demarrage.
+COPY acquisition/config/s3-target.json ./acquisition/config/s3-target.json
+
 COPY deploy/capture-job/run-capture-job.sh /usr/local/bin/run-capture-job.sh
 RUN chmod +x /usr/local/bin/run-capture-job.sh
 
