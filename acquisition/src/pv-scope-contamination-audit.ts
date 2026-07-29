@@ -655,6 +655,8 @@ async function sampleAudit(
   const upper = populationMedian === null ? [] : sample.filter((row) => row.population !== null && row.population > populationMedian);
   const lowerRate = rate(lower);
   const upperRate = rate(upper);
+  const missingPopulation = sample.filter((row) => row.population === null);
+  const contaminatedMissingPopulation = missingPopulation.filter((row) => row.contaminated);
   const selectedDocuments = sample.flatMap((row) => row.documents.map((document) => ({ ...document, scope_slug: row.slug })));
   const mismatched = selectedDocuments.filter((document) => document.mismatch === true);
   const affectedScopes = new Set(mismatched.map((document) => document.scope_slug));
@@ -665,9 +667,11 @@ async function sampleAudit(
   }));
   const mrcKnownPairs = mrcPairs.filter((pair) => pair.scope_mrc !== null && pair.owner_mrc !== null);
   const sameMrcPairs = mrcKnownPairs.filter((pair) => pair.scope_mrc === pair.owner_mrc).length;
-  const smallMunicipalityEvidence = populationMedian !== null && lowerRate.percent !== null && upperRate.percent !== null && lowerRate.percent > upperRate.percent;
+  const smallMunicipalityEvidence = contaminatedMissingPopulation.length === 0 && populationMedian !== null && lowerRate.percent !== null && upperRate.percent !== null && lowerRate.percent > upperRate.percent;
   const hypothesisConclusion = populationMedian === null
     ? "Hypothèse non testable: population absente dans l’échantillon."
+    : contaminatedMissingPopulation.length > 0
+      ? "Hypothèse non tranchable: un scope contaminé confirmé n’a pas de population; les deux moitiés mesurables n’ont aucune contamination confirmée, et un hôte ne suffit jamais à attribuer l’opérateur du portail."
     : smallMunicipalityEvidence
       ? "La composante « petites municipalités » est soutenue; le mécanisme « via leur MRC » reste non établi: un hôte ne suffit jamais à attribuer l’opérateur du portail."
       : "L’hypothèse ne tient pas dans l’échantillon: la moitié basse de population n’est pas plus contaminée; un hôte ne suffit jamais à attribuer l’opérateur du portail.";
@@ -690,6 +694,8 @@ async function sampleAudit(
       tested: "Confirmed contamination rate among the lower versus upper half of sampled scopes by gazetteer population. Same-MRC pairs are reported as regional correlation only; portal ownership is never inferred from a hostname.",
       population_crosscheck: {
         sample_population_median: populationMedian,
+        missing_population_scopes: missingPopulation.length,
+        contaminated_scopes_with_missing_population: contaminatedMissingPopulation.length,
         lower_population_half: { scopes: lower.length, contaminated_scopes: lowerRate.numerator, rate_percent: lowerRate.percent },
         upper_population_half: { scopes: upper.length, contaminated_scopes: upperRate.numerator, rate_percent: upperRate.percent },
       },
