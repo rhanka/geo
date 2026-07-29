@@ -8,7 +8,8 @@
  * Usage:
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx acquisition/src/pv-lecture-visuelle-lot.ts \
- *     --out=work/coverage/pv-lecture-visuelle-lot-01-preflight-YYYYMMDDTHHMMSSZ.json
+ *     --out=work/coverage/pv-lecture-visuelle-lot-01-preflight-YYYYMMDDTHHMMSSZ.json \
+ *     [--prior-report=work/coverage/pv-lecture-visuelle-lot-01-YYYYMMDDTHHMMSSZ.json ...]
  */
 import { createHash } from "node:crypto";
 import { createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -39,7 +40,7 @@ interface SelectedDocument {
 
 interface DocumentSelection {
   readonly description: string;
-  readonly prior_lot_report: string | null;
+  readonly prior_lot_reports: readonly string[];
   readonly source_inventory: string | null;
   readonly candidate_cas_keys: number;
   readonly prior_lot_collisions_avoided: number;
@@ -69,10 +70,10 @@ function requiredArg(name: string): string {
   return values[0]!;
 }
 
-function optionalArg(name: string): string | null {
+function repeatedArg(name: string): string[] {
   const values = process.argv.slice(2).filter((value) => value.startsWith(`--${name}=`)).map((value) => value.slice(name.length + 3));
-  if (values.length > 1 || values.some((value) => !value)) throw new Error(`--${name}=... est optionnel mais ne peut apparaître qu'une fois`);
-  return values[0] ?? null;
+  if (values.some((value) => !value)) throw new Error(`--${name}=... ne peut pas être vide`);
+  return values;
 }
 
 function record(value: unknown, where: string): JsonRecord {
@@ -136,7 +137,7 @@ function initialSampleSelection(): DocumentSelection {
   if (new Set(documents.map((document) => document.storage_key)).size !== LOT_SIZE) throw new Error("triage: clés du lot dupliquées");
   return {
     description: "les 20 premières entrées ordonnées de triage.sample.documents",
-    prior_lot_report: null,
+    prior_lot_reports: [],
     source_inventory: null,
     candidate_cas_keys: documents.length,
     prior_lot_collisions_avoided: 0,
@@ -145,7 +146,9 @@ function initialSampleSelection(): DocumentSelection {
   };
 }
 
-function dedupedInventorySelection(priorReport: string): DocumentSelection {
+function dedupedInventorySelection(priorReports: readonly string[]): DocumentSelection {
+  if (priorReports.length === 0) throw new Error("au moins un --prior-report est requis pour la sélection sur inventaire");
+  if (new Set(priorReports).size !== priorReports.length) throw new Error("--prior-report ne peut pas être répété");
   const inventory = readSmallJson(INVENTORY);
   if (inventory.input_commit !== "14c60a04" || inventory.source_triage !== "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json") {
     throw new Error(`${INVENTORY}: ancrage triage inattendu`);
@@ -171,16 +174,22 @@ function dedupedInventorySelection(priorReport: string): DocumentSelection {
   if (new Set(candidates.map((candidate) => candidate.storage_key)).size !== candidates.length) {
     throw new Error(`${INVENTORY}: clés CAS dupliquées`);
   }
-  const priorKeys = priorLotCasKeys(priorReport);
+  const priorKeys = new Set<string>();
+  for (const report of priorReports) {
+    for (const key of priorLotCasKeys(report)) {
+      if (priorKeys.has(key)) throw new Error(`${report}: clé CAS déjà présente dans un lot antérieur`);
+      priorKeys.add(key);
+    }
+  }
   const collisions = candidates.filter((candidate) => priorKeys.has(candidate.storage_key));
-  if (collisions.length !== priorKeys.size) throw new Error(`${INVENTORY}: au moins une clé du lot antérieur manque de la liste des 186`);
+  if (collisions.length !== priorKeys.size) throw new Error(`${INVENTORY}: au moins une clé d'un lot antérieur manque de la liste des 186`);
   const remaining = candidates
     .filter((candidate) => !priorKeys.has(candidate.storage_key))
     .sort((left, right) => left.first_selection_offset - right.first_selection_offset || left.storage_key.localeCompare(right.storage_key));
-  if (remaining.length !== 166) throw new Error(`${INVENTORY}: déduplication attendue 166, obtenue ${remaining.length}`);
+  if (remaining.length !== candidates.length - priorKeys.size) throw new Error(`${INVENTORY}: déduplication incohérente, obtenue ${remaining.length}`);
   return {
-    description: "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion du lot antérieur",
-    prior_lot_report: priorReport.slice(ROOT.length + 1),
+    description: "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs",
+    prior_lot_reports: priorReports.map((report) => report.slice(ROOT.length + 1)),
     source_inventory: "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
     candidate_cas_keys: candidates.length,
     prior_lot_collisions_avoided: collisions.length,
@@ -189,8 +198,8 @@ function dedupedInventorySelection(priorReport: string): DocumentSelection {
   };
 }
 
-function selectedDocuments(priorReport: string | null): DocumentSelection {
-  return priorReport === null ? initialSampleSelection() : dedupedInventorySelection(priorReport);
+function selectedDocuments(priorReports: readonly string[]): DocumentSelection {
+  return priorReports.length === 0 ? initialSampleSelection() : dedupedInventorySelection(priorReports);
 }
 
 function compactError(error: unknown): string {
@@ -242,16 +251,16 @@ function writeAtomic(path: string, value: unknown): void {
 
 async function main(): Promise<void> {
   const output = resolve(ROOT, requiredArg("out"));
-  const priorReportArg = optionalArg("prior-report");
+  const priorReportArgs = repeatedArg("prior-report");
   if (!output.startsWith(`${COVERAGE}/`)) throw new Error("--out doit rester sous work/coverage");
   if (existsSync(output)) throw new Error(`artefact déjà présent: ${output}`);
-  const priorReport = priorReportArg === null ? null : resolve(ROOT, priorReportArg);
-  if (priorReport !== null && !priorReport.startsWith(`${COVERAGE}/`)) throw new Error("--prior-report doit rester sous work/coverage");
+  const priorReports = priorReportArgs.map((report) => resolve(ROOT, report));
+  if (priorReports.some((report) => !report.startsWith(`${COVERAGE}/`))) throw new Error("--prior-report doit rester sous work/coverage");
   assertS3RunEnvironment();
   const workspace = resolve(ROOT, "work", "graphify", basename(output, ".json"));
   mkdirSync(workspace, { recursive: true });
   const results: GuardResult[] = [];
-  const selection = selectedDocuments(priorReport);
+  const selection = selectedDocuments(priorReports);
   for (const document of selection.documents) {
     const result = await downloadAndHash(document, workspace);
     results.push(result);
@@ -269,7 +278,7 @@ async function main(): Promise<void> {
     source_triage: "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
     selection: {
       description: selection.description,
-      prior_lot_report: selection.prior_lot_report,
+      prior_lot_reports: selection.prior_lot_reports,
       source_inventory: selection.source_inventory,
       candidate_cas_keys: selection.candidate_cas_keys,
       prior_lot_collisions_avoided: selection.prior_lot_collisions_avoided,
