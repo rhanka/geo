@@ -6,7 +6,6 @@
  * document. Les worklists sont une entrée durable du Job cluster, pas une
  * décision locale cachée.
  */
-import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,6 +16,9 @@ import {
   planPvProbableTargets,
   sha256,
   splitPvCaptureTargets,
+  stablePvIndexListing,
+  type StablePvIndexListing,
+  type PvIndexListing,
   type PvIndexSnapshot,
 } from "./lib/pv-probable-capture-plan.js";
 
@@ -53,10 +55,6 @@ function insideRepo(path: string, name: string): string {
   const resolved = resolve(ROOT, path);
   if (!resolved.startsWith(`${ROOT}/`)) throw new Error(`--${name} doit rester dans le dépôt`);
   return resolved;
-}
-
-function hashListing(listing: readonly (readonly [string, string | null, string | null])[]): `sha256:${string}` {
-  return `sha256:${createHash("sha256").update(JSON.stringify({ pv_index_listing: listing })).digest("hex")}`;
 }
 
 function slugFromKey(key: string): string {
@@ -101,23 +99,22 @@ async function mapConcurrent<T, R>(items: readonly T[], concurrency: number, fn:
   return output;
 }
 
-async function readSnapshot(report: ClassificationReport): Promise<PvIndexSnapshot[]> {
+interface ReadSnapshot {
+  readonly scans: PvIndexSnapshot[];
+  readonly listing: StablePvIndexListing;
+}
+
+async function readSnapshot(report: ClassificationReport): Promise<ReadSnapshot> {
   const s3 = s3Client();
   const firstListing = (await listObjectEntries(s3, PV_INDEX_PREFIX))
     .filter((entry) => entry.key.endsWith("/index.json"))
-    .map((entry) => [entry.key, entry.etag, entry.last_modified] as const);
-  if (hashListing(firstListing) !== report.source_snapshot.sha256) {
-    throw new Error("snapshot des index PV différent du rapport classifié; refus de mélanger les corpus");
-  }
+    .map((entry) => [entry.key, entry.etag, entry.last_modified] as const) satisfies PvIndexListing;
   const scans = await mapConcurrent(firstListing, 4, async ([key]) =>
     parseIndex(slugFromKey(key), JSON.parse((await getBytes(s3, key)).toString("utf8")) as unknown));
   const finalListing = (await listObjectEntries(s3, PV_INDEX_PREFIX))
     .filter((entry) => entry.key.endsWith("/index.json"))
-    .map((entry) => [entry.key, entry.etag, entry.last_modified] as const);
-  if (hashListing(finalListing) !== report.source_snapshot.sha256) {
-    throw new Error("snapshot des index PV modifié pendant la planification; refus de publier une worklist mixte");
-  }
-  return scans;
+    .map((entry) => [entry.key, entry.etag, entry.last_modified] as const) satisfies PvIndexListing;
+  return { scans, listing: stablePvIndexListing(report.source_snapshot.sha256, firstListing, finalListing) };
 }
 
 async function main(): Promise<void> {
@@ -134,10 +131,8 @@ async function main(): Promise<void> {
   if (report.contract !== "pv-observable-classification/v1" || report.no_document_fetch !== true) {
     throw new Error("--classification doit être le rapport observable PV complet");
   }
-  const targets = planPvProbableTargets(await readSnapshot(report));
-  if (targets.length !== report.class_counts.pv_probable) {
-    throw new Error(`classification rejouée divergente: ${targets.length} != ${report.class_counts.pv_probable}`);
-  }
+  const snapshot = await readSnapshot(report);
+  const targets = planPvProbableTargets(snapshot.scans);
   const selected = targets.slice(start, start + count);
   if (selected.length !== count) throw new Error(`tranche PV insuffisante: ${selected.length}/${count}`);
   const lots = splitPvCaptureTargets(selected, lotSize);
@@ -153,8 +148,10 @@ async function main(): Promise<void> {
   const plan = {
     contract: "pv-probable-capture-plan/v1",
     classification: classificationPath.slice(ROOT.length + 1),
-    source_snapshot: report.source_snapshot.sha256,
-    expected_pv_probable: report.class_counts.pv_probable,
+    source_snapshot: snapshot.listing.sha256,
+    classification_snapshot: report.source_snapshot.sha256,
+    classification_recomputed_from_fresh_index: snapshot.listing.classificationWasStale,
+    expected_pv_probable: targets.length,
     range: { start, count, end_exclusive: start + count },
     selected_sha256: sha256(`${JSON.stringify(selected)}\n`),
     combined_worklist: { path: combinedOut.slice(ROOT.length + 1), targets: selected.length, sha256: sha256(combinedBody) },
