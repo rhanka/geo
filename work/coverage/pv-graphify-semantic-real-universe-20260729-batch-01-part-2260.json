@@ -1,0 +1,1086 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T14:09:47.477Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2260,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/050abef2204f3ac732466f2aad4df98e6a2cdbcfa64957acf084c1ea7f4c18ee.pdf",
+      "raw/pv-index/cas/1e127a12681ecdb321d25364f8a380225d9416db92ea1d84a0ddaeb161cc13e0.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 9,
+    "failed_pvs": 9,
+    "outcomes": {
+      "INDEXED": 9,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 9
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 9,
+    "Document": 9,
+    "LotCadastre": 2,
+    "Regulation": 14,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "Resolution": 10
+  },
+  "graphify": {
+    "nodes": 50,
+    "edges": 20,
+    "failures": 9
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "bury",
+      "storage_key": "raw/pv-index/cas/a97c4828e71169b8825f5a2f3da1478776c0b1e90a88e167514ea598a433c5e1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4773158",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:56",
+      "quote": "                      8.7 Mandat pour évaluation - lot no 4773158"
+    },
+    {
+      "municipality_slug": "bury",
+      "storage_key": "raw/pv-index/cas/a97c4828e71169b8825f5a2f3da1478776c0b1e90a88e167514ea598a433c5e1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4773209",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:62",
+      "quote": "                       8.13 Demande de dérogation mineure pour le lot 4 773 209"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 58,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 2270,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z",
+  "documents": [
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/04/2026-03-30_SE-FR.pdf",
+      "storage_key": "raw/pv-index/cas/108d8b71b5d473b759c1589ef118fcfd0536a4e5f068a9e59548e01f8d3140d1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/e01f8d3140d1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/e01f8d3140d1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/02/2026-01_26_SE_FR-1.pdf",
+      "storage_key": "raw/pv-index/cas/5e301d95942492c364c3b120d6764fbebb98f5d53c72f2ab4406779015f3a1c9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/779015f3a1c9.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/779015f3a1c9.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/02/2026-01_12_SO_FR.pdf",
+      "storage_key": "raw/pv-index/cas/5f0e25cf5bcbcf7f0103f5590f16a6898d9d58020f6c554c428eccbf6af10bac.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/ccbf6af10bac.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/ccbf6af10bac.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/04/2026-03-02_SO-FR.pdf",
+      "storage_key": "raw/pv-index/cas/8b33dc73213fdb0c53999961ba195dd1404ed8114dabb3a9715dc78fd3a696d5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/c78fd3a696d5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/c78fd3a696d5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/02/2026-01_26_SE_FR.pdf",
+      "storage_key": "raw/pv-index/cas/a7bd07a5eb7f64ff570cb5a03dc9ad171f03562baba220fa7264ad274e5d0f69.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/ad274e5d0f69.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/ad274e5d0f69.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/05/2026-04-07_SO-FR.pdf",
+      "storage_key": "raw/pv-index/cas/a97c4828e71169b8825f5a2f3da1478776c0b1e90a88e167514ea598a433c5e1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bury",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                      Procès-verbal du conseil de la Municipalité de Bury"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                      Procès-verbal du conseil de la Municipalité de Bury"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4773158",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "                      8.7 Mandat pour évaluation - lot no 4773158"
+            }
+          },
+          {
+            "label": "4773209",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                       8.13 Demande de dérogation mineure pour le lot 4 773 209"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/a598a433c5e1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/a598a433c5e1.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bury"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/06/2026-05-04_SE_FR.pdf",
+      "storage_key": "raw/pv-index/cas/ad87e7ffa448bde884d7db0467f5725ae65af01e7619d0627d4ab15d8373ff50.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/b15d8373ff50.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/b15d8373ff50.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/03/2026-02_02_SO_FR.pdf",
+      "storage_key": "raw/pv-index/cas/b57aa1640a9416659f23c3f498213be32bf62bb73c83fa4a4dbd6a80748526b1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/6a80748526b1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/6a80748526b1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/06/2026-05-04_SO_FR.pdf",
+      "storage_key": "raw/pv-index/cas/e00be85c4d52c06af668cf2e082401ed4d906108e39a35babdfcb759e0946ac7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/b759e0946ac7.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/b759e0946ac7.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/06/2026-05-25_SE_FR.pdf",
+      "storage_key": "raw/pv-index/cas/f1017cc335e1464dca57cff11ff4404de5f00338b411f967a2d3fe2839aa5167.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/fe2839aa5167.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/bury/fe2839aa5167.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/ordres_du_jour/seance_ordinaire_du_11_mai_2026.pdf",
+      "storage_key": "raw/pv-index/cas/2101d1e5e1a00348ebc890e33275ad63eb85d34a9d08d605500011b72d194b62.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 11 MAI 2026"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 11 MAI 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "137-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "    10.2. Adoption du Règlement numéro 137-26 sur l’occupation et l’entretien des bâtiments"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/11b72d194b62.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/11b72d194b62.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/proces-verbaux/seance_ordinaire_du_11_mai_2026.pdf",
+      "storage_key": "raw/pv-index/cas/2a7139ed504ae94755acf9121441a7fde3ca4954ce80606f3bc513eadf8afa93.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Cacouna, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                Le 11 mai 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-07-160.8",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:559",
+              "quote": "                  CONSIDÉRANT la résolution numéro 2024-07-160.8.4 adoptée par les membres du"
+            }
+          },
+          {
+            "label": "2026-05-123.10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1080",
+              "quote": "Résolution no 2026-05-123.10.2"
+            }
+          },
+          {
+            "label": "2023-12-283.10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1596",
+              "quote": "                   formation de ce comité par l’adoption de la résolution numéro 2023-12-283.10.2 lors"
+            }
+          },
+          {
+            "label": "2025-05-116.10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1601",
+              "quote": "                   par l’adoption de la résolution numéro 2025-05-116.10.3;"
+            }
+          },
+          {
+            "label": "2026-03-67.11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1972",
+              "quote": "                   CONSIDÉRANT la résolution numéro 2026-03-67.11.6 adoptée par le Conseil"
+            }
+          },
+          {
+            "label": "2025-07-172.11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2025",
+              "quote": "                   CONSIDÉRANT la résolution numéro 2025-07-172.11.2 adoptée par le Conseil"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "137-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "    10.2. Adoption du Règlement numéro 137-26 sur l’occupation et l’entretien des bâtiments"
+            }
+          },
+          {
+            "label": "125-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1572",
+              "quote": "                   CONSIDÉRANT le Règlement numéro 125-23 relatif à la démolition d’immeuble"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/13eadf8afa93.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/13eadf8afa93.pdf/.graphify/.graphify_extract.json — 12 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna",
+          "riviere-du-loup"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/ordres_du_jour/seance_ordinaire_du_9_mars_2026.pdf",
+      "storage_key": "raw/pv-index/cas/70788fcb85bf0ace7a56ad29c5930c96a05c8cf8ff9c553f67792f143f9eeb79.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 9 MARS 2026"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 9 MARS 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "136-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "   6.1. Avis de motion et dépôt du projet de Règlement numéro 136-26 édictant le code d’éthique et de déontologie"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/2f143f9eeb79.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/2f143f9eeb79.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna",
+          "lisle-verte"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/proces-verbaux/seance_ordinaire_du_9_mars_2026.pdf",
+      "storage_key": "raw/pv-index/cas/83b7909c8edd018e844e9a01b153a431e292b5973a2145db09411af8c88ee047.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Cacouna, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               Le 9 mars 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-10-240.9",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:599",
+              "quote": "                 CONSIDÉRANT la résolution numéro 2025-10-240.9.1 adoptée par le Conseil de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "136-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                  6.1. Avis de motion et dépôt du projet de Règlement numéro 136-26 édictant le code"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/1af8c88ee047.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/1af8c88ee047.pdf/.graphify/.graphify_extract.json — 6 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna",
+          "lisle-verte"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/proces-verbaux/seance_ordinaire_du_9_fevrier_2026.pdf",
+      "storage_key": "raw/pv-index/cas/9a6f884591dbb5299f8f99725bd8f5c16d47974913cbaddf6a4aa6f9febf30b2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               MRC DE RIVIÈRE-DU-LOUP"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               Procès-verbal de la séance ordinaire du Conseil de la Municipalité de Cacouna, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               Le 9 février 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-02-29.6",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "                 Résolution no 2026-02-29.6.1"
+            }
+          },
+          {
+            "label": "2025-10-240.9",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:569",
+              "quote": "                 CONSIDÉRANT la résolution numéro 2025-10-240.9.1 adoptée par le Conseil de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "135-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                  6.1. Adoption du Règlement no 135-26 sur les taux de taxations et tarifications 2026"
+            }
+          },
+          {
+            "label": "239-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "\f                  CONSIDÉRANT le Règlement numéro 239-17 fixant la date de vente des immeubles"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/a6f9febf30b2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/a6f9febf30b2.pdf/.graphify/.graphify_extract.json — 8 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/ordres_du_jour/seance_ordinaire_du_12_janvier_2026.pdf",
+      "storage_key": "raw/pv-index/cas/a4a33b93bcb762b08ea3d0bf0e62d26e3c4ae7364bd255331e32d8afd9339062.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   SÉANCE ORDINAIRE DU 12 JANVIER 2026"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   SÉANCE ORDINAIRE DU 12 JANVIER 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/d8afd9339062.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/d8afd9339062.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/ordres_du_jour/seance_ordinaire_du_13_avril_2026.pdf",
+      "storage_key": "raw/pv-index/cas/b981be14d50c89c0286d9322e38880e8cc379dcc18e16aba2448022044eed7b4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     SÉANCE ORDINAIRE DU 13 AVRIL 2026"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     SÉANCE ORDINAIRE DU 13 AVRIL 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "136-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "   6.2. Adoption du Règlement numéro 136-26 édictant le code d’éthique et de déontologie des élus(e)s municipaux;"
+            }
+          },
+          {
+            "label": "137-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "    10.3. Avis de motion et dépôt du projet de Règlement numéro 137-26 sur l’occupation et l’entretien des bâtiments"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/022044eed7b4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/022044eed7b4.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cacouna",
+      "municipality_name": "Cacouna",
+      "url": "https://cacouna.ca/documents/pdf/ordres_du_jour/seance_ordinaire_du_8_juin_2026.pdf",
+      "storage_key": "raw/pv-index/cas/bb12e404f6ece9bf49334ceb9e9ca9dc46b379a4e470b3f02e9edb0d031ec035.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cacouna",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 8 JUIN 2026"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      SÉANCE ORDINAIRE DU 8 JUIN 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "   9.2. Les Entreprises Camille Ouellet et Fils inc. – Abrogation et modification de la résolution numéro 2026-05-"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "138-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "    10.4. Avis de motion et dépôt du projet de Règlement numéro 138-26 intitulé « Plan d’urbanisme de la"
+            }
+          },
+          {
+            "label": "139-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "    10.6. Avis de motion et dépôt du projet de Règlement numéro 139-26 intitulé « Règlement de zonage »"
+            }
+          },
+          {
+            "label": "140-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "    10.8. Avis de motion et dépôt du projet de Règlement numéro 140-26 intitulé « Règlement de construction »"
+            }
+          },
+          {
+            "label": "141-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "    10.10. Avis de motion et dépôt du projet de Règlement numéro 141-26 intitulé « Règlement de lotissement »"
+            }
+          },
+          {
+            "label": "142-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "    10.12. Avis de motion et dépôt du projet de Règlement numéro 142-26 intitulé « Règlement relatif aux permis et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/db0d031ec035.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T140845Z/cacouna/db0d031ec035.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cacouna",
+          "riviere-du-loup"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
