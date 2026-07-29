@@ -29,7 +29,9 @@ import { BUCKET, S3ENV, getBytes, loadEnv, objectHead, putBytes, s3Client, s3Tar
 const ROOT = resolve(import.meta.dirname, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
 const INVENTORY_PATH = "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json";
-const INVENTORY_COMMIT = "f42e09c0";
+// The inventory report itself is commit f42e09c0; its declared immutable input
+// is the authorised failure-triage commit below.
+const INVENTORY_INPUT_COMMIT = "14c60a04";
 const EXPECTED_DOCUMENTS = 186;
 const MAX_LOCAL_OR_ARTIFACT_BYTES = 5 * 1024 * 1024;
 const RANGE_BYTES = 512 * 1024;
@@ -135,7 +137,7 @@ function readSmallJson(path: string): unknown {
 
 function inventory(): InventoryDocument[] {
   const root = record(readSmallJson(resolve(ROOT, INVENTORY_PATH)), INVENTORY_PATH);
-  if (root.contract !== "pv-ocr-inventaire-pages/v1" || root.input_commit !== INVENTORY_COMMIT) {
+  if (root.contract !== "pv-ocr-inventaire-pages/v1" || root.input_commit !== INVENTORY_INPUT_COMMIT) {
     throw new Error("inventaire OCR non ancré sur le commit autorisé");
   }
   if (root.unique_failed_documents !== EXPECTED_DOCUMENTS || !Array.isArray(root.failed_documents)) {
@@ -354,7 +356,7 @@ function stageReport(selected: readonly InventoryDocument[], documents: readonly
     contract: "pv-ocr-stage/v1",
     generated_at: new Date().toISOString(),
     input_inventory: INVENTORY_PATH,
-    input_commit: INVENTORY_COMMIT,
+    input_commit: INVENTORY_INPUT_COMMIT,
     authorization: { unique_cas_keys: EXPECTED_DOCUMENTS, hard_cap_usd: "2.000", price_per_page_usd: "0.001" },
     selected_documents: selected.length,
     completed_documents: completed,
