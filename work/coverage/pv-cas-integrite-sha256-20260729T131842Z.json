@@ -1,0 +1,494 @@
+{
+  "contract": "pv-cas-integrite-sha256/v1",
+  "generated_at": "2026-07-29T13:20:25.941Z",
+  "read_only": true,
+  "s3": {
+    "target_config": "acquisition/config/s3-target.json",
+    "endpoint": "https://s3.bhs.io.cloud.ovh.net",
+    "region": "bhs",
+    "bucket": "sentropic-geo",
+    "s3_client_constructed_after_guard": true
+  },
+  "method": {
+    "transport": "S3 GetObject",
+    "hash": "sha256",
+    "memory": "streaming only; no PDF buffered in full",
+    "maximum_full_object_buffer_bytes": 0
+  },
+  "scope": {
+    "named_ocr_stop_report": "work/coverage/pv-ocr-186-stage-known-001-r2-20260729T125514Z.json",
+    "named_keys_requested": 10,
+    "additional_random_keys_requested": 20,
+    "sample": {
+      "requested": 20,
+      "selection": "stratified_random",
+      "method": "seed aléatoire 256-bit; les clés aux plus petits SHA-256(seed + newline + key) sont retenues dans chaque strate, sans remise",
+      "seed": "6f36aeb453c017b52ca37254258a021d0be9d316d7b64cdeaba0f10bfaad5c80",
+      "listed_cas_pdfs": 6577,
+      "indexed_success_witnesses": [
+        "raw/pv-index/cas/1289f0b63a24d59ea01e8f3c3131a6424fab9d7b2d3af5002c5941e694b39767.pdf",
+        "raw/pv-index/cas/5807e37b9eaa728fd63dc48dadddb53cc1c54d806fd0a2d8bbe997cb11bd3205.pdf",
+        "raw/pv-index/cas/7b2f91aab65bf872240a6d7e40b5a13c8ddcefd4c8e88ae3a189ea5cdda41d9d.pdf",
+        "raw/pv-index/cas/051da8a9a5777f6cd8a179a21caa1f4c9dd340666a6f93969833147a8c41e8eb.pdf",
+        "raw/pv-index/cas/b8f8f611c4c7ea516a232dcea30c98dce72d44fd8e3b8c2c0d08acbd80222ba7.pdf"
+      ],
+      "other_cas_witnesses": [
+        "raw/pv-index/cas/db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48.pdf",
+        "raw/pv-index/cas/6bfa09fc0543b1318586d7c3161c979e31197246f85d7721405c761c49715281.pdf",
+        "raw/pv-index/cas/4aa4314ae4863b15c678503b77b81376617454946c7ca8c33b2fcec97c17e304.pdf",
+        "raw/pv-index/cas/52780a7e91c0a778f1f073dfd781a90abc1942171e1cd4eecc78de6908fecd8c.pdf",
+        "raw/pv-index/cas/41c0afebff1f64371b096245e16e8ea8282ff3b798db62e046b911ccc4db443b.pdf",
+        "raw/pv-index/cas/bd7597813365e6448721336cdbd3815d7867df45e2af6292f39b70f878e11c4c.pdf",
+        "raw/pv-index/cas/221e62f69c28d9bb37d678756769c328b3d5b93372b7365acc88306b8f2e8c31.pdf",
+        "raw/pv-index/cas/8b32e0e81c2a3ea4c790724f4885a152495f5c1f76fcba0b064b2ad02702b774.pdf",
+        "raw/pv-index/cas/d53ea36e48ede6d668f0538bf2b412c7780b464aa0d8f5ceaa047ff1b6cf7c3a.pdf",
+        "raw/pv-index/cas/6eecc4b50afafed3e698f99b665edac329fb1409945a433f6b75fdb42074e140.pdf",
+        "raw/pv-index/cas/13c05f4d90c7882da4db4ae647f4904cb264acc469e840945c63c8bdf7e2c7db.pdf",
+        "raw/pv-index/cas/6336be2557542c26ca74efaf7926ce08af30c5c1f76a56ddb4ff9aef2bbc14d6.pdf",
+        "raw/pv-index/cas/918984ee2e2e11da570bc16258f8f1ae9e2290537fdc2dc6b1a236d66ce041c5.pdf",
+        "raw/pv-index/cas/83cb503128da7da94483f3c8071b2ce4725b9aa445b62816668bcb11c70aa6c9.pdf",
+        "raw/pv-index/cas/c76beda724c5763b959f60ce120501efd2b4dae778defcffd24f23b24ed2cd25.pdf"
+      ]
+    }
+  },
+  "historical_endpoint_evidence": {
+    "target_config": "acquisition/config/s3-target.json",
+    "guard_commit": "0ea922acdeb53e5dafa7a02232c8c3a1466c2975",
+    "target_at_guard_commit": {
+      "endpoint": "https://s3.bhs.io.cloud.ovh.net",
+      "region": "bhs",
+      "bucket": "sentropic-geo"
+    },
+    "common_guard": {
+      "source": "acquisition/src/lib/s3.ts:110-145",
+      "behavior": "s3Client rejects an explicit endpoint/region that differs from the declared target, then constructs S3Client with the declared endpoint and region; BUCKET is s3Target().bucket."
+    },
+    "inventory_run": {
+      "report": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json",
+      "report_commit": "f42e09c009242d7de73288fbc81d85534e1da7e8",
+      "guard_commit_is_ancestor": true,
+      "s3_client_call": "acquisition/src/_pv-ocr-pages-inventory.ts:473",
+      "size_measurement": "acquisition/src/_pv-ocr-pages-inventory.ts:248-252 (HeadObject Bucket=BUCKET, Key=key; ContentLength)"
+    },
+    "ocr_stop_run": {
+      "report": "work/coverage/pv-ocr-186-stage-known-001-r2-20260729T125514Z.json",
+      "report_commit": "4a0233a79d3ecdf23a56006af53347866a5aa46c",
+      "guard_commit_is_ancestor": true,
+      "s3_client_call": "acquisition/src/pv-ocr-186-stage.ts:387",
+      "size_comparison": "acquisition/src/pv-ocr-186-stage.ts:410-415 (objectHead against BUCKET then compares ContentLength)"
+    }
+  },
+  "checks": [
+    {
+      "storage_key": "raw/pv-index/cas/00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80",
+      "recalculated_sha256": "00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80",
+      "comparison": "EQUAL",
+      "get_content_length": 6745215,
+      "streamed_bytes": 6745215,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638",
+      "recalculated_sha256": "00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638",
+      "comparison": "EQUAL",
+      "get_content_length": 292468,
+      "streamed_bytes": 292468,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669",
+      "recalculated_sha256": "01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669",
+      "comparison": "EQUAL",
+      "get_content_length": 4117077,
+      "streamed_bytes": 4117077,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad",
+      "recalculated_sha256": "018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad",
+      "comparison": "EQUAL",
+      "get_content_length": 640448,
+      "streamed_bytes": 640448,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3",
+      "recalculated_sha256": "01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3",
+      "comparison": "EQUAL",
+      "get_content_length": 2612843,
+      "streamed_bytes": 2612843,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67",
+      "recalculated_sha256": "02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67",
+      "comparison": "EQUAL",
+      "get_content_length": 37032,
+      "streamed_bytes": 37032,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e",
+      "recalculated_sha256": "0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e",
+      "comparison": "EQUAL",
+      "get_content_length": 5636223,
+      "streamed_bytes": 5636223,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd",
+      "recalculated_sha256": "04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd",
+      "comparison": "EQUAL",
+      "get_content_length": 1834745,
+      "streamed_bytes": 1834745,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036",
+      "recalculated_sha256": "07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036",
+      "comparison": "EQUAL",
+      "get_content_length": 1522460,
+      "streamed_bytes": 1522460,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858.pdf",
+      "category": "named_by_ocr_stop",
+      "expected_sha256": "080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858",
+      "recalculated_sha256": "080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858",
+      "comparison": "EQUAL",
+      "get_content_length": 555651,
+      "streamed_bytes": 555651,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1289f0b63a24d59ea01e8f3c3131a6424fab9d7b2d3af5002c5941e694b39767.pdf",
+      "category": "random_indexed_success",
+      "expected_sha256": "1289f0b63a24d59ea01e8f3c3131a6424fab9d7b2d3af5002c5941e694b39767",
+      "recalculated_sha256": "1289f0b63a24d59ea01e8f3c3131a6424fab9d7b2d3af5002c5941e694b39767",
+      "comparison": "EQUAL",
+      "get_content_length": 843874,
+      "streamed_bytes": 843874,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5807e37b9eaa728fd63dc48dadddb53cc1c54d806fd0a2d8bbe997cb11bd3205.pdf",
+      "category": "random_indexed_success",
+      "expected_sha256": "5807e37b9eaa728fd63dc48dadddb53cc1c54d806fd0a2d8bbe997cb11bd3205",
+      "recalculated_sha256": "5807e37b9eaa728fd63dc48dadddb53cc1c54d806fd0a2d8bbe997cb11bd3205",
+      "comparison": "EQUAL",
+      "get_content_length": 257215,
+      "streamed_bytes": 257215,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/7b2f91aab65bf872240a6d7e40b5a13c8ddcefd4c8e88ae3a189ea5cdda41d9d.pdf",
+      "category": "random_indexed_success",
+      "expected_sha256": "7b2f91aab65bf872240a6d7e40b5a13c8ddcefd4c8e88ae3a189ea5cdda41d9d",
+      "recalculated_sha256": "7b2f91aab65bf872240a6d7e40b5a13c8ddcefd4c8e88ae3a189ea5cdda41d9d",
+      "comparison": "EQUAL",
+      "get_content_length": 274370,
+      "streamed_bytes": 274370,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/051da8a9a5777f6cd8a179a21caa1f4c9dd340666a6f93969833147a8c41e8eb.pdf",
+      "category": "random_indexed_success",
+      "expected_sha256": "051da8a9a5777f6cd8a179a21caa1f4c9dd340666a6f93969833147a8c41e8eb",
+      "recalculated_sha256": "051da8a9a5777f6cd8a179a21caa1f4c9dd340666a6f93969833147a8c41e8eb",
+      "comparison": "EQUAL",
+      "get_content_length": 169490,
+      "streamed_bytes": 169490,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b8f8f611c4c7ea516a232dcea30c98dce72d44fd8e3b8c2c0d08acbd80222ba7.pdf",
+      "category": "random_indexed_success",
+      "expected_sha256": "b8f8f611c4c7ea516a232dcea30c98dce72d44fd8e3b8c2c0d08acbd80222ba7",
+      "recalculated_sha256": "b8f8f611c4c7ea516a232dcea30c98dce72d44fd8e3b8c2c0d08acbd80222ba7",
+      "comparison": "EQUAL",
+      "get_content_length": 427497,
+      "streamed_bytes": 427497,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48",
+      "recalculated_sha256": "db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48",
+      "comparison": "EQUAL",
+      "get_content_length": 4919067,
+      "streamed_bytes": 4919067,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6bfa09fc0543b1318586d7c3161c979e31197246f85d7721405c761c49715281.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "6bfa09fc0543b1318586d7c3161c979e31197246f85d7721405c761c49715281",
+      "recalculated_sha256": "6bfa09fc0543b1318586d7c3161c979e31197246f85d7721405c761c49715281",
+      "comparison": "EQUAL",
+      "get_content_length": 361934,
+      "streamed_bytes": 361934,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4aa4314ae4863b15c678503b77b81376617454946c7ca8c33b2fcec97c17e304.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "4aa4314ae4863b15c678503b77b81376617454946c7ca8c33b2fcec97c17e304",
+      "recalculated_sha256": "4aa4314ae4863b15c678503b77b81376617454946c7ca8c33b2fcec97c17e304",
+      "comparison": "EQUAL",
+      "get_content_length": 430838,
+      "streamed_bytes": 430838,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/52780a7e91c0a778f1f073dfd781a90abc1942171e1cd4eecc78de6908fecd8c.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "52780a7e91c0a778f1f073dfd781a90abc1942171e1cd4eecc78de6908fecd8c",
+      "recalculated_sha256": "52780a7e91c0a778f1f073dfd781a90abc1942171e1cd4eecc78de6908fecd8c",
+      "comparison": "EQUAL",
+      "get_content_length": 75434,
+      "streamed_bytes": 75434,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/41c0afebff1f64371b096245e16e8ea8282ff3b798db62e046b911ccc4db443b.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "41c0afebff1f64371b096245e16e8ea8282ff3b798db62e046b911ccc4db443b",
+      "recalculated_sha256": "41c0afebff1f64371b096245e16e8ea8282ff3b798db62e046b911ccc4db443b",
+      "comparison": "EQUAL",
+      "get_content_length": 102541,
+      "streamed_bytes": 102541,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/bd7597813365e6448721336cdbd3815d7867df45e2af6292f39b70f878e11c4c.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "bd7597813365e6448721336cdbd3815d7867df45e2af6292f39b70f878e11c4c",
+      "recalculated_sha256": "bd7597813365e6448721336cdbd3815d7867df45e2af6292f39b70f878e11c4c",
+      "comparison": "EQUAL",
+      "get_content_length": 160027,
+      "streamed_bytes": 160027,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/221e62f69c28d9bb37d678756769c328b3d5b93372b7365acc88306b8f2e8c31.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "221e62f69c28d9bb37d678756769c328b3d5b93372b7365acc88306b8f2e8c31",
+      "recalculated_sha256": "221e62f69c28d9bb37d678756769c328b3d5b93372b7365acc88306b8f2e8c31",
+      "comparison": "EQUAL",
+      "get_content_length": 110650,
+      "streamed_bytes": 110650,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8b32e0e81c2a3ea4c790724f4885a152495f5c1f76fcba0b064b2ad02702b774.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "8b32e0e81c2a3ea4c790724f4885a152495f5c1f76fcba0b064b2ad02702b774",
+      "recalculated_sha256": "8b32e0e81c2a3ea4c790724f4885a152495f5c1f76fcba0b064b2ad02702b774",
+      "comparison": "EQUAL",
+      "get_content_length": 690500,
+      "streamed_bytes": 690500,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d53ea36e48ede6d668f0538bf2b412c7780b464aa0d8f5ceaa047ff1b6cf7c3a.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "d53ea36e48ede6d668f0538bf2b412c7780b464aa0d8f5ceaa047ff1b6cf7c3a",
+      "recalculated_sha256": "d53ea36e48ede6d668f0538bf2b412c7780b464aa0d8f5ceaa047ff1b6cf7c3a",
+      "comparison": "EQUAL",
+      "get_content_length": 266032,
+      "streamed_bytes": 266032,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6eecc4b50afafed3e698f99b665edac329fb1409945a433f6b75fdb42074e140.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "6eecc4b50afafed3e698f99b665edac329fb1409945a433f6b75fdb42074e140",
+      "recalculated_sha256": "6eecc4b50afafed3e698f99b665edac329fb1409945a433f6b75fdb42074e140",
+      "comparison": "EQUAL",
+      "get_content_length": 395039,
+      "streamed_bytes": 395039,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/13c05f4d90c7882da4db4ae647f4904cb264acc469e840945c63c8bdf7e2c7db.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "13c05f4d90c7882da4db4ae647f4904cb264acc469e840945c63c8bdf7e2c7db",
+      "recalculated_sha256": "13c05f4d90c7882da4db4ae647f4904cb264acc469e840945c63c8bdf7e2c7db",
+      "comparison": "EQUAL",
+      "get_content_length": 159165,
+      "streamed_bytes": 159165,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6336be2557542c26ca74efaf7926ce08af30c5c1f76a56ddb4ff9aef2bbc14d6.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "6336be2557542c26ca74efaf7926ce08af30c5c1f76a56ddb4ff9aef2bbc14d6",
+      "recalculated_sha256": "6336be2557542c26ca74efaf7926ce08af30c5c1f76a56ddb4ff9aef2bbc14d6",
+      "comparison": "EQUAL",
+      "get_content_length": 75374,
+      "streamed_bytes": 75374,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/918984ee2e2e11da570bc16258f8f1ae9e2290537fdc2dc6b1a236d66ce041c5.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "918984ee2e2e11da570bc16258f8f1ae9e2290537fdc2dc6b1a236d66ce041c5",
+      "recalculated_sha256": "918984ee2e2e11da570bc16258f8f1ae9e2290537fdc2dc6b1a236d66ce041c5",
+      "comparison": "EQUAL",
+      "get_content_length": 26631,
+      "streamed_bytes": 26631,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/83cb503128da7da94483f3c8071b2ce4725b9aa445b62816668bcb11c70aa6c9.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "83cb503128da7da94483f3c8071b2ce4725b9aa445b62816668bcb11c70aa6c9",
+      "recalculated_sha256": "83cb503128da7da94483f3c8071b2ce4725b9aa445b62816668bcb11c70aa6c9",
+      "comparison": "EQUAL",
+      "get_content_length": 143486,
+      "streamed_bytes": 143486,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c76beda724c5763b959f60ce120501efd2b4dae778defcffd24f23b24ed2cd25.pdf",
+      "category": "random_other_cas",
+      "expected_sha256": "c76beda724c5763b959f60ce120501efd2b4dae778defcffd24f23b24ed2cd25",
+      "recalculated_sha256": "c76beda724c5763b959f60ce120501efd2b4dae778defcffd24f23b24ed2cd25",
+      "comparison": "EQUAL",
+      "get_content_length": 384026,
+      "streamed_bytes": 384026,
+      "content_length_matches_streamed_bytes": true,
+      "error": null
+    }
+  ],
+  "summary": {
+    "requested": 30,
+    "attempted": 30,
+    "equal": 30,
+    "different": 0,
+    "unknown": 0,
+    "conclusion": "CAS_HEALTHY",
+    "inventory_fault": {
+      "source": "acquisition/src/_pv-ocr-pages-inventory.ts:312",
+      "association_line": "acquisition/src/_pv-ocr-pages-inventory.ts:318",
+      "measurement": "L'inventaire a bien mesuré HeadObject.ContentLength du même objet CAS à acquisition/src/_pv-ocr-pages-inventory.ts:248-252 (pas une URL d'origine, redirection ou préfixe homonyme).",
+      "finding": "uniqueRows est mesuré dans son ordre d'insertion à :474, puis uniqueDocuments trie seulement les clés à :312 et associe metadata[index] à la clé triée à :318. Les tailles sont donc attribuées à d'autres clés.",
+      "permutation_evidence": {
+        "inventory_report": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json",
+        "inventory_documents": 186,
+        "inventory_content_lengths_are_unique": true,
+        "named_current_lengths_reassigned_in_inventory": [
+          {
+            "storage_key": "raw/pv-index/cas/00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80.pdf",
+            "inventory_content_length": 450089,
+            "current_content_length": 6745215,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638.pdf",
+            "inventory_content_length": 555651,
+            "current_content_length": 292468,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/77d41c86eef3c29a750dc5c0a05361444ca719fe75a94631a099c996060e9139.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669.pdf",
+            "inventory_content_length": 1834745,
+            "current_content_length": 4117077,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/6dfdffcff5f65bb7f3deb7d5578de63ed71a54ac2d9d9ec735ecef5d87f822be.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad.pdf",
+            "inventory_content_length": 4247612,
+            "current_content_length": 640448,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/ce872f6eb65b42a538eaec007a46f5b4f9360dc7205eacfc433bf7301282f256.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3.pdf",
+            "inventory_content_length": 3420856,
+            "current_content_length": 2612843,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/ce30007511991d078ee4e89291c6cf041d884a13679500b5c20c6777822d160e.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67.pdf",
+            "inventory_content_length": 3015949,
+            "current_content_length": 37032,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e.pdf",
+            "inventory_content_length": 2921085,
+            "current_content_length": 5636223,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/6d9dea567f9457ae965fe539e5dbc154dc843fe9362d67066b6cbec776fd4635.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd.pdf",
+            "inventory_content_length": 4680487,
+            "current_content_length": 1834745,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036.pdf",
+            "inventory_content_length": 1838121,
+            "current_content_length": 1522460,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48.pdf"
+          },
+          {
+            "storage_key": "raw/pv-index/cas/080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858.pdf",
+            "inventory_content_length": 3721089,
+            "current_content_length": 555651,
+            "inventory_key_holding_current_length": "raw/pv-index/cas/00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638.pdf"
+          }
+        ]
+      }
+    }
+  }
+}
