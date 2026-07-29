@@ -207,7 +207,56 @@ export function kubectlApplyArgs(args: Pick<Args, "kubeconfig" | "namespace">): 
   return ["--kubeconfig", args.kubeconfig, "-n", args.namespace, "apply", "-f", "-"];
 }
 
+interface K8sTarget {
+  server: string;
+  cluster: string;
+  namespace: string;
+}
+
+/** Cible declaree dans le depot; c'est elle qui fait foi, pas le kubeconfig fourni. */
+export function k8sTarget(): K8sTarget {
+  const path = new URL("../config/k8s-target.json", import.meta.url);
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as Partial<K8sTarget>;
+  if (!parsed.server || !parsed.cluster || !parsed.namespace) {
+    throw new Error("acquisition/config/k8s-target.json incomplet: server, cluster et namespace sont requis");
+  }
+  return { server: parsed.server, cluster: parsed.cluster, namespace: parsed.namespace };
+}
+
+/**
+ * Refuse d'appliquer sur un cluster autre que celui declare.
+ *
+ * `--kubeconfig` etait deja obligatoire, mais rien ne verifiait QUEL cluster ce
+ * fichier designe. Le 2026-07-29, l'outillage a donc cree un CronJob de capture
+ * sur SCALEWAY — cadence toutes les 2 minutes, pods en Error — et c'est l'equipe k8s qui l'a vu
+ * depuis chez elle. Rien de notre cote ne pouvait le signaler: un apply reussi
+ * sur le mauvais cluster ressemble exactement a un apply reussi.
+ */
+function assertDeclaredCluster(args: Args): void {
+  const target = k8sTarget();
+  const view = spawnSync(
+    "kubectl",
+    ["--kubeconfig", args.kubeconfig, "config", "view", "--minify", "-o", "jsonpath={.clusters[0].cluster.server}"],
+    { encoding: "utf8" },
+  );
+  if (view.status !== 0) {
+    throw new Error(`kubectl config view a échoué sur ${args.kubeconfig}: ${(view.stderr || "statut inconnu").trim()}`);
+  }
+  const server = view.stdout.trim();
+  if (server !== target.server) {
+    throw new Error(
+      `cluster ${server || "(vide)"} ne correspond pas a la cible declaree ${target.server} ` +
+        `(acquisition/config/k8s-target.json). Une bascule de cluster se declare DANS LE DEPOT; ` +
+        `le kubeconfig ${args.kubeconfig} designe un autre cluster.`,
+    );
+  }
+  if (args.namespace !== target.namespace) {
+    throw new Error(`namespace ${args.namespace} ne correspond pas a la cible declaree ${target.namespace}`);
+  }
+}
+
 function apply(args: Args, manifest: string): void {
+  assertDeclaredCluster(args);
   const result = spawnSync("kubectl", kubectlApplyArgs(args), {
     input: manifest,
     encoding: "utf8",
