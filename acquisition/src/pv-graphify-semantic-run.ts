@@ -24,6 +24,7 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 
 import {
   extractPvSemantic,
+  printedMunicipalityOwners,
   type GraphifySemanticExtraction,
   type MunicipalityGazetteerEntry,
   type MunicipalLotGazetteer,
@@ -80,6 +81,7 @@ interface LotGazetteerReport {
 
 interface ParsedArgs {
   readonly classifications: readonly string[];
+  readonly universe: string | null;
   readonly control: number | null;
   readonly all: boolean;
   readonly storageKeys: readonly string[];
@@ -99,8 +101,20 @@ interface GraphifyRunResult {
   readonly exit_code: number;
   readonly stdout: string;
   readonly stderr: string;
-  readonly nodes: number | null;
-  readonly edges: number | null;
+  readonly nodes: number;
+  readonly edges: number;
+}
+
+type DocumentOutcome =
+  | "INDEXED"
+  | "OWNER_NOT_CONFIRMED"
+  | "CONTAMINATION_OWNER_MISMATCH"
+  | "GRAPHIFY_FAILED"
+  | "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED";
+
+interface OwnerScopeReport {
+  readonly status: "CONFIRMED" | "NOT_CONFIRMED" | "CONTAMINATION_OWNER_MISMATCH";
+  readonly printed_owner_slugs: readonly string[];
 }
 
 interface ControlDocumentReport {
@@ -120,6 +134,9 @@ interface ControlDocumentReport {
     };
   }[]>>;
   readonly graphify: GraphifyRunResult;
+  readonly outcome: DocumentOutcome;
+  readonly owner_scope: OwnerScopeReport;
+  readonly failure_reason: string | null;
   readonly manual_verification: "UNVERIFIED";
 }
 
@@ -141,7 +158,7 @@ interface MunicipalizeResult {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH] [--out=PATH]");
   process.exit(0);
 }
 
@@ -153,8 +170,15 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   const controlValue = values("control").at(-1);
   const all = argv.includes("--all");
   const storageKeys = values("storage-key");
+  const universeValues = values("universe");
+  if (universeValues.length > 1) throw new Error("--universe ne peut apparaître qu'une fois");
+  const universe = universeValues[0] === undefined ? null : resolve(ROOT, universeValues[0]);
+  if (universe !== null && !universe.startsWith(`${ROOT}/`)) throw new Error("--universe doit rester dans le dépôt");
   if (storageKeys.some((key) => !key)) throw new Error("--storage-key doit être une clé CAS non vide");
   if (new Set(storageKeys).size !== storageKeys.length) throw new Error("--storage-key ne peut pas être répété");
+  if (universe !== null && (values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined)) {
+    throw new Error("--universe est exclusif de --classification, --storage-key, --all et --control");
+  }
   if (storageKeys.length > 0 && (all || controlValue !== undefined)) {
     throw new Error("--storage-key est exclusif de --all et --control");
   }
@@ -175,7 +199,8 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   const timestamp = new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z");
   return {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
-    control: all ? null : control,
+    universe,
+    control: universe === null ? (all ? null : control) : null,
     all,
     storageKeys,
     batchSize,
@@ -210,6 +235,34 @@ function readClassificationLines(path: string): ClassificationLine[] {
     });
   }
   return eligible;
+}
+
+/** Read the committed S3-CAS universe without treating it as a classification. */
+function readRealUniverseBatch(path: string): ClassificationLine[] {
+  const raw: unknown = JSON.parse(readFileSync(path, "utf8"));
+  if (!isRecord(raw) || raw.contract !== "pv-graphify-semantic-real-universe/v1") {
+    throw new Error(`univers PV réel invalide: ${path}`);
+  }
+  const batch = raw.batch;
+  if (!isRecord(batch) || !Array.isArray(batch.selected_documents)) {
+    throw new Error(`univers PV réel sans batch sélectionné: ${path}`);
+  }
+  const selected: ClassificationLine[] = [];
+  for (const [index, value] of batch.selected_documents.entries()) {
+    if (!isRecord(value)) throw new Error(`${path}.batch.selected_documents[${index}] invalide`);
+    selected.push({
+      slug: requiredString(value, "slug", `${path}.batch.selected_documents[${index}]`),
+      municipality_name: requiredString(value, "municipality_name", `${path}.batch.selected_documents[${index}]`),
+      url: requiredString(value, "url", `${path}.batch.selected_documents[${index}]`),
+      storage_key: requiredString(value, "storage_key", `${path}.batch.selected_documents[${index}]`),
+      classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+    });
+  }
+  if (selected.length === 0) throw new Error(`univers PV réel sans document indexable: ${path}`);
+  if (new Set(selected.map((document) => document.storage_key)).size !== selected.length) {
+    throw new Error(`univers PV réel avec clé CAS dupliquée: ${path}`);
+  }
+  return selected;
 }
 
 function uniqueEligible(lines: readonly ClassificationLine[]): ClassificationLine[] {
@@ -690,12 +743,12 @@ async function runGraphify(inputDirectory: string, semanticPath: string, outputD
       exit_code: 0,
       stdout: stdout.slice(-4000),
       stderr: stderr.slice(-4000),
-      nodes: count ? Number(count[1]) : null,
-      edges: count ? Number(count[2]) : null,
+      nodes: count ? Number(count[1]) : 0,
+      edges: count ? Number(count[2]) : 0,
     };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    return { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: null, edges: null };
+    return { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: 0, edges: 0 };
   }
 }
 
@@ -735,46 +788,90 @@ async function processDocument(
   gazetteer: MunicipalizeResult,
   workspace: string,
 ): Promise<ControlDocumentReport> {
-  const documentDirectory = resolve(workspace, document.slug, document.storage_key.slice(-16));
-  const inputDirectory = resolve(documentDirectory, "input");
-  mkdirSync(inputDirectory, { recursive: true });
-  const pdfPath = resolve(inputDirectory, "captured.pdf");
-  const textPath = resolve(inputDirectory, "document.txt");
-  writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
-  const text = await textFromCapturedPdf(pdfPath);
-  writeFileSync(textPath, text, "utf8");
-  const semantic = extractPvSemantic({
-    source_file: "document.txt",
-    source_id: document.storage_key,
-    source_url: document.url,
-    municipality_slug: document.slug,
-    text,
-  }, municipalities, gazetteer.zone, gazetteer.lot);
-  const semanticPath = resolve(documentDirectory, "semantic.json");
-  writeAtomic(semanticPath, semantic);
-  const graphify = await runGraphify(inputDirectory, semanticPath, documentDirectory);
-  return {
-    slug: document.slug,
-    municipality_name: document.municipality_name,
-    url: document.url,
-    storage_key: document.storage_key,
-    source_file: "document.txt",
-    entity_counts: reportCounts(semantic),
-    entities: reportEntities(semantic),
-    graphify,
-    manual_verification: "UNVERIFIED",
-  };
+  try {
+    const documentDirectory = resolve(workspace, document.slug, document.storage_key.slice(-16));
+    const inputDirectory = resolve(documentDirectory, "input");
+    mkdirSync(inputDirectory, { recursive: true });
+    const pdfPath = resolve(inputDirectory, "captured.pdf");
+    const textPath = resolve(inputDirectory, "document.txt");
+    writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
+    const text = await textFromCapturedPdf(pdfPath);
+    writeFileSync(textPath, text, "utf8");
+    const printedOwnerSlugs = printedMunicipalityOwners(text, municipalities)
+      .map((municipality) => municipality.slug)
+      .sort((left, right) => left.localeCompare(right));
+    const ownerScope: OwnerScopeReport = printedOwnerSlugs.includes(document.slug)
+      ? { status: "CONFIRMED", printed_owner_slugs: printedOwnerSlugs }
+      : printedOwnerSlugs.length > 0
+        ? { status: "CONTAMINATION_OWNER_MISMATCH", printed_owner_slugs: printedOwnerSlugs }
+        : { status: "NOT_CONFIRMED", printed_owner_slugs: [] };
+    const semantic = extractPvSemantic({
+      source_file: "document.txt",
+      source_id: document.storage_key,
+      source_url: document.url,
+      municipality_slug: document.slug,
+      text,
+    }, municipalities, gazetteer.zone, gazetteer.lot);
+    const semanticPath = resolve(documentDirectory, "semantic.json");
+    writeAtomic(semanticPath, semantic);
+    const graphify = await runGraphify(inputDirectory, semanticPath, documentDirectory);
+    const outcome: DocumentOutcome = graphify.exit_code !== 0
+      ? "GRAPHIFY_FAILED"
+      : ownerScope.status === "CONTAMINATION_OWNER_MISMATCH"
+        ? "CONTAMINATION_OWNER_MISMATCH"
+        : ownerScope.status === "NOT_CONFIRMED"
+          ? "OWNER_NOT_CONFIRMED"
+          : graphify.nodes > 0
+            ? "INDEXED"
+            : "GRAPHIFY_FAILED";
+    return {
+      slug: document.slug,
+      municipality_name: document.municipality_name,
+      url: document.url,
+      storage_key: document.storage_key,
+      source_file: "document.txt",
+      entity_counts: reportCounts(semantic),
+      entities: reportEntities(semantic),
+      graphify,
+      outcome,
+      owner_scope: ownerScope,
+      failure_reason: outcome === "GRAPHIFY_FAILED"
+        ? (graphify.stderr || "Graphify a produit zéro nœud malgré un propriétaire confirmé")
+        : null,
+      manual_verification: "UNVERIFIED",
+    };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      slug: document.slug,
+      municipality_name: document.municipality_name,
+      url: document.url,
+      storage_key: document.storage_key,
+      source_file: "document.txt",
+      entity_counts: {},
+      entities: {},
+      graphify: { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: 0, edges: 0 },
+      outcome: "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      owner_scope: { status: "NOT_CONFIRMED", printed_owner_slugs: [] },
+      failure_reason: message.slice(-4000),
+      manual_verification: "UNVERIFIED",
+    };
+  }
 }
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const paths = args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS;
-  const eligibleRecords = paths.flatMap(readClassificationLines);
+  const paths = args.universe === null
+    ? (args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS)
+    : [];
+  const eligibleRecords = args.universe === null ? paths.flatMap(readClassificationLines) : readRealUniverseBatch(args.universe);
   const eligible = uniqueEligible(eligibleRecords);
-  const batch = args.all && args.batchSize !== null
+  const batch = args.universe === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const selected = args.storageKeys.length > 0
+  const selected = args.universe !== null
+    ? eligible
+    : args.storageKeys.length > 0
     ? selectStorageKeys(eligible, args.storageKeys)
     : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   assertS3RunEnvironment();
@@ -827,8 +924,26 @@ async function main(): Promise<void> {
   const workspace = resolve(ROOT, "work", "graphify", `pv-semantic-${new Date().toISOString().replace(/[-:]/gu, "").replace(/\..+/u, "Z")}`);
   const documents: ControlDocumentReport[] = [];
   for (const document of selected) {
-    const gazetteer = await materializeForSlug(document.slug);
-    documents.push(await processDocument(document, municipalities, gazetteer, workspace));
+    try {
+      const gazetteer = await materializeForSlug(document.slug);
+      documents.push(await processDocument(document, municipalities, gazetteer, workspace));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      documents.push({
+        slug: document.slug,
+        municipality_name: document.municipality_name,
+        url: document.url,
+        storage_key: document.storage_key,
+        source_file: "document.txt",
+        entity_counts: {},
+        entities: {},
+        graphify: { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: 0, edges: 0 },
+        outcome: "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+        owner_scope: { status: "NOT_CONFIRMED", printed_owner_slugs: [] },
+        failure_reason: message.slice(-4000),
+        manual_verification: "UNVERIFIED",
+      });
+    }
   }
 
   const entityCounts: Record<string, number> = {};
@@ -840,15 +955,26 @@ async function main(): Promise<void> {
   let zoneEntities = 0;
   let lotEntities = 0;
   const matchDetails: MatchDetail[] = [];
+  const outcomes: Record<DocumentOutcome, number> = {
+    INDEXED: 0,
+    OWNER_NOT_CONFIRMED: 0,
+    CONTAMINATION_OWNER_MISMATCH: 0,
+    GRAPHIFY_FAILED: 0,
+    DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED: 0,
+  };
   for (const document of documents) {
+    outcomes[document.outcome]++;
+    if (document.graphify.exit_code !== 0) {
+      graphifyFailures++;
+      continue;
+    }
     for (const [type, count] of Object.entries(document.entity_counts)) entityCounts[type] = (entityCounts[type] ?? 0) + count;
     if ((document.entity_counts.Zone ?? 0) > 0) documentsWithZone += 1;
     if ((document.entity_counts.LotCadastre ?? 0) > 0) documentsWithLot += 1;
     zoneEntities += document.entity_counts.Zone ?? 0;
     lotEntities += document.entity_counts.LotCadastre ?? 0;
-    graphNodes += document.graphify.nodes ?? 0;
-    graphEdges += document.graphify.edges ?? 0;
-    if (document.graphify.exit_code !== 0) graphifyFailures++;
+    graphNodes += document.graphify.nodes;
+    graphEdges += document.graphify.edges;
     for (const zone of document.entities.Zone ?? []) {
       matchDetails.push({
         municipality_slug: document.slug,
@@ -888,7 +1014,10 @@ async function main(): Promise<void> {
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
-    mode: args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
+    mode: args.universe !== null
+      ? "real-cas-universe-batch"
+      : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
+    ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_records: eligibleRecords.length,
     eligible_documents: eligible.length,
@@ -897,6 +1026,18 @@ async function main(): Promise<void> {
     ...(batch ? { batch } : {}),
     ...(args.storageKeys.length > 0 ? { supersedes_storage_keys: selected.map((document) => document.storage_key) } : {}),
     selected_documents: documents.length,
+    indexing: {
+      indexed_pvs: outcomes.INDEXED,
+      failed_pvs: documents.length - outcomes.INDEXED,
+      outcomes,
+      owner_contaminations: documents
+        .filter((document) => document.outcome === "CONTAMINATION_OWNER_MISMATCH")
+        .map((document) => ({
+          storage_key: document.storage_key,
+          manifest_scope_slug: document.slug,
+          printed_owner_slugs: document.owner_scope.printed_owner_slugs,
+        })),
+    },
     entity_counts: entityCounts,
     graphify: { nodes: graphNodes, edges: graphEdges, failures: graphifyFailures },
     matches: {
@@ -930,6 +1071,7 @@ async function main(): Promise<void> {
   console.log(JSON.stringify({
     report: args.output.slice(ROOT.length + 1),
     selected_documents: report.selected_documents,
+    indexing: report.indexing,
     entity_counts: report.entity_counts,
     graphify: report.graphify,
     manual_verification: report.manual_verification,
