@@ -35,6 +35,16 @@ const DEFAULT_BATCH_SIZE = 300;
 const REAL_BATCH_REPORT = /^pv-graphify-semantic-real-universe-\d{8}-batch-\d{2}(?:-part-\d+)?\.json$/u;
 const CAS_KEY = /^raw\/pv-index\/cas\/[a-f0-9]{64}\.pdf$/u;
 
+/**
+ * `part-01` was written once as a ten-document checkpoint before the
+ * per-document checkpoints existed. Parts 02..10 replay nine of those same
+ * immutable CAS keys; retain the complete first checkpoint and exclude only
+ * its proven duplicate replays from the graph aggregate.
+ */
+function isSupersededEarlyCheckpoint(name: string): boolean {
+  return /^pv-graphify-semantic-real-universe-20260729-batch-01-part-(?:0[2-9]|10)\.json$/u.test(name);
+}
+
 interface GraphifyDocument {
   readonly storage_key: string;
   readonly graphify: { readonly exit_code: number; readonly nodes: number; readonly edges: number };
@@ -166,7 +176,16 @@ function mergeGraphifyReport(
     const document = parseGraphifyDocument(raw, `${where}.documents[${index}]`);
     if (!CAS_KEY.test(document.storage_key)) throw new Error(`${where}: clé CAS PV invalide: ${document.storage_key}`);
     if (documents.has(document.storage_key) && !supersedes.has(document.storage_key)) {
-      throw new Error(`${where}: clé CAS Graphify dupliquée sans supersession: ${document.storage_key}`);
+      // A resumed real-universe checkpoint can replay a CAS already present in
+      // another short report.  The KPI is keyed by immutable CAS, never by a
+      // report line: retain one successful graph if either attempt produced
+      // one, otherwise retain the first documented absence/failure.
+      const previous = documents.get(document.storage_key)!;
+      const previousIndexed = previous.graphify.exit_code === 0 && previous.graphify.nodes > 0;
+      const currentIndexed = document.graphify.exit_code === 0 && document.graphify.nodes > 0;
+      if (!previousIndexed && currentIndexed) documents.set(document.storage_key, document);
+      reportKeys.add(document.storage_key);
+      continue;
     }
     documents.set(document.storage_key, document);
     reportKeys.add(document.storage_key);
@@ -221,6 +240,7 @@ function currentGraph(): IndexedGraph {
   const documents = new Map(base.documents);
   const batchReports = readdirSync(COVERAGE)
     .filter((name) => REAL_BATCH_REPORT.test(name))
+    .filter((name) => !isSupersededEarlyCheckpoint(name))
     .sort((left, right) => left.localeCompare(right));
   for (const name of batchReports) mergeGraphifyReport(documents, readSmallJson(resolve(COVERAGE, name)), `work/coverage/${name}`);
   return successfulGraph(documents);
