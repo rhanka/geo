@@ -59,10 +59,21 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: geo-pv-backlog-lease
-# ⚠️ Ces trois-la EXISTENT sur le cluster, verifie avant d'ecrire ce fichier.
+# ⚠️ Ces sujets EXISTENT sur le cluster, verifie avant d'ecrire ce fichier.
 # `geo-pv-backlog-pv-control-20260728-01-sa` n'existe PAS malgre son CronJob :
 # lier un sujet fantome ne casse rien et ne fait rien, ce qui en ferait
 # exactement le genre de ligne qu'on croit active alors qu'elle dort.
+#
+# ⚠️ CETTE LISTE NOMMATIVE EST UN DEFAUT DE CONCEPTION, PAS UNE PRECAUTION.
+# Chaque campagne fabrique un ServiceAccount NEUF, donc chaque campagne recree le
+# meme HTTP 403 sur `leases` tant que personne n'a pense a rallonger cette liste.
+# C'est arrive deux fois : d'abord 7 heures sur b32de19169bc, puis a nouveau le
+# 2026-07-29 sur a-0112-0117, dont les ticks echouaient toutes les deux minutes
+# pendant que le compteur de capture restait fige.
+# La sortie n'est pas d'allonger la liste indefiniment : c'est que la soumission de
+# campagne depose elle-meme son Role et son RoleBinding, ce que fait desormais
+# `pv-probable-backlog-cronjob.yaml`. Ce fichier-ci reste le filet des campagnes
+# anterieures a ce changement.
 subjects:
   - kind: ServiceAccount
     name: geo-pv-backlog-pv-control-20260728-02-sa
@@ -72,4 +83,7 @@ subjects:
     namespace: geo
   - kind: ServiceAccount
     name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+    namespace: geo
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-probable-20260728-a-0112-0117-sa
     namespace: geo
