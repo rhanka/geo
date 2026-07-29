@@ -1,0 +1,1298 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:15:52.256Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4800,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 4,
+    "failed_pvs": 16,
+    "outcomes": {
+      "INDEXED": 4,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 16
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 4,
+    "Document": 4,
+    "CouncilSession": 4,
+    "MeetingDate": 4,
+    "Resolution": 13,
+    "Regulation": 31,
+    "Zone": 2,
+    "LotCadastre": 6
+  },
+  "graphify": {
+    "nodes": 68,
+    "edges": 18,
+    "failures": 16
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 6,
+    "documents_with_zone": 1,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/0bdb874776bac19f0f41ba4fe343e54f42aeb6d322e1b9099469e3a9f2d929c0.pdf",
+      "entity_type": "Zone",
+      "value": "RF-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:637",
+      "quote": "                                 situés en zone RF-1 est de 50 mètres;"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/0bdb874776bac19f0f41ba4fe343e54f42aeb6d322e1b9099469e3a9f2d929c0.pdf",
+      "entity_type": "Zone",
+      "value": "ID-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:697",
+      "quote": "                                 minimale pour les lots situés en zone ID-5 est de"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/17b9c2259a550ce47d60f615677ffc298b91ac9120211715bf6f763f6ab271f0.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3979971",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:554",
+      "quote": "         CONSIDÉRANT QUE       le demandeur est propriétaire du lot 3 979 971 du"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/17b9c2259a550ce47d60f615677ffc298b91ac9120211715bf6f763f6ab271f0.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3979982",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:558",
+      "quote": "         CONSIDÉRANT QUE       le lot 3 979 982 du cadastre du Québec a fait l’objet"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/21e9301c297b82e2b0bb0fea0586fe1a28d894386dd12fa4057001f690c3e753.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3980947",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:162",
+      "quote": "                                le lot 3 980 947 du cadastre du Québec,"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/21e9301c297b82e2b0bb0fea0586fe1a28d894386dd12fa4057001f690c3e753.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4238892",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:164",
+      "quote": "                                partie de la rue Montcalm étant le lot 4 238 892 du"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/21e9301c297b82e2b0bb0fea0586fe1a28d894386dd12fa4057001f690c3e753.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3979492",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:167",
+      "quote": "                                Champlain étant les lots 3 979 492 et 3 980 980 du"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/21e9301c297b82e2b0bb0fea0586fe1a28d894386dd12fa4057001f690c3e753.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3980980",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:208",
+      "quote": "                     d. Une partie de la rue de Champlain étant le lot 3 980 980"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 56,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 3796,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z",
+  "documents": [
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2023-11-08%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/c2d94d9622f2d45dfefc50fdf078a48d95458fb1e23e0c3a26c47e03b2f5225a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/7e03b2f5225a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/7e03b2f5225a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2025-07-09%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ce17306319fde870d9644e56fdcaabe2c131bf84a8eb492152994e72752a91d9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/4e72752a91d9.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/4e72752a91d9.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2022-07-13%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/cefc2b1de68b0bb041aa6e3fff74f18b07a20b62a05c1ffe7ad38ac6a7e37653.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8ac6a7e37653.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8ac6a7e37653.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-07-10%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/d147f649d78470459810dadb117f85beffdece423fd21de6e780ae754ad4aa8a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/ae754ad4aa8a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/ae754ad4aa8a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2025-04-09%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/d58b9ad3d711da05312eda392e9b10766abadc34090cefacd8278a95400fe114.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8a95400fe114.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8a95400fe114.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2023-06-14%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/d5fd74b261f6739174750ec23db7fb15c032ca9fbc4f9547a899cc06a2c4a29f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/cc06a2c4a29f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/cc06a2c4a29f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-11-13%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/d7a49cad25a9e2fd57749b5e9fa3e59543a919ac38ab798a19f1afcff5b19d10.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/afcff5b19d10.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/afcff5b19d10.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2022-02-09%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/dbcb67c3b5edc94556ba5cdda6c5286801ed29f79af61a4c32c59c03b50605c1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/9c03b50605c1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/9c03b50605c1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2022-03-09%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/e8b523511f8fefbf2611d018f195deb59b97046ba4a9d0868ca9dcb3de9b1106.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/dcb3de9b1106.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/dcb3de9b1106.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-08-14%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ea1189b781adb2b02103ce4310dc29bae26e600cfd1824006f5a1e6f8020b10b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/1e6f8020b10b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/1e6f8020b10b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2022-12-14%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ed79a93d654fba1dbfed3552ce7e018dafc6f3c422abed180d5c6971f3e5ecd1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/6971f3e5ecd1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/6971f3e5ecd1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2023-09-13%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f0e2b51730909aba2630d3ad30fafa201e7f6a221137d5fc436fa4f50b127e48.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/a4f50b127e48.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/a4f50b127e48.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-12-19%20S%C3%A9ance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f55fbf8c5fc92787fa0f6b64cb344d58738290bab366e7df7d6643f9ecb23eca.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/43f9ecb23eca.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/43f9ecb23eca.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-05-08%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fc784cb0f28ec3bcf5703231b3d5689f4d4208068f669e6c8b3d8abaa26249f5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8abaa26249f5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8abaa26249f5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-04-30%20S%C3%A9ance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fe53d7238b57a3d504b2a9844e2ca624b88da1646aa9de0fce194265ebb9d334.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/4265ebb9d334.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/4265ebb9d334.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2021-05-25%20S%C3%A9ance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ffba7e169624f9609dd8efcd717dcc4acbc1d209a830a17e7b4b8cbf6c911078.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8cbf6c911078.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/duhamel-ouest/8cbf6c911078.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%202025-12-02.pdf",
+      "storage_key": "raw/pv-index/cas/0bdb874776bac19f0f41ba4fe343e54f42aeb6d322e1b9099469e3a9f2d929c0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 6,
+        "Zone": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/12/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/12/02          Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/12/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/12/02          Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "073-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "           CONSIDÉRANT             la résolution 073-25 concernant l’adjudication du"
+            }
+          },
+          {
+            "label": "071-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:457",
+              "quote": "         CONSIDÉRANT             les résolutions 071-25, 127-25 et 170-25 des"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "523-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:297",
+              "quote": "         qu’à une prochaine séance du conseil le projet de règlement no 523-25"
+            }
+          },
+          {
+            "label": "524-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "         séance du conseil le projet de règlement no 524-25 (RM-660) concernant"
+            }
+          },
+          {
+            "label": "402-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:366",
+              "quote": "                                   Règlement no 402-20 relatif à la gestion"
+            }
+          },
+          {
+            "label": "516-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:576",
+              "quote": "         CONFORMÉMENT AU RÈGLEMENT NO 516-25 SUR LES USAGES"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:754",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          },
+          {
+            "label": "525-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:870",
+              "quote": "         une prochaine séance du conseil le projet de règlement no 525-25 (RM-"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RF-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:637",
+              "quote": "                                 situés en zone RF-1 est de 50 mètres;"
+            }
+          },
+          {
+            "label": "ID-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:697",
+              "quote": "                                 minimale pour les lots situés en zone ID-5 est de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/e3a9f2d929c0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/e3a9f2d929c0.pdf/.graphify/.graphify_extract.json — 14 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham",
+          "frelighsburg"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%202%20juillet%202025(1).pdf",
+      "storage_key": "raw/pv-index/cas/17b9c2259a550ce47d60f615677ffc298b91ac9120211715bf6f763f6ab271f0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5,
+        "Regulation": 13,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/07/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/07/02   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/07/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/07/02   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "073-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:200",
+              "quote": "           CONSIDÉRANT QUE         le conseil, par sa résolution 073-25, a octroyé le"
+            }
+          },
+          {
+            "label": "082-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "                                   et la résolution 082-25;"
+            }
+          },
+          {
+            "label": "084-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:298",
+              "quote": "                                 et la résolution 084-25;"
+            }
+          },
+          {
+            "label": "083-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:347",
+              "quote": "                                 et la résolution 083-25;"
+            }
+          },
+          {
+            "label": "133-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:479",
+              "quote": "         CONSIDÉRANT QUE         cette demande fait suite à la résolution 133-25"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "518-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "             a) ajout du sujet « 13.1 Retrait du règlement no 518-25 décrétant une"
+            }
+          },
+          {
+            "label": "449-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "         PRÉVUE AU RÈGLEMENT NO 449-22 DÉCRÉTANT LA DÉLÉGATION DE"
+            }
+          },
+          {
+            "label": "455-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:226",
+              "quote": "                   emprunt de 1 400 000 $ (Parapluie) et du Règlement no 455-22"
+            }
+          },
+          {
+            "label": "471-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:231",
+              "quote": "                   Règlement no 471-23 décrétant des dépenses en immobilisation et"
+            }
+          },
+          {
+            "label": "511-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:242",
+              "quote": "143-25     6.1. ADOPTION DU RÈGLEMENT NO 511-25 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "514-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "144-25   6.2. ADOPTION DU RÈGLEMENT NO 514-25 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "516-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:340",
+              "quote": "145-25   6.3. ADOPTION DU RÈGLEMENT NO 516-25 SUR LES USAGES"
+            }
+          },
+          {
+            "label": "519-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:384",
+              "quote": "         PARTICIPATION PUBLIQUE POUR LE PROJET DE RÈGLEMENT NO 519-25"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:395",
+              "quote": "         l’urbanisme et du Règlement no 444-22 décrétant la politique de"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:486",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          },
+          {
+            "label": "500-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:817",
+              "quote": "                 Règlement no 500-24 décrétant des dépenses en immobilisation et"
+            }
+          },
+          {
+            "label": "520-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:897",
+              "quote": "         13.2. AVIS DE MOTION POUR LE PROJET DE RÈGLEMENT NO 520-25"
+            }
+          },
+          {
+            "label": "408-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:921",
+              "quote": "             - Règlement no 408-20 décrétant des dépenses en immobilisations"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3979971",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:554",
+              "quote": "         CONSIDÉRANT QUE       le demandeur est propriétaire du lot 3 979 971 du"
+            }
+          },
+          {
+            "label": "3979982",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:558",
+              "quote": "         CONSIDÉRANT QUE       le lot 3 979 982 du cadastre du Québec a fait l’objet"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/763f6ab271f0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/763f6ab271f0.pdf/.graphify/.graphify_extract.json — 24 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cowansville",
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_7_fevrier2023.pdf",
+      "storage_key": "raw/pv-index/cas/19fa64fe88d380e0fec91e6c2aca892ade8a28ff71b27e9255ae7d922061e07f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/02/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/02/07   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/02/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/02/07   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "232-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:222",
+              "quote": "018-23   MODIFICATION DE LA RÉSOLUTION 232-22 – NOMINATION DES"
+            }
+          },
+          {
+            "label": "304-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:254",
+              "quote": "         CONSIDÉRANT           la résolution 304-22 autorisant l’embauche de"
+            }
+          },
+          {
+            "label": "278-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:296",
+              "quote": "                             Ville, autorisée par la résolution 278-22, pour y"
+            }
+          },
+          {
+            "label": "054-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:643",
+              "quote": "         CONSIDÉRANT                la résolution 054-14 adoptée le 3 février 2014 qui"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "463-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:127",
+              "quote": "016-23   ADOPTION DU RÈGLEMENT NO 463-23 DE GESTION CONTRACTUELLE"
+            }
+          },
+          {
+            "label": "402-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "                                contractuelle, lequel abroge le règlement no 402-20;"
+            }
+          },
+          {
+            "label": "461-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:326",
+              "quote": "         AVIS DE MOTION SUR LE RÈGLEMENT NO 461-23 MODIFIANT LE PLAN"
+            }
+          },
+          {
+            "label": "462-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:392",
+              "quote": "         AVIS DE MOTION SUR LE RÈGLEMENT NO 462-23 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "466-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:456",
+              "quote": "         AVIS DE MOTION SUR LE RÈGLEMENT NO 466-23 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:505",
+              "quote": "                  conformément au Règlement no 444-22 décrétant la politique de"
+            }
+          },
+          {
+            "label": "441-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:652",
+              "quote": "         CONSIDÉRANT QUE            cette rue privée est assujettie au Règlement no 441-21"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/7d922061e07f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/7d922061e07f.pdf/.graphify/.graphify_extract.json — 15 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_7_mars2023.pdf",
+      "storage_key": "raw/pv-index/cas/21e9301c297b82e2b0bb0fea0586fe1a28d894386dd12fa4057001f690c3e753.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 5,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/03/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/03/07   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/03/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/03/07   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "314-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:298",
+              "quote": "040-23   MODIFICATION DE LA RÉSOLUTION 314-22 - CONTRAT 2022-005"
+            }
+          },
+          {
+            "label": "290-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:563",
+              "quote": "044-23   ABROGATION DE LA RÉSOLUTION 290-22 - AUTORISATION DE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "467-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "038-23   ADOPTION DU RÈGLEMENT NO 467-23 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "464-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:256",
+              "quote": "                Règlement no 464-22 relatif à la taxation, aux compensations et à"
+            }
+          },
+          {
+            "label": "448-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:526",
+              "quote": "         DÉPÔT DU RAPPORT DE RÉTROACTION POUR LE RÈGLEMENT NO 448-22"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:533",
+              "quote": "         l’aménagement et l’urbanisme et au Règlement no 444-22 décrétant la"
+            }
+          },
+          {
+            "label": "454-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:537",
+              "quote": "         DÉPÔT DU RAPPORT DE RÉTROACTION POUR LE RÈGLEMENT NO 454-22"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3980947",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "                                le lot 3 980 947 du cadastre du Québec,"
+            }
+          },
+          {
+            "label": "4238892",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:164",
+              "quote": "                                partie de la rue Montcalm étant le lot 4 238 892 du"
+            }
+          },
+          {
+            "label": "3979492",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "                                Champlain étant les lots 3 979 492 et 3 980 980 du"
+            }
+          },
+          {
+            "label": "3980980",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "                     d. Une partie de la rue de Champlain étant le lot 3 980 980"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/01f690c3e753.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181510Z/dunham/01f690c3e753.pdf/.graphify/.graphify_extract.json — 15 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
