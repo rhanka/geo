@@ -1,0 +1,662 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T11:48:45.454Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1820,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 18,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 14,
+      "CONTAMINATION_OWNER_MISMATCH": 4,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/8e2706ceb12aa1c14e8d2c4fe62723858559e20adbbbc49bee42f8f421e27fad.pdf",
+        "manifest_scope_slug": "bolton-ouest",
+        "printed_owner_slugs": [
+          "saint-armand"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/adabadbf99370d04f8230a64549e8ef73cbd19f9927853c319c2076428b6f528.pdf",
+        "manifest_scope_slug": "bolton-ouest",
+        "printed_owner_slugs": [
+          "frelighsburg"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/b369ab9661d07d86dc05b4cb62a6c17089a101ea6637b15bfcc40b684bfef6bf.pdf",
+        "manifest_scope_slug": "bolton-ouest",
+        "printed_owner_slugs": [
+          "saint-etienne-de-bolton"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/014d40c49115a2f4bf1103e027153a5daf8329620d08a5d81d8b3b4dbd3b3db8.pdf",
+        "manifest_scope_slug": "bonaventure",
+        "printed_owner_slugs": [
+          "saint-elzear--bonaventure",
+          "saint-elzear--la-nouvelle-beauce"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "LotCadastre": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1
+  },
+  "graphify": {
+    "nodes": 7,
+    "edges": 4,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "bolton-ouest",
+      "storage_key": "raw/pv-index/cas/754b7e008127799af7e94186b1d127dbf9aeafc710d01b08abdbdc7299fcc311.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5193104",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:20",
+      "quote": "               lot 5 193 104 of the cadastre of Québec, located on Paramount Road"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 118,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 3973,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z",
+  "documents": [
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704092346-notice-of-special-meeting-may-29.pdf",
+      "storage_key": "raw/pv-index/cas/64b85f252726bc0f8bc9fc363d0b6a305b4cbd3bea9bf410ddba0e177ee0d3fe.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/0e177ee0d3fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/0e177ee0d3fe.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250709101001-agenda-jully-7-2025.pdf",
+      "storage_key": "raw/pv-index/cas/754b7e008127799af7e94186b1d127dbf9aeafc710d01b08abdbdc7299fcc311.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bolton-Ouest",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "        7.2. Mayor’s report on highlights of the financial report and the external auditor’s"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "        7.2. Mayor’s report on highlights of the financial report and the external auditor’s"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5193104",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "               lot 5 193 104 of the cadastre of Québec, located on Paramount Road"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/dc7299fcc311.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/dc7299fcc311.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bolton-ouest"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251017111315-avis-public-seance-extraordinaire-20-octobre.pdf",
+      "storage_key": "raw/pv-index/cas/861f1c5fb3aee8f924d9d566dc9a4168ef5530495fc6e8300f59db7e1d964001.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bolton-Ouest",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance extraordinaire du conseil municipal – 20 octobre 2025"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Report de la séance prévue le 15 octobre 2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/db7e1d964001.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/db7e1d964001.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bolton-ouest"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250906092412-00-agenda-08-28-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8e2706ceb12aa1c14e8d2c4fe62723858559e20adbbbc49bee42f8f421e27fad.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/f8f421e27fad.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/f8f421e27fad.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "saint-armand"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704091516-agenda-may-5-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8edbff40b96df765e668c12ae2af10f1b61cb401fe107e1816b69c8e2e6f425c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/9c8e2e6f425c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/9c8e2e6f425c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704092257-notice-of-special-meeting-may-26.pdf",
+      "storage_key": "raw/pv-index/cas/94fb8360d876ca7143d5487836e3ad15def90229053f592622adeb4d85b8b25c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/eb4d85b8b25c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/eb4d85b8b25c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251204150621-pv-final-01-10-2025-dv-eng.pdf",
+      "storage_key": "raw/pv-index/cas/9749b8f64d2c7f431383da4582973b676c4ffcc493da6f87bef216661b55a359.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/16661b55a359.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/16661b55a359.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704091616-agenda-special-meeting-april-15-2025.pdf",
+      "storage_key": "raw/pv-index/cas/9d49d3a48df210b724b28370afe4406c9be05687679af56774dc65adf90fbd08.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/65adf90fbd08.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/65adf90fbd08.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251213133834-00-agenda-15-12-2025.pdf",
+      "storage_key": "raw/pv-index/cas/adabadbf99370d04f8230a64549e8ef73cbd19f9927853c319c2076428b6f528.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/076428b6f528.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/076428b6f528.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "frelighsburg"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20260109105121-00-agenda-12-01-2026.pdf",
+      "storage_key": "raw/pv-index/cas/b369ab9661d07d86dc05b4cb62a6c17089a101ea6637b15bfcc40b684bfef6bf.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/0b684bfef6bf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/0b684bfef6bf.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "saint-etienne-de-bolton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704091111-agenda-mars-3-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b79cb77fb4f8302fc7f9faf5576577b4bd131a4639ded30944b45915e1c59a03.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/5915e1c59a03.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/5915e1c59a03.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20260122090143-00-agenda-extra-15-12-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ba496636a3e2ec135c3cb9221e83a8951d822cfde93403a1ef7d73e4cca06561.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/73e4cca06561.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/73e4cca06561.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704090613-agenda-january-13-2025.pdf",
+      "storage_key": "raw/pv-index/cas/c901834e8ed40328b850e700a1353b654f938cb2d0f3c562569c57c2f94c26ed.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/57c2f94c26ed.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/57c2f94c26ed.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704091921-agenda-june-2-2025.pdf",
+      "storage_key": "raw/pv-index/cas/da6df1a64390eeb59444735c76b30382b2b05d784ee5851b2f94cd10860a11eb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/cd10860a11eb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/cd10860a11eb.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20260508095411-00-agenda-2026-05-11.pdf",
+      "storage_key": "raw/pv-index/cas/e2fdd911e407d8d4d7339937e9c8a356540a31db1dedf42b0c23e5cd55370f43.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/e5cd55370f43.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/e5cd55370f43.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704092026-notice-of-special-meeting-june-12-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f410ddc544e913d0104b4b005d185694c3b919b7748afbacc7f2416e46078e26.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/416e46078e26.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/416e46078e26.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20260109122905-avis-public-seance-ext-budget-2026-eng-jan19.pdf",
+      "storage_key": "raw/pv-index/cas/f5eea43a100aa0e205f491b05a26f9962a7339a3f57a1f6f56d1bf4cdcb351ac.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/bf4cdcb351ac.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/bf4cdcb351ac.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20251114114516-public-notice-extraordinary-meeting-november-17.pdf",
+      "storage_key": "raw/pv-index/cas/fc22691974cc8d71f094d8bfc434f9879c4e868cd0770cfe10c61741e51702ae.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/1741e51702ae.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bolton-ouest/1741e51702ae.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bonaventure",
+      "municipality_name": "Bonaventure",
+      "url": "https://villebonaventure.ca/wp-content/uploads/2025/03/17-03-2015-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/014d40c49115a2f4bf1103e027153a5daf8329620d08a5d81d8b3b4dbd3b3db8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bonaventure/3b4dbd3b3db8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bonaventure/3b4dbd3b3db8.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "saint-elzear--bonaventure",
+          "saint-elzear--la-nouvelle-beauce"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bonaventure",
+      "municipality_name": "Bonaventure",
+      "url": "https://villebonaventure.ca/wp-content/uploads/2025/09/Ordre-du-jour-02-10-2025.pdf",
+      "storage_key": "raw/pv-index/cas/01eabc7fe4d34fd08a448f433e3b8d6c683750d3f2ffc536c19bf3138433d44d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bonaventure/f3138433d44d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114814Z/bonaventure/f3138433d44d.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
