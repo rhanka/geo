@@ -1,0 +1,204 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:34:37.642Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6320,
+    "limit": 20,
+    "requested": 20,
+    "selected": 3,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/fda5b2ab02a0eae120ec0db27f81d32de87a094c9a733330889acfca5f2de468.pdf",
+      "raw/pv-index/cas/fdabae12aeba8cc4937df2f3f066413ea0505c1f07cd7598d8debd0a976dae5a.pdf",
+      "raw/pv-index/cas/fdc38bf4f380de5cbceb20cf4f852768854d9cb19ce3898bd0c6082c6452e5b1.pdf",
+      "raw/pv-index/cas/fdc5b0353b987f6b1a0232ef67e30e63d42454d3a92031422434b5e93ab99ef8.pdf",
+      "raw/pv-index/cas/fdcb6ba456c451958cff3f0c7ea02b8a4bdcba9ebea61e59c881bf1a7a79caea.pdf",
+      "raw/pv-index/cas/fdede8801e1b0e36a2d670cf20f39bee4cf505c282062d8b375192ee201f1e63.pdf",
+      "raw/pv-index/cas/fdee21e9997933977f7dd309af760e8020430a6d7507f557ab61bbab89d50b17.pdf",
+      "raw/pv-index/cas/fdff92ec795d1ffde2d9db9291c94a7cd5cde08e47bb136058ac119b4ebe437c.pdf",
+      "raw/pv-index/cas/fe193d9c1166c6f6906719f510c19b42e0675361da28a86db69dd669978d608a.pdf",
+      "raw/pv-index/cas/fe2636bad92e9872adcedae43d43813dc69e70c59f294cdbe012f29b806370d0.pdf",
+      "raw/pv-index/cas/fe2638c4f26784e5f833c888ab417764c0c1d785e6ca60e50ab8ca1c266157de.pdf",
+      "raw/pv-index/cas/fe3890da419a3de3d4550872c857d1793dbd6102b3e6d8fb4bf59769d04ce904.pdf",
+      "raw/pv-index/cas/fe4ec26af0cd4a7329fda1d814dc2a87130dc988f6e3ce9fc8a89adf3c0341a1.pdf",
+      "raw/pv-index/cas/fe58394436a08d3ccd8649065246144d80a56157a8ad74efe735429a7fdb1867.pdf",
+      "raw/pv-index/cas/fe5b8200548b8f2e4b4e493a72f85a4d814c3c13a5c50a41057bf44204989b84.pdf",
+      "raw/pv-index/cas/fe74a6634a19a8ae188c82f6e4781777dd6eac085aeeca2c7597e0bd72c6b14b.pdf",
+      "raw/pv-index/cas/fe803ddc02968284dca80c6acea1f529c1c9cc43d9bcbfe81ad09d8aa683d3fa.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 3,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 2
+  },
+  "graphify": {
+    "nodes": 4,
+    "edges": 1,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 122,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 7550,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z",
+  "documents": [
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20extraordinaire%20du%2028%20janvier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/fdb6b794d6af126403227a6f90f5a9f1072cc2949c44262b97a8b3182a5c3644.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/lepiphanie/b3182a5c3644.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/lepiphanie/b3182a5c3644.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2024-04-30%20S%C3%A9ance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fe53d7238b57a3d504b2a9844e2ca624b88da1646aa9de0fce194265ebb9d334.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/duhamel-ouest/4265ebb9d334.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/duhamel-ouest/4265ebb9d334.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/Proces-verbal%20-%20Seance%20ordinaire%20du%205%20mai%202025%20.pdf",
+      "storage_key": "raw/pv-index/cas/fe80ca08193588098748e5cc8a847bd330be44a9d55824f67c25c432ba35da0c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "285-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "\f         6.1 - Avis de motion et dépôt du projet de Règlement 285-2025 amendant"
+            }
+          },
+          {
+            "label": "241-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "               le Règlement 241-2022 Code d'éthique et de déontologie des élus-es"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/beaulac-garthby/c432ba35da0c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193424Z/beaulac-garthby/c432ba35da0c.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "adstock",
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
