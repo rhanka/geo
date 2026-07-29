@@ -14,7 +14,7 @@ import { createHash } from "node:crypto";
 import { createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { finished } from "node:stream/promises";
 import { once } from "node:events";
-import { resolve } from "node:path";
+import { basename, resolve } from "node:path";
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
@@ -23,10 +23,10 @@ import { BUCKET, s3Client } from "./lib/s3.js";
 const ROOT = resolve(import.meta.dirname, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
 const TRIAGE = resolve(COVERAGE, "pv-extraction-failures-triage-20260729T115007Z.json");
+const INVENTORY = resolve(COVERAGE, "pv-ocr-inventaire-pages-20260729T122121Z.json");
 const MAX_LOCAL_JSON_BYTES = 5 * 1024 * 1024;
 const LOT_SIZE = 20;
 const MISMATCH_STOP = 3;
-const LOCAL_PDF_DIRECTORY = resolve(ROOT, "work", "graphify", "pv-lecture-visuelle-lot-01");
 
 type JsonRecord = Record<string, unknown>;
 type IntegrityOutcome = "SHA_PASSED" | "CAS_SHA_MISMATCH" | "GET_FAILED";
@@ -35,8 +35,16 @@ interface SelectedDocument {
   readonly storage_key: string;
   readonly slug: string;
   readonly municipality_name: string | null;
-  readonly triage_content_length: number | null;
-  readonly triage_page_count: number | null;
+}
+
+interface DocumentSelection {
+  readonly description: string;
+  readonly prior_lot_report: string | null;
+  readonly source_inventory: string | null;
+  readonly candidate_cas_keys: number;
+  readonly prior_lot_collisions_avoided: number;
+  readonly remaining_after_dedupe: number;
+  readonly documents: SelectedDocument[];
 }
 
 interface GuardResult extends SelectedDocument {
@@ -61,6 +69,12 @@ function requiredArg(name: string): string {
   return values[0]!;
 }
 
+function optionalArg(name: string): string | null {
+  const values = process.argv.slice(2).filter((value) => value.startsWith(`--${name}=`)).map((value) => value.slice(name.length + 3));
+  if (values.length > 1 || values.some((value) => !value)) throw new Error(`--${name}=... est optionnel mais ne peut apparaître qu'une fois`);
+  return values[0] ?? null;
+}
+
 function record(value: unknown, where: string): JsonRecord {
   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error(`${where}: objet requis`);
   return value as JsonRecord;
@@ -76,21 +90,35 @@ function nullableString(value: unknown, where: string): string | null {
   return string(value, where);
 }
 
-function nullableInteger(value: unknown, where: string): number | null {
-  if (value === null || value === undefined) return null;
-  if (!Number.isSafeInteger(value) || (value as number) < 0) throw new Error(`${where}: entier positif ou null requis`);
-  return value as number;
-}
-
 function expectedSha256(key: string): string {
   const match = /^raw\/pv-index\/cas\/([a-f0-9]{64})\.pdf$/u.exec(key);
   if (!match) throw new Error(`${key}: clé CAS PDF sha256 requise`);
   return match[1]!;
 }
 
-function selectedDocuments(): SelectedDocument[] {
+function readSmallJson(path: string): JsonRecord {
+  if (statSync(path).size > MAX_LOCAL_JSON_BYTES) throw new Error(`${path}: lecture > 5 MiB interdite`);
+  return record(JSON.parse(readFileSync(path, "utf8")), path);
+}
+
+function priorLotCasKeys(path: string): Set<string> {
+  const prior = readSmallJson(path);
+  if (!Array.isArray(prior.documents) || prior.documents.length !== LOT_SIZE) {
+    throw new Error(`${path}: documents[20] requis pour la déduplication du lot antérieur`);
+  }
+  const keys = prior.documents.map((value, index) => {
+    const document = record(value, `${path}.documents[${index}]`);
+    const key = string(document.storage_key, `${path}.documents[${index}].storage_key`);
+    expectedSha256(key);
+    return key;
+  });
+  if (new Set(keys).size !== LOT_SIZE) throw new Error(`${path}: clés CAS du lot antérieur dupliquées`);
+  return new Set(keys);
+}
+
+function initialSampleSelection(): DocumentSelection {
   if (statSync(TRIAGE).size > MAX_LOCAL_JSON_BYTES) throw new Error(`${TRIAGE}: lecture > 5 MiB interdite`);
-  const triage = record(JSON.parse(readFileSync(TRIAGE, "utf8")), TRIAGE);
+  const triage = readSmallJson(TRIAGE);
   const sample = record(triage.sample, "triage.sample");
   if (sample.inspected_documents !== 30 || !Array.isArray(sample.documents) || sample.documents.length !== 30) {
     throw new Error("triage: l'échantillon pur-scan attendu de 30 documents est invalide");
@@ -99,31 +127,79 @@ function selectedDocuments(): SelectedDocument[] {
     const document = record(value, `triage.sample.documents[${index}]`);
     const key = string(document.storage_key, `triage.sample.documents[${index}].storage_key`);
     expectedSha256(key);
-    const pdfinfo = record(document.tools, `triage.sample.documents[${index}].tools`);
-    const summary = nullableString(record(pdfinfo.pdfinfo, `triage.sample.documents[${index}].tools.pdfinfo`).summary, "pdfinfo.summary");
-    const pages = summary === null ? null : (() => {
-      const match = /\bPages:\s*(\d+)\b/u.exec(summary);
-      return match ? Number(match[1]) : null;
-    })();
     return {
       storage_key: key,
       slug: string(document.slug, `triage.sample.documents[${index}].slug`),
       municipality_name: null,
-      triage_content_length: nullableInteger(document.content_length, `triage.sample.documents[${index}].content_length`),
-      triage_page_count: pages,
     };
   });
   if (new Set(documents.map((document) => document.storage_key)).size !== LOT_SIZE) throw new Error("triage: clés du lot dupliquées");
-  return documents;
+  return {
+    description: "les 20 premières entrées ordonnées de triage.sample.documents",
+    prior_lot_report: null,
+    source_inventory: null,
+    candidate_cas_keys: documents.length,
+    prior_lot_collisions_avoided: 0,
+    remaining_after_dedupe: 0,
+    documents,
+  };
+}
+
+function dedupedInventorySelection(priorReport: string): DocumentSelection {
+  const inventory = readSmallJson(INVENTORY);
+  if (inventory.input_commit !== "14c60a04" || inventory.source_triage !== "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json") {
+    throw new Error(`${INVENTORY}: ancrage triage inattendu`);
+  }
+  if (inventory.unique_failed_documents !== 186 || !Array.isArray(inventory.failed_documents) || inventory.failed_documents.length !== 186) {
+    throw new Error(`${INVENTORY}: liste fermée de 186 clés CAS requise`);
+  }
+  const candidates = inventory.failed_documents.map((value, index) => {
+    const document = record(value, `${INVENTORY}.failed_documents[${index}]`);
+    const key = string(document.storage_key, `${INVENTORY}.failed_documents[${index}].storage_key`);
+    expectedSha256(key);
+    if (!Array.isArray(document.selection_offsets) || document.selection_offsets.some((offset) => !Number.isSafeInteger(offset) || (offset as number) < 0)) {
+      throw new Error(`${INVENTORY}.failed_documents[${index}].selection_offsets: entiers positifs requis`);
+    }
+    if (document.selection_offsets.length === 0) throw new Error(`${INVENTORY}.failed_documents[${index}].selection_offsets: au moins un offset requis`);
+    return {
+      storage_key: key,
+      slug: string(document.slug, `${INVENTORY}.failed_documents[${index}].slug`),
+      municipality_name: nullableString(document.municipality_name, `${INVENTORY}.failed_documents[${index}].municipality_name`),
+      first_selection_offset: Math.min(...document.selection_offsets as number[]),
+    };
+  });
+  if (new Set(candidates.map((candidate) => candidate.storage_key)).size !== candidates.length) {
+    throw new Error(`${INVENTORY}: clés CAS dupliquées`);
+  }
+  const priorKeys = priorLotCasKeys(priorReport);
+  const collisions = candidates.filter((candidate) => priorKeys.has(candidate.storage_key));
+  if (collisions.length !== priorKeys.size) throw new Error(`${INVENTORY}: au moins une clé du lot antérieur manque de la liste des 186`);
+  const remaining = candidates
+    .filter((candidate) => !priorKeys.has(candidate.storage_key))
+    .sort((left, right) => left.first_selection_offset - right.first_selection_offset || left.storage_key.localeCompare(right.storage_key));
+  if (remaining.length !== 166) throw new Error(`${INVENTORY}: déduplication attendue 166, obtenue ${remaining.length}`);
+  return {
+    description: "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion du lot antérieur",
+    prior_lot_report: priorReport.slice(ROOT.length + 1),
+    source_inventory: "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
+    candidate_cas_keys: candidates.length,
+    prior_lot_collisions_avoided: collisions.length,
+    remaining_after_dedupe: remaining.length,
+    documents: remaining.slice(0, LOT_SIZE).map(({ first_selection_offset: _offset, ...document }) => document),
+  };
+}
+
+function selectedDocuments(priorReport: string | null): DocumentSelection {
+  return priorReport === null ? initialSampleSelection() : dedupedInventorySelection(priorReport);
 }
 
 function compactError(error: unknown): string {
   return (error instanceof Error ? error.message : String(error)).replace(/\s+/gu, " ").trim().slice(0, 1_000);
 }
 
-async function downloadAndHash(document: SelectedDocument): Promise<GuardResult> {
+async function downloadAndHash(document: SelectedDocument, workspace: string): Promise<GuardResult> {
   const expected = expectedSha256(document.storage_key);
-  const finalPath = resolve(LOCAL_PDF_DIRECTORY, `${expected}.pdf`);
+  const finalPath = resolve(workspace, `${expected}.pdf`);
   const partialPath = `${finalPath}.${process.pid}.partial`;
   let streamed = 0;
   try {
@@ -166,13 +242,18 @@ function writeAtomic(path: string, value: unknown): void {
 
 async function main(): Promise<void> {
   const output = resolve(ROOT, requiredArg("out"));
+  const priorReportArg = optionalArg("prior-report");
   if (!output.startsWith(`${COVERAGE}/`)) throw new Error("--out doit rester sous work/coverage");
   if (existsSync(output)) throw new Error(`artefact déjà présent: ${output}`);
+  const priorReport = priorReportArg === null ? null : resolve(ROOT, priorReportArg);
+  if (priorReport !== null && !priorReport.startsWith(`${COVERAGE}/`)) throw new Error("--prior-report doit rester sous work/coverage");
   assertS3RunEnvironment();
-  mkdirSync(LOCAL_PDF_DIRECTORY, { recursive: true });
+  const workspace = resolve(ROOT, "work", "graphify", basename(output, ".json"));
+  mkdirSync(workspace, { recursive: true });
   const results: GuardResult[] = [];
-  for (const document of selectedDocuments()) {
-    const result = await downloadAndHash(document);
+  const selection = selectedDocuments(priorReport);
+  for (const document of selection.documents) {
+    const result = await downloadAndHash(document, workspace);
     results.push(result);
     const mismatches = results.filter((value) => value.outcome === "CAS_SHA_MISMATCH").length;
     if (mismatches > MISMATCH_STOP) break;
@@ -186,7 +267,14 @@ async function main(): Promise<void> {
     generated_at: new Date().toISOString(),
     read_only: true,
     source_triage: "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
-    selection: "les 20 premières entrées ordonnées de triage.sample.documents",
+    selection: {
+      description: selection.description,
+      prior_lot_report: selection.prior_lot_report,
+      source_inventory: selection.source_inventory,
+      candidate_cas_keys: selection.candidate_cas_keys,
+      prior_lot_collisions_avoided: selection.prior_lot_collisions_avoided,
+      remaining_after_dedupe: selection.remaining_after_dedupe,
+    },
     guard: {
       before_visual_reading: true,
       transport: "S3 GetObject",
@@ -195,7 +283,7 @@ async function main(): Promise<void> {
       stopped_for_integrity_incident: stopped,
     },
     summary: { requested: LOT_SIZE, attempted: results.length, sha_passed: passed, cas_sha_mismatch: mismatches, get_failed: getFailed },
-    local_visual_workspace: LOCAL_PDF_DIRECTORY,
+    local_visual_workspace: workspace,
     documents: results,
   };
   writeAtomic(output, report);
