@@ -8,7 +8,7 @@
 
 import { createReadStream } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 
 import { resolveLicense, type CollectionMeta, type License } from "@sentropic/geo-core";
 
@@ -66,7 +66,9 @@ export class FileProvider implements FeatureProvider {
     }
     for (const relPath of entries.filter((name) => name.endsWith(".geojson")).sort()) {
       const entry = await this.#indexOne(relPath);
-      if (entry) map.set(entry.info.id, entry);
+      if (!entry) continue;
+      const existing = map.get(entry.info.id);
+      map.set(entry.info.id, existing ? selectServedEntry(existing, entry) : entry);
     }
     return map;
   }
@@ -194,6 +196,35 @@ async function describeCollection(
     count: meta?.count ?? count,
     ...(bbox ? { extent: { bbox } } : {}),
   };
+}
+
+type CollectionLayout = "flat" | "nested";
+
+/** The nested layout is `<slug>/<slug>.geojson`; enclosing directories are not layouts. */
+function collectionLayout(geojsonPath: string): CollectionLayout {
+  const stem = stemOf(geojsonPath);
+  return basename(dirname(geojsonPath)) === stem ? "nested" : "flat";
+}
+
+function stemOf(geojsonPath: string): string {
+  return basename(geojsonPath, ".geojson");
+}
+
+/**
+ * Served-contract rule: when a collection exists in both layouts, use nested.
+ * Equal layouts keep the prior sorted, last-path-wins behavior.
+ */
+function selectServedEntry(
+  existing: FileCollectionEntry,
+  candidate: FileCollectionEntry,
+): FileCollectionEntry {
+  if (stemOf(existing.geojsonPath) !== stemOf(candidate.geojsonPath)) return candidate;
+  const existingLayout = collectionLayout(existing.geojsonPath);
+  const candidateLayout = collectionLayout(candidate.geojsonPath);
+  if (existingLayout !== candidateLayout) {
+    return candidateLayout === "nested" ? candidate : existing;
+  }
+  return candidate;
 }
 
 /** A feature's stable id: GeoJSON `id`, then `properties.geoId`, then position. */
