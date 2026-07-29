@@ -50,6 +50,7 @@ interface ClassificationEvidence {
   path: string;
   manifest_key: string;
   observations: Observation[];
+  confirmed_storage_keys: string[];
 }
 
 interface RunEvidence {
@@ -58,6 +59,8 @@ interface RunEvidence {
   finished_at: string | null;
   exit_code: number | null;
 }
+
+const CONFIRMED_CLASSIFICATION = "PV_LISIBLE_PROPRIETAIRE_CONFIRME";
 
 function required(name: string): string {
   const prefix = `--${name}=`;
@@ -97,14 +100,23 @@ function parseClassificationReport(path: string): ClassificationEvidence {
     throw new Error(`${path}: préfixe de run invalide`);
   }
   if (!Array.isArray(parsed.lines)) throw new Error(`${path}: lines invalide`);
+  const confirmedStorageKeys = new Set<string>();
   const observations = parsed.lines.map((raw, index) => {
     if (!raw || typeof raw !== "object") throw new Error(`${path}: lines[${index}] invalide`);
     const line = raw as ClassificationLine;
     if (typeof line.url !== "string") throw new Error(`${path}: lines[${index}].url invalide`);
     if (line.storage_key !== null && typeof line.storage_key !== "string") throw new Error(`${path}: lines[${index}].storage_key invalide`);
+    if ((raw as { classification?: unknown }).classification === CONFIRMED_CLASSIFICATION && typeof line.storage_key === "string") {
+      confirmedStorageKeys.add(line.storage_key);
+    }
     return { url: canonicalCaptureUrl(line.url), storage_key: line.storage_key, origin: path };
   });
-  return { path, manifest_key: `${parsed.scope.run_prefix}/manifest.jsonl`, observations };
+  return {
+    path,
+    manifest_key: `${parsed.scope.run_prefix}/manifest.jsonl`,
+    observations,
+    confirmed_storage_keys: [...confirmedStorageKeys],
+  };
 }
 
 function parseCandidateWorklist(path: string): { path: string; urls: Set<string> } {
@@ -180,7 +192,15 @@ async function campaignObservations(
     .map((entry) => entry.key)
     .filter((key) => key.endsWith("/manifest.jsonl"))
     .sort();
-  return Promise.all(manifests.map((key) => readS3Manifest(s3, key)));
+  return Promise.all(manifests.map(async (key): Promise<RunEvidence> => {
+    const headerKey = `${key.slice(0, -"manifest.jsonl".length)}run.json`;
+    const headerHead = await objectHead(s3, headerKey);
+    // A pod can flush manifest lines before it dies or before its final
+    // run.json upload. Those bytes are useful diagnostics, but they are not a
+    // terminal capture receipt and must not enter the CAS aggregate.
+    if (!headerHead.exists) return { manifest_key: key, observations: [], finished_at: null, exit_code: null };
+    return readS3Manifest(s3, key);
+  }));
 }
 
 function signature(observation: Observation): string {
@@ -238,6 +258,9 @@ async function main(): Promise<void> {
     return;
   }
   const reports = classificationPaths.map(parseClassificationReport);
+  const confirmedClassificationCasKeys = new Set(
+    reports.flatMap((report) => report.confirmed_storage_keys),
+  );
   const campaignRuns = await campaignObservations(s3, manifest);
   const sourceRuns = new Map<string, RunEvidence>();
   const missingClassificationSourceManifests: string[] = [];
@@ -312,6 +335,7 @@ async function main(): Promise<void> {
       classification_source_manifest_count: sourceRuns.size,
       classification_source_manifest_absent: missingClassificationSourceManifests,
       classification_source_manifest_absent_new_cas_keys: missingClassificationCasKeys.size,
+      unique_confirmed_classification_cas_keys: confirmedClassificationCasKeys.size,
       all_source_manifest_count: allRuns.size,
       observations: observations.length,
       unique_observed_document_urls: observedUrls.size,
