@@ -1,0 +1,1625 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:48:07.658Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5420,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "CouncilSession": 11,
+    "MeetingDate": 11,
+    "Resolution": 7,
+    "Regulation": 25,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 93,
+    "edges": 41,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "montebello",
+      "storage_key": "raw/pv-index/cas/a2e45c41e945c40273a4db46bae7cece6693870441515c207bae66da6a623c39.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5362109",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:88",
+      "quote": " 14.5 Vente de terrain - lot 5 362 109"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 501,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 8426,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z",
+  "documents": [
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250916131712-odj-16-septembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/708fc4b094ad30a647fef777c83249b0187f0f9f1e100067a7cf1207fb3c71e7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE         MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE      SÉANCE ORDINAIRE DU 16 SEPTEMBRE 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-03-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "                 6.2 Modification de la résolution numéro 2025-03-19-Rémunération du"
+            }
+          },
+          {
+            "label": "2025-09-144",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "   travaux soumis à la résolution numéro 2025-09-144 (renouvellement de la"
+            }
+          },
+          {
+            "label": "2024-10-191",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "      résolution 2024-10-191"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/1207fb3c71e7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/1207fb3c71e7.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260313181721-ordre-du-jour-17-mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/71161be44cd7fc77fea5a6124f6eefa9da2b87829dc8aaf6f90dff6f7e1a24bc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/ff6f7e1a24bc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/ff6f7e1a24bc.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250715161958-odj-seance-ordinaire-15-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/73075c92128bee62c04a4e4a497fa99c7abd12e11ab69b10c45fec86d579beff.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 JUILLET 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE            MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 JUILLET 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE         SÉANCE ORDINAIRE DU 15 JUILLET 2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/ec86d579beff.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/ec86d579beff.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250516151747-odj-seance-ordinaire-20-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/7913abd8559d6487d7c840252415b81b9ee53b10de59a735ed0066dd5343cc77.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 MAI 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE        MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 MAI 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE     SÉANCE ORDINAIRE DU 20 MAI 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "941-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": "13.1 Adoption du règlement numéro 941-2025 abrogeant le règlement numéro"
+            }
+          },
+          {
+            "label": "966-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "13.3 Avis de motion et dépôt du projet de règlement numéro 966-2025"
+            }
+          },
+          {
+            "label": "966-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "     modifiant le règlement numéro 966-2024 relatif à la tarification"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/66dd5343cc77.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/66dd5343cc77.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260616130400-projet-ordre-du-jour-16-juin-2026.pdf",
+      "storage_key": "raw/pv-index/cas/88f05a6d87316d4c8361c54be1066beed66edc61ed0f72bbca313ef9fc5ae3ee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE ORDINAIRE DU CONSEIL DU 19 JUIN 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE ORDINAIRE DU CONSEIL DU 19 JUIN 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "961-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "13.1 Adoption du règlement numéro 961-2026 relatif aux compteurs d'eau et à"
+            }
+          },
+          {
+            "label": "966-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "13.2 Adoption du règlement numéro 966-2026 relatif à la tarification"
+            }
+          },
+          {
+            "label": "974-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "13.3 Adoption du règlement numéro 974-2026 décrétant une dépense et un"
+            }
+          },
+          {
+            "label": "975-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "13.4 Avis de motion et dépôt du projet de règlement numéro 975-2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/3ef9fc5ae3ee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/3ef9fc5ae3ee.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250610140322-odj-extraordinaire-10-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a22ee6a6ac9a1708b22e39b9e1c94bd9751f1075dc0ab8b3bf002a0d65b5b97b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/2a0d65b5b97b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/2a0d65b5b97b.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260515153625-odj-projet-seance-ordinaire-du-19-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/a2e45c41e945c40273a4db46bae7cece6693870441515c207bae66da6a623c39.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL DU CONSEIL DE LA MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL DU CONSEIL DE LA MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "961-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": " 13.1 Avis de motion et dépôt du projet de règlement numéro 961-2026 relatif à"
+            }
+          },
+          {
+            "label": "966-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": " 13.2 Avis de motion et dépôt du projet de règlement numéro 966-2026 relatif à"
+            }
+          },
+          {
+            "label": "974-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": " 13.3 Avis de motion et dépôt du projet de règlement numéro 974-2026 décrétant"
+            }
+          },
+          {
+            "label": "975-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": " 13.4 Avis de motion – règlement numéro 975-2026 portant sur l’utilisation d’un"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5362109",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": " 14.5 Vente de terrain - lot 5 362 109"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/66da6a623c39.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/66da6a623c39.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250505143646-odj-18-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/afaa24ffa1e3f6d3226b000c3db9d5f890242fe7e53dd207191efd5306f5f84e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 AVRIL 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE          MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 AVRIL 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE       SÉANCE ORDINAIRE DU 15 AVRIL 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "973-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "  13.1 Adoption du règlement numéro 973-2025 interdisant la chasse sur le"
+            }
+          },
+          {
+            "label": "941-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "  13.2 Avis de motion et dépôt du projet de règlement numéro 941-2025"
+            }
+          },
+          {
+            "label": "941-2020",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "  abrogeant le règlement numéro 941-2020 concernant les animaux et les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/fd5306f5f84e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/fd5306f5f84e.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20251030153913-odj-30-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/afeb1193c1975218aec2f3ff047ac1837258f29311f39729832b780c34d7342e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/780c34d7342e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/780c34d7342e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250217110126-odj-18-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b05df0421f243513dedce4388efa0b8f4d822f7c1e3f70361843b65a7c76e9bd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 FÉVRIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE          MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 FÉVRIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE       SÉANCE ORDINAIRE DU 18 FÉVRIER 2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b65a7c76e9bd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b65a7c76e9bd.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260520101818-ordre-du-jour-28-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/be5767fc3e120e87b7f48ecb1319037a3eb495cfc4296abe04124fce1a354ed0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "   MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "   MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/4fce1a354ed0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/4fce1a354ed0.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260115114149-ordre-du-jour-16-decembre-2025-adoption-du-budget-et-pti.pdf",
+      "storage_key": "raw/pv-index/cas/c3fc436abb1e976cce225486f9fdecd5347c5c117f40c436cba135be4be730dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/35be4be730dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/35be4be730dd.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20251216165230-ordre-du-jour-seance-ordinaire-16-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/d20ada1aeb65364bc8f15ecea4a0b4bb45887783e0b33c2bc486b30c0f668e01.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b30c0f668e01.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b30c0f668e01.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250120100326-odj-seance-ordinaire-14-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f43aef4e878ee43de4e1e578c5c81e54c96ed23bacd330dbaa4d54e76572b3b3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 JANVIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "SÉANCE            MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 JANVIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "ORDINAIRE         SÉANCE ORDINAIRE DU 21 JANVIER 2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/54e76572b3b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/54e76572b3b3.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20251118142205-odj-seance-ordinaire-18-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f71d0dafa752617eafe922d8fff17464d98f47cdd9671fc516f8b038e3c2c213.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "961-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": " 11.2 Nomination des officiers pour le règlement 961-2023 – compteurs d’eau"
+            }
+          },
+          {
+            "label": "SQ-21-002",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "      règlement numéro SQ-21-002 concernant la sécurité, la paix et l'ordre"
+            }
+          },
+          {
+            "label": "SQ-21-003",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "     règlement SQ-21-003 concernant les nuisances applicables par la Sûreté"
+            }
+          },
+          {
+            "label": "SQ-21-004",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "      règlement SQ-21-004 concernant le colportage applicable par la Sûreté du"
+            }
+          },
+          {
+            "label": "SQ-21-007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "      règlement SQ-21-007 sur les systèmes d’alarme applicable par la Sûreté"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b038e3c2c213.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/b038e3c2c213.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20251022152058-odj-seance-ordinaire-21-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f8fe6aa70e49bd29f7abbc3b98d93cf5ff9edd19ec8020f2ec88da8e6cf81af9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE          MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE       SÉANCE ORDINAIRE DU 21 OCTOBRE 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-04-73",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "                 14.2 Abrogation de la résolution numéro 2024-04-73 constituant les comités"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/da8e6cf81af9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/da8e6cf81af9.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250617094623-odj-seance-ordinaire-17-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/fa9d3c0a6e8dcbe2426edec21fa0a27e397ca921305f73e19be623a344328a7b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 JUIN 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE         MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 JUIN 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE      SÉANCE ORDINAIRE DU 17 JUIN 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-05-81",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "               7.1 Amendement à la résolution numéro 2025-05-81 - Création d’un comité RH"
+            }
+          },
+          {
+            "label": "2025-06-85",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "Le greffier a présenté la résolution numéro 2025-06-85 à la mairesse pour la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "966-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "   13.1 Adoption du règlement numéro 966-2025 modifiant le règlement 966-"
+            }
+          },
+          {
+            "label": "796-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "   13.2 Avis de motion et dépôt du projet de règlement numéro 796-2025"
+            }
+          },
+          {
+            "label": "796-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "        modifiant le règlement numéro 796-2022 relatif à la régie interne du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/23a344328a7b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/23a344328a7b.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250818094142-ordre-du-jour-projet-19-aout-2025.pdf",
+      "storage_key": "raw/pv-index/cas/fc4771d05241e3b0089cadc46319c7e6ab3dca605cb20cbbae6f71ceca54be6b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 AOÛT 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE         MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 AOÛT 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE      SÉANCE ORDINAIRE DU 19 AOÛT 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-06-102",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "      soumis à la résolution numéro 2025-06-102 (résolution de contrôle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/71ceca54be6b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/71ceca54be6b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250314151200-odj-18-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/febd176a4dcf9c513298eb7649d68f632e2405336e73ee818a1a7c4b74359dbb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "SÉANCE         MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "ORDINAIRE      SÉANCE ORDINAIRE DU 18 MARS 2025 À 19H00"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "973-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                 13.1 Avis de motion et dépôt du projet de règlement numéro 973-2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/7c4b74359dbb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montebello/7c4b74359dbb.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montmagny",
+      "municipality_name": "Montmagny",
+      "url": "https://www.ville.montmagny.qc.ca/fichiersUpload/fichiers/20250214115253-20250217-projet-site-internet.pdf",
+      "storage_key": "raw/pv-index/cas/15de879b006098782591a3b21abaea313e887d790a46e3c6507e2ed09c092dc3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montmagny",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1314",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "26   Adoption du Règlement numéro 1314 décrétant une dépense de 1 342 000 $ et un emprunt de"
+            }
+          },
+          {
+            "label": "1316",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "27   Adoption du Règlement numéro 1316 décrétant une dépense et un emprunt de 3 685 000 $"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montmagny/2ed09c092dc3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184745Z/montmagny/2ed09c092dc3.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer",
+          "montmagny"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
