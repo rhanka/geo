@@ -68,6 +68,7 @@ interface ClassificationLine {
 interface RealUniverseSelection {
   readonly candidates: readonly ClassificationLine[];
   readonly initiallyIndexedStorageKeys: ReadonlySet<string>;
+  readonly populationStorageKeys: readonly string[];
 }
 
 interface ZoneRegistryEntry {
@@ -339,7 +340,27 @@ function readRealUniverseBatch(path: string): RealUniverseSelection {
     if (typeof value !== "string" || !value) throw new Error(`${path}.indexed_graph.storage_keys[${index}] invalide`);
     initiallyIndexedStorageKeys.add(value);
   }
-  return { candidates, initiallyIndexedStorageKeys };
+  const realUniverse = raw.real_universe;
+  if (!isRecord(realUniverse) || !Array.isArray(realUniverse.documents)) {
+    throw new Error(`univers PV réel sans documents: ${path}`);
+  }
+  const populationStorageKeys = new Set(initiallyIndexedStorageKeys);
+  for (const [index, value] of realUniverse.documents.entries()) {
+    if (!isRecord(value)) throw new Error(`${path}.real_universe.documents[${index}] invalide`);
+    populationStorageKeys.add(requiredString(value, "storage_key", `${path}.real_universe.documents[${index}]`));
+  }
+  const population = raw.population;
+  if (!isRecord(population) || typeof population.unique_cas_keys !== "number" || !Number.isInteger(population.unique_cas_keys) || population.unique_cas_keys < 1) {
+    throw new Error(`population CAS invalide: ${path}`);
+  }
+  if (populationStorageKeys.size !== population.unique_cas_keys) {
+    throw new Error(`population CAS non réconciliée: ${populationStorageKeys.size}/${population.unique_cas_keys} dans ${path}`);
+  }
+  return {
+    candidates,
+    initiallyIndexedStorageKeys,
+    populationStorageKeys: [...populationStorageKeys].sort((left, right) => left.localeCompare(right)),
+  };
 }
 
 function indexedStorageKeysFromExistingReports(): Set<string> {
@@ -1029,24 +1050,37 @@ async function main(): Promise<void> {
   const batch = args.universe === null && args.ocrStage === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const requested = args.ocrStage !== null
-    ? eligible
-    : args.universe !== null
-    ? eligible.slice(args.universeOffset, args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit)
-    : args.storageKeys.length > 0
-    ? selectStorageKeys(eligible, args.storageKeys)
-    : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   const indexedStorageKeys = args.universe === null
     ? new Set<string>()
     : new Set([...realUniverse!.initiallyIndexedStorageKeys, ...indexedStorageKeysFromExistingReports()]);
+  const eligibleByStorageKey = new Map(eligible.map((document) => [document.storage_key, document]));
+  const requestedStorageKeys = args.universe === null
+    ? null
+    : realUniverse!.populationStorageKeys.slice(
+      args.universeOffset,
+      args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit,
+    );
+  const requested = args.ocrStage !== null
+    ? eligible
+    : args.universe !== null
+    ? requestedStorageKeys!.flatMap((storageKey) => {
+      const document = eligibleByStorageKey.get(storageKey);
+      return document === undefined ? [] : [document];
+    })
+    : args.storageKeys.length > 0
+    ? selectStorageKeys(eligible, args.storageKeys)
+    : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   const skippedIndexedStorageKeys = args.universe === null
     ? []
-    : requested.filter((document) => indexedStorageKeys.has(document.storage_key)).map((document) => document.storage_key);
+    : requestedStorageKeys!.filter((storageKey) => indexedStorageKeys.has(storageKey));
   const selected = args.universe === null
     ? requested
     : requested.filter((document) => !indexedStorageKeys.has(document.storage_key));
   assertS3RunEnvironment();
-  if (selected.length === 0) throw new Error("la sélection Graphify est vide");
+  if (args.universe !== null && requestedStorageKeys!.length === 0) {
+    throw new Error(`fenêtre de l'univers vide: offset=${args.universeOffset}`);
+  }
+  if (selected.length === 0 && args.universe === null) throw new Error("la sélection Graphify est vide");
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
   const registry = readZoneRegistry(ZONE_REGISTRY_PATH);
@@ -1214,7 +1248,7 @@ async function main(): Promise<void> {
       universe_selection: {
         offset: args.universeOffset,
         limit: args.universeLimit,
-        requested: requested.length,
+        requested: requestedStorageKeys!.length,
         selected: selected.length,
         skipped_indexed_cas_keys: skippedIndexedStorageKeys,
         concurrency: args.concurrency,
