@@ -1,0 +1,4083 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T16:25:40.011Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3340,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "CouncilSession": 4,
+    "MeetingDate": 4,
+    "Resolution": 260,
+    "Zone": 4,
+    "LotCadastre": 41
+  },
+  "graphify": {
+    "nodes": 353,
+    "edges": 40,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 4,
+    "lot_entities": 41,
+    "documents_with_zone": 3,
+    "documents_with_lot": 9
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "Zone",
+      "value": "H-131",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1495",
+      "quote": "  que la grille des usages et des normes de la zone H-131 exige une marge latérale"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "Zone",
+      "value": "C-233",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2176",
+      "quote": "alors que la grille des usages et des normes de la zone C-233 permet une marge avant"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6647818",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:849",
+      "quote": "                                         (exo) du lot 6 647 818 d'une superficie de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4279349",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1442",
+      "quote": "connu comme étant le lot 4 279 349, en vertu du règlement de zonage Z-3001 afin de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4278041",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1491",
+      "quote": "connu comme étant le lot 4 278 041, en vertu du règlement de zonage Z-3001 afin de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6106108",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1541",
+      "quote": "Primeau, connu comme étant les lots 6 106 108 et 6 106 109, en vertu du règlement de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6540626",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1629",
+      "quote": "Bergerie, connu comme étant le lot 6 540 626, en vertu du règlement de zonage Z-3001"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5142103",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1676",
+      "quote": "boulevard D'Youville, connu comme étant le lot 5 142 103, en vertu du règlement de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3825683",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1725",
+      "quote": "comme étant le lot 3 825 683, en vertu du règlement Z-3600 relatif aux plans d'implantation"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4052970",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1772",
+      "quote": "Nord, connu comme étant le lot 4 052 970, en vertu du règlement Z-3600 relatif aux plans"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6456613",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1867",
+      "quote": "Haute-Rivière, connu comme étant le lot 6 456 613, en vertu du règlement Z-3600 relatif"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6420809",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2206",
+      "quote": "                                      trouvant sur le lot 6 420 809 dans le secteur"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6420827",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2237",
+      "quote": "                                      trouvant sur le lot 6 420 827 dans le secteur"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4279001",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2272",
+      "quote": "                                             hauban d'Hydro-Québec sur le lot 4 279 001"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4280241",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:675",
+      "quote": "\fQUE le conseil impose un avis de réserve pour fins publiques sur le lot 4 280 241 du"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4050707",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1410",
+      "quote": "connu comme étant le lot 4 050 707, en vertu du règlement de zonage Z-3001 afin de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3825670",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1468",
+      "quote": "D'Anjou, connu comme étant le lot 3 825 670, en vertu du règlement de zonage Z-3001"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2867817",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1695",
+      "quote": "connu comme étant les lots 2 867 817, 2 867 819, 2 867 821, 2 867 822, 5 444 243 et"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5672289",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1777",
+      "quote": "« Commerce », au 72, rue McComber connu comme étant le lot 5 672 289, en permettant :"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6105622",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:126",
+      "quote": "          diligente visant une partie du lot 6 105 622 du Cadastre du Québec"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4280241",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:291",
+      "quote": "    7.19. Acquisition du lot 4 280 241, situé sur la rue Dupont Ouest au montant de 275 000 $,"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4711359",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:294",
+      "quote": "    7.20. Levée partielle de la servitude de non-accès sur une portion du lot 4 711 359 donnant"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4709146",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:303",
+      "quote": "    7.23. Avis à des fins de réserve foncière visant une partie des lots 4 709 146 et 4 709 138"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6105620",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:307",
+      "quote": "    7.25. Modification au délai accordé pour les vérifications diligentes visant le lot 6 105 620"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/7f163fe9b72479c6870fe35fdc32504b4c8423ae7bbb161f97bd3c26f2aebfad.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6105622",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:461",
+      "quote": "ATTENDU QUE les lots 6 105 622 et 6 105 598 du cadastre du Québec sont situés à"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/875091ecc823edd81702fcad3241be1aeb0b6089e3b3ccd3b33469a4674a548c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6647818",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:147",
+      "quote": "     5.15. Vente au Réseau de Transport Métropolitain (exo) du lot 6 647 818 d'une superficie"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/875091ecc823edd81702fcad3241be1aeb0b6089e3b3ccd3b33469a4674a548c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6420809",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:247",
+      "quote": "    7.16. Attribution de l'odonyme du parc Joe Lee se trouvant sur le lot 6 420 809 dans le"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/875091ecc823edd81702fcad3241be1aeb0b6089e3b3ccd3b33469a4674a548c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6420827",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:250",
+      "quote": "    7.17. Attribution de l'odonyme rue Richardson se trouvant sur le lot 6 420 827 dans le"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/875091ecc823edd81702fcad3241be1aeb0b6089e3b3ccd3b33469a4674a548c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4279001",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:254",
+      "quote": "          hauban d'Hydro-Québec sur le lot 4 279 001 appartenant à la Ville de Châteauguay"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/87967f0cca5b1cf96e1667f2c72d97fd3975838bbc531a69f03204356eae91da.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5672635",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:21",
+      "quote": "          l'expropriation du lot 5 672 635 – Terre Tho (TPH21-024)"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/8a04e2ed3ce4e94690a9efc639f488469fe81325a15d1016d22f973fa3fcdc45.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5672635",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:21",
+      "quote": "          l'expropriation du lot 5 672 635 – Terre 252 (TPH21-024)"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b0e25cd05549a024f3a2805f9b28090510186e2f85dc93af89166245f9afb221.pdf",
+      "entity_type": "Zone",
+      "value": "P-767",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:72",
+      "quote": "     4.9. Modification du règlement de zonage visant à créer la zone P-767 à même les zones"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b0e25cd05549a024f3a2805f9b28090510186e2f85dc93af89166245f9afb221.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6531701",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:131",
+      "quote": "           de conformité concernant le bâtiment situé sur le lot 6 531 701"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b0e25cd05549a024f3a2805f9b28090510186e2f85dc93af89166245f9afb221.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5022269",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:133",
+      "quote": "     5.14. Amendement de la promesse d'achat visant le lot 5 022 269 et modification de la"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b0e25cd05549a024f3a2805f9b28090510186e2f85dc93af89166245f9afb221.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6517427",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:226",
+      "quote": "           de construction sur le lot 6 517 427"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "Zone",
+      "value": "H-107",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1635",
+      "quote": "  normes de la zone H-107 du règlement de zonage Z-3001;"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6396128",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1582",
+      "quote": "connu comme étant le lot projeté 6 666 534 et actuellement le lot 6 396 128, en vertu du"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4050917",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1774",
+      "quote": "connu comme étant le lot 4 050 917, en vertu du règlement Z-3600 relatif aux plans"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6106166",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1824",
+      "quote": "connu comme étant le lot 6 106 166, en vertu du règlement Z-3600 relatif aux plans"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6106165",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1851",
+      "quote": "  Châteauguay sur les lots 6 106 165, 6 106 166 et 6 106 167, daté du 20 septembre"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6457156",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1929",
+      "quote": "comme étant le lot 6 457 156, en vertu du règlement Z-3600 relatif aux plans"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5672289",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1977",
+      "quote": "au 72, rue McComber connu comme étant le lot 5 672 289, en permettant :"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5980596",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1998",
+      "quote": "                                  7.10 Cession du lot 5 980 596 à la Ville de"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6456613",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2057",
+      "quote": "6 456 614 par le lot 6 456 613."
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6606078",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2066",
+      "quote": "                                            de l'acheteur pour la vente du lot 6 606 078"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 133,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 18765,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z",
+  "documents": [
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/01/PV_2025-05-12.pdf",
+      "storage_key": "raw/pv-index/cas/5b54a82a5302ecae83a085fcc37c777534b01534fac1e11dd4ab57375b8b3066.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 74,
+        "Zone": 2,
+        "LotCadastre": 12
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "QUE le conseil approuve les procès-verbaux de la séance ordinaire du 14 avril 2025 et"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "QUE le conseil approuve les procès-verbaux de la séance ordinaire du 14 avril 2025 et"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-05-251",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "RÉSOLUTION 2025-05-251                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-05-252",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "\fRÉSOLUTION 2025-05-252                       Approbation des procès-verbaux de la séance"
+            }
+          },
+          {
+            "label": "2025-05-263",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "RÉSOLUTION 2025-05-263                          Modification du règlement G-080-24 établissant"
+            }
+          },
+          {
+            "label": "2025-03-129",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-03-129, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-05-264",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:229",
+              "quote": "RÉSOLUTION 2025-05-264                          Modification du règlement général G-041-19"
+            }
+          },
+          {
+            "label": "2025-04-191",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:243",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-04-191, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-05-265",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:262",
+              "quote": "RÉSOLUTION 2025-05-265                    Modification du règlement général G-1309 sur la"
+            }
+          },
+          {
+            "label": "2025-04-192",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:276",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-04-192, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-05-266",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "RÉSOLUTION 2025-05-266                       Règlement d'emprunt d'un montant de 300 000 $"
+            }
+          },
+          {
+            "label": "2025-04-193",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:302",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-04-193, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-05-267",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:325",
+              "quote": "RÉSOLUTION 2025-05-267                       Règlement d'emprunt d'un montant de 450 000 $"
+            }
+          },
+          {
+            "label": "2025-04-194",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:334",
+              "quote": "\fATTENDU QU'aux fins de la résolution 2025-04-194, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-05-268",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:357",
+              "quote": "RÉSOLUTION 2025-05-268                      Modification du règlement zonage visant à"
+            }
+          },
+          {
+            "label": "2025-05-260",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:364",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-05-260, l'avis de motion du présent projet de"
+            }
+          },
+          {
+            "label": "2025-05-269",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:384",
+              "quote": "\fRÉSOLUTION 2025-05-269                     Modification du règlement de zonage Z-3001"
+            }
+          },
+          {
+            "label": "2025-05-261",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:393",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-05-261, l'avis de motion du présent projet de"
+            }
+          },
+          {
+            "label": "2025-05-270",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "RÉSOLUTION 2025-05-270                     Modification du règlement de zonage visant à"
+            }
+          },
+          {
+            "label": "2025-05-262",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:424",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-05-262, l'avis de motion du présent projet de"
+            }
+          },
+          {
+            "label": "2025-05-271",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:448",
+              "quote": "RÉSOLUTION 2025-05-271                      Approbation de la liste des mouvements de"
+            }
+          },
+          {
+            "label": "2025-05-272",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:477",
+              "quote": "\fRÉSOLUTION 2025-05-272                      Permanence de madame Nathalie Dodier au"
+            }
+          },
+          {
+            "label": "2025-05-273",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:504",
+              "quote": "RÉSOLUTION 2025-05-273                      Permanence de madame Marjorie Le Cavalier-"
+            }
+          },
+          {
+            "label": "2025-05-274",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:531",
+              "quote": "RÉSOLUTION 2025-05-274                       Permanence de madame Marie-Josée Circé"
+            }
+          },
+          {
+            "label": "2025-05-275",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:554",
+              "quote": "RÉSOLUTION 2025-05-275                       Permanence de monsieur Martin Lefebvre au"
+            }
+          },
+          {
+            "label": "2025-05-276",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:589",
+              "quote": "RÉSOLUTION 2025-05-276                      Autorisation de signature de la lettre d’entente"
+            }
+          },
+          {
+            "label": "2025-05-277",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:622",
+              "quote": "RÉSOLUTION 2025-05-277"
+            }
+          },
+          {
+            "label": "2025-05-278",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:646",
+              "quote": "RÉSOLUTION 2025-05-278"
+            }
+          },
+          {
+            "label": "2025-04-203",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "                                  5.11 Modification de la résolution 2025-04-203 afin"
+            }
+          },
+          {
+            "label": "2025-05-279",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:674",
+              "quote": "RÉSOLUTION 2025-05-279"
+            }
+          },
+          {
+            "label": "2025-05-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:724",
+              "quote": "RÉSOLUTION 2025-05-280"
+            }
+          },
+          {
+            "label": "2025-05-281",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:803",
+              "quote": "RÉSOLUTION 2025-05-281"
+            }
+          },
+          {
+            "label": "2025-05-282",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:847",
+              "quote": "RÉSOLUTION 2025-05-282"
+            }
+          },
+          {
+            "label": "2024-06-382",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:853",
+              "quote": "ATTENDU la résolution 2024-06-382 autorisant la signature de l'entente entre exo et la Ville;"
+            }
+          },
+          {
+            "label": "2025-05-283",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:889",
+              "quote": "RÉSOLUTION 2025-05-283"
+            }
+          },
+          {
+            "label": "2025-05-284",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:922",
+              "quote": "RÉSOLUTION 2025-05-284                       Attribution du contrat SP-25-011 relatif à des"
+            }
+          },
+          {
+            "label": "2025-05-285",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:995",
+              "quote": "RÉSOLUTION 2025-05-285                         Attribution du contrat SP-25-013 relatif à la"
+            }
+          },
+          {
+            "label": "2025-05-286",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1034",
+              "quote": "RÉSOLUTION 2025-05-286                       Attribution du contrat SP-25-015 relatif à la"
+            }
+          },
+          {
+            "label": "2025-05-287",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1085",
+              "quote": "RÉSOLUTION 2025-05-287                        Demande de dérogation au règlement"
+            }
+          },
+          {
+            "label": "2025-05-288",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1124",
+              "quote": "RÉSOLUTION 2025-05-288                     Émission d'obligations pour les emprunts de la"
+            }
+          },
+          {
+            "label": "2025-05-289",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1206",
+              "quote": "RÉSOLUTION 2025-05-289                      Autorisation de la liste des acquisitions"
+            }
+          },
+          {
+            "label": "2025-05-290",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1235",
+              "quote": "RÉSOLUTION 2025-05-290                      Affectation d'un montant de 150 000 $ pour la"
+            }
+          },
+          {
+            "label": "2025-05-291",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1266",
+              "quote": "RÉSOLUTION 2025-05-291                    Avis à la Commission municipale du Québec"
+            }
+          },
+          {
+            "label": "2025-05-292",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1308",
+              "quote": "RÉSOLUTION 2025-05-292"
+            }
+          },
+          {
+            "label": "2023-12-750",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1317",
+              "quote": "taxes incluses, et adopté par la résolution 2023-12-750;"
+            }
+          },
+          {
+            "label": "2024-02-90",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1319",
+              "quote": "et adopté par la résolution 2024-02-90;"
+            }
+          },
+          {
+            "label": "2025-05-293",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1348",
+              "quote": "RÉSOLUTION 2025-05-293                        Demande de dérogation mineure au 104, rue"
+            }
+          },
+          {
+            "label": "2025-05-294",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1408",
+              "quote": "RÉSOLUTION 2025-05-294                      Demande de dérogation mineure au"
+            }
+          },
+          {
+            "label": "2025-05-295",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1456",
+              "quote": "RÉSOLUTION 2025-05-295                        Demande de dérogation mineure au 218, rue"
+            }
+          },
+          {
+            "label": "2025-05-296",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1507",
+              "quote": "RÉSOLUTION 2025-05-296                      Demande de dérogation mineure au"
+            }
+          },
+          {
+            "label": "2025-05-297",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1598",
+              "quote": "RÉSOLUTION 2025-05-297                        Demande de dérogation mineure au 46, rue"
+            }
+          },
+          {
+            "label": "2025-05-298",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1641",
+              "quote": "RÉSOLUTION 2025-05-298                        Demande de dérogation mineure au"
+            }
+          },
+          {
+            "label": "2025-05-299",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1701",
+              "quote": "RÉSOLUTION 2025-05-299                        Autorisation de rénovation commerciale au"
+            }
+          },
+          {
+            "label": "2025-05-300",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1742",
+              "quote": "RÉSOLUTION 2025-05-300                        Autorisation de rénovation d'un immeuble"
+            }
+          },
+          {
+            "label": "2025-05-301",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1791",
+              "quote": "RÉSOLUTION 2025-05-301                        Autorisation de construction résidentielle au"
+            }
+          },
+          {
+            "label": "2025-05-302",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1837",
+              "quote": "RÉSOLUTION 2025-05-302"
+            }
+          },
+          {
+            "label": "2025-05-303",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1884",
+              "quote": "RÉSOLUTION 2025-05-303"
+            }
+          },
+          {
+            "label": "2025-05-304",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1944",
+              "quote": "RÉSOLUTION 2025-05-304"
+            }
+          },
+          {
+            "label": "2025-05-305",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1992",
+              "quote": "RÉSOLUTION 2025-05-305"
+            }
+          },
+          {
+            "label": "2024-04-243",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2001",
+              "quote": "résolution 2024-04-243 lors de la séance ordinaire du conseil du 15 avril 2024 pour une"
+            }
+          },
+          {
+            "label": "2025-05-306",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2087",
+              "quote": "RÉSOLUTION 2025-05-306"
+            }
+          },
+          {
+            "label": "2024-04-238",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2088",
+              "quote": "                                  7.14 Modification de la résolution 2024-04-238 afin"
+            }
+          },
+          {
+            "label": "2025-05-307",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2204",
+              "quote": "\fRÉSOLUTION 2025-05-307"
+            }
+          },
+          {
+            "label": "2025-05-308",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2235",
+              "quote": "RÉSOLUTION 2025-05-308"
+            }
+          },
+          {
+            "label": "2025-05-309",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2269",
+              "quote": "RÉSOLUTION 2025-05-309"
+            }
+          },
+          {
+            "label": "2025-05-310",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2302",
+              "quote": "\fRÉSOLUTION 2025-05-310"
+            }
+          },
+          {
+            "label": "2025-05-311",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2349",
+              "quote": "\fRÉSOLUTION 2025-05-311"
+            }
+          },
+          {
+            "label": "2025-05-312",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2390",
+              "quote": "RÉSOLUTION 2025-05-312"
+            }
+          },
+          {
+            "label": "2025-05-313",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2437",
+              "quote": "RÉSOLUTION 2025-05-313                      Création du Comité directeur du Festival"
+            }
+          },
+          {
+            "label": "2025-05-314",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2473",
+              "quote": "RÉSOLUTION 2025-05-314                       Entente entre le Centre de services scolaires"
+            }
+          },
+          {
+            "label": "2025-05-315",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2508",
+              "quote": "RÉSOLUTION 2025-05-315                      Approbation des sites ciblés pour la gestion"
+            }
+          },
+          {
+            "label": "2024-02-105",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2518",
+              "quote": "Châteauguay par la résolution 2024-02-105;"
+            }
+          },
+          {
+            "label": "2025-05-316",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2534",
+              "quote": "RÉSOLUTION 2025-05-316                      Adoption du Plan de protection des sources"
+            }
+          },
+          {
+            "label": "2025-05-317",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2563",
+              "quote": "RÉSOLUTION 2025-05-317"
+            }
+          },
+          {
+            "label": "2025-05-318",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2593",
+              "quote": "\fRÉSOLUTION 2025-05-318"
+            }
+          },
+          {
+            "label": "2025-05-319",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2659",
+              "quote": "RÉSOLUTION 2025-05-319"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "H-131",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1495",
+              "quote": "  que la grille des usages et des normes de la zone H-131 exige une marge latérale"
+            }
+          },
+          {
+            "label": "C-233",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2176",
+              "quote": "alors que la grille des usages et des normes de la zone C-233 permet une marge avant"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6647818",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:849",
+              "quote": "                                         (exo) du lot 6 647 818 d'une superficie de"
+            }
+          },
+          {
+            "label": "4279349",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1442",
+              "quote": "connu comme étant le lot 4 279 349, en vertu du règlement de zonage Z-3001 afin de"
+            }
+          },
+          {
+            "label": "4278041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1491",
+              "quote": "connu comme étant le lot 4 278 041, en vertu du règlement de zonage Z-3001 afin de"
+            }
+          },
+          {
+            "label": "6106108",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1541",
+              "quote": "Primeau, connu comme étant les lots 6 106 108 et 6 106 109, en vertu du règlement de"
+            }
+          },
+          {
+            "label": "6540626",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1629",
+              "quote": "Bergerie, connu comme étant le lot 6 540 626, en vertu du règlement de zonage Z-3001"
+            }
+          },
+          {
+            "label": "5142103",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1676",
+              "quote": "boulevard D'Youville, connu comme étant le lot 5 142 103, en vertu du règlement de"
+            }
+          },
+          {
+            "label": "3825683",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1725",
+              "quote": "comme étant le lot 3 825 683, en vertu du règlement Z-3600 relatif aux plans d'implantation"
+            }
+          },
+          {
+            "label": "4052970",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1772",
+              "quote": "Nord, connu comme étant le lot 4 052 970, en vertu du règlement Z-3600 relatif aux plans"
+            }
+          },
+          {
+            "label": "6456613",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1867",
+              "quote": "Haute-Rivière, connu comme étant le lot 6 456 613, en vertu du règlement Z-3600 relatif"
+            }
+          },
+          {
+            "label": "6420809",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2206",
+              "quote": "                                      trouvant sur le lot 6 420 809 dans le secteur"
+            }
+          },
+          {
+            "label": "6420827",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2237",
+              "quote": "                                      trouvant sur le lot 6 420 827 dans le secteur"
+            }
+          },
+          {
+            "label": "4279001",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2272",
+              "quote": "                                             hauban d'Hydro-Québec sur le lot 4 279 001"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/57375b8b3066.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/57375b8b3066.pdf/.graphify/.graphify_extract.json — 92 nodes, 7 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 92,
+        "edges": 7
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/07/ODJ_2025-07-14_extra.pdf",
+      "storage_key": "raw/pv-index/cas/5f0328688f42df4fcb306c858bf9acc203639e91bc566fa26915a2d5fbf66962.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-06-369",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "     2.16 Modification de la résolution 2025-06-369 concernant l'autorisation de déposer une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/a2d5fbf66962.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/a2d5fbf66962.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/09/PV_2025-03-17.pdf",
+      "storage_key": "raw/pv-index/cas/6d8df4a6caae99eac7a33b642df21ee3988b6a40d30ae098ae8b6b953d065c50.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 71,
+        "LotCadastre": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "QUE le conseil approuve les procès-verbaux de la séance ordinaire du 17 février 2025 et"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "QUE le conseil approuve les procès-verbaux de la séance ordinaire du 17 février 2025 et"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-03-126",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "RÉSOLUTION 2025-03-126                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-03-127",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "\fRÉSOLUTION 2025-03-127                       Approbation des procès-verbaux de la séance"
+            }
+          },
+          {
+            "label": "2025-02- 096",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "         Dépôt d'un procès-verbal de correction à l'égard de la résolution 2025-02- 096"
+            }
+          },
+          {
+            "label": "2025-03-130",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "RÉSOLUTION 2025-03-130                          Règlement d'emprunt d'un montant de"
+            }
+          },
+          {
+            "label": "2025-02-062",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-062, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-131",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "RÉSOLUTION 2025-03-131                      Règlement d'emprunt d'un montant de 350 000 $"
+            }
+          },
+          {
+            "label": "2025-02-063",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:161",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-063, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-132",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:183",
+              "quote": "RÉSOLUTION 2025-03-132                      Règlement d'emprunt d'un montant de 706 000 $"
+            }
+          },
+          {
+            "label": "2025-02-064",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "\fATTENDU QU'aux fins de la résolution 2025-02-064, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-133",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:215",
+              "quote": "RÉSOLUTION 2025-03-133                      Règlement d'emprunt d'un montant de 907 000 $"
+            }
+          },
+          {
+            "label": "2025-02-065",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-065, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-134",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:247",
+              "quote": "RÉSOLUTION 2025-03-134                       Règlement d'emprunt d'un montant de"
+            }
+          },
+          {
+            "label": "2025-02-066",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:257",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-066, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-135",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:280",
+              "quote": "RÉSOLUTION 2025-03-135                       Règlement d'emprunt d'un montant de"
+            }
+          },
+          {
+            "label": "2025-02-067",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:289",
+              "quote": "\fATTENDU QU'aux fins de la résolution 2025-02-067, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-136",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:312",
+              "quote": "RÉSOLUTION 2025-03-136                         Règlement d'emprunt d'un montant de"
+            }
+          },
+          {
+            "label": "2025-02-068",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:320",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-068, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-03-137",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:340",
+              "quote": "\fRÉSOLUTION 2025-03-137                       Modification du règlement de zonage visant à"
+            }
+          },
+          {
+            "label": "2025-01-004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:348",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-01-004, l'avis de motion du présent projet de"
+            }
+          },
+          {
+            "label": "2025-01-009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:352",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-01-009, le premier projet de règlement"
+            }
+          },
+          {
+            "label": "2025-02-070",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-070, le second projet de règlement"
+            }
+          },
+          {
+            "label": "2025-03-138",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:385",
+              "quote": "\fRÉSOLUTION 2025-03-138                      Approbation de la liste des mouvements de"
+            }
+          },
+          {
+            "label": "2025-03-139",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:415",
+              "quote": "RÉSOLUTION 2025-03-139                      Permanence de madame Amélie Trudel au"
+            }
+          },
+          {
+            "label": "2025-03-140",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:442",
+              "quote": "RÉSOLUTION 2025-03-140                     Permanence de madame Isabelle Lévesque-"
+            }
+          },
+          {
+            "label": "2025-03-141",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:470",
+              "quote": "RÉSOLUTION 2025-03-141                     Permanence de madame Caroline Dumouchel"
+            }
+          },
+          {
+            "label": "2025-03-142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:495",
+              "quote": "RÉSOLUTION 2025-03-142                    Embauche au poste de cadre permanent de"
+            }
+          },
+          {
+            "label": "2025-03-143",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:520",
+              "quote": "RÉSOLUTION 2025-03-143                    Ajustement de la grille salariale de l’année"
+            }
+          },
+          {
+            "label": "2025-03-144",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:539",
+              "quote": "RÉSOLUTION 2025-03-144                       Approbation de l'entente de principe"
+            }
+          },
+          {
+            "label": "2025-03-145",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:575",
+              "quote": "\fRÉSOLUTION 2025-03-145                     Approbation de l'entente (transaction et"
+            }
+          },
+          {
+            "label": "2025-03-146",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:593",
+              "quote": "RÉSOLUTION 2025-03-146                     Approbation de la liste des contributions"
+            }
+          },
+          {
+            "label": "2025-03-147",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:616",
+              "quote": "RÉSOLUTION 2025-03-147"
+            }
+          },
+          {
+            "label": "2025-03-148",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:663",
+              "quote": "RÉSOLUTION 2025-03-148"
+            }
+          },
+          {
+            "label": "2025-03-149",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:689",
+              "quote": "RÉSOLUTION 2025-03-149                  Participation à la soirée-bénéfice au profit de la"
+            }
+          },
+          {
+            "label": "2025-03-150",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:720",
+              "quote": "\fRÉSOLUTION 2025-03-150"
+            }
+          },
+          {
+            "label": "2025-03-151",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:760",
+              "quote": "RÉSOLUTION 2025-03-151"
+            }
+          },
+          {
+            "label": "2025-03-152",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:786",
+              "quote": "RÉSOLUTION 2025-03-152"
+            }
+          },
+          {
+            "label": "2025-03-153",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:823",
+              "quote": "\fRÉSOLUTION 2025-03-153                        à la municipalité de Bolton-Ouest"
+            }
+          },
+          {
+            "label": "2025-02-016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:847",
+              "quote": "ATTENDU la résolution 2025-02-016 adoptée par la municipalité de Bolton-Ouest dans"
+            }
+          },
+          {
+            "label": "2025-03-154",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:882",
+              "quote": "RÉSOLUTION 2025-03-154"
+            }
+          },
+          {
+            "label": "2025-03-155",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:945",
+              "quote": "RÉSOLUTION 2025-03-155"
+            }
+          },
+          {
+            "label": "2025-03-158",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1049",
+              "quote": "RÉSOLUTION 2025-03-158                        Attribution du contrat SP-25-003 relatif à un"
+            }
+          },
+          {
+            "label": "2025-03-164",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1090",
+              "quote": "RÉSOLUTION 2025-03-164                       Modification du montant de financement par la"
+            }
+          },
+          {
+            "label": "2025-03-165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1122",
+              "quote": "RÉSOLUTION 2025-03-165                      Approbation de la liste finale des travaux et"
+            }
+          },
+          {
+            "label": "2025-03-166",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1170",
+              "quote": "RÉSOLUTION 2025-03-166"
+            }
+          },
+          {
+            "label": "2025-03-167",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1199",
+              "quote": "RÉSOLUTION 2025-03-167"
+            }
+          },
+          {
+            "label": "2025-03-168",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1240",
+              "quote": "RÉSOLUTION 2025-03-168"
+            }
+          },
+          {
+            "label": "2025-03-169",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1266",
+              "quote": "RÉSOLUTION 2025-03-169"
+            }
+          },
+          {
+            "label": "2025-03-170",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1325",
+              "quote": "RÉSOLUTION 2025-03-170"
+            }
+          },
+          {
+            "label": "2025-03-171",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1377",
+              "quote": "RÉSOLUTION 2025-03-171                      Demande de dérogation mineure au"
+            }
+          },
+          {
+            "label": "2025-03-172",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1435",
+              "quote": "RÉSOLUTION 2025-03-172                     Demande de dérogation mineure au"
+            }
+          },
+          {
+            "label": "2025-03-173",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1534",
+              "quote": "RÉSOLUTION 2025-03-173                       Autorisation de construction résidentielle au"
+            }
+          },
+          {
+            "label": "2025-03-174",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1584",
+              "quote": "RÉSOLUTION 2025-03-174                        Autorisation de construction au 66, boulevard"
+            }
+          },
+          {
+            "label": "2025-03-175",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1658",
+              "quote": "RÉSOLUTION 2025-03-175                      Autorisation d'agrandissement et de rénovation"
+            }
+          },
+          {
+            "label": "2024-06-410",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1709",
+              "quote": "conseil municipal du 10 juin 2024, portant le numéro de résolution 2024-06-410 :"
+            }
+          },
+          {
+            "label": "2025-03-176",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1741",
+              "quote": "\fRÉSOLUTION 2025-03-176                      Autorisation au 72, rue McComber - Projets"
+            }
+          },
+          {
+            "label": "2024-11-765",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1754",
+              "quote": "ATTENDU QU'aux fins de la résolution 2024-11-765, le premier projet a été adopté lors"
+            }
+          },
+          {
+            "label": "2025-03-177",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1796",
+              "quote": "RÉSOLUTION 2025-03-177                      Demande d’aide financière au               volet"
+            }
+          },
+          {
+            "label": "2025-03-178",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1831",
+              "quote": "RÉSOLUTION 2025-03-178                      Entente    entre   l'organisme    Cultivons"
+            }
+          },
+          {
+            "label": "2025-03-179",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1879",
+              "quote": "RÉSOLUTION 2025-03-179                       Entente entre l'Association Héritage Irlandais"
+            }
+          },
+          {
+            "label": "2025-03-180",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1924",
+              "quote": "RÉSOLUTION 2025-03-180                      Prolongation de l'entente entre la Maison des"
+            }
+          },
+          {
+            "label": "2025-03-181",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1947",
+              "quote": "RÉSOLUTION 2025-03-181                        Modification de la résolution 2024-10-686"
+            }
+          },
+          {
+            "label": "2024-10-686",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1947",
+              "quote": "RÉSOLUTION 2025-03-181                        Modification de la résolution 2024-10-686"
+            }
+          },
+          {
+            "label": "2024-11-770",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1960",
+              "quote": "résolution 2024-11-770, est d’une durée d’un (1) an seulement, entraînant une surallocation"
+            }
+          },
+          {
+            "label": "2025-03-182",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1993",
+              "quote": "RÉSOLUTION 2025-03-182                     Affectation de l'excédent non affecté d'un"
+            }
+          },
+          {
+            "label": "2025-03-183",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2029",
+              "quote": "\fRÉSOLUTION 2025-03-183                      Entente entre le Centre de formation générale aux"
+            }
+          },
+          {
+            "label": "2025-03-184",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2065",
+              "quote": "RÉSOLUTION 2025-03-184"
+            }
+          },
+          {
+            "label": "2024-12-799",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2077",
+              "quote": "dans le PQI 2025-2029 ainsi que dans la résolution 2024-12-799 relative au règlement"
+            }
+          },
+          {
+            "label": "2025-03-185",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2094",
+              "quote": "RÉSOLUTION 2025-03-185"
+            }
+          },
+          {
+            "label": "2025-03-186",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2126",
+              "quote": "\fRÉSOLUTION 2025-03-186"
+            }
+          },
+          {
+            "label": "2025-03-187",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2168",
+              "quote": "RÉSOLUTION 2025-03-187"
+            }
+          },
+          {
+            "label": "2025-03-188",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2219",
+              "quote": "\fRÉSOLUTION 2025-03-188"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4280241",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:675",
+              "quote": "\fQUE le conseil impose un avis de réserve pour fins publiques sur le lot 4 280 241 du"
+            }
+          },
+          {
+            "label": "4050707",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1410",
+              "quote": "connu comme étant le lot 4 050 707, en vertu du règlement de zonage Z-3001 afin de"
+            }
+          },
+          {
+            "label": "3825670",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1468",
+              "quote": "D'Anjou, connu comme étant le lot 3 825 670, en vertu du règlement de zonage Z-3001"
+            }
+          },
+          {
+            "label": "2867817",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1695",
+              "quote": "connu comme étant les lots 2 867 817, 2 867 819, 2 867 821, 2 867 822, 5 444 243 et"
+            }
+          },
+          {
+            "label": "5672289",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1777",
+              "quote": "« Commerce », au 72, rue McComber connu comme étant le lot 5 672 289, en permettant :"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/6b953d065c50.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/6b953d065c50.pdf/.graphify/.graphify_extract.json — 80 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 80,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beauharnois",
+          "blainville",
+          "bolton-ouest",
+          "chateauguay",
+          "lery",
+          "saint-constant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/03/ODJ_2026-03-12_extra.pdf",
+      "storage_key": "raw/pv-index/cas/6db5564063282e58446e9e12812caf6afcf6d85a2df480ba230c21c3d9db4d48.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/21c3d9db4d48.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/21c3d9db4d48.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/01/V2_2026-01-26_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/7b2362200446fd3e49fe666d3dc187776d98d16ee2b777a2bb6ce52064967c89.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "LotCadastre": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                 DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                 DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-204",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "    5.17. Modification de la résolution 2025-04-204 afin d'autoriser la signature d'un acte de"
+            }
+          },
+          {
+            "label": "2025-07-471",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "    5.18. Modification de la résolution 2025-07-471 afin de prolonger le délai de vérification"
+            }
+          },
+          {
+            "label": "2025-12-733",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:165",
+              "quote": "     5.29. Modification de la résolution 2025-12-733 concernant la suspension sans solde de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6105622",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "          diligente visant une partie du lot 6 105 622 du Cadastre du Québec"
+            }
+          },
+          {
+            "label": "4280241",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:291",
+              "quote": "    7.19. Acquisition du lot 4 280 241, situé sur la rue Dupont Ouest au montant de 275 000 $,"
+            }
+          },
+          {
+            "label": "4711359",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "    7.20. Levée partielle de la servitude de non-accès sur une portion du lot 4 711 359 donnant"
+            }
+          },
+          {
+            "label": "4709146",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:303",
+              "quote": "    7.23. Avis à des fins de réserve foncière visant une partie des lots 4 709 146 et 4 709 138"
+            }
+          },
+          {
+            "label": "6105620",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:307",
+              "quote": "    7.25. Modification au délai accordé pour les vérifications diligentes visant le lot 6 105 620"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/e52064967c89.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/e52064967c89.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/07/PV_2025-07-14_extra.pdf",
+      "storage_key": "raw/pv-index/cas/7f163fe9b72479c6870fe35fdc32504b4c8423ae7bbb161f97bd3c26f2aebfad.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 23,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-07-455",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "RÉSOLUTION 2025-07-455                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-07-456",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "\fRÉSOLUTION 2025-07-456                           Entente de partenariat en matière d'alliance"
+            }
+          },
+          {
+            "label": "2025-07-457",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "RÉSOLUTION 2025-07-457                           Autorisation de signature de la lettre d’entente"
+            }
+          },
+          {
+            "label": "2025-07-458",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "RÉSOLUTION 2025-07-458                       Attribution du contrat SP-25-001 pour des"
+            }
+          },
+          {
+            "label": "2025-07-459",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "RÉSOLUTION 2025-07-459                       Attribution du contrat SP-25-021 relatif à des"
+            }
+          },
+          {
+            "label": "2025-07-460",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "RÉSOLUTION 2025-07-460                       Attribution du contrat SP-25-025A relatif à des"
+            }
+          },
+          {
+            "label": "2024-12-860",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:236",
+              "quote": "\fATTENDU la résolution 2024-12-860, adoptée le 9 décembre 2024, concernant une"
+            }
+          },
+          {
+            "label": "2025-07-461",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:267",
+              "quote": "RÉSOLUTION 2025-07-461                       Attribution du contrat SP-25-030 pour la fourniture"
+            }
+          },
+          {
+            "label": "2025-07-462",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "RÉSOLUTION 2025-07-462                      Attribution du contrat SP-25-037 relatif aux travaux"
+            }
+          },
+          {
+            "label": "2025-05-290",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:350",
+              "quote": "comme autorisé par la résolution 2025-05-290 adoptée le 12 mai 2025."
+            }
+          },
+          {
+            "label": "2025-07-463",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:359",
+              "quote": "RÉSOLUTION 2025-07-463                       Attribution du contrat SP-25-038 pour des"
+            }
+          },
+          {
+            "label": "2025-07-464",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:405",
+              "quote": "RÉSOLUTION 2025-07-464                        Modification du contrat SP-23-003 relatif à des"
+            }
+          },
+          {
+            "label": "2023-03-141",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "incluses et adopté par la résolution 2023-03-141;"
+            }
+          },
+          {
+            "label": "2025-07-465",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:456",
+              "quote": "RÉSOLUTION 2025-07-465"
+            }
+          },
+          {
+            "label": "2025-07-466",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:497",
+              "quote": "RÉSOLUTION 2025-07-466"
+            }
+          },
+          {
+            "label": "2025-07-467",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:539",
+              "quote": "RÉSOLUTION 2025-07-467"
+            }
+          },
+          {
+            "label": "2025-07-468",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:580",
+              "quote": "RÉSOLUTION 2025-07-468"
+            }
+          },
+          {
+            "label": "2025-07-469",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:616",
+              "quote": "RÉSOLUTION 2025-07-469"
+            }
+          },
+          {
+            "label": "2025-07-470",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:650",
+              "quote": "\fRÉSOLUTION 2025-07-470"
+            }
+          },
+          {
+            "label": "2025-06-369",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:651",
+              "quote": "                                   2.16 Modification de la résolution 2025-06-369"
+            }
+          },
+          {
+            "label": "2025-05-267",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "« ATTENDU QUE la Ville a adopté, le 12 mai 2025, la résolution 2025-05-267 concernant"
+            }
+          },
+          {
+            "label": "2025-07-471",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:693",
+              "quote": "RÉSOLUTION 2025-07-471"
+            }
+          },
+          {
+            "label": "2025-07-472",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:724",
+              "quote": "RÉSOLUTION 2025-07-472                       Levée de la séance extraordinaire"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6105622",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:461",
+              "quote": "ATTENDU QUE les lots 6 105 622 et 6 105 598 du cadastre du Québec sont situés à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/3c26f2aebfad.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/3c26f2aebfad.pdf/.graphify/.graphify_extract.json — 26 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 26,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/01/V3_2025-05-12_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/875091ecc823edd81702fcad3241be1aeb0b6089e3b3ccd3b33469a4674a548c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-203",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "     5.11. Modification de la résolution 2025-04-203 afin d'ajouter un participant à la 3e édition"
+            }
+          },
+          {
+            "label": "2024-04-238",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:241",
+              "quote": "    7.14. Modification de la résolution 2024-04-238 afin d'ajouter, de remplacer et de retirer"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6647818",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "     5.15. Vente au Réseau de Transport Métropolitain (exo) du lot 6 647 818 d'une superficie"
+            }
+          },
+          {
+            "label": "6420809",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:247",
+              "quote": "    7.16. Attribution de l'odonyme du parc Joe Lee se trouvant sur le lot 6 420 809 dans le"
+            }
+          },
+          {
+            "label": "6420827",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "    7.17. Attribution de l'odonyme rue Richardson se trouvant sur le lot 6 420 827 dans le"
+            }
+          },
+          {
+            "label": "4279001",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:254",
+              "quote": "          hauban d'Hydro-Québec sur le lot 4 279 001 appartenant à la Ville de Châteauguay"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/69a4674a548c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/69a4674a548c.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/01/ODJ_2026-01-19_extra.pdf",
+      "storage_key": "raw/pv-index/cas/87967f0cca5b1cf96e1667f2c72d97fd3975838bbc531a69f03204356eae91da.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5672635",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "          l'expropriation du lot 5 672 635 – Terre Tho (TPH21-024)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/04356eae91da.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/04356eae91da.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/01/V2_ODJ_2026-01-19_extra.pdf",
+      "storage_key": "raw/pv-index/cas/8a04e2ed3ce4e94690a9efc639f488469fe81325a15d1016d22f973fa3fcdc45.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5672635",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "          l'expropriation du lot 5 672 635 – Terre 252 (TPH21-024)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/973fa3fcdc45.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/973fa3fcdc45.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/02/PV_2025-02-24_extra.pdf",
+      "storage_key": "raw/pv-index/cas/8a0657a8d1e510bfcef6fa04e8a340857e7a347d5fa586731e1a7def8098d0fb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                             DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                             DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "ATTENDU QU'un projet de règlement a été déposé lors de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "tenue le 17 février 2025 et qu'il a été mis à la disposition du public pour consultation;"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-02-114",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "RÉSOLUTION 2025-02-114                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-02-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "\fRÉSOLUTION 2025-02-115                        Modification du règlement général G-1309 sur la"
+            }
+          },
+          {
+            "label": "2025-02-069",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "ATTENDU QU'aux fins de la résolution 2025-02-069, l'avis de motion du présent"
+            }
+          },
+          {
+            "label": "2025-02-116",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "RÉSOLUTION 2025-02-116                        Permanence de monsieur Jesse Giguère-Martel"
+            }
+          },
+          {
+            "label": "2025-02-117",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "RÉSOLUTION 2025-02-117                      Permanence de monsieur Gabriel Boyer au"
+            }
+          },
+          {
+            "label": "2025-02-118",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "\fRÉSOLUTION 2025-02-118                     Approuver la permanence de monsieur"
+            }
+          },
+          {
+            "label": "2025-02-119",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "RÉSOLUTION 2025-02-119                     Permanence de monsieur Richard Bédard-Pattullo"
+            }
+          },
+          {
+            "label": "2025-02-120",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "RÉSOLUTION 2025-02-120                        Permanence de madame Cindy Mantha au"
+            }
+          },
+          {
+            "label": "2025-02-121",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:222",
+              "quote": "RÉSOLUTION 2025-02-121                        Embauche au poste cadre contractuel de"
+            }
+          },
+          {
+            "label": "2025-02-122",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:251",
+              "quote": "RÉSOLUTION 2025-02-122                       Levée de la séance extraordinaire"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/7def8098d0fb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/7def8098d0fb.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/10/ODJ_2025-11-03_extra-1.pdf",
+      "storage_key": "raw/pv-index/cas/91e10a804e0a4c9e1e6fa863c028a9da7cf1874fe1bccafb7fe274e97063ba25.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/74e97063ba25.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/74e97063ba25.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/04/ODJ_2025-04-28_extra.pdf",
+      "storage_key": "raw/pv-index/cas/9596db9aa1b5045310690c4df3ededdb8c253506225ba659ca04cb791334fead.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/cb791334fead.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/cb791334fead.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/04/ODJ_2026-04-09_extra.pdf",
+      "storage_key": "raw/pv-index/cas/991319389ccf342af312da12a09ebd4f7ef49969604df084367d5f753bcc2d6e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/5f753bcc2d6e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/5f753bcc2d6e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/08/ODJ_2025-09-08_extra_PQI.pdf",
+      "storage_key": "raw/pv-index/cas/ac1d171c33a9cfaa37333682836300ed155cb9340ba76535b5567650d8b5b446.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/7650d8b5b446.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/7650d8b5b446.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/08/PV_2025-09-08_extra_PQI.pdf",
+      "storage_key": "raw/pv-index/cas/ad2967c6526f5aba29ce80c3ba2d137a239343c264b8274617c9ffacc707bddd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-09-533",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "RÉSOLUTION 2025-09-533                      Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-09-534",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "RÉSOLUTION 2025-09-534                      Adoption    du     programme      quinquennal"
+            }
+          },
+          {
+            "label": "2025-09-535",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "RÉSOLUTION 2025-09-535                        Levée de la séance extraordinaire"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/ffacc707bddd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/ffacc707bddd.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/10/PV_2025-11-03_extra.pdf",
+      "storage_key": "raw/pv-index/cas/ad8cda8666da3398afd3d400cb83653198d01d67b88e373ee044db43f3d0db91.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-11-621",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "RÉSOLUTION 2025-11-621                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-11-622",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "RÉSOLUTION 2025-11-622                     Entente entre Produits Suncor Énergie S.E.N.C."
+            }
+          },
+          {
+            "label": "2025-11-623",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "RÉSOLUTION 2025-11-623                       Levée de la séance extraordinaire"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/db43f3d0db91.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/db43f3d0db91.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/02/ODJ_2025-02-24_extra.pdf",
+      "storage_key": "raw/pv-index/cas/ae82e0ee2a5a3e36115be6dafb3bbaa263cb43451e67d2cc7b7a1b8464c1f888.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/1b8464c1f888.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/1b8464c1f888.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/01/V2_2025-01-20_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/b0e25cd05549a024f3a2805f9b28090510186e2f85dc93af89166245f9afb221.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-09-569",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "           résolution 2024-09-569"
+            }
+          },
+          {
+            "label": "2022-02-138",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:136",
+              "quote": "     5.15. Modification des membres du comité environnement dans la résolution 2022-02-138 et"
+            }
+          },
+          {
+            "label": "2023-03-162",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "     7.11. Modification de la résolution 2023-03-162 afin de prolonger le délai relatif à l'obligation"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "P-767",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "     4.9. Modification du règlement de zonage visant à créer la zone P-767 à même les zones"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6531701",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "           de conformité concernant le bâtiment situé sur le lot 6 531 701"
+            }
+          },
+          {
+            "label": "5022269",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "     5.14. Amendement de la promesse d'achat visant le lot 5 022 269 et modification de la"
+            }
+          },
+          {
+            "label": "6517427",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:226",
+              "quote": "           de construction sur le lot 6 517 427"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/6245f9afb221.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/6245f9afb221.pdf/.graphify/.graphify_extract.json — 9 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/01/PV_2025-04-14.pdf",
+      "storage_key": "raw/pv-index/cas/b13e62e7d1f8ec98345bd191155f12a2769d6c5a04053f4bdebce34c27c847dc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 61,
+        "Zone": 1,
+        "LotCadastre": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                              DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "QUE le conseil approuve le procès-verbal de la séance ordinaire du 17 mars 2025."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "QUE le conseil approuve le procès-verbal de la séance ordinaire du 17 mars 2025."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-189",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "RÉSOLUTION 2025-04-189                     Adoption de l'ordre du jour"
+            }
+          },
+          {
+            "label": "2025-04-190",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "\fRÉSOLUTION 2025-04-190                       Approbation du procès-verbal de la séance"
+            }
+          },
+          {
+            "label": "2025-04-195",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "RÉSOLUTION 2025-04-195                       Approbation de la liste des mouvements de"
+            }
+          },
+          {
+            "label": "2025-04-196",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "RÉSOLUTION 2025-04-196                     Permanence de madame Jessica Smith-Viau"
+            }
+          },
+          {
+            "label": "2025-04-197",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:229",
+              "quote": "\fRÉSOLUTION 2025-04-197                     Permanence de monsieur Simon-David Gouveia"
+            }
+          },
+          {
+            "label": "2025-04-198",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:257",
+              "quote": "RÉSOLUTION 2025-04-198                     Nomination de madame Nathalie Racine au"
+            }
+          },
+          {
+            "label": "2025-04-199",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:285",
+              "quote": "RÉSOLUTION 2025-04-199                     Approbation du plan des effectifs pour l’année"
+            }
+          },
+          {
+            "label": "2025-04-200",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:308",
+              "quote": "RÉSOLUTION 2025-04-200                     Approbation de la liste des contributions"
+            }
+          },
+          {
+            "label": "2025-04-201",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:329",
+              "quote": "\fRÉSOLUTION 2025-04-201                     Participation à la conférence sur les collectivités"
+            }
+          },
+          {
+            "label": "2025-04-202",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "RÉSOLUTION 2025-04-202                     Participation au congrès annuel de la"
+            }
+          },
+          {
+            "label": "2025-04-203",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:404",
+              "quote": "RÉSOLUTION 2025-04-203                     Participation à la 3e édition du Bal d'Anna, au"
+            }
+          },
+          {
+            "label": "2025-04-204",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:434",
+              "quote": "RÉSOLUTION 2025-04-204"
+            }
+          },
+          {
+            "label": "2025-04-205",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:493",
+              "quote": "RÉSOLUTION 2025-04-205"
+            }
+          },
+          {
+            "label": "2025-04-206",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:531",
+              "quote": "RÉSOLUTION 2025-04-206"
+            }
+          },
+          {
+            "label": "2025-04-207",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:554",
+              "quote": "RÉSOLUTION 2025-04-207"
+            }
+          },
+          {
+            "label": "2025-04-208",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:604",
+              "quote": "RÉSOLUTION 2025-04-208"
+            }
+          },
+          {
+            "label": "2025-04-209",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:641",
+              "quote": "RÉSOLUTION 2025-04-209"
+            }
+          },
+          {
+            "label": "2025-04-210",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:675",
+              "quote": "\fRÉSOLUTION 2025-04-210"
+            }
+          },
+          {
+            "label": "2025-04-211",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:734",
+              "quote": "RÉSOLUTION 2025-04-211"
+            }
+          },
+          {
+            "label": "2021-05-273",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:742",
+              "quote": "correspondance était permis par la résolution 2021-05-273 pour toute personne qui est"
+            }
+          },
+          {
+            "label": "2025-04-212",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:780",
+              "quote": "RÉSOLUTION 2025-04-212"
+            }
+          },
+          {
+            "label": "2025-04-213",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:837",
+              "quote": "RÉSOLUTION 2025-04-213"
+            }
+          },
+          {
+            "label": "2025-04-214",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:903",
+              "quote": "RÉSOLUTION 2025-04-214"
+            }
+          },
+          {
+            "label": "2025-04-215",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:953",
+              "quote": "RÉSOLUTION 2025-04-215"
+            }
+          },
+          {
+            "label": "2025-04-216",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:981",
+              "quote": "RÉSOLUTION 2025-04-216"
+            }
+          },
+          {
+            "label": "2025-04-217",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1004",
+              "quote": "RÉSOLUTION 2025-04-217"
+            }
+          },
+          {
+            "label": "2025-04-218",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1025",
+              "quote": "\fRÉSOLUTION 2025-04-218"
+            }
+          },
+          {
+            "label": "2025-04-219",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1048",
+              "quote": "RÉSOLUTION 2025-04-219"
+            }
+          },
+          {
+            "label": "2025-04-220",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1071",
+              "quote": "RÉSOLUTION 2025-04-220"
+            }
+          },
+          {
+            "label": "2025-04-221",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1087",
+              "quote": "RÉSOLUTION 2025-04-221"
+            }
+          },
+          {
+            "label": "2025-04-222",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1124",
+              "quote": "\fRÉSOLUTION 2025-04-222                     Attribution du contrat SP-25-002 relatif à la"
+            }
+          },
+          {
+            "label": "2025-04-223",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1233",
+              "quote": "RÉSOLUTION 2025-04-223                        Attribution du contrat SP-25-010 relatif à la"
+            }
+          },
+          {
+            "label": "2025-04-224",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1290",
+              "quote": "RÉSOLUTION 2025-04-224                         Résiliation du contrat SP-24-012 relatif à des"
+            }
+          },
+          {
+            "label": "2024-06-389",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1296",
+              "quote": "ATTENDU QUE le 10 juin 2024, par la résolution 2024-06-389, le conseil a octroyé à"
+            }
+          },
+          {
+            "label": "2025-04-225",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1331",
+              "quote": "RÉSOLUTION 2025-04-225                      Résiliation du contrat SP-24-018 concernant"
+            }
+          },
+          {
+            "label": "2024-05-304",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1339",
+              "quote": "ATTENDU QUE le 13 mai 2024, par la résolution 2024-05-304, le conseil a octroyé à"
+            }
+          },
+          {
+            "label": "2025-04-226",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1380",
+              "quote": "RÉSOLUTION 2025-04-226                         Autoriser l'utilisation de la réserve financière"
+            }
+          },
+          {
+            "label": "2019-08-481",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1388",
+              "quote": "ATTENDU QUE par la résolution 2019-08-481, la Ville a adopté le règlement G-041-19"
+            }
+          },
+          {
+            "label": "2025-04-227",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1408",
+              "quote": "\fRÉSOLUTION 2025-04-227                     Approbation de la liste préliminaire des"
+            }
+          },
+          {
+            "label": "2025-04-228",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1458",
+              "quote": "\fRÉSOLUTION 2025-04-228                       Autorisations, mandats requis et dépôt de la"
+            }
+          },
+          {
+            "label": "2025-04-229",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1508",
+              "quote": "\fRÉSOLUTION 2025-04-229                         Demande d'adhésion annuelle de la Ville à"
+            }
+          },
+          {
+            "label": "2025-04-230",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1549",
+              "quote": "RÉSOLUTION 2025-04-230                         Demande de dérogation mineure au 252, rue"
+            }
+          },
+          {
+            "label": "2025-04-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1595",
+              "quote": "RÉSOLUTION 2025-04-231                        Demande de dérogation mineure pour les lots"
+            }
+          },
+          {
+            "label": "2025-04-232",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1648",
+              "quote": "RÉSOLUTION 2025-04-232                     Demande de dérogation mineure pour le lot"
+            }
+          },
+          {
+            "label": "2025-04-233",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1699",
+              "quote": "RÉSOLUTION 2025-04-233                      Demande de dérogation mineure pour les lots"
+            }
+          },
+          {
+            "label": "2025-04-234",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1747",
+              "quote": "\fRÉSOLUTION 2025-04-234                      Autorisation pour l'installation d'une enseigne"
+            }
+          },
+          {
+            "label": "2025-04-235",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1784",
+              "quote": "RÉSOLUTION 2025-04-235                      Autorisation de construction résidentielle au"
+            }
+          },
+          {
+            "label": "2025-04-236",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1858",
+              "quote": "RÉSOLUTION 2025-04-236                      Autorisation de construction résidentielle au"
+            }
+          },
+          {
+            "label": "2025-04-237",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1904",
+              "quote": "RÉSOLUTION 2025-04-237                       Autorisation de construction résidentielle au"
+            }
+          },
+          {
+            "label": "2025-04-238",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1948",
+              "quote": "RÉSOLUTION 2025-04-238                     Autorisation au 72, rue McComber - Projets"
+            }
+          },
+          {
+            "label": "2024-11-765",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1952",
+              "quote": "ATTENDU QU'aux fins de la résolution 2024-11-765, le premier projet a été adopté lors"
+            }
+          },
+          {
+            "label": "2024-03-176",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1955",
+              "quote": "ATTENDU QU'aux fins de la résolution 2024-03-176, le second projet a été adopté lors"
+            }
+          },
+          {
+            "label": "2025-04-239",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1997",
+              "quote": "RÉSOLUTION 2025-04-239"
+            }
+          },
+          {
+            "label": "2025-04-240",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2029",
+              "quote": "RÉSOLUTION 2025-04-240"
+            }
+          },
+          {
+            "label": "2022-07-482",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2031",
+              "quote": "                                       résolution 2022-07-482 concernant une"
+            }
+          },
+          {
+            "label": "2025-04-241",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2062",
+              "quote": "RÉSOLUTION 2025-04-241"
+            }
+          },
+          {
+            "label": "2025-02-101",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2063",
+              "quote": "                                  7.12 Modification de la résolution 2025-02-101"
+            }
+          },
+          {
+            "label": "2022-06-436",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2093",
+              "quote": "QUE les résolutions 2022-06-436, 2022-12-825 et 2023-01-33 soient annulées conformément"
+            }
+          },
+          {
+            "label": "2022-11-774",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2096",
+              "quote": "QUE la résolution 2022-11-774 soit conservée."
+            }
+          },
+          {
+            "label": "2025-04-242",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2114",
+              "quote": "RÉSOLUTION 2025-04-242                    Autorisation au chef de la Division hygiène"
+            }
+          },
+          {
+            "label": "2025-04-243",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2148",
+              "quote": "RÉSOLUTION 2025-04-243"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "H-107",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1635",
+              "quote": "  normes de la zone H-107 du règlement de zonage Z-3001;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6396128",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1582",
+              "quote": "connu comme étant le lot projeté 6 666 534 et actuellement le lot 6 396 128, en vertu du"
+            }
+          },
+          {
+            "label": "4050917",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1774",
+              "quote": "connu comme étant le lot 4 050 917, en vertu du règlement Z-3600 relatif aux plans"
+            }
+          },
+          {
+            "label": "6106166",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1824",
+              "quote": "connu comme étant le lot 6 106 166, en vertu du règlement Z-3600 relatif aux plans"
+            }
+          },
+          {
+            "label": "6106165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1851",
+              "quote": "  Châteauguay sur les lots 6 106 165, 6 106 166 et 6 106 167, daté du 20 septembre"
+            }
+          },
+          {
+            "label": "6457156",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1929",
+              "quote": "comme étant le lot 6 457 156, en vertu du règlement Z-3600 relatif aux plans"
+            }
+          },
+          {
+            "label": "5672289",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1977",
+              "quote": "au 72, rue McComber connu comme étant le lot 5 672 289, en permettant :"
+            }
+          },
+          {
+            "label": "5980596",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1998",
+              "quote": "                                  7.10 Cession du lot 5 980 596 à la Ville de"
+            }
+          },
+          {
+            "label": "6456613",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2057",
+              "quote": "6 456 614 par le lot 6 456 613."
+            }
+          },
+          {
+            "label": "6606078",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2066",
+              "quote": "                                            de l'acheteur pour la vente du lot 6 606 078"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/e34c27c847dc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/e34c27c847dc.pdf/.graphify/.graphify_extract.json — 75 nodes, 7 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 75,
+        "edges": 7
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay",
+          "quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2025/01/V2_2025-12-08_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/ba8dca014f97626da41f1b693fffe98cedc479f4cb2b0ea00a571ad48303803a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                   DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-11-656",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "     5.15.Modification de la résolution 2025-11-656 afin de corriger le nom de l’entité juridique du"
+            }
+          },
+          {
+            "label": "2025-11-622",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "    6.10.Modification de la résolution 2025-11-622 visant l'entente entre Produits Suncor"
+            }
+          },
+          {
+            "label": "2025-08-502",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:196",
+              "quote": "    6.11.Modification de la résolution 2025-08-502 visant la modification du contrat SP-24-036 relatif"
+            }
+          },
+          {
+            "label": "2025-03-157",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:204",
+              "quote": "     6.12.Modification de la résolution 2025-03-157 visant l'attribution du contrat SP-24-054 relatif"
+            }
+          },
+          {
+            "label": "2021-02-80",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "     7.1. Annulation de la résolution 2021-02-80 et modification de la résolution 2025-06-374,"
+            }
+          },
+          {
+            "label": "2025-06-374",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "     7.1. Annulation de la résolution 2021-02-80 et modification de la résolution 2025-06-374,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/1ad48303803a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162344Z/chateauguay/1ad48303803a.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay",
+          "lery"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
