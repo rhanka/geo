@@ -1,0 +1,219 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:27:11.366Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 57,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Resolution": 2,
+    "Regulation": 3,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 10,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 3,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/033fc1cd502ae316bad30ec32d99520d0ec7e80ff7cdd95f618f99e08366cd16.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5847681",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:732",
+      "quote": "             Faggion et de monsieur Louis Bertrand portant sur le numéro de lot 5 847 681;"
+    },
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/033fc1cd502ae316bad30ec32d99520d0ec7e80ff7cdd95f618f99e08366cd16.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5847527",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:798",
+      "quote": "             propriétaire du lot 5 847 527 et par la municipalité de Beaulac-Garthby, propriétaire"
+    },
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/033fc1cd502ae316bad30ec32d99520d0ec7e80ff7cdd95f618f99e08366cd16.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5847510",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:799",
+      "quote": "             du lot 5 847 510;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 91,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2084,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z",
+  "documents": [
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230511115100-proces-verbal-du-11-avril-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/033fc1cd502ae316bad30ec32d99520d0ec7e80ff7cdd95f618f99e08366cd16.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 3,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-06-7570",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "             CONSIDÉRANT la résolution 22-06-7570 et résolution 22-06-7571 de la municipalité"
+            }
+          },
+          {
+            "label": "22-06-7571",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "             CONSIDÉRANT la résolution 22-06-7570 et résolution 22-06-7571 de la municipalité"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "257-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "        6.1 - Adoption du règlement 257-2023 sur le déroulement des séances du"
+            }
+          },
+          {
+            "label": "253-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "        6.2 - Adoption du règlement 253-2023 portant sur le traitement des élus"
+            }
+          },
+          {
+            "label": "258-2023",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "        6.3 - Dépôt et adoption du premier projet de règlement 258-2023 portant sur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5847681",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:732",
+              "quote": "             Faggion et de monsieur Louis Bertrand portant sur le numéro de lot 5 847 681;"
+            }
+          },
+          {
+            "label": "5847527",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:798",
+              "quote": "             propriétaire du lot 5 847 527 et par la municipalité de Beaulac-Garthby, propriétaire"
+            }
+          },
+          {
+            "label": "5847510",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:799",
+              "quote": "             du lot 5 847 510;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z/beaulac-garthby/99e08366cd16.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z/beaulac-garthby/99e08366cd16.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
