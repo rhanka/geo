@@ -232,7 +232,7 @@ export function k8sTarget(): K8sTarget {
  * depuis chez elle. Rien de notre cote ne pouvait le signaler: un apply reussi
  * sur le mauvais cluster ressemble exactement a un apply reussi.
  */
-function assertDeclaredCluster(args: Args): void {
+export function assertDeclaredCluster(args: Pick<Args, "kubeconfig" | "namespace">): void {
   const target = k8sTarget();
   const view = spawnSync(
     "kubectl",
