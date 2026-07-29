@@ -82,6 +82,7 @@ interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly control: number | null;
   readonly all: boolean;
+  readonly storageKeys: readonly string[];
   readonly batchSize: number | null;
   readonly batchIndex: number | null;
   readonly output: string;
@@ -140,7 +141,7 @@ interface MunicipalizeResult {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all] [--classification=PATH] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--out=PATH]");
   process.exit(0);
 }
 
@@ -150,9 +151,15 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
     .filter((argument) => argument.startsWith(`--${name}=`))
     .map((argument) => argument.slice(name.length + 3));
   const controlValue = values("control").at(-1);
-  const control = controlValue === undefined ? 20 : Number(controlValue);
-  if (!Number.isInteger(control) || control < 1) throw new Error("--control doit être un entier positif");
   const all = argv.includes("--all");
+  const storageKeys = values("storage-key");
+  if (storageKeys.some((key) => !key)) throw new Error("--storage-key doit être une clé CAS non vide");
+  if (new Set(storageKeys).size !== storageKeys.length) throw new Error("--storage-key ne peut pas être répété");
+  if (storageKeys.length > 0 && (all || controlValue !== undefined)) {
+    throw new Error("--storage-key est exclusif de --all et --control");
+  }
+  const control = storageKeys.length > 0 ? null : (controlValue === undefined ? 20 : Number(controlValue));
+  if (control !== null && (!Number.isInteger(control) || control < 1)) throw new Error("--control doit être un entier positif");
   if (all && values("control").length > 0) throw new Error("--all et --control sont exclusifs");
   const batchSizeValue = values("batch-size").at(-1);
   const batchIndexValue = values("batch-index").at(-1);
@@ -170,6 +177,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
     control: all ? null : control,
     all,
+    storageKeys,
     batchSize,
     batchIndex,
     output: resolve(ROOT, outputValue ?? `work/coverage/pv-graphify-semantic-${timestamp}.json`),
@@ -215,6 +223,15 @@ function uniqueEligible(lines: readonly ClassificationLine[]): ClassificationLin
 
 function selectControl(lines: readonly ClassificationLine[], count: number): ClassificationLine[] {
   return selectBalancedPvControl(lines, count);
+}
+
+function selectStorageKeys(lines: readonly ClassificationLine[], storageKeys: readonly string[]): ClassificationLine[] {
+  const requested = new Set(storageKeys);
+  const selected = lines.filter((line) => requested.has(line.storage_key));
+  const found = new Set(selected.map((line) => line.storage_key));
+  const missing = storageKeys.filter((storageKey) => !found.has(storageKey));
+  if (missing.length > 0) throw new Error(`--storage-key absent de l'univers PV confirmé: ${missing.join(", ")}`);
+  return selected;
 }
 
 function readMunicipalities(path: string): MunicipalityGazetteerEntry[] {
@@ -757,7 +774,9 @@ async function main(): Promise<void> {
   const batch = args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const selected = batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
+  const selected = args.storageKeys.length > 0
+    ? selectStorageKeys(eligible, args.storageKeys)
+    : batch?.candidates ?? (args.all ? eligible : selectControl(eligible, args.control!));
   assertS3RunEnvironment();
 
   const municipalities = readMunicipalities(MUNICIPALITIES_PATH);
@@ -869,13 +888,14 @@ async function main(): Promise<void> {
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
-    mode: args.all ? "all-eligible" : "balanced-municipality-control",
+    mode: args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
     classification_reports: paths.map((path) => path.slice(ROOT.length + 1)),
     eligible_records: eligibleRecords.length,
     eligible_documents: eligible.length,
     duplicate_eligible_records: eligibleRecords.length - eligible.length,
     eligible_municipalities: new Set(eligible.map((document) => document.slug)).size,
     ...(batch ? { batch } : {}),
+    ...(args.storageKeys.length > 0 ? { supersedes_storage_keys: selected.map((document) => document.storage_key) } : {}),
     selected_documents: documents.length,
     entity_counts: entityCounts,
     graphify: { nodes: graphNodes, edges: graphEdges, failures: graphifyFailures },

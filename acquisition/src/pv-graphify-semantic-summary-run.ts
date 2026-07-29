@@ -45,7 +45,7 @@ function main(): void {
   const date = parseDate(process.argv.slice(2));
   const coverageDirectory = resolve(ROOT, "work", "coverage");
   const classificationReports = readReports(coverageDirectory, new RegExp(`^pv-capture-octets-classification-${date}-.+\\.json$`, "u"));
-  const graphifyReports = readReports(coverageDirectory, new RegExp(`^pv-graphify-semantic-all-${date}-batch-\\d+\\.json$`, "u"));
+  const graphifyReports = readReports(coverageDirectory, new RegExp(`^pv-graphify-semantic-all-${date}-(?:batch-\\d+|reindex-[a-z0-9-]+)\\.json$`, "u"));
   if (classificationReports.length === 0 || graphifyReports.length === 0) throw new Error(`rapports PV ${date} introuvables`);
   const output = resolve(coverageDirectory, `pv-graphify-semantic-all-${date}-summary.json`);
   const summary = summarizePvGraphifySemantic(classificationReports, graphifyReports);
