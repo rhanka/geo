@@ -19,6 +19,20 @@ export interface PvCaptureTarget {
   readonly urls: readonly [string];
 }
 
+/**
+ * Version observable d'un index PV S3. L'ETag et la date font partie du
+ * snapshot: deux contenus différents sous la même clé ne sont pas un même
+ * corpus.
+ */
+export type PvIndexListing = readonly (readonly [key: string, etag: string | null, lastModified: string | null])[];
+
+export interface StablePvIndexListing {
+  readonly sha256: `sha256:${string}`;
+  readonly listing: PvIndexListing;
+  /** Le rapport de classification était un ancien instantané, sans incohérence. */
+  readonly classificationWasStale: boolean;
+}
+
 function stringValue(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
@@ -26,6 +40,46 @@ function stringValue(value: unknown): string | null {
 /** Stable hash of the exact target bytes later uploaded to S3. */
 export function sha256(value: string): `sha256:${string}` {
   return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
+/** Hash exact du listing observable qui identifie un corpus d'index PV. */
+export function pvIndexListingSha256(listing: PvIndexListing): `sha256:${string}` {
+  return sha256(JSON.stringify({ pv_index_listing: listing }));
+}
+
+function listingChange(first: PvIndexListing, final: PvIndexListing): string {
+  const firstByKey = new Map(first.map((entry) => [entry[0], entry]));
+  const finalByKey = new Map(final.map((entry) => [entry[0], entry]));
+  const changedVersions = [...firstByKey.keys()]
+    .filter((key) => finalByKey.has(key) && JSON.stringify(firstByKey.get(key)) !== JSON.stringify(finalByKey.get(key)))
+    .sort();
+  if (changedVersions.length > 0) return `versions divergentes pour ${changedVersions.slice(0, 3).join(", ")}`;
+  const added = [...finalByKey.keys()].filter((key) => !firstByKey.has(key)).sort();
+  const removed = [...firstByKey.keys()].filter((key) => !finalByKey.has(key)).sort();
+  return `clés ajoutées ${added.slice(0, 3).join(", ") || "aucune"}; clés supprimées ${removed.slice(0, 3).join(", ") || "aucune"}`;
+}
+
+/**
+ * Un rapport historique peut être dépassé: le plan repart alors du listing
+ * frais. En revanche, l'index ne peut pas changer entre le premier listing
+ * et la lecture des octets, sinon les scans mélangent deux versions d'une
+ * même clé et ne sont plus publiables.
+ */
+export function stablePvIndexListing(
+  classificationSnapshot: string,
+  firstListing: PvIndexListing,
+  finalListing: PvIndexListing,
+): StablePvIndexListing {
+  const firstSha256 = pvIndexListingSha256(firstListing);
+  const finalSha256 = pvIndexListingSha256(finalListing);
+  if (firstSha256 !== finalSha256) {
+    throw new Error(`snapshot d'index PV incohérent pendant la planification: ${listingChange(firstListing, finalListing)}`);
+  }
+  return {
+    sha256: firstSha256,
+    listing: firstListing,
+    classificationWasStale: firstSha256 !== classificationSnapshot,
+  };
 }
 
 /**
