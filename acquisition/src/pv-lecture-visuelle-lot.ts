@@ -145,7 +145,12 @@ function initialSampleSelection(limit: number): DocumentSelection {
       municipality_name: null,
     };
   });
-  if (new Set(documents.map((document) => document.storage_key)).size !== LOT_SIZE) throw new Error("triage: clés du lot dupliquées");
+  // `documents.length`, pas une constante: le dernier lot des 186 n'en compte que
+  // 26, et comparer a une taille figee ferait lever un lot parfaitement valide.
+  // Ce que le garde doit dire est « aucune cle en double », rien de plus.
+  if (new Set(documents.map((document) => document.storage_key)).size !== documents.length) {
+    throw new Error("triage: clés du lot dupliquées");
+  }
   return {
     description: "les 20 premières entrées ordonnées de triage.sample.documents",
     prior_lot_reports: [],
