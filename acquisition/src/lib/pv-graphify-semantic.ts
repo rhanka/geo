@@ -98,7 +98,11 @@ export type RegulationLegalQuality =
   | "PROJET"
   | "PREMIER_PROJET"
   | "SECOND_PROJET"
+  | "AVIS_DE_MOTION"
   | "AVIS_APPROBATION_REFERENDAIRE"
+  | "DEPOT_CERTIFICAT"
+  | "CERTIFICAT_CONFORMITE"
+  | "ENTREE_EN_VIGUEUR"
   | "VERSION_ADMINISTRATIVE"
   | "CODIFICATION"
   | "INCONNUE";
@@ -120,6 +124,8 @@ interface ResolutionEvidence {
 
 interface RegulationEvidence {
   readonly line: SourceLine;
+  /** The line containing the status marker when it is adjacent to the code. */
+  readonly statusLine: SourceLine;
   readonly verbatim: string;
   readonly quality: RegulationLegalQuality;
 }
@@ -343,12 +349,19 @@ function resolutionEvidence(lines: readonly SourceLine[]): ResolutionEvidence[] 
   return found;
 }
 
-const REGULATION_REFERENCE = /\br[èe]glement\b\s*(?:n(?:um[ée]ro)?[°o]?\s*)?([A-Z]{0,5}\s*\d{1,6}(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
+// A prefix is either attached to its digits (`RV26`) or separated by a code
+// operator (`R-2026`).  A free-standing word before a number is never a code:
+// without that restriction `Règlement de 19` becomes the fabricated `DE 19`.
+const REGULATION_REFERENCE = /\br[èe]glement\b\s*(?:n(?:um[ée]ro)?[°o]?\s*)?((?:[A-Z]{1,5}(?:[-./]\s*)?\d{1,6}|\d{1,6})(?:\s*[./-]\s*\d{1,6}){0,3})/giu;
 const REGULATION_DATE_CONTINUATION = new RegExp(`^\\s+(?:${MONTH})\\b`, "iu");
 
-function regulationQuality(line: string, regulationOffset: number): RegulationLegalQuality {
+function hasRegulationReference(line: string): boolean {
+  return line.matchAll(REGULATION_REFERENCE).next().done === false;
+}
+
+function regulationQuality(line: string, regulationOffset: number, contextAfter = 80): RegulationLegalQuality {
   const before = normalizeWords(line.slice(Math.max(0, regulationOffset - 100), regulationOffset));
-  const after = normalizeWords(line.slice(regulationOffset, regulationOffset + 80));
+  const after = normalizeWords(line.slice(regulationOffset, regulationOffset + contextAfter));
   // A legal-status clause attached to the regulation controls the result. Its
   // nearby "adopté" can only record adoption of that draft, never turn the
   // draft itself into a legally effective regulation.
@@ -360,28 +373,87 @@ function regulationQuality(line: string, regulationOffset: number): RegulationLe
   }
   if (/\bprojet (?:de|du|d) $/u.test(before)) return "PROJET";
   if (/\bavis d approbation referendaire (?:de|du|d) $/u.test(before)) return "AVIS_APPROBATION_REFERENDAIRE";
+  if (/\bavis de motion\b/u.test(before) || /\bavis de motion\b/u.test(after)) return "AVIS_DE_MOTION";
+  if (/\bcertificat de conformite\b/u.test(before) || /\bcertificat de conformite\b/u.test(after)) return "CERTIFICAT_CONFORMITE";
+  if (/\bdepot (?:d un |du |d )?certificat\b/u.test(before) || /\bdepot (?:d un |du |d )?certificat\b/u.test(after)) {
+    return "DEPOT_CERTIFICAT";
+  }
+  if (/\b(?:entree en vigueur|en vigueur)\b/u.test(before) || /\b(?:entree en vigueur|en vigueur)\b/u.test(after)) {
+    return "ENTREE_EN_VIGUEUR";
+  }
   if (/\bversion administrative (?:de|du|d) $/u.test(before)) return "VERSION_ADMINISTRATIVE";
   if (/\bcodification (?:de|du|d) $/u.test(before)) return "CODIFICATION";
-  if (/\badoption du $/u.test(before)) return "ADOPTE";
+  if (/\badoption (?:de|du|d|le|la|les|un|une) $/u.test(before)) return "ADOPTE";
+  if (/\badoption $/u.test(before) && !/\bavis d adoption $/u.test(before)) return "ADOPTE";
+  if (/\b(?:adopter|adopte) (?:de|du|d|le|la|les|un|une) $/u.test(before)) return "ADOPTE";
+  if (/\bsera? adopte\b/u.test(after) || /\bseront adoptes\b/u.test(after)) return "INCONNUE";
   if (/\badopte(?:e|es|er)?\b/u.test(after)) return "ADOPTE";
   return "INCONNUE";
 }
 
-function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] {
+function qualityFromAdjacentLines(
+  lines: readonly SourceLine[],
+  lineIndex: number,
+  regulationOffset: number,
+): { readonly quality: RegulationLegalQuality; readonly statusLine: SourceLine } {
+  const current = lines[lineIndex]!;
+  const direct = regulationQuality(current.text, regulationOffset);
+  if (direct !== "INCONNUE") return { quality: direct, statusLine: current };
+
+  const previous = lines[lineIndex - 1];
+  if (previous && !hasRegulationReference(previous.text)) {
+    const joined = `${previous.text}\n${current.text}`;
+    const quality = regulationQuality(joined, previous.text.length + 1 + regulationOffset);
+    if (quality !== "INCONNUE") return { quality, statusLine: previous };
+  }
+
+  const next = lines[lineIndex + 1];
+  if (next && !hasRegulationReference(next.text)) {
+    const joined = `${current.text}\n${next.text}`;
+    // This wider range is limited to the immediately adjacent physical line;
+    // it lets a PDF-wrapped status finish after a long regulation title.
+    const quality = regulationQuality(joined, regulationOffset, 400);
+    if (quality !== "INCONNUE") return { quality, statusLine: next };
+  }
+  return { quality: "INCONNUE", statusLine: current };
+}
+
+function rawRegulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] {
   const found: RegulationEvidence[] = [];
-  for (const line of lines) {
+  for (const [lineIndex, line] of lines.entries()) {
     for (const match of line.text.matchAll(REGULATION_REFERENCE)) {
       const verbatim = match[1]?.trim();
       const offset = match.index ?? -1;
       const afterReference = offset < 0 ? "" : line.text.slice(offset + match[0].length);
-      const hasBrokenCode = /^\s*[-‐‑‒–—―]\s*(?:$|\D)/u.test(afterReference);
+      // `pdftotext` can split a code immediately after its operator.  Do not
+      // rejoin physical lines and never emit the left fragment as a code.
+      const hasDanglingCodeOperator = /^\s*[-‐‑‒–—―]\s*$/u.test(afterReference);
       const isDayOfMonth = REGULATION_DATE_CONTINUATION.test(afterReference);
-      if (verbatim && offset >= 0 && !hasBrokenCode && !isDayOfMonth) {
-        found.push({ line, verbatim, quality: regulationQuality(line.text, offset) });
+      if (verbatim && offset >= 0 && !hasDanglingCodeOperator && !isDayOfMonth) {
+        const classified = qualityFromAdjacentLines(lines, lineIndex, offset);
+        found.push({ line, statusLine: classified.statusLine, verbatim, quality: classified.quality });
       }
     }
   }
   return found;
+}
+
+/**
+ * A document may mention one exact regulation before its agenda item later
+ * names the same regulation's status.  Keep the last explicit status for that
+ * exact normalized code only; this is a document-local consolidation, never a
+ * prefix, neighbour, or hyphen-fragment resolution.
+ */
+function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] {
+  const grouped = new Map<string, RegulationEvidence[]>();
+  for (const evidence of rawRegulationEvidence(lines)) {
+    const code = normalizeCode(evidence.verbatim);
+    const values = grouped.get(code) ?? [];
+    values.push(evidence);
+    grouped.set(code, values);
+  }
+  return [...grouped.values()]
+    .map((evidences) => [...evidences].reverse().find((evidence) => evidence.quality !== "INCONNUE") ?? evidences[0]!);
 }
 
 /**
@@ -393,9 +465,8 @@ export function classifyRegulationLegalQuality(sourceClause: string, regulationN
   const expectedCode = normalizeCode(regulationNumber);
   const matches = regulationEvidence(sourceLines(sourceClause))
     .filter((evidence) => normalizeCode(evidence.verbatim) === expectedCode);
-  const qualities = new Set(matches.map((evidence) => evidence.quality));
-  if (matches.length === 0 || qualities.size !== 1) {
-    throw new Error(`qualification réglementaire ambiguë ou absente pour ${regulationNumber}: ${matches.length} ancre(s) exacte(s), ${qualities.size} qualité(s)`);
+  if (matches.length !== 1) {
+    throw new Error(`qualification réglementaire ambiguë ou absente pour ${regulationNumber}: ${matches.length} ancre(s) exacte(s)`);
   }
   return matches[0]!.quality;
 }
@@ -572,14 +643,17 @@ export function extractPvSemantic(
   for (const regulation of regulationEvidence(lines)) {
     const code = normalizeCode(regulation.verbatim);
     const id = `regulation:qc:${municipality.slug}:${stableId("value", code).slice("value:".length)}`;
-    nodes.push(node(
+    const regulationNode = node(
       id,
       regulation.verbatim,
       "Regulation",
       document,
       regulation.line,
       { regulation_number: regulation.verbatim, legal_quality: regulation.quality },
-    ));
+    );
+    nodes.push(regulation.statusLine.number === regulation.line.number
+      ? regulationNode
+      : { ...regulationNode, citations: [citation(document, regulation.line), citation(document, regulation.statusLine)] });
     for (const resolutionId of resolutionIdsByLine.get(regulation.line.number) ?? []) {
       edges.push(edge(resolutionId, id, "resolution_mentions_regulation", document, regulation.line));
     }
