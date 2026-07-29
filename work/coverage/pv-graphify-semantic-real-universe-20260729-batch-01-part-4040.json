@@ -1,0 +1,1534 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:31:31.214Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4040,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/1329edb107b61134cca317f926cd6b9eabe7e0b5a42a8138593bf4c645e74b56.pdf",
+      "raw/pv-index/cas/1d4b2510e3017a1e1a26c9051ebf6837d5870363352aac3cf919ee8b78063fdc.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 12,
+    "failed_pvs": 6,
+    "outcomes": {
+      "INDEXED": 12,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 6
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 12,
+    "Document": 12,
+    "CouncilSession": 11,
+    "MeetingDate": 11,
+    "Regulation": 23,
+    "Resolution": 20,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 91,
+    "edges": 38,
+    "failures": 6
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chute-saint-philippe",
+      "storage_key": "raw/pv-index/cas/4212ebdce18bf52cc7ab96a1a1987a98b1bcccc4a788332ece101b7fd741c0a7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5964326",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:443",
+      "quote": "                        carrés, le tout, attaché à la rive du lot 5 964 326 appartenant à la municipalité."
+    },
+    {
+      "municipality_slug": "chute-saint-philippe",
+      "storage_key": "raw/pv-index/cas/4212ebdce18bf52cc7ab96a1a1987a98b1bcccc4a788332ece101b7fd741c0a7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6669526",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:495",
+      "quote": "                       6 669 490 ayant une superficie de 4 482.30 mètres carrés et le lot 6 669 526 ayant une"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 115,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 1788,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z",
+  "documents": [
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20241217155726-proces-verbal-12e-seance-ordinaire-2%20(1).pdf",
+      "storage_key": "raw/pv-index/cas/ef93cb217900469e342f6cec882ae66af3fce27f8de416b7aea024f261102e4b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "           municipal de Chute-aux-Outardes, tenue le 16 décembre 2024, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "464-2024",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": " Rés. no   7.1   Adoption du règlement n° 464-2024 - Règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/24f261102e4b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/24f261102e4b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154844-2017-12-18-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f0a720579198854d235c12807379379e63deb7b41c45cc5284af64613c203508.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                              Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                              Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/64613c203508.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/64613c203508.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823145431-2019-12-16-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f1619d994de90c4421ad17f3d0df8475de03d39c2d7999bc4e52a2d2ed5bbd03.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/a2d2ed5bbd03.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/a2d2ed5bbd03.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823145429-2019-09-16-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f1fdede050d23dd5de469353b77343deae293aaa65d9d10698262802e7fa535b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/2802e7fa535b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/2802e7fa535b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20230420150749-2023-02-20-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f518a610ada436d6e67ce6060331d796d3d31088e5bcae69e2c929e60be0d5ae.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "                                                      Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "                                                      Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "                                                      Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "                                                      municipal de Chute-aux-Outardes, tenue le 20 février 2023, à 20h"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-120",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:507",
+              "quote": "                                                 CONSIDÉRANT Que, par sa résolution numéro 2022-120,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "458-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:205",
+              "quote": "(!                                                             de règlement n° 458-2023 Relatif        à la démolition"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/29e60be0d5ae.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/29e60be0d5ae.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154856-2017-01-30-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f56a66ca51230bc29ef00400c063a2a82909ae6ac42e9b1b3033418a2e09a842.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/418a2e09a842.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/418a2e09a842.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823161355-2016-04-18-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f67a1b309dd314dc39660b98e66182762e91d59f704da51a57a0bc44769d58c3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 avril 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 avril 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "           municipal de Chute-aux-Outardes, tenue le 18 avril 2016, à 20h à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2015-176",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:304",
+              "quote": "                 CONSIDÉRANT la résolution n° 2015-176 autorisant la"
+            }
+          },
+          {
+            "label": "2015-180",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:318",
+              "quote": "                 CONSIDÉRANT la résolution n° 2015-180 autorisant la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "412-2016",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:211",
+              "quote": " Rés. no   7.1   Adoption du règlement n° 412-2016 modifiant le"
+            }
+          },
+          {
+            "label": "345-2009",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:212",
+              "quote": "2016-090         règlement n° 345-2009 décrétant l'imposition d'une taxe"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/bc44769d58c3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/bc44769d58c3.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes",
+          "saint-augustin--le-golfe-du-saint-laurent",
+          "saint-augustin--maria-chapdelaine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20240619103736-proces-verbal-06e-seance-ordinaire%20(1).pdf",
+      "storage_key": "raw/pv-index/cas/f8a5040343c59a6a78d8d34cd43537823a6408a7432db9dc61368ddba932d6c6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "           municipal de Chute-aux-Outardes, tenue le 17 juin 2024, à 20h00"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-027",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:321",
+              "quote": " Rés. no   8.6    Abrogation de la résolution n° 2024-027"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "24-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": " Rés. no   7.1    Approbation du règlement n° 24-01 de la Régie de"
+            }
+          },
+          {
+            "label": "12-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:188",
+              "quote": "                  règlement numéro 12-03 afin d'augmenter la dépense et"
+            }
+          },
+          {
+            "label": "438-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:345",
+              "quote": "                  CONSIDÉRANT les dispositions du règlement n° 438-2019"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/8ddba932d6c6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/8ddba932d6c6.pdf/.graphify/.graphify_extract.json — 8 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20220502102857-2021-09-21-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fb6300539dca1810bcd8bab2bf12a12423be79ee3e0a05cacc139c70fc8966fd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/9c70fc8966fd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/9c70fc8966fd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154831-2017-03-21-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fb7f9be09aa648b4fa03c0261ea00fe64bd1aec9bb3c10870eaf5ea6528dbd0a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/5ea6528dbd0a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/5ea6528dbd0a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20230420150839-2023-03-20-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ff178630a33bd06cac9e6c7f03779b3233cb97a1ce3d89fa7ac0168e63a18721.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/168e63a18721.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-aux-outardes/168e63a18721.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20251212113517-seance-12-2025-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/36ef373a1af291fa23317309f7039e10bd1f868437ccad7ad54de159197e4199.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "directeur général et greffier-trésorier dépose à la présente séance publique, les déclarations mises à jour des"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "directeur général et greffier-trésorier dépose à la présente séance publique, les déclarations mises à jour des"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 décembre 2025, à 19 heures, tenue dans la salle du conseil, située au"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 décembre 2025, à 19 heures, tenue dans la salle du conseil, située au"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13041-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:515",
+              "quote": "                       environnement par la résolution 13041-2025;"
+            }
+          },
+          {
+            "label": "12530-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:598",
+              "quote": "CONSIDÉRANT              La résolution 12530-2025 adoptée le 11 décembre 2023 par le conseil municipal de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "307-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "Conformément au règlement 307-2022 en lien avec le Code d’éthique et de déontologie des élus municipaux, le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/e159197e4199.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/e159197e4199.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "ferme-neuve",
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250217080046-seance-02-2025.pdf",
+      "storage_key": "raw/pv-index/cas/4212ebdce18bf52cc7ab96a1a1987a98b1bcccc4a788332ece101b7fd741c0a7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 5,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "                        d'autoriser les versements de la contribution financière 2025 de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "                        d'autoriser les versements de la contribution financière 2025 de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 11 février 2025, à 19 h, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 11 février 2025, à 19 h, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12801-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "     10.4. Abrogation de la résolution 12801-2024 – Demande de renouvellement et/ou d’octroi d’un bail – Lot"
+            }
+          },
+          {
+            "label": "12781-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "     10.5. Abrogation résolution 12781-2024 – Dépôt plan projet de lotissement M. Lefebvre;"
+            }
+          },
+          {
+            "label": "12162-2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:370",
+              "quote": "                        a été déposé et accepté par la municipalité selon la résolution 12162-2022;"
+            }
+          },
+          {
+            "label": "12853-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:893",
+              "quote": "                        résolution 12853-2025 par la conseillère Danielle Ferland;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "326-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "       13.1 Règlement 326-2025 décrétant une dépense de 420 000 $ et un emprunt de 420 000 $ pour"
+            }
+          },
+          {
+            "label": "327-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "       14.2 Dépôt du projet de règlement numéro 327-2025 décrétant une dépense de 832 650 $ et un emprunt"
+            }
+          },
+          {
+            "label": "325-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "       15.1 Adoption du règlement 325-2025, abrogeant et remplaçant les règlements 121, 154, 155, 311 et 321-"
+            }
+          },
+          {
+            "label": "140",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:361",
+              "quote": "CONSIDÉRANT             L’article 3.2.4 du règlement 140 relatif au lotissement qui stipule qu’un propriétaire d’un"
+            }
+          },
+          {
+            "label": "137",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:460",
+              "quote": "CONSIDÉRANT             Que l’article 4.2.3 du règlement 137 relatif aux divers permis et certificats exige pour un"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5964326",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:443",
+              "quote": "                        carrés, le tout, attaché à la rive du lot 5 964 326 appartenant à la municipalité."
+            }
+          },
+          {
+            "label": "6669526",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:495",
+              "quote": "                       6 669 490 ayant une superficie de 4 482.30 mètres carrés et le lot 6 669 526 ayant une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/1b7fd741c0a7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/1b7fd741c0a7.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "lac-des-ecorces",
+          "lac-saint-paul"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20260123110807-seance-01-2026.pdf",
+      "storage_key": "raw/pv-index/cas/4c987c552e4c8b729bbfe10a3445254ac2f04db476caf8676c5a07ca10f51596.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "montant de 707.10 $ incluant les taxes applicables pour la participation et parution de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "montant de 707.10 $ incluant les taxes applicables pour la participation et parution de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 19 janvier 2026, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 19 janvier 2026, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13067-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:542",
+              "quote": "CONSIDÉRANT             La résolution 13067-2025 et le mandat pour service juridique en lien avec la demande"
+            }
+          },
+          {
+            "label": "13044-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:561",
+              "quote": "patinoire de façon contractuelle, tel que stipulé au protocole d’entente signé en vertu de la résolution 13044-2025:"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "303-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": "CONSIDÉRANT             Que l’application du règlement 303-2021 sur la gestion contractuelle a été appliquée et"
+            }
+          },
+          {
+            "label": "304-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:341",
+              "quote": "                        l’application de son règlement 304-2021, relatif aux animaux domestiques sur son"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/07ca10f51596.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/07ca10f51596.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250314112842-seance-03-2025.pdf",
+      "storage_key": "raw/pv-index/cas/522d1028151f672879d80e2925de8cbf2a2ed1193b1c296d6f75dbb7d807505b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "ATTENDU              Que le rapport d’activités 2024 de la MRC d’Antoine-Labelle intègre le bilan des"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "ATTENDU              Que le rapport d’activités 2024 de la MRC d’Antoine-Labelle intègre le bilan des"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 11 mars 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 11 mars 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12734-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:261",
+              "quote": "CONSIDÉRANT            La résolution 12734-2024 relative à la position de la municipalité à la sortie des bois"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "326-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "     15.1     Règlement numéro 326-2025 décrétant une dépense de 420 000 $ et un emprunt de 420 000 $ pour"
+            }
+          },
+          {
+            "label": "327-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "\f       15.2    Règlement numéro 327-2025 décrétant une dépense de 832 650 $ et un emprunt de 832 650 $ pour"
+            }
+          },
+          {
+            "label": "195",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:212",
+              "quote": "                       règlement 195 relatif aux nuisances, sous peine d’annulation de l’évènement avec les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/dbb7d807505b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/dbb7d807505b.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250124102453-seance-01-2025.pdf",
+      "storage_key": "raw/pv-index/cas/53e26eece1baad20bb514d773ac6fe2d76e71f317304656355d0ad9576f99a2a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "montant de 707.10 $ incluant les taxes applicables pour la participation et parution de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "montant de 707.10 $ incluant les taxes applicables pour la participation et parution de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 21 janvier 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 21 janvier 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12734-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:476",
+              "quote": "CONSIDÉRANT             Que la Municipalité a fait parvenir la résolution 12734-2024 datée du 28 août 2024 au"
+            }
+          },
+          {
+            "label": "12782-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:580",
+              "quote": "patinoire de façon contractuelle, tel que stipulé au protocole d’entente signé en vertu de la résolution 12782-2024:"
+            }
+          },
+          {
+            "label": "12803-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:597",
+              "quote": "renouvelée selon la résolution 12803-2024 au montant de 37 057.21 $."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "     13.1 Règlement 325-2025, abrogeant et remplaçant les règlements 121, 154, 155, 311 et 321-2024 relatif"
+            }
+          },
+          {
+            "label": "324-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "     15.1 Règlement 324-2024, abrogeant et remplacent le règlement 303-2021 relatif à la collecte et le"
+            }
+          },
+          {
+            "label": "303-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "     15.1 Règlement 324-2024, abrogeant et remplacent le règlement 303-2021 relatif à la collecte et le"
+            }
+          },
+          {
+            "label": "304-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:341",
+              "quote": "                        l’application de son règlement 304-2021, relatif aux animaux domestiques sur son"
+            }
+          },
+          {
+            "label": "301-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1490",
+              "quote": "           RÈGLEMENT # 324-2025, ABROGEANT LE RÈGLEMENT 301-2021 RELATIF À LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/ad9576f99a2a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/ad9576f99a2a.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "lac-des-ecorces",
+          "lac-saint-paul",
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250924132027-seance-09-2025.pdf",
+      "storage_key": "raw/pv-index/cas/57626ee92a1412c56c799abb75962e154bf7fe52234bd35bc24dde232d327d27.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 septembre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 septembre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12842-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "     11.1. Abrogation de la résolution 12842-2025 et autorisation de paiement équipements supralocaux"
+            }
+          },
+          {
+            "label": "12852-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "CONSIDÉRANT             L’achat d’une nouvelle camionnette 6 roues selon les résolutions 12852-2025 et 12960-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/de232d327d27.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/de232d327d27.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "ferme-neuve",
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250417092250-seance-extra-15-04-2025-entente-supralocal.pdf",
+      "storage_key": "raw/pv-index/cas/5b9c6dbd8717124dc2c48ef5186ac1da3488fd158e541b50f02adad6a8ab83d4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "Un avis de convocation a été signifié tel que requis par le Code municipal, article 153, à tous les membres du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "Un avis de convocation a été signifié tel que requis par le Code municipal, article 153, à tous les membres du"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance extraordinaire du 15 avril 2025, à 17 heures, tenue dans la salle du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance extraordinaire du 15 avril 2025, à 17 heures, tenue dans la salle du conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-03-167",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "                         plusieurs années de discussions, tel que mentionné dans la résolution 25-03-167 adoptée"
+            }
+          },
+          {
+            "label": "2025-03-074",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "                         par la Ville de Mont-Laurier et dans la résolution 2025-03-074 adoptée par la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/dad6a8ab83d4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172949Z/chute-saint-philippe/dad6a8ab83d4.pdf/.graphify/.graphify_extract.json — 6 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "ferme-neuve",
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
