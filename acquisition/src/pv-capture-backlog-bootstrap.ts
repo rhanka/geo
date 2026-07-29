@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { dirname, basename, resolve } from "node:path";
 
 import { parseCaptureWorklist } from "../../packages/qc-sources/src/capture/index.js";
+import { assertDeclaredCluster, kubectlApplyArgs } from "./k8s-capture-run.js";
 import { getBytes, objectHead, putBytesIfAbsent, s3Client } from "./lib/s3.js";
 import {
   assertContiguousWorklistLots,
@@ -30,6 +31,7 @@ interface Args {
   maxBytes: number;
   maxActiveJobs: number;
   egress: string;
+  kubeconfig: string | null;
   apply: boolean;
 }
 
@@ -65,6 +67,7 @@ function parseArgs(argv: string[]): Args {
     maxBytes: integer("max-bytes", option(argv, "max-bytes"), 104_857_600),
     maxActiveJobs: integer("max-active-jobs", option(argv, "max-active-jobs"), 10),
     egress,
+    kubeconfig: option(argv, "kubeconfig") ?? null,
     apply: argv.includes("--apply"),
   };
 }
@@ -106,14 +109,15 @@ function sameManifest(left: PvCaptureBacklogManifest, right: PvCaptureBacklogMan
   return JSON.stringify(comparable(left)) === JSON.stringify(comparable(right));
 }
 
-function kubectlApply(manifest: string, cronJobName: string, namespace: string): void {
-  const applied = spawnSync("kubectl", ["apply", "-f", "-"], { input: manifest, encoding: "utf8" });
+function kubectlApply(manifest: string, cronJobName: string, args: { kubeconfig: string; namespace: string }): void {
+  assertDeclaredCluster(args);
+  const applied = spawnSync("kubectl", kubectlApplyArgs(args), { input: manifest, encoding: "utf8" });
   if (applied.status !== 0) throw new Error(`kubectl apply a échoué: ${(applied.stderr || applied.stdout).trim()}`);
   process.stderr.write(applied.stdout);
   // Job name is capped at 63 chars; keep the immediate tick deterministic
   // enough for observation without exceeding the CronJob-name maximum.
   const name = `${cronJobName.slice(0, 46)}-i-${new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).toLowerCase()}`;
-  const started = spawnSync("kubectl", ["create", "job", `--from=cronjob/${cronJobName}`, name, "-n", namespace], { encoding: "utf8" });
+  const started = spawnSync("kubectl", ["--kubeconfig", args.kubeconfig, "create", "job", `--from=cronjob/${cronJobName}`, name, "-n", args.namespace], { encoding: "utf8" });
   if (started.status !== 0) throw new Error(`kubectl create job initial a échoué: ${(started.stderr || started.stdout).trim()}`);
   process.stderr.write(started.stdout);
 }
@@ -167,7 +171,8 @@ async function main(): Promise<void> {
   const cronJobName = `geo-pv-backlog-${args.id}`;
   if (args.apply) {
     if (state.phase !== "running") throw new Error(`campagne ${args.id} ${state.phase}: refus de la redémarrer implicitement`);
-    kubectlApply(captureBacklogCronManifest(manifest, cronJobName), cronJobName, manifest.namespace);
+    if (args.kubeconfig === null) throw new Error("--kubeconfig est requis avec --apply");
+    kubectlApply(captureBacklogCronManifest(manifest, cronJobName), cronJobName, { kubeconfig: args.kubeconfig, namespace: args.namespace });
   }
   console.log(JSON.stringify({
     campaign: args.id,
