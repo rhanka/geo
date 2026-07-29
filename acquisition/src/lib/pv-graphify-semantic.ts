@@ -384,6 +384,22 @@ function regulationEvidence(lines: readonly SourceLine[]): RegulationEvidence[] 
   return found;
 }
 
+/**
+ * Replays the legal status of one already-cited regulation from its verbatim
+ * source clause. It deliberately requires one exact regulation-code match;
+ * callers cannot substitute a fuzzy or neighbouring regulation.
+ */
+export function classifyRegulationLegalQuality(sourceClause: string, regulationNumber: string): RegulationLegalQuality {
+  const expectedCode = normalizeCode(regulationNumber);
+  const matches = regulationEvidence(sourceLines(sourceClause))
+    .filter((evidence) => normalizeCode(evidence.verbatim) === expectedCode);
+  const qualities = new Set(matches.map((evidence) => evidence.quality));
+  if (matches.length === 0 || qualities.size !== 1) {
+    throw new Error(`qualification réglementaire ambiguë ou absente pour ${regulationNumber}: ${matches.length} ancre(s) exacte(s), ${qualities.size} qualité(s)`);
+  }
+  return matches[0]!.quality;
+}
+
 function zonePattern(code: string): RegExp {
   const parts = normalizeCode(code)
     .split(/([./-])/u)
