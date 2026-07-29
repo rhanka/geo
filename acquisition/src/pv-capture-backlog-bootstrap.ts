@@ -6,6 +6,7 @@ import { dirname, basename, resolve } from "node:path";
 import { parseCaptureWorklist } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, objectHead, putBytesIfAbsent, s3Client } from "./lib/s3.js";
 import {
+  assertContiguousWorklistLots,
   assertBacklogManifest,
   assertBacklogState,
   campaignManifestKey,
@@ -92,7 +93,7 @@ function worklistPaths(prefix: string): string[] {
     return match ? [{ path: resolve(directory, entry.name), lot: Number(match[1]) }] : [];
   }).sort((left, right) => left.lot - right.lot);
   if (matched.length === 0) throw new Error(`aucune worklist trouvée pour ${prefix}`);
-  if (matched.some((entry, index) => entry.lot !== index + 1)) throw new Error("numérotation de worklists non contiguë");
+  assertContiguousWorklistLots(matched.map((entry) => entry.lot));
   return matched.map((entry) => entry.path);
 }
 
