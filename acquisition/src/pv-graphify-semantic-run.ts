@@ -34,7 +34,8 @@ import {
 } from "./lib/pv-graphify-semantic.js";
 import { selectBalancedPvControl, selectPvControlBatch } from "./lib/pv-graphify-control.js";
 import { readReadyPvRealUniverse } from "./lib/pv-graphify-real-universe.js";
-import { BUCKET, exists, getBytes, s3Client } from "./lib/s3.js";
+import { parsePvOcrTextArtifact } from "./lib/pv-ocr-artifact.js";
+import { BUCKET, exists, getBytes, objectHead, s3Client } from "./lib/s3.js";
 
 const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -60,6 +61,8 @@ interface ClassificationLine {
   readonly url: string;
   readonly storage_key: string;
   readonly classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME";
+  /** Durable S3 OCR artefact; absent for the native pdftotext path. */
+  readonly ocr_artifact_key?: string;
 }
 
 interface RealUniverseSelection {
@@ -91,6 +94,7 @@ interface LotGazetteerReport {
 interface ParsedArgs {
   readonly classifications: readonly string[];
   readonly universe: string | null;
+  readonly ocrStage: string | null;
   readonly universeOffset: number;
   readonly universeLimit: number | null;
   readonly concurrency: number;
@@ -135,6 +139,15 @@ interface ControlDocumentReport {
   readonly url: string;
   readonly storage_key: string;
   readonly source_file: string;
+  readonly text_provenance: "NATIVE" | "OCR";
+  readonly ocr?: {
+    readonly artifact_key: string;
+    readonly provider: "mistral-ocr";
+    readonly methode: string;
+    readonly model: string | null;
+    readonly billed_pages: number;
+    readonly cost_usd: string;
+  };
   readonly entity_counts: Readonly<Record<string, number>>;
   readonly entities: Readonly<Record<string, readonly {
     readonly label: string;
@@ -170,7 +183,7 @@ interface MunicipalizeResult {
 }
 
 function usage(): never {
-  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N] [--concurrency=1..4] [--out=PATH]");
+  console.log("Usage: NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx src/pv-graphify-semantic-run.ts [--control=N | --all | --storage-key=CAS_KEY] [--classification=PATH] [--universe=PATH --universe-offset=N --universe-limit=N | --ocr-stage=PATH] [--concurrency=1..4] [--out=PATH]");
   process.exit(0);
 }
 
@@ -183,9 +196,13 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   const all = argv.includes("--all");
   const storageKeys = values("storage-key");
   const universeValues = values("universe");
+  const ocrStageValues = values("ocr-stage");
   if (universeValues.length > 1) throw new Error("--universe ne peut apparaître qu'une fois");
+  if (ocrStageValues.length > 1) throw new Error("--ocr-stage ne peut apparaître qu'une fois");
   const universe = universeValues[0] === undefined ? null : resolve(ROOT, universeValues[0]);
+  const ocrStage = ocrStageValues[0] === undefined ? null : resolve(ROOT, ocrStageValues[0]);
   if (universe !== null && !universe.startsWith(`${ROOT}/`)) throw new Error("--universe doit rester dans le dépôt");
+  if (ocrStage !== null && !ocrStage.startsWith(`${ROOT}/`)) throw new Error("--ocr-stage doit rester dans le dépôt");
   const universeOffsetValue = values("universe-offset").at(-1);
   const universeLimitValue = values("universe-limit").at(-1);
   const universeOffset = universeOffsetValue === undefined ? 0 : Number(universeOffsetValue);
@@ -206,10 +223,13 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   if (universe !== null && (values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined)) {
     throw new Error("--universe est exclusif de --classification, --storage-key, --all et --control");
   }
+  if (ocrStage !== null && (universe !== null || values("classification").length > 0 || storageKeys.length > 0 || all || controlValue !== undefined || universeOffsetValue !== undefined || universeLimitValue !== undefined)) {
+    throw new Error("--ocr-stage est exclusif de --universe, --classification, --storage-key, --all, --control et des offsets");
+  }
   if (storageKeys.length > 0 && (all || controlValue !== undefined)) {
     throw new Error("--storage-key est exclusif de --all et --control");
   }
-  const control = storageKeys.length > 0 ? null : (controlValue === undefined ? 20 : Number(controlValue));
+  const control = storageKeys.length > 0 || ocrStage !== null ? null : (controlValue === undefined ? 20 : Number(controlValue));
   if (control !== null && (!Number.isInteger(control) || control < 1)) throw new Error("--control doit être un entier positif");
   if (all && values("control").length > 0) throw new Error("--all et --control sont exclusifs");
   const batchSizeValue = values("batch-size").at(-1);
@@ -227,10 +247,11 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   return {
     classifications: values("classification").map((path) => resolve(ROOT, path)),
     universe,
+    ocrStage,
     universeOffset,
     universeLimit,
     concurrency,
-    control: universe === null ? (all ? null : control) : null,
+    control: universe === null && ocrStage === null ? (all ? null : control) : null,
     all,
     storageKeys,
     batchSize,
@@ -265,6 +286,34 @@ function readClassificationLines(path: string): ClassificationLine[] {
     });
   }
   return eligible;
+}
+
+/**
+ * An OCR stage is an explicit, bounded list of immutable CAS keys.  It is not
+ * a new eligibility classification: a document reaches this branch only after
+ * the separately authorised OCR runner wrote its durable S3 text artefact.
+ */
+function readOcrStage(path: string): ClassificationLine[] {
+  const raw = readSmallJson(path);
+  if (!isRecord(raw) || raw.contract !== "pv-ocr-stage/v1" || !Array.isArray(raw.documents)) {
+    throw new Error(`stage OCR invalide: ${path}`);
+  }
+  const selected: ClassificationLine[] = [];
+  for (const [index, value] of raw.documents.entries()) {
+    if (!isRecord(value)) throw new Error(`${path}.documents[${index}] invalide`);
+    const outcome = requiredString(value, "outcome", `${path}.documents[${index}]`);
+    if (outcome !== "OCR_COMPLETED" && outcome !== "ALREADY_OCRD") continue;
+    selected.push({
+      slug: requiredString(value, "slug", `${path}.documents[${index}]`),
+      municipality_name: requiredString(value, "municipality_name", `${path}.documents[${index}]`),
+      url: requiredString(value, "url", `${path}.documents[${index}]`),
+      storage_key: requiredString(value, "storage_key", `${path}.documents[${index}]`),
+      classification: "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+      ocr_artifact_key: requiredString(value, "ocr_artifact_key", `${path}.documents[${index}]`),
+    });
+  }
+  if (selected.length === 0) throw new Error(`stage OCR sans document complété: ${path}`);
+  return selected;
 }
 
 /** Read the committed S3-CAS universe without treating it as a classification. */
@@ -843,6 +892,43 @@ function reportCounts(extraction: GraphifySemanticExtraction): Readonly<Record<s
   return counts;
 }
 
+interface MaterializedText {
+  readonly text: string;
+  readonly source_file: "document.txt" | "document.ocr.txt";
+  readonly text_provenance: "NATIVE" | "OCR";
+  readonly ocr?: ControlDocumentReport["ocr"];
+}
+
+async function textFromOcrArtifact(document: ClassificationLine): Promise<MaterializedText> {
+  const artifactKey = document.ocr_artifact_key;
+  if (!artifactKey) throw new Error("artefact OCR absent");
+  const s3 = s3Client();
+  const head = await objectHead(s3, artifactKey);
+  if (!head.exists || head.contentLength === undefined || head.contentLength > MAX_REPORT_BYTES) {
+    throw new Error(`${artifactKey}: artefact OCR absent, taille inconnue ou > 5 MiB`);
+  }
+  const artifact = parsePvOcrTextArtifact(JSON.parse((await getBytes(s3, artifactKey)).toString("utf8")), artifactKey);
+  if (artifact.source.storage_key !== document.storage_key || artifact.source.slug !== document.slug) {
+    throw new Error(`${artifactKey}: source OCR hors scope du document demandé`);
+  }
+  if (artifact.source.url !== document.url || artifact.source.municipality_name !== document.municipality_name) {
+    throw new Error(`${artifactKey}: métadonnées source OCR non réconciliées`);
+  }
+  return {
+    text: artifact.text,
+    source_file: "document.ocr.txt",
+    text_provenance: "OCR",
+    ocr: {
+      artifact_key: artifactKey,
+      provider: "mistral-ocr",
+      methode: artifact.ocr.methode,
+      model: artifact.ocr.model,
+      billed_pages: artifact.ocr.billed_pages,
+      cost_usd: artifact.ocr.cost_usd,
+    },
+  };
+}
+
 async function processDocument(
   document: ClassificationLine,
   municipalities: readonly MunicipalityGazetteerEntry[],
@@ -854,11 +940,19 @@ async function processDocument(
     const inputDirectory = resolve(documentDirectory, "input");
     mkdirSync(inputDirectory, { recursive: true });
     const pdfPath = resolve(inputDirectory, "captured.pdf");
-    const textPath = resolve(inputDirectory, "document.txt");
-    writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
-    const text = await textFromCapturedPdf(pdfPath);
-    writeFileSync(textPath, text, "utf8");
-    const printedOwnerSlugs = printedMunicipalityOwners(text, municipalities)
+    const materialized: MaterializedText = document.ocr_artifact_key === undefined
+      ? await (async (): Promise<MaterializedText> => {
+      writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
+        return {
+          text: await textFromCapturedPdf(pdfPath),
+          source_file: "document.txt",
+          text_provenance: "NATIVE",
+        };
+      })()
+      : await textFromOcrArtifact(document);
+    const textPath = resolve(inputDirectory, materialized.source_file);
+    writeFileSync(textPath, materialized.text, "utf8");
+    const printedOwnerSlugs = printedMunicipalityOwners(materialized.text, municipalities)
       .map((municipality) => municipality.slug)
       .sort((left, right) => left.localeCompare(right));
     const ownerScope: OwnerScopeReport = printedOwnerSlugs.includes(document.slug)
@@ -867,11 +961,11 @@ async function processDocument(
         ? { status: "CONTAMINATION_OWNER_MISMATCH", printed_owner_slugs: printedOwnerSlugs }
         : { status: "NOT_CONFIRMED", printed_owner_slugs: [] };
     const semantic = extractPvSemantic({
-      source_file: "document.txt",
+      source_file: materialized.source_file,
       source_id: document.storage_key,
       source_url: document.url,
       municipality_slug: document.slug,
-      text,
+      text: materialized.text,
     }, municipalities, gazetteer.zone, gazetteer.lot);
     const semanticPath = resolve(documentDirectory, "semantic.json");
     writeAtomic(semanticPath, semantic);
@@ -890,7 +984,9 @@ async function processDocument(
       municipality_name: document.municipality_name,
       url: document.url,
       storage_key: document.storage_key,
-      source_file: "document.txt",
+      source_file: materialized.source_file,
+      text_provenance: materialized.text_provenance,
+      ...(materialized.ocr ? { ocr: materialized.ocr } : {}),
       entity_counts: reportCounts(semantic),
       entities: reportEntities(semantic),
       graphify,
@@ -908,7 +1004,8 @@ async function processDocument(
       municipality_name: document.municipality_name,
       url: document.url,
       storage_key: document.storage_key,
-      source_file: "document.txt",
+      source_file: document.ocr_artifact_key ? "document.ocr.txt" : "document.txt",
+      text_provenance: document.ocr_artifact_key ? "OCR" : "NATIVE",
       entity_counts: {},
       entities: {},
       graphify: { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: 0, edges: 0 },
@@ -923,15 +1020,18 @@ async function processDocument(
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const realUniverse = args.universe === null ? null : readRealUniverseBatch(args.universe);
+  const ocrStage = args.ocrStage === null ? null : readOcrStage(args.ocrStage);
   const paths = args.universe === null
-    ? (args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS)
+    ? (args.ocrStage === null ? (args.classifications.length > 0 ? args.classifications : DEFAULT_CLASSIFICATIONS) : [])
     : [];
-  const eligibleRecords = args.universe === null ? paths.flatMap(readClassificationLines) : realUniverse!.candidates;
+  const eligibleRecords = ocrStage ?? (args.universe === null ? paths.flatMap(readClassificationLines) : realUniverse!.candidates);
   const eligible = uniqueEligible(eligibleRecords);
-  const batch = args.universe === null && args.all && args.batchSize !== null
+  const batch = args.universe === null && args.ocrStage === null && args.all && args.batchSize !== null
     ? selectPvControlBatch(eligible, args.batchSize, args.batchIndex ?? 1)
     : null;
-  const requested = args.universe !== null
+  const requested = args.ocrStage !== null
+    ? eligible
+    : args.universe !== null
     ? eligible.slice(args.universeOffset, args.universeLimit === null ? undefined : args.universeOffset + args.universeLimit)
     : args.storageKeys.length > 0
     ? selectStorageKeys(eligible, args.storageKeys)
@@ -987,7 +1087,11 @@ async function main(): Promise<void> {
       });
     }
     return {
-      zone: zoneResult.gazetteer,
+      // OCR never receives a separator/case-normalizing zone matcher.  A code
+      // must occur literally in this municipality's closed gazetteer.
+      zone: args.ocrStage !== null && zoneResult.gazetteer
+        ? { ...zoneResult.gazetteer, zone_code_matching: "exact" }
+        : zoneResult.gazetteer,
       lot: lotResult.gazetteer,
       zonePolicy: zoneResult.policy,
       lotServed: lotResult.served,
@@ -1005,7 +1109,8 @@ async function main(): Promise<void> {
         municipality_name: document.municipality_name,
         url: document.url,
         storage_key: document.storage_key,
-        source_file: "document.txt",
+        source_file: document.ocr_artifact_key ? "document.ocr.txt" : "document.txt",
+        text_provenance: document.ocr_artifact_key ? "OCR" : "NATIVE",
         entity_counts: {},
         entities: {},
         graphify: { exit_code: 1, stdout: "", stderr: message.slice(-4000), nodes: 0, edges: 0 },
@@ -1098,9 +1203,12 @@ async function main(): Promise<void> {
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
-    mode: args.universe !== null
+    mode: args.ocrStage !== null
+      ? "ocr-artifact-stage"
+      : args.universe !== null
       ? "real-cas-universe-batch"
       : args.storageKeys.length > 0 ? "targeted-storage-keys" : (args.all ? "all-eligible" : "balanced-municipality-control"),
+    ...(args.ocrStage === null ? {} : { ocr_stage: args.ocrStage.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : { universe_report: args.universe.slice(ROOT.length + 1) }),
     ...(args.universe === null ? {} : {
       universe_selection: {
