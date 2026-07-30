@@ -232,6 +232,7 @@ async function main(): Promise<void> {
     targets: eligibleCandidates,
     municipalitySlugs,
     coveredMunicipalitySlugs: new Set([...covered, ...excludedMunicipalities]),
+    strictlyUncovered: true,
     count,
   });
   const lots = splitPvCaptureTargets(selected, lotSize);
