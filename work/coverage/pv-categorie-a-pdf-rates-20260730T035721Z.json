@@ -1,0 +1,2111 @@
+{
+  "contract": "pv-categorie-a-pdf-rates/v1",
+  "generated_at": "2026-07-30T03:57:44.870Z",
+  "read_only": true,
+  "no_crawler_changes": true,
+  "no_registry_writes": true,
+  "capture": {
+    "chokepoint": "packages/qc-sources/src/capture/capturedFetch.ts",
+    "run_id": "pv-categorie-a-pdf-rates-pv-categorie-a-pdf-rates-controls-20260730T000000Z",
+    "store": "memory",
+    "store_false": true,
+    "raw_writes": 0,
+    "capture_run_writes": 0,
+    "browser_user_agent": true,
+    "no_naked_fetch": true,
+    "max_http_bytes": 5242880,
+    "attempts": 117
+  },
+  "sources": {
+    "survey": "work/coverage/pv-decouverte-municipalites-vierges-20260730T010135Z-enquete.json",
+    "list": "work/coverage/pv-decouverte-municipalites-vierges-20260730T005234Z.json",
+    "discovery_code_compared": [
+      "acquisition/src/pv-discover-unlisted.ts",
+      "packages/qc-sources/src/sources/proces-verbaux-generic.ts",
+      "acquisition/src/lib/pv-probable-capture-plan.ts"
+    ],
+    "pdf_octets_test": "pdftotext - - (stdin; no local PDF file)"
+  },
+  "category_a": {
+    "report_count": 5,
+    "actual_pv_proven_by_pdf_text": 1,
+    "findings": [
+      {
+        "slug": "chelsea",
+        "name": "Chelsea",
+        "directory_website": "https://www.chelsea.ca",
+        "actual_pv_url": null,
+        "reported_pdf_url": "https://www.chelsea.ca/application/files/4917/8404/4864/Avis_public_Dero_aout_2026_signe.pdf",
+        "actual_pv_requested_url": "https://www.chelsea.ca/application/files/4917/8404/4864/Avis_public_Dero_aout_2026_signe.pdf",
+        "reported_pdf_verdict": "not_a_pv_by_pdf_text",
+        "coverage_matrix": {
+          "status": "done",
+          "candidateTracks": [
+            "scraper-configured",
+            "scraper-new",
+            "obscura-session",
+            "recenseur-manual"
+          ],
+          "lastResearchAt": "2026-06-23T05:28:57.119Z",
+          "doneTrack": "qc-pv-chelsea"
+        },
+        "opened_pdf": {
+          "requested_url": "https://www.chelsea.ca/application/files/4917/8404/4864/Avis_public_Dero_aout_2026_signe.pdf",
+          "final_url": "https://www.chelsea.ca/application/files/4917/8404/4864/Avis_public_Dero_aout_2026_signe.pdf",
+          "status": 200,
+          "error": null,
+          "bytes": 273200,
+          "sha256": "sha256:acdc63dc9062a68b5e90a3546ff770728a6841f9d1f030f36d02a6d350398502",
+          "body_kind": "pdf",
+          "pdf_magic": true,
+          "pdftotext_ok": true,
+          "text_chars": 2746,
+          "text_markers": [
+            "conseil-municipal"
+          ],
+          "text_head": "CANADA PROVINCE DU QUÉBEC DISTRICT DE GATINEAU CANADA PROVINCE OF QUÉBEC DISTRICT OF GATINEAU MUNICIPALITÉ DE CHELSEA MUNICIPALITY OF CHELSEA MRC DES COLLINES-DE-L’OUTAOUAIS MRC DES COLLINES-DE-L’OUTAOUAIS AVIS PUBLIC PUBLIC NOTICE Dérogation mineure Minor exemption Prenez avis que conformément à l’article 145.6 de la Loi sur l’aménagement et l’urbanisme, le conseil municipal statuera de nouveau sur cette demande de dérogation mineure, lors de sa session ordinaire qui se tiendra le 18 août 2026, à 19 heures, au centre communautaire de Farm Point, situé au 331, chemin de la Rivière, Chelsea, Québec. Notice is hereby given that, in accordance with Section 145.6 of the Act respecting Land Use Planning and Development, the Municipal Council will reconsider upon a minor exemption request, at its ordinary sitting to be held Tuesday, August 18, at 7 p.m., at the Farm Point Community Centre, located at 331 chemin de la Rivière, Chelsea Quebec. Règlement de zonage numéro 1215-22: Zoning By-law ",
+          "body_designates_pv": false,
+          "visual_preview_path": null,
+          "visual_review": null
+        },
+        "alternate_documents": [
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/calendrier",
+              "text": "Collectes"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/calendrier",
+              "final_url": "https://www.chelsea.ca/fr/calendrier",
+              "status": 200,
+              "error": null,
+              "bytes": 126348,
+              "sha256": "sha256:b580e32bd7ebfb4f6ea44564f1850dc7893ed7c0d4e3ad44f51edb264bd84ef4",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/calendrier/quoi-faire-a-chelsea",
+              "text": "Quoi faire &agrave; Chelsea"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/calendrier/quoi-faire-a-chelsea",
+              "final_url": "https://www.chelsea.ca/fr/calendrier/quoi-faire-a-chelsea",
+              "status": 200,
+              "error": null,
+              "bytes": 148010,
+              "sha256": "sha256:1bd5cfc8d0776a141b23af18b709b10cd726fb42cd9c118d1756c5f8a3b3cbcb",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/medias",
+              "text": "M&eacute;dias"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/medias",
+              "final_url": "https://www.chelsea.ca/fr/medias",
+              "status": 200,
+              "error": null,
+              "bytes": 77283,
+              "sha256": "sha256:3e89c16011f395ef3e23955e22d7fa7acaeaaaeebbaa7ddc62ecc4ce160fc9eb",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil",
+              "text": "S&eacute;ances du conseil"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil",
+              "final_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil",
+              "status": 200,
+              "error": null,
+              "bytes": 105827,
+              "sha256": "sha256:aa34c317a6bb3234444bfe27eba13c2161993d7c6f7856b9a2aa0fab3b16410a",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/download_file/5704/0",
+              "text": "Politique de confidentialit&eacute;"
+            },
+            "pdf": {
+              "requested_url": "https://www.chelsea.ca/download_file/5704/0",
+              "final_url": "https://www.chelsea.ca/application/files/3316/9875/8853/politique_sur_la_confidentialite_fr.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 247249,
+              "sha256": "sha256:a21c655e282d231522752ce5e5edc2f0a3a793e087d0fde358929cff644991a3",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 10596,
+              "text_markers": [],
+              "text_head": "POLITIQUE SUR LA CONFIDENTIALITÉ MUNICIPALITÉ DE CHELSEA 100, chemin d’Old Chelsea, Chelsea (QC) J9B 1C1 Tel. : (819) 827-1124 Fax : (819) 827-2672 www.chelsea.ca Entérinée le 3 octobre 2023 Résolution xxx-23 Dernière mise à jour : septembre 2023 La Municipalité de Chelsea s’engage à protéger la confidentialité et la sécurité des renseignements personnels. Cette politique vous concerne. Elle décrit la manière dont nous recueillons, utilisons et communiquons vos renseignements personnels. Elle explique aussi comment vous pouvez demander accès à ces renseignements ou les faire rectifier, lorsque cela est nécessaire. Lorsque vous nous fournissez des renseignements personnels via notre site Web ou une de nos applications mobiles après avoir pris connaissance de cette politique, vous consentez à ce que nous les utilisions et communiquions de la manière décrite. EN BREF COMMENT Lorsque vous naviguez sur notre site Web, téléchargez une de nos applications mobiles ou communiquez avec nous, nou",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/application/files/2217/8403/6197/1388-26_Avis_public_signe.pdf",
+              "text": "14 juillet - AVIS PUBLIC DE CONSULTATION – Une assemblée publique de consultation sur le premier projet de règlement 1388-26 concernant les dispositions relatives à la protection du ruisseau Meech se tiendra le 10 août 2026 à 18 h, à la Bibliothèque de Chelsea, située au 100, chemin d’Old Chelsea, Chelsea, Québec, J9B 1C1."
+            },
+            "pdf": {
+              "requested_url": "https://www.chelsea.ca/application/files/2217/8403/6197/1388-26_Avis_public_signe.pdf",
+              "final_url": "https://www.chelsea.ca/application/files/2217/8403/6197/1388-26_Avis_public_signe.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 612847,
+              "sha256": "sha256:285d89c55b13c16a3726e8c70a416a4d56be61c158f4c8bd6f395d59280c6cef",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 5166,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "CANADA PROVINCE DU QUÉBEC DISTRICT DE GATINEAU CANADA PROVINCE OF QUEBEC DISTRICT OF GATINEAU MUNICIPALITÉ DE CHELSEA MUNICIPALITY OF CHELSEA MRC DES COLLINES-DE-L’OUTAOUAIS MRC DES COLLINES-DE-L’OUTAOUAIS AVIS PUBLIC PUBLIC NOTICE ASSEMBLÉE PUBLIQUE DE CONSULTATION PUBLIC CONSULTATION ASSEMBLY Aux personnes intéressées par ces projets de règlement modifiant le règlement d’urbanisme suivant : To all persons interested in these draft by-laws amending the following Planning by-law: Règlement sur le zonage no 1215-22 Zoning By-law No. 1215-22 AVIS PUBLIC EST DONNÉ DE CE QUI SUIT PUBLIC NOTICE IS HEREBY GIVEN THAT 1. 1. Lors d’une séance tenue le 7 juillet 2026, le conseil a adopté le projet de règlement suivant : During a meeting held on July 7, 2026, Council adopted the following draft by-law: First draft by-law number 1388-26 – By-law amending the Zoning By-law No. 1215-22 – Provisions relating to the protection of Meech Creek as a habitat connectivity corridor Adoption du premier proje",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/application/files/5917/8403/6131/1391-26_avis_public_signe.pdf",
+              "text": "14 juillet - AVIS PUBLIC DE CONSULTATION – Une assemblée publique de consultation sur le premier projet de règlement 1391-26 concernant les dispositions modifiant les modes d’éclairage des enseignes se tiendra le 10 août 2026 à 18 h, à la Bibliothèque de Chelsea, située au 100, chemin d’Old Chelsea, Chelsea, Québec, J9B 1C1."
+            },
+            "pdf": {
+              "requested_url": "https://www.chelsea.ca/application/files/5917/8403/6131/1391-26_avis_public_signe.pdf",
+              "final_url": "https://www.chelsea.ca/application/files/5917/8403/6131/1391-26_avis_public_signe.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 609619,
+              "sha256": "sha256:9aa30fea43725cdb86aa2481d28b7806e715f22618e86b88e8d14037a0045c8f",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 3817,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "CANADA PROVINCE DU QUÉBEC DISTRICT DE GATINEAU CANADA PROVINCE OF QUEBEC DISTRICT OF GATINEAU MUNICIPALITÉ DE CHELSEA MUNICIPALITY OF CHELSEA MRC DES COLLINES-DE-L’OUTAOUAIS MRC DES COLLINES-DE-L’OUTAOUAIS AVIS PUBLIC PUBLIC NOTICE ASSEMBLÉE PUBLIQUE DE CONSULTATION PUBLIC CONSULTATION ASSEMBLY Aux personnes intéressées par ces projets de règlement modifiant le règlement d’urbanisme suivant : To all persons interested in these draft by-laws amending the following Planning by-law: Règlement sur le zonage no 1215-22 Zoning By-law No. 1215-22 AVIS PUBLIC EST DONNÉ DE CE QUI SUIT PUBLIC NOTICE IS HEREBY GIVEN THAT 1. 1. Lors d’une séance tenue le 7 juillet 2026, le conseil a adopté le projet de règlement suivant : During a meeting held on July 7, 2026, Council adopted the following draft by-law: First draft by-law number 1391-26 – By-law amending the Zoning By-law No. 1215-22 – Provisions modifying the lighting methods of signs Adoption du premier projet de règlement numéro 1391-26 – Règle",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/application/files/5917/8361/1464/1376-26_Avis_de_promulgation_signe.pdf",
+              "text": "9 juillet - AVIS DE PROMULGATION – Le conseil de la Municipalité de Chelsea a, à sa séance ordinaire tenue le 7 juillet 2026, adopté le règlement numéro 1376-26 – Règlement modifiant certaines dispositions du plan d’urbanisme numéro 1214-22 – Modifications requises afin d’assurer la concordance au schéma d’aménagement de la MRC des Collines-de-l’Outaouais et accordant un statut particulier à l’aire d’affectation multifonctionnelle du pont Alonzo-Wright."
+            },
+            "pdf": {
+              "requested_url": "https://www.chelsea.ca/application/files/5917/8361/1464/1376-26_Avis_de_promulgation_signe.pdf",
+              "final_url": "https://www.chelsea.ca/application/files/5917/8361/1464/1376-26_Avis_de_promulgation_signe.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 603598,
+              "sha256": "sha256:4cc5c48fba43163f8f2e3426c3a898409ed991b2c3b35ce24d606897a957f074",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 3005,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "CANADA PROVINCE DE QUÉBEC DISTRICT DE GATINEAU MUNICIPALITÉ DE CHELSEA MRC DES COLLINES-DE-L’OUTAOUAIS AVIS DE PROMULGATION NOTICE OF PROMULGATION AVIS PUBLIC est par la présente donné que le conseil de la Municipalité de Chelsea a, à sa séance ordinaire tenue le 5 mai 2026, adopté le règlement suivant : PUBLIC NOTICE is hereby given that the Council of the Municipality of Chelsea, at an ordinary sitting held on May 5, 2026, has adopted the following bylaw: RÈGLEMENT NUMÉRO 1376-26 BY-LAW NUMBER 1376-26 RÈGLEMENT MODIFIANT CERTAINES DISPOSITIONS DU PLAN D’URBANISME NUMÉRO 1214-22 – MODIFICATIONS REQUISES AFIN D’ASSURER LA CONCORDANCE AU SCHÉMA D’AMÉNAGEMENT DE LA MRC DES COLLINES-DE-L’OUTAOUAIS ET ACCORDANT UN STATUT PARTICULIER À L’AIRE D’AFFECTATION MULTIFONCTIONNELLE DU PONT ALONZO-WRIGHT BY-LAW AMENDING CERTAIN PROVISIONS OF THE URBAN PLAN BY-LAW NUMBER 1214-22 – AMENDMENTS REQUIRED TO ENSURE CONFORMITY WITH THE LAND USE AND DEVELOPMENT PLAN OF THE MRC DES COLLINES-DE-L’OUTAOUAIS A",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21460",
+              "text": "Séance ordinaire du conseil"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21460",
+              "final_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21460",
+              "status": 200,
+              "error": null,
+              "bytes": 105865,
+              "sha256": "sha256:6fa446661e8ee6297cc4d9ef0c691684353d868e676194835732be0c0f86432e",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21461",
+              "text": "Séance ordinaire du conseil"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21461",
+              "final_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21461",
+              "status": 200,
+              "error": null,
+              "bytes": 105865,
+              "sha256": "sha256:b7a5299d4976c1402f299d6771983dbe1d1403b86d58d6989011477a357c77ac",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21462",
+              "text": "Séance ordinaire du conseil"
+            },
+            "evidence": {
+              "requested_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21462",
+              "final_url": "https://www.chelsea.ca/fr/votre-municipalite/seances-du-conseil?occurrenceID=21462",
+              "status": 200,
+              "error": null,
+              "bytes": 105865,
+              "sha256": "sha256:f646e75cccd2da64b315c921ffe2fa461d0b1ad56e5a1799806ed4998e8ba607",
+              "body_kind": "html"
+            }
+          }
+        ],
+        "homepage": {
+          "requested_url": "https://www.chelsea.ca/",
+          "final_url": "https://www.chelsea.ca/fr",
+          "status": 200,
+          "error": null,
+          "bytes": 83576,
+          "sha256": "sha256:c8d1ff8af374a80088ab079339434ca82e742df4f26678673faef0bf64acdf82",
+          "body_kind": "html",
+          "anchor_count": 102
+        },
+        "actual_page": {
+          "requested_url": "https://www.chelsea.ca/",
+          "final_url": "https://www.chelsea.ca/fr",
+          "status": 200,
+          "error": null,
+          "bytes": 83576,
+          "sha256": "sha256:c8d1ff8af374a80088ab079339434ca82e742df4f26678673faef0bf64acdf82",
+          "body_kind": "html",
+          "anchor_count": 102,
+          "home_link_discovery_match": {
+            "href": "https://www.chelsea.ca/fr/votre-municipalite/conseil-municipal-et-comites",
+            "text": "Conseil municipal"
+          },
+          "actual_anchor_from_home": {
+            "href": "https://www.chelsea.ca/application/files/4917/8404/4864/Avis_public_Dero_aout_2026_signe.pdf",
+            "text": "14 juillet - DÉROGATIONS MINEURES ​​​​​​ – Avis est donné que le conseil municipal statuera lors de la prochaine séance ordinaire qui se tiendra le mardi, 18 aout 2026, sur cette demande de dérogation mineure :141, chemin Marc-Aurèle-Fortin (lot 6 164 238) - Marge latérale droite et largeur du trottoir"
+          }
+        },
+        "configured_generic_index": null,
+        "discovery_flags": {
+          "page_reached_from_pv_home_link": true,
+          "page_passes_historic_context_gate": true,
+          "page_passes_plural_aware_context_gate": true,
+          "actual_pdf_anchor_seen_in_opened_page": true,
+          "actual_pdf_href_has_pdf_extension": true,
+          "actual_pdf_href_is_extensionless": false,
+          "actual_pdf_host_differs_from_page": false
+        },
+        "diagnosis": "faux_positif_de_la_categorie_a: le texte des octets PDF ne designe pas un PV"
+      },
+      {
+        "slug": "saint-emile-de-suffolk",
+        "name": "Saint-Émile-de-Suffolk",
+        "directory_website": "https://www.st-emile-de-suffolk.com",
+        "actual_pv_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/18ea91_1971cc6790c6483381cb0e510fec9b32.pdf",
+        "reported_pdf_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/18ea91_1971cc6790c6483381cb0e510fec9b32.pdf",
+        "actual_pv_requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/18ea91_1971cc6790c6483381cb0e510fec9b32.pdf",
+        "reported_pdf_verdict": "pv_proven_by_pdf_text",
+        "coverage_matrix": {
+          "status": "done",
+          "candidateTracks": [
+            "scraper-configured",
+            "scraper-new",
+            "obscura-session",
+            "recenseur-manual"
+          ],
+          "lastResearchAt": "2026-06-23T05:19:51.016Z",
+          "doneTrack": "qc-pv-saint-emile-de-suffolk"
+        },
+        "opened_pdf": {
+          "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/18ea91_1971cc6790c6483381cb0e510fec9b32.pdf",
+          "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/18ea91_1971cc6790c6483381cb0e510fec9b32.pdf",
+          "status": 200,
+          "error": null,
+          "bytes": 272958,
+          "sha256": "sha256:90bd4c019432ca8f9fed33c715eee7d1da37e982f58c43cef23e5eee1d8e2271",
+          "body_kind": "pdf",
+          "pdf_magic": true,
+          "pdftotext_ok": true,
+          "text_chars": 4539,
+          "text_markers": [
+            "seance-conseil",
+            "conseil-municipal"
+          ],
+          "text_head": "PROVINCE DE QUÉBEC MUNICIPALITÉ DE ST-ÉMILE-DE-SUFFOLK Procès-verbal de la séance extraordinaire du conseil municipal de St-Émile-de-Suffolk, tenue ce vendredi le 21 septembre 2018 à 8h00 à la salle municipale de St-Émile-de-Suffolk, Québec, à laquelle sont présents : Mesdames Marie Andrée Leduc, Louise Boudreault et messieurs, Jacques Proulx, Pierre Bérubé, Michel Bisson et monsieur le conseiller Serge Morin sont présents; Formant quorum et siégeant sous la présence du maire, M. Hugo Desormeaux. Mme Danielle Longtin est aussi présente à titre de secrétaire de réunion. 18-09-186 1. MOMENT DE RÉFLEXION Le conseiller Serge Morin dicte le moment de réflexion suivant : « Le conseil municipal de St-Émile-deSuffolk s’engage à agir avec honnêteté et justice dans le respect de la loi et du Code d’éthique et de déontologie des élus municipaux de St-Émile-de-Suffolk ». 18-09-187 2. OUVERTURE DE LA SÉANCE IL EST PROPOSÉE par monsieur le conseiller Jacques Proulx et APPUYÉ par monsieur le conseill",
+          "body_designates_pv": true,
+          "visual_preview_path": null,
+          "visual_review": null
+        },
+        "alternate_documents": [
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/proces-verbaux",
+              "text": "Procès-verbaux"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/proces-verbaux",
+              "final_url": "https://www.st-emile-de-suffolk.com/proces-verbaux",
+              "status": 200,
+              "error": null,
+              "bytes": 782590,
+              "sha256": "sha256:dc54d131655fe43adc4cd0e619a14a8f3ba6caf7fb5a797580f57c8a4e488169",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_b82dd3aca56d4ed3baf9aa8eaf9e77b9.pdf",
+              "text": "Ordre du jour Janvier"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_b82dd3aca56d4ed3baf9aa8eaf9e77b9.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_b82dd3aca56d4ed3baf9aa8eaf9e77b9.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 132946,
+              "sha256": "sha256:dfc2b444689868b9306210ef5a50ef127a1ce060b878fd2d1458bafa41c316ae",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1246,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Ordre du jour Vous êtes convoqués à la séance ordinaire du 12 janvier 2026 du conseil municipal de Saint-Émile-de-Suffolk à 20h00, enregistrée, à la salle municipale de Saint-Émile-de-Suffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. Moment de réflexion Ouverture de la séance Adoption de l’ordre du jour Rapport du maire Rapport des délégations Période de questions Adoption du procès-verbal du 8 décembre 2025 Correspondances 8.1 Voirie 9.1 Rapport de la voirie Urbanisme et environnement 10.1 Rapport de l’inspecteur en bâtiment et environnement de décembre 2025 10.2 Projet La Loutre (développement sur la mine) Sécurité incendie 11.1 Rapport du directeur du service incendie de décembre 2025 Loisirs et culture 12.1 Rapport des loisirs de décembre 2025 12.2 Suivi – Politique Familiale et MADA Affaires financières/Résolutions 13.1 Liste des comptes à payer du mois de décembre 2025 au montant de 50 675.42",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_ae072a7067c04f64b181942439fbd27a.docx?dn=12%20janvier.docx",
+              "text": "PV 2026 - 12 Janvier"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_ae072a7067c04f64b181942439fbd27a.docx?dn=12%20janvier.docx",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_ae072a7067c04f64b181942439fbd27a.docx?dn=12%20janvier.docx",
+              "status": 200,
+              "error": null,
+              "bytes": 73518,
+              "sha256": "sha256:211066323efeb83996bd2c08e947c08cf75dbf36ca9f95af4bbaee84d626ac41",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0b1af2a494754a8687010d7c5d56b0cf.pdf",
+              "text": "Ordre du jour Janvier - Budget"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0b1af2a494754a8687010d7c5d56b0cf.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_0b1af2a494754a8687010d7c5d56b0cf.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 71451,
+              "sha256": "sha256:066b7105711fea9c55dd2cf7d0c2fe87de23401c73272999d302fa103e399ec1",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 513,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Ordre du jour Vous êtes convoqués à la séance extraordinaire du 15 janvier 2026 du conseil municipal de Saint-Émile-de-Suffolk, tenue à 16h30, enregistrée, à la salle municipale de Saint-Émile-deSuffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. Moment de réflexion 2. Ouverture de la séance 3. Adoption de l’ordre du jour 4. Adoption des prévisions budgétaires année 2026 5. Adoption du programme triennal d’immobilisations pour les années 2026,2027,2028 6. Levée de la séance",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_651d5673e18542ee939011dfa6de89c7.docx?dn=15%20janvier%20budget.docx",
+              "text": "PV 2026 - 15 Janvier"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_651d5673e18542ee939011dfa6de89c7.docx?dn=15%20janvier%20budget.docx",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_651d5673e18542ee939011dfa6de89c7.docx?dn=15%20janvier%20budget.docx",
+              "status": 200,
+              "error": null,
+              "bytes": 37924,
+              "sha256": "sha256:e491c159aaf3bb4d6e6eea67f6172188f941fbb1c3cfad022e7b5860e7002a10",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_8964c21cad1a41fd9887e3a0f94b4425.pdf",
+              "text": "Ordre du jour F&eacute;vrier"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_8964c21cad1a41fd9887e3a0f94b4425.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_8964c21cad1a41fd9887e3a0f94b4425.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 128571,
+              "sha256": "sha256:5c61d2d8f9966ba5554ab855aa971215abfa512416545fc77dcf16ca81b7593a",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1709,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Projet d’ordre du jour Vous êtes convoqués à la séance ordinaire du 9 février 2026 du conseil municipal de Saint-Émilede-Suffolk à 20h00, enregistrée, à la salle municipale de Saint-Émile-de-Suffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. Moment de réflexion Ouverture de la séance Adoption de l’ordre du jour Rapport du maire Rapport des délégations Période de questions Adoption des procès-verbaux du 12 janvier et 15 janvier 2026 Correspondances 8.1 Demande de rencontre ‘’Les amis de l’entraide du nord de la Petite Nation Voirie 9.1 Rapport de la voirie Urbanisme et environnement 10.1 Rapport de l’inspecteur en bâtiment et environnement de janvier 2026 10.2 Projet La Loutre (développement sur la mine) Sécurité incendie 11.1 Rapport du directeur du service incendie de janvier 2026 Loisirs et culture 12.1 Rapport des loisirs de janvier 2026 12.2 Suivi – Politique Familiale et MADA Affaires financièr",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_7a4e5ce913714971aa45aacdefe7afbe.docx?dn=9%20f%C3%A9vrier%202026.docx",
+              "text": "PV 2026 - 9 F&eacute;vrier"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_7a4e5ce913714971aa45aacdefe7afbe.docx?dn=9%20f%C3%A9vrier%202026.docx",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_7a4e5ce913714971aa45aacdefe7afbe.docx?dn=9%20f%C3%A9vrier%202026.docx",
+              "status": 200,
+              "error": null,
+              "bytes": 96496,
+              "sha256": "sha256:d3873dbd420455d24ff1a5192e7f18f9b75b7cf729af94a4a6e70d7023dc46ff",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_457f110fb80f44b49d8a5fa896e13462.pdf",
+              "text": "Ordre du jour Mars"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_457f110fb80f44b49d8a5fa896e13462.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_457f110fb80f44b49d8a5fa896e13462.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 113566,
+              "sha256": "sha256:aa0088337637b46f4a018163bd20bd4d9ee734953fb65654237a41efea70dfdd",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1846,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Projet d’ordre du jour Vous êtes convoqués à la séance ordinaire du 9 mars 2026 du conseil municipal de Saint-Émilede-Suffolk à 20h00, enregistrée, à la salle municipale de Saint-Émile-de-Suffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. Moment de réflexion Ouverture de la séance Adoption de l’ordre du jour Rapport du maire Rapport des délégations Période de questions Adoption du procès-verbal du 9 février 2026 Correspondances 8.1 Le tarif postal réduit pour bibliothèque est maintenu Voirie 9.1 Rapport de la voirie Urbanisme et environnement 10.1 Rapport de l’inspecteur en bâtiment et environnement de février 2026 10.2 Projet La Loutre (développement sur la mine) Sécurité incendie 11.1 Rapport du directeur du service incendie de février 2026 Loisirs et culture 12.1 Rapport des loisirs de février 2026 12.2 Suivi – Politique Familiale et MADA Affaires financières/Résolutions 13.1 Liste des comptes à payer du moi",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_764718e339b549fdb196cdd597ca9071.docx?dn=9%20mars.docx",
+              "text": "PV 2026 - 9 Mars"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_764718e339b549fdb196cdd597ca9071.docx?dn=9%20mars.docx",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_764718e339b549fdb196cdd597ca9071.docx?dn=9%20mars.docx",
+              "status": 200,
+              "error": null,
+              "bytes": 81467,
+              "sha256": "sha256:cf1be0ff02e6dfe3c875c09c2bec7637731c6610bc645f5f6311e6261966a8b3",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_6c544a48c3a4455288ce651595c07a34.pdf",
+              "text": "Ordre du jour Avril"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_6c544a48c3a4455288ce651595c07a34.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_6c544a48c3a4455288ce651595c07a34.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 194936,
+              "sha256": "sha256:0a1f5232f08450fa51af77a842a259a8f7c27a59f38b11fb8a8e59a6c13a2354",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1827,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Projet d’Ordre du jour Vous êtes convoqués à la séance ordinaire du 13 avril 2026 du conseil municipal de Saint-Émilede-Suffolk à 20h00, enregistrée, à la salle municipale de Saint-Émile-de-Suffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. Moment de réflexion Ouverture de la séance Adoption de l’ordre du jour Rapport du maire Rapport des délégations Période de questions Adoption du procès-verbal du 13 avril 2026 Correspondances 8.1 Demande de changement de tracé du Club Quad au Lac Quesnel 8.2 Les statistiques du TAC Papineau Voirie 9.1 Rapport de la voirie Urbanisme et environnement 10.1 Rapport de l’inspecteur en bâtiment et environnement de mars 2026 10.2 Projet La Loutre (développement sur la mine) Sécurité incendie 11.1 Rapport du directeur du service incendie de mars 2026 Loisirs et culture 12.1 Rapport des loisirs de mars 2026 12.2 Suivi – Politique Familiale et MADA Affaires financières/Rés",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0ee3f13f98ee492fae83ec1d35dc85ee.docx?dn=4%20avril.docx",
+              "text": "PV 2026 - 13 Avril"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0ee3f13f98ee492fae83ec1d35dc85ee.docx?dn=4%20avril.docx",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_0ee3f13f98ee492fae83ec1d35dc85ee.docx?dn=4%20avril.docx",
+              "status": 200,
+              "error": null,
+              "bytes": 93958,
+              "sha256": "sha256:4f9f711c12326ccf08750a3e977fb36644f5666bec02788df942c52e4fead5a4",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0f816f00dddc4ed68065b7989bc0c0e8.pdf",
+              "text": "Ordre du jour Mai"
+            },
+            "pdf": {
+              "requested_url": "https://www.st-emile-de-suffolk.com/_files/ugd/8a174b_0f816f00dddc4ed68065b7989bc0c0e8.pdf",
+              "final_url": "https://fde7fc54-3e0b-4807-b715-8022699b3e4b.filesusr.com/ugd/8a174b_0f816f00dddc4ed68065b7989bc0c0e8.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 175888,
+              "sha256": "sha256:cda018b906d1239c3aadb59a50d217c470f4bd5c556e0d4bdab092f286f30547",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2060,
+              "text_markers": [
+                "seance-conseil",
+                "conseil-municipal"
+              ],
+              "text_head": "MUNICIPALITÉ DE SAINT-ÉMILE-DE-SUFFOLK Ordre du jour Vous êtes convoqués à la séance ordinaire du 11 mai 2026 du conseil municipal de SaintÉmile-de-Suffolk à 20h00, enregistrée, à la salle municipale de Saint-Émile-de-Suffolk, Québec. ADOPTION DE L’ORDRE DU JOUR 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. Moment de réflexion Ouverture de la séance Adoption de l’ordre du jour Rapport du maire Rapport des délégations Période de questions Adoption du procès-verbal du 13 avril 2026 Correspondances 8.1 Remerciement pour lettre d’appui – Atelier La Plume 8.2 Statistiques 2025 – Réseau Biblio de l’Outaouais 8.3 Programme d’aide à la voirie locale au montant de 115 778 $ Voirie 9.1 Rapport de la voirie Urbanisme et environnement 10.1 Rapport de l’inspecteur en bâtiment et environnement d’avril 2026 10.2 Projet La Loutre (développement sur la mine) Sécurité incendie 11.1 Rapport du directeur du service incendie d’avril 2026 Loisirs et culture 12.1 Rapport des loisirs d’avril 2026 12.",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          }
+        ],
+        "homepage": {
+          "requested_url": "https://www.st-emile-de-suffolk.com/",
+          "final_url": "https://www.st-emile-de-suffolk.com/",
+          "status": 200,
+          "error": null,
+          "bytes": 591389,
+          "sha256": "sha256:8c86a0306a40f2530b839212e559c0d93a0919a98ac737c5d3d571ca0f8b807e",
+          "body_kind": "html",
+          "anchor_count": 43
+        },
+        "actual_page": {
+          "requested_url": "https://www.st-emile-de-suffolk.com/proces-verbaux",
+          "final_url": "https://www.st-emile-de-suffolk.com/proces-verbaux",
+          "status": 200,
+          "error": null,
+          "bytes": 782590,
+          "sha256": "sha256:dc54d131655fe43adc4cd0e619a14a8f3ba6caf7fb5a797580f57c8a4e488169",
+          "body_kind": "html",
+          "anchor_count": 255,
+          "home_link_discovery_match": {
+            "href": "https://www.st-emile-de-suffolk.com/notre-conseil",
+            "text": "Notre conseil"
+          },
+          "actual_anchor_from_home": null
+        },
+        "configured_generic_index": null,
+        "discovery_flags": {
+          "page_reached_from_pv_home_link": true,
+          "page_passes_historic_context_gate": true,
+          "page_passes_plural_aware_context_gate": true,
+          "actual_pdf_anchor_seen_in_opened_page": true,
+          "actual_pdf_href_has_pdf_extension": true,
+          "actual_pdf_href_is_extensionless": false,
+          "actual_pdf_host_differs_from_page": false
+        },
+        "diagnosis": "PV_reel_actuellement_accessible_sur_chemin_canonique_mais_commune_marquee_done_et_exclue_de_pv_discover_unlisted; changement_historique_non_prouvable"
+      },
+      {
+        "slug": "trecesson",
+        "name": "Trécesson",
+        "directory_website": "https://www.municipalitedetrecesson.com",
+        "actual_pv_url": null,
+        "reported_pdf_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0ec9a5f142314a939082770e5a9c0052.pdf",
+        "actual_pv_requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0ec9a5f142314a939082770e5a9c0052.pdf",
+        "reported_pdf_verdict": "not_a_pv_by_pdf_text",
+        "coverage_matrix": {
+          "status": "done",
+          "candidateTracks": [
+            "scraper-configured",
+            "scraper-new",
+            "obscura-session",
+            "recenseur-manual"
+          ],
+          "lastResearchAt": "2026-06-23T05:47:49.245Z",
+          "doneTrack": "qc-pv-trecesson"
+        },
+        "opened_pdf": {
+          "requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0ec9a5f142314a939082770e5a9c0052.pdf",
+          "final_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0ec9a5f142314a939082770e5a9c0052.pdf",
+          "status": 200,
+          "error": null,
+          "bytes": 95941,
+          "sha256": "sha256:edf032257395a04f78102f7c8f7ee51fd772b1e9316c96b84239ea3961a4fee9",
+          "body_kind": "pdf",
+          "pdf_magic": true,
+          "pdftotext_ok": true,
+          "text_chars": 1005,
+          "text_markers": [
+            "seance-conseil"
+          ],
+          "text_head": "ORDRE DU JOUR Séance ordinaire du conseil Tenue à la salle des délibérations du conseil 16 juin 2026, à 19 h 00 1 Constatation du quorum et ouverture de la séance 2 Adoption de l'ordre du jour 3 DÉCLARATION DU DIRECTEUR GÉNÉRAL ET GREFFIER-TRÉSORIER ADJOINT 4 PREMIÈRE PÉRIODE DE QUESTIONS 5 ADOPTION DE PROCÈS-VERBAL DES SÉANCES ANTÉRIEURE 5.1 Adoption du procès-verbal de la séance extraordinaire du 2 juin 2026 5.2 Adoption du procès-verbal de la séance ordinaire du 19 mai 2026 6 RAPPORT DES COMITÉS 7 CONTRAT À OCTOYER 7.1 Octroi de contrat pour le stationnement de la forêt récréative 8 DÉPENSES ET ENGAGEMENTS DE CRÉDITS 8.1 Autorisation de dépenses chez Équipement Amos 9 PRÉSENTATION DES COMPTES 9.1 Liste des comptes payés et à payer au 11 juin 2026 9.2 État de la situation financière au 31 mai 2026 10 AVIS DE MOTION 11 ADOPTION DE RÈGLEMENTS 11.1 Règlement sur la gestion contractuelle de la Municipalité de Trécesson 2026-337 12 DIVERS 13 SECONDE PÉRIODE DE QUESTIONS 14 LEVÉE DE L'ASSE",
+          "body_designates_pv": false,
+          "visual_preview_path": null,
+          "visual_review": null
+        },
+        "alternate_documents": [
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0bba322a460a4698bd73734e11713570.xlsx?dn=Demande%20de%20permis.xlsx",
+              "text": "Fichier à remplir"
+            },
+            "evidence": {
+              "requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0bba322a460a4698bd73734e11713570.xlsx?dn=Demande%20de%20permis.xlsx",
+              "final_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0bba322a460a4698bd73734e11713570.xlsx?dn=Demande%20de%20permis.xlsx",
+              "status": 200,
+              "error": null,
+              "bytes": 28252,
+              "sha256": "sha256:ff87b375006c718f1dde718c27200e90527e07b019c6945900bcb04bc469d6c9",
+              "body_kind": "binary"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/proces-verbaux",
+              "text": "Procès-verbaux"
+            },
+            "evidence": {
+              "requested_url": "https://www.municipalitedetrecesson.com/proces-verbaux",
+              "final_url": "https://www.municipalitedetrecesson.com/proces-verbaux",
+              "status": 200,
+              "error": null,
+              "bytes": 1876238,
+              "sha256": "sha256:aab31785f6217e171b79fec2f7601926eeac68cab8977e547acb48da15476d7d",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/copie-de-procès-verbaux",
+              "text": "ordres du jour"
+            },
+            "evidence": {
+              "requested_url": "https://www.municipalitedetrecesson.com/copie-de-proc%C3%A8s-verbaux",
+              "final_url": "https://www.municipalitedetrecesson.com/copie-de-proc%C3%A8s-verbaux",
+              "status": 200,
+              "error": null,
+              "bytes": 862908,
+              "sha256": "sha256:2707f60deb08072b1ee6189482e116e06b745281bbee7cbf59e9cffdfcf7b16e",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0f79a0c3e1e14689a6f32092c4e6fbd1.pdf",
+              "text": "ORDRE DU JOUR S&eacute;ance ordinaire du conseil municipal"
+            },
+            "pdf": {
+              "requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0f79a0c3e1e14689a6f32092c4e6fbd1.pdf",
+              "final_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_0f79a0c3e1e14689a6f32092c4e6fbd1.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 111726,
+              "sha256": "sha256:e37df7e497aed4dad1fb059f4d718e0bd5aa91bb44f5f620ca130aba9506d43e",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1349,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "ORDRE DU JOUR Séance ordinaire du conseil Tenue à la salle des délibérations du conseil 19 mai 2026, à 19 h 00 1 Constatation du quorum et ouverture de la séance 2 Adoption de l'ordre du jour 3 DÉCLARATION DE LA DIRECTRICE GÉNÉRALE ET GREFFIÈRE-TRÉSORIÈRE 4 PREMIÈRE PÉRIODE DE QUESTION 5 ADOPTION DE PROCÈS-VERBAL DES SÉANCES ANTÉRIEURE 5.1 Adoption du procès-verbal de la séance ordinaire du 21 avril 2026 6 RAPPORT DES COMITÉS 7 CONTRAT À OCTOYER 7.1 Autorisation de signer un contrat avec Telmatik 7.2 Autorisation de conclure et de signer une entente intermunicipale relative à la la fourniture d'un service de prévention incendie résidentielle par la ville d'Amos 8 DÉPENSES ET ENGAGEMENTS DE CRÉDITS 8.1 Autorisation d'achat de 20 lumières de rue 9 PRÉSENTATION DES COMPTES 9.1 Liste des comptes payés et à payer au 19 mai 2026 9.2 État de la situation financière au 30 avril 2026 10 AVIS DE MOTION 10.1 Avis de motion projet de règlement sur la gestion contractuelle 2026-337 11 ADOPTION DE R",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_33e70ff9b5d14fc28768f4330143fc1d.pdf",
+              "text": "ORDRE DU JOUR S&eacute;ance extraordinaire du conseil municipal"
+            },
+            "pdf": {
+              "requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_33e70ff9b5d14fc28768f4330143fc1d.pdf",
+              "final_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_33e70ff9b5d14fc28768f4330143fc1d.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 104735,
+              "sha256": "sha256:ad1bb88e85943759101ce67d95d7f333ce6622a5140e2e92fecc937b27384dfd",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2102,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "ORDRE DU JOUR Séance ordinaire du conseil Tenue à la salle des délibérations du conseil 21 juillet 2026, à 19 h 00 1 Constatation du quorum et ouverture de la séance 2 Adoption de l'ordre du jour 3 DÉCLARATION DE LA DIRECTRICE GÉNÉRALE ET GREFFIÈRE-TRÉSORIÈRE 4 PREMIÈRE PÉRIODE DE QUESTION 5 ADOPTION DE PROCÈS-VERBAL DES SÉANCES ANTÉRIEURE 5.1 Adoption du procès-verbal de la séance ordinaire du 16 juin 2026 5.2 Adoption du procès-verbal de la séance extraordinaire du 7 juillet 2026 6 RAPPORT DES COMITÉS 6.1 RESSOURCES HUMAINES 6.1.1 Fin de la période de probation de l'employé no. 13-0018 6.2 URBANISME 6.2.1 Demande de dérogation mineure pour l'immeuble sis au 427, route 111 6.2.2 Nomination du fonctionnaire Responsable de l'émission des permis et certificats 6.2.3 Dépôt de rapport urbanisme 6.2.4 LOISIR ET CULTURE 6.2.4.1 Dépôt du rapport d'activité ADL 7 PRÉSENTATION DES COMPTES 7.1 Liste des comptes payés et à payer au 21 juillet 2026 7.2 État de la situation financière au 30 juin 20",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_15773ac96dd64d3480cea527f93b70cf.pdf",
+              "text": "ORDRE DU JOUR S&eacute;ance extraordinaire du conseil municipal"
+            },
+            "pdf": {
+              "requested_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_15773ac96dd64d3480cea527f93b70cf.pdf",
+              "final_url": "https://www.municipalitedetrecesson.com/_files/ugd/10bf4d_15773ac96dd64d3480cea527f93b70cf.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 99012,
+              "sha256": "sha256:35a4b4558d8207cb1e34a61dc0b6368061800cbac158845a88e9d61307ef8554",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1699,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "ORDRE DU JOUR Séance extraordinaire du conseil AVIS SPÉCIAL vous est donnée qu'une séance extraordinaire est convoquée par madame Marie Claude De Gagné, directrice générale et greffière-trésorière, pour être tenue le mardi 7 juillet 2026, à compter de 19 h15, à la salle des délibérations du conseil, et qu'il y sera pris en considération les sujets suivants, à savoir: 1 Constatation du quorum et ouverture de la séance 2 Adoption de l'ordre du jour 3 DÉCLARATION DE LA DIRECTRICE GÉNÉRALE ET GREFFIÈRE-TRÉSORIÈRE 4 AVIS DE MOTION 4.1 Avis de motion du projet de règlement modifiant le règlement de zonage numéro 2015-224 4.2 Avis de motion du projet de règlement modifiant le règlement de lotissement numéro 2015-225 4.3 Avis de motion du projet de règlement modifiant le règlement de construction numéro 2015-226 4.4 Avis de motion du projet de règlement modifiant le règlement de régissant l'émission des permis et des certificats numéro 2015-227 4.5 Avis de motion du projet de règlement modifia",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          }
+        ],
+        "homepage": {
+          "requested_url": "https://www.municipalitedetrecesson.com/",
+          "final_url": "https://www.municipalitedetrecesson.com/",
+          "status": 200,
+          "error": null,
+          "bytes": 808408,
+          "sha256": "sha256:f2717969760f05970dfadb03510ddd4f739566aa17030e40487052f72a4dcbb9",
+          "body_kind": "html",
+          "anchor_count": 31
+        },
+        "actual_page": {
+          "requested_url": "https://www.municipalitedetrecesson.com/copie-de-proc%C3%A8s-verbaux",
+          "final_url": "https://www.municipalitedetrecesson.com/copie-de-proc%C3%A8s-verbaux",
+          "status": 200,
+          "error": null,
+          "bytes": 862908,
+          "sha256": "sha256:2707f60deb08072b1ee6189482e116e06b745281bbee7cbf59e9cffdfcf7b16e",
+          "body_kind": "html",
+          "anchor_count": 41,
+          "home_link_discovery_match": {
+            "href": "https://www.municipalitedetrecesson.com/membres-du-conseil",
+            "text": "Membres du conseil"
+          },
+          "actual_anchor_from_home": null
+        },
+        "configured_generic_index": null,
+        "discovery_flags": {
+          "page_reached_from_pv_home_link": true,
+          "page_passes_historic_context_gate": true,
+          "page_passes_plural_aware_context_gate": true,
+          "actual_pdf_anchor_seen_in_opened_page": true,
+          "actual_pdf_href_has_pdf_extension": true,
+          "actual_pdf_href_is_extensionless": false,
+          "actual_pdf_host_differs_from_page": false
+        },
+        "diagnosis": "faux_positif_de_la_categorie_a: le texte des octets PDF ne designe pas un PV"
+      },
+      {
+        "slug": "saint-rene-de-matane",
+        "name": "Saint-René-de-Matane",
+        "directory_website": "https://saintrene.ca",
+        "actual_pv_url": null,
+        "reported_pdf_url": "https://saintrene.ca/images/Upload/Files/calendriers_des_seances/calendrier_des_seances_2026.pdf",
+        "actual_pv_requested_url": "https://saintrene.ca/images/Upload/Files/calendriers_des_seances/calendrier_des_seances_2026.pdf",
+        "reported_pdf_verdict": "not_a_pv_by_pdf_text",
+        "coverage_matrix": {
+          "status": "done",
+          "candidateTracks": [
+            "scraper-configured",
+            "scraper-new",
+            "obscura-session",
+            "recenseur-manual"
+          ],
+          "lastResearchAt": "2026-06-23T05:51:59.578Z",
+          "doneTrack": "qc-pv-saint-rene-de-matane"
+        },
+        "opened_pdf": {
+          "requested_url": "https://saintrene.ca/images/Upload/Files/calendriers_des_seances/calendrier_des_seances_2026.pdf",
+          "final_url": "https://saintrene.ca/images/Upload/Files/calendriers_des_seances/calendrier_des_seances_2026.pdf",
+          "status": 200,
+          "error": null,
+          "bytes": 283143,
+          "sha256": "sha256:32461de88e588faa67c3bce329275a8f6feab9b9747092c205fae29362dcb725",
+          "body_kind": "pdf",
+          "pdf_magic": true,
+          "pdftotext_ok": true,
+          "text_chars": 1348,
+          "text_markers": [
+            "seance-conseil",
+            "conseil-municipal"
+          ],
+          "text_head": "Canada Province de Québec Saint-René-de-Matane AVIS PUBLIC AUX CONTRIBUABLES DE LA MUNICIPALITÉ DE SAINT-RENÉ-DE-MATANE CALENDRIER 2026 DES SÉANCES ORDINAIRES DU CONSEIL MUNICIPAL EST donné, PAR LA PRÉSENTE, DONNÉ par la soussignée, Joyce Bérubé, directrice générale et greffière-trésorière de la susdite municipalité, QUE conformément à l’article 148 du Code municipal du Québec, le conseil municipal de la Municipalité de Saint-René-de-Matane a adopté, lors de la séance tenue le 10 novembre 2025, une résolution par laquelle est établi le calendrier des séances ordinaires pour l’année 2026 ; QUE les jours et l’heure du début de chacune des séances ordinaires sont fixés comme suit : DATES HEURE DATES HEURE Lundi 12 janvier 2026 19 h 30 Lundi 2 février 2026 19 h 30 Lundi 2 mars 2026 19 h 30 Lundi 6 avril 2026 19 h 30 Lundi 4 mai 2026 19 h 30 Lundi 1er juin 2026 19 h 30 Lundi 6 juillet 2026 19 h 30 Lundi 3 août 2026 19 h 30 Mardi 8 septembre 2026 19 h 30 Lundi 5 octobre 2026 19 h 30 Lundi 2 ",
+          "body_designates_pv": false,
+          "visual_preview_path": null,
+          "visual_review": null
+        },
+        "alternate_documents": [
+          {
+            "anchor": {
+              "href": "/images/Upload/Files/operateur_de_machinerie_et_journalier.pdf",
+              "text": "OPÉRATEUR DE MACHINERIE ET JOURNALIER"
+            },
+            "pdf": {
+              "requested_url": "https://saintrene.ca/images/Upload/Files/operateur_de_machinerie_et_journalier.pdf",
+              "final_url": "https://saintrene.ca/images/Upload/Files/operateur_de_machinerie_et_journalier.pdf",
+              "status": 200,
+              "error": null,
+              "bytes": 287244,
+              "sha256": "sha256:b4f082b8805f728c75cafdd3cb7344627f5f6f13cfe583e7ab44f28980ecf3df",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2490,
+              "text_markers": [],
+              "text_head": "Canada Province de Québec Saint-René-de-Matane APPEL DE CANDIDATURES OPÉRATEUR DE MACHINERIE ET JOURNALIER La Municipalité de Saint-René-de-Matane fait une offre d’emploi afin d’occuper un poste d’opérateur / journalier permanent 40 heures semaine, à l’année. PRINCIPALES RESPONSABILITÉS Sous l’autorité de la directrice générale, le titulaire du poste effectue divers travaux d’entretien général en voirie, en entretien de bâtiments et de tous travaux nécessaires au bon fonctionnement de la municipalité. Sous l’autorité de la directrice générale, le titulaire du poste doit agir comme opérateur de la machinerie servant à l’entretien et au déneigement des chemins, le titulaire du poste effectue divers travaux de vérification, d’ajustement, d’entretien et des réparations mécaniques mineures sur tous les véhicules, équipements et outillages actionnés par un moteur diesel ou à essence ainsi que toutes les activités connexes reliées à ces travaux, en conformité avec les règles en vigueur. Appli",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          }
+        ],
+        "homepage": {
+          "requested_url": "https://saintrene.ca/",
+          "final_url": "https://saintrene.ca/",
+          "status": 200,
+          "error": null,
+          "bytes": 35042,
+          "sha256": "sha256:ef1d5632d19a4d35b3a81801ce9b80be1f9ec1080761500e872465e4c5fa54dd",
+          "body_kind": "html",
+          "anchor_count": 31
+        },
+        "actual_page": {
+          "requested_url": "https://saintrene.ca/",
+          "final_url": "https://saintrene.ca/",
+          "status": 200,
+          "error": null,
+          "bytes": 35042,
+          "sha256": "sha256:ef1d5632d19a4d35b3a81801ce9b80be1f9ec1080761500e872465e4c5fa54dd",
+          "body_kind": "html",
+          "anchor_count": 31,
+          "home_link_discovery_match": {
+            "href": "/municipalite/conseil.html",
+            "text": "Le conseil"
+          },
+          "actual_anchor_from_home": {
+            "href": "/images/Upload/Files/calendriers_des_seances/calendrier_des_seances_2026.pdf",
+            "text": "Calendrier des séances 2026"
+          }
+        },
+        "configured_generic_index": null,
+        "discovery_flags": {
+          "page_reached_from_pv_home_link": true,
+          "page_passes_historic_context_gate": true,
+          "page_passes_plural_aware_context_gate": true,
+          "actual_pdf_anchor_seen_in_opened_page": true,
+          "actual_pdf_href_has_pdf_extension": true,
+          "actual_pdf_href_is_extensionless": false,
+          "actual_pdf_host_differs_from_page": false
+        },
+        "diagnosis": "faux_positif_de_la_categorie_a: le texte des octets PDF ne designe pas un PV"
+      },
+      {
+        "slug": "saint-benjamin",
+        "name": "Saint-Benjamin",
+        "directory_website": "https://www.st-benjamin.qc.ca",
+        "actual_pv_url": null,
+        "reported_pdf_url": "https://cdn.gestionweblex.ca/files/UNq96edSmu",
+        "actual_pv_requested_url": "https://cdn.gestionweblex.ca/files/UNq96edSmu",
+        "reported_pdf_verdict": "not_a_pv_visual_review",
+        "coverage_matrix": {
+          "status": "done",
+          "candidateTracks": [
+            "scraper-configured",
+            "scraper-new",
+            "obscura-session",
+            "recenseur-manual"
+          ],
+          "lastResearchAt": "2026-06-23T05:36:16.497Z",
+          "notes": "PV 'ready' (config présente) — bascule prod en attente",
+          "doneTrack": "qc-pv-saint-benjamin"
+        },
+        "opened_pdf": {
+          "requested_url": "https://cdn.gestionweblex.ca/files/UNq96edSmu",
+          "final_url": "https://cdn.gestionweblex.ca/files/UNq96edSmu",
+          "status": 200,
+          "error": null,
+          "bytes": 46692,
+          "sha256": "sha256:409e1f404fdf4e47c50df2731b905a11b4fed83f421d35201b9770ef3441aa1d",
+          "body_kind": "pdf",
+          "pdf_magic": true,
+          "pdftotext_ok": true,
+          "text_chars": 0,
+          "text_markers": [],
+          "text_head": "",
+          "body_designates_pv": false,
+          "visual_preview_path": "/tmp/pv-categorie-a-pdf-rates-previews/saint-benjamin.png",
+          "visual_review": {
+            "performed": true,
+            "verdict": "not_pv",
+            "basis": "premiere_page_lue: AVIS PUBLIC et CALENDRIER 2026 DES SEANCES ORDINAIRES DU CONSEIL MUNICIPAL"
+          }
+        },
+        "alternate_documents": [
+          {
+            "anchor": {
+              "href": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+              "text": "Ordres du jour et dates des séances du conseil municipal"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+              "final_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+              "status": 200,
+              "error": null,
+              "bytes": 20824,
+              "sha256": "sha256:c7476ee31c59378acc94fecf8921fee24964606ebdbdf827bab441900db1a8ba",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+              "text": "Procès verbaux"
+            },
+            "evidence": {
+              "requested_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+              "final_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+              "status": 200,
+              "error": null,
+              "bytes": 14653,
+              "sha256": "sha256:6f3f0fa09159233fa4ea6cef324ea844b3800898822718c925c108a4c9a815ff",
+              "body_kind": "html"
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/DbsA7Vyru6",
+              "text": "5 janvier 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/DbsA7Vyru6",
+              "final_url": "https://cdn.gestionweblex.ca/files/DbsA7Vyru6",
+              "status": 200,
+              "error": null,
+              "bytes": 124684,
+              "sha256": "sha256:f65b46f653f0a4eba3ef0d580ea921d49b7bfc629e61b23fc01e33130780aae1",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 907,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE EXTRAORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 5 janvier 2026 01 - OUVERTURE DE LA SÉANCE 02 - RENONCIATION À L'AVIS DE CONVOCATION 03 - LECTURE ET ADOPTION DE L'ORDRE DU JOUR 04 - Adoption des prévisions budgétaires 2026 05 - Dépôt et adoption du plan triennal d'immobilisations 2026-27-28 06 - Avis de motion et dépôt du projet de règlement no 462-26 - « Règlement fixant les taux de taxes et des tarifs pour l'exercice financier 2026 et les modalités de perception » 07 - Adoption du projet de règlement no 462-26 - « Règlement fixant les taux de taxes et des tarifs pour l'exercice financier 2026 et les modalités de perception » 08 - PÉRIODE DE QUESTIONS 09 - CLÔTURE ET LEVÉE DE LA SÉANCE Laurence Chabot Directrice générale et greffière-trésorière",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/NkOZHM8bEo",
+              "text": "12 janvier 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/NkOZHM8bEo",
+              "final_url": "https://cdn.gestionweblex.ca/files/NkOZHM8bEo",
+              "status": 200,
+              "error": null,
+              "bytes": 138818,
+              "sha256": "sha256:f03ed1e7f74fbb5e5dee857e09fce2ba143ad38d7343863b3d00085e70fbefcc",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2484,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE RÉGULIÈRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 12 janvier 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 08.01 - Résolution - Adoption du règlement no 462-26 - « Règlement fixant les taux de taxes et des tarifs pour l'exercice financier 2026 et les modalités de perception » 08.02 - Résolution - Avis de motion et dépôt projet règlement no 463-26 Création réserve financière vidange boues (village) 08.03 - Résolution - Adoption projet règlement no 463-26 Création réserve financière vidange boues (village) 08.04 - Résolution - Avis de motion et dépôt projet de règlement no 464-26 Nouveau code déontologie des élus municipaux 08.05 - Résolution - Adoption projet ",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/jVL0RGKWXB",
+              "text": "2 f&eacute;vrier 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/jVL0RGKWXB",
+              "final_url": "https://cdn.gestionweblex.ca/files/jVL0RGKWXB",
+              "status": 200,
+              "error": null,
+              "bytes": 134137,
+              "sha256": "sha256:6ad6d8517f7fdc4c0df8ea939b04d4f88ece949a5687b1d57a3e22c1b6cfdec9",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2416,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE EXTRAORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 2 février 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 03.01 - Utilisation du tracteur municipal 03.02 - Information - Statistiques Transport Autonomie de Beauce 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 08.01 - Avis de motion et dépôt projet règlement no 465-26 26 décrétant une dépense de 10 244 905 $ et un emprunt de 10 244 905 $ pour la réalisation du projet d'assainissement des eaux usées du secteur Morisset-Station 08.02 - Adoption projet règlement no 465-26 décrétant décrétant une dépense de 10 244 905 $ et un emprunt de 10 244 905 $ pour la réalisation du projet d'assainissement des eaux usées du secteur Morisset-Station. 09 - GESTION ADMI",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/s7b0hYwu0w",
+              "text": "2 mars 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/s7b0hYwu0w",
+              "final_url": "https://cdn.gestionweblex.ca/files/s7b0hYwu0w",
+              "status": 200,
+              "error": null,
+              "bytes": 350866,
+              "sha256": "sha256:b214b24338ac8c7f99c3ec5ccc927a2490c66223bd9b11acd99266ec3cd69ad9",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2666,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE EXTRAORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 2 mars 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 08.01 - Résolution - Adoption règlement no 463-26 Création réserve financière vidange boues (village) 08.02 - Résolution - Adoption règlement no 464-26 Nouveau code déontologie élus municipaux 08.03 - Avis de motion et dépôt de projet de règlement no 466-26 relatif aux projets particuliers de construction, de modification ou d'occupation d'un immeuble 08.04 - Résolution - Adoption projet de règlement no 466-26 relatif aux projets particuliers de construction, de modification ou d'occupation d'un immeuble 09 - GESTION ADMINISTRATIVE ET FINANCIÈRE 10 - AM",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/p3Eqa2i7Gf",
+              "text": "13 avril 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/p3Eqa2i7Gf",
+              "final_url": "https://cdn.gestionweblex.ca/files/p3Eqa2i7Gf",
+              "status": 200,
+              "error": null,
+              "bytes": 131469,
+              "sha256": "sha256:593a4c4e781dd55422f5027e28700aae97c216384e69cb8ea438783ac50f1451",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 2559,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE RÉGULIÈRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 13 avril 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 08.01 - Résolution - Adoption règlement no 465-26 décrétant décrétant une dépense de 10 244 905 $ et un emprunt de 10 244 905 $ pour la réalisation du projet d’assainissement des eaux usées du secteur Morisset-Station 08.02 - Résolution - Adoption règlement no 466-26 relatif aux projets particuliers de construction, de modification ou d'occupation d'un immeuble 08.03 - Résolution - Demande de révision du programme concernant le rachat des armes à feu par le Gouvernement fédéral 09 - GESTION ADMINISTRATIVE ET FINANCIÈRE 09.01 - Résolution - Budget révisé 20",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/Kuomt9y7rZ",
+              "text": "4 mai 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/Kuomt9y7rZ",
+              "final_url": "https://cdn.gestionweblex.ca/files/Kuomt9y7rZ",
+              "status": 200,
+              "error": null,
+              "bytes": 125453,
+              "sha256": "sha256:8a69ef359c677d233501811687505b5a49e477b78993fe193c9d3c03e6aa50ac",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1583,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE RÉGULIÈRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 4 mai 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 09 - GESTION ADMINISTRATIVE ET FINANCIÈRE 09.01 - Résolution de concordance et de courte échéance relativement à un emprunt par billets au montant de 502 800 $ qui sera réalisé le 19 mai 2026 09.02 - Résolution - Renouvellement contrat location imprimante avec Xeros Canada Ltée 10 - AMÉNAGEMENT DU TERRITOIRE, URBANISME ET PROJETS 10.01 - Résolution - Acceptation du Plan de gestion des actifs municipaux des eaux PGAM-EAU 10.02 - Résolution - Acceptation offre de services Éqip Solutions pour terminer plans et devis du bassin de rétention (village) 10.03 - Résol",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/I0fi6AEzbW",
+              "text": "25 mai 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/I0fi6AEzbW",
+              "final_url": "https://cdn.gestionweblex.ca/files/I0fi6AEzbW",
+              "status": 200,
+              "error": null,
+              "bytes": 117134,
+              "sha256": "sha256:208a06c0128236fa25eebf42ba56de8c3bf1e15d59b8cca49e20b87f1cc46ea4",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 576,
+              "text_markers": [
+                "seance-conseil"
+              ],
+              "text_head": "mai Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE EXTRAORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 25 mai 2026 01 - OUVERTURE DE SÉANCE 02 - RENONCIATION À L'AVIS DE CONVOCATION 03 - ADOPTION DE L'ORDRE DU JOUR 04 - Résolution - Dépôt et acceptation du rapport financier et du rapport du vérificateur externe pour l'exercice financier 2025 05 - VARIA 06 - PÉRIODE DE QUESTIONS 07 - CLÔTURE ET LEVÉE DE LA SÉANCE Laurence Chabot Directrice générale et greffière-trésorière",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/yo5EpwNYJb",
+              "text": "1er juin 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/yo5EpwNYJb",
+              "final_url": "https://cdn.gestionweblex.ca/files/yo5EpwNYJb",
+              "status": 200,
+              "error": null,
+              "bytes": 127335,
+              "sha256": "sha256:80b4016868da916b2399cc970b269454e68ece0e968d8bf5e8f2fdb9930af9a7",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1419,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE ORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 1er juin 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 09 - GESTION ADMINISTRATIVE ET FINANCIÈRE 09.01 - Dépôt des états financiers comparatifs au 30 avril 2026 09.02 - Résolution - Limitation du nombre de visites à l'écocentre par adresse 10 - AMÉNAGEMENT DU TERRITOIRE, URBANISME ET PROJETS 10.01 - Résolution - Acceptation entente lot 4 216 295 (borne sèche) 10.02 - Résolution - Entente avec la Fédération Québecoise des Municipalités (Éco360) - Conversion des lumières de rue 10.03 - Résolution - Lotissement terrain à la pointe du village 11 - TRAVAUX PUBLICS 11.01 - Résolution - Acceptation pour l'achat de ba",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          },
+          {
+            "anchor": {
+              "href": "https://cdn.gestionweblex.ca/files/Wx8hH2FHBI",
+              "text": "6 juillet 2026 - Ordre du jour"
+            },
+            "pdf": {
+              "requested_url": "https://cdn.gestionweblex.ca/files/Wx8hH2FHBI",
+              "final_url": "https://cdn.gestionweblex.ca/files/Wx8hH2FHBI",
+              "status": 200,
+              "error": null,
+              "bytes": 125738,
+              "sha256": "sha256:79d905f5892893f3b99d8be85f67f1604367cbf84a4ec076942f3672b49de654",
+              "body_kind": "pdf",
+              "pdf_magic": true,
+              "pdftotext_ok": true,
+              "text_chars": 1811,
+              "text_markers": [
+                "proces-verbaux",
+                "seance-conseil"
+              ],
+              "text_head": "Municipalité de Saint-Benjamin PROVINCE DE QUÉBEC M.R.C. LES ETCHEMINS, MUNICIPALITÉ DE SAINT-BENJAMIN ORDRE DU JOUR SÉANCE ORDINAIRE DU CONSEIL À 18 H 30 Tenue au lieu ordinaire des séances, le 6 juillet 2026 01 - OUVERTURE DE LA SÉANCE 02 - ADOPTION DE L'ORDRE DU JOUR 03 - COMPTE-RENDU DU MAIRE 03.01 - Carte des travaux à Morisset-Station 03.02 - Mention honorable à M. David Poulin, pompier volontaire 04 - MOT DE LA DIRECTRICE GÉNÉRALE 05 - COMPTE-RENDU DES ÉLUS 06 - ADOPTION DES PROCÈS-VERBAUX 07 - ACCEPTATION DES COMPTES 08 - LÉGISLATION 08.01 - Appui | Retrait de la certification obligatoire en arboriculture concernant les scies à chaînes 09 - GESTION ADMINISTRATIVE ET FINANCIÈRE 09.01 - Résolution - Ouverture d'un prêt temporaire Projet Morisset-Station à la Caisse Desjardins Sud de la Beauce 10 - AMÉNAGEMENT DU TERRITOIRE, URBANISME ET PROJETS 10.01 - Demande de signalisation touristique sur le réseau routier du ministère des Transports pour le Club de golf de Saint-Benjamin 10.",
+              "body_designates_pv": false,
+              "visual_preview_path": null,
+              "visual_review": null
+            }
+          }
+        ],
+        "homepage": {
+          "requested_url": "https://www.st-benjamin.qc.ca/",
+          "final_url": "https://www.st-benjamin.qc.ca/",
+          "status": 200,
+          "error": null,
+          "bytes": 23550,
+          "sha256": "sha256:54b65a109538dfeb545ea75e19db5b6bc41b0010004dd3d3bab9b0b12358cc9c",
+          "body_kind": "html",
+          "anchor_count": 42
+        },
+        "actual_page": {
+          "requested_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+          "final_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+          "status": 200,
+          "error": null,
+          "bytes": 20824,
+          "sha256": "sha256:1932b31d2509bd73cbe7ef2697c6ac3c01507803f4e5b032962bb4eba26069f0",
+          "body_kind": "html",
+          "anchor_count": 70,
+          "home_link_discovery_match": {
+            "href": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+            "text": "Ordres du jour et dates des séances du conseil municipal"
+          },
+          "actual_anchor_from_home": null
+        },
+        "configured_generic_index": {
+          "requested_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+          "final_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+          "status": 200,
+          "error": null,
+          "bytes": 14653,
+          "sha256": "sha256:718d443b3840b378e16e7c3dc3168e4e3740c6c0b0a0b33028261a06383aff00",
+          "body_kind": "html",
+          "text_markers": true,
+          "documents": [
+            {
+              "anchor": {
+                "href": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+                "text": "Ordres du jour et dates des séances du conseil municipal"
+              },
+              "evidence": {
+                "requested_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+                "final_url": "https://www.st-benjamin.qc.ca/pages/ordre-du-jour-et-dates-seances-du-conseil-municipal",
+                "status": 200,
+                "error": null,
+                "bytes": 20824,
+                "sha256": "sha256:0e12dcbad8e071987d8ec5fdf29cce97926ecdffac57e6c09314fa0e09f711ac",
+                "body_kind": "html"
+              }
+            },
+            {
+              "anchor": {
+                "href": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+                "text": "Procès verbaux"
+              },
+              "evidence": {
+                "requested_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+                "final_url": "https://www.st-benjamin.qc.ca/pages/proces-verbaux",
+                "status": 200,
+                "error": null,
+                "bytes": 14653,
+                "sha256": "sha256:f4328df4dda405280a3a6b5d879d810fd239fb0281b340ecb862f7e99af7723f",
+                "body_kind": "html"
+              }
+            }
+          ]
+        },
+        "discovery_flags": {
+          "page_reached_from_pv_home_link": true,
+          "page_passes_historic_context_gate": true,
+          "page_passes_plural_aware_context_gate": true,
+          "actual_pdf_anchor_seen_in_opened_page": true,
+          "actual_pdf_href_has_pdf_extension": false,
+          "actual_pdf_href_is_extensionless": true,
+          "actual_pdf_host_differs_from_page": true
+        },
+        "diagnosis": "faux_positif_confirme_visuellement: avis_public_calendrier_et_non_PV"
+      }
+    ]
+  },
+  "controls": {
+    "frame_size": 192,
+    "sample_size": 10,
+    "seed": "pv-categorie-a-pdf-rates-controls-20260730T000000Z",
+    "selection_method": "Fisher-Yates pseudo-aléatoire dérivé de SHA-256 sur les 222 moins les 30 de l'enquête initiale",
+    "slugs": [
+      "sainte-anne-du-lac",
+      "crabtree",
+      "saint-leon-le-grand--maskinonge",
+      "malartic",
+      "hampstead",
+      "notre-dame-de-la-salette",
+      "piopolis",
+      "portage-du-fort",
+      "lile-cadieux",
+      "sainte-beatrix"
+    ],
+    "findings": [
+      {
+        "slug": "sainte-anne-du-lac",
+        "name": "Sainte-Anne-du-Lac",
+        "mrc": "Antoine-Labelle",
+        "website": "https://www.steannedulac.ca",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.steannedulac.ca/",
+          "final_url": "https://www.steannedulac.ca/",
+          "status": 200,
+          "error": null,
+          "bytes": 917281,
+          "sha256": "sha256:423b12ab76507204b68659666b9029fd6cd873ba9882c5b03dfd3a7f0c5cb6e3",
+          "body_kind": "html",
+          "anchor_count": 32,
+          "discovery_link_count": 4
+        },
+        "pages": [
+          {
+            "url": "https://www.steannedulac.ca/membre-du-conseil",
+            "text": "Membres du conseil",
+            "requested_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "final_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "status": 200,
+            "error": null,
+            "bytes": 841987,
+            "sha256": "sha256:dcbdfaacf2a4ac12bffe7ab759843e68d29deb42350d12f2106f85861ccded99",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 32
+          },
+          {
+            "url": "https://www.steannedulac.ca/membre-du-conseil",
+            "text": "Read More",
+            "requested_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "final_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "status": 200,
+            "error": null,
+            "bytes": 841987,
+            "sha256": "sha256:dcbdfaacf2a4ac12bffe7ab759843e68d29deb42350d12f2106f85861ccded99",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 32
+          },
+          {
+            "url": "https://www.steannedulac.ca/calendrier-des-seances-ordinaires",
+            "text": "Calendrier des réunions",
+            "requested_url": "https://www.steannedulac.ca/calendrier-des-seances-ordinaires",
+            "final_url": "https://www.steannedulac.ca/calendrier-des-seances-ordinaires",
+            "status": 200,
+            "error": null,
+            "bytes": 1043525,
+            "sha256": "sha256:86e9a0b60c53b0a3fbc54058d9f09a48600f4e0f4cc9a4cf903df66ca2012ea2",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 32
+          },
+          {
+            "url": "https://www.steannedulac.ca/membre-du-conseil",
+            "text": "Membres du conseil",
+            "requested_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "final_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "status": 200,
+            "error": null,
+            "bytes": 841987,
+            "sha256": "sha256:dcbdfaacf2a4ac12bffe7ab759843e68d29deb42350d12f2106f85861ccded99",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 32
+          },
+          {
+            "url": "https://www.steannedulac.ca/ordres-du-jour",
+            "text": "Ordre du jour",
+            "requested_url": "https://www.steannedulac.ca/ordres-du-jour",
+            "final_url": "https://www.steannedulac.ca/ordres-du-jour",
+            "status": 200,
+            "error": null,
+            "bytes": 1069279,
+            "sha256": "sha256:9aa226e86960aa71de8c7e717d55bc9eb7dfff6e2eb0261070a63fd551003c38",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 48
+          },
+          {
+            "url": "https://www.steannedulac.ca/membre-du-conseil",
+            "text": "Membres du conseil",
+            "requested_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "final_url": "https://www.steannedulac.ca/membre-du-conseil",
+            "status": 200,
+            "error": null,
+            "bytes": 841987,
+            "sha256": "sha256:dcbdfaacf2a4ac12bffe7ab759843e68d29deb42350d12f2106f85861ccded99",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 32
+          }
+        ],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "crabtree",
+        "name": "Crabtree",
+        "mrc": "Joliette",
+        "website": "https://www.crabtree.quebec",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.crabtree.quebec/",
+          "final_url": "https://crabtree.quebec/",
+          "status": 200,
+          "error": null,
+          "bytes": 246141,
+          "sha256": "sha256:236ce146101c2886e62dba6e64708db354b45f77d43ad0475647ea2ef782a99e",
+          "body_kind": "html",
+          "anchor_count": 151,
+          "discovery_link_count": 36
+        },
+        "pages": [
+          {
+            "url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "text": "Conseil municipal",
+            "requested_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "final_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 276742,
+            "sha256": "sha256:d90e92979680015425deaf4856b13cd5a293933d913ae95abd67c46da6f13b82",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 131
+          },
+          {
+            "url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "text": "Conseil municipal",
+            "requested_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "final_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 276742,
+            "sha256": "sha256:d90e92979680015425deaf4856b13cd5a293933d913ae95abd67c46da6f13b82",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 131
+          },
+          {
+            "url": "https://crabtree.quebec/municipalite/communications/ordres-du-jour/",
+            "text": "Ordres du jour",
+            "requested_url": "https://crabtree.quebec/municipalite/communications/ordres-du-jour/",
+            "final_url": "https://crabtree.quebec/municipalite/communications/ordres-du-jour/",
+            "status": 200,
+            "error": null,
+            "bytes": 270712,
+            "sha256": "sha256:c3cdec938506700090514bd2711eecdb3199b20d24b47cc11cb261cd36b7513b",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 133
+          },
+          {
+            "url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "text": "Conseil municipal",
+            "requested_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "final_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 276742,
+            "sha256": "sha256:d90e92979680015425deaf4856b13cd5a293933d913ae95abd67c46da6f13b82",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 131
+          },
+          {
+            "url": "https://crabtree.quebec/municipalite/communications/proces-verbaux/",
+            "text": "Séances du conseil municipal",
+            "requested_url": "https://crabtree.quebec/municipalite/communications/proces-verbaux/",
+            "final_url": "https://crabtree.quebec/municipalite/communications/proces-verbaux/",
+            "status": 200,
+            "error": null,
+            "bytes": 271471,
+            "sha256": "sha256:fd38b49365b7cbfac5c3ee83e468f1808bcfc19e47a22c937b4c992a0bb3bb35",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 145
+          },
+          {
+            "url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "text": "Conseil municipal",
+            "requested_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "final_url": "https://crabtree.quebec/municipalite/conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 276742,
+            "sha256": "sha256:d90e92979680015425deaf4856b13cd5a293933d913ae95abd67c46da6f13b82",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 131
+          }
+        ],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "saint-leon-le-grand--maskinonge",
+        "name": "Saint-Léon-le-Grand",
+        "mrc": "Maskinongé",
+        "website": "https://www.st-leon.com",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.st-leon.com/",
+          "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/index.php",
+          "status": 200,
+          "error": null,
+          "bytes": 25922,
+          "sha256": "sha256:4ee70ba1fccce3079f0f9d697fe4502a0925516d2353e946c4732d7e5843bb02",
+          "body_kind": "html",
+          "anchor_count": 38,
+          "discovery_link_count": 4
+        },
+        "pages": [
+          {
+            "url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "text": "Calendrier des séances",
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "context_gate": false,
+            "plural_aware_gate": false,
+            "anchor_count": 0
+          },
+          {
+            "url": "https://municipalites-du-quebec.com/st-leon-le-grand/seances.php",
+            "text": "Vidéos des séances",
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/seances.php",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/seances.php",
+            "status": 200,
+            "error": null,
+            "bytes": 22468,
+            "sha256": "sha256:5599a8df401e06ac40df915ebf02f92e249e6eed6d8db8ddbba279a2406a3532",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 37
+          },
+          {
+            "url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "text": "Calendrier des séances",
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "context_gate": false,
+            "plural_aware_gate": false,
+            "anchor_count": 0
+          },
+          {
+            "url": "https://municipalites-du-quebec.com/st-leon-le-grand/f-ordres-du-jour.php",
+            "text": "Ordres du jour",
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/f-ordres-du-jour.php",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/f-ordres-du-jour.php",
+            "status": 200,
+            "error": null,
+            "bytes": 27038,
+            "sha256": "sha256:39d49bb49a17dd078f6f250109747ef13969bd5e288ae11e5bf07cf030165ae7",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 47
+          },
+          {
+            "url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "text": "Calendrier des séances",
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "context_gate": false,
+            "plural_aware_gate": false,
+            "anchor_count": 0
+          }
+        ],
+        "pdfs": [
+          {
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "pdf_magic": true,
+            "pdftotext_ok": true,
+            "text_chars": 2239,
+            "text_markers": [
+              "seance-conseil",
+              "conseil-municipal"
+            ],
+            "text_head": "Municipalité de SAINT-LÉON-LE-GRAND PROVINCE DE QUÉBEC MRC DE MASKINONGÉ Municipalité de Saint-Léon-le-Grand AVIS PUBLIC CALENDRIER DES SÉANCES ORDINAIRES DU CONSEIL MUNICIPAL DE SAINT-LÉON-LE-GRAND POUR L’ANNÉE 2026 AVIS PUBLIC est donné, conformément à l’article 148.0.1 du Code municipal, par la soussignée, Roxane St-Yves, directrice générale et greffière-trésorière de la municipalité de Saint-Léon-le-Grand, que lors de la séance ordinaire du 2 décembre 2025, le Conseil a adopté le calendrier des séances ordinaires du conseil municipal de Saint-Léon-le-Grand, pour l’année 2026. Mardi le 13 janvier 2026 Mardi le 10 février 2026 Mardi le 10 mars 2026 Mardi le 14 avril 2026 Mardi le 12 mai 2026 Mardi le 9 juin 2026 Mardi le 14 juillet 2026 Mardi le 11 août 2026 Mardi le 8 septembre 2026 Mardi le 13 octobre 2026 Mardi le 10 novembre 2026 Mardi le 1er décembre 2026 Chacune des séances ordinaires débutera à 19 heures; Donné à Saint-Léon-le-Grand ce 3 décembre 2025. ________________________",
+            "body_designates_pv": false,
+            "visual_preview_path": null,
+            "visual_review": null
+          },
+          {
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "pdf_magic": true,
+            "pdftotext_ok": true,
+            "text_chars": 2239,
+            "text_markers": [
+              "seance-conseil",
+              "conseil-municipal"
+            ],
+            "text_head": "Municipalité de SAINT-LÉON-LE-GRAND PROVINCE DE QUÉBEC MRC DE MASKINONGÉ Municipalité de Saint-Léon-le-Grand AVIS PUBLIC CALENDRIER DES SÉANCES ORDINAIRES DU CONSEIL MUNICIPAL DE SAINT-LÉON-LE-GRAND POUR L’ANNÉE 2026 AVIS PUBLIC est donné, conformément à l’article 148.0.1 du Code municipal, par la soussignée, Roxane St-Yves, directrice générale et greffière-trésorière de la municipalité de Saint-Léon-le-Grand, que lors de la séance ordinaire du 2 décembre 2025, le Conseil a adopté le calendrier des séances ordinaires du conseil municipal de Saint-Léon-le-Grand, pour l’année 2026. Mardi le 13 janvier 2026 Mardi le 10 février 2026 Mardi le 10 mars 2026 Mardi le 14 avril 2026 Mardi le 12 mai 2026 Mardi le 9 juin 2026 Mardi le 14 juillet 2026 Mardi le 11 août 2026 Mardi le 8 septembre 2026 Mardi le 13 octobre 2026 Mardi le 10 novembre 2026 Mardi le 1er décembre 2026 Chacune des séances ordinaires débutera à 19 heures; Donné à Saint-Léon-le-Grand ce 3 décembre 2025. ________________________",
+            "body_designates_pv": false,
+            "visual_preview_path": null,
+            "visual_review": null
+          },
+          {
+            "requested_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "final_url": "https://municipalites-du-quebec.com/st-leon-le-grand/img-cus/calendrier-conseil.pdf",
+            "status": 200,
+            "error": null,
+            "bytes": 347809,
+            "sha256": "sha256:a63177ae9b58095fcd61f904c49ce025ac2b7e3fa1377784859bee34aefc9296",
+            "body_kind": "pdf",
+            "pdf_magic": true,
+            "pdftotext_ok": true,
+            "text_chars": 2239,
+            "text_markers": [
+              "seance-conseil",
+              "conseil-municipal"
+            ],
+            "text_head": "Municipalité de SAINT-LÉON-LE-GRAND PROVINCE DE QUÉBEC MRC DE MASKINONGÉ Municipalité de Saint-Léon-le-Grand AVIS PUBLIC CALENDRIER DES SÉANCES ORDINAIRES DU CONSEIL MUNICIPAL DE SAINT-LÉON-LE-GRAND POUR L’ANNÉE 2026 AVIS PUBLIC est donné, conformément à l’article 148.0.1 du Code municipal, par la soussignée, Roxane St-Yves, directrice générale et greffière-trésorière de la municipalité de Saint-Léon-le-Grand, que lors de la séance ordinaire du 2 décembre 2025, le Conseil a adopté le calendrier des séances ordinaires du conseil municipal de Saint-Léon-le-Grand, pour l’année 2026. Mardi le 13 janvier 2026 Mardi le 10 février 2026 Mardi le 10 mars 2026 Mardi le 14 avril 2026 Mardi le 12 mai 2026 Mardi le 9 juin 2026 Mardi le 14 juillet 2026 Mardi le 11 août 2026 Mardi le 8 septembre 2026 Mardi le 13 octobre 2026 Mardi le 10 novembre 2026 Mardi le 1er décembre 2026 Chacune des séances ordinaires débutera à 19 heures; Donné à Saint-Léon-le-Grand ce 3 décembre 2025. ________________________",
+            "body_designates_pv": false,
+            "visual_preview_path": null,
+            "visual_review": null
+          }
+        ],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "malartic",
+        "name": "Malartic",
+        "mrc": "La Vallée-de-l'Or",
+        "website": "https://www.ville.malartic.qc.ca",
+        "site_status": "transport_error",
+        "homepage": {
+          "requested_url": "https://www.ville.malartic.qc.ca/",
+          "final_url": null,
+          "status": null,
+          "error": "TypeError: fetch failed",
+          "bytes": null,
+          "sha256": null,
+          "body_kind": "no_body",
+          "anchor_count": 0,
+          "discovery_link_count": 0
+        },
+        "pages": [],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "hampstead",
+        "name": "Hampstead",
+        "mrc": null,
+        "website": "https://www.hampstead.qc.ca",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.hampstead.qc.ca/",
+          "final_url": "https://www.hampstead.qc.ca/fr/",
+          "status": 200,
+          "error": null,
+          "bytes": 104843,
+          "sha256": "sha256:4abb95fa1c7a23e1723905b5b3c8d3db667a874dfa232423458a63251ac6fd3a",
+          "body_kind": "html",
+          "anchor_count": 101,
+          "discovery_link_count": 3
+        },
+        "pages": [
+          {
+            "url": "https://www.hampstead.qc.ca/fr/",
+            "text": "Prochaine séance du conseil",
+            "requested_url": "https://www.hampstead.qc.ca/fr/",
+            "final_url": "https://www.hampstead.qc.ca/fr/",
+            "status": 200,
+            "error": null,
+            "bytes": 104843,
+            "sha256": "sha256:4abb95fa1c7a23e1723905b5b3c8d3db667a874dfa232423458a63251ac6fd3a",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 101
+          },
+          {
+            "url": "https://www.hampstead.qc.ca/fr/",
+            "text": "Prochaine séance du conseil",
+            "requested_url": "https://www.hampstead.qc.ca/fr/",
+            "final_url": "https://www.hampstead.qc.ca/fr/",
+            "status": 200,
+            "error": null,
+            "bytes": 104843,
+            "sha256": "sha256:4abb95fa1c7a23e1723905b5b3c8d3db667a874dfa232423458a63251ac6fd3a",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 101
+          },
+          {
+            "url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "text": "Le conseil municipal",
+            "requested_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "final_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 142593,
+            "sha256": "sha256:201feb20581661792d715c2f0f170685b7ba3d02491005720537c54fb366112e",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 95
+          },
+          {
+            "url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "text": "Le conseil municipal",
+            "requested_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "final_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/le-conseil-municipal/",
+            "status": 200,
+            "error": null,
+            "bytes": 142593,
+            "sha256": "sha256:201feb20581661792d715c2f0f170685b7ba3d02491005720537c54fb366112e",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 95
+          },
+          {
+            "url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "text": "Séances et ordres du jour",
+            "requested_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "final_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "status": 200,
+            "error": null,
+            "bytes": 121315,
+            "sha256": "sha256:b99c61b721fb090d56f688128400c25bf56694f797ad15a32c7b6e46fe45dd26",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 96
+          },
+          {
+            "url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "text": "Séances et ordres du jour",
+            "requested_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "final_url": "https://www.hampstead.qc.ca/fr/ville/vie-democratique/seances-et-ordres-du-jour/",
+            "status": 200,
+            "error": null,
+            "bytes": 121315,
+            "sha256": "sha256:b99c61b721fb090d56f688128400c25bf56694f797ad15a32c7b6e46fe45dd26",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 96
+          }
+        ],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "notre-dame-de-la-salette",
+        "name": "Notre-Dame-de-la-Salette",
+        "mrc": "Papineau",
+        "website": "https://www.muni-ndsalette.qc.ca",
+        "site_status": "transport_error",
+        "homepage": {
+          "requested_url": "https://www.muni-ndsalette.qc.ca/",
+          "final_url": null,
+          "status": null,
+          "error": "TypeError: fetch failed",
+          "bytes": null,
+          "sha256": null,
+          "body_kind": "no_body",
+          "anchor_count": 0,
+          "discovery_link_count": 0
+        },
+        "pages": [],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "piopolis",
+        "name": "Piopolis",
+        "mrc": "Le Granit",
+        "website": "https://www.piopolis.quebec",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.piopolis.quebec/",
+          "final_url": "https://www.piopolis.quebec/",
+          "status": 200,
+          "error": null,
+          "bytes": 69766,
+          "sha256": "sha256:fa2a5a242faab48a643c317e5ab2c4527072672240b0b39599f5311b5abc4b9e",
+          "body_kind": "html",
+          "anchor_count": 90,
+          "discovery_link_count": 3
+        },
+        "pages": [
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "text": "Calendrier des séances",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "status": 200,
+            "error": null,
+            "bytes": 47000,
+            "sha256": "sha256:393d3e3125c107f36e199d141a3b4cf0c97f3c34bb477c9e0129c98e9d82d7b1",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 83
+          },
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "text": "Calendrier des séances",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "status": 200,
+            "error": null,
+            "bytes": 47000,
+            "sha256": "sha256:56de9976b71575d2813eab4c3ef5489aca46ed17bfe42c20bb2b2615d9ac2aeb",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 83
+          },
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/membres-du-conseil/",
+            "text": "Membres du conseil",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/membres-du-conseil/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/membres-du-conseil/",
+            "status": 200,
+            "error": null,
+            "bytes": 61822,
+            "sha256": "sha256:e0952bbc24329c4297a5276d88aa94a90bf333ed6f90a73ad16b3c34ba39cb56",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 83
+          },
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "text": "Calendrier des séances",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "status": 200,
+            "error": null,
+            "bytes": 47000,
+            "sha256": "sha256:c0adfb0353b223b8b6a885df23ae365188f5d30f056c2df37f20a00e04b3da72",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 83
+          },
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/proces-verbaux-et-ordres-du-jour/",
+            "text": "Procès-verbaux et ordres du jour",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/proces-verbaux-et-ordres-du-jour/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/proces-verbaux-et-ordres-du-jour/",
+            "status": 200,
+            "error": null,
+            "bytes": 73213,
+            "sha256": "sha256:77080cc2b7c17d657fcc130e849bcae45b0a7f4499bccf644d9d7acda8817753",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 172
+          },
+          {
+            "url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "text": "Calendrier des séances",
+            "requested_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "final_url": "https://www.piopolis.quebec/fr/vie-municipale/conseil-municipal/calendrier-des-seances/",
+            "status": 200,
+            "error": null,
+            "bytes": 47000,
+            "sha256": "sha256:9bce3da403bdaea608cb56ac734a429f6bbba57d98977b537a993ffae2fd3fc8",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 83
+          }
+        ],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "portage-du-fort",
+        "name": "Portage-du-Fort",
+        "mrc": "Pontiac",
+        "website": "https://www.portage-du-fort.com",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.portage-du-fort.com/",
+          "final_url": "https://portage-du-fort.com/",
+          "status": 200,
+          "error": null,
+          "bytes": 214915,
+          "sha256": "sha256:88bb17dfcd20c5f036229589d116777f9facb4e3c1e6a8675726ad0da84e35b8",
+          "body_kind": "html",
+          "anchor_count": 40,
+          "discovery_link_count": 0
+        },
+        "pages": [],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "lile-cadieux",
+        "name": "L'Île-Cadieux",
+        "mrc": "Vaudreuil-Soulanges",
+        "website": "https://www.ilecadieux.ca",
+        "site_status": "transport_error",
+        "homepage": {
+          "requested_url": "https://www.ilecadieux.ca/",
+          "final_url": null,
+          "status": null,
+          "error": "TypeError: fetch failed",
+          "bytes": null,
+          "sha256": null,
+          "body_kind": "no_body",
+          "anchor_count": 0,
+          "discovery_link_count": 0
+        },
+        "pages": [],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      },
+      {
+        "slug": "sainte-beatrix",
+        "name": "Sainte-Béatrix",
+        "mrc": "Matawinie",
+        "website": "https://www.sainte-beatrix.com",
+        "site_status": "reachable",
+        "homepage": {
+          "requested_url": "https://www.sainte-beatrix.com/",
+          "final_url": "https://www.sainte-beatrix.com/",
+          "status": 200,
+          "error": null,
+          "bytes": 62900,
+          "sha256": "sha256:0555e422d6ec05312b7b8d7ea7a14c7c0d8711311d82d141b0e3873661f08264",
+          "body_kind": "html",
+          "anchor_count": 75,
+          "discovery_link_count": 2
+        },
+        "pages": [
+          {
+            "url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "text": "Conseil municipal",
+            "requested_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "final_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "status": 200,
+            "error": null,
+            "bytes": 81168,
+            "sha256": "sha256:d92855cc33d105d8739b177a05949c9217d5f77420e0a0e9ed900a12cf085cac",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 73
+          },
+          {
+            "url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "text": "Conseil municipal",
+            "requested_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "final_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "status": 200,
+            "error": null,
+            "bytes": 81168,
+            "sha256": "sha256:d92855cc33d105d8739b177a05949c9217d5f77420e0a0e9ed900a12cf085cac",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 73
+          },
+          {
+            "url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/seances-du-conseil",
+            "text": "Séances du conseil",
+            "requested_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/seances-du-conseil",
+            "final_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/seances-du-conseil",
+            "status": 200,
+            "error": null,
+            "bytes": 170307,
+            "sha256": "sha256:09f8d9ef40a73b47ce91bf216dafd41c410bc5421e3a493997d9a0f5ed0e020f",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 262
+          },
+          {
+            "url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "text": "Conseil municipal",
+            "requested_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "final_url": "https://www.sainte-beatrix.com/municipalite/vie-municipale/conseil-municipal",
+            "status": 200,
+            "error": null,
+            "bytes": 81168,
+            "sha256": "sha256:d92855cc33d105d8739b177a05949c9217d5f77420e0a0e9ed900a12cf085cac",
+            "body_kind": "html",
+            "context_gate": true,
+            "plural_aware_gate": true,
+            "anchor_count": 73
+          }
+        ],
+        "pdfs": [],
+        "actual_pv_proven_by_opened_pdf": false
+      }
+    ],
+    "actual_pv_proven_by_opened_pdf": 0
+  },
+  "conclusion_inputs": {
+    "target_category_a_pdf_text_rate": "1/5",
+    "controls_pv_rate_when_found_in_bounded_follow_up": "0/10",
+    "common_mechanism_observed_in_actual_target_pvs": [
+      "PV_reel_actuellement_accessible_sur_chemin_canonique_mais_commune_marquee_done_et_exclue_de_pv_discover_unlisted; changement_historique_non_prouvable"
+    ]
+  },
+  "conclusion": {
+    "reported_category_a": 5,
+    "false_positive_reported_pdf_count": 4,
+    "actual_pv_count_in_category_a": 1,
+    "supplemental_controls_actual_pv_count": 0,
+    "common_cause": "la sonde d'enquete classait un PDF par le libelle/contexte du lien sans ouvrir son contenu; le goulot de decouverte n'est pas demontre sur 5 cas",
+    "systematic_selection_signal": "les 5 communes portent pv.status=done dans coverage-matrix.json et ne sont donc pas selectionnees par pv-discover-unlisted.ts, qui ne prend que status=to-research; Saint-Émile est toutefois actuellement atteignable par le chemin canonique /proces-verbaux",
+    "gisement_extrapolation": {
+      "denominator": 222,
+      "sample": "30 communes vierges de l'enquete initiale",
+      "measured_actual_pv": "1/30",
+      "original_report_point": "5/30 * 222 = 37.0 communes, invalide apres ouverture des octets",
+      "corrected_point": "1/30 * 222 = 7.4 communes, extrapolation descriptive seulement",
+      "supplemental_test": "0/10 PV reel dans l'echantillon aleatoire supplementaire; le motif ne s'etend pas sur ce test"
+    }
+  }
+}
