@@ -38,6 +38,14 @@ const TERRITORIAL_V1_CLASSIFICATION_REPORTS = [
   "pv-capture-octets-classification-20260729t222149z-lot-0005.json",
   "pv-capture-octets-classification-20260729t222149z-lot-0006.json",
 ] as const;
+const TERRITORIAL_V2_CLASSIFICATION_REPORTS = [
+  "pv-capture-octets-classification-20260729t231834z-lot-0001.json",
+  "pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+  "pv-capture-octets-classification-20260729t231834z-lot-0003.json",
+  "pv-capture-octets-classification-20260729t231834z-lot-0004.json",
+  "pv-capture-octets-classification-20260729t231834z-lot-0005.json",
+  "pv-capture-octets-classification-20260729t231834z-lot-0006.json",
+] as const;
 const TERRITORIAL_V1_TARGETS = [
   ["020e9d0e", "4173"], ["07a2c09c", "c191"], ["1bb6c50a", "39e1"], ["1c7b0b22", "a388"],
   ["2168ba03", "9df8"], ["29d2ee15", "fb30"], ["2b3510fd", "0c9a"], ["2d29f473", "8e10"],
@@ -49,6 +57,37 @@ const TERRITORIAL_V1_TARGETS = [
   ["ec9ef5ee", "34a1"], ["ed2a4de8", "0151"], ["f15b3a46", "5fb9"], ["f5199086", "6ca8"],
   ["f8591bac", "0a53"], ["ff49faec", "9acc"],
 ] as const;
+const TERRITORIAL_V2_EXACT_TARGETS = [
+  "0a69d072b10d3faa88b96bde76b81159a03c68da26897b6e4ee12ab373ca06a1",
+  "1b2be48854757cd5ee7d1361afc8c2b1305378b7629ed75d39338ba411d02f5c",
+  "21a7e2cb1b98e0697d548db9749cd8b31bb2dfedc7357b72057d3a3bb9fbe2b7",
+  "25a5a87891dbf5d02fc7cb4629cef0f73227f88e93bad00ff79f95586d319d82",
+  "263d84f38fb86bd4a70334a36a4699799ac7e66f82dce42945a7648609123061",
+  "349837e9ddaaaa104f1b6835323c78ea3c02b01e1572754d6d61419ee63042b7",
+  "37609e7b07c9daf499ff2fa72c977cb236f485746dbe99dd2083d77a77f2f251",
+  "3d59cade47ff6b300bab4b955344c9d1648391dc6c6b1f7e5f8dcc4d539c70ac",
+  "3fd4d4b8e39c93daab0a499834e1a10fa8331627786504f0f1de92d41ac4a15a",
+  "4c2450729eb6354713d53ea275893efa7ceb9efef2bafee03f3cf8847102fcc6",
+  "618a31b83f3b8d8b7f2d270f2c86b068a88caa9f01346c2b0394166e1421a8d2",
+  "6e02331ed6e36e60732781225f4da5fbc9fa74b0e98d4df7cab989dea6dc8ac1",
+  "719bab8ad24c908ba5773a35b5d24c0823524a939f66c4fc7c9548f3ef46aecb",
+  "71bdca47d14aa4345a67d4206113214f1f8f9c87502557d65fdd0161c0e5276d",
+  "8c924cccf3d5fb2a865fe122b661e84692924da22ff65b4ee53b9ae01ec47207",
+  "9472469330f1f4403f1fe891ef7caaf8e03bc070497b4dafef5dddf75c6d9616",
+  "a451790d34daf1470e50b67011ad17bf455b2be6ba8e08eab93b81376d82beed",
+  "a9c097b291b98863abc13fe9f55223b11c468ccc6b9e6df53ce2df297ae30599",
+  "af33883c1c4c97ed11dea2cba333dc8c0a8156aa895220e789f78ae870419fce",
+  "b2f1e4329332e7c33fb0d2b39cc304a48a4728350c1ee51a66b7b5cd10f50301",
+  "c0709b3987bdb03eac705437414f38188ddf769cfeab9ffd6143c3c31ea0967b",
+  "cc47fbd82813f9c9ec22fda9e8756608312bb144a35675ea906460d4dd734f4f",
+  "cd00d92acbff6b82b836834d2d924724b04ae43c8a90b6b11bb29c0541cd5f99",
+  "e43ac047ac0190b5ef2b3bbeebc2fc3155c3165d4948c5874f1147a69c7b70b7",
+  "e6904d6df88cbe9a5356c033e96933474fc60c12f98ddeaf36ed76e50952c129",
+  "f1b831a4192675639c880901ec5d3efb30ad4da3befca187905a145480fa9615",
+  "f1fb57063d56b7ea2875139f50a0259563dbe06533b09eb8d29091a540d45ff3",
+  "f73e5e816c80eda60ba1f0f99c25505d03854c36ffd81ba50c24a890cf46ee23",
+] as const;
+const TERRITORIAL_V2_TRUNCATED_TARGET = "5c42ed1778c7260f75267c6b0786a6bdd612e5a60cc5b99efbf62fa29ecab1";
 
 type JsonRecord = Record<string, unknown>;
 type IntegrityOutcome = "SHA_PASSED" | "CAS_SHA_MISMATCH" | "GET_FAILED";
@@ -299,11 +338,74 @@ function territorialV1Selection(): DocumentSelection {
   };
 }
 
-function selectedDocuments(priorReports: readonly string[], limit: number, territorialV1: boolean): DocumentSelection {
+function territorialV2Selection(): DocumentSelection {
+  const candidates: SelectedDocument[] = [];
+  for (const name of TERRITORIAL_V2_CLASSIFICATION_REPORTS) {
+    const path = resolve(COVERAGE, name);
+    const report = readSmallJson(path);
+    if (report.contract !== "pv-capture-octets-classification/v1" || !Array.isArray(report.lines)) {
+      throw new Error(`${path}: inventaire territorial v2 de classification invalide`);
+    }
+    for (const [index, value] of report.lines.entries()) {
+      const line = record(value, `${path}.lines[${index}]`);
+      if (line.storage_key === null || line.storage_key === undefined) continue;
+      const key = string(line.storage_key, `${path}.lines[${index}].storage_key`);
+      try {
+        expectedSha256(key);
+      } catch {
+        continue;
+      }
+      candidates.push({
+        storage_key: key,
+        slug: string(line.slug, `${path}.lines[${index}].slug`),
+        municipality_name: nullableString(line.municipality_name, `${path}.lines[${index}].municipality_name`),
+      });
+    }
+  }
+  if (new Set(candidates.map((candidate) => candidate.storage_key)).size !== candidates.length) {
+    throw new Error("inventaire territorial v2: clé CAS dupliquée entre classifications");
+  }
+  const documents: SelectedDocument[] = [];
+  const unresolved: { prefix: string; suffix: string; status: "MISSING" | "AMBIGUOUS" | "MISMATCH"; matching_keys: string[] }[] = [];
+  for (const sha256 of TERRITORIAL_V2_EXACT_TARGETS) {
+    const key = `${CAS_PREFIX}${sha256}.pdf`;
+    const matches = candidates.filter((candidate) => candidate.storage_key === key);
+    if (matches.length !== 1) {
+      unresolved.push({ prefix: sha256, suffix: "", status: matches.length === 0 ? "MISSING" : "AMBIGUOUS", matching_keys: matches.map((match) => match.storage_key).sort((left, right) => left.localeCompare(right)) });
+      continue;
+    }
+    documents.push(matches[0]!);
+  }
+  const truncatedMatches = candidates.filter((candidate) => candidate.storage_key.startsWith(`${CAS_PREFIX}${TERRITORIAL_V2_TRUNCATED_TARGET}`));
+  unresolved.push({
+    prefix: TERRITORIAL_V2_TRUNCATED_TARGET,
+    suffix: "",
+    status: truncatedMatches.length === 0 ? "MISSING" : truncatedMatches.length === 1 ? "MISMATCH" : "AMBIGUOUS",
+    matching_keys: truncatedMatches.map((match) => match.storage_key).sort((left, right) => left.localeCompare(right)),
+  });
+  return {
+    description: "les 28 clés CAS complètes du reliquat territorial v2, résolues exactement depuis les six classifications de la vague 20260729t231834z; la 29e clé tronquée est exclue sans complétion devinée",
+    prior_lot_reports: [],
+    source_inventory: TERRITORIAL_V2_CLASSIFICATION_REPORTS.map((name) => `work/coverage/${name}`).join(", "),
+    candidate_cas_keys: candidates.length,
+    prior_lot_collisions_avoided: 0,
+    remaining_after_dedupe: documents.length,
+    unresolved_targets: unresolved,
+    documents,
+  };
+}
+
+function selectedDocuments(priorReports: readonly string[], limit: number, territorialV1: boolean, territorialV2: boolean): DocumentSelection {
+  if (territorialV1 && territorialV2) throw new Error("--territorial-v1 et --territorial-v2 ne peuvent pas être combinés");
   if (territorialV1) {
     if (priorReports.length > 0) throw new Error("--territorial-v1 ne peut pas être combiné avec --prior-report");
     if (limit !== DEFAULT_LOT_SIZE) throw new Error("--territorial-v1 ne peut pas être combiné avec --limit");
     return territorialV1Selection();
+  }
+  if (territorialV2) {
+    if (priorReports.length > 0) throw new Error("--territorial-v2 ne peut pas être combiné avec --prior-report");
+    if (limit !== DEFAULT_LOT_SIZE) throw new Error("--territorial-v2 ne peut pas être combiné avec --limit");
+    return territorialV2Selection();
   }
   return priorReports.length === 0 ? initialSampleSelection(limit) : dedupedInventorySelection(priorReports, limit);
 }
@@ -360,6 +462,7 @@ async function main(): Promise<void> {
   const priorReportArgs = repeatedArg("prior-report");
   const requested = optionalPositiveIntegerArg("limit", DEFAULT_LOT_SIZE, MAX_LOT_SIZE);
   const territorialV1 = hasFlag("territorial-v1");
+  const territorialV2 = hasFlag("territorial-v2");
   if (!output.startsWith(`${COVERAGE}/`)) throw new Error("--out doit rester sous work/coverage");
   if (existsSync(output)) throw new Error(`artefact déjà présent: ${output}`);
   const priorReports = priorReportArgs.map((report) => resolve(ROOT, report));
@@ -368,7 +471,7 @@ async function main(): Promise<void> {
   const workspace = resolve(ROOT, "work", "graphify", basename(output, ".json"));
   mkdirSync(workspace, { recursive: true });
   const results: GuardResult[] = [];
-  const selection = selectedDocuments(priorReports, requested, territorialV1);
+  const selection = selectedDocuments(priorReports, requested, territorialV1, territorialV2);
   for (const document of selection.documents) {
     const result = await downloadAndHash(document, workspace);
     results.push(result);
@@ -400,7 +503,7 @@ async function main(): Promise<void> {
       mismatch_stop_threshold: MISMATCH_STOP,
       stopped_for_integrity_incident: stopped,
     },
-    summary: { requested: territorialV1 ? TERRITORIAL_V1_TARGETS.length : requested, attempted: results.length, sha_passed: passed, cas_sha_mismatch: mismatches, get_failed: getFailed },
+    summary: { requested: territorialV1 ? TERRITORIAL_V1_TARGETS.length : territorialV2 ? TERRITORIAL_V2_EXACT_TARGETS.length + 1 : requested, attempted: results.length, sha_passed: passed, cas_sha_mismatch: mismatches, get_failed: getFailed },
     local_visual_workspace: workspace,
     documents: results,
   };
