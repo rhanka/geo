@@ -1435,6 +1435,10 @@ async function main(): Promise<void> {
       missing: lotGazetteer.missing,
     },
   };
+  // An external campaign supplies its own frozen historical de-duplication
+  // source.  It needs the per-document audit, not a second multi-megabyte
+  // dump of every municipal lot gazetteer for each 20-document checkpoint.
+  const includeFullGazetteerSidecars = args.universe === null && args.unverdictList === null && args.dedupeSnapshot === null;
   const report = {
     contract: "pv-graphify-semantic-control/v1",
     generated_at: new Date().toISOString(),
@@ -1504,14 +1508,14 @@ async function main(): Promise<void> {
     },
     match_details: matchDetails,
     gazetteers: {
-      ...(args.universe === null && args.unverdictList === null ? { zones: zoneGazetteer, lots: lotGazetteer } : compactGazetteers),
+      ...(includeFullGazetteerSidecars ? { zones: zoneGazetteer, lots: lotGazetteer } : compactGazetteers),
     },
     manual_verification: "UNVERIFIED",
     workspace,
     documents,
   };
   writeAtomic(args.output, report);
-  if (args.universe === null && args.unverdictList === null) {
+  if (includeFullGazetteerSidecars) {
     writeAtomic(args.output.replace(/\.json$/u, "-gazetteer-zones.json"), {
       generated_at: report.generated_at,
       municipalities: zoneGazetteer,
