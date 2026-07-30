@@ -25,6 +25,8 @@ export interface PvTerritorialCaptureSelection {
   readonly municipalitySlugs: ReadonlySet<string>;
   /** Municipalités qui ont déjà au moins un PV indexé dans la partition fermée. */
   readonly coveredMunicipalitySlugs: ReadonlySet<string>;
+  /** Une campagne territoriale stricte ne peut ni reprendre une ville couverte, ni prendre une seconde URL. */
+  readonly strictlyUncovered?: boolean;
   readonly count: number;
 }
 
@@ -187,6 +189,7 @@ export function selectPvProbableTargetsForUncoveredMunicipalities(
     const first = bySlug.get(slug)?.[0];
     if (first !== undefined && !append(first)) return result;
   }
+  if (selection.strictlyUncovered) return result;
   // Preserve the same priority when the requested campaign is larger than the
   // number of available municipalities: exhaust additional candidates from
   // uncovered municipalities before returning to already covered territory.
