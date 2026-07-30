@@ -12,6 +12,7 @@
  *     [--prior-report=work/coverage/pv-lecture-visuelle-lot-01-YYYYMMDDTHHMMSSZ.json ...]
  */
 import { createHash } from "node:crypto";
+import { spawn } from "node:child_process";
 import { createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { finished } from "node:stream/promises";
 import { once } from "node:events";
@@ -457,7 +458,54 @@ function writeAtomic(path: string, value: unknown): void {
   renameSync(temporary, path);
 }
 
+async function renderFirstPage(pdf: string, outputPrefix: string): Promise<void> {
+  const result = await new Promise<{ code: number | null; error?: Error; stderr: string }>((complete) => {
+    const child = spawn("pdftoppm", ["-f", "1", "-l", "1", "-r", "200", "-jpeg", "-jpegopt", "quality=90", "-singlefile", pdf, outputPrefix], { stdio: ["ignore", "ignore", "pipe"] });
+    let stderr = "";
+    child.stderr.setEncoding("utf8");
+    child.stderr.on("data", (chunk: string) => { stderr = `${stderr}${chunk}`.slice(-4_000); });
+    child.once("error", (error) => complete({ code: null, error, stderr }));
+    child.once("close", (code) => complete({ code, stderr }));
+  });
+  if (result.code !== 0 || result.error || !existsSync(`${outputPrefix}.jpg`)) {
+    throw new Error(`${pdf}: rendu de la page 1 échoué: ${compactError(result.error ?? result.stderr ?? `code ${result.code}`)}`);
+  }
+}
+
+async function renderFirstPages(preflightPath: string): Promise<void> {
+  const preflight = readSmallJson(preflightPath);
+  if (preflight.contract !== "pv-lecture-visuelle-preflight/v1" || !Array.isArray(preflight.documents)) {
+    throw new Error(`${preflightPath}: préflight de lecture visuelle invalide`);
+  }
+  const workspace = string(preflight.local_visual_workspace, `${preflightPath}.local_visual_workspace`);
+  const expectedWorkspace = resolve(ROOT, "work", "graphify");
+  if (!workspace.startsWith(`${expectedWorkspace}/`)) throw new Error(`${preflightPath}: workspace de rendu hors work/graphify`);
+  let rendered = 0;
+  for (const [index, value] of preflight.documents.entries()) {
+    const document = record(value, `${preflightPath}.documents[${index}]`);
+    if (document.outcome !== "SHA_PASSED" || document.local_pdf_available !== true) {
+      throw new Error(`${preflightPath}.documents[${index}]: seul un PDF gardé SHA_PASSED peut être rendu`);
+    }
+    const expected = string(document.expected_sha256, `${preflightPath}.documents[${index}].expected_sha256`);
+    if (!/^[a-f0-9]{64}$/u.test(expected)) throw new Error(`${preflightPath}.documents[${index}]: sha256 invalide`);
+    const pdf = resolve(workspace, `${expected}.pdf`);
+    if (!pdf.startsWith(`${workspace}/`) || !existsSync(pdf)) throw new Error(`${pdf}: PDF préfléché introuvable`);
+    const outputPrefix = resolve(workspace, `${expected}-p1`);
+    await renderFirstPage(pdf, outputPrefix);
+    rendered += 1;
+  }
+  process.stdout.write(`${JSON.stringify({ preflight: preflightPath.slice(ROOT.length + 1), first_pages_rendered: rendered, renderer: "pdftoppm page 1, JPEG 200 dpi; un PDF à la fois" }, null, 2)}\n`);
+}
+
 async function main(): Promise<void> {
+  const renderFirstPagesFlag = hasFlag("render-first-pages");
+  if (renderFirstPagesFlag) {
+    if (process.argv.slice(2).some((value) => value.startsWith("--out=") || value.startsWith("--prior-report=") || value.startsWith("--limit=") || value === "--territorial-v1" || value === "--territorial-v2")) {
+      throw new Error("--render-first-pages ne peut être combiné qu'avec --preflight=...");
+    }
+    await renderFirstPages(resolve(ROOT, requiredArg("preflight")));
+    return;
+  }
   const output = resolve(ROOT, requiredArg("out"));
   const priorReportArgs = repeatedArg("prior-report");
   const requested = optionalPositiveIntegerArg("limit", DEFAULT_LOT_SIZE, MAX_LOT_SIZE);
