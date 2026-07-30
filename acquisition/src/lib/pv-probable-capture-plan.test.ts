@@ -73,6 +73,22 @@ describe("PV probable capture plan", () => {
     ]);
   });
 
+  it("returns only one candidate per uncovered municipality for a strict territorial campaign", () => {
+    const targets = [
+      { slug: "alpha", source: "pv-index" as const, urls: ["https://alpha.example/one.pdf"] as const },
+      { slug: "alpha", source: "pv-index" as const, urls: ["https://alpha.example/two.pdf"] as const },
+      { slug: "covered", source: "pv-index" as const, urls: ["https://covered.example/one.pdf"] as const },
+    ];
+
+    expect(selectPvProbableTargetsForUncoveredMunicipalities({
+      targets,
+      municipalitySlugs: new Set(["alpha", "covered"]),
+      coveredMunicipalitySlugs: new Set(["covered"]),
+      strictlyUncovered: true,
+      count: 300,
+    }).map((target) => target.urls[0])).toEqual(["https://alpha.example/one.pdf"]);
+  });
+
   it("does not guess a reference municipality for an operational index slug", () => {
     const targets = [
       { slug: "canonical", source: "pv-index" as const, urls: ["https://canonical.example/pv.pdf"] as const },
