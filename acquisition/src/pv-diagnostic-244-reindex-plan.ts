@@ -11,6 +11,7 @@
  *   npx tsx acquisition/src/pv-diagnostic-244-reindex-plan.ts \
  *     --out=work/coverage/pv-diagnostic-244-echecs-<stamp>-unverdict-list.json
  */
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -158,7 +159,7 @@ function addSnapshot(treated: Map<string, TreatedSource[]>): void {
   }
 }
 
-function addBatchReports(treated: Map<string, TreatedSource[]>): string[] {
+function addBatchReports(treated: Map<string, TreatedSource[]>): { readonly count: number; readonly inventory_sha256: string } {
   const reports: string[] = [];
   for (const path of allCoverageFiles().filter((path) => REAL_BATCH_REPORT.test(path.split("/").at(-1) ?? ""))) {
     const report = record(readSmallJson(path), relativePath(path));
@@ -174,7 +175,10 @@ function addBatchReports(treated: Map<string, TreatedSource[]>): string[] {
       );
     }
   }
-  return reports;
+  return {
+    count: reports.length,
+    inventory_sha256: createHash("sha256").update(JSON.stringify(reports)).digest("hex"),
+  };
 }
 
 function addTerritorialRows(treated: Map<string, TreatedSource[]>, path: string, field: "verdicts" | "document_verdicts"): void {
