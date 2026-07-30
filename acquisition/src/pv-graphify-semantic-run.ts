@@ -136,6 +136,14 @@ type DocumentOutcome =
   | "UNKNOWN_NO_TERMINAL_PV_MANIFEST"
   | "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE";
 
+/** A denied source-object read is an operational blocker, never a document verdict. */
+class S3CasReadForbiddenError extends Error {
+  constructor(storageKey: string, cause: unknown) {
+    super(`${storageKey}: lecture S3 refusée (HTTP 403); aucun verdict documentaire n'a été produit: ${cause instanceof Error ? cause.message : String(cause)}`);
+    this.name = "S3CasReadForbiddenError";
+  }
+}
+
 interface OwnerScopeReport {
   readonly status: "CONFIRMED" | "NOT_CONFIRMED" | "CONTAMINATION_OWNER_MISMATCH" | "UNAVAILABLE_NO_MUNICIPAL_SCOPE";
   readonly printed_owner_slugs: readonly string[];
@@ -673,6 +681,15 @@ function assertS3RunEnvironment(): void {
   }
 }
 
+function isS3Forbidden(error: unknown): boolean {
+  if (!isRecord(error)) return false;
+  const metadata = error.$metadata;
+  if (isRecord(metadata) && metadata.httpStatusCode === 403) return true;
+  return error.$response !== undefined
+    && isRecord(error.$response)
+    && error.$response.statusCode === 403;
+}
+
 function writeAtomic(path: string, value: unknown): void {
   mkdirSync(dirname(path), { recursive: true });
   const temporary = `${path}.${process.pid}.tmp`;
@@ -1201,6 +1218,7 @@ async function processDocument(
       manual_verification: "UNVERIFIED",
     };
   } catch (error: unknown) {
+    if (isS3Forbidden(error)) throw new S3CasReadForbiddenError(document.storage_key, error);
     const message = error instanceof Error ? error.message : String(error);
     return {
       slug: document.slug,
@@ -1335,6 +1353,7 @@ async function main(): Promise<void> {
       const gazetteer = await materializeForSlug(document.slug);
       return processDocument(document, municipalities, gazetteer, workspace);
     } catch (error: unknown) {
+      if (error instanceof S3CasReadForbiddenError) throw error;
       const message = error instanceof Error ? error.message : String(error);
       return {
         slug: document.slug,
