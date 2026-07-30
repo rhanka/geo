@@ -35,9 +35,9 @@ import {
 import { selectBalancedPvControl, selectPvControlBatch } from "./lib/pv-graphify-control.js";
 import { readReadyPvRealUniverse } from "./lib/pv-graphify-real-universe.js";
 import { parsePvOcrTextArtifact } from "./lib/pv-ocr-artifact.js";
+import { extractNativeDocumentText } from "./lib/density-document-review.js";
 import { BUCKET, exists, getBytes, objectHead, s3Client } from "./lib/s3.js";
 
-const execFileAsync = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
@@ -857,13 +857,15 @@ async function collectFeatureProperties(
   }
 }
 
-async function textFromCapturedPdf(path: string): Promise<string> {
-  const { stdout } = await execFileAsync("pdftotext", ["-q", "-layout", "-enc", "UTF-8", path, "-"], {
-    encoding: "utf8",
-    maxBuffer: 64 * 1024 * 1024,
-  });
-  if (!stdout.trim()) throw new Error(`pas de couche texte: ${path}`);
-  return stdout;
+async function textFromCapturedDocument(document: ClassificationLine): Promise<string> {
+  const s3 = s3Client();
+  const head = await objectHead(s3, document.storage_key);
+  if (!head.exists || head.contentLength === undefined || head.contentLength > MAX_REPORT_BYTES) {
+    throw new Error(`${document.storage_key}: octets source absents, taille inconnue ou > 5 MiB`);
+  }
+  const native = extractNativeDocumentText(await getBytes(s3, document.storage_key), { sourceName: document.url });
+  if (native.text === null) throw new Error(native.blocker ?? `${document.storage_key}: texte natif absent`);
+  return native.text;
 }
 
 function servedZoneKeys(slug: string): string[] {
@@ -1115,12 +1117,10 @@ async function processDocument(
     const documentDirectory = resolve(workspace, document.slug, document.storage_key.slice(-16));
     const inputDirectory = resolve(documentDirectory, "input");
     mkdirSync(inputDirectory, { recursive: true });
-    const pdfPath = resolve(inputDirectory, "captured.pdf");
     const materialized: MaterializedText = document.ocr_artifact_key === undefined
       ? await (async (): Promise<MaterializedText> => {
-      writeFileSync(pdfPath, await getBytes(s3Client(), document.storage_key));
         return {
-          text: await textFromCapturedPdf(pdfPath),
+          text: await textFromCapturedDocument(document),
           source_file: "document.txt",
           text_provenance: "NATIVE",
         };
@@ -1543,3 +1543,4 @@ main().catch((error: unknown) => {
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);
 });
+const execFileAsync = promisify(execFile);
