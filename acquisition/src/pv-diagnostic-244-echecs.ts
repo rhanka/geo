@@ -78,7 +78,7 @@ function nullableString(value: unknown, where: string): string | null {
 
 function requiredInteger(value: unknown, where: string): number {
   if (!Number.isInteger(value)) throw new Error(`${where}: entier requis`);
-  return value;
+  return value as number;
 }
 
 function nullableStatus(value: unknown, where: string): number | null {
