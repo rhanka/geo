@@ -391,6 +391,7 @@ async function main(): Promise<void> {
       candidate_cas_keys: selection.candidate_cas_keys,
       prior_lot_collisions_avoided: selection.prior_lot_collisions_avoided,
       remaining_after_dedupe: selection.remaining_after_dedupe,
+      ...(selection.unresolved_targets ? { unresolved_targets: selection.unresolved_targets } : {}),
     },
     guard: {
       before_visual_reading: true,
