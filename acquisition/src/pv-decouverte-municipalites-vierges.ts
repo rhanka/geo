@@ -101,7 +101,7 @@ async function readIndexSnapshots(): Promise<{
       } as const;
     }));
     for (const item of read) {
-      if ("oversized" in item) oversized.push(item.oversized);
+      if ("oversized" in item && typeof item.oversized === "string") oversized.push(item.oversized);
       else scans.push(item.scan);
     }
   }
