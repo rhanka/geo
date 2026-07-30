@@ -1355,6 +1355,7 @@ async function main(): Promise<void> {
       return processDocument(document, municipalities, gazetteer, workspace);
     } catch (error: unknown) {
       if (error instanceof S3CasReadUnavailableError) throw error;
+      if (isS3ReadUnavailable(error)) throw new S3CasReadUnavailableError(document.storage_key, error);
       const message = error instanceof Error ? error.message : String(error);
       return {
         slug: document.slug,
