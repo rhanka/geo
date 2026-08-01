@@ -39,8 +39,8 @@ Trois obligations, par construction, dans chaque WP de donnée :
 | **wp3** | reglements | `reglement` | ce que le règlement dit de la zone : normes/grilles, n° + millésime, usage dominant, **effet densifiant 4a** | pas la géométrie (→ wp2) ; pas la détection d'événement (→ wp4) | partiel |
 | **wp4** | pv | `pv` | délibérations + avis + **YouTube (transcription)** captés, indexés, propriétaire confirmé → événements de zonage | pas la qualification de l'effet (→ wp3) ; le graphe immo reste écrit par immo | **existe** (modèle) |
 | **wp5** | jointures | `jointures` | lot↔zone, normes repliées sur le lot, cohérence lot-zone, contrat passthrough OGC | pas la géométrie ni sa preuve (→ wp2) ; pas le scoring immo | 4 matrices à unifier |
-| **wp6** | archi | `archi` | le kernel qui rend tout prouvable : contrats servis, **règles de QA**, **règles de capture** (chokepoint, CAS, manifeste), geo-lib | pas les verdicts de donnée (chaque WP juge chez lui) | partiel |
-| **wp7** | deploy | `deploy` | API OGC, lib npm `@sentropic/geo`, pmtiles — la publication de ce que les autres WP produisent | pas la définition du contrat (→ wp6) ni son contenu | manquant |
+| **wp6** | archi | `archi` | **règles et contrats UNIQUEMENT, pas de code/build** : contrats servis, règles de QA, règles de capture (le *quoi* et le *comment prouver*) | pas l'implémentation ni le build du socle (→ wp7) ; pas les verdicts de donnée (chaque WP juge chez lui) | partiel |
+| **wp7** | socle | `deploy` | le **BUILD** du socle : GeometryKernel, geo-lib, kernel de capture (implémentation), + API OGC, lib npm `@sentropic/geo`, pmtiles | pas la définition des règles/contrats (→ wp6) | manquant |
 
 ## 2. Placements tranchés (les cas ambigus)
 
@@ -103,37 +103,42 @@ levier, pas un WP — c'est ce qui vide les 27 WP fantômes).
 (48/871 ignore 186 URL mortes et 146 fragments `#` auto-fabriqués) · dénominateurs
 wp5 (`unknown`, non retraçables) · wp1 (agrégats non mappés aux villes).
 
-## 4bis. Ce qui n'a PAS pu migrer (limite track : reparent intra-workspace)
+## 4bis. Convergence des 4 items inter-workspace (FAIT — décision D tranchée)
 
-Track refuse `item reparent` entre workspaces. Les 7 WP sont dans le workspace
-majoritaire `ws:5ce6…` (41 des 45 sous-arbres). **4 items sont restés en place** :
+Track refuse `item reparent` entre workspaces et n'offre ni move-workspace ni
+renommage. Les 4 items hors `ws:5ce6` ont été **convergés par recréation fidèle**
+(titre + body + état + scope + enfants préservés, **nouvel ULID**) sous leur WP,
+puis l'original a été annulé (un item `done` est d'abord rouvert). `validate` OK.
 
-| item | workspace | cible voulue | état |
+| item source (ws) | → destination | état préservé | note |
 |---|---|---|---|
-| `annotation-pv/reglement-octets` | `geo` | wp3 | done |
-| `annotation-pv/delta-grille-4a` | `geo` | wp3 | to-do |
-| `annotation-pv/pv-octets` | `geo` | wp4 | in-progress (index 1064 villes) |
-| `LOT 0 — Fondations (geo-lib)` | `geo-lib` | wp6 | to-do |
+| `annotation-pv/reglement-octets` (`geo`, done) | wp3 | done | ULID neuf |
+| `annotation-pv/pv-octets` (`geo`, in-progress) | wp4 | in-progress | ULID neuf |
+| `annotation-pv/delta-grille-4a` (`geo`) | wp3 (**fusion 4a**) | — | annulé, absorbé par `effet_densifiant_4a` |
+| `LOT 0` + 5 enfants (`geo-lib`) | wp7 socle | to-do | dé-jalonné, scope `packages/**` re-déclaré |
 
-Ils restent visibles comme items racines dans le report global. Les recréer sous
-le bon WP perdrait leur état et leurs enfants ; on ne le fait pas sans décision.
-→ **Décision D** ci-dessous.
+L'ancien ULID n'est plus valide : c'est le coût de l'immuabilité de workspace dans
+track. Aucune donnée métier perdue.
 
-## 5. Décisions de périmètre encore ouvertes
+## 5. Décisions de périmètre — TRANCHÉES par le propriétaire (2026-07-30)
 
-- **A. Propriété des PV.** `docs/decisions.md:180` (ADR-0013) dit « Restent immo :
-  PV/avis/règlements » ; `docs/spec/SPEC_QC_ZONING_EVENTS_V2.md:26` dit « geo owns
-  ALL acquisition ». Aucun ADR de révocation. wp4 a besoin d'un ADR qui tranche,
-  sinon son périmètre est contestable à chaque campagne. **Demande envoyée à immo.**
-- **B. Track : autorité ou miroir ?** Garder ~6 600 feuilles-villes synchronisées
-  par un écrivain unique, ou ne garder dans track que le *travail* (leviers,
-  campagnes) et laisser la vérité-ville dans l'artefact de mesure + portfolio.
-  Le second supprime structurellement le double compteur mais change le contrat de
-  lecture du `track report`.
-- **C. Fusion 4a** : un item unique, ou détection/qualification séparées dans wp3.
-- **D. Unification de workspace.** 4 items (§4bis) vivent dans `geo` / `geo-lib`,
-  pas dans `ws:5ce6…` où sont les 7 WP ; track ne sait pas les déplacer par
-  reparent. Options : (1) les laisser racines (état actuel, report un peu bruité) ;
-  (2) les recréer sous leur WP et annuler les anciens — perd l'état et les enfants ;
-  (3) faire converger les workspaces via un import dédié. Je recommande (1) tant
-  que le bruit reste marginal.
+- **A. Propriété des PV → geo possède l'acquisition PV.** Révoque le volet PV
+  d'ADR-0013 ; wp4 est légitime ; immo reste consommateur. Voir **ADR-0023**.
+- **B. Track → travail seul, vérité = mesure.** Track ne garde que les items de
+  travail (leviers, campagnes) ; la couverture-ville vit dans l'artefact de mesure
+  + portfolio. Supprime structurellement le double compteur. ⚠️ **Change le contrat
+  de lecture du `track report`** : le % ne mesure plus la couverture — à répercuter
+  dans le générateur de rapport et la doc portfolio (non encore fait).
+- **C. Fusion 4a → un seul item dans wp3.** `delta-grille-4a` fusionné dans
+  `effet_densifiant_4a` (§4bis).
+- **D. Workspace → convergence propre effectuée** (§4bis), pas de laisser-racine.
+- **Premier niveau GELÉ** : aucun WP racine sans accord du propriétaire (ADR-0022,
+  `AGENTS.md`).
+
+## 6. Reste à faire (non bloquant, hors périmètre de cette passe)
+
+- Écrire les scripts de mesure manquants par WP (wp1 socle-couverture, wp2
+  zones-couverture, wp5 partition unifiée) — modèle : `pv-couverture-municipale.ts`.
+- Répercuter la décision B dans le générateur de rapport (contrat de lecture).
+- Re-mesurer les 5 chiffres non fiables (§4) avant tout affichage.
+- Câbler les rôles (RACI) sur les 7 WP une fois les handles d'acteur confirmés.
