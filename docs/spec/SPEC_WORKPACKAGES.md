@@ -61,6 +61,17 @@ Trois obligations, par construction, dans chaque WP de donnée :
 - pmtiles → **wp7** (dérivé de service ; wp2 dit *ce qu'il y a dedans*, wp7 *comment
   c'est servi*).
 - contrat servi geo→immo → **wp6** le définit, **wp7** le publie.
+- **zones inondables / à risque, agricole (CPTAQ), BDZI…** → **wp2**, dont la charte
+  s'étend des « zones municipales » aux **géométries de contraintes servies à
+  provenance prouvée** ; la jointure « ce lot est en zone inondable » → **wp5**.
+- **3D / Cityweft** → l'**outillage** (GeometryKernel, StreetGraph, Cityweft OSS)
+  est du **wp7** socle ; la géométrie 3D servie → **wp2** ; l'attribut 3D par lot →
+  **wp5**.
+- **Google Street View** → ⚠️ **licence** : Google interdit le cache et la
+  rediffusion. geo ne capte ni ne sert l'imagerie ; au mieux une **référence**
+  (`pano_id`/URL) comme attribut lot (**wp1**) ou jointure (**wp5**), et immo
+  embarque le viewer vif. Reste probablement de l'**affichage immo** — à confirmer
+  par la qualif de Steve (§7).
 
 ## 3. Rôles — qui décide, qui mesure, qui refuse
 
@@ -69,9 +80,9 @@ Trois obligations, par construction, dans chaque WP de donnée :
 | **toi** (propriétaire, cadre h2a) | transverse | tout ; seul à trancher les ADR et à autoriser un retrait prod (`--withdraw`) |
 | **conductor** | transverse | toute campagne sans essai borné chiffré ; re-grinder une lane terminale ; un levier au coût non mesuré |
 | **qa** | transverse | tout chiffre non recalculable depuis un artefact committé ; toute partition qui ne ferme pas ; tout Δ fabriqué. Possède les *règles*, vérifie les mesures — mais **chaque WP porte SON script et SA partition** |
-| **archi** | wp6 | une règle métier restée dans un `_*.ts` ; un vert par omission (workspace sauté, fixture locale absente) |
-| **lot** | wp1 | un dépôt sans propriétaire établi ; toute PII non filtrée |
-| **zones** | wp2 | un stamp sans capture ; une géométrie sans preuve v2 |
+| **archi** | wp6 | une règle métier restée dans un `_*.ts` ; un vert par omission ; **une source dont la licence n'est pas déclarée rediffusable** (Google, CC-BY, ODbL, CGU MAMH) — archi possède la règle de conformité, chaque WP refuse d'acquérir/servir une source non validée |
+| **lot** | wp1 | un dépôt sans propriétaire établi ; **toute PII non filtrée** (Loi 25 → état `PII_REFUSED` de sa partition) |
+| **zones** | wp2 | un stamp sans capture ; une géométrie sans preuve v2 (zonage **et** contraintes servies : inondable, agricole, risque, 3D) |
 | **reglement** | wp3 | un « projet de règlement » traité comme adopté ; un effet sans qualité juridique établie (c'est ici que 3 effets fabriqués sont partis en prod) |
 | **pv** | wp4 | un owner ambigu (bonaventure/saint-elzear) ; une date non verbatim |
 | **jointures** | wp5 | une résolution floue de code de zone (HC-14→COMPTON) |
@@ -80,6 +91,15 @@ Trois obligations, par construction, dans chaque WP de donnée :
 **Séparation clé** (leçon « effet fabriqué parti en prod ») : *celui qui produit
 ne se note pas lui-même* — le rôle `qa` reçoit les SOURCES, jamais la conclusion ;
 un gardien de WP peut bloquer son conductor ; seul le propriétaire débloque.
+
+**Rôles GELÉS comme les WP.** Sept rôles de couche (lot, zones, reglement, pv,
+jointures, archi, socle) + trois transverses (conductor, qa, propriétaire). Une
+donnée ou une exigence nouvelle devient un **devoir d'un rôle existant**, jamais un
+rôle neuf, sauf accord du propriétaire. Deux responsabilités transverses n'avaient
+pas de rôle et sont désormais rattachées : la **PII/Loi 25** au gardien `lot`
+(vérifiée par `qa`), la **conformité/licence** à `archi` (arbitrée par le
+propriétaire). Alternative laissée ouverte : un rôle « compliance » dédié à côté de
+`qa` — exception au gel, donc décision du propriétaire.
 
 ## 4. Migration (à appliquer APRÈS §5)
 
@@ -141,4 +161,24 @@ track. Aucune donnée métier perdue.
   zones-couverture, wp5 partition unifiée) — modèle : `pv-couverture-municipale.ts`.
 - Répercuter la décision B dans le générateur de rapport (contrat de lecture).
 - Re-mesurer les 5 chiffres non fiables (§4) avant tout affichage.
-- Câbler les rôles (RACI) sur les 7 WP une fois les handles d'acteur confirmés.
+- RACI câblés dans track (`accountable = role:<owner>`, `responsible = owner,conductor`) — **fait**.
+
+## 7. Données à venir (qualif Steve, juillet) — rangement dans les 7 WP
+
+Quatre jeux de données que le propriétaire veut placer. **Aucun ne crée de WP ni de
+rôle racine** : chacun se raccroche. La colonne « nature » distingue une
+**acquisition geo** (on capte, on prouve, on sert) d'un **affichage immo** (immo
+embarque la donnée vive) — distinction à confirmer par le rapport de Steve, demande
+envoyée à immo.
+
+| donnée | acquisition → WP | jointure/attribut | outillage | réserve |
+|---|---|---|---|---|
+| propriétaires de lots | **wp1** (`role:lot`) | — | — | PII/Loi 25 = état `PII_REFUSED` |
+| zones inondables / à risque | **wp2** (`role:zones`) | wp5 (`role:jointures`) | — | élargit la charte wp2 aux contraintes non-municipales |
+| 3D / Cityweft | **wp2** (3D servie) | wp5 (attribut lot) | **wp7** (`role:socle`) | Cityweft OSS = ex-LOT 0 |
+| Google Street View | ⚠️ **probablement immo** | wp1/wp5 (référence `pano_id` seule) | — | licence Google interdit cache/rediffusion |
+
+**Décisions ouvertes (propriétaire) :** (1) Street View — acquisition geo d'une
+référence, ou affichage immo pur ? (2) rôle conformité — chez `archi` (recommandé)
+ou rôle dédié ? Les deux attendent la liste de Steve pour être tranchées sur du
+concret plutôt que sur une intuition.
