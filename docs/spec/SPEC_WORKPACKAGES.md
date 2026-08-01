@@ -40,7 +40,7 @@ Trois obligations, par construction, dans chaque WP de donnée :
 | **wp4** | pv | `pv` | délibérations + avis + **YouTube (transcription)** captés, indexés, propriétaire confirmé → événements de zonage | pas la qualification de l'effet (→ wp3) ; le graphe immo reste écrit par immo | **existe** (modèle) |
 | **wp5** | jointures | `jointures` | lot↔zone, normes repliées sur le lot, cohérence lot-zone, contrat passthrough OGC | pas la géométrie ni sa preuve (→ wp2) ; pas le scoring immo | 4 matrices à unifier |
 | **wp6** | archi | `archi` | **règles et contrats UNIQUEMENT, pas de code/build** : contrats servis, règles de QA, règles de capture (le *quoi* et le *comment prouver*) | pas l'implémentation ni le build du socle (→ wp7) ; pas les verdicts de donnée (chaque WP juge chez lui) | partiel |
-| **wp7** | socle | `deploy` | le **BUILD** du socle : GeometryKernel, geo-lib, kernel de capture (implémentation), + API OGC, lib npm `@sentropic/geo`, pmtiles | pas la définition des règles/contrats (→ wp6) | manquant |
+| **wp7** | socle | `socle` | le **BUILD** du socle : GeometryKernel, geo-lib, kernel de capture (implémentation), + API OGC, lib npm `@sentropic/geo`, pmtiles | pas la définition des règles/contrats (→ wp6) | manquant |
 
 ## 2. Placements tranchés (les cas ambigus)
 
@@ -75,7 +75,7 @@ Trois obligations, par construction, dans chaque WP de donnée :
 | **reglement** | wp3 | un « projet de règlement » traité comme adopté ; un effet sans qualité juridique établie (c'est ici que 3 effets fabriqués sont partis en prod) |
 | **pv** | wp4 | un owner ambigu (bonaventure/saint-elzear) ; une date non verbatim |
 | **jointures** | wp5 | une résolution floue de code de zone (HC-14→COMPTON) |
-| **deploy** | wp7 | publier une couche non exposée/non lisible ; un npm dont le tarball ne porte pas son module |
+| **socle** | wp7 | publier une couche non exposée/non lisible ; un npm dont le tarball ne porte pas son module ; du build hors du socle |
 
 **Séparation clé** (leçon « effet fabriqué parti en prod ») : *celui qui produit
 ne se note pas lui-même* — le rôle `qa` reçoit les SOURCES, jamais la conclusion ;
