@@ -453,7 +453,8 @@ quand la couverture réelle du graphe était 640/1 106, connue seulement après 
 (cf. `docs/spec/SPEC_WORKPACKAGES.md`) : **wp1** cadastre · **wp2** zones · **wp3** reglements ·
 **wp4** pv · **wp5** jointures · **wp6** archi (règles et contrats **uniquement, pas de code/build**) ·
 **wp7** socle (BUILD du socle — GeometryKernel, geo-lib, kernel de capture — + API OGC + npm + pmtiles).
-Rôles propriétaires : lot, zones, reglement, pv, jointures, archi, deploy ; transverses : conductor, qa.
+Rôles propriétaires (RACI gravés dans track) : lot, zones, reglement, pv, jointures, archi, socle ;
+transverses : conductor, qa.
 **Pas de WP « QA »** : la QA est une obligation de structure de chaque WP (partition fermée à états
 nommés — un refus est un état — + un script de mesure committé). **Le premier niveau est GELÉ : aucun
 WP racine ne sera créé sans l'accord explicite du propriétaire** (règle inscrite dans `AGENTS.md`/`CLAUDE.md`).
