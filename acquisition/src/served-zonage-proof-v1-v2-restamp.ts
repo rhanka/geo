@@ -1,5 +1,5 @@
 /**
- * Promote a closed pilot of legacy served zoning envelopes to complete v2
+ * Promote SHA-identical legacy served zoning envelopes to complete v2
  * proofs, without replacing a single geometry.  Every source fact comes from
  * a named capture manifest line; the additive writer independently re-reads
  * the served object and rejects any geometry/order/property change outside the
@@ -9,7 +9,7 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *     npx tsx acquisition/src/served-zonage-proof-v1-v2-restamp.ts \
  *       --assessment=work/coverage/served-zonage-proof-v1-v2-capture-assessment-<UTC>.json \
- *       --out=work/coverage/zones-restamp-pilot7-<UTC>.json
+ *       --out=work/coverage/zones-v2mass-promote-<UTC>.json
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
@@ -25,7 +25,6 @@ import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PREFIX = "normalized/ca-qc-zonage/";
 const ASSESSMENT_CONTRACT = "served-zonage-proof-v1-v2-capture-assessment/v1";
-const PILOT_SIZE = 7;
 const PUT = ["PutObject", "Command"].join("");
 
 type JsonObject = Record<string, unknown>;
@@ -84,17 +83,18 @@ function readAssessment(path: string): AssessmentEntry[] {
     throw new Error(`assessment incomplete or incompatible: ${relative(ROOT, path)}`);
   }
   const selected = value.urls.filter((entry): entry is AssessmentEntry => entry?.outcome === "SHA_IDENTIQUE");
-  if (selected.length !== PILOT_SIZE) throw new Error(`SHA_IDENTIQUE pilot is ${selected.length}, expected ${PILOT_SIZE}`);
+  if (selected.length === 0) throw new Error("assessment has no SHA_IDENTIQUE entry to promote");
   const seenSlugs = new Set<string>();
   for (const entry of selected) {
     if (
       typeof entry.url !== "string" || !/^sha256:[a-f0-9]{64}$/.test(entry.sha256) ||
       typeof entry.retrieved_at !== "string" || typeof entry.manifest_key !== "string" ||
       !Number.isInteger(entry.line_index) || entry.line_index < 0 || entry.raw_payload_verified !== true ||
-      !Array.isArray(entry.slugs) || entry.slugs.length !== 1 || typeof entry.slugs[0] !== "string" ||
-      !/^[a-z0-9-]+$/.test(entry.slugs[0]!) || seenSlugs.has(entry.slugs[0]!)
+      !Array.isArray(entry.slugs) || entry.slugs.length === 0 ||
+      new Set(entry.slugs).size !== entry.slugs.length ||
+      entry.slugs.some((slug) => typeof slug !== "string" || !/^[a-z0-9-]+$/.test(slug) || seenSlugs.has(slug))
     ) throw new Error("assessment SHA_IDENTIQUE entry is incomplete, ambiguous, or repeated");
-    seenSlugs.add(entry.slugs[0]!);
+    for (const slug of entry.slugs) seenSlugs.add(slug);
   }
   return selected;
 }
@@ -106,14 +106,22 @@ function exactArcgisSource(line: CaptureManifestLine): GeometrySourceProof {
   } catch {
     throw new Refusal("manifest-url-invalid");
   }
-  // This maps the capture's concrete ArcGIS REST protocol, not a guessed
-  // municipality/source: every pilot URL names an ArcGIS layer query and
-  // GeoJSON response verbatim.
+  // The protocol (not a guessed municipality/source) determines the proof
+  // type.  Both hosted ArcGIS and ArcGIS Server expose the same explicit REST
+  // GeoJSON query contract; the provincial open-data download is likewise an
+  // explicit official GeoJSON artefact.
   if (
     parsed.protocol !== "https:" ||
-    !/\/arcgis\/rest\/services\/.*\/(?:FeatureServer|MapServer)\/\d+\/query$/i.test(parsed.pathname) ||
+    !/(?:arcgis|server)\/rest\/services\/.*\/(?:FeatureServer|MapServer)\/\d+\/query$/i.test(parsed.pathname) ||
     parsed.searchParams.get("f")?.toLowerCase() !== "geojson"
-  ) throw new Refusal("capture-source-not-a-verbatim-arcgis-geojson-query");
+  ) {
+    if (
+      parsed.protocol === "https:" &&
+      parsed.hostname === "www.donneesquebec.ca" &&
+      /^\/recherche\/dataset\/[^/]+\/resource\/[^/]+\/download\/[^/]+\.geojson$/i.test(parsed.pathname)
+    ) return proofFromCaptureEntry(line, { type: "geojson-officiel", method: "natif", reliability: "directe" });
+    throw new Refusal("capture-source-not-a-verbatim-supported-geojson-endpoint");
+  }
   return proofFromCaptureEntry(line, { type: "arcgis", method: "natif", reliability: "directe" });
 }
 
@@ -292,7 +300,7 @@ async function main(): Promise<void> {
   }
   const generatedAt = new Date().toISOString();
   const report = {
-    contract: "zones-restamp-pilot7-stamp/v1",
+    contract: "zones-v2mass-promote/v1",
     generated_at: generatedAt,
     assessment: relative(ROOT, assessmentPath),
     partition: { total: entries.length, restampe_v2: restamped, deja_v2: alreadyV2, refus: refused, closed: true },
@@ -300,11 +308,11 @@ async function main(): Promise<void> {
   };
   const markdownPath = outputPath.replace(/\.json$/, ".md");
   writeNew(outputPath, `${JSON.stringify(report, null, 2)}\n`);
-  writeNew(markdownPath, `# Restamp zones pilot 7\n\n${generatedAt}: ${restamped} restampé(s) v2, ${alreadyV2} déjà v2, ${refused} refusé(s). Partition fermée: ${entries.length}.\n`);
+  writeNew(markdownPath, `# Promotion zones v2 mass\n\n${generatedAt}: ${restamped} promu(s) v2, ${alreadyV2} déjà v2, ${refused} refusé(s). Partition fermée: ${entries.length}.\n`);
   console.log(JSON.stringify({ output: relative(ROOT, outputPath), complete: true, partition: report.partition }, null, 2));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.stack ?? error.message : String(error));
     process.exitCode = 1;
