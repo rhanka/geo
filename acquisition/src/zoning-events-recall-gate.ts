@@ -13,10 +13,10 @@
  * production path with:
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx ...
  *
- * Matching is deliberately exact only. It does not share geo's `event_id`
- * with immo, so it compares a canonical natural key instead. The optional
- * bylaw key is a second, unique-gated exact pass; it never forces an
- * ambiguous match.
+ * Provenance: the type crosswalk is vendorized byte-for-byte from immo commit
+ * b9c121d (`docs/spec/crosswalk-taxonomie.json`), PR #451, git blob dfe67cf.
+ * The identity tuple stays exact; only type compatibility comes from that
+ * frozen contract. Bylaw numbers are evidence only and never a match key.
  */
 import {
   existsSync,
@@ -37,6 +37,7 @@ import {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const MAX_INPUT_BYTES = 20 * 1024 * 1024;
+const VENDORED_CROSSWALK_PATH = fileURLToPath(new URL("./data/crosswalk-taxonomie.json", import.meta.url));
 
 /** The fixed recall sample from SPEC_QC_ZONING_EVENTS_V2.md. */
 export const RECALL_SAMPLE_MUNICIPALITIES = [
@@ -62,6 +63,7 @@ export const RECALL_THRESHOLD = 0.95;
  * of immo internals.
  */
 export const IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS = {
+  event_id: ["node_id", "event_id"],
   muni: ["muni", "city_slug"],
   type: ["type", "category", "kind"],
   date_iso: ["date", "date_iso"],
@@ -121,7 +123,7 @@ export interface NaturalKeyEvent {
 
 export interface PartitionEntry {
   readonly outcome: RecallOutcome;
-  readonly match_kind: "natural_key" | "secondary_bylaw_key" | null;
+  readonly match_kind: "identity_crosswalk" | null;
   readonly geo: NaturalKeyEvent | null;
   readonly immo: NaturalKeyEvent | null;
   readonly unmatched_reason: string | null;
@@ -167,10 +169,19 @@ export interface RecallGateReport {
   readonly read_only_aggregation: true;
   readonly sample_municipalities: readonly RecallSampleMunicipality[];
   readonly natural_key_definition: {
-    readonly tuple: "(muni, source_url_norm, date_iso, type)";
+    readonly tuple: "(muni, source_url_norm, date_iso) exact + crosswalk(type)";
     readonly source_url_normalization: string;
-    readonly matching: "exact_only_unique_gated";
-    readonly secondary_key: "(muni, bylaw_numero_norm, type, date_iso), only when non-null on both sides";
+    readonly matching: "identity_exact_type_crosswalk_unique_gated";
+    readonly secondary_key: "disabled; bylaw never relaxes identity";
+  };
+  readonly taxonomy_crosswalk: {
+    readonly path: "acquisition/src/data/crosswalk-taxonomie.json";
+    readonly source_commit: "b9c121d";
+    readonly source_pull_request: "#451";
+    readonly source_git_blob: "dfe67cf";
+    readonly contract_status: "frozen";
+    readonly immo_category_normalization: "trim+lowercase; synonyms; known id; otherwise autre";
+    readonly unmapped: "non-match";
   };
   readonly threshold: number;
   readonly input: {
@@ -180,7 +191,7 @@ export interface RecallGateReport {
   };
   readonly states: readonly string[];
   readonly findings: readonly {
-    readonly code: "taxonomy_crosswalk_required" | "source_url_alignment_risk" | "saint_stanislas_absent";
+    readonly code: "taxonomy_crosswalk_vendorized" | "source_url_alignment_risk" | "saint_stanislas_absent";
     readonly detail: string;
   }[];
   readonly cities: readonly CityRecall[];
@@ -226,6 +237,19 @@ export interface RunRecallGateResult {
   readonly exitCode: 0 | 1 | 2;
 }
 
+interface CrosswalkMapping {
+  readonly immoCategories: ReadonlySet<string>;
+  readonly status: "mapped" | "unmapped";
+}
+
+interface VendorizedCrosswalk {
+  readonly synonyms: ReadonlyMap<string, string>;
+  readonly knownImmoCategories: ReadonlySet<string>;
+  readonly mappedImmoCategories: ReadonlySet<string>;
+  readonly mappings: ReadonlyMap<string, CrosswalkMapping>;
+  readonly unknown: "autre";
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -253,6 +277,94 @@ function candidateValue(
 
 function canonicalToken(value: unknown): string | null {
   return asNonEmptyString(value)?.toLowerCase() ?? null;
+}
+
+function stringList(value: unknown, where: string): string[] {
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string" && item.length > 0)) {
+    throw new Error(`${where}: tableau de chaînes non vides requis`);
+  }
+  return [...value];
+}
+
+/**
+ * Parse and validate the copied contract rather than reconstructing its
+ * taxonomy in code. A malformed or non-frozen artifact is a hard failure:
+ * guessing an `autre` fallback would make an audit-invalid false match.
+ */
+function loadVendorizedCrosswalk(): VendorizedCrosswalk {
+  const raw = record(JSON.parse(readFileSync(VENDORED_CROSSWALK_PATH, "utf8")) as unknown, "crosswalk");
+  const contract = record(raw.$contract, "crosswalk.$contract");
+  if (contract.status !== "frozen") throw new Error("crosswalk.$contract.status frozen requis");
+
+  const identity = record(contract.identity, "crosswalk.$contract.identity");
+  const identityFields = stringList(identity.fields, "crosswalk.$contract.identity.fields");
+  if (identity.comparison !== "exact" || identity.all_required !== true || identity.match_before_type !== true
+    || identityFields.join(",") !== "municipality,source_url,date") {
+    throw new Error("crosswalk: contrat d'identité exacte requis");
+  }
+
+  const categoryInput = record(contract.category_input, "crosswalk.$contract.category_input");
+  if (categoryInput.normalization !== "trim+lowercase" || categoryInput.unknown !== "autre") {
+    throw new Error("crosswalk: contrat de canonicalisation immo requis");
+  }
+  const synonyms = new Map<string, string>();
+  for (const [source, target] of Object.entries(record(categoryInput.synonyms, "crosswalk.$contract.category_input.synonyms"))) {
+    const canonicalSource = canonicalToken(source);
+    const canonicalTarget = canonicalToken(target);
+    if (canonicalSource === null || canonicalTarget === null) throw new Error("crosswalk: synonyme invalide");
+    synonyms.set(canonicalSource, canonicalTarget);
+  }
+
+  const vocabularies = record(contract.target_vocabularies, "crosswalk.$contract.target_vocabularies");
+  const knownImmoCategories = new Set([
+    ...stringList(vocabularies.category, "crosswalk.$contract.target_vocabularies.category"),
+    ...stringList(vocabularies.etape, "crosswalk.$contract.target_vocabularies.etape"),
+  ]);
+  const geoKinds = new Set(stringList(contract.geo_kinds, "crosswalk.$contract.geo_kinds"));
+  const mappingsRaw = record(raw.mappings, "crosswalk.mappings");
+  const mappings = new Map<string, CrosswalkMapping>();
+  const mappedImmoCategories = new Set<string>();
+
+  for (const [geoKind, value] of Object.entries(mappingsRaw)) {
+    const mapping = record(value, `crosswalk.mappings.${geoKind}`);
+    const status = mapping.status;
+    if (status !== "mapped" && status !== "unmapped") throw new Error(`crosswalk.mappings.${geoKind}.status invalide`);
+    const immo = stringList(mapping.immo, `crosswalk.mappings.${geoKind}.immo`);
+    const axis = mapping.axis;
+    const cardinality = mapping.cardinality;
+    if (status === "mapped") {
+      const expectedCardinality = immo.length === 1 ? "1↔1" : "1↔n";
+      if (immo.length === 0 || (axis !== "category" && axis !== "etape") || cardinality !== expectedCardinality) {
+        throw new Error(`crosswalk.mappings.${geoKind}: mapping mappé invalide`);
+      }
+    } else if (immo.length !== 0 || axis !== null || cardinality !== null) {
+      throw new Error(`crosswalk.mappings.${geoKind}: mapping non mappé invalide`);
+    }
+    if (new Set(immo).size !== immo.length || immo.some((category) => !knownImmoCategories.has(category))) {
+      throw new Error(`crosswalk.mappings.${geoKind}: cible immo invalide`);
+    }
+    if (status === "mapped") for (const category of immo) mappedImmoCategories.add(category);
+    mappings.set(geoKind, { immoCategories: new Set(immo), status });
+  }
+  if (mappings.size !== geoKinds.size || [...geoKinds].some((kind) => !mappings.has(kind))) {
+    throw new Error("crosswalk: tous les types geo contractuels doivent être mappés");
+  }
+  if ([...synonyms.values()].some((category) => !knownImmoCategories.has(category))) {
+    throw new Error("crosswalk: synonyme vers une catégorie inconnue");
+  }
+  return { synonyms, knownImmoCategories, mappedImmoCategories, mappings, unknown: "autre" };
+}
+
+const VENDORED_CROSSWALK = loadVendorizedCrosswalk();
+
+/** Implements `$contract.category_input` exactly; `autre` is never matchable. */
+export function canonicalizeImmoCategory(value: unknown): string {
+  const token = canonicalToken(value);
+  if (token === null) return VENDORED_CROSSWALK.unknown;
+  const normalized = VENDORED_CROSSWALK.synonyms.get(token) ?? token;
+  return VENDORED_CROSSWALK.knownImmoCategories.has(normalized)
+    ? normalized
+    : VENDORED_CROSSWALK.unknown;
 }
 
 function canonicalDate(value: unknown): string | null {
@@ -311,7 +423,9 @@ function toNaturalKeyEvent(
   sourceFields: NaturalKeySourceFields,
 ): NaturalKeyEvent {
   const muni = canonicalToken(sourceFields.muni);
-  const type = canonicalToken(sourceFields.type);
+  const type = side === "immo"
+    ? canonicalizeImmoCategory(sourceFields.type)
+    : canonicalToken(sourceFields.type);
   const dateIso = canonicalDate(sourceFields.date_iso);
   return {
     side,
@@ -341,6 +455,7 @@ export function parseImmoDesignationEvents(raw: unknown): NaturalKeyEvent[] {
   if (!Array.isArray(raw)) throw new Error("immo events: tableau JSON requis (un event par entrée)");
   return raw.map((value, index) => {
     const item = record(value, `immo events[${index}]`);
+    const eventId = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.event_id);
     const muni = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.muni);
     const type = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.type);
     const dateIso = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.date_iso);
@@ -349,7 +464,7 @@ export function parseImmoDesignationEvents(raw: unknown): NaturalKeyEvent[] {
     const zoneRef = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.zone_ref);
     const noLot = candidateValue(item, IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS.no_lot);
     return toNaturalKeyEvent("immo", {
-      event_id: null,
+      event_id: eventId,
       muni,
       source_url: sourceUrl,
       date_iso: dateIso,
@@ -413,15 +528,25 @@ function parseGeoEvent(event: ZoningEvent): NaturalKeyEvent {
   });
 }
 
-function naturalKeyToken(event: NaturalKeyEvent): string | null {
+/** Identity is the complete document tuple. Type is deliberately excluded. */
+function identityKeyToken(event: NaturalKeyEvent): string | null {
   const key = event.natural_key;
-  if (key.muni === null || key.source_url_norm === null || key.date_iso === null || key.type === null) return null;
-  return JSON.stringify([key.muni, key.source_url_norm, key.date_iso, key.type]);
+  if (key.muni === null || key.source_url_norm === null || key.date_iso === null) return null;
+  return JSON.stringify([key.muni, key.source_url_norm, key.date_iso]);
 }
 
-function secondaryKeyToken(event: NaturalKeyEvent): string | null {
-  const key = event.secondary_natural_key;
-  return key === null ? null : JSON.stringify([key.muni, key.bylaw_numero_norm, key.type, key.date_iso]);
+function crosswalkMapping(geo: NaturalKeyEvent): CrosswalkMapping | null {
+  const type = geo.natural_key.type;
+  return type === null ? null : VENDORED_CROSSWALK.mappings.get(type) ?? null;
+}
+
+function isCrosswalkPair(geo: NaturalKeyEvent, immo: NaturalKeyEvent): boolean {
+  const geoIdentity = identityKeyToken(geo);
+  const immoIdentity = identityKeyToken(immo);
+  if (geoIdentity === null || geoIdentity !== immoIdentity) return false;
+  const mapping = crosswalkMapping(geo);
+  const immoCategory = immo.natural_key.type;
+  return mapping?.status === "mapped" && immoCategory !== null && mapping.immoCategories.has(immoCategory);
 }
 
 function sortPartitionEntries(entries: PartitionEntry[]): PartitionEntry[] {
@@ -429,10 +554,10 @@ function sortPartitionEntries(entries: PartitionEntry[]): PartitionEntry[] {
 }
 
 /**
- * Compute a closed, exact partition. The primary pass requires an identical
- * complete natural key. The secondary bylaw pass considers only still-unpaired
- * events, with an identical complete secondary key and exactly one event on
- * either side. Duplicates are deliberately left unpaired.
+ * Compute a closed partition gated by a unique 1 geo ↔ 1 immo candidate edge.
+ * Identity (muni, source_url_norm, date_iso) is exact and complete; only the
+ * geo type / immo category comparison uses the vendorized crosswalk. A bylaw
+ * number may not create an edge, so it can never relax document identity.
  */
 export function partitionEventSets(
   geoEvents: readonly NaturalKeyEvent[],
@@ -441,63 +566,62 @@ export function partitionEventSets(
   const remainingGeo = new Set(geoEvents.map((_, index) => index));
   const remainingImmo = new Set(immoEvents.map((_, index) => index));
   const matched: PartitionEntry[] = [];
-  const primaryAmbiguous = new Set<string>();
-  const secondaryAmbiguous = new Set<string>();
+  const hasCandidateBeforeUniqueGate = new Set<string>();
 
-  const matchBy = (
-    keyFor: (event: NaturalKeyEvent) => string | null,
-    kind: "natural_key" | "secondary_bylaw_key",
-    ambiguous: Set<string>,
-  ): void => {
-    // Retain original indexes: filtering first would make matches delete the
-    // wrong element from the remaining sets.
-    const groupsFromRemaining = (events: readonly NaturalKeyEvent[], remaining: ReadonlySet<number>) => {
-      const groups = new Map<string, number[]>();
-      for (const index of remaining) {
-        const key = keyFor(events[index]!);
-        if (key === null) continue;
-        const group = groups.get(key);
-        if (group) group.push(index);
-        else groups.set(key, [index]);
-      }
-      return groups;
-    };
-    const geoRemainingGroups = groupsFromRemaining(geoEvents, remainingGeo);
-    const immoRemainingGroups = groupsFromRemaining(immoEvents, remainingImmo);
-    const keys = new Set([...geoRemainingGroups.keys(), ...immoRemainingGroups.keys()]);
-    for (const key of keys) {
-      const geo = geoRemainingGroups.get(key) ?? [];
-      const immo = immoRemainingGroups.get(key) ?? [];
-      if (geo.length === 1 && immo.length === 1) {
-        const geoIndex = geo[0]!;
-        const immoIndex = immo[0]!;
-        remainingGeo.delete(geoIndex);
-        remainingImmo.delete(immoIndex);
-        matched.push({
-          outcome: "matched",
-          match_kind: kind,
-          geo: geoEvents[geoIndex]!,
-          immo: immoEvents[immoIndex]!,
-          unmatched_reason: null,
-        });
-      } else if (geo.length > 0 && immo.length > 0) {
-        ambiguous.add(key);
+  while (true) {
+    const geoCandidates = new Map<number, number[]>();
+    const immoCandidates = new Map<number, number[]>();
+    for (const geoIndex of remainingGeo) {
+      for (const immoIndex of remainingImmo) {
+        if (!isCrosswalkPair(geoEvents[geoIndex]!, immoEvents[immoIndex]!)) continue;
+        const geoEdges = geoCandidates.get(geoIndex) ?? [];
+        geoEdges.push(immoIndex);
+        geoCandidates.set(geoIndex, geoEdges);
+        const immoEdges = immoCandidates.get(immoIndex) ?? [];
+        immoEdges.push(geoIndex);
+        immoCandidates.set(immoIndex, immoEdges);
+        hasCandidateBeforeUniqueGate.add(`${geoIndex}:${immoIndex}`);
       }
     }
-  };
+    const uniquePairs: Array<readonly [number, number]> = [];
+    for (const [geoIndex, immoIndexes] of geoCandidates) {
+      const immoIndex = immoIndexes[0];
+      if (immoIndexes.length === 1 && immoIndex !== undefined && immoCandidates.get(immoIndex)?.length === 1) {
+        uniquePairs.push([geoIndex, immoIndex]);
+      }
+    }
+    if (uniquePairs.length === 0) break;
+    for (const [geoIndex, immoIndex] of uniquePairs) {
+      remainingGeo.delete(geoIndex);
+      remainingImmo.delete(immoIndex);
+      matched.push({
+        outcome: "matched",
+        match_kind: "identity_crosswalk",
+        geo: geoEvents[geoIndex]!,
+        immo: immoEvents[immoIndex]!,
+        unmatched_reason: null,
+      });
+    }
+  }
 
-  matchBy(naturalKeyToken, "natural_key", primaryAmbiguous);
-  matchBy(secondaryKeyToken, "secondary_bylaw_key", secondaryAmbiguous);
-
-  const unmatchedReason = (event: NaturalKeyEvent): string => {
-    const natural = naturalKeyToken(event);
-    const secondary = secondaryKeyToken(event);
-    if (natural !== null && primaryAmbiguous.has(natural)) return "natural_key_ambiguous";
-    if (secondary !== null && secondaryAmbiguous.has(secondary)) return "secondary_bylaw_key_ambiguous";
-    if (natural === null && secondary === null) return "natural_and_secondary_keys_incomplete";
-    if (natural === null) return "natural_key_incomplete";
-    if (secondary === null) return "no_exact_natural_key_match_secondary_key_unavailable";
-    return "no_exact_natural_or_secondary_key_match";
+  const unmatchedReason = (side: "geo" | "immo", event: NaturalKeyEvent, index: number): string => {
+    const identity = identityKeyToken(event);
+    if (identity === null) return "identity_key_incomplete";
+    const counterpart = side === "immo" ? geoEvents : immoEvents;
+    const sameIdentity = counterpart.filter((candidate) => identityKeyToken(candidate) === identity);
+    if (sameIdentity.length === 0) return "identity_not_aligned";
+    if (side === "immo" && !VENDORED_CROSSWALK.mappedImmoCategories.has(event.natural_key.type ?? "")) {
+      return "immo_kind_hors_map";
+    }
+    if (side === "geo" && crosswalkMapping(event)?.status !== "mapped") return "geo_type_unmapped";
+    const hasCompatibleType = side === "immo"
+      ? sameIdentity.some((geo) => isCrosswalkPair(geo, event))
+      : sameIdentity.some((immo) => isCrosswalkPair(event, immo));
+    if (!hasCompatibleType) return side === "immo" ? "geo_type_absent_on_document" : "immo_type_absent_on_document";
+    const candidateKey = side === "immo"
+      ? [...remainingGeo].some((geoIndex) => hasCandidateBeforeUniqueGate.has(`${geoIndex}:${index}`))
+      : [...remainingImmo].some((immoIndex) => hasCandidateBeforeUniqueGate.has(`${index}:${immoIndex}`));
+    return candidateKey ? "crosswalk_match_ambiguous" : "crosswalk_match_not_selected";
   };
 
   const missed = [...remainingImmo].map((index) => ({
@@ -505,14 +629,14 @@ export function partitionEventSets(
     match_kind: null,
     geo: null,
     immo: immoEvents[index]!,
-    unmatched_reason: unmatchedReason(immoEvents[index]!),
+    unmatched_reason: unmatchedReason("immo", immoEvents[index]!, index),
   }));
   const extra = [...remainingGeo].map((index) => ({
     outcome: "extra" as const,
     match_kind: null,
     geo: geoEvents[index]!,
     immo: null,
-    unmatched_reason: unmatchedReason(geoEvents[index]!),
+    unmatched_reason: unmatchedReason("geo", geoEvents[index]!, index),
   }));
 
   const partition: EventSetPartition = {
@@ -714,7 +838,7 @@ function markdown(report: RecallGateReport): string {
   return [
     "# Recall gate qc-zoning-events vs DesignationEvents immo",
     "",
-    "Mesure read-only du rappel event-set sur l’échantillon contractuel. Les correspondances sont EXACTES et unicité-gatées; aucune clé incomplète ou ambiguë n’est forcée.",
+    "Mesure read-only du rappel event-set sur l’échantillon contractuel. L’identité (muni, source_url_norm, date_iso) est EXACTE et unicité-gatée; seul le type passe par le crosswalk vendorisé. Aucune clé incomplète, ambiguë ou hors-map n’est forcée.",
     "",
     `Seuil : ${report.threshold}. Rappel agrégé : ${aggregateRecall}. État du gate : ${report.gate.status}.`,
     "",
@@ -835,10 +959,19 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     read_only_aggregation: true,
     sample_municipalities: RECALL_SAMPLE_MUNICIPALITIES,
     natural_key_definition: {
-      tuple: "(muni, source_url_norm, date_iso, type)",
+      tuple: "(muni, source_url_norm, date_iso) exact + crosswalk(type)",
       source_url_normalization: "trim; lowercase host; remove trailing pathname slash; remove utm_*, fbclid, gclid, mc_cid, mc_eid, _ga, _gl, ref, source, download, cache, timestamp, ts; sort retained query pairs",
-      matching: "exact_only_unique_gated",
-      secondary_key: "(muni, bylaw_numero_norm, type, date_iso), only when non-null on both sides",
+      matching: "identity_exact_type_crosswalk_unique_gated",
+      secondary_key: "disabled; bylaw never relaxes identity",
+    },
+    taxonomy_crosswalk: {
+      path: "acquisition/src/data/crosswalk-taxonomie.json",
+      source_commit: "b9c121d",
+      source_pull_request: "#451",
+      source_git_blob: "dfe67cf",
+      contract_status: "frozen",
+      immo_category_normalization: "trim+lowercase; synonyms; known id; otherwise autre",
+      unmapped: "non-match",
     },
     threshold: RECALL_THRESHOLD,
     input: {
@@ -849,8 +982,8 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     states,
     findings: [
       {
-        code: "taxonomy_crosswalk_required",
-        detail: "La taxonomie immo kind (rezonage/piia/…) diffère de la taxonomie neutre geo (changement-de-zonage/ppcmoi/derogation-mineure/…) ; type ne peut pas matcher cross-side sans crosswalk explicite.",
+        code: "taxonomy_crosswalk_vendorized",
+        detail: "Le type est relâché uniquement par le crosswalk gelé vendorisé depuis immo b9c121d / PR #451 / blob dfe67cf. Une catégorie sans cible geo (dont piia et autre) reste non-matchée.",
       },
       {
         code: "source_url_alignment_risk",
