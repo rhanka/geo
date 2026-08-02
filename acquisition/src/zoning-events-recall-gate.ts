@@ -63,7 +63,7 @@ export const RECALL_THRESHOLD = 0.95;
  */
 export const IMMO_DESIGNATION_EVENT_CANDIDATE_FIELDS = {
   muni: ["muni", "city_slug"],
-  type: ["type", "category"],
+  type: ["type", "category", "kind"],
   date_iso: ["date", "date_iso"],
   bylaw_numero: ["bylaw_numero"],
   source_url: ["source_url", "url_pdf"],
@@ -148,7 +148,14 @@ export interface CityRecall {
   readonly matched: number;
   readonly missed: number;
   readonly extra: number;
+  /** Only `node_type === "DesignationEvent"`; this is the recall denominator. */
   readonly immo_events: number;
+  /** `node_type === "Signal"`; reported but never eligible for recall. */
+  readonly immo_signals_excluded: number;
+  /** Missing, null, empty, or non-string `node_type`; never inferred into a denominator. */
+  readonly immo_node_type_missing_or_unknown: number;
+  /** Non-empty `node_type` values other than DesignationEvent or Signal. */
+  readonly immo_node_type_other: number;
   readonly geo_events: number;
   readonly recall: number | null;
   readonly recall_state: "measured" | "no_immo_ground_truth";
@@ -172,12 +179,20 @@ export interface RecallGateReport {
     readonly immo_events_path: string;
   };
   readonly states: readonly string[];
+  readonly findings: readonly {
+    readonly code: "taxonomy_crosswalk_required" | "source_url_alignment_risk" | "saint_stanislas_absent";
+    readonly detail: string;
+  }[];
   readonly cities: readonly CityRecall[];
   readonly aggregate: {
     readonly matched: number;
     readonly missed: number;
     readonly extra: number;
+    /** Only DesignationEvents. */
     readonly immo_events: number;
+    readonly immo_signals_excluded: number;
+    readonly immo_node_type_missing_or_unknown: number;
+    readonly immo_node_type_other: number;
     readonly geo_events: number;
     readonly geo_read_error_count: number;
     readonly recall: number | null;
@@ -346,6 +361,44 @@ export function parseImmoDesignationEvents(raw: unknown): NaturalKeyEvent[] {
   });
 }
 
+interface ClassifiedImmoEvents {
+  readonly designationEvents: readonly NaturalKeyEvent[];
+  readonly signals: readonly NaturalKeyEvent[];
+  readonly nodeTypeMissingOrUnknown: readonly NaturalKeyEvent[];
+  readonly nodeTypeOther: readonly NaturalKeyEvent[];
+}
+
+/**
+ * The immo handoff contains both DesignationEvents and derived Signals. Only
+ * the former are ground truth for this geo emission recall denominator.
+ *
+ * `node_type` is deliberately exact and case-sensitive here. An absent,
+ * malformed, or unknown value is reported separately; it is never guessed
+ * into either product type.
+ */
+function classifyImmoEvents(raw: unknown): ClassifiedImmoEvents {
+  if (!Array.isArray(raw)) throw new Error("immo events: tableau JSON requis (un event par entrée)");
+  const events = parseImmoDesignationEvents(raw);
+  const designationEvents: NaturalKeyEvent[] = [];
+  const signals: NaturalKeyEvent[] = [];
+  const nodeTypeMissingOrUnknown: NaturalKeyEvent[] = [];
+  const nodeTypeOther: NaturalKeyEvent[] = [];
+  for (const [index, value] of raw.entries()) {
+    const item = record(value, `immo events[${index}]`);
+    const event = events[index]!;
+    if (!Object.hasOwn(item, "node_type") || asNonEmptyString(item.node_type) === null) {
+      nodeTypeMissingOrUnknown.push(event);
+    } else if (item.node_type === "DesignationEvent") {
+      designationEvents.push(event);
+    } else if (item.node_type === "Signal") {
+      signals.push(event);
+    } else {
+      nodeTypeOther.push(event);
+    }
+  }
+  return { designationEvents, signals, nodeTypeMissingOrUnknown, nodeTypeOther };
+}
+
 function parseGeoEvent(event: ZoningEvent): NaturalKeyEvent {
   const source = event as unknown as Record<string, unknown>;
   return toNaturalKeyEvent("geo", {
@@ -492,6 +545,36 @@ function readJson(path: string): unknown {
   return JSON.parse(readFileSync(absolute, "utf8")) as unknown;
 }
 
+/** The immo export is a read-only handoff and may deliberately live outside this checkout. */
+function readOnlyInputPath(path: string): string {
+  return isAbsolute(path) ? resolve(path) : rootRelativePath(path);
+}
+
+function readImmoEventsInput(path: string): unknown {
+  const absolute = readOnlyInputPath(path);
+  const size = statSync(absolute).size;
+  if (size > MAX_INPUT_BYTES) throw new Error(`${displayPath(absolute)}: ${size} octets > plafond de ${MAX_INPUT_BYTES}`);
+  const text = readFileSync(absolute, "utf8");
+  const parseNdjson = (): unknown[] => {
+    const lines = text.split(/\r?\n/u).map((line) => line.trim()).filter((line) => line.length > 0);
+    return lines.map((line, index) => {
+      try {
+        return JSON.parse(line) as unknown;
+      } catch (error) {
+        throw new Error(`${displayPath(absolute)}: NDJSON ligne ${index + 1} invalide: ${errorText(error)}`);
+      }
+    });
+  };
+  if (absolute.toLowerCase().endsWith(".ndjson")) return parseNdjson();
+  try {
+    return JSON.parse(text) as unknown;
+  } catch (jsonError) {
+    const nonEmptyLineCount = text.split(/\r?\n/u).filter((line) => line.trim().length > 0).length;
+    if (nonEmptyLineCount > 1) return parseNdjson();
+    throw new Error(`${displayPath(absolute)}: JSON invalide: ${errorText(jsonError)}`);
+  }
+}
+
 function parseZoningEventsDocuments(raw: unknown, where: string): ZoningEventsDocument[] {
   const documents = Array.isArray(raw) ? raw : [raw];
   return documents.map((value, index) => {
@@ -621,7 +704,7 @@ function recallFor(partition: EventSetPartition): { recall: number | null; state
 function markdown(report: RecallGateReport): string {
   const cityRows = report.cities.map((city) => {
     const recall = city.recall === null ? "unknown (no_immo_ground_truth)" : city.recall.toFixed(4);
-    return `| ${city.slug} | ${city.geo_collection_status} | ${city.matched} | ${city.missed} | ${city.extra} | ${recall} |`;
+    return `| ${city.slug} | ${city.geo_collection_status} | ${city.matched} | ${city.missed} | ${city.extra} | ${city.immo_signals_excluded} | ${recall} | ${city.recall_state} |`;
   });
   const exceptions = report.cities.flatMap((city) => [
     ...city.partition.missed.map((entry) => `- missed ${city.slug}: ${JSON.stringify(entry.immo)}`),
@@ -635,9 +718,21 @@ function markdown(report: RecallGateReport): string {
     "",
     `Seuil : ${report.threshold}. Rappel agrégé : ${aggregateRecall}. État du gate : ${report.gate.status}.`,
     "",
-    "| Ville | État geo | Matched | Missed | Extra | Recall |",
-    "| --- | --- | ---: | ---: | ---: | ---: |",
+    "| Ville | État geo | Matched | Missed | Extra | Signals écartés | Recall | État recall |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
     ...cityRows,
+    "",
+    "## Entrées immo hors dénominateur",
+    "",
+    `Signals écartés : ${report.aggregate.immo_signals_excluded}. node_type missing/unknown : ${report.aggregate.immo_node_type_missing_or_unknown}. node_type autre : ${report.aggregate.immo_node_type_other}.`,
+    "",
+    "## Failure 1 — population des DesignationEvents immo",
+    "",
+    `DesignationEvents : ${report.immo_zone_or_lot_population.designation_events}. zone_ref peuplé/null-or-unknown : ${report.immo_zone_or_lot_population.zone_ref.populated}/${report.immo_zone_or_lot_population.zone_ref.null_or_unknown}. no_lot peuplé/null-or-unknown : ${report.immo_zone_or_lot_population.no_lot.populated}/${report.immo_zone_or_lot_population.no_lot.null_or_unknown}.`,
+    "",
+    "## Findings déclarés",
+    "",
+    ...report.findings.map((finding) => `- ${finding.code}: ${finding.detail}`),
     "",
     "## Missed et extra (clés naturelles et champs sources)",
     "",
@@ -663,8 +758,9 @@ function writeArtifact(path: string, body: string): void {
 export async function runRecallGate(options: RunRecallGateOptions): Promise<RunRecallGateResult> {
   const output = outputPath(options.outPath, ".json");
   const markdownOutput = outputPath(options.markdownPath, ".md");
-  const immoPath = rootRelativePath(options.immoEventsPath);
-  const immoEvents = parseImmoDesignationEvents(readJson(options.immoEventsPath));
+  const immoPath = readOnlyInputPath(options.immoEventsPath);
+  const immoInput = classifyImmoEvents(readImmoEventsInput(options.immoEventsPath));
+  const immoEvents = immoInput.designationEvents;
   const geo = options.geoEventsPath === undefined ? await loadS3GeoDocuments() : loadLocalGeoDocuments(options.geoEventsPath);
   const cities: CityRecall[] = [];
   const immoEventsOutsideSample: NaturalKeyEvent[] = [];
@@ -677,6 +773,10 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     const document = geo.bySlug.get(slug);
     const geoEvents = document === undefined ? [] : document.events.map(parseGeoEvent);
     const cityImmoEvents = immoEvents.filter((event) => event.natural_key.muni === slug);
+    const citySignals = immoInput.signals.filter((event) => event.natural_key.muni === slug);
+    const cityNodeTypeMissingOrUnknown = immoInput.nodeTypeMissingOrUnknown
+      .filter((event) => event.natural_key.muni === slug);
+    const cityNodeTypeOther = immoInput.nodeTypeOther.filter((event) => event.natural_key.muni === slug);
     const partition = partitionEventSets(geoEvents, cityImmoEvents);
     const measurement = recallFor(partition);
     cities.push({
@@ -688,6 +788,9 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       missed: partition.missed.length,
       extra: partition.extra.length,
       immo_events: cityImmoEvents.length,
+      immo_signals_excluded: citySignals.length,
+      immo_node_type_missing_or_unknown: cityNodeTypeMissingOrUnknown.length,
+      immo_node_type_other: cityNodeTypeOther.length,
       geo_events: geoEvents.length,
       recall: measurement.recall,
       recall_state: measurement.state,
@@ -722,6 +825,9 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
   }
   if (immoEventsOutsideSample.length > 0) states.push("immo_events_outside_sample");
   if (geo.outsideSample.length > 0) states.push("geo_documents_outside_sample");
+  if (cities.some((city) => city.recall_state === "no_immo_ground_truth")) states.push("no_immo_ground_truth");
+  if (immoInput.nodeTypeMissingOrUnknown.length > 0) states.push("immo_node_type_missing_or_unknown");
+  if (immoInput.nodeTypeOther.length > 0) states.push("immo_node_type_other");
 
   const report: RecallGateReport = {
     contract: "qc-zoning-events-recall-gate/v1",
@@ -741,12 +847,29 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       immo_events_path: displayPath(immoPath),
     },
     states,
+    findings: [
+      {
+        code: "taxonomy_crosswalk_required",
+        detail: "La taxonomie immo kind (rezonage/piia/…) diffère de la taxonomie neutre geo (changement-de-zonage/ppcmoi/derogation-mineure/…) ; type ne peut pas matcher cross-side sans crosswalk explicite.",
+      },
+      {
+        code: "source_url_alignment_risk",
+        detail: "geo(url_pdf) et immo(source_url) peuvent référer des URL différentes pour un même event, créant des faux missed sous le matching exact.",
+      },
+      {
+        code: "saint_stanislas_absent",
+        detail: "Le slug saint-stanislas est ambigu (saint-stanislas-de-kostka / saint-stanislas--des-chenaux / saint-stanislas--maria-chapdelaine) et l’export immo ne fournit pas de graphe sous le slug nu ; la ville est no_immo_ground_truth.",
+      },
+    ],
     cities,
     aggregate: {
       matched: aggregatePartition.matched.length,
       missed: aggregatePartition.missed.length,
       extra: aggregatePartition.extra.length,
       immo_events: aggregatePartition.matched.length + aggregatePartition.missed.length,
+      immo_signals_excluded: immoInput.signals.length,
+      immo_node_type_missing_or_unknown: immoInput.nodeTypeMissingOrUnknown.length,
+      immo_node_type_other: immoInput.nodeTypeOther.length,
       geo_events: aggregatePartition.matched.length + aggregatePartition.extra.length,
       geo_read_error_count: cities.filter((city) => city.geo_collection_status === "geo_read_error").length,
       recall: aggregateMeasurement.recall,
@@ -796,10 +919,24 @@ async function main(): Promise<void> {
     missed: result.report.aggregate.missed,
     extra: result.report.aggregate.extra,
     immo_events: result.report.aggregate.immo_events,
+    immo_signals_excluded: result.report.aggregate.immo_signals_excluded,
+    immo_node_type_missing_or_unknown: result.report.aggregate.immo_node_type_missing_or_unknown,
+    immo_node_type_other: result.report.aggregate.immo_node_type_other,
     geo_events: result.report.aggregate.geo_events,
     recall: result.report.aggregate.recall,
     gate: result.report.gate.status,
     exit_code: result.exitCode,
+    cities: result.report.cities.map((city) => ({
+      slug: city.slug,
+      matched: city.matched,
+      missed: city.missed,
+      extra: city.extra,
+      immo_events: city.immo_events,
+      immo_signals_excluded: city.immo_signals_excluded,
+      recall: city.recall,
+      recall_state: city.recall_state,
+      geo_collection_status: city.geo_collection_status,
+    })),
   })}\n`);
   process.exitCode = result.exitCode;
 }
