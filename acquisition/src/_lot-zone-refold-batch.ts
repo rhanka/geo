@@ -37,6 +37,7 @@
  * Usage :
  *   npx tsx acquisition/src/_lot-zone-refold-batch.ts \
  *     --slugs saint-gilbert,autre-slug \
+ *     --max-seconds 2400 \
  *     --simplify-zones-m 1 \
  *     --out work/coverage/_refold-batch-progress.json
  *
@@ -90,6 +91,7 @@ class BatchAbortError extends Error {
 
 interface Args {
   slugs: string[];
+  maxSeconds: number;
   simplifyZonesM: number;
   /** Materialisation de normes : laisse la garde de compteurs décider du rollback. */
   allowGeometrySuspect: boolean;
@@ -101,6 +103,7 @@ interface Args {
 function parseArgs(argv: string[]): Args {
   const slugs: string[] = [];
   let slugsFile: string | null = null;
+  let maxSeconds = 2400;
   // La simplification peut déplacer une frontière et faire perdre de vrais
   // lots. Le re-fold de matérialisation doit donc reprendre la géométrie servie
   // à l'identique; l'opt-in explicite reste disponible pour les diagnostics.
@@ -118,6 +121,7 @@ function parseArgs(argv: string[]): Args {
           .filter(Boolean),
       );
     } else if (a === "--slugs-file") slugsFile = String(argv[++i] ?? "");
+    else if (a === "--max-seconds") maxSeconds = Math.max(1, Number(argv[++i] ?? "2400") || 2400);
     else if (a === "--simplify-zones-m") simplifyZonesM = Math.max(0, Number(argv[++i] ?? "1") || 0);
     else if (a === "--allow-geometry-suspect") allowGeometrySuspect = true;
     else if (a === "--metrics-only") metricsOnly = true;
@@ -133,7 +137,7 @@ function parseArgs(argv: string[]): Args {
   const uniqueSlugs = [...new Set(slugs)];
   if (uniqueSlugs.length === 0) throw new Error("pass --slugs a,b,c and/or --slugs-file <path>");
   if (!out) throw new Error("--out <path> required (resume-safe progress journal)");
-  return { slugs: uniqueSlugs, simplifyZonesM, allowGeometrySuspect, metricsOnly, out };
+  return { slugs: uniqueSlugs, maxSeconds, simplifyZonesM, allowGeometrySuspect, metricsOnly, out };
 }
 
 // ── journal (resume-safe) ────────────────────────────────────────────────────
@@ -160,6 +164,7 @@ interface LotMetrics {
   num_lots: number;
   num_with_norms: number;
   num_with_code_zone: number;
+  num_with_adresse: number | null;
 }
 
 interface JournalEntry {
@@ -248,6 +253,10 @@ async function readLotMetrics(s3: S3Client, slug: string): Promise<LotMetrics | 
     const numLots = raw["num_lots"];
     const withNorms = raw["num_with_norms"];
     const withCode = raw["num_with_zone_code"];
+    const role = raw["role"];
+    const withAdresse = role && typeof role === "object" && !Array.isArray(role)
+      ? (role as Record<string, unknown>)["num_with_adresse"]
+      : null;
     if (
       typeof numLots !== "number" || !Number.isFinite(numLots) ||
       typeof withNorms !== "number" || !Number.isFinite(withNorms) ||
@@ -255,7 +264,13 @@ async function readLotMetrics(s3: S3Client, slug: string): Promise<LotMetrics | 
     ) {
       throw new Error(`${slug}: stats qc-lots invalides (${key})`);
     }
-    return { stats_key: key, num_lots: numLots, num_with_norms: withNorms, num_with_code_zone: withCode };
+    return {
+      stats_key: key,
+      num_lots: numLots,
+      num_with_norms: withNorms,
+      num_with_code_zone: withCode,
+      num_with_adresse: typeof withAdresse === "number" && Number.isFinite(withAdresse) ? withAdresse : null,
+    };
   }
   return null;
 }
@@ -272,10 +287,6 @@ function regressionReason(before: LotMetrics, after: LotMetrics): string | null 
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /** Timestamp compact (même idiome que `_lot-zone-refold-s3.ts`). */
 function stamp(): string {
@@ -314,9 +325,7 @@ async function withRetry<T>(label: string, fn: () => Promise<T> | T, maxRetries 
           `${label}: ETIMEDOUT persiste après ${maxRetries} retries (${errMsg(e)})`,
         );
       }
-      const backoffMs = 1500 * attempt;
-      console.error(`[refold-batch] ${label}: ETIMEDOUT, retry ${attempt}/${maxRetries} dans ${backoffMs}ms`);
-      await sleep(backoffMs);
+      console.error(`[refold-batch] ${label}: ETIMEDOUT, retry ${attempt}/${maxRetries}`);
     }
   }
 }
@@ -577,11 +586,21 @@ async function main(): Promise<void> {
   if (already.length) console.log(`RESUME: ${already.length} déjà deposited=true, sautées: ${already.join(", ")}`);
   console.log(
       `[refold-batch] slugs=${args.slugs.length} pending=${pending.length} ` +
-      `simplify_zones_m=${args.simplifyZonesM} allow_geometry_suspect=${args.allowGeometrySuspect} metrics_only=${args.metricsOnly} out=${args.out}`,
+      `max_seconds=${args.maxSeconds} simplify_zones_m=${args.simplifyZonesM} ` +
+      `allow_geometry_suspect=${args.allowGeometrySuspect} metrics_only=${args.metricsOnly} out=${args.out}`,
   );
 
   const doneThisRun: string[] = [];
+  const deadline = Date.now() + args.maxSeconds * 1000;
   for (let i = 0; i < pending.length; i++) {
+    if (Date.now() >= deadline) {
+      const remaining = pending.slice(i);
+      console.log(
+        `[refold-batch] CHECKPOINT time-box reached after ${doneThisRun.length} muni(s); ` +
+        `remaining=${remaining.length} journal=${args.out}`,
+      );
+      return;
+    }
     const slug = pending[i]!;
     try {
       await processSlug(s3, slug, args, journalMap);
@@ -598,6 +617,14 @@ async function main(): Promise<void> {
         return;
       }
       throw e;
+    }
+    if (Date.now() >= deadline && i + 1 < pending.length) {
+      const remaining = pending.slice(i + 1);
+      console.log(
+        `[refold-batch] CHECKPOINT time-box reached after ${doneThisRun.length} muni(s); ` +
+        `remaining=${remaining.length} journal=${args.out}`,
+      );
+      return;
     }
   }
 
