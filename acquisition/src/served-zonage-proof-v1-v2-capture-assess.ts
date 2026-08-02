@@ -69,6 +69,12 @@ interface UrlAssessment extends CapturedObservation {
   expected_sha256: `sha256:${string}`[];
 }
 
+interface CaptureTarget {
+  slug: string;
+  source: string;
+  url: string;
+}
+
 function option(name: string): string | null {
   const prefix = `--${name}=`;
   const value = process.argv.slice(2).find((argument) => argument.startsWith(prefix));
@@ -133,6 +139,22 @@ export function classifyCapturedSha(
     raw_payload_verified: rawPayloadVerified,
     verification_detail: null,
   }, expectedSha256);
+}
+
+/** A repeated source URL is safe only when each named collection has its own
+ * capture-manifest line.  The slug is therefore part of the match, never an
+ * inferred association made from the URL alone. */
+export function lineForControlTarget<T extends { source: string; url: string; slugs: string[] }>(
+  target: CaptureTarget,
+  lines: readonly T[],
+): T {
+  const matches = lines.filter((line) => (
+    line.source === target.source && line.url === target.url && line.slugs.includes(target.slug)
+  ));
+  if (matches.length !== 1) {
+    throw new Error(`capture manifest is not one-to-one with control target ${target.slug}: ${matches.length}`);
+  }
+  return matches[0]!;
 }
 
 async function observedCapture(
@@ -223,33 +245,32 @@ async function main(): Promise<void> {
 
   const scope = readScope(scopePath);
   const worklist = parseCaptureWorklist(JSON.parse(readFileSync(worklistPath, "utf8")) as unknown);
-  const targetUrls = [...new Set(worklist.flatMap((target) => target.urls))].sort();
-  if (targetUrls.length !== worklist.length) throw new Error("control worklist repeats a URL; capture would be counted twice");
-  const byUrl = new Map<string, ScopeRow[]>();
-  for (const row of scope.collection_scope) byUrl.set(row.url, [...(byUrl.get(row.url) ?? []), row]);
-  if (targetUrls.some((url) => !byUrl.has(url))) throw new Error("control worklist URL absent from scope");
+  const scopeBySlug = new Map(scope.collection_scope.map((row) => [row.slug, row]));
+  if (scopeBySlug.size !== scope.collection_scope.length) throw new Error("scope repeats a slug");
+  const targets = worklist.flatMap((target): CaptureTarget[] => {
+    if (target.urls.length !== 1) throw new Error(`control worklist target must have exactly one URL: ${target.slug}`);
+    const scopeRow = scopeBySlug.get(target.slug);
+    if (!scopeRow || scopeRow.url !== target.urls[0]) throw new Error(`control worklist target does not exactly match scope: ${target.slug}`);
+    return [{ slug: target.slug, source: target.source, url: target.urls[0]! }];
+  });
+  if (targets.length !== scope.collection_scope.length) throw new Error("control worklist and scope collection counts differ");
+  if (new Set(targets.map((target) => target.slug)).size !== targets.length) throw new Error("control worklist repeats a slug");
 
   const lines = await completedRunLines(runStamp);
-  const targetSet = new Set(targetUrls);
-  const matching = lines.filter(({ line }) => line.source === "zones-v1-proof-url" && targetSet.has(line.url));
-  const byCapturedUrl = new Map<string, typeof matching>();
-  for (const entry of matching) byCapturedUrl.set(entry.line.url, [...(byCapturedUrl.get(entry.line.url) ?? []), entry]);
-  if (targetUrls.some((url) => (byCapturedUrl.get(url) ?? []).length !== 1)) {
-    const detail = targetUrls.map((url) => `${url}=${(byCapturedUrl.get(url) ?? []).length}`).join(", ");
-    throw new Error(`capture manifest is not one-to-one with worklist: ${detail}`);
-  }
 
   const urls: UrlAssessment[] = [];
-  for (const url of targetUrls) {
-    const captured = (byCapturedUrl.get(url) ?? [])[0]!;
-    const members = [...(byUrl.get(url) ?? [])].sort((left, right) => left.slug.localeCompare(right.slug));
-    const observation = await observedCapture(captured.line, captured.manifestKey, captured.lineIndex);
-    const expected = [...new Set(members.map((member) => member.sha256))].sort() as `sha256:${string}`[];
+  for (const target of targets) {
+    const captured = lineForControlTarget(target, lines.map(({ line }) => line));
+    const capturedEntry = lines.find(({ line }) => line === captured);
+    if (!capturedEntry) throw new Error(`capture manifest line vanished for ${target.slug}`);
+    const member = scopeBySlug.get(target.slug)!;
+    const observation = await observedCapture(capturedEntry.line, capturedEntry.manifestKey, capturedEntry.lineIndex);
+    const expected = [member.sha256];
     urls.push({
-      url,
+      url: target.url,
       ...observation,
       outcome: outcomeFor(observation, expected),
-      slugs: members.map((member) => member.slug),
+      slugs: [member.slug],
       expected_sha256: expected,
     });
   }
@@ -278,7 +299,7 @@ async function main(): Promise<void> {
   }, null, 2));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.stack ?? error.message : String(error));
     process.exitCode = 1;
