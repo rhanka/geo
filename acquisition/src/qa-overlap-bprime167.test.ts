@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { classifyBucket, parseBprimeTsv, type ZoneSignal } from "./qa-overlap-bprime167.js";
+import { bprimeJoinKey, classifyBucket, parseBprimeTsv, type ZoneSignal } from "./qa-overlap-bprime167.js";
 
 describe("B' 167 versus geo overlap", () => {
   it("should ignore comments, parse the header, and retain an UNMATCHED row verbatim", () => {
     const rows = parseBprimeTsv([
       "# frozen conductor input",
-      "# graph_city_slug remains authoritative only as a reported comparison",
+      "# graph_city_slug is authoritative; UNMATCHED rows fall back to slug",
       "slug\tname\tpriorityRank\tgraph_version\tgraph_city_slug\tmatch",
       "alpha\tAlpha\t1\t2.3\talpha\texact",
       "raw-slug\tRaw city\t2\tnone\t\tUNMATCHED",
@@ -16,6 +16,26 @@ describe("B' 167 versus geo overlap", () => {
       { slug: "alpha", name: "Alpha", priorityRank: 1, graph_version: "2.3", graph_city_slug: "alpha", match: "exact" },
       { slug: "raw-slug", name: "Raw city", priorityRank: 2, graph_version: "none", graph_city_slug: "", match: "UNMATCHED" },
     ]);
+  });
+
+  it("should prefer graph_city_slug and fall back to slug only for empty or UNMATCHED graph rows", () => {
+    const rows = parseBprimeTsv([
+      "slug\tname\tpriorityRank\tgraph_version\tgraph_city_slug\tmatch",
+      "saint-damase-les-maskoutains\tSaint-Damase\t1\t2.3\tsaint-damase--les-maskoutains\tnormalized",
+      "without-graph\tWithout graph\t2\tnone\t\tUNMATCHED",
+      "unmatched-overrides-graph\tUnmatched graph\t3\tnone\tgraph-only\tUNMATCHED",
+    ].join("\n"));
+    const geoSet = new Set<string>();
+    const zonesMap = new Map<string, ZoneSignal>([
+      ["saint-damase--les-maskoutains", { url: "https://example.test/dead", classification: "DEAD" }],
+    ]);
+
+    expect(rows.map(bprimeJoinKey)).toEqual([
+      "saint-damase--les-maskoutains",
+      "without-graph",
+      "unmatched-overrides-graph",
+    ]);
+    expect(classifyBucket(bprimeJoinKey(rows[0]), geoSet, zonesMap)).toBe("proof_v1_dead");
   });
 
   it("should apply the four evidence buckets by precedence with exact slug equality", () => {
