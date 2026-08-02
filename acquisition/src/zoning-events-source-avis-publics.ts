@@ -18,6 +18,7 @@ import {
 
 import type { DetectedEventCandidate, ZoningEventSourceAdapter } from "./zoning-events-detect-emit.js";
 import type { ZoningEventType } from "./zoning-events-emit.js";
+import { classifyMunicipalZoningEventType } from "./zoning-events-type-classification.js";
 
 const MAX_PDF_BYTES = 40 * 1024 * 1024;
 const PDF_TEXT_TIMEOUT_MS = 45_000;
@@ -174,20 +175,12 @@ export function dateFromDocumentText(text: string): string | null {
 }
 
 function typeFromVerbatim(span: string): ZoningEventType | null {
-  const value = fold(span);
-  if (/\bppcmoi\b/u.test(value)) return "ppcmoi";
-  if (/\bcptaq\b/u.test(value)) return "cptaq";
-  if (/\bderogation\s+mineure\b/u.test(value)) return "derogation-mineure";
-  if (/\bpiia\b/u.test(value)) return "autre";
-  const zoning = /\bzonage\b/u.test(value);
-  const regulation = /\breglement\b/u.test(value);
-  if (zoning && regulation && /\b(?:avis\s+de\s+motion|(?:premier|second)\s+projet|projet\s+de\s+reglement|consultation)\b/u.test(value)) {
-    return "projet-reglement";
-  }
-  if (zoning && (/\bmodifi(?:e|er|cation|ant)\b/u.test(value) || /\bchangement\b/u.test(value) || /\brezonage\b/u.test(value))) {
-    return "changement-de-zonage";
-  }
-  return null;
+  const type = classifyMunicipalZoningEventType(span);
+  // A numbered council decision alone is not a zoning-event detection.  Keep
+  // the explicit PIIA catch-all already admitted by this adapter, but do not
+  // manufacture an event for a wholly vague decision just because the pure
+  // classifier honestly calls its type `autre`.
+  return type === "autre" && !/\bpiia\b/u.test(fold(span)) ? null : type;
 }
 
 function sourceSpan(lines: readonly string[], index: number): string {
