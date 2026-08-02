@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deterministic, local-only completion matrix for the three regdens portfolio
+ * Deterministic, local-only completion matrix for the four regdens portfolio
  * KPIs. Missing city evidence is always unknown: this script never infers a
  * status from a neighbouring or historical city.
  */
@@ -13,6 +13,7 @@ const CITY_TARGET = 1106;
 const STATES = ["complete", "incomplete", "unknown", "N/A"];
 const OUTPUT_DATE = new Date().toISOString().slice(0, 10).replaceAll("-", "");
 const OUTPUT = `work/coverage/completion-regdens-${OUTPUT_DATE}.json`;
+const REGLEMENT_DECLARED_SOURCE_AS_OF = "2026-08-02";
 
 function absolute(relativePath) {
   return resolve(REPO_ROOT, relativePath);
@@ -83,6 +84,37 @@ invariant(catalog.length === CITY_TARGET, `municipal catalogue has ${catalog.len
 const catalogSlugs = new Set(catalog.map(({ slug }) => slug));
 invariant(catalogSlugs.size === CITY_TARGET, "municipal catalogue has duplicate or missing slugs");
 
+// Declared regulation provenance is the committed registry snapshot
+// acquisition/config/reglement-provenance.json (last revised 2026-08-02): a
+// catalog slug with a non-null reglement_numero is declared complete; a slug
+// present in the registry without that number is incomplete (partial
+// millesime/URL values do not invent a number); a slug absent from the
+// registry is unknown. Registry keys outside the municipal catalog are not
+// alias-mapped: they establish no status for a catalog city.
+const reglementDeclaredSourcePath = "acquisition/config/reglement-provenance.json";
+const reglementDeclaredSource = readJson(reglementDeclaredSourcePath);
+invariant(reglementDeclaredSource.slugs !== null
+  && typeof reglementDeclaredSource.slugs === "object"
+  && !Array.isArray(reglementDeclaredSource.slugs),
+`${reglementDeclaredSourcePath} has no slugs object`);
+const reglementDeclaredBySlug = uniqueSlugs(
+  Object.entries(reglementDeclaredSource.slugs).flatMap(([slug, row]) => {
+    invariant(row !== null && typeof row === "object" && !Array.isArray(row),
+      `${reglementDeclaredSourcePath}/${slug} is not an object`);
+    return catalogSlugs.has(slug) ? [{ slug, ...row }] : [];
+  }),
+  "slug",
+  "reglement declared registry",
+  catalogSlugs,
+);
+const reglementDeclared = countStates(catalog, (slug) => {
+  const row = reglementDeclaredBySlug.get(slug);
+  if (row === undefined) return "unknown";
+  return row.reglement_numero !== null && row.reglement_numero !== undefined
+    ? "complete"
+    : "incomplete";
+}, "reglement_declared");
+
 // Authoritative regulation provenance/capture registry: a captured unchanged
 // regulation is complete; a missing or changed capture is incomplete; an
 // unreadable/no-URL observation remains unknown.
@@ -95,13 +127,13 @@ const reglementStates = new Map([
   ["change", "incomplete"],
   ["unknown", "unknown"],
 ]);
-const reglement = countStates(catalog, (slug) => {
+const reglementProven = countStates(catalog, (slug) => {
   const row = reglementBySlug.get(slug);
   if (row === undefined) return "unknown";
   const state = reglementStates.get(row.state);
   invariant(state !== undefined, `reglement capture registry/${slug} has unsupported state ${row.state}`);
   return state;
-}, "reglement");
+}, "reglement_proven");
 
 // The enrichment coverage reports a per-city boolean for usage dominant. A
 // city omitted from its finite coverage is unknown, rather than incomplete.
@@ -139,12 +171,14 @@ const effetDensifiant = countStates(catalog, (slug) => {
 
 const matrix = {
   totals: {
-    reglement,
+    reglement_declared: reglementDeclared,
+    reglement_proven: reglementProven,
     usage_dominant: usageDominant,
     effet_densifiant: effetDensifiant,
   },
   source_as_of: {
-    reglement: reglementSource.timestamp,
+    reglement_declared: REGLEMENT_DECLARED_SOURCE_AS_OF,
+    reglement_proven: reglementSource.timestamp,
     usage_dominant: usageSource.generatedAt,
     effet_densifiant: dateFromFileName(effectSource.relativePath),
   },
