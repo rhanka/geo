@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 
 import type { DetectedEventCandidate, ZoningEventSourceAdapter } from "./zoning-events-detect-emit.js";
 import type { ZoningEventType } from "./zoning-events-emit.js";
+import { classifyMunicipalZoningEventType } from "./zoning-events-type-classification.js";
 
 const ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const COVERAGE = resolve(ROOT, "work", "coverage");
@@ -100,18 +101,11 @@ function defaultReportPaths(): string[] {
 }
 
 function typeFromVerbatim(quote: string): ZoningEventType | null {
-  const normalized = quote.normalize("NFD").replace(/[\u0300-\u036f]/gu, "").toLowerCase();
-  if (/\bppcmoi\b/u.test(normalized)) return "ppcmoi";
-  if (/\bcptaq\b/u.test(normalized)) return "cptaq";
-  if (/\bderogation\s+mineure\b/u.test(normalized)) return "derogation-mineure";
-  if (/\bchangement\s+de\s+zonage\b/u.test(normalized) || /\bmodif(?:ication|ie)\b.*\bzonage\b/u.test(normalized)) {
-    return "changement-de-zonage";
-  }
-  if (/\bprojet\b.*\breglement\b/u.test(normalized) && /\bzonage\b/u.test(normalized)) return "projet-reglement";
-  if (/\bentree\s+en\s+vigueur\b/u.test(normalized) && /\bzonage\b/u.test(normalized)) return "entree-en-vigueur";
-  if (/\bconsultation\b/u.test(normalized) && /\bzonage\b/u.test(normalized)) return "consultation";
-  if (/\bregistre\b.*\breferend/u.test(normalized)) return "registre-referendaire";
-  return null;
+  const type = classifyMunicipalZoningEventType(quote);
+  // A Graphify entity is not itself a decision heading.  Preserve this
+  // adapter's existing event-selection boundary: a vague entity does not
+  // become a synthetic event merely because the classifier calls it `autre`.
+  return type === "autre" ? null : type;
 }
 
 function dateFromSourceRef(url: string): string | null {
