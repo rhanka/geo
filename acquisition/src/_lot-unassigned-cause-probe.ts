@@ -34,6 +34,7 @@ type Ring = number[][];
 type Poly = Ring[];
 type Bucket = "unassigned_inside_served" | "unassigned_outside_all" | "unassigned_no_geometry";
 type Status = "complete" | "partial" | "unknown";
+type ServedLayout = "nested" | "flat";
 
 const BUCKETS: readonly Bucket[] = [
   "unassigned_inside_served",
@@ -76,6 +77,11 @@ interface CityResult {
   examples: Record<Bucket, Example[]>;
   lots_key: string | null;
   zonage_key: string | null;
+  /**
+   * Layout effectivement lu : geo-api privilegie le nested quand les deux
+   * existent. Le conserver rend la sonde comparable a la matrice P2.
+   */
+  served_layout_used?: { lots: ServedLayout | null; zonage: ServedLayout | null };
   note?: string;
 }
 
@@ -235,11 +241,17 @@ function emptyExamples(): Record<Bucket, Example[]> {
   };
 }
 
-function emptyCity(slug: string, lotsKey: string | null, zonageKey: string | null): CityResult {
+function emptyCity(
+  slug: string,
+  lots: ServedKey | null,
+  zonage: ServedKey | null,
+): CityResult {
   return {
     slug, status: "partial", lots_total: null, lots_traites: 0, next_lot_index: 0,
     unassigned_total: 0, inside_served: 0, outside_all: 0, no_geometry: 0,
-    pct_foldable_sur_traites: null, examples: emptyExamples(), lots_key: lotsKey, zonage_key: zonageKey,
+    pct_foldable_sur_traites: null, examples: emptyExamples(),
+    lots_key: lots?.key ?? null, zonage_key: zonage?.key ?? null,
+    served_layout_used: { lots: lots?.layout ?? null, zonage: zonage?.layout ?? null },
   };
 }
 
@@ -311,13 +323,16 @@ function renderMarkdown(report: Report): string {
   const lines = [
     "# Sonde cause des lots sans code_zone",
     "",
-    "Lecture S3 seule; classification par centroide shoelace et point-in-polygon du zonage effectivement servi.",
+    "Lecture S3 seule; classification par centroide shoelace et point-in-polygon du zonage effectivement servi (nested avant flat, layout conserve par ville).",
     "",
-    "| Slug | Etat | Lots traites / total | Sans code | Dans zone servie | Hors toutes zones | Sans geometrie | % foldable |",
-    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Slug | Layout lots / zonage | Etat | Lots traites / total | Sans code | Dans zone servie | Hors toutes zones | Sans geometrie | % foldable |",
+    "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
   ];
   for (const city of report.cities) {
-    lines.push(`| ${city.slug} | ${city.status} | ${city.lots_traites} / ${city.lots_total ?? "unknown"} | ${city.unassigned_total} | ${city.inside_served} | ${city.outside_all} | ${city.no_geometry} | ${city.pct_foldable_sur_traites === null ? "unknown" : `${city.pct_foldable_sur_traites}%`} |`);
+    const layout = city.served_layout_used
+      ? `${city.served_layout_used.lots ?? "unknown"} / ${city.served_layout_used.zonage ?? "unknown"}`
+      : "unknown";
+    lines.push(`| ${city.slug} | ${layout} | ${city.status} | ${city.lots_traites} / ${city.lots_total ?? "unknown"} | ${city.unassigned_total} | ${city.inside_served} | ${city.outside_all} | ${city.no_geometry} | ${city.pct_foldable_sur_traites === null ? "unknown" : `${city.pct_foldable_sur_traites}%`} |`);
     if (city.note) lines.push("", `- ${city.slug}: ${city.note}`);
   }
   return `${lines.join("\n")}\n`;
@@ -340,10 +355,15 @@ function loadResume(output: string, args: Args): Map<string, CityResult> {
   return new Map(prior.cities.map((city) => [city.slug, city]));
 }
 
-async function firstServedKey(s3: S3Client, prefix: string, collection: string): Promise<string | null> {
-  // geo-api privilegie le sous-dossier quand les deux layouts existent.
-  const keys = [`${prefix}${collection}/${collection}.geojson`, `${prefix}${collection}.geojson`];
-  for (const key of keys) if ((await objectHead(s3, key)).exists) return key;
+interface ServedKey { key: string; layout: ServedLayout }
+
+async function firstServedKey(s3: S3Client, prefix: string, collection: string): Promise<ServedKey | null> {
+  // Ordre geo-api: le sous-dossier servi l'emporte sur son ombre plate.
+  const keys: readonly ServedKey[] = [
+    { key: `${prefix}${collection}/${collection}.geojson`, layout: "nested" },
+    { key: `${prefix}${collection}.geojson`, layout: "flat" },
+  ];
+  for (const candidate of keys) if ((await objectHead(s3, candidate.key)).exists) return candidate;
   return null;
 }
 
@@ -355,24 +375,25 @@ async function measureCity(
   deadline: number,
   persist: (city: CityResult) => void,
 ): Promise<CityResult> {
-  const [lotsKey, zonageKey] = await Promise.all([
+  const [lots, zonage] = await Promise.all([
     firstServedKey(s3, LOTS_PREFIX, `qc-lots-${slug}`),
     firstServedKey(s3, ZONAGE_PREFIX, `qc-zonage-${slug}`),
   ]);
-  if (!lotsKey || !zonageKey) {
-    const city = emptyCity(slug, lotsKey, zonageKey);
+  if (!lots || !zonage) {
+    const city = emptyCity(slug, lots, zonage);
     city.status = "unknown";
-    city.note = !lotsKey ? "qc-lots non servi" : "qc-zonage non servi";
+    city.note = !lots ? "qc-lots non servi" : "qc-zonage non servi";
     persist(city);
     return city;
   }
-  if (resumed?.status === "complete") return resumed;
-  if (resumed && (resumed.lots_key !== lotsKey || resumed.zonage_key !== zonageKey)) {
+  if (resumed && (resumed.lots_key !== lots.key || resumed.zonage_key !== zonage.key)) {
     throw new Error(`${slug}: checkpoint ne correspond plus aux cles servies`);
   }
+  if (resumed) resumed.served_layout_used = { lots: lots.layout, zonage: zonage.layout };
+  if (resumed?.status === "complete") return resumed;
   const [lotsFc, zonesFc] = await Promise.all([
-    getGeoJsonFeatureCollection<Feature>(s3, lotsKey),
-    getGeoJsonFeatureCollection<Feature>(s3, zonageKey),
+    getGeoJsonFeatureCollection<Feature>(s3, lots.key),
+    getGeoJsonFeatureCollection<Feature>(s3, zonage.key),
   ]);
   const zones: ZonePolygon[] = [];
   for (const zone of zonesFc.features) {
@@ -381,14 +402,14 @@ async function measureCity(
     for (const polygon of polygonsOf(zone.geometry)) zones.push({ code_zone: code, poly: polygon, ...bboxOf(polygon) });
   }
   if (!zones.length) {
-    const city = emptyCity(slug, lotsKey, zonageKey);
+    const city = emptyCity(slug, lots, zonage);
     city.lots_total = lotsFc.features.length;
     city.status = "unknown";
     city.note = "qc-zonage servi sans polygone a code_zone exploitable";
     persist(city);
     return city;
   }
-  const city = resumed ? structuredClone(resumed) : emptyCity(slug, lotsKey, zonageKey);
+  const city = resumed ? structuredClone(resumed) : emptyCity(slug, lots, zonage);
   city.lots_total = lotsFc.features.length;
   const start = city.next_lot_index;
   if (start < 0 || start > lotsFc.features.length || city.lots_traites !== start) throw new Error(`${slug}: checkpoint de lot invalide`);
