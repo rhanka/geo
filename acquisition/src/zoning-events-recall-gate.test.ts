@@ -16,11 +16,19 @@ import {
 const HERE = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const GEO_FIXTURE = join(HERE, "__fixtures__/zoning-events-recall-gate.geo.json");
 const IMMO_FIXTURE = join(HERE, "__fixtures__/zoning-events-recall-gate.immo.json");
+const CROSSWALK_FIXTURE = JSON.parse(readFileSync(
+  join(HERE, "__fixtures__/zoning-events-recall-gate.crosswalk.json"),
+  "utf8",
+)) as {
+  synonym: { geo_type: string; immo_kind: string; source_url: string };
+  unmapped: { geo_type: string; immo_kind: string; source_url: string };
+};
 
 function event(
   side: "geo" | "immo",
   sourceUrl: string | null,
   bylawNumero: string | null,
+  type = "ppcmoi",
 ): NaturalKeyEvent {
   return {
     side,
@@ -28,17 +36,17 @@ function event(
       muni: "coaticook",
       source_url_norm: sourceUrl,
       date_iso: "2026-02-10",
-      type: "ppcmoi",
+      type,
     },
     secondary_natural_key: bylawNumero === null
       ? null
-      : { muni: "coaticook", bylaw_numero_norm: bylawNumero.toLowerCase(), type: "ppcmoi", date_iso: "2026-02-10" },
+      : { muni: "coaticook", bylaw_numero_norm: bylawNumero.toLowerCase(), type, date_iso: "2026-02-10" },
     source_fields: {
       event_id: side === "geo" ? "geo-id" : null,
       muni: "coaticook",
       source_url: sourceUrl,
       date_iso: "2026-02-10",
-      type: "ppcmoi",
+      type,
       bylaw_numero: bylawNumero,
       zone_ref: null,
       no_lot: null,
@@ -47,10 +55,11 @@ function event(
 }
 
 describe("parseImmoDesignationEvents", () => {
-  it("should map only documented candidate fields and keep absent components null", () => {
+  it("should map only documented candidate fields and canonicalize an absent category to autre", () => {
     const [mapped, unknown] = parseImmoDesignationEvents([
       {
         city_slug: "coaticook",
+        node_id: "immo-co-100",
         kind: "PPCMOI",
         date: "2026-02-10",
         bylaw_numero: "CO-100",
@@ -68,37 +77,69 @@ describe("parseImmoDesignationEvents", () => {
       type: "ppcmoi",
     });
     expect(mapped?.source_fields.zone_ref).toEqual(["CO-1"]);
-    expect(unknown?.natural_key).toEqual({ muni: null, source_url_norm: null, date_iso: null, type: null });
+    expect(mapped?.source_fields.event_id).toBe("immo-co-100");
+    expect(unknown?.natural_key).toEqual({ muni: null, source_url_norm: null, date_iso: null, type: "autre" });
     expect(unknown?.secondary_natural_key).toBeNull();
   });
 });
 
 describe("partitionEventSets", () => {
-  it("should use the unique exact secondary bylaw key only after the natural key does not match", () => {
+  it("should never let a bylaw number relax exact document identity", () => {
     const partition = partitionEventSets(
       [event("geo", "https://coaticook.ca/docs/geo.pdf", "CO-100")],
       [event("immo", "https://coaticook.ca/docs/immo.pdf", "CO-100")],
     );
 
-    expect(partition.matched).toHaveLength(1);
-    expect(partition.matched[0]?.match_kind).toBe("secondary_bylaw_key");
-    expect(partition.missed).toHaveLength(0);
-    expect(partition.extra).toHaveLength(0);
+    expect(partition.matched).toHaveLength(0);
+    expect(partition.missed[0]?.unmatched_reason).toBe("identity_not_aligned");
+    expect(partition.extra[0]?.unmatched_reason).toBe("identity_not_aligned");
   });
 
-  it("should leave duplicate secondary keys unpaired instead of forcing an ambiguous match", () => {
+  it("should match a vendorized synonym but never force an unmapped piia category", () => {
+    const synonymImmo = parseImmoDesignationEvents([{
+      city_slug: "coaticook",
+      kind: CROSSWALK_FIXTURE.synonym.immo_kind,
+      date: "2026-02-10",
+      source_url: CROSSWALK_FIXTURE.synonym.source_url,
+    }])[0]!;
+    const synonym = partitionEventSets([
+      event("geo", CROSSWALK_FIXTURE.synonym.source_url, null, CROSSWALK_FIXTURE.synonym.geo_type),
+    ], [synonymImmo]);
+    expect(synonymImmo.natural_key.type).toBe("modification_zonage");
+    expect(synonym.matched[0]?.match_kind).toBe("identity_crosswalk");
+
+    const unmappedImmo = parseImmoDesignationEvents([{
+      city_slug: "coaticook",
+      kind: CROSSWALK_FIXTURE.unmapped.immo_kind,
+      date: "2026-02-10",
+      source_url: CROSSWALK_FIXTURE.unmapped.source_url,
+    }])[0]!;
+    const unmapped = partitionEventSets([
+      event("geo", CROSSWALK_FIXTURE.unmapped.source_url, null, CROSSWALK_FIXTURE.unmapped.geo_type),
+    ], [unmappedImmo]);
+    expect(unmapped.matched).toHaveLength(0);
+    expect(unmapped.missed[0]?.unmatched_reason).toBe("immo_kind_hors_map");
+  });
+
+  it("should leave duplicate crosswalk candidates unpaired instead of double-counting", () => {
+    const immo = parseImmoDesignationEvents([{
+      city_slug: "coaticook",
+      kind: "rezonage",
+      date: "2026-02-10",
+      source_url: "https://coaticook.ca/docs/geo.pdf",
+    }])[0]!;
     const partition = partitionEventSets(
       [
-        event("geo", "https://coaticook.ca/docs/geo-a.pdf", "CO-100"),
-        event("geo", "https://coaticook.ca/docs/geo-b.pdf", "CO-100"),
+        event("geo", "https://coaticook.ca/docs/geo.pdf", null, "changement-de-zonage"),
+        event("geo", "https://coaticook.ca/docs/geo.pdf", null, "changement-de-zonage"),
       ],
-      [event("immo", "https://coaticook.ca/docs/immo.pdf", "CO-100")],
+      [immo],
     );
 
     expect(partition.matched).toHaveLength(0);
     expect(partition.missed).toHaveLength(1);
     expect(partition.extra).toHaveLength(2);
-    expect(partition.missed[0]?.unmatched_reason).toBe("secondary_bylaw_key_ambiguous");
+    expect(partition.missed[0]?.unmatched_reason).toBe("crosswalk_match_ambiguous");
   });
 });
 
