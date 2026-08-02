@@ -155,7 +155,7 @@ const immoFoldedRel = discoverLatest(/^immo-folded-normes-city-matrix-.*\.json$/
 const SRC = {
   zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
   pv: loadFile('work/coverage/pv-completion-city-audit.json'),
-  regdens: loadFile('work/coverage/completion-regdens-20260723.json'),
+  regdens: loadFile('work/coverage/completion-regdens-20260802.json'),
   provQuality: provQualityRel ? loadFile(provQualityRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   immoLotZone: loadFile(immoLotZoneRel),
   immoFolded: loadFile(immoFoldedRel),
@@ -253,6 +253,37 @@ function unknownCell(cibleFallback = fmt(UNIVERSE)) {
   };
 }
 
+// Une matrice de complétion est exploitable seulement si ses quatre états sont
+// explicitement publiés et forment l'univers canonique. Une source incomplète
+// ne reçoit aucun crédit : le KPI reste `unknown`.
+function closedCityStateCell(states, { naKey, sourceLabel }) {
+  const fields = ['complete', 'incomplete', 'unknown', naKey];
+  if (!states || typeof states !== 'object') {
+    warn(`${sourceLabel}: états absents (KPI concerné → unknown)`);
+    return unknownCell();
+  }
+  const values = {};
+  for (const field of fields) {
+    const value = states[field];
+    if (!Number.isInteger(value) || value < 0) {
+      warn(`${sourceLabel}: état ${field} absent ou invalide (KPI concerné → unknown)`);
+      return unknownCell();
+    }
+    values[field] = value;
+  }
+  const total = Object.values(values).reduce((sum, value) => sum + value, 0);
+  if (total !== UNIVERSE) {
+    warn(`${sourceLabel}: partition ${total} ≠ univers ${UNIVERSE} (KPI concerné → unknown)`);
+    return unknownCell();
+  }
+  return stdCell({
+    complete: values.complete,
+    incomplete: values.incomplete,
+    unknown: values.unknown,
+    na: values[naKey],
+  });
+}
+
 // ---- extracteurs par KPI ---------------------------------------------------
 function kpiZones() {
   const sc = SRC.zonesNormes.data?.lanes?.zones?.state_counts;
@@ -275,8 +306,7 @@ function kpiPv() {
 
 function regdensCell(laneKey) {
   const t = SRC.regdens.data?.totals?.[laneKey];
-  if (!t) return unknownCell();
-  return stdCell({ complete: t.complete, incomplete: t.incomplete, unknown: t.unknown, na: t['N/A'] || 0 });
+  return closedCityStateCell(t, { naKey: 'N/A', sourceLabel: `regdens totals.${laneKey}` });
 }
 
 function kpiProvJointure() {
@@ -388,14 +418,12 @@ function kpiUrlSourceServie() {
 
 function kpiImmoLotZone() {
   const cs = SRC.immoLotZone.data?.summary?.city_states;
-  if (!cs) return unknownCell();
-  return stdCell({ complete: cs.complete, incomplete: cs.incomplete, unknown: cs.unknown, na: cs['N/A'] || 0 });
+  return closedCityStateCell(cs, { naKey: 'N/A', sourceLabel: 'immo lot-zone summary.city_states' });
 }
 
 function kpiImmoFolded() {
   const cs = SRC.immoFolded.data?.counts?.cityStates;
-  if (!cs) return unknownCell();
-  return stdCell({ complete: cs.complete, incomplete: cs.incomplete, unknown: cs.unknown, na: cs.not_applicable || 0 });
+  return closedCityStateCell(cs, { naKey: 'not_applicable', sourceLabel: 'immo normes pliées counts.cityStates' });
 }
 
 function immoFieldCell(fieldKey) {
@@ -501,7 +529,12 @@ const KPIS = [
   { key: 'coherence_lot_zone', label: 'Zones — cohérence lot-zone', extract: kpiCoherenceLotZone },
   { key: 'normes', label: 'Normes — complétion', extract: kpiNormes },
   { key: 'pv', label: 'PV — complétion', extract: kpiPv },
-  { key: 'reglement', label: 'Règlement — complétion', extract: () => regdensCell('reglement') },
+  {
+    key: 'reglement',
+    label: 'Règlement — complétion',
+    definitionChangedAsOf: '20260802',
+    extract: () => regdensCell('reglement'),
+  },
   { key: 'usage_dominant', label: 'Usage dominant — complétion', extract: () => regdensCell('usage_dominant') },
   { key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: () => regdensCell('effet_densifiant') },
   { key: 'prov_jointure', label: 'Provenance zones — jointure exacte', extract: kpiProvJointure },
@@ -596,15 +629,20 @@ function build(todayNum) {
     if (cur.extra) actuel.extra = cur.extra;
     if (cur.unit) actuel.unit = cur.unit;
     if (cur.partitionTotal != null) actuel.partitionTotal = cur.partitionTotal;
-    return {
+    const definitionIncomparable = !!(
+      k.definitionChangedAsOf && prevSnap && prevSnap.date < k.definitionChangedAsOf
+    );
+    const row = {
       key: k.key,
       kpi: k.label,
       precedent: prior ? renderPrecedent(prior) : '—',
       precedentDate: prevSnap ? prevSnap.date : null,
       actuel,
-      delta: computeDelta(prior, cur),
+      delta: definitionIncomparable ? '—' : computeDelta(prior, cur),
       cible: cur.cible,
     };
+    if (k.definitionChangedAsOf) row.definitionChangedAsOf = k.definitionChangedAsOf;
+    return row;
   });
 
   const sourcesMeta = [
@@ -683,6 +721,16 @@ function renderMarkdown(payload) {
   L.push(
     '- **Alignement présence + qualité/provenance** : le rapport mesure la PRÉSENCE (données servies) ET la QUALITÉ/PROVENANCE (URL de source servie, cohérence lot-zone) ; sans cet axe, la ré-acquisition et le stampage sont invisibles.'
   );
+  const reglement = payload.kpis.find((k) => k.key === 'reglement');
+  if (
+    reglement?.definitionChangedAsOf &&
+    payload.previousSnapshotDate &&
+    payload.previousSnapshotDate < reglement.definitionChangedAsOf
+  ) {
+    L.push(
+      '- Règlement complétion : définition DURCIE déclarée (815, source jamais committée = non reproductible) -> capture-prouvée v2 (542, committée, alignée preuve v2). Δ non comparable, aucune régression.'
+    );
+  }
   const url = payload.kpis.find((k) => k.key === 'prov_url_servie');
   if (url && url.actuel.status === 'ok') {
     L.push(
