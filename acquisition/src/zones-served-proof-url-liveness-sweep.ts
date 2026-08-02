@@ -21,15 +21,15 @@ const SOURCE_PATH = "work/coverage/served-zonage-immo-proof-url-audit-final-2026
 const SOURCE_CONTRACT = "served-zonage-immo-proof-url-audit/v1";
 const REPORT_CONTRACT = "zones-served-proof-url-liveness/v1";
 const MAX_SOURCE_BYTES = 5 * 1024 * 1024;
-const CONCURRENCY = 5;
-const MAX_ATTEMPTS = 3;
-const REQUEST_TIMEOUT_MS = 12_000;
-const BROWSER_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
+export const CONCURRENCY = 5;
+export const MAX_ATTEMPTS = 3;
+export const REQUEST_TIMEOUT_MS = 12_000;
+export const BROWSER_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
 export const LIVENESS_CLASSES = ["LIVE", "DEAD", "AMBIGU", "UNKNOWN"] as const;
 export type LivenessClass = (typeof LIVENESS_CLASSES)[number];
 
-interface Candidate {
+export interface Candidate {
   readonly slug: string;
   readonly url: string;
 }
@@ -42,7 +42,7 @@ interface Attempt {
   readonly dnsNotFound: boolean;
 }
 
-interface Observation {
+export interface Observation {
   readonly slug: string;
   readonly url: string;
   readonly http_status: number | null;
@@ -217,7 +217,7 @@ function observationFrom(attempt: Attempt, classification: LivenessClass, detail
   };
 }
 
-async function probe(candidate: Candidate): Promise<Observation> {
+export async function probeProofUrl(candidate: Candidate): Promise<Observation> {
   const attempts: Attempt[] = [];
   for (let index = 0; index < MAX_ATTEMPTS; index += 1) {
     const current = await attempt(candidate.url);
@@ -255,7 +255,7 @@ async function probe(candidate: Candidate): Promise<Observation> {
   return { slug: candidate.slug, url: candidate.url, ...observationFrom(last, "AMBIGU", withAttemptDetail("non-terminal HTTP responses", attempts)) };
 }
 
-async function mapConcurrent<T, U>(values: readonly T[], worker: (value: T) => Promise<U>): Promise<U[]> {
+export async function mapConcurrent<T, U>(values: readonly T[], worker: (value: T) => Promise<U>): Promise<U[]> {
   const output = new Array<U>(values.length);
   let next = 0;
   const runner = async (): Promise<void> => {
@@ -270,7 +270,7 @@ async function mapConcurrent<T, U>(values: readonly T[], worker: (value: T) => P
   return output;
 }
 
-function counts(observations: readonly Observation[]): Record<LivenessClass, number> {
+export function livenessCounts(observations: readonly Pick<Observation, "classification">[]): Record<LivenessClass, number> {
   const totals: Record<LivenessClass, number> = { LIVE: 0, DEAD: 0, AMBIGU: 0, UNKNOWN: 0 };
   for (const observation of observations) totals[observation.classification] += 1;
   return totals;
@@ -306,8 +306,8 @@ async function main(): Promise<void> {
 
   const source = readSource();
   const candidates = candidatesFrom(source);
-  const observations = await mapConcurrent(candidates, probe);
-  const partition = counts(observations);
+  const observations = await mapConcurrent(candidates, probeProofUrl);
+  const partition = livenessCounts(observations);
   const total = partition.LIVE + partition.DEAD + partition.AMBIGU + partition.UNKNOWN;
   if (total !== observations.length) {
     throw new Error(`partition invalide: ${total} classifications pour ${observations.length} couples`);
