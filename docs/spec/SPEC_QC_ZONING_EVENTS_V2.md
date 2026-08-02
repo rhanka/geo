@@ -49,7 +49,7 @@ Because immo's projector deletes-per-ville what is not in the served set, a part
 would mass-delete still-valid events. So the SERVED collection carries a completeness contract:
 - Collection-level metadata: `as_of` (ISO) + `complete: true|false`. immo projects a ville ONLY
   when `complete: true`; a `false` (mid-refresh partial) is skipped, not applied.
-- Per-ville emit is ATOMIC: the whole `qc-zonage-events-<slug>` object is written in one put
+- Per-ville emit is ATOMIC: the whole `qc-zoning-events-<slug>` object is written in one put
   (mirrors the fold-effet-densifiant whole-object write), never feature-by-feature.
 - Retracted events stay SERVED as TOMBSTONES (`state=retracted`), never silently absent — so
   immo can distinguish "retracted" (remove cleanly, keep Steve marks) from "temporarily not
