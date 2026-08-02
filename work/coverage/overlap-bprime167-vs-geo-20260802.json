@@ -1,5 +1,7 @@
 {
   "contract": "overlap-bprime167-vs-geo/v1",
+  "join_key": "graph_city_slug (fallback slug si vide ou match=UNMATCHED)",
+  "correction": "join key slug->graph_city_slug per tsv header authority; 2 MRC double-tiret munis (saint-damase, hemmingford) reclassées no_signal->proof_v1_dead",
   "provenance": {
     "bprime": {
       "source": "radar feat/set-167-canonical@800ee90 (PREVIEW, PR #436 NON mergée, contenu 'figé conducteur 2026-08-02')",
@@ -24,11 +26,29 @@
   "partition": {
     "proof_live_verifiable": 19,
     "proof_v1_live": 0,
-    "proof_v1_dead": 4,
-    "no_proof_url_signal": 144,
+    "proof_v1_dead": 6,
+    "no_proof_url_signal": 142,
     "total": 167
   },
   "recapture_target": [
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "name": "Saint-Damase",
+      "priorityRank": 104,
+      "graph_version": "2.3",
+      "bucket": "proof_v1_dead",
+      "v1_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54017_SaintDamase54017/MapServer/162/query?where=1%3D1&outFields=*&f=geojson",
+      "v1_classification": "DEAD"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "name": "Hemmingford",
+      "priorityRank": 117,
+      "graph_version": "2.3",
+      "bucket": "proof_v1_dead",
+      "v1_url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68015_Hemmingford68015_public/MapServer/144/query?where=1%3D1&outFields=*&f=geojson",
+      "v1_classification": "DEAD"
+    },
     {
       "slug": "saint-bernard-de-lacolle",
       "name": "Saint-Bernard-de-Lacolle",
@@ -90,6 +110,8 @@
     ],
     "proof_v1_live": [],
     "proof_v1_dead": [
+      "saint-damase-les-maskoutains",
+      "hemmingford-les-jardins-de-napierville",
       "saint-bernard-de-lacolle",
       "saint-pie",
       "saint-ours",
@@ -183,7 +205,6 @@
       "howick",
       "sainte-anne-de-sabrevois",
       "saint-lin-laurentides",
-      "saint-damase-les-maskoutains",
       "saint-denis-sur-richelieu",
       "tres-saint-sacrement",
       "la-presentation",
@@ -195,7 +216,6 @@
       "hudson",
       "saint-alexandre",
       "saint-chrysostome",
-      "hemmingford-les-jardins-de-napierville",
       "saint-cesaire",
       "saint-paul-de-lile-aux-noix",
       "saint-louis-de-gonzague-beauharnois-salaberry",
@@ -340,18 +360,5 @@
       "bucket_par_graph": "no_proof_url_signal"
     }
   ],
-  "slug_ambiguities": [
-    {
-      "slug": "saint-damase-les-maskoutains",
-      "graph_city_slug": "saint-damase--les-maskoutains",
-      "bucket_par_slug": "no_proof_url_signal",
-      "bucket_par_graph": "proof_v1_dead"
-    },
-    {
-      "slug": "hemmingford-les-jardins-de-napierville",
-      "graph_city_slug": "hemmingford--les-jardins-de-napierville",
-      "bucket_par_slug": "no_proof_url_signal",
-      "bucket_par_graph": "proof_v1_dead"
-    }
-  ]
+  "slug_ambiguities": []
 }
