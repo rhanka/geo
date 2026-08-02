@@ -1,12 +1,13 @@
 /**
  * publish-reglement-provenance.ts — P0_1 lane (demande Steve/immo 2026-07-12).
  *
- * SURFACE la provenance du RÈGLEMENT sur les grilles de normes SERVIES: ajoute 4
+ * SURFACE la provenance du RÈGLEMENT sur les grilles de normes SERVIES: ajoute 8
  * champs FIGÉS à CHAQUE feature de `normalized/qc-zonage-norms/qc-zonage-norms-<slug>.geojson`:
  *   reglement_numero, reglement_millesime, reglement_page_source, reglement_url
+ *   reglement_ancien_numero, reglement_ancien_millesime, reglement_ancien_source, has_ancien
  * (passthrough verbatim d'un registre par muni; anti-invention: champ inconnu = null).
  *
- * Le geo-api sert ce geojson tel quel -> immo lit ces 4 champs sur la fiche lot
+ * Le geo-api sert ce geojson tel quel -> immo lit ces champs sur la fiche lot
  * (« de quel règlement/millésime vient chaque norme »). RÉVERSIBLE (re-run sans le
  * slug dans le registre = laisse les champs; --strip pour les retirer).
  *
@@ -34,13 +35,30 @@ import { getBytes, putBytes, exists, listSlugs, s3Client } from "./lib/s3.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CONFIG = resolve(ROOT, "acquisition", "config", "reglement-provenance.json");
 const SERVED_PREFIX = "normalized/qc-zonage-norms/";
-const FIELDS = ["reglement_numero", "reglement_millesime", "reglement_page_source", "reglement_url"] as const;
+const FIELDS = [
+  "reglement_numero",
+  "reglement_millesime",
+  "reglement_page_source",
+  "reglement_url",
+  "reglement_ancien_numero",
+  "reglement_ancien_millesime",
+  "reglement_ancien_source",
+  "has_ancien",
+] as const;
 
-interface Prov {
+interface CuratedProv {
   reglement_numero: string | null;
   reglement_millesime: string | null;
   reglement_page_source: string | null;
   reglement_url: string | null;
+  reglement_ancien_numero?: string | null;
+  reglement_ancien_millesime?: number | null;
+  reglement_ancien_source?: string | null;
+}
+
+interface Prov extends Required<CuratedProv> {
+  reglement_ancien_millesime: null;
+  has_ancien: boolean;
 }
 
 function arg(argv: string[], k: string): string | undefined {
@@ -54,45 +72,64 @@ const isUrl = (v: unknown): v is string => typeof v === "string" && /^https?:\/\
 /** Provenance minée depuis la provenance DÉJÀ déposée dans la grille (verbatim),
  *  le registre curé override champ par champ (curé non-null gagne). Anti-invention:
  *  millesime + page_source NE viennent QUE du registre curé. */
-function resolveProv(firstProps: Record<string, unknown>, curated?: Prov): Prov {
+export function servedKeys(slug: string): string[] {
+  const name = `qc-zonage-norms-${slug}`;
+  return [`${SERVED_PREFIX}${name}.geojson`, `${SERVED_PREFIX}${name}/${name}.geojson`];
+}
+
+export function resolveProv(firstProps: Record<string, unknown>, curated?: CuratedProv): Prov {
   const minedNumero = asStr(firstProps["_reglement"]);
   const minedUrl = isUrl(firstProps["_source_url"]) ? (firstProps["_source_url"] as string) : null;
+  const ancienNumero = asStr(curated?.reglement_ancien_numero);
   return {
     reglement_numero: curated?.reglement_numero ?? minedNumero,
     reglement_millesime: curated?.reglement_millesime ?? null,
     reglement_page_source: curated?.reglement_page_source ?? null,
     reglement_url: curated?.reglement_url ?? minedUrl,
+    // v1 n'infere jamais le millesime de l'ancien reglement: le registre peut
+    // documenter son numero et sa clause, mais pas une annee non attestee.
+    reglement_ancien_numero: ancienNumero,
+    reglement_ancien_millesime: null,
+    reglement_ancien_source: asStr(curated?.reglement_ancien_source),
+    has_ancien: ancienNumero !== null,
   };
 }
 
-/** Applique/retire les 4 champs sur la grille servie d'un slug. Retourne le compte
+/** Applique/retire les champs de provenance sur chaque layout servi d'un slug. Retourne le compte
  *  de cellules modifiées + le nombre de features (null si grille non servie). */
-async function applyToServed(
+export async function applyToServed(
   s3: ReturnType<typeof s3Client>,
   slug: string,
   prov: Prov,
   opts: { dryRun: boolean; strip: boolean },
 ): Promise<{ features: number; changed: number } | null> {
-  const key = `${SERVED_PREFIX}qc-zonage-norms-${slug}.geojson`;
-  if (!(await exists(s3, key))) return null;
-  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-  const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+  let features = 0;
   let changed = 0;
-  for (const f of feats) {
-    f.properties = f.properties ?? {};
-    for (const field of FIELDS) {
-      if (opts.strip) {
-        if (field in f.properties) { delete f.properties[field]; changed++; }
-      } else {
-        const val = prov[field] ?? null;
-        if (f.properties[field] !== val) { f.properties[field] = val; changed++; }
+  let found = false;
+  for (const key of servedKeys(slug)) {
+    if (!(await exists(s3, key))) continue;
+    found = true;
+    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+    const feats: Array<{ properties?: Record<string, unknown> }> = fc.features ?? [];
+    let layoutChanged = 0;
+    for (const f of feats) {
+      f.properties = f.properties ?? {};
+      for (const field of FIELDS) {
+        if (opts.strip) {
+          if (field in f.properties) { delete f.properties[field]; layoutChanged++; }
+        } else {
+          const val = prov[field];
+          if (f.properties[field] !== val) { f.properties[field] = val; layoutChanged++; }
+        }
       }
     }
+    if (!opts.dryRun && layoutChanged > 0) {
+      await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
+    }
+    features += feats.length;
+    changed += layoutChanged;
   }
-  if (!opts.dryRun && changed > 0) {
-    await putBytes(s3, key, Buffer.from(JSON.stringify(fc)), "application/geo+json");
-  }
-  return { features: feats.length, changed };
+  return found ? { features, changed } : null;
 }
 
 /** Lit les properties de la 1re feature d'une grille servie (pour miner la provenance). */
@@ -100,18 +137,21 @@ async function firstProps(
   s3: ReturnType<typeof s3Client>,
   slug: string,
 ): Promise<Record<string, unknown> | null> {
-  const key = `${SERVED_PREFIX}qc-zonage-norms-${slug}.geojson`;
-  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-  return fc.features?.[0]?.properties ?? {};
+  for (const key of servedKeys(slug)) {
+    if (!(await exists(s3, key))) continue;
+    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8"));
+    return fc.features?.[0]?.properties ?? {};
+  }
+  return null;
 }
 
-async function generalize(dryRun: boolean, cfg: { slugs: Record<string, Prov> }): Promise<void> {
+async function generalize(dryRun: boolean, cfg: { slugs: Record<string, CuratedProv> }): Promise<void> {
   const s3 = s3Client();
-  const rests = await listSlugs(s3, SERVED_PREFIX, ".geojson", true);
-  const slugs = rests
-    .filter((r) => r.startsWith("qc-zonage-norms-"))
-    .map((r) => r.slice("qc-zonage-norms-".length))
-    .sort();
+  const rests = await listSlugs(s3, SERVED_PREFIX, ".geojson");
+  const slugs = [...new Set(rests.flatMap((rest) => {
+    const match = rest.match(/^qc-zonage-norms-([a-z0-9-]+)(?:\/qc-zonage-norms-([a-z0-9-]+))?$/);
+    return match && (!match[2] || match[1] === match[2]) ? [match[1]!] : [];
+  }))].sort();
   console.log(`generalize: ${slugs.length} grilles servies`);
   let numeroFilled = 0, urlFilled = 0, curated = 0, served = 0, i = 0;
   for (const slug of slugs) {
@@ -137,7 +177,7 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
   const strip = argv.includes("--strip");
-  const cfg = JSON.parse(readFileSync(CONFIG, "utf8")) as { slugs: Record<string, Prov> };
+  const cfg = JSON.parse(readFileSync(CONFIG, "utf8")) as { slugs: Record<string, CuratedProv> };
 
   if (argv.includes("--generalize")) {
     await generalize(dryRun, cfg);
@@ -161,7 +201,7 @@ async function main(): Promise<void> {
       skipped.push(`${slug} (absent du registre)`);
       continue;
     }
-    const res = await applyToServed(s3, slug, prov ?? ({} as Prov), { dryRun, strip });
+    const res = await applyToServed(s3, slug, resolveProv({}, prov), { dryRun, strip });
     if (!res) {
       skipped.push(`${slug} (grille non servie)`);
       continue;
