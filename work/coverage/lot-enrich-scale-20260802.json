@@ -1,0 +1,318 @@
+{
+  "contract": "lot-enrich-scale/v1",
+  "as_of": "2026-08-02",
+  "scope": {
+    "batch_max_seconds": 2400,
+    "max_lots": 15000,
+    "province": false,
+    "excluded_large": [
+      "laval",
+      "montreal",
+      "saguenay"
+    ],
+    "target_rule": "assignment complete + coverage normes done + folded matrix incomplete + current folded below current join ceiling"
+  },
+  "source_matrices": [
+    "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+    "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+    "work/coverage/coverage-matrix.json"
+  ],
+  "target_selection": {
+    "matrix_candidates": 159,
+    "productive_targets": [
+      "sainte-cecile-de-whitton",
+      "saint-ludger",
+      "marston",
+      "stornoway",
+      "milan",
+      "grenville-sur-la-rouge"
+    ],
+    "productive_target_count": 6,
+    "matrix_candidates_at_current_ceiling": 153,
+    "remaining_productive_targets": [],
+    "ceiling_policy": "liste plafond séparée; aucun re-traitement sans nouveau parquet/normes ou changement de zone"
+  },
+  "anti_invention": {
+    "address_rule": "adresse absente du rôle joint par lot = null; aucune adresse n'est déduite",
+    "structural_nulls": "Les nulls adresse sont comptés comme structurels et ne sont pas un gain.",
+    "stamp_rule": "zone_source_url et zone_source_level lus sur la collection zonage servie; objet zone non écrit par ce batch"
+  },
+  "municipalities": [
+    {
+      "slug": "sainte-cecile-de-whitton",
+      "lots": 1233,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 1233/1233 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 914/1233 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-sainte-cecile-de-whitton",
+        "folded_normes_matrix": 914,
+        "folded_normes_matrix_missing": 319
+      },
+      "preflight_join_ceiling": 1053,
+      "folded_normes_avant": {
+        "lots": 914,
+        "pct": 74.13
+      },
+      "folded_normes_apres": {
+        "lots": 1053,
+        "pct": 85.4
+      },
+      "folded_normes_gain": 139,
+      "adresse_avant": {
+        "lots": 1083,
+        "pct": 87.83
+      },
+      "adresse_apres": {
+        "lots": 1083,
+        "pct": 87.83
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235257044ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED",
+        "level": "documented",
+        "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson",
+        "key": "normalized/ca-qc-zonage/qc-zonage-sainte-cecile-de-whitton.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    },
+    {
+      "slug": "saint-ludger",
+      "lots": 1174,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 1174/1174 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 1134/1174 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-saint-ludger",
+        "folded_normes_matrix": 1134,
+        "folded_normes_matrix_missing": 40
+      },
+      "preflight_join_ceiling": 1173,
+      "folded_normes_avant": {
+        "lots": 1134,
+        "pct": 96.59
+      },
+      "folded_normes_apres": {
+        "lots": 1173,
+        "pct": 99.91
+      },
+      "folded_normes_gain": 39,
+      "adresse_avant": {
+        "lots": 1049,
+        "pct": 89.35
+      },
+      "adresse_apres": {
+        "lots": 1049,
+        "pct": 89.35
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235326530ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED",
+        "level": "legacy-traceable",
+        "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+        "key": "normalized/ca-qc-zonage/qc-zonage-saint-ludger.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    },
+    {
+      "slug": "marston",
+      "lots": 946,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 946/946 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 913/946 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-marston",
+        "folded_normes_matrix": 913,
+        "folded_normes_matrix_missing": 33
+      },
+      "preflight_join_ceiling": 944,
+      "folded_normes_avant": {
+        "lots": 913,
+        "pct": 96.51
+      },
+      "folded_normes_apres": {
+        "lots": 944,
+        "pct": 99.79
+      },
+      "folded_normes_gain": 31,
+      "adresse_avant": {
+        "lots": 856,
+        "pct": 90.49
+      },
+      "adresse_apres": {
+        "lots": 856,
+        "pct": 90.49
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235437276ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED",
+        "level": "documented",
+        "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson",
+        "key": "normalized/ca-qc-zonage/qc-zonage-marston.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    },
+    {
+      "slug": "stornoway",
+      "lots": 856,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 856/856 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 749/856 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-stornoway",
+        "folded_normes_matrix": 749,
+        "folded_normes_matrix_missing": 107
+      },
+      "preflight_join_ceiling": 775,
+      "folded_normes_avant": {
+        "lots": 749,
+        "pct": 87.5
+      },
+      "folded_normes_apres": {
+        "lots": 775,
+        "pct": 90.54
+      },
+      "folded_normes_gain": 26,
+      "adresse_avant": {
+        "lots": 754,
+        "pct": 88.08
+      },
+      "adresse_apres": {
+        "lots": 754,
+        "pct": 88.08
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235459506ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED",
+        "level": "legacy-traceable",
+        "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+        "key": "normalized/ca-qc-zonage/qc-zonage-stornoway.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    },
+    {
+      "slug": "milan",
+      "lots": 754,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 754/754 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 440/754 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-milan",
+        "folded_normes_matrix": 440,
+        "folded_normes_matrix_missing": 314
+      },
+      "preflight_join_ceiling": 454,
+      "folded_normes_avant": {
+        "lots": 440,
+        "pct": 58.36
+      },
+      "folded_normes_apres": {
+        "lots": 454,
+        "pct": 60.21
+      },
+      "folded_normes_gain": 14,
+      "adresse_avant": {
+        "lots": 677,
+        "pct": 89.79
+      },
+      "adresse_apres": {
+        "lots": 677,
+        "pct": 89.79
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235529776ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED",
+        "level": "documented",
+        "url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson",
+        "key": "normalized/ca-qc-zonage/qc-zonage-milan.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    },
+    {
+      "slug": "grenville-sur-la-rouge",
+      "lots": 1415,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 1415/1415 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 1044/1415 served lots with folded-normes.",
+        "normes_track": "qc-zonage-norms-grenville-sur-la-rouge",
+        "folded_normes_matrix": 1044,
+        "folded_normes_matrix_missing": 371
+      },
+      "preflight_join_ceiling": 1045,
+      "folded_normes_avant": {
+        "lots": 1044,
+        "pct": 73.78
+      },
+      "folded_normes_apres": {
+        "lots": 1045,
+        "pct": 73.85
+      },
+      "folded_normes_gain": 1,
+      "adresse_avant": {
+        "lots": 1413,
+        "pct": 99.86
+      },
+      "adresse_apres": {
+        "lots": 1413,
+        "pct": 99.86
+      },
+      "adresse_gain": 0,
+      "backup_ts": "2026-08-02T235549351ZZ",
+      "backup_ok": true,
+      "mirror": "flat-only",
+      "mirror_ok": true,
+      "stamp_before_after": {
+        "status": "STAMPED_NULL",
+        "level": "orphan",
+        "url": null,
+        "key": "normalized/ca-qc-zonage/qc-zonage-grenville-sur-la-rouge/qc-zonage-grenville-sur-la-rouge.geojson"
+      },
+      "stamp_preserved": true,
+      "stamp_evidence": "zone object LastModified precedes batch start; chain writes qc-lots/qc-lot-zonage only",
+      "deposited": true,
+      "skipped_reason": null
+    }
+  ],
+  "summary": {
+    "municipalities_processed": 6,
+    "folded_normes_avant": 5194,
+    "folded_normes_apres": 5444,
+    "folded_normes_added": 250,
+    "adresse_added": 0,
+    "backup_ok_all": true,
+    "mirror_ok_all": true,
+    "stamp_preserved_all": true,
+    "deposited_all": true
+  },
+  "checkpoint": ".cache/lot-enrich-scale-progress-20260802.json"
+}
