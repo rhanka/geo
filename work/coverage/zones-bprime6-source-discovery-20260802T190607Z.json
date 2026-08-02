@@ -1,0 +1,83 @@
+{
+  "stamp": "20260802T190607Z",
+  "scope": "WP2 zones — B-prime immo, six municipalites",
+  "total": 6,
+  "status_counts": {
+    "FRESH_SOURCE_FOUND": 0,
+    "NEEDS_RECALAGE_PDF": 5,
+    "UNRESOLVED": 1
+  },
+  "cities": [
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54017_SaintDamase54017/MapServer/162/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "La page officielle de reglementation de Saint-Damase et https://www.st-damase.qc.ca/wp-content/uploads/2021/09/zonage.pdf sont vivants; le PDF (200, application/pdf) commence par des extraits de reglements de zonage. C'est bien la municipalite, mais ce n'est pas un FeatureCollection GeoJSON; le chemin GoAzimut courant pour 54017 conserve le service gis109-08 non exploitable.",
+      "method": "b",
+      "status": "NEEDS_RECALAGE_PDF"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/680_LesJardinsDeNapierville/68015_Hemmingford68015_public/MapServer/144/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "Le portail officiel du Canton (https://canton.hemmingford.ca/citoyens/reglements-et-permis/reglements/) fournit le reglement 309 codifie (200, application/pdf), dont le texte commence par MUNICIPALITE DU CANTON DE HEMMINGFORD / REGLEMENT DE ZONAGE, ainsi que les annexes de plans de zonage (200, application/pdf). Identite confirmee, mais aucun GeoJSON.",
+      "method": "b",
+      "status": "NEEDS_RECALAGE_PDF"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/680_LesJardinsDeNapierville/68005_SaintBernardDeLacolle/MapServer/162/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "La page officielle de reglementation municipale est vivante et https://www.municipalite-de-saint-bernard-de-lacolle.ca/uploads/urbanisme/2025/02/codifie_171-4.pdf renvoie 200 application/pdf; le texte identifie MUNICIPALITE DE SAINT-BERNARD-DE-LACOLLE et REGLEMENT DE ZONAGE 171. Le document est officiel mais non GeoJSON; aucune couche GeoJSON actuelle de la municipalite n'a ete verifiee.",
+      "method": "b",
+      "status": "NEEDS_RECALAGE_PDF"
+    },
+    {
+      "slug": "saint-pie",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "Le portail officiel de Saint-Pie (pages urbanisme/reglements) et son lien GOnet m=54008 repondent 200, mais respectivement en HTML de portail et HTML d'application. Les documents de zonage reperes sont des avis/projets ou modifications partielles, sans plan de zonage actuel complet publiquement verifiable; aucune reponse GeoJSON non vide et identifiee Saint-Pie n'a ete obtenue.",
+      "method": "b",
+      "status": "UNRESOLVED"
+    },
+    {
+      "slug": "saint-ours",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/530_PierreDeSaurel/53032_SaintOurs/MapServer/169/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "La page officielle https://saintours.qc.ca/reglements-durbanisme-et-grille-de-specification/ est vivante et intitule la section Plan de zonage et reglements. Elle expose les deux plans officiels (PNG) et un reglement de zonage PDF (200, application/pdf) dont le texte commence par VILLE DE SAINT-OURS / Reglementation d'urbanisme. Identite confirmee, mais pas de GeoJSON.",
+      "method": "b",
+      "status": "NEEDS_RECALAGE_PDF"
+    },
+    {
+      "slug": "saint-dominique",
+      "v1_dead_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=*&f=geojson",
+      "fresh_source_url": null,
+      "http_status": 200,
+      "is_geojson": false,
+      "feature_count": null,
+      "identity_check": "La page officielle https://www.st-dominique.ca/fr/urbanisme/reglements-d-urbanisme/ et son annexe C plan de zonage sont vivantes; le PDF (200, application/pdf) est explicitement le plan de zonage du reglement 2017-324 et contient des references a la Municipalite de Saint-Dominique. Identite confirmee, mais format PDF, pas GeoJSON.",
+      "method": "b",
+      "status": "NEEDS_RECALAGE_PDF"
+    }
+  ],
+  "partition": {
+    "total": 6,
+    "sum_statuses": 6,
+    "closed": true
+  }
+}
