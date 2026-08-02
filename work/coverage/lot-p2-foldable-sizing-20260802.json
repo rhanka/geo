@@ -1,0 +1,66 @@
+{
+  "$schema": "lot-p2-foldable-sizing/v1",
+  "as_of": "20260802",
+  "source_matrix": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+  "method": "Sonde lecture seule : centroide shoelace de chaque lot sans code_zone et point-in-polygon contre le zonage servi; nested avant flat pour les lots et le zonage.",
+  "authoritative_lots_without_code_zone": 1120034,
+  "municipalities": [
+    {
+      "slug": "montreal",
+      "status": "complete",
+      "lots_sans_code": 669287,
+      "lots_traites": 680087,
+      "lots_total": 680087,
+      "inside_served": 34,
+      "outside_all": 669253,
+      "no_geometry": 0,
+      "served_layout_used": {
+        "lots": "flat",
+        "zonage": "flat"
+      },
+      "lots_key": "normalized/qc-lots/qc-lots-montreal.geojson",
+      "zonage_key": "normalized/ca-qc-zonage/qc-zonage-montreal.geojson"
+    },
+    {
+      "slug": "laval",
+      "status": "complete",
+      "lots_sans_code": 261800,
+      "lots_traites": 401594,
+      "lots_total": 401594,
+      "inside_served": 92,
+      "outside_all": 261708,
+      "no_geometry": 0,
+      "served_layout_used": {
+        "lots": "flat",
+        "zonage": "flat"
+      },
+      "lots_key": "normalized/qc-lots/qc-lots-laval.geojson",
+      "zonage_key": "normalized/ca-qc-zonage/qc-zonage-laval.geojson"
+    },
+    {
+      "slug": "saguenay",
+      "status": "complete",
+      "lots_sans_code": 0,
+      "lots_traites": 19135,
+      "lots_total": 19135,
+      "inside_served": 0,
+      "outside_all": 0,
+      "no_geometry": 0,
+      "served_layout_used": {
+        "lots": "flat",
+        "zonage": "flat"
+      },
+      "lots_key": "normalized/qc-lots/qc-lots-saguenay.geojson",
+      "zonage_key": "normalized/ca-qc-zonage/qc-zonage-saguenay.geojson"
+    }
+  ],
+  "province_on_scanned": {
+    "scanned_municipalities": 3,
+    "scanned_lots": 1100816,
+    "scanned_lots_without_code_zone": 931087,
+    "pct_of_authoritative_lots_without_code_zone": 83.130244,
+    "total_foldable": 126,
+    "total_coverage_gap": 930961,
+    "total_no_geometry": 0
+  }
+}
