@@ -1,12 +1,14 @@
 /**
- * Compose the exact-slug overlap between the conductor's frozen B' 167 set,
- * geo's already-verifiable evidence, and the zones-v1 liveness sweep.
+ * Compose the overlap between the conductor's frozen B' 167 set, geo's
+ * already-verifiable evidence, and the zones-v1 liveness sweep. B' joins on
+ * its authoritative graph_city_slug, falling back verbatim to slug only when
+ * graph_city_slug is empty or match is UNMATCHED.
  *
  * Usage (from repository root):
  *   npx tsx acquisition/src/qa-overlap-bprime167.ts
  *
- * This command is read-only except for its committed local report.  It never
- * normalizes a slug: B' slug equality is the only join criterion.
+ * This command is read-only except for its committed local report. It never
+ * normalizes a slug.
  */
 import { createHash, randomUUID } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -45,6 +47,14 @@ export interface BprimeRow {
 export interface ZoneSignal {
   url: string;
   classification: ZoneClassification;
+}
+
+/**
+ * B' TSV header authority: graph_city_slug is the serving and graph key.
+ * Cities without a graph are the only permitted fallback to their B' slug.
+ */
+export function bprimeJoinKey(row: BprimeRow): string {
+  return row.graph_city_slug === "" || row.match === "UNMATCHED" ? row.slug : row.graph_city_slug;
 }
 
 type JsonObject = Record<string, unknown>;
@@ -223,34 +233,31 @@ function main(): void {
   }> = [];
 
   for (const row of bprimeRows) {
-    const bucket = classifyBucket(row.slug, geoSet, zonesMap);
+    const joinKey = bprimeJoinKey(row);
+    const bucket = classifyBucket(joinKey, geoSet, zonesMap);
     buckets[bucket].push(row.slug);
 
+    // Retain non-exact B' source mappings as a raw diagnostic only. The
+    // authoritative key above resolves graph-versus-slug differences, so they
+    // are no longer reported as unresolved slug ambiguities.
     if (row.slug !== row.graph_city_slug || row.match !== "exact") {
+      const bucketBySlug = classifyBucket(row.slug, geoSet, zonesMap);
       const bucketByGraph = classifyBucket(row.graph_city_slug, geoSet, zonesMap);
-      if (bucket !== bucketByGraph) {
-        slugAmbiguities.push({
-          slug: row.slug,
-          graph_city_slug: row.graph_city_slug,
-          bucket_par_slug: bucket,
-          bucket_par_graph: bucketByGraph,
-        });
-      }
       if (row.match !== "exact") {
         unmatched.push({
           bucket: "UNMATCHED",
           slug: row.slug,
           graph_city_slug: row.graph_city_slug,
           match: row.match,
-          bucket_par_slug: bucket,
+          bucket_par_slug: bucketBySlug,
           bucket_par_graph: bucketByGraph,
         });
       }
     }
 
     if (bucket === "proof_v1_live" || bucket === "proof_v1_dead") {
-      const signal = zonesMap.get(row.slug);
-      if (signal === undefined) throw new Error(`missing zones-v1 signal for ${row.slug} classified as ${bucket}`);
+      const signal = zonesMap.get(joinKey);
+      if (signal === undefined) throw new Error(`missing zones-v1 signal for ${joinKey} classified as ${bucket}`);
       recaptureTarget.push({
         slug: row.slug,
         name: row.name,
@@ -272,6 +279,8 @@ function main(): void {
   recaptureTarget.sort((left, right) => left.priorityRank - right.priorityRank);
   const artifact = {
     contract: "overlap-bprime167-vs-geo/v1",
+    join_key: "graph_city_slug (fallback slug si vide ou match=UNMATCHED)",
+    correction: "join key slug->graph_city_slug per tsv header authority; 2 MRC double-tiret munis (saint-damase, hemmingford) reclassées no_signal->proof_v1_dead",
     provenance: {
       bprime: {
         source: "radar feat/set-167-canonical@800ee90 (PREVIEW, PR #436 NON mergée, contenu 'figé conducteur 2026-08-02')",
