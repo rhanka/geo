@@ -657,6 +657,69 @@ describe("additive served-zone provenance write", () => {
     });
   });
 
+  describe("exact v1 envelope promotion to served v2", () => {
+    const source = {
+      url: PUBLIC_ARTIFACT_URL,
+      type: "arcgis" as const,
+      method: "natif" as const,
+      reliability: "directe" as const,
+      retrieved_at: "2026-07-28T12:00:00.000Z",
+      sha256: PROOF_SHA256,
+    };
+    const legacy = () => ({
+      schema_version: "1.0",
+      status: "complete",
+      sources: {
+        geometry: { status: "available", artifact_uri: PUBLIC_ARTIFACT_URL, sha256: PROOF_SHA256 },
+        regulation: { status: "unavailable", artifact_uri: null },
+      },
+      gaps: ["regulation_source_unavailable"],
+    });
+
+    it("promotes only the capture-attested geometry envelope while preserving legacy evidence", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = legacy();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      incoming.proof = { schema_version: "2.0", geometry_source: source };
+      for (const feature of incoming.features) {
+        feature.properties.proof = { ...feature.properties.proof, schema_version: "2.0", geometry_source: source };
+        feature.properties.zone_source_url = source.url;
+        feature.properties.zone_source_level = "documented";
+      }
+
+      await putServedZoneAdditive(s3, KEY, incoming, {
+        allowedProps: ["zone_source_url", "zone_source_level"],
+        allowProofV2Promotion: [{ geometrySource: source }],
+      });
+      const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+      expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
+      expect(body.features[0].properties.proof.sources).toEqual(served.features[0].properties.proof.sources);
+      expect(body.proof).toEqual({ schema_version: "2.0", geometry_source: source });
+      expect(() => assertServedZoneGeojson(KEY, body)).not.toThrow();
+    });
+
+    it("refuses a promotion that edits a legacy proof member", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = legacy();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      incoming.proof = { schema_version: "2.0", geometry_source: source };
+      for (const feature of incoming.features) {
+        feature.properties.proof = { ...feature.properties.proof, schema_version: "2.0", geometry_source: source };
+        feature.properties.proof.sources.regulation.status = "available";
+        feature.properties.zone_source_url = source.url;
+        feature.properties.zone_source_level = "documented";
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowedProps: ["zone_source_url", "zone_source_level"],
+        allowProofV2Promotion: [{ geometrySource: source }],
+      })).rejects.toThrow(/non-provenance property "proof"/);
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+  });
+
   it("can skip the backup when explicitly disabled", async () => {
     const served = twoFeatures();
     const { s3, sent } = fakeS3(served);
