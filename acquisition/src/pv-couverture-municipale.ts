@@ -219,7 +219,7 @@ function sourceRows(
   for (const key of seen) metrics.keys.add(key);
 }
 
-interface SourceMetrics {
+export interface SourceMetrics {
   filesDiscovered: number;
   filesRead: number;
   excludedFiles: number;
@@ -232,6 +232,15 @@ interface SourceMetrics {
   indexedRows: number;
   missingFiles: string[];
   unreadableFiles: string[];
+}
+
+export interface LoadedCoverageObservations {
+  readonly observations: readonly CoverageObservation[];
+  readonly municipalities: ReadonlyMap<string, string>;
+  readonly partitionSlugs: readonly string[];
+  readonly universeKeys: readonly string[];
+  readonly sources: ReadonlyMap<string, SourceMetrics>;
+  readonly partition: Record<string, unknown> | null;
 }
 
 function metrics(): SourceMetrics {
@@ -453,10 +462,7 @@ function markdown(report: Record<string, unknown>): string {
   ].join("\n");
 }
 
-function main(): void {
-  const output = outputPath("--out", ".json");
-  const markdownOutput = outputPath("--markdown", ".md");
-  const generatedAt = new Date().toISOString();
+export function loadObservations(): LoadedCoverageObservations {
   const municipalities = readMunicipalities();
   const observations: CoverageObservation[] = [];
   const sources = new Map<string, SourceMetrics>();
@@ -601,6 +607,14 @@ function main(): void {
     }
   }
 
+  return { observations, municipalities, partitionSlugs, universeKeys, sources, partition };
+}
+
+function main(): void {
+  const output = outputPath("--out", ".json");
+  const markdownOutput = outputPath("--markdown", ".md");
+  const generatedAt = new Date().toISOString();
+  const { observations, municipalities, partitionSlugs, universeKeys, sources, partition } = loadObservations();
   const aggregation = aggregateObservations(observations, municipalities, partitionSlugs, universeKeys);
   const observedKeys = new Set(observations.map((observation) => observation.storageKey));
   const sourceUnavailable = [...sources.entries()]
