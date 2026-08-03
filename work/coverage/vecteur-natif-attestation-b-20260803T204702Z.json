@@ -1,0 +1,302 @@
+{
+  "contract": "vecteur-natif-attestation/v1",
+  "banc": {
+    "http_ok": 200,
+    "polygon_types": [
+      "Polygon",
+      "MultiPolygon"
+    ],
+    "feature_min": 1,
+    "zone_distinct_min": 3,
+    "zone_maxlen_max": 24,
+    "bbox_diag_max": 35,
+    "sha256_hex_len": 64,
+    "feature_url_re": {},
+    "registry_attribution_km_tight": 1.1
+  },
+  "lot_zone_source_post_depot": "work/coverage/lot-zone-consistency-scale-20260803.json",
+  "total": 9,
+  "pass_banc": 2,
+  "fail": 7,
+  "fail_breakdown": {
+    "FAIL-BANC": 7
+  },
+  "aggregate": "2 vecteur-natif PASS-banc / 7 FAIL",
+  "attestations": [
+    {
+      "slug": "lassomption",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services/URB_MAJZonageJuillet2021/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T11:51:11.625Z",
+        "sha256": "sha256:efbbf015e86a0d0b2e1f8da31df3f6f642d70f1a82fa42e6d3c779b63dc15b6e",
+        "http_status": 200,
+        "feature_count": 359,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "Zonage",
+        "zone_distinct": 359,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 22.160098789275757,
+        "registry_attribution_km": 0.53,
+        "nearest_registre_muni": "lassomption",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 5.23
+    },
+    {
+      "slug": "laval",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T11:51:20.592Z",
+        "sha256": "sha256:1ed9579ed1d17e1321d2683dc8f7e614c71f5b031edc22ecd217ac04818b9fd6",
+        "http_status": 200,
+        "feature_count": 2657,
+        "geometry_type": "Polygon",
+        "zone_field": "NO_ZONE",
+        "zone_distinct": 2657,
+        "zone_maxlen": 4,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 35.847511044038086,
+        "registry_attribution_km": 1.21,
+        "nearest_registre_muni": "laval",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 5.29
+    },
+    {
+      "slug": "saint-francois-xavier-de-brompton",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention, non_contamination",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "FAIL"
+      },
+      "metrics": {
+        "source_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:41.441Z",
+        "sha256": "sha256:7a0c5c212a7473c7203e96dafa3363760193f72056ae8cd7e9eae31117b28acd",
+        "http_status": 200,
+        "feature_count": 1446,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "Sect",
+        "zone_distinct": 714,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 77.91475969565899,
+        "registry_attribution_km": 3.77,
+        "nearest_registre_muni": "windsor",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 2.8
+    },
+    {
+      "slug": "saint-honore-de-temiscouata",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention, non_contamination",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "FAIL"
+      },
+      "metrics": {
+        "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:17.451Z",
+        "sha256": "sha256:48d3d00d5e640dce7849e85a7eb1efb3984c15c9152bc2220c3380dec69a3f39",
+        "http_status": 200,
+        "feature_count": 1180,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "ZONE",
+        "zone_distinct": 440,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 99.9,
+        "bbox_diag": 125.54986182608565,
+        "registry_attribution_km": 2.97,
+        "nearest_registre_muni": "saint-louis-du-ha-ha",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 1.39
+    },
+    {
+      "slug": "saint-jean-de-la-lande",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention, non_contamination",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "FAIL"
+      },
+      "metrics": {
+        "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:17.451Z",
+        "sha256": "sha256:48d3d00d5e640dce7849e85a7eb1efb3984c15c9152bc2220c3380dec69a3f39",
+        "http_status": 200,
+        "feature_count": 1180,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "ZONE",
+        "zone_distinct": 440,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 99.9,
+        "bbox_diag": 125.54986182608565,
+        "registry_attribution_km": 2.97,
+        "nearest_registre_muni": "saint-louis-du-ha-ha",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 2.29
+    },
+    {
+      "slug": "saint-juste-du-lac",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention, non_contamination",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "FAIL"
+      },
+      "metrics": {
+        "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:17.451Z",
+        "sha256": "sha256:48d3d00d5e640dce7849e85a7eb1efb3984c15c9152bc2220c3380dec69a3f39",
+        "http_status": 200,
+        "feature_count": 1180,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "ZONE",
+        "zone_distinct": 440,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 99.9,
+        "bbox_diag": 125.54986182608565,
+        "registry_attribution_km": 2.97,
+        "nearest_registre_muni": "saint-louis-du-ha-ha",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 1.86
+    },
+    {
+      "slug": "saint-louis-de-blandford",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T11:54:51.008Z",
+        "sha256": "sha256:fd2f7932b976888ac7ba04ba10ca0e1588da2fea320b2c5b0c0e87d628f3e135",
+        "http_status": 200,
+        "feature_count": 56,
+        "geometry_type": "Polygon",
+        "zone_field": "ZonageMuni",
+        "zone_distinct": 29,
+        "zone_maxlen": 2,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 24.026786557347343,
+        "registry_attribution_km": 1.51,
+        "nearest_registre_muni": "saint-louis-de-blandford",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 2.92
+    },
+    {
+      "slug": "saint-louis-du-ha-ha",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:17.451Z",
+        "sha256": "sha256:48d3d00d5e640dce7849e85a7eb1efb3984c15c9152bc2220c3380dec69a3f39",
+        "http_status": 200,
+        "feature_count": 1180,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "ZONE",
+        "zone_distinct": 440,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 99.9,
+        "bbox_diag": 125.54986182608565,
+        "registry_attribution_km": 2.97,
+        "nearest_registre_muni": "saint-louis-du-ha-ha",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 3.86
+    },
+    {
+      "slug": "saint-ludger",
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): anti_invention, non_contamination",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "FAIL",
+        "non_contamination": "FAIL"
+      },
+      "metrics": {
+        "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=1%3D1&outFields=*&f=geojson",
+        "retrieved_at": "2026-07-28T04:05:08.653Z",
+        "sha256": "sha256:b32fb0f4cb8e84e72548534daf1d59a632ff0dc6c97869e7bab866aa3cd4c226",
+        "http_status": 200,
+        "feature_count": 1431,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "NO_ZONE",
+        "zone_distinct": 389,
+        "zone_maxlen": 7,
+        "zone_nonnull_pct": 99.9,
+        "bbox_diag": 112.69167676980669,
+        "registry_attribution_km": 0.82,
+        "nearest_registre_muni": "lac-megantic",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 3.24
+    }
+  ],
+  "source_manifest": {
+    "ref": "lane/zones@working-tree:work/coverage/zones-vecteur-natif-manifest-b-20260803T204702Z.json",
+    "contract": "zones-vecteur-natif-capture-manifest/v1",
+    "sha256": "sha256:989a734ec4694417b3889d0ac2ebe123e007c74c28ab6c1377dc70d997467490"
+  }
+}

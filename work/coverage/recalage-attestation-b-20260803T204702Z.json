@@ -1,0 +1,269 @@
+{
+  "contract": "recalage-attestation/v1",
+  "banc": {
+    "residual_max_m": 30,
+    "min_gcps": 12,
+    "anisotropy_max": 1.1,
+    "anisotropy_hard": 1.5,
+    "orientation_tol_deg": 15,
+    "shear_max_deg": 10,
+    "lot_zone_mismatch_max_pct": 5,
+    "degeneracy_scale_band_edge_frac": 0.02,
+    "degeneracy_mean_dist_m": 0.1,
+    "degeneracy_margin_min_pct": 10
+  },
+  "lot_zone_source": "work/coverage/lot-zone-consistency-scale-20260803.json",
+  "total": 9,
+  "pass_banc": 0,
+  "fail": 9,
+  "fail_breakdown": {
+    "FAIL-BANC": 2,
+    "FAIL-INDET": 7
+  },
+  "aggregate": "0 recalées PASS-banc / 9 FAIL",
+  "attestations": [
+    {
+      "slug": "lassomption",
+      "feuillet": null,
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): lot_zone",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "FAIL"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 5.23,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "laval",
+      "feuillet": null,
+      "verdict": "FAIL-BANC",
+      "motif": "porte(s) échouée(s): lot_zone",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "FAIL"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 5.29,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-francois-xavier-de-brompton",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 2.8,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-honore-de-temiscouata",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 1.39,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-jean-de-la-lande",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 2.29,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-juste-du-lac",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 1.86,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-louis-de-blandford",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 2.92,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-louis-du-ha-ha",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 3.86,
+        "pipeline_pass": null
+      }
+    },
+    {
+      "slug": "saint-ludger",
+      "feuillet": null,
+      "verdict": "FAIL-INDET",
+      "motif": "métrique(s) absente(s), non déposable: gcp_residual, orientation",
+      "gates": {
+        "gcp_residual": "INDET",
+        "orientation": "INDET",
+        "lot_zone": "PASS"
+      },
+      "degenerate": false,
+      "metrics": {
+        "chamfer_mean_dist_m": null,
+        "inlier_pct": null,
+        "scale_ratio": null,
+        "scale_band": null,
+        "margin_pct": null,
+        "rotation_deg": null,
+        "gcp_residual_max_m": null,
+        "gcp_holdout_max_m": null,
+        "selected_gcps": null,
+        "anisotropy": null,
+        "shear_deg": null,
+        "lot_zone_mismatch_pct": 3.24,
+        "pipeline_pass": null
+      }
+    }
+  ]
+}
