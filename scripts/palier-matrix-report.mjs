@@ -174,6 +174,11 @@ const IDX = {
 const normSlug = (s) => String(s).replace(/-+/g, '-');
 const immoFieldNorm = new Map();
 for (const [slug, row] of IDX.immoField) { const n = normSlug(slug); if (!immoFieldNorm.has(n)) immoFieldNorm.set(n, row); }
+// Même divergence d'orthographe possible dans l'export col-20 (jointures) : index
+// normalisé secondaire, fallback STRICT après échec exact (jamais de flou).
+const col20Norm = new Map();
+for (const [slug, row] of IDX.col20) { const n = normSlug(slug); if (!col20Norm.has(n)) col20Norm.set(n, row); }
+const col20Row = (s) => IDX.col20.get(s) ?? col20Norm.get(normSlug(s));
 
 // ---- extracteurs par KPI (état pour UN slug) -------------------------------
 const U = 'unknown';
@@ -275,14 +280,14 @@ const COLUMNS = [
   { n: 18, key: 'tod_applicabilite', label: 'Immo — applicabilité TOD', slug_measured: true, extract: (s) => immoFieldStatus(s, 'tod_applicability') },
   { n: 19, key: 'tod_completion', label: 'Immo — complétion TOD', slug_measured: true, extract: (s) => immoFieldStatus(s, 'tod_completion') },
   { n: 20, key: 'v34_qc_zoning_events', label: 'Recall+précision v3.4 qc-zoning-events', gap: GAP_V34, extract: (s) => {
-      const r = IDX.col20.get(s);
+      const r = col20Row(s);
       if (!r) return U;                                  // hors périmètre mesuré → GAP unknown (anti-invention, jamais fabriqué)
       if (r.statut === 'measured') return 'complete';    // recall MESURÉ (GT immo présente) → résolu
       if (r.statut === 'N-A') return 'N-A';              // na_proven : absence PROUVÉE (0 event densifiant, attestation) → résolu
       if (r.statut === 'measured-geo-empty') return 'incomplete'; // GT existe mais geo n'émet rien
       return U;                                          // immo-gt-pending → GT immo absente → unknown (null jamais inventé)
     }, detail: (s) => {
-      const r = IDX.col20.get(s);
+      const r = col20Row(s);
       if (!r) return undefined;
       return { statut: r.statut, geo_events_count: r.geo_events_count, immo_gt_events: r.immo_gt_events, matched: r.matched, recall_pct_si_mesurable: r.recall_pct_si_mesurable };
     } },
