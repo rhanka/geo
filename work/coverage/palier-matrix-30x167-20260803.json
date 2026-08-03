@@ -1,6 +1,6 @@
 {
   "contract": "palier-matrix/v1",
-  "generatedAt": "2026-08-03T01:32:25.280Z",
+  "generatedAt": "2026-08-03T01:45:06.145Z",
   "reportDate": "2026-08-03",
   "previousSnapshotDate": null,
   "owner_target": "CIBLE MERCREDI = PRÉSENCE 100% sur les 30 (col 10 preuve-v2 = campagne longue séparée).",
@@ -20,6 +20,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -29,6 +30,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -38,15 +40,17 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
       "n": 4,
       "key": "pv",
-      "label": "PV — complétion",
+      "label": "PV — capté (indexé)",
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": true,
       "ceiling": null
     },
     {
@@ -56,6 +60,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -65,6 +70,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -74,6 +80,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": "plafond DOCUMENTAIRE : l'effet densifiant n'est établi que si le document le porte (amendement ne recouvre pas l'original) — gisement rare ; l'incomplete/unknown est majoritairement NON acquérable à court terme."
     },
     {
@@ -83,6 +90,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -92,6 +100,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -101,6 +110,7 @@
       "gap": null,
       "v2_track": true,
       "gate_excluded": true,
+      "presence_strict": false,
       "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi."
     },
     {
@@ -110,6 +120,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -119,6 +130,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -128,6 +140,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -137,6 +150,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -146,6 +160,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -155,6 +170,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -164,6 +180,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -173,6 +190,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -182,6 +200,7 @@
       "gap": null,
       "v2_track": false,
       "gate_excluded": false,
+      "presence_strict": false,
       "ceiling": null
     },
     {
@@ -191,6 +210,7 @@
       "gap": "GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)",
       "v2_track": false,
       "gate_excluded": true,
+      "presence_strict": false,
       "ceiling": "plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour."
     }
   ],
@@ -199,15 +219,15 @@
     "axis": "présence (donnée là) ; cols 10 (preuve-v2, piste longue) & 20 (v3.4, non mesurable) EXCLUES de la gate",
     "gate_columns": 18,
     "cities_scored": 162,
-    "cities_full_presence": 15,
+    "cities_full_presence": 9,
     "cities_full_completion": 0,
-    "mean_presence_pct": 69.8
+    "mean_presence_pct": 67.8
   },
   "subset_palier1_rank_le_30": {
     "cities_scored": 27,
-    "cities_full_presence": 9,
+    "cities_full_presence": 4,
     "cities_full_completion": 0,
-    "mean_presence_pct": 96.1
+    "mean_presence_pct": 93.7
   },
   "rows": [
     {
@@ -219,7 +239,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -266,18 +286,18 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 4,
+        "complete": 11,
+        "incomplete": 5,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -289,7 +309,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -336,18 +356,18 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 6,
+        "complete": 11,
+        "incomplete": 7,
         "unknown": 2,
         "N-A": 0
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 94.4
+        "pct": 88.9
       }
     },
     {
@@ -359,7 +379,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -406,18 +426,18 @@
         }
       },
       "counts": {
-        "complete": 8,
-        "incomplete": 8,
+        "complete": 7,
+        "incomplete": 9,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 8,
+      "completion_complete_over_20": 7,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -639,7 +659,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -686,18 +706,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 7,
+        "complete": 10,
+        "incomplete": 8,
         "unknown": 2,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 94.4
+        "pct": 88.9
       }
     },
     {
@@ -983,7 +1003,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1030,18 +1050,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 6,
+        "complete": 12,
+        "incomplete": 7,
         "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 100
+        "pct": 94.4
       }
     },
     {
@@ -1123,7 +1143,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1170,18 +1190,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 9,
+        "complete": 9,
+        "incomplete": 10,
         "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 100
+        "pct": 94.4
       }
     },
     {
@@ -1327,7 +1347,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1374,18 +1394,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 6,
+        "complete": 12,
+        "incomplete": 7,
         "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 100
+        "pct": 94.4
       }
     },
     {
@@ -1397,7 +1417,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1444,18 +1464,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 8,
+        "complete": 10,
+        "incomplete": 9,
         "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 100
+        "pct": 94.4
       }
     },
     {
@@ -1957,7 +1977,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -2004,18 +2024,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 8,
+        "complete": 10,
+        "incomplete": 9,
         "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 100
+        "pct": 94.4
       }
     },
     {
@@ -2097,7 +2117,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -2144,18 +2164,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 7,
+        "complete": 10,
+        "incomplete": 8,
         "unknown": 2,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 94.4
+        "pct": 88.9
       }
     },
     {
@@ -2167,7 +2187,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -2214,18 +2234,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 5,
+        "complete": 12,
+        "incomplete": 6,
         "unknown": 2,
         "N-A": 0
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 94.4
+        "pct": 88.9
       }
     },
     {
@@ -3001,7 +3021,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -3048,18 +3068,18 @@
         }
       },
       "counts": {
-        "complete": 3,
-        "incomplete": 3,
+        "complete": 2,
+        "incomplete": 4,
         "unknown": 14,
         "N-A": 0
       },
-      "completion_complete_over_20": 3,
+      "completion_complete_over_20": 2,
       "presence": {
-        "present": 6,
-        "absent": 12,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 33.3
+        "pct": 27.8
       }
     },
     {
@@ -3281,7 +3301,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -3328,18 +3348,18 @@
         }
       },
       "counts": {
-        "complete": 3,
-        "incomplete": 3,
+        "complete": 2,
+        "incomplete": 4,
         "unknown": 14,
         "N-A": 0
       },
-      "completion_complete_over_20": 3,
+      "completion_complete_over_20": 2,
       "presence": {
-        "present": 6,
-        "absent": 12,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 33.3
+        "pct": 27.8
       }
     },
     {
@@ -3351,7 +3371,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -3398,18 +3418,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -3491,7 +3511,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -3538,18 +3558,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 2,
+        "complete": 1,
+        "incomplete": 3,
         "unknown": 14,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 12,
+        "present": 3,
+        "absent": 13,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 25
+        "pct": 18.8
       }
     },
     {
@@ -3771,7 +3791,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -3818,18 +3838,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -3981,7 +4001,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "incomplete",
@@ -4028,18 +4048,18 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 5,
+        "complete": 11,
+        "incomplete": 6,
         "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 15,
+        "absent": 1,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 100
+        "pct": 93.8
       }
     },
     {
@@ -4051,7 +4071,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -4098,18 +4118,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 3,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -4191,7 +4211,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -4238,18 +4258,18 @@
         }
       },
       "counts": {
-        "complete": 1,
-        "incomplete": 2,
+        "complete": 0,
+        "incomplete": 3,
         "unknown": 15,
         "N-A": 2
       },
-      "completion_complete_over_20": 1,
+      "completion_complete_over_20": 0,
       "presence": {
-        "present": 3,
-        "absent": 13,
+        "present": 2,
+        "absent": 14,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 18.8
+        "pct": 12.5
       }
     },
     {
@@ -4611,7 +4631,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -4658,18 +4678,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -4815,7 +4835,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -4862,18 +4882,18 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 4,
+        "complete": 11,
+        "incomplete": 5,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -4955,7 +4975,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -5002,18 +5022,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -5235,7 +5255,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -5282,18 +5302,18 @@
         }
       },
       "counts": {
-        "complete": 3,
-        "incomplete": 2,
+        "complete": 2,
+        "incomplete": 3,
         "unknown": 15,
         "N-A": 0
       },
-      "completion_complete_over_20": 3,
+      "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 27.8
+        "pct": 22.2
       }
     },
     {
@@ -5585,7 +5605,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -5632,18 +5652,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -5865,7 +5885,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -5912,18 +5932,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -5935,7 +5955,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -5982,18 +6002,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -6005,7 +6025,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -6052,18 +6072,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -6075,7 +6095,7 @@
         "zones": "complete",
         "coherence_lot_zone": "unknown",
         "normes": "incomplete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -6122,18 +6142,18 @@
         }
       },
       "counts": {
-        "complete": 7,
-        "incomplete": 8,
+        "complete": 6,
+        "incomplete": 9,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 7,
+      "completion_complete_over_20": 6,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -6215,7 +6235,7 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -6262,18 +6282,18 @@
         }
       },
       "counts": {
-        "complete": 2,
-        "incomplete": 3,
+        "complete": 1,
+        "incomplete": 4,
         "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 2,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 5,
-        "absent": 11,
+        "present": 4,
+        "absent": 12,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 31.3
+        "pct": 25
       }
     },
     {
@@ -6495,7 +6515,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -6542,18 +6562,18 @@
         }
       },
       "counts": {
-        "complete": 8,
-        "incomplete": 7,
+        "complete": 7,
+        "incomplete": 8,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 8,
+      "completion_complete_over_20": 7,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -6565,7 +6585,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -6612,18 +6632,18 @@
         }
       },
       "counts": {
-        "complete": 8,
-        "incomplete": 7,
+        "complete": 7,
+        "incomplete": 8,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 8,
+      "completion_complete_over_20": 7,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -6775,7 +6795,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -6822,18 +6842,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 6,
+        "complete": 10,
+        "incomplete": 7,
         "unknown": 3,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 0,
         "denom_excl_v2": 18,
-        "pct": 88.9
+        "pct": 83.3
       }
     },
     {
@@ -6985,7 +7005,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -7032,18 +7052,18 @@
         }
       },
       "counts": {
-        "complete": 8,
-        "incomplete": 7,
+        "complete": 7,
+        "incomplete": 8,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 8,
+      "completion_complete_over_20": 7,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -7125,7 +7145,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -7172,18 +7192,18 @@
         }
       },
       "counts": {
-        "complete": 11,
-        "incomplete": 4,
+        "complete": 10,
+        "incomplete": 5,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -7265,7 +7285,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -7312,18 +7332,18 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 4,
+        "complete": 11,
+        "incomplete": 5,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -7825,7 +7845,7 @@
         "zones": "complete",
         "coherence_lot_zone": "unknown",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -7872,18 +7892,18 @@
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 4,
+        "complete": 3,
+        "incomplete": 5,
         "unknown": 10,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 3,
       "presence": {
-        "present": 8,
-        "absent": 8,
+        "present": 7,
+        "absent": 9,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 50
+        "pct": 43.8
       }
     },
     {
@@ -8035,7 +8055,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -8082,18 +8102,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -8595,7 +8615,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -8642,18 +8662,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 6,
+        "complete": 9,
+        "incomplete": 7,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -8875,7 +8895,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -8922,18 +8942,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 6,
+        "complete": 9,
+        "incomplete": 7,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -9225,7 +9245,7 @@
         "zones": "incomplete",
         "coherence_lot_zone": "unknown",
         "normes": "incomplete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "unknown",
         "effet_densifiant": "unknown",
@@ -9272,18 +9292,18 @@
         }
       },
       "counts": {
-        "complete": 1,
-        "incomplete": 3,
+        "complete": 0,
+        "incomplete": 4,
         "unknown": 14,
         "N-A": 2
       },
-      "completion_complete_over_20": 1,
+      "completion_complete_over_20": 0,
       "presence": {
-        "present": 4,
-        "absent": 12,
+        "present": 3,
+        "absent": 13,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 25
+        "pct": 18.8
       }
     },
     {
@@ -9505,7 +9525,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -9552,18 +9572,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -9575,7 +9595,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -9622,18 +9642,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -9715,7 +9735,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -9762,18 +9782,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -10065,7 +10085,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -10112,18 +10132,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 3,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -10205,7 +10225,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -10252,18 +10272,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -10345,7 +10365,7 @@
         "zones": "incomplete",
         "coherence_lot_zone": "unknown",
         "normes": "incomplete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "unknown",
         "effet_densifiant": "unknown",
@@ -10392,18 +10412,18 @@
         }
       },
       "counts": {
-        "complete": 1,
-        "incomplete": 3,
+        "complete": 0,
+        "incomplete": 4,
         "unknown": 14,
         "N-A": 2
       },
-      "completion_complete_over_20": 1,
+      "completion_complete_over_20": 0,
       "presence": {
-        "present": 4,
-        "absent": 12,
+        "present": 3,
+        "absent": 13,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 25
+        "pct": 18.8
       }
     },
     {
@@ -10765,7 +10785,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
@@ -10812,18 +10832,18 @@
         }
       },
       "counts": {
-        "complete": 9,
-        "incomplete": 6,
+        "complete": 8,
+        "incomplete": 7,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 9,
+      "completion_complete_over_20": 8,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -10905,7 +10925,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -10952,18 +10972,18 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 5,
+        "complete": 9,
+        "incomplete": 6,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -11045,7 +11065,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -11092,18 +11112,18 @@
         }
       },
       "counts": {
-        "complete": 9,
-        "incomplete": 6,
+        "complete": 8,
+        "incomplete": 7,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 9,
+      "completion_complete_over_20": 8,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -11319,7 +11339,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -11366,18 +11386,18 @@
         }
       },
       "counts": {
-        "complete": 9,
-        "incomplete": 6,
+        "complete": 8,
+        "incomplete": 7,
         "unknown": 3,
         "N-A": 2
       },
-      "completion_complete_over_20": 9,
+      "completion_complete_over_20": 8,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 13,
+        "absent": 3,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 87.5
+        "pct": 81.3
       }
     },
     {
@@ -11389,77 +11409,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
-        "reglement": "complete",
-        "usage_dominant": "complete",
-        "effet_densifiant": "unknown",
-        "prov_jointure": "complete",
-        "prov_qualite": "complete",
-        "prov_v2": "incomplete",
-        "prov_url_servie": "incomplete",
-        "immo_lot_zone": "incomplete",
-        "immo_normes_pliees": "incomplete",
-        "immo_lots_servis": "complete",
-        "immo_surface": "complete",
-        "immo_code_postal": "complete",
-        "immo_adresse": "incomplete",
-        "tod_applicabilite": "N-A",
-        "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
-      },
-      "deltas": {
-        "zones": "—",
-        "coherence_lot_zone": "—",
-        "normes": "—",
-        "pv": "—",
-        "reglement": "—",
-        "usage_dominant": "—",
-        "effet_densifiant": "—",
-        "prov_jointure": "—",
-        "prov_qualite": "—",
-        "prov_v2": "—",
-        "prov_url_servie": "—",
-        "immo_lot_zone": "—",
-        "immo_normes_pliees": "—",
-        "immo_lots_servis": "—",
-        "immo_surface": "—",
-        "immo_code_postal": "—",
-        "immo_adresse": "—",
-        "tod_applicabilite": "—",
-        "tod_completion": "—",
-        "v34_qc_zoning_events": "—"
-      },
-      "details": {
-        "reglement": {
-          "declared": "complete",
-          "proven": "complete"
-        }
-      },
-      "counts": {
-        "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
-        "N-A": 2
-      },
-      "completion_complete_over_20": 11,
-      "presence": {
-        "present": 15,
-        "absent": 1,
-        "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
-      }
-    },
-    {
-      "priorityRank": 162,
-      "slug": "saint-hippolyte",
-      "graph_matched": true,
-      "flag": null,
-      "cells": {
-        "zones": "complete",
-        "coherence_lot_zone": "complete",
-        "normes": "unknown",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -11507,8 +11457,8 @@
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
@@ -11521,6 +11471,76 @@
       }
     },
     {
+      "priorityRank": 162,
+      "slug": "saint-hippolyte",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "unknown",
+        "pv": "incomplete",
+        "reglement": "complete",
+        "usage_dominant": "complete",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "deltas": {
+        "zones": "—",
+        "coherence_lot_zone": "—",
+        "normes": "—",
+        "pv": "—",
+        "reglement": "—",
+        "usage_dominant": "—",
+        "effet_densifiant": "—",
+        "prov_jointure": "—",
+        "prov_qualite": "—",
+        "prov_v2": "—",
+        "prov_url_servie": "—",
+        "immo_lot_zone": "—",
+        "immo_normes_pliees": "—",
+        "immo_lots_servis": "—",
+        "immo_surface": "—",
+        "immo_code_postal": "—",
+        "immo_adresse": "—",
+        "tod_applicabilite": "—",
+        "tod_completion": "—",
+        "v34_qc_zoning_events": "—"
+      },
+      "details": {
+        "reglement": {
+          "declared": "complete",
+          "proven": "complete"
+        }
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 6,
+        "unknown": 3,
+        "N-A": 2
+      },
+      "completion_complete_over_20": 9,
+      "presence": {
+        "present": 13,
+        "absent": 3,
+        "na_excluded": 2,
+        "denom_excl_v2": 16,
+        "pct": 81.3
+      }
+    },
+    {
       "priorityRank": 163,
       "slug": "venise-en-quebec",
       "graph_matched": true,
@@ -11529,7 +11549,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "complete",
+        "pv": "incomplete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -11576,18 +11596,18 @@
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 3,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 14,
+        "absent": 2,
         "na_excluded": 2,
         "denom_excl_v2": 16,
-        "pct": 93.8
+        "pct": 87.5
       }
     },
     {
@@ -11935,22 +11955,22 @@
     {
       "n": 4,
       "key": "pv",
-      "label": "PV — complétion",
+      "label": "PV — capté (indexé)",
       "gap": null,
       "v2_track": false,
       "ceiling": null,
-      "acquirable_incomplete": 9,
+      "acquirable_incomplete": 62,
       "counts": {
-        "complete": 153,
-        "incomplete": 0,
+        "complete": 100,
+        "incomplete": 53,
         "unknown": 9,
         "N-A": 0
       },
-      "complete_over_matched": "153/162",
-      "cities_100pct": 153,
-      "pct_complete": 94.4,
-      "present": 153,
-      "pct_present": 94.4
+      "complete_over_matched": "100/162",
+      "cities_100pct": 100,
+      "pct_complete": 61.7,
+      "present": 100,
+      "pct_present": 61.7
     },
     {
       "n": 5,
@@ -12293,9 +12313,15 @@
       "present": true
     },
     {
-      "role": "pv-completion",
+      "role": "pv-completion-declared",
       "path": "work/coverage/pv-completion-city-audit.json",
       "sha256": "sha256:0352d5ffb08309ae0516f370c29980ed93f2adbe1459c2825eccc24319a15e25",
+      "present": true
+    },
+    {
+      "role": "pv-couverture-captee",
+      "path": "work/coverage/pv-couverture-municipale-20260803T003500Z.json",
+      "sha256": "sha256:26819ccc48a8f85112227096d86b4e027e6740a457a0010a53955f51cf5a921d",
       "present": true
     },
     {
