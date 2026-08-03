@@ -44,24 +44,26 @@ describe("palier-matrix contract", () => {
     }
   });
 
-  it("gate présence : cols 10 (v2) et 20 (v3.4) EXCLUES", () => {
+  it("gate présence : les 20 KPI comptent — AUCUNE colonne exclue (cols 10 v2 & 20 v3.4 INCLUSES, décision owner révisée)", () => {
     const v2 = payload.columns.find((c: any) => c.key === "prov_v2");
     const v34 = payload.columns.find((c: any) => c.key === "v34_qc_zoning_events");
-    expect(v2.gate_excluded).toBe(true);
-    expect(v34.gate_excluded).toBe(true);
-    // dénominateur présence par ville n'inclut pas les 2 colonnes exclues.
+    // décision owner révisée : plus aucune colonne n'est hors gate.
+    expect(v2.gate_excluded).toBe(false);
+    expect(v34.gate_excluded).toBe(false);
     const gateCols = payload.columns.filter((c: any) => !c.gate_excluded).length;
-    expect(gateCols).toBe(18);
+    expect(gateCols).toBe(20);
+    // dénominateur présence par ville = les 20 KPI (present+absent+N-A).
     for (const r of payload.rows.filter((x: any) => x.graph_matched)) {
-      expect(r.presence.present + r.presence.absent + r.presence.na_excluded).toBe(18);
+      expect(r.presence.present + r.presence.absent + r.presence.na_excluded).toBe(20);
     }
+    // col 20 (v3.4) sans source per-ville : absente partout → aucune ville full-presence.
+    expect(payload.presence_gate.cities_full_presence).toBe(0);
   });
 
   it("présence = donnée là ; colonne presence_strict (PV capté) : present ssi complete", () => {
     for (const r of payload.rows.filter((x: any) => x.graph_matched)) {
       let present = 0, absent = 0;
       for (const c of payload.columns) {
-        if (c.gate_excluded) continue;
         const st = r.cells[c.key];
         if (st === "N-A") continue;
         if (c.presence_strict) { if (st === "complete") present++; else absent++; }
