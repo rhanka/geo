@@ -1,6 +1,6 @@
 {
   "contract": "palier-matrix/v1",
-  "generatedAt": "2026-08-03T20:18:46.683Z",
+  "generatedAt": "2026-08-03T20:31:33.046Z",
   "reportDate": "2026-08-03",
   "previousSnapshotDate": null,
   "owner_target": "CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.",
@@ -239,15 +239,15 @@
     "axis": "présence (donnée là) sur les 20 KPI — AUCUNE colonne exclue (cols 10 preuve-v2 & 20 v3.4 INCLUSES, décision owner révisée)",
     "gate_columns": 20,
     "cities_scored": 162,
-    "cities_full_presence": 0,
+    "cities_full_presence": 12,
     "cities_full_completion": 0,
-    "mean_presence_pct": 64.9
+    "mean_presence_pct": 69.1
   },
   "subset_palier1_rank_le_30": {
     "cities_scored": 27,
-    "cities_full_presence": 0,
+    "cities_full_presence": 7,
     "cities_full_completion": 0,
-    "mean_presence_pct": 89.4
+    "mean_presence_pct": 95.5
   },
   "rows": [
     {
@@ -259,7 +259,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -275,7 +275,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -303,21 +303,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 12,
+        "complete": 13,
         "incomplete": 4,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 94.4
       }
     },
     {
@@ -373,6 +380,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -399,7 +413,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -415,7 +429,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -443,21 +457,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 8,
+        "complete": 9,
         "incomplete": 8,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 8,
+      "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 94.4
       }
     },
     {
@@ -485,7 +506,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -513,21 +534,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -583,6 +611,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -625,7 +660,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -653,21 +688,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -679,7 +721,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -695,7 +737,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -723,21 +765,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 11,
+        "complete": 12,
         "incomplete": 7,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 3,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 85
+        "pct": 95
       }
     },
     {
@@ -829,7 +878,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "complete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -857,21 +906,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 12,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 15,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 15,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -899,7 +955,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -927,21 +983,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 11,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -969,7 +1032,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "complete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -997,21 +1060,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 12,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 5,
-        "unknown": 1,
+        "incomplete": 6,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 19,
-        "absent": 1,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 95
+        "pct": 100
       }
     },
     {
@@ -1023,7 +1093,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "complete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1039,7 +1109,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "complete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1067,21 +1137,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 13,
+        "complete": 14,
         "incomplete": 6,
-        "unknown": 1,
+        "unknown": 0,
         "N-A": 0
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 14,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 100
       }
     },
     {
@@ -1109,7 +1186,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1137,21 +1214,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -1163,7 +1247,7 @@
         "zones": "complete",
         "coherence_lot_zone": "incomplete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1179,7 +1263,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1207,21 +1291,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 10,
+        "complete": 11,
         "incomplete": 9,
-        "unknown": 1,
+        "unknown": 0,
         "N-A": 0
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 100
       }
     },
     {
@@ -1249,7 +1340,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1277,21 +1368,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 11,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 7,
-        "unknown": 1,
+        "incomplete": 8,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 19,
-        "absent": 1,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 95
+        "pct": 100
       }
     },
     {
@@ -1383,7 +1481,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "complete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1411,21 +1509,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 14,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 6,
-        "unknown": 1,
+        "incomplete": 7,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -1437,7 +1542,7 @@
         "zones": "complete",
         "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "incomplete",
@@ -1453,7 +1558,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1481,21 +1586,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 10,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 11,
+        "complete": 12,
         "incomplete": 8,
-        "unknown": 1,
+        "unknown": 0,
         "N-A": 0
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 100
       }
     },
     {
@@ -1523,7 +1635,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1551,21 +1663,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 15,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -1593,7 +1712,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1621,21 +1740,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 5,
-        "unknown": 1,
+        "incomplete": 6,
+        "unknown": 0,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 0,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 94.4
+        "pct": 100
       }
     },
     {
@@ -1663,7 +1789,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1691,21 +1817,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 25,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 5,
-        "unknown": 1,
+        "incomplete": 6,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 19,
-        "absent": 1,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 95
+        "pct": 100
       }
     },
     {
@@ -1733,7 +1866,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1761,21 +1894,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -1803,7 +1943,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1831,21 +1971,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 10,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -1873,7 +2020,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1901,21 +2048,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -1943,7 +2097,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -1971,21 +2125,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2013,7 +2174,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2041,21 +2202,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 8,
-        "unknown": 1,
+        "incomplete": 9,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2083,7 +2251,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2111,21 +2279,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2153,7 +2328,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2181,21 +2356,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2205,9 +2387,9 @@
       "flag": null,
       "cells": {
         "zones": "complete",
-        "coherence_lot_zone": "incomplete",
+        "coherence_lot_zone": "complete",
         "normes": "complete",
-        "pv": "incomplete",
+        "pv": "complete",
         "reglement": "incomplete",
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
@@ -2223,7 +2405,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2251,21 +2433,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 5,
-        "unknown": 2,
+        "complete": 15,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 15,
       "presence": {
-        "present": 17,
-        "absent": 3,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 85
+        "pct": 95
       }
     },
     {
@@ -2357,7 +2546,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2385,21 +2574,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 7,
-        "incomplete": 5,
-        "unknown": 8,
+        "incomplete": 6,
+        "unknown": 7,
         "N-A": 0
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 12,
-        "absent": 8,
+        "present": 13,
+        "absent": 7,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 60
+        "pct": 65
       }
     },
     {
@@ -2497,7 +2693,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2525,21 +2721,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 13,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 7,
-        "incomplete": 5,
-        "unknown": 8,
+        "incomplete": 6,
+        "unknown": 7,
         "N-A": 0
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 12,
-        "absent": 8,
+        "present": 13,
+        "absent": 7,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 60
+        "pct": 65
       }
     },
     {
@@ -2567,7 +2770,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2595,21 +2798,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 10,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -2637,7 +2847,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2665,21 +2875,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 24,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -2707,7 +2924,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "complete",
         "tod_completion": "unknown",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2735,21 +2952,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 3,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 0
       },
       "completion_complete_over_20": 3,
       "presence": {
-        "present": 6,
-        "absent": 14,
+        "present": 7,
+        "absent": 13,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 30
+        "pct": 35
       }
     },
     {
@@ -2777,7 +3001,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2805,21 +3029,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 12,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -2847,7 +3078,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2875,21 +3106,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 12,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2917,7 +3155,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -2945,21 +3183,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 15,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 0
       },
       "completion_complete_over_20": 15,
       "presence": {
-        "present": 18,
-        "absent": 2,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 90
+        "pct": 95
       }
     },
     {
@@ -2987,7 +3232,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "complete",
         "tod_completion": "unknown",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3015,21 +3260,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 12,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 3,
-        "incomplete": 2,
-        "unknown": 15,
+        "incomplete": 3,
+        "unknown": 14,
         "N-A": 0
       },
       "completion_complete_over_20": 3,
       "presence": {
-        "present": 5,
-        "absent": 15,
+        "present": 6,
+        "absent": 14,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 25
+        "pct": 30
       }
     },
     {
@@ -3057,7 +3309,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "complete",
         "tod_completion": "unknown",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3085,21 +3337,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 4,
-        "unknown": 14,
+        "incomplete": 5,
+        "unknown": 13,
         "N-A": 0
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 15,
+        "present": 6,
+        "absent": 14,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 25
+        "pct": 30
       }
     },
     {
@@ -3127,7 +3386,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3155,21 +3414,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 7,
-        "unknown": 1,
+        "incomplete": 8,
+        "unknown": 0,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 0,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 94.4
+        "pct": 100
       }
     },
     {
@@ -3230,8 +3496,8 @@
           "statut": "measured",
           "geo_events_count": 37,
           "immo_gt_events": 18,
-          "matched": 12,
-          "recall_pct_si_mesurable": 0.6666666666666666
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
@@ -3274,7 +3540,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3302,21 +3568,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 13,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -3372,6 +3645,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -3414,7 +3694,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3442,21 +3722,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 4,
-        "unknown": 13,
+        "incomplete": 5,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -3484,7 +3771,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3512,21 +3799,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -3554,7 +3848,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3582,21 +3876,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 3,
-        "absent": 15,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 16.7
+        "pct": 22.2
       }
     },
     {
@@ -3624,7 +3925,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3652,21 +3953,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 14,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -3694,7 +4002,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3722,21 +4030,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -3764,7 +4079,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3792,21 +4107,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 7,
-        "incomplete": 5,
-        "unknown": 8,
+        "incomplete": 6,
+        "unknown": 7,
         "N-A": 0
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 12,
-        "absent": 8,
+        "present": 13,
+        "absent": 7,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 60
+        "pct": 65
       }
     },
     {
@@ -3834,7 +4156,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3862,21 +4184,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 11,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 4,
-        "unknown": 13,
+        "incomplete": 5,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -3904,7 +4233,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -3932,21 +4261,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 13,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -3974,7 +4310,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "complete",
         "tod_completion": "unknown",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4002,21 +4338,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 3,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 0
       },
       "completion_complete_over_20": 3,
       "presence": {
-        "present": 6,
-        "absent": 14,
+        "present": 7,
+        "absent": 13,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 30
+        "pct": 35
       }
     },
     {
@@ -4077,8 +4420,8 @@
           "statut": "measured",
           "geo_events_count": 377,
           "immo_gt_events": 50,
-          "matched": 50,
-          "recall_pct_si_mesurable": 1
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
@@ -4149,6 +4492,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -4191,7 +4541,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4219,21 +4569,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 15,
-        "incomplete": 4,
-        "unknown": 1,
+        "incomplete": 5,
+        "unknown": 0,
         "N-A": 0
       },
       "completion_complete_over_20": 15,
       "presence": {
-        "present": 19,
-        "absent": 1,
+        "present": 20,
+        "absent": 0,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 95
+        "pct": 100
       }
     },
     {
@@ -4289,6 +4646,13 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -4331,7 +4695,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4359,21 +4723,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 6,
-        "incomplete": 5,
-        "unknown": 9,
+        "incomplete": 6,
+        "unknown": 8,
         "N-A": 0
       },
       "completion_complete_over_20": 6,
       "presence": {
-        "present": 11,
-        "absent": 9,
+        "present": 12,
+        "absent": 8,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 55
+        "pct": 60
       }
     },
     {
@@ -4383,7 +4754,7 @@
       "flag": null,
       "cells": {
         "zones": "unknown",
-        "coherence_lot_zone": "unknown",
+        "coherence_lot_zone": "complete",
         "normes": "unknown",
         "pv": "complete",
         "reglement": "unknown",
@@ -4401,7 +4772,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4429,21 +4800,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 2,
-        "unknown": 12,
+        "complete": 5,
+        "incomplete": 3,
+        "unknown": 10,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 5,
       "presence": {
-        "present": 6,
-        "absent": 12,
+        "present": 8,
+        "absent": 10,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 33.3
+        "pct": 44.4
       }
     },
     {
@@ -4471,7 +4849,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4499,21 +4877,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 7,
-        "incomplete": 5,
-        "unknown": 8,
+        "incomplete": 6,
+        "unknown": 7,
         "N-A": 0
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 12,
-        "absent": 8,
+        "present": 13,
+        "absent": 7,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 60
+        "pct": 65
       }
     },
     {
@@ -4541,7 +4926,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4569,21 +4954,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 2,
-        "unknown": 14,
+        "incomplete": 3,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -4611,7 +5003,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4639,21 +5031,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 15,
-        "incomplete": 2,
-        "unknown": 3,
+        "incomplete": 3,
+        "unknown": 2,
         "N-A": 0
       },
       "completion_complete_over_20": 15,
       "presence": {
-        "present": 17,
-        "absent": 3,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 85
+        "pct": 90
       }
     },
     {
@@ -4709,6 +5108,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -4815,7 +5221,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "complete",
         "tod_completion": "unknown",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4843,21 +5249,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 17,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 3,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 0
       },
       "completion_complete_over_20": 3,
       "presence": {
-        "present": 6,
-        "absent": 14,
+        "present": 7,
+        "absent": 13,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 30
+        "pct": 35
       }
     },
     {
@@ -4913,6 +5326,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -4955,7 +5375,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -4983,21 +5403,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -5025,7 +5452,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5053,21 +5480,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 16,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 4,
-        "unknown": 13,
+        "incomplete": 5,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -5123,6 +5557,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -5165,7 +5606,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5193,21 +5634,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 2,
-        "unknown": 15,
+        "incomplete": 3,
+        "unknown": 14,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 3,
-        "absent": 15,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 16.7
+        "pct": 22.2
       }
     },
     {
@@ -5235,7 +5683,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5263,21 +5711,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -5333,6 +5788,13 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -5375,7 +5837,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5403,21 +5865,28 @@
         "reglement": {
           "declared": "incomplete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 2,
-        "unknown": 14,
+        "incomplete": 3,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -5427,7 +5896,7 @@
       "flag": null,
       "cells": {
         "zones": "complete",
-        "coherence_lot_zone": "incomplete",
+        "coherence_lot_zone": "complete",
         "normes": "complete",
         "pv": "complete",
         "reglement": "complete",
@@ -5445,7 +5914,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5473,21 +5942,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 15,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 13,
+        "complete": 14,
         "incomplete": 3,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 14,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -5515,7 +5991,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5543,21 +6019,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -5585,7 +6068,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5613,21 +6096,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 5,
-        "incomplete": 4,
-        "unknown": 9,
+        "incomplete": 5,
+        "unknown": 8,
         "N-A": 2
       },
       "completion_complete_over_20": 5,
       "presence": {
-        "present": 9,
-        "absent": 9,
+        "present": 10,
+        "absent": 8,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 50
+        "pct": 55.6
       }
     },
     {
@@ -5683,6 +6173,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -5725,7 +6222,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5753,21 +6250,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -5777,7 +6281,7 @@
       "flag": null,
       "cells": {
         "zones": "complete",
-        "coherence_lot_zone": "complete",
+        "coherence_lot_zone": "incomplete",
         "normes": "complete",
         "pv": "complete",
         "reglement": "complete",
@@ -5823,15 +6327,22 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
-        "complete": 13,
-        "incomplete": 3,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 12,
       "presence": {
         "present": 16,
         "absent": 2,
@@ -5893,6 +6404,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -5935,7 +6453,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -5963,21 +6481,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 4,
-        "unknown": 13,
+        "incomplete": 5,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -6005,7 +6530,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6033,21 +6558,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -6103,6 +6635,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6173,6 +6712,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6243,6 +6789,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6267,7 +6820,7 @@
       "flag": null,
       "cells": {
         "zones": "unknown",
-        "coherence_lot_zone": "unknown",
+        "coherence_lot_zone": "complete",
         "normes": "complete",
         "pv": "incomplete",
         "reglement": "incomplete",
@@ -6285,7 +6838,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6313,21 +6866,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 4,
-        "unknown": 10,
+        "complete": 5,
+        "incomplete": 5,
+        "unknown": 8,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 5,
       "presence": {
-        "present": 7,
-        "absent": 11,
+        "present": 9,
+        "absent": 9,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 38.9
+        "pct": 50
       }
     },
     {
@@ -6355,7 +6915,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6383,21 +6943,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -6425,7 +6992,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6453,21 +7020,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 2,
-        "unknown": 14,
+        "incomplete": 3,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -6523,6 +7097,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6593,6 +7174,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6663,6 +7251,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6733,6 +7328,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -6775,7 +7377,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6803,21 +7405,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 13,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 2,
-        "unknown": 2,
+        "incomplete": 3,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -6845,7 +7454,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -6873,21 +7482,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 27,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 6,
-        "unknown": 3,
+        "incomplete": 7,
+        "unknown": 2,
         "N-A": 0
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 4,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 80
+        "pct": 85
       }
     },
     {
@@ -6943,6 +7559,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7013,6 +7636,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7083,6 +7713,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7125,7 +7762,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7153,21 +7790,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -7195,7 +7839,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7223,21 +7867,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -7265,7 +7916,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7293,21 +7944,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "incomplete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 0
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 17,
-        "absent": 3,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 85
+        "pct": 90
       }
     },
     {
@@ -7363,6 +8021,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7405,7 +8070,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7433,21 +8098,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 8,
-        "incomplete": 7,
-        "unknown": 3,
+        "incomplete": 8,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -7573,6 +8245,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7615,7 +8294,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7643,21 +8322,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -7713,6 +8399,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7783,6 +8476,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -7825,7 +8525,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7853,21 +8553,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -7895,7 +8602,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7923,21 +8630,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 7,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 3,
-        "incomplete": 5,
-        "unknown": 10,
+        "incomplete": 6,
+        "unknown": 9,
         "N-A": 2
       },
       "completion_complete_over_20": 3,
       "presence": {
-        "present": 7,
-        "absent": 11,
+        "present": 8,
+        "absent": 10,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 38.9
+        "pct": 44.4
       }
     },
     {
@@ -7965,7 +8679,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -7993,21 +8707,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 19,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -8035,7 +8756,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8063,21 +8784,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -8105,7 +8833,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8133,21 +8861,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 13,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -8175,7 +8910,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8203,21 +8938,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -8245,7 +8987,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8273,21 +9015,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 17,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 8,
-        "incomplete": 4,
-        "unknown": 6,
+        "incomplete": 5,
+        "unknown": 5,
         "N-A": 2
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 12,
-        "absent": 6,
+        "present": 13,
+        "absent": 5,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 66.7
+        "pct": 72.2
       }
     },
     {
@@ -8343,6 +9092,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -8455,7 +9211,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8483,21 +9239,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -8525,7 +9288,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8553,21 +9316,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 2,
-        "unknown": 15,
+        "incomplete": 3,
+        "unknown": 14,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 3,
-        "absent": 15,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 16.7
+        "pct": 22.2
       }
     },
     {
@@ -8665,7 +9435,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8693,21 +9463,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -8763,6 +9540,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -8833,6 +9617,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -8875,7 +9666,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8903,21 +9694,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -8945,7 +9743,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -8973,21 +9771,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -9015,7 +9820,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9043,21 +9848,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -9085,7 +9897,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9113,21 +9925,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -9155,7 +9974,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9183,21 +10002,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 1,
-        "incomplete": 3,
-        "unknown": 14,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 1,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 5,
+        "absent": 13,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 27.8
       }
     },
     {
@@ -9225,7 +10051,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9253,21 +10079,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 6,
-        "unknown": 2,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -9323,6 +10156,13 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -9365,7 +10205,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9393,21 +10233,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -9505,7 +10352,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9533,21 +10380,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 10,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 3,
-        "unknown": 3,
+        "incomplete": 4,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -9575,7 +10429,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9603,21 +10457,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 16,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -9673,6 +10534,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -9785,7 +10653,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9813,21 +10681,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 16,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -9855,7 +10730,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9883,21 +10758,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 32,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -9925,7 +10807,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -9953,21 +10835,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 2,
-        "unknown": 2,
+        "incomplete": 3,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -10065,7 +10954,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10093,21 +10982,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -10135,7 +11031,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10163,21 +11059,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -10205,7 +11108,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10233,21 +11136,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 10,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 5,
-        "unknown": 1,
+        "incomplete": 6,
+        "unknown": 0,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 0,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 94.4
+        "pct": 100
       }
     },
     {
@@ -10275,7 +11185,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10303,21 +11213,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -10345,7 +11262,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10373,21 +11290,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 3,
-        "unknown": 3,
+        "incomplete": 4,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -10415,7 +11339,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10443,21 +11367,28 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 0,
-        "incomplete": 4,
-        "unknown": 14,
+        "incomplete": 5,
+        "unknown": 13,
         "N-A": 2
       },
       "completion_complete_over_20": 0,
       "presence": {
-        "present": 3,
-        "absent": 15,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 16.7
+        "pct": 22.2
       }
     },
     {
@@ -10513,6 +11444,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -10555,7 +11493,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10583,21 +11521,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 8,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 2,
-        "incomplete": 3,
-        "unknown": 13,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
       "completion_complete_over_20": 2,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 33.3
       }
     },
     {
@@ -10625,7 +11570,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10653,21 +11598,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 9,
-        "incomplete": 7,
-        "unknown": 2,
+        "incomplete": 8,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -10723,6 +11675,13 @@
         "reglement": {
           "declared": "unknown",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -10747,7 +11706,7 @@
       "flag": null,
       "cells": {
         "zones": "complete",
-        "coherence_lot_zone": "incomplete",
+        "coherence_lot_zone": "complete",
         "normes": "complete",
         "pv": "complete",
         "reglement": "complete",
@@ -10765,7 +11724,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10793,21 +11752,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
-        "complete": 14,
+        "complete": 15,
         "incomplete": 2,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 14,
+      "completion_complete_over_20": 15,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -10835,7 +11801,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10863,21 +11829,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 9,
-        "incomplete": 6,
-        "unknown": 3,
+        "incomplete": 7,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -10905,7 +11878,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -10933,21 +11906,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 3,
-        "unknown": 1,
+        "incomplete": 4,
+        "unknown": 0,
         "N-A": 2
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 0,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 94.4
+        "pct": 100
       }
     },
     {
@@ -10975,7 +11955,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11003,21 +11983,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 4,
-        "unknown": 3,
+        "incomplete": 5,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -11045,7 +12032,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11073,21 +12060,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -11115,7 +12109,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11143,21 +12137,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 4,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 9,
-        "incomplete": 6,
-        "unknown": 3,
+        "incomplete": 7,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -11213,6 +12214,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -11347,6 +12355,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -11389,7 +12404,7 @@
         "immo_adresse": "unknown",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11417,21 +12432,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "unknown"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 2,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 8,
-        "incomplete": 6,
-        "unknown": 4,
+        "incomplete": 7,
+        "unknown": 3,
         "N-A": 2
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 13,
-        "absent": 5,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 72.2
+        "pct": 77.8
       }
     },
     {
@@ -11487,6 +12509,13 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "immo-gt-pending",
+          "geo_events_count": 0,
+          "immo_gt_events": null,
+          "matched": null,
+          "recall_pct_si_mesurable": null
         }
       },
       "counts": {
@@ -11529,7 +12558,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11557,21 +12586,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 30,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 10,
-        "incomplete": 5,
-        "unknown": 3,
+        "incomplete": 6,
+        "unknown": 2,
         "N-A": 2
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 4,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 77.8
+        "pct": 83.3
       }
     },
     {
@@ -11599,7 +12635,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11627,21 +12663,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 3,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 83.3
+        "pct": 88.9
       }
     },
     {
@@ -11669,7 +12712,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11697,21 +12740,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 1,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 11,
-        "incomplete": 5,
-        "unknown": 2,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -11739,7 +12789,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11767,21 +12817,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 9,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 12,
-        "incomplete": 4,
-        "unknown": 2,
+        "incomplete": 5,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -11809,7 +12866,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11837,21 +12894,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 5,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 13,
-        "incomplete": 3,
-        "unknown": 2,
+        "incomplete": 4,
+        "unknown": 1,
         "N-A": 2
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 88.9
+        "pct": 94.4
       }
     },
     {
@@ -11879,7 +12943,7 @@
         "immo_adresse": "complete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -11907,21 +12971,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 6,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
         }
       },
       "counts": {
         "complete": 14,
-        "incomplete": 3,
-        "unknown": 1,
+        "incomplete": 4,
+        "unknown": 0,
         "N-A": 2
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 0,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 94.4
+        "pct": 100
       }
     }
   ],
@@ -11957,18 +13028,18 @@
       "slug_measured": false,
       "denom": 162,
       "ceiling": null,
-      "acquirable_incomplete": 89,
+      "acquirable_incomplete": 85,
       "counts": {
-        "complete": 73,
-        "incomplete": 30,
-        "unknown": 59,
+        "complete": 77,
+        "incomplete": 28,
+        "unknown": 57,
         "N-A": 0
       },
-      "complete_over_matched": "73/162",
-      "cities_100pct": 73,
-      "pct_complete": 45.1,
-      "present": 103,
-      "pct_present": 63.6
+      "complete_over_matched": "77/162",
+      "cities_100pct": 77,
+      "pct_complete": 47.5,
+      "present": 105,
+      "pct_present": 64.8
     },
     {
       "n": 3,
@@ -12001,18 +13072,18 @@
       "slug_measured": false,
       "denom": 162,
       "ceiling": null,
-      "acquirable_incomplete": 59,
+      "acquirable_incomplete": 52,
       "counts": {
-        "complete": 103,
-        "incomplete": 50,
+        "complete": 110,
+        "incomplete": 43,
         "unknown": 9,
         "N-A": 0
       },
-      "complete_over_matched": "103/162",
-      "cities_100pct": 103,
-      "pct_complete": 63.6,
-      "present": 103,
-      "pct_present": 63.6
+      "complete_over_matched": "110/162",
+      "cities_100pct": 110,
+      "pct_complete": 67.9,
+      "present": 110,
+      "pct_present": 67.9
     },
     {
       "n": 5,
@@ -12356,15 +13427,15 @@
       "acquirable_incomplete": 160,
       "counts": {
         "complete": 2,
-        "incomplete": 0,
-        "unknown": 160,
+        "incomplete": 117,
+        "unknown": 43,
         "N-A": 0
       },
       "complete_over_matched": "2/162",
       "cities_100pct": 2,
       "pct_complete": 1.2,
-      "present": 2,
-      "pct_present": 1.2
+      "present": 119,
+      "pct_present": 73.5
     }
   ],
   "sources": [
@@ -12382,8 +13453,8 @@
     },
     {
       "role": "lot-zone-consistency",
-      "path": "work/coverage/lot-zone-consistency-scale-20260725.json",
-      "sha256": "sha256:36cccc45e94ee81a7736f309609d2eec03c69dcab533bb6118d7f903d68268d3",
+      "path": "work/coverage/lot-zone-consistency-scale-20260803.json",
+      "sha256": "sha256:5f18b360645c973262752aa878f759ea4629afc03b1a348c44325f41ac9eb035",
       "present": true
     },
     {
@@ -12394,8 +13465,8 @@
     },
     {
       "role": "pv-couverture-captee",
-      "path": "work/coverage/pv-couverture-municipale-20260803T015524Z.json",
-      "sha256": "sha256:7c6d135a52da7bcc8e9650bf15a871b856b3904d85c0ee0d2d4ed76c5172fddc",
+      "path": "work/coverage/pv-couverture-municipale-20260803T175000Z.json",
+      "sha256": "sha256:e33d65409b6900e803744c5144447cd3ecc6ffc79eb195a2f3cef10524e62243",
       "present": true
     },
     {
@@ -12424,8 +13495,8 @@
     },
     {
       "role": "immo-folded-normes",
-      "path": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
-      "sha256": "sha256:e6dd636758a0d2e3bf706d78cc5c117659f5d663ba98ff3a043637da0b75ff8f",
+      "path": "work/coverage/immo-folded-normes-city-matrix-20260803.json",
+      "sha256": "sha256:71cf3ab87103b362bfcd577e1ed2faf3a2902ad22892428de3ece7719ec2f308",
       "present": true
     },
     {
@@ -12436,8 +13507,8 @@
     },
     {
       "role": "col20-recall-v34",
-      "path": "work/coverage/zoning-events-col20-sample6-measured-20260803.json",
-      "sha256": "sha256:1e02b712484362ad2c545178291573288ec31fe3d7821954bbaab6209faf5580",
+      "path": "work/coverage/zoning-events-col20-167-s3gt-20260803.json",
+      "sha256": "sha256:de97b715ef3843e4e18f8819796bd4c426c20da694c8c0960bc09408cb87c64e",
       "present": true
     }
   ],
