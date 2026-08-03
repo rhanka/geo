@@ -10,18 +10,20 @@
     "hampstead",
     "mont-royal",
     "montreal-ouest",
-    "cote-saint-luc"
-  ],
-  "checkpoint_only": [
-    "longueuil"
-  ],
-  "pending_after_palier": [
-    "longueuil",
+    "cote-saint-luc",
     "sainte-catherine",
     "la-prairie",
     "delson",
+    "montreal-est"
+  ],
+  "checkpoint_only": [
+    "longueuil",
     "candiac",
-    "montreal-est",
+    "boucherville"
+  ],
+  "pending_after_palier": [
+    "longueuil",
+    "candiac",
     "boucherville",
     "dorval",
     "saint-constant",
@@ -51,7 +53,11 @@
       "hampstead",
       "mont-royal",
       "montreal-ouest",
-      "cote-saint-luc"
+      "cote-saint-luc",
+      "sainte-catherine",
+      "la-prairie",
+      "delson",
+      "montreal-est"
     ],
     "anti_invention": "lot hors de toute zone servie reste unassigned/couverture incomplete; aucune valeur n'est fabriquée.",
     "s3_run_prefix": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10"
@@ -60,8 +66,8 @@
     "assignment_before": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
     "folded_before": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
     "consistency_baseline": "work/coverage/lot-zone-consistency-scale-20260725.json",
-    "consistency_readback_after": "acquisition/src/lot-zone-consistency-audit.ts (30 slugs, 2026-08-03)",
-    "stamp_readback_after": "acquisition/src/_zone-source-readback-audit.ts (6 slugs, concurrency=1)"
+    "consistency_readback_after": "acquisition/src/lot-zone-consistency-audit.ts (30 slugs, 2026-08-03; palier 2)",
+    "stamp_readback_after": "acquisition/src/_zone-source-readback-audit.ts (4 slugs, concurrency=1; palier 2)"
   },
   "summary": {
     "complete_cities": {
@@ -104,27 +110,33 @@
       },
       "kpi13": {
         "before": {
+          "with_normes": 110230,
+          "total": 298390,
+          "pct": 36.94
+        },
+        "after": {
+          "with_normes": 110230,
+          "total": 298390,
+          "pct": 36.94
+        },
+        "matrix_baseline": {
           "with_normes": 110274,
           "total": 298390,
           "pct": 36.96
         },
-        "after": {
-          "with_normes": 110291,
-          "total": 298390,
-          "pct": 36.96
-        }
+        "note": "La matrice datée est conservée comme baseline; le live pre-run corrige la dérive préexistante de la-prairie (533 dans matrice, 472 dans stats S3)."
       }
     },
     "added": {
       "lots_with_code_zone": 0,
       "lots_with_folded_normes": 17
     },
-    "couverture_incomplete_restant_completed": 192,
+    "couverture_incomplete_restant_completed": 269,
     "zones_escalation": [
       "saint-catherine",
       "ile-dorval"
     ],
-    "note": "Global X/30 uses the closed cohort; after counts include unchanged baseline for 24 pending cities and the six completed palier-1 cities."
+    "note": "Global X/30 uses the closed cohort; after counts use live runner stats for completed cities and dated matrices for pending cities. La-Prairie matrix drift is recorded explicitly."
   },
   "cities": [
     {
@@ -574,13 +586,16 @@
         "before": 35,
         "after": null
       },
-      "backup": null,
+      "backup": {
+        "status": "backup-only",
+        "timestamp": "2026-08-03T010702463ZZ"
+      },
       "mirror": null,
       "stamp": null
     },
     {
       "slug": "sainte-catherine",
-      "state": "pending",
+      "state": "completed",
       "note": "qc-zonage non servi",
       "kpi12_assignation_lot_zone": {
         "before": {
@@ -588,7 +603,11 @@
           "total": 5754,
           "pct": 99.86
         },
-        "after": null
+        "after": {
+          "with_code_zone": 5746,
+          "total": 5754,
+          "pct": 99.86
+        }
       },
       "kpi2_coherence_lot_zone": {
         "before": null,
@@ -600,31 +619,49 @@
           "total": 5754,
           "pct": 44.26
         },
-        "after": null
+        "after": {
+          "with_normes": 2547,
+          "total": 5754,
+          "pct": 44.26
+        }
       },
       "inside_served_assignes": {
         "before": 5746,
-        "after": null,
-        "added": null
+        "after": 5746,
+        "added": 0
       },
       "couverture_incomplete_restant": {
         "before": 8,
-        "after": null
+        "after": 8
       },
-      "backup": null,
-      "mirror": null,
-      "stamp": null
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T011309345ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-sainte-catherine.geojson",
+        "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2767030%27",
+        "zone_source_level": "documented",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
     },
     {
       "slug": "la-prairie",
-      "state": "pending",
+      "state": "completed",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 9399,
           "total": 9468,
           "pct": 99.27
         },
-        "after": null
+        "after": {
+          "with_code_zone": 9399,
+          "total": 9468,
+          "pct": 99.27
+        }
       },
       "kpi2_coherence_lot_zone": {
         "before": {
@@ -639,35 +676,59 @@
       },
       "kpi13_folded_normes": {
         "before": {
+          "with_normes": 472,
+          "total": 9468,
+          "pct": 4.99
+        },
+        "after": {
+          "with_normes": 472,
+          "total": 9468,
+          "pct": 4.99
+        },
+        "matrix_baseline": {
           "with_normes": 533,
           "total": 9468,
-          "pct": 5.63
-        },
-        "after": null
+          "pct": 5.63,
+          "note": "La matrice datée précédait le snapshot S3 lu avant ce run (472); le garde absolu a comparé 472→472."
+        }
       },
       "inside_served_assignes": {
         "before": 9399,
-        "after": null,
-        "added": null
+        "after": 9399,
+        "added": 0
       },
       "couverture_incomplete_restant": {
         "before": 69,
-        "after": null
+        "after": 69
       },
-      "backup": null,
-      "mirror": null,
-      "stamp": null
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T011354756ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-la-prairie.geojson",
+        "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2767015%27",
+        "zone_source_level": "documented",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
     },
     {
       "slug": "delson",
-      "state": "pending",
+      "state": "completed",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 3330,
           "total": 3330,
           "pct": 100
         },
-        "after": null
+        "after": {
+          "with_code_zone": 3330,
+          "total": 3330,
+          "pct": 100
+        }
       },
       "kpi2_coherence_lot_zone": {
         "before": {
@@ -686,24 +747,38 @@
           "total": 3330,
           "pct": 99.55
         },
-        "after": null
+        "after": {
+          "with_normes": 3315,
+          "total": 3330,
+          "pct": 99.55
+        }
       },
       "inside_served_assignes": {
         "before": 3330,
-        "after": null,
-        "added": null
+        "after": 3330,
+        "added": 0
       },
       "couverture_incomplete_restant": {
         "before": 0,
-        "after": null
+        "after": 0
       },
-      "backup": null,
-      "mirror": null,
-      "stamp": null
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T011523476ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-delson.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
     },
     {
       "slug": "candiac",
-      "state": "pending",
+      "state": "checkpoint_backup_only",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 7725,
@@ -740,20 +815,27 @@
         "before": 0,
         "after": null
       },
-      "backup": null,
+      "backup": {
+        "status": "backup-only",
+        "timestamp": "2026-08-03T011729782ZZ"
+      },
       "mirror": null,
       "stamp": null
     },
     {
       "slug": "montreal-est",
-      "state": "pending",
+      "state": "completed",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 1678,
           "total": 1678,
           "pct": 100
         },
-        "after": null
+        "after": {
+          "with_code_zone": 1678,
+          "total": 1678,
+          "pct": 100
+        }
       },
       "kpi2_coherence_lot_zone": {
         "before": {
@@ -772,24 +854,38 @@
           "total": 1678,
           "pct": 100
         },
-        "after": null
+        "after": {
+          "with_normes": 1678,
+          "total": 1678,
+          "pct": 100
+        }
       },
       "inside_served_assignes": {
         "before": 1678,
-        "after": null,
-        "added": null
+        "after": 1678,
+        "added": 0
       },
       "couverture_incomplete_restant": {
         "before": 0,
-        "after": null
+        "after": 0
       },
-      "backup": null,
-      "mirror": null,
-      "stamp": null
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T012348579ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-montreal-est.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
     },
     {
       "slug": "boucherville",
-      "state": "pending",
+      "state": "checkpoint_backup_only",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 16242,
@@ -826,7 +922,10 @@
         "before": 27,
         "after": null
       },
-      "backup": null,
+      "backup": {
+        "status": "backup-only",
+        "timestamp": "2026-08-03T012419473ZZ"
+      },
       "mirror": null,
       "stamp": null
     },

@@ -1,6 +1,6 @@
-# WP1 — completion cohorte 30 (palier 1)
+# WP1 — completion cohorte 30 (palier 2)
 
-État daté `20260802`; palier 1 : 6 dépôts validés. Longueuil a un backup S3 confirmé mais aucun dépôt lot-zone validé; il reste au checkpoint.
+État daté `20260802`; dix dépôts validés cumulés. Longueuil, Candiac et Boucherville ont un backup S3 confirmé mais aucun dépôt lot-zone validé; ils restent aux checkpoints.
 
 | muni | état | #12 avant→après | #2 mismatch avant→après | #13 avant→après | inside-served assignés | couverture incomplete restante | backup / miroir / stamp |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -10,13 +10,13 @@
 | mont-royal | completed | 98.55%→98.55% | 2.52%→2.52% | 39.91%→39.91% | 5711→5711 | 84→84 | done 2026-08-03T005016722ZZ; flat-only; STAMPED_NULL |
 | montreal-ouest | completed | 100%→100% | 8.99%→8.99% | 5.12%→5.12% | 1601→1601 | 0→0 | done 2026-08-03T005411749ZZ; flat-only; STAMPED_NULL |
 | cote-saint-luc | completed | 98.89%→98.89% | 6.69%→6.69% | 71.77%→71.77% | 4890→4890 | 55→55 | done 2026-08-03T005436864ZZ; flat-only; STAMPED_NULL |
-| longueuil | checkpoint_backup_only | 99.95%→null | 5.62%→null | 48.47%→null | 66975→null | 35→null | — |
-| sainte-catherine | pending | 99.86%→null | null→null | 44.26%→null | 5746→null | 8→null | — |
-| la-prairie | pending | 99.27%→null | 8.55%→null | 5.63%→null | 9399→null | 69→null | — |
-| delson | pending | 100%→null | 5.77%→null | 99.55%→null | 3330→null | 0→null | — |
-| candiac | pending | 100%→null | 8.52%→null | 13.41%→null | 7725→null | 0→null | — |
-| montreal-est | pending | 100%→null | 6.91%→null | 100%→null | 1678→null | 0→null | — |
-| boucherville | pending | 99.83%→null | 6.07%→null | 21.7%→null | 16242→null | 27→null | — |
+| longueuil | checkpoint_backup_only | 99.95%→null | 5.62%→null | 48.47%→null | 66975→null | 35→null | backup-only 2026-08-03T010702463ZZ; —; non lu |
+| sainte-catherine | completed | 99.86%→99.86% | null→null | 44.26%→44.26% | 5746→5746 | 8→8 | done 2026-08-03T011309345ZZ; flat-only; STAMPED |
+| la-prairie | completed | 99.27%→99.27% | 8.55%→null | 4.99%→4.99% | 9399→9399 | 69→69 | done 2026-08-03T011354756ZZ; flat-only; STAMPED |
+| delson | completed | 100%→100% | 5.77%→null | 99.55%→99.55% | 3330→3330 | 0→0 | done 2026-08-03T011523476ZZ; flat-only; STAMPED_NULL |
+| candiac | checkpoint_backup_only | 100%→null | 8.52%→null | 13.41%→null | 7725→null | 0→null | backup-only 2026-08-03T011729782ZZ; —; non lu |
+| montreal-est | completed | 100%→100% | 6.91%→null | 100%→100% | 1678→1678 | 0→0 | done 2026-08-03T012348579ZZ; flat-only; STAMPED_NULL |
+| boucherville | checkpoint_backup_only | 99.83%→null | 6.07%→null | 21.7%→null | 16242→null | 27→null | backup-only 2026-08-03T012419473ZZ; —; non lu |
 | dorval | pending | 98.86%→null | 3.9%→null | 97.82%→null | 6174→null | 71→null | — |
 | saint-constant | pending | 99.94%→null | 3.57%→null | 4.26%→null | 11615→null | 7→null | — |
 | saint-bruno-de-montarville | pending | 98.66%→null | 3.58%→null | 0%→null | 10123→null | 138→null | — |
@@ -35,10 +35,10 @@
 | ile-dorval | pending | null→null | null→null | null→null | null→null | null→null | — |
 | kirkland | pending | 94.48%→null | 4.89%→null | 76.23%→null | 6498→null | 380→null | — |
 
-Résumé palier : #12 `7/30→7/30` (293078/298390, 98,22 %→98,22 %); #2 `<5 %` `15/30→15/30` (5,22 %→5,22 % sur 28 munis mesurés); #13 `1/30→1/30` (110274/298390, 36,96 %→110291/298390, 36,96 %).
+Résumé cumulé : #12 `7/30→7/30` (293078/298390, 98,22 %→98,22 %); #2 `<5 %` `15/30→15/30` (5,22 %→5,22 % sur 28 munis mesurés); #13 live `110230/298390→110230/298390` (36,94 %→36,94 %). La matrice datée indiquait 110274/298390 (36,96 %); la dérive préexistante de La Prairie (533→472) est séparée et le garde S3 a validé 472→472.
 
-Gains réels : `+0` lot avec `code_zone`, `+17` lots avec normes pliées. Les lots hors couverture restent nommés `couverture incomplete`; `saint-catherine` et `ile-dorval` sont escaladés à zones faute de zonage servi.
+Gains d'opération : `+0` lot avec `code_zone` au palier 2; `+17` lots avec normes pliées au cumul. Aucun lot hors couverture n'a été inventé; les états restent `couverture incomplete`.
 
-Stamp : readback S3 sans erreur sur les six dépôts; le zonage n’est pas écrit par la chaîne, donc `zone_source_url`/`zone_source_level` sont préservés par construction et les valeurs servies actuelles sont consignées dans le JSON.
+Stamp : readback S3 sans erreur sur les quatre nouveaux dépôts; le zonage n’est pas écrit par la chaîne, donc `zone_source_url`/`zone_source_level` sont préservés par construction.
 
-Sources : `immo-lot-zone-assignment-matrix-20260802.json`, `immo-folded-normes-city-matrix-20260802.json`, audit `lot-zone-consistency-audit.ts`, readback stamp `_zone-source-readback-audit.ts`.
+Sources : matrices `20260802`, stats live des journaux S3 palier 1/2, audit `lot-zone-consistency-audit.ts`, readback `_zone-source-readback-audit.ts`.
