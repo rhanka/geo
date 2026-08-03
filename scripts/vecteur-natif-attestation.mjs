@@ -132,16 +132,37 @@ function attestFromMetrics(m, meta = {}) {
     })(),
   };
 
+  // G5 superset — CONDITIONNELLE (dépôt de REMPLACEMENT seulement). Quand la
+  // capture remplace une couche servie PLUS RICHE (orphelin d'une source tierce
+  // réelle, p.ex. geomatiquecn-arcgis — PAS un Voronoï), le dépôt ne doit pas
+  // RÉGRESSER la couverture : les codes servis antérieurs doivent être ⊆ des codes
+  // captés. « superset » doit être PROUVÉ (deux ensembles dans le manifeste), pas
+  // affirmé. Gate absente s'il n'y a pas de remplacement (prior_served_codes vide).
+  let supersetMissing = null;
+  if (Array.isArray(m.prior_served_codes) && m.prior_served_codes.length) {
+    if (!Array.isArray(m.zone_codes)) {
+      gates.superset_no_regression = 'INDET'; // codes captés non fournis : invérifiable
+    } else {
+      const captured = new Set(m.zone_codes.map(String));
+      supersetMissing = m.prior_served_codes.map(String).filter((c) => !captured.has(c));
+      gates.superset_no_regression = supersetMissing.length ? 'FAIL' : 'PASS';
+    }
+  }
+
   const failed = Object.entries(gates).filter(([, v]) => v === 'FAIL').map(([k]) => k);
   const indet = Object.entries(gates).filter(([, v]) => v === 'INDET').map(([k]) => k);
   let verdict, motif;
-  if (failed.length) { verdict = 'FAIL-BANC'; motif = `porte(s) échouée(s): ${failed.join(', ')}`; }
-  else if (indet.length) { verdict = 'FAIL-INDET'; motif = `métrique(s) absente(s), non déposable: ${indet.join(', ')}`; }
+  if (failed.length) {
+    verdict = 'FAIL-BANC';
+    motif = `porte(s) échouée(s): ${failed.join(', ')}`;
+    if (supersetMissing && supersetMissing.length) motif += ` [régression codes: ${supersetMissing.join(',')}]`;
+  } else if (indet.length) { verdict = 'FAIL-INDET'; motif = `métrique(s) absente(s), non déposable: ${indet.join(', ')}`; }
   else { verdict = 'PASS-BANC'; motif = 'capture v2 vecteur natif réelle, intègre, non contaminée'; }
 
   return {
     slug: meta.slug ?? null, verdict, motif, gates,
     metrics: m,
+    superset_missing_codes: supersetMissing,
     lot_zone_mismatch_pct_post_depot: meta.lot_zone_mismatch_pct ?? null, // informatif
   };
 }
@@ -162,6 +183,8 @@ function attest(entry, lotZone) {
     bbox_diag: entry.bbox_diag ?? null,
     registry_attribution_km: entry.registry_attribution_km ?? null,
     nearest_registre_muni: entry.nearest_registre_muni ?? null,
+    zone_codes: entry.zone_codes ?? null,                     // G5 : codes captés
+    prior_served_codes: entry.prior_served_codes ?? null,     // G5 : codes servis à ne pas régresser
   };
   return attestFromMetrics(m, {
     slug: entry.slug,
