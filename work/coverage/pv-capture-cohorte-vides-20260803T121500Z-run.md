@@ -46,10 +46,26 @@ confirmé par extraction de texte natif) :
   chacune). → verdict `pv-lecture-visuelle-cohorte-vides-lot-05-20260803T133000Z.json`.
 - **candiac** : 3 scans `PDF_SANS_COUCHE_TEXTE` → lecture visuelle requise (octets
   présents, à traiter dans un prochain lot).
-- **saint-basile-le-grand, saint-bruno-de-montarville** : 3 `HTTP_AUTRE` chacune
-  (storage_key null) → capture non-200, **URLs à re-sourcer**.
+- **saint-basile-le-grand, saint-bruno-de-montarville** : 3 `HTTP_AUTRE` chacune,
+  `detail=robots-disallowed`, http_status null (aucun fetch : gate robots au
+  moment de la capture). Diagnostic robots.txt (lecture seule) :
+  - `www.villesblg.ca` : `User-agent: * / Disallow: /wp-content/uploads/` — or
+    TOUS ses PV sont sous `/wp-content/uploads/` → **mur robots réel** (pas un
+    faux-positif). N-A documenté sauf source alternative.
+  - `saintbruno-site.s3.ca-central-1.amazonaws.com` : `Disallow: /` global sur le
+    CDN S3 → mur pour cet hôte. Mais le site muni `saintbruno.ca` peut servir les
+    PV par un chemin non interdit → **candidat re-sourcing**.
+  On ne contourne PAS robots (capture polie, principe fondateur).
 - **westmount** : hors run (doc annuel « MINUTES » > 512Mi ; re-sourcer une séance
-  unique).
+  unique, doc plus léger).
+
+## Résiduels → prochain beat (re-sourcing / N-A documenté)
+- saint-bruno-de-montarville : découvrir les URLs PV sur `saintbruno.ca` (hors CDN
+  S3 interdit) → worklist pv-index → capture cluster.
+- westmount : découvrir un PV de séance unique (pas la compilation annuelle).
+- saint-basile-le-grand : chercher une source alternative hors
+  `/wp-content/uploads/` ; sinon **N-A « mur robots documenté »** (le palier
+  accepte un mur tracé comme N-A).
 
 Couverture recomptée : **666 → 670/1106** (+4 villes, +12 clés CAS) —
 `work/coverage/pv-couverture-municipale-20260803T134500Z.{json,md}`.
