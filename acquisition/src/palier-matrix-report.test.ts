@@ -8,11 +8,14 @@ const mod = await import("../../scripts/palier-matrix-report.mjs");
 const payload = mod.build("20260803");
 
 describe("palier-matrix contract", () => {
-  it("30 villes, 20 KPI, partitions fermées", () => {
-    expect(payload.rows.length).toBe(30);
+  it("cohorte 167 par défaut, 20 KPI, partitions fermées", () => {
+    expect(payload.rows.length).toBe(167);
     expect(payload.columns.length).toBe(20);
     expect(payload.validation.closed).toBe(true);
     expect(payload.validation.errors).toEqual([]);
+    // sous-vue palier 1 (rang<=30) présente comme sous-ensemble.
+    expect(payload.subset_palier1_rank_le_30.cities_scored).toBeGreaterThan(0);
+    expect(payload.subset_palier1_rank_le_30.cities_scored).toBeLessThanOrEqual(30);
   });
 
   it("chaque ville : les 4 états somment à 20", () => {
@@ -24,7 +27,7 @@ describe("palier-matrix contract", () => {
 
   it("PENDING-GRAPH-NODE : 3 villes, cellules toutes unknown + présence 0", () => {
     const pending = payload.rows.filter((r: any) => !r.graph_matched);
-    expect(pending.length).toBe(3);
+    expect(pending.length).toBe(5);
     for (const r of pending) {
       expect(r.flag).toBe("PENDING-GRAPH-NODE");
       expect(r.counts.unknown).toBe(20);
