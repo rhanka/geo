@@ -23,8 +23,8 @@ const OVERLAP_PATH = "work/coverage/overlap-bprime167-vs-geo-20260802.json";
 const OVERLAP_REVISION = "5ec1d919815e0c2b98e10587c69fdb0e439fd16e";
 const DISCOVERY_PATH = "work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json";
 const DISCOVERY_REVISION = "39eefd2da283eb23f67e5f9156df55ec20ff4775";
-const MATRIX_PATH = "work/coverage/zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0.json";
-const MATRIX_REVISION = "d0f892295f73e91c20618642e8504163dbf9a304";
+const MATRIX_PATH = "work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json";
+const MATRIX_REVISION = "608c23d2";
 const RADAR_PREVIEW = "radar@800ee90 (PREVIEW non ratifie; merge PR #436 a venir)";
 
 const BPRIME_BUCKETS = [
