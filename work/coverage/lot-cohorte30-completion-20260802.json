@@ -5,27 +5,18 @@
   "palier": 1,
   "cohort_size": 30,
   "processed_this_palier": [
-    "westmount",
-    "saint-lambert",
-    "hampstead",
-    "mont-royal",
-    "montreal-ouest",
-    "cote-saint-luc",
-    "sainte-catherine",
-    "la-prairie",
-    "delson",
-    "montreal-est"
+    "dorval"
   ],
   "checkpoint_only": [
     "longueuil",
     "candiac",
-    "boucherville"
+    "boucherville",
+    "saint-constant"
   ],
   "pending_after_palier": [
     "longueuil",
     "candiac",
     "boucherville",
-    "dorval",
     "saint-constant",
     "saint-bruno-de-montarville",
     "carignan",
@@ -57,7 +48,8 @@
       "sainte-catherine",
       "la-prairie",
       "delson",
-      "montreal-est"
+      "montreal-est",
+      "dorval"
     ],
     "anti_invention": "lot hors de toute zone servie reste unassigned/couverture incomplete; aucune valeur n'est fabriquée.",
     "s3_run_prefix": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10"
@@ -66,8 +58,8 @@
     "assignment_before": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
     "folded_before": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
     "consistency_baseline": "work/coverage/lot-zone-consistency-scale-20260725.json",
-    "consistency_readback_after": "acquisition/src/lot-zone-consistency-audit.ts (30 slugs, 2026-08-03; palier 2)",
-    "stamp_readback_after": "acquisition/src/_zone-source-readback-audit.ts (4 slugs, concurrency=1; palier 2)"
+    "consistency_readback_after": "acquisition/src/lot-zone-consistency-audit.ts (dorval, 2026-08-03; palier 3)",
+    "stamp_readback_after": "acquisition/src/_zone-source-readback-audit.ts (dorval, concurrency=1; palier 3)"
   },
   "summary": {
     "complete_cities": {
@@ -131,12 +123,12 @@
       "lots_with_code_zone": 0,
       "lots_with_folded_normes": 17
     },
-    "couverture_incomplete_restant_completed": 269,
+    "couverture_incomplete_restant_completed": 340,
     "zones_escalation": [
       "saint-catherine",
       "ile-dorval"
     ],
-    "note": "Global X/30 uses the closed cohort; after counts use live runner stats for completed cities and dated matrices for pending cities. La-Prairie matrix drift is recorded explicitly."
+    "note": "Global X/30 uses the closed cohort; after counts use live runner stats for completed cities and dated matrices for pending cities. Large exact joins remain checkpointed without approximation."
   },
   "cities": [
     {
@@ -924,21 +916,25 @@
       },
       "backup": {
         "status": "backup-only",
-        "timestamp": "2026-08-03T012419473ZZ"
+        "timestamp": "2026-08-03T013438191ZZ"
       },
       "mirror": null,
       "stamp": null
     },
     {
       "slug": "dorval",
-      "state": "pending",
+      "state": "completed",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 6174,
           "total": 6245,
           "pct": 98.86
         },
-        "after": null
+        "after": {
+          "with_code_zone": 6174,
+          "total": 6245,
+          "pct": 98.86
+        }
       },
       "kpi2_coherence_lot_zone": {
         "before": {
@@ -949,7 +945,14 @@
           "outside_all": 35,
           "unassigned": 71
         },
-        "after": null
+        "after": {
+          "mismatch_pct": 3.9,
+          "assigned": 6174,
+          "matched": 5933,
+          "misassigned": 206,
+          "outside_all": 35,
+          "unassigned": 71
+        }
       },
       "kpi13_folded_normes": {
         "before": {
@@ -957,24 +960,38 @@
           "total": 6245,
           "pct": 97.82
         },
-        "after": null
+        "after": {
+          "with_normes": 6109,
+          "total": 6245,
+          "pct": 97.82
+        }
       },
       "inside_served_assignes": {
         "before": 6174,
-        "after": null,
-        "added": null
+        "after": 6174,
+        "added": 0
       },
       "couverture_incomplete_restant": {
         "before": 71,
-        "after": null
+        "after": 71
       },
-      "backup": null,
-      "mirror": null,
-      "stamp": null
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T013629228ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-dorval/qc-zonage-dorval.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "orphan",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
     },
     {
       "slug": "saint-constant",
-      "state": "pending",
+      "state": "checkpoint_backup_only",
       "kpi12_assignation_lot_zone": {
         "before": {
           "with_code_zone": 11615,
@@ -1011,7 +1028,10 @@
         "before": 7,
         "after": null
       },
-      "backup": null,
+      "backup": {
+        "status": "backup-only",
+        "timestamp": "2026-08-03T013709310ZZ"
+      },
       "mirror": null,
       "stamp": null
     },
