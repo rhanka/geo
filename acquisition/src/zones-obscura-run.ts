@@ -162,6 +162,7 @@ interface SlugResult {
   deposited: boolean;
   status: "deposited" | "no-zonage-layer" | "matrice-only" | "no-viewer" | "spatial-fail" | "platform-not-arcgis" | "no-site" | "error";
   detail: string;
+  captureReport?: GonetCaptureReport;
 }
 
 interface ServedAudit {
@@ -177,6 +178,21 @@ interface CapturedFeatures {
   features: GeoFeature[];
   entry: CaptureManifestLine;
   paginated: boolean;
+}
+
+interface GonetCaptureReport {
+  slug: string;
+  source_url_reelle: string | null;
+  retrieved_at: string | null;
+  sha256_octets: string | null;
+  n_features: number;
+  codes_distinct: number;
+  lettered_pct: number;
+  integer_pure_pct: number;
+  bbox_diag_km: number | null;
+  nearest_registre_muni: string | null;
+  nearest_km: number | null;
+  verdict: string;
 }
 
 /** A deposited v2 source must be a manifest entry, never a reconstructed body. */
@@ -243,6 +259,122 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   const R = 6371, dLat = ((lat2 - lat1) * Math.PI) / 180, dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+interface FeatureBbox {
+  minx: number;
+  miny: number;
+  maxx: number;
+  maxy: number;
+}
+
+function featureBbox(features: GeoFeature[]): FeatureBbox | null {
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (const feature of features) {
+    for (const [x, y] of positionsOf(feature.geometry?.coordinates)) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      if (x < minx) minx = x;
+      if (x > maxx) maxx = x;
+      if (y < miny) miny = y;
+      if (y > maxy) maxy = y;
+    }
+  }
+  if (![minx, miny, maxx, maxy].every(Number.isFinite)) return null;
+  return { minx, miny, maxx, maxy };
+}
+
+function noVectorCaptureReport(slug: string, entry?: CaptureManifestLine, verdict = "NO_VECTOR"): GonetCaptureReport {
+  return {
+    slug,
+    source_url_reelle: entry?.url ?? null,
+    retrieved_at: entry?.retrieved_at ?? null,
+    sha256_octets: entry?.sha256?.replace(/^sha256:/, "") ?? null,
+    n_features: 0,
+    codes_distinct: 0,
+    lettered_pct: 0,
+    integer_pure_pct: 100,
+    bbox_diag_km: null,
+    nearest_registre_muni: null,
+    nearest_km: null,
+    verdict,
+  };
+}
+
+function captureVerdictCounts(reports: GonetCaptureReport[]): Record<string, number> {
+  const counts: Record<string, number> = { PASS_CAPTURE: 0, REJECT: 0, NO_VECTOR: 0 };
+  for (const report of reports) {
+    if (report.verdict === "PASS_CAPTURE") counts.PASS_CAPTURE++;
+    else if (report.verdict === "NO_VECTOR") counts.NO_VECTOR++;
+    else if (report.verdict.startsWith("REJECT_")) counts.REJECT++;
+  }
+  return counts;
+}
+
+function captureReportMarkdown(reports: GonetCaptureReport[], runId: string): string {
+  const counts = captureVerdictCounts(reports);
+  const rows = reports.map((r) =>
+    `| ${r.slug} | ${r.verdict} | ${r.n_features} | ${r.codes_distinct} | ${r.lettered_pct.toFixed(1)}% | ${r.integer_pure_pct.toFixed(1)}% | ${r.bbox_diag_km === null ? "—" : r.bbox_diag_km.toFixed(2)} | ${r.nearest_registre_muni ?? "—"} | ${r.nearest_km === null ? "—" : r.nearest_km.toFixed(2)} |`,
+  );
+  return [
+    "# Capture GOnet — rapport de gate",
+    "",
+    `Run capture : \`${runId}\``,
+    "",
+    `Verdicts : PASS_CAPTURE=${counts.PASS_CAPTURE}, REJECT=${counts.REJECT}, NO_VECTOR=${counts.NO_VECTOR}`,
+    "",
+    "| slug | verdict | features | codes | lettrés | entiers purs | diagonale km | muni registre la plus proche | distance km |",
+    "|---|---|---:|---:|---:|---:|---:|---|---:|",
+    ...rows,
+    "",
+  ].join("\n");
+}
+
+function buildGonetCaptureReport(
+  slug: string,
+  target: MuniEntry | undefined,
+  registry: MuniEntry[],
+  entry: CaptureManifestLine,
+  features: GeoFeature[],
+  paginated: boolean,
+  zoneField: string,
+): GonetCaptureReport {
+  const stats = zoneCodeStats(features as never, zoneField);
+  const bbox = featureBbox(features);
+  const center = bbox === null ? null : { lat: (bbox.miny + bbox.maxy) / 2, lon: (bbox.minx + bbox.maxx) / 2 };
+  let nearest: { slug: string; km: number } | null = null;
+  if (center !== null) {
+    for (const muni of registry) {
+      const km = haversineKm(muni.lat, muni.lon, center.lat, center.lon);
+      if (nearest === null || km < nearest.km) nearest = { slug: muni.slug, km };
+    }
+  }
+
+  let verdict = "PASS_CAPTURE";
+  if (paginated) verdict = "REJECT_PAGINATED_RESPONSE";
+  else if (stats.distinct < 3) verdict = "REJECT_CODES_DISTINCT_LT3";
+  else if (stats.codeLikeRatio < 0.5) verdict = "REJECT_LETTERED_LT50_PCT";
+  else if (stats.pureIntRatio > 0.8) verdict = "REJECT_INTEGER_PURE_GT80_PCT";
+  else if (stats.maxLen > 24) verdict = "REJECT_MAXLEN_GT24";
+  else if (bbox === null) verdict = "REJECT_NO_GEOMETRY";
+  else if (haversineKm(bbox.miny, bbox.minx, bbox.maxy, bbox.maxx) > 35) verdict = "REJECT_BBOX_DIAG_GT35KM";
+  else if (nearest === null) verdict = "REJECT_NO_REGISTRE_NEAREST";
+  else if (target !== undefined && nearest.slug !== target.slug) verdict = "REJECT_MUNI_CONTAMINATION";
+  else if (nearest !== null && nearest.km > 8) verdict = "REJECT_NEAREST_GT8KM";
+
+  return {
+    slug,
+    source_url_reelle: entry.url,
+    retrieved_at: entry.retrieved_at,
+    sha256_octets: entry.sha256?.replace(/^sha256:/, "") ?? null,
+    n_features: features.length,
+    codes_distinct: stats.distinct,
+    lettered_pct: stats.codeLikeRatio * 100,
+    integer_pure_pct: stats.pureIntRatio * 100,
+    bbox_diag_km: bbox === null ? null : haversineKm(bbox.miny, bbox.minx, bbox.maxy, bbox.maxx),
+    nearest_registre_muni: nearest?.slug ?? null,
+    nearest_km: nearest?.km ?? null,
+    verdict,
+  };
 }
 
 async function capturedArcgisJson<T = unknown>(
@@ -1061,6 +1193,7 @@ async function gonetFetchUnpaginated(
 async function processGonetZonage(
   slug: string, muni: MuniEntry | undefined, viewerUrl: string,
   browser: Browser, run: CaptureRun, s3: S3Client | null, args: Args, base: SlugResult,
+  registry: MuniEntry[],
 ): Promise<SlugResult> {
   // The GOnet6 viewer is a heavy JS map: the in-session MapServer proxy request
   // (the only signal that the muni IS on goazimut) is not fired until the map
@@ -1070,18 +1203,18 @@ async function processGonetZonage(
   const session = await browser.openSession(viewerUrl, Math.max(args.navMs, 40_000) + 8_000);
   try {
     const mapBase = gonetMapServerBase(session.requests);
-    if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
+    if (!mapBase) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
     const proxy = gonetProxyBase(session.requests);
 
     const info = await capturedGonetJson<{ layers?: GoNetLayer[] }>(browser, session.sid, `${proxy}${mapBase}/?f=json`, run, slug);
     const layers = info?.value.layers ?? [];
-    if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
+    if (layers.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
     if (process.env["GONET_DUMP_LAYERS"]) {
       console.error(`[gonet-dump ${slug}] ${layers.length} couches @ ${mapBase}`);
       for (const l of layers) console.error(`    #${l.id}\tp=${l.parentLayerId ?? "-"}\t${l.type ?? "?"}\t${l.geometryType ?? "?"}\t${l.name}`);
     }
     const candidates = gonetZonageCandidates(layers);
-    if (candidates.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
+    if (candidates.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
 
     // Among zonage-named polygon layers, keep the one with a usable zone field AND
     // the most features (scale variants are duplicated; one may be empty).
@@ -1097,11 +1230,14 @@ async function processGonetZonage(
       if (count <= 0) continue;
       if (!best || count > best.count) best = { id: c.id, name: stripGonetPrefix(c.name), zoneField, oidField, count };
     }
-    if (!best) return { ...base, status: "no-zonage-layer", detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
+    if (!best) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
 
     const layerUrl = `${mapBase}/${best.id}`;
     const received = await gonetFetchUnpaginated(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.count, run, slug);
-    if (!received || received.features.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    if (!received) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée sans GeoJSON exploitable` };
+    if (received.features.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug, received.entry), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    const captureReport = buildGonetCaptureReport(slug, muni, registry, received.entry, received.features, received.paginated, best.zoneField);
+    base.captureReport = captureReport;
     if (received.paginated) {
       return { ...base, status: "no-zonage-layer", detail: `gonet: réponse PAGINÉE/refusée (${received.features.length}/${best.count} features; preuve v2 à URL unique impossible)` };
     }
@@ -1149,7 +1285,7 @@ async function processGonetZonage(
 }
 
 // ── Traitement d'une ville ────────────────────────────────────────────────────
-async function processCity(slug: string, muni: MuniEntry | undefined, browser: Browser, s3: S3Client | null, args: Args): Promise<SlugResult> {
+async function processCity(slug: string, muni: MuniEntry | undefined, browser: Browser, s3: S3Client | null, args: Args, registry: MuniEntry[]): Promise<SlugResult> {
   const site = websiteForSlug(slug) ?? null;
   const base: SlugResult = { slug, site, platforms: [], viewerUrls: [], deposited: false, status: "no-viewer", detail: "" };
   if (!site) return { ...base, status: "no-site", detail: "aucun site dans l'annuaire" };
@@ -1208,7 +1344,7 @@ async function processCity(slug: string, muni: MuniEntry | undefined, browser: B
     const viewer = gonetViewerUrl(lead.goazimut);
     dbg(`gonet viewer=${viewer ?? "n/a"}`);
     if (viewer) {
-      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base);
+      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base, registry);
       if (g.deposited || g.status === "deposited") return g;
       if (!platforms.includes("arcgis")) return g; // gonet-only → classement gonet terminal
       base.detail = g.detail; // garde la note gonet si l'ArcGIS échoue aussi
@@ -1459,10 +1595,10 @@ async function main(): Promise<void> {
         const viewer = `https://www.goazimut.com/GOnet6/?m=${code}&pl=1`;
         const seedBase: SlugResult = { slug, site: websiteForSlug(slug) ?? null, platforms: ["goazimut"], viewerUrls: [viewer], deposited: false, status: "no-zonage-layer", detail: "" };
         let r: SlugResult;
-        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase); }
+        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase, munis); }
         catch (e) {
           if (e instanceof PropertyRegressionError) throw e;
-          r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) };
+          r = { ...seedBase, status: "error", captureReport: noVectorCaptureReport(slug, undefined, "REJECT_RUN_ERROR"), detail: e instanceof Error ? e.message : String(e) };
         }
         results.push(r);
         console.error(`[${i + 1}/${args.gonetSeeds.length}] ${r.status.padEnd(18)} ${slug} (m=${code}) :: ${r.detail}`);
@@ -1489,7 +1625,7 @@ async function main(): Promise<void> {
       for (let i = 0; i < args.slugs.length; i++) {
         const slug = args.slugs[i]!;
         let r: SlugResult;
-        try { r = await processCity(slug, bySlug.get(slug), browser, s3, args); }
+        try { r = await processCity(slug, bySlug.get(slug), browser, s3, args, munis); }
         catch (e) {
           if (e instanceof PropertyRegressionError) throw e;
           r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
@@ -1505,10 +1641,22 @@ async function main(): Promise<void> {
   const byStatus: Record<string, number> = {};
   for (const r of results) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
   const deposited = results.filter((r) => r.deposited).map((r) => r.slug);
+  const captureReports = results.map((r) => r.captureReport).filter((r): r is GonetCaptureReport => r !== undefined);
 
-  const report = { generatedAt: new Date().toISOString(), deposit: args.deposit, byStatus, deposited, results };
+  const report = {
+    contract: "zones-gonet-capture-report/v1",
+    generatedAt: new Date().toISOString(),
+    capture_run_id: captureRun.runId,
+    deposit: args.deposit,
+    verdict_counts: captureVerdictCounts(captureReports),
+    capture_report: captureReports,
+    byStatus,
+    deposited,
+    results,
+  };
   const out = args.outFile ?? resolve(HERE, "../../work/delegation-mass/zones-obscura-report.json");
   writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
+  if (captureReports.length > 0) writeFileSync(out.replace(/\.json$/i, ".md"), captureReportMarkdown(captureReports, captureRun.runId));
   console.error(`\n=== STATUS ${JSON.stringify(byStatus)}`);
   console.error(`déposés=${deposited.length} [${deposited.join(",")}]`);
   console.error(`rapport → ${out}`);
