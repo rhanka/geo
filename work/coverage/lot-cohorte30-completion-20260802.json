@@ -1,0 +1,1551 @@
+{
+  "$schema": "lot-cohorte30-completion/v1",
+  "as_of": "20260802",
+  "generated_at": "2026-08-03T00:00:00Z",
+  "palier": 1,
+  "cohort_size": 30,
+  "processed_this_palier": [
+    "westmount",
+    "saint-lambert",
+    "hampstead",
+    "mont-royal",
+    "montreal-ouest",
+    "cote-saint-luc"
+  ],
+  "checkpoint_only": [
+    "longueuil"
+  ],
+  "pending_after_palier": [
+    "longueuil",
+    "sainte-catherine",
+    "la-prairie",
+    "delson",
+    "candiac",
+    "montreal-est",
+    "boucherville",
+    "dorval",
+    "saint-constant",
+    "saint-bruno-de-montarville",
+    "carignan",
+    "dollard-des-ormeaux",
+    "pointe-claire",
+    "saint-philippe",
+    "saint-mathieu",
+    "chateauguay",
+    "sainte-julie",
+    "saint-basile-le-grand",
+    "chambly",
+    "rosemere",
+    "varennes",
+    "brossard",
+    "ile-dorval",
+    "kirkland"
+  ],
+  "method": {
+    "runner": "acquisition/src/_lot-zone-refold-batch.ts",
+    "chain": "audit-before -> _lot-zone-refold-s3 backup -> lot-zone-join-run -> lots-enriched-run -> mirror -> audit-after",
+    "simplify_zones_m": 0,
+    "allow_geometry_suspect": true,
+    "metrics_only_for": [
+      "saint-lambert",
+      "hampstead",
+      "mont-royal",
+      "montreal-ouest",
+      "cote-saint-luc"
+    ],
+    "anti_invention": "lot hors de toute zone servie reste unassigned/couverture incomplete; aucune valeur n'est fabriquée.",
+    "s3_run_prefix": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10"
+  },
+  "sources": {
+    "assignment_before": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+    "folded_before": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+    "consistency_baseline": "work/coverage/lot-zone-consistency-scale-20260725.json",
+    "consistency_readback_after": "acquisition/src/lot-zone-consistency-audit.ts (30 slugs, 2026-08-03)",
+    "stamp_readback_after": "acquisition/src/_zone-source-readback-audit.ts (6 slugs, concurrency=1)"
+  },
+  "summary": {
+    "complete_cities": {
+      "kpi12_before": 7,
+      "kpi12_after": 7,
+      "kpi2_before": 15,
+      "kpi2_after": 15,
+      "kpi13_before": 1,
+      "kpi13_after": 1
+    },
+    "global_kpis": {
+      "kpi12": {
+        "before": {
+          "with_code_zone": 293078,
+          "total": 298390,
+          "pct": 98.22
+        },
+        "after": {
+          "with_code_zone": 293078,
+          "total": 298390,
+          "pct": 98.22
+        }
+      },
+      "kpi2": {
+        "before": {
+          "mismatch": 15013,
+          "assigned": 287332,
+          "pct": 5.22
+        },
+        "after": {
+          "mismatch": 15013,
+          "assigned": 287332,
+          "pct": 5.22
+        },
+        "measured_cities": 28,
+        "missing_zonage_slugs": [
+          "saint-catherine",
+          "ile-dorval"
+        ]
+      },
+      "kpi13": {
+        "before": {
+          "with_normes": 110274,
+          "total": 298390,
+          "pct": 36.96
+        },
+        "after": {
+          "with_normes": 110291,
+          "total": 298390,
+          "pct": 36.96
+        }
+      }
+    },
+    "added": {
+      "lots_with_code_zone": 0,
+      "lots_with_folded_normes": 17
+    },
+    "couverture_incomplete_restant_completed": 192,
+    "zones_escalation": [
+      "saint-catherine",
+      "ile-dorval"
+    ],
+    "note": "Global X/30 uses the closed cohort; after counts include unchanged baseline for 24 pending cities and the six completed palier-1 cities."
+  },
+  "cities": [
+    {
+      "slug": "westmount",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 5013,
+          "total": 5040,
+          "pct": 99.46
+        },
+        "after": {
+          "with_code_zone": 5013,
+          "total": 5040,
+          "pct": 99.46
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 10.99,
+          "assigned": 5013,
+          "matched": 4462,
+          "misassigned": 506,
+          "outside_all": 45,
+          "unassigned": 27
+        },
+        "after": {
+          "mismatch_pct": 10.99,
+          "assigned": 5013,
+          "matched": 4462,
+          "misassigned": 506,
+          "outside_all": 45,
+          "unassigned": 27
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 7,
+          "total": 5040,
+          "pct": 0.14
+        },
+        "after": {
+          "with_normes": 24,
+          "total": 5040,
+          "pct": 0.48
+        }
+      },
+      "inside_served_assignes": {
+        "before": 5013,
+        "after": 5013,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 27,
+        "after": 27
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T003823001ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-westmount/qc-zonage-westmount.geojson",
+        "zone_source_url": "https://cartes.westmount.org/server/rest/services/Zonage_/FeatureServer/0/query?where=1%3D1&outFields=ZoneNumber&outSR=4326&geometryPrecision=6&resultOffset=0&resultRecordCount=1000&f=geojson",
+        "zone_source_level": "documented",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "saint-lambert",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 5451,
+          "total": 5472,
+          "pct": 99.62
+        },
+        "after": {
+          "with_code_zone": 5451,
+          "total": 5472,
+          "pct": 99.62
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.93,
+          "assigned": 5451,
+          "matched": 5237,
+          "misassigned": 194,
+          "outside_all": 20,
+          "unassigned": 21
+        },
+        "after": {
+          "mismatch_pct": 3.93,
+          "assigned": 5451,
+          "matched": 5237,
+          "misassigned": 194,
+          "outside_all": 20,
+          "unassigned": 21
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 5451,
+          "total": 5472,
+          "pct": 99.62
+        },
+        "after": {
+          "with_normes": 5451,
+          "total": 5472,
+          "pct": 99.62
+        }
+      },
+      "inside_served_assignes": {
+        "before": 5451,
+        "after": 5451,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 21,
+        "after": 21
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T004443731ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-saint-lambert.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "hampstead",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 1861,
+          "total": 1866,
+          "pct": 99.73
+        },
+        "after": {
+          "with_code_zone": 1861,
+          "total": 1866,
+          "pct": 99.73
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 11.88,
+          "assigned": 1861,
+          "matched": 1640,
+          "misassigned": 40,
+          "outside_all": 181,
+          "unassigned": 5
+        },
+        "after": {
+          "mismatch_pct": 11.88,
+          "assigned": 1861,
+          "matched": 1640,
+          "misassigned": 40,
+          "outside_all": 181,
+          "unassigned": 5
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1847,
+          "total": 1866,
+          "pct": 98.98
+        },
+        "after": {
+          "with_normes": 1847,
+          "total": 1866,
+          "pct": 98.98
+        }
+      },
+      "inside_served_assignes": {
+        "before": 1861,
+        "after": 1861,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 5,
+        "after": 5
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T004944660ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "orphan",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "mont-royal",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 5711,
+          "total": 5795,
+          "pct": 98.55
+        },
+        "after": {
+          "with_code_zone": 5711,
+          "total": 5795,
+          "pct": 98.55
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 2.52,
+          "assigned": 5711,
+          "matched": 5567,
+          "misassigned": 80,
+          "outside_all": 64,
+          "unassigned": 84
+        },
+        "after": {
+          "mismatch_pct": 2.52,
+          "assigned": 5711,
+          "matched": 5567,
+          "misassigned": 80,
+          "outside_all": 64,
+          "unassigned": 84
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 2313,
+          "total": 5795,
+          "pct": 39.91
+        },
+        "after": {
+          "with_normes": 2313,
+          "total": 5795,
+          "pct": 39.91
+        }
+      },
+      "inside_served_assignes": {
+        "before": 5711,
+        "after": 5711,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 84,
+        "after": 84
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T005016722ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-mont-royal.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "montreal-ouest",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 1601,
+          "total": 1601,
+          "pct": 100
+        },
+        "after": {
+          "with_code_zone": 1601,
+          "total": 1601,
+          "pct": 100
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 8.99,
+          "assigned": 1601,
+          "matched": 1457,
+          "misassigned": 131,
+          "outside_all": 13,
+          "unassigned": 0
+        },
+        "after": {
+          "mismatch_pct": 8.99,
+          "assigned": 1601,
+          "matched": 1457,
+          "misassigned": 131,
+          "outside_all": 13,
+          "unassigned": 0
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 82,
+          "total": 1601,
+          "pct": 5.12
+        },
+        "after": {
+          "with_normes": 82,
+          "total": 1601,
+          "pct": 5.12
+        }
+      },
+      "inside_served_assignes": {
+        "before": 1601,
+        "after": 1601,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": 0
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T005411749ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-montreal-ouest.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "cote-saint-luc",
+      "state": "completed",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 4890,
+          "total": 4945,
+          "pct": 98.89
+        },
+        "after": {
+          "with_code_zone": 4890,
+          "total": 4945,
+          "pct": 98.89
+        }
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 6.69,
+          "assigned": 4890,
+          "matched": 4563,
+          "misassigned": 277,
+          "outside_all": 50,
+          "unassigned": 55
+        },
+        "after": {
+          "mismatch_pct": 6.69,
+          "assigned": 4890,
+          "matched": 4563,
+          "misassigned": 277,
+          "outside_all": 50,
+          "unassigned": 55
+        }
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 3549,
+          "total": 4945,
+          "pct": 71.77
+        },
+        "after": {
+          "with_normes": 3549,
+          "total": 4945,
+          "pct": 71.77
+        }
+      },
+      "inside_served_assignes": {
+        "before": 4890,
+        "after": 4890,
+        "added": 0
+      },
+      "couverture_incomplete_restant": {
+        "before": 55,
+        "after": 55
+      },
+      "backup": {
+        "status": "done",
+        "timestamp": "2026-08-03T005436864ZZ"
+      },
+      "mirror": "flat-only",
+      "stamp": {
+        "readback_status": "STAMPED_NULL",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-cote-saint-luc/qc-zonage-cote-saint-luc.geojson",
+        "zone_source_url": null,
+        "zone_source_level": "orphan",
+        "preserved_by_construction": true,
+        "note": "La chaîne n'écrit pas normalized/ca-qc-zonage; readback post-dépôt sans erreur."
+      }
+    },
+    {
+      "slug": "longueuil",
+      "state": "checkpoint_backup_only",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 66975,
+          "total": 67010,
+          "pct": 99.95
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 5.62,
+          "assigned": 66975,
+          "matched": 63208,
+          "misassigned": 3740,
+          "outside_all": 27,
+          "unassigned": 35
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 32479,
+          "total": 67010,
+          "pct": 48.47
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 66975,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 35,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "sainte-catherine",
+      "state": "pending",
+      "note": "qc-zonage non servi",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 5746,
+          "total": 5754,
+          "pct": 99.86
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": null,
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 2547,
+          "total": 5754,
+          "pct": 44.26
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 5746,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 8,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "la-prairie",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 9399,
+          "total": 9468,
+          "pct": 99.27
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 8.55,
+          "assigned": 9399,
+          "matched": 8595,
+          "misassigned": 766,
+          "outside_all": 38,
+          "unassigned": 69
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 533,
+          "total": 9468,
+          "pct": 5.63
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 9399,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 69,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "delson",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 3330,
+          "total": 3330,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 5.77,
+          "assigned": 3330,
+          "matched": 3138,
+          "misassigned": 161,
+          "outside_all": 31,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 3315,
+          "total": 3330,
+          "pct": 99.55
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 3330,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "candiac",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 7725,
+          "total": 7725,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 8.52,
+          "assigned": 7725,
+          "matched": 7067,
+          "misassigned": 613,
+          "outside_all": 45,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1036,
+          "total": 7725,
+          "pct": 13.41
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 7725,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "montreal-est",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 1678,
+          "total": 1678,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 6.91,
+          "assigned": 1678,
+          "matched": 1562,
+          "misassigned": 94,
+          "outside_all": 22,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1678,
+          "total": 1678,
+          "pct": 100
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 1678,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "boucherville",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 16242,
+          "total": 16269,
+          "pct": 99.83
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 6.07,
+          "assigned": 16242,
+          "matched": 15256,
+          "misassigned": 942,
+          "outside_all": 44,
+          "unassigned": 27
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 3530,
+          "total": 16269,
+          "pct": 21.7
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 16242,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 27,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "dorval",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 6174,
+          "total": 6245,
+          "pct": 98.86
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.9,
+          "assigned": 6174,
+          "matched": 5933,
+          "misassigned": 206,
+          "outside_all": 35,
+          "unassigned": 71
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 6109,
+          "total": 6245,
+          "pct": 97.82
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 6174,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 71,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "saint-constant",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 11615,
+          "total": 11622,
+          "pct": 99.94
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.57,
+          "assigned": 11615,
+          "matched": 11200,
+          "misassigned": 385,
+          "outside_all": 30,
+          "unassigned": 7
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 495,
+          "total": 11622,
+          "pct": 4.26
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 11615,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 7,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 10123,
+          "total": 10261,
+          "pct": 98.66
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.58,
+          "assigned": 10123,
+          "matched": 9761,
+          "misassigned": 334,
+          "outside_all": 28,
+          "unassigned": 138
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 0,
+          "total": 10261,
+          "pct": 0
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 10123,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 138,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "carignan",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 6654,
+          "total": 6654,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.62,
+          "assigned": 6654,
+          "matched": 6413,
+          "misassigned": 201,
+          "outside_all": 40,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 2861,
+          "total": 6654,
+          "pct": 43
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 6654,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 12562,
+          "total": 12563,
+          "pct": 99.99
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 4.4,
+          "assigned": 12562,
+          "matched": 12009,
+          "misassigned": 480,
+          "outside_all": 73,
+          "unassigned": 1
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1901,
+          "total": 12563,
+          "pct": 15.13
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 12562,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 1,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "pointe-claire",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 10815,
+          "total": 10815,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.77,
+          "assigned": 10815,
+          "matched": 10407,
+          "misassigned": 350,
+          "outside_all": 58,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 6931,
+          "total": 10815,
+          "pct": 64.09
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 10815,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "saint-philippe",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 5069,
+          "total": 5202,
+          "pct": 97.44
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.69,
+          "assigned": 5069,
+          "matched": 4882,
+          "misassigned": 166,
+          "outside_all": 21,
+          "unassigned": 133
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 4976,
+          "total": 5202,
+          "pct": 95.66
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 5069,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 133,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "saint-mathieu",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 1442,
+          "total": 1444,
+          "pct": 99.86
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 2.57,
+          "assigned": 1442,
+          "matched": 1405,
+          "misassigned": 30,
+          "outside_all": 7,
+          "unassigned": 2
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1442,
+          "total": 1444,
+          "pct": 99.86
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 1442,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 2,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "chateauguay",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 17715,
+          "total": 18765,
+          "pct": 94.4
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 2.68,
+          "assigned": 17715,
+          "matched": 17240,
+          "misassigned": 359,
+          "outside_all": 116,
+          "unassigned": 1050
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 5,
+          "total": 18765,
+          "pct": 0.03
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 17715,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 1050,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "sainte-julie",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 9147,
+          "total": 10772,
+          "pct": 84.91
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.24,
+          "assigned": 9147,
+          "matched": 8851,
+          "misassigned": 262,
+          "outside_all": 34,
+          "unassigned": 1625
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 73,
+          "total": 10772,
+          "pct": 0.68
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 9147,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 1625,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 10298,
+          "total": 10312,
+          "pct": 99.86
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 3.29,
+          "assigned": 10298,
+          "matched": 9959,
+          "misassigned": 255,
+          "outside_all": 84,
+          "unassigned": 14
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 1973,
+          "total": 10312,
+          "pct": 19.13
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 10298,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 14,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "chambly",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 12018,
+          "total": 12027,
+          "pct": 99.93
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 5.22,
+          "assigned": 12018,
+          "matched": 11391,
+          "misassigned": 591,
+          "outside_all": 36,
+          "unassigned": 9
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 12018,
+          "total": 12027,
+          "pct": 99.93
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 12018,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 9,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "rosemere",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 4246,
+          "total": 5767,
+          "pct": 73.63
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 7.47,
+          "assigned": 4246,
+          "matched": 3929,
+          "misassigned": 40,
+          "outside_all": 277,
+          "unassigned": 1521
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 4246,
+          "total": 5767,
+          "pct": 73.63
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 4246,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 1521,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "varennes",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 8287,
+          "total": 8287,
+          "pct": 100
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 4.98,
+          "assigned": 8287,
+          "matched": 7874,
+          "misassigned": 404,
+          "outside_all": 9,
+          "unassigned": 0
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 3268,
+          "total": 8287,
+          "pct": 39.44
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 8287,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 0,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "brossard",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 24793,
+          "total": 24823,
+          "pct": 99.88
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 6.7,
+          "assigned": 24793,
+          "matched": 23133,
+          "misassigned": 1513,
+          "outside_all": 147,
+          "unassigned": 30
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 366,
+          "total": 24823,
+          "pct": 1.47
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 24793,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 30,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "ile-dorval",
+      "state": "pending",
+      "note": "qc-zonage non servi",
+      "kpi12_assignation_lot_zone": {
+        "before": null,
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": null,
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": null,
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": null,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": null,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    },
+    {
+      "slug": "kirkland",
+      "state": "pending",
+      "kpi12_assignation_lot_zone": {
+        "before": {
+          "with_code_zone": 6498,
+          "total": 6878,
+          "pct": 94.48
+        },
+        "after": null
+      },
+      "kpi2_coherence_lot_zone": {
+        "before": {
+          "mismatch_pct": 4.89,
+          "assigned": 6498,
+          "matched": 6180,
+          "misassigned": 261,
+          "outside_all": 57,
+          "unassigned": 380
+        },
+        "after": null
+      },
+      "kpi13_folded_normes": {
+        "before": {
+          "with_normes": 5243,
+          "total": 6878,
+          "pct": 76.23
+        },
+        "after": null
+      },
+      "inside_served_assignes": {
+        "before": 6498,
+        "after": null,
+        "added": null
+      },
+      "couverture_incomplete_restant": {
+        "before": 380,
+        "after": null
+      },
+      "backup": null,
+      "mirror": null,
+      "stamp": null
+    }
+  ]
+}
