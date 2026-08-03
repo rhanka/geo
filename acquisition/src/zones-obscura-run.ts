@@ -118,6 +118,24 @@ const ZONE_CODE_FIELD_CODELIKE = [
 const ZONAGE_TITLE_PATTERNS = [/\bzonage\b/i, /\bzoning\b/i, /\bzones?\b/i, /grille.*zone/i, /regl.*zone/i];
 const AFFECTATION_TITLE_PATTERNS = [/\baffectation\b/i, /milieu.*humide/i, /\bpiia\b/i, /inondab/i, /patrimo/i, /contrainte/i];
 
+// Certaines munis QC codent leurs zones en NUMÉRIQUE pur (ex. "512","402" ; le
+// 1er chiffre = classe d'usage). Le gate value-based (`codeLikeRatio`/`pureIntRatio`)
+// les prend à tort pour un champ décoy/cadastre et les rejette. Discriminant sûr =
+// autorité du NOM DE CHAMP (identifiant de zone) + TITRE de couche « zonage » +
+// cardinalité bornée (un cadastre/rôle porte des MILLIERS de lots distincts). Sous
+// ces trois gardes, les valeurs numériques SONT du zonage → bypass des deux gates
+// de forme uniquement (les gardes bbox/attribution/contamination restent actives).
+export const NUMERIC_ZONAGE_MAX_DISTINCT = 500;
+export function isNumericZonageBypass(zoneField: string, layerTitle: string, distinct: number): boolean {
+  const field = (zoneField ?? "").trim();
+  const title = (layerTitle ?? "").trim();
+  const fieldIsZoneId = ZONE_CODE_FIELD_CODELIKE.some((re) => re.test(field));
+  const titleIsZonage = ZONAGE_TITLE_PATTERNS.some((re) => re.test(title));
+  const titleIsAffectation = AFFECTATION_TITLE_PATTERNS.some((re) => re.test(title));
+  return fieldIsZoneId && titleIsZonage && !titleIsAffectation
+    && distinct >= 3 && distinct <= NUMERIC_ZONAGE_MAX_DISTINCT;
+}
+
 // Attributs municipalité dans les couches MRC agrégées.
 const MUNI_ATTR_CANDIDATES = [
   "mun_nom", "MuniTopo", "municipalite", "Municipalite", "MUNICIPALITE", "NOM_MUN",
@@ -301,9 +319,10 @@ function noVectorCaptureReport(slug: string, entry?: CaptureManifestLine, verdic
 }
 
 function captureVerdictCounts(reports: GonetCaptureReport[]): Record<string, number> {
-  const counts: Record<string, number> = { PASS_CAPTURE: 0, REJECT: 0, NO_VECTOR: 0 };
+  const counts: Record<string, number> = { PASS_CAPTURE: 0, PASS_CAPTURE_NUMERIC: 0, REJECT: 0, NO_VECTOR: 0 };
   for (const report of reports) {
     if (report.verdict === "PASS_CAPTURE") counts.PASS_CAPTURE++;
+    else if (report.verdict === "PASS_CAPTURE_NUMERIC") counts.PASS_CAPTURE_NUMERIC++;
     else if (report.verdict === "NO_VECTOR") counts.NO_VECTOR++;
     else if (report.verdict.startsWith("REJECT_")) counts.REJECT++;
   }
@@ -337,8 +356,10 @@ function buildGonetCaptureReport(
   features: GeoFeature[],
   paginated: boolean,
   zoneField: string,
+  layerTitle: string,
 ): GonetCaptureReport {
   const stats = zoneCodeStats(features as never, zoneField);
+  const numericZonage = isNumericZonageBypass(zoneField, layerTitle, stats.distinct);
   const bbox = featureBbox(features);
   const center = bbox === null ? null : { lat: (bbox.miny + bbox.maxy) / 2, lon: (bbox.minx + bbox.maxx) / 2 };
   let nearest: { slug: string; km: number } | null = null;
@@ -349,11 +370,11 @@ function buildGonetCaptureReport(
     }
   }
 
-  let verdict = "PASS_CAPTURE";
+  let verdict = numericZonage ? "PASS_CAPTURE_NUMERIC" : "PASS_CAPTURE";
   if (paginated) verdict = "REJECT_PAGINATED_RESPONSE";
   else if (stats.distinct < 3) verdict = "REJECT_CODES_DISTINCT_LT3";
-  else if (stats.codeLikeRatio < 0.5) verdict = "REJECT_LETTERED_LT50_PCT";
-  else if (stats.pureIntRatio > 0.8) verdict = "REJECT_INTEGER_PURE_GT80_PCT";
+  else if (!numericZonage && stats.codeLikeRatio < 0.5) verdict = "REJECT_LETTERED_LT50_PCT";
+  else if (!numericZonage && stats.pureIntRatio > 0.8) verdict = "REJECT_INTEGER_PURE_GT80_PCT";
   else if (stats.maxLen > 24) verdict = "REJECT_MAXLEN_GT24";
   else if (bbox === null) verdict = "REJECT_NO_GEOMETRY";
   else if (haversineKm(bbox.miny, bbox.minx, bbox.maxy, bbox.maxx) > 35) verdict = "REJECT_BBOX_DIAG_GT35KM";
@@ -1236,7 +1257,7 @@ async function processGonetZonage(
     const received = await gonetFetchUnpaginated(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.count, run, slug);
     if (!received) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée sans GeoJSON exploitable` };
     if (received.features.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug, received.entry), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
-    const captureReport = buildGonetCaptureReport(slug, muni, registry, received.entry, received.features, received.paginated, best.zoneField);
+    const captureReport = buildGonetCaptureReport(slug, muni, registry, received.entry, received.features, received.paginated, best.zoneField, best.name);
     base.captureReport = captureReport;
     if (received.paginated) {
       return { ...base, status: "no-zonage-layer", detail: `gonet: réponse PAGINÉE/refusée (${received.features.length}/${best.count} features; preuve v2 à URL unique impossible)` };
