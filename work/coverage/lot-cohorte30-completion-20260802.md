@@ -1,6 +1,6 @@
-# WP1 — completion cohorte 30 (palier 2)
+# WP1 — completion cohorte 30 (palier 3)
 
-État daté `20260802`; dix dépôts validés cumulés. Longueuil, Candiac et Boucherville ont un backup S3 confirmé mais aucun dépôt lot-zone validé; ils restent aux checkpoints.
+Onze dépôts validés cumulés. Longueuil, Candiac, Boucherville et Saint-Constant ont un backup S3 confirmé mais aucun dépôt lot-zone validé; ils restent aux checkpoints.
 
 | muni | état | #12 avant→après | #2 mismatch avant→après | #13 avant→après | inside-served assignés | couverture incomplete restante | backup / miroir / stamp |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -16,9 +16,9 @@
 | delson | completed | 100%→100% | 5.77%→null | 99.55%→99.55% | 3330→3330 | 0→0 | done 2026-08-03T011523476ZZ; flat-only; STAMPED_NULL |
 | candiac | checkpoint_backup_only | 100%→null | 8.52%→null | 13.41%→null | 7725→null | 0→null | backup-only 2026-08-03T011729782ZZ; —; non lu |
 | montreal-est | completed | 100%→100% | 6.91%→null | 100%→100% | 1678→1678 | 0→0 | done 2026-08-03T012348579ZZ; flat-only; STAMPED_NULL |
-| boucherville | checkpoint_backup_only | 99.83%→null | 6.07%→null | 21.7%→null | 16242→null | 27→null | backup-only 2026-08-03T012419473ZZ; —; non lu |
-| dorval | pending | 98.86%→null | 3.9%→null | 97.82%→null | 6174→null | 71→null | — |
-| saint-constant | pending | 99.94%→null | 3.57%→null | 4.26%→null | 11615→null | 7→null | — |
+| boucherville | checkpoint_backup_only | 99.83%→null | 6.07%→null | 21.7%→null | 16242→null | 27→null | backup-only 2026-08-03T013438191ZZ; —; non lu |
+| dorval | completed | 98.86%→98.86% | 3.9%→3.9% | 97.82%→97.82% | 6174→6174 | 71→71 | done 2026-08-03T013629228ZZ; flat-only; STAMPED_NULL |
+| saint-constant | checkpoint_backup_only | 99.94%→null | 3.57%→null | 4.26%→null | 11615→null | 7→null | backup-only 2026-08-03T013709310ZZ; —; non lu |
 | saint-bruno-de-montarville | pending | 98.66%→null | 3.58%→null | 0%→null | 10123→null | 138→null | — |
 | carignan | pending | 100%→null | 3.62%→null | 43%→null | 6654→null | 0→null | — |
 | dollard-des-ormeaux | pending | 99.99%→null | 4.4%→null | 15.13%→null | 12562→null | 1→null | — |
@@ -35,10 +35,10 @@
 | ile-dorval | pending | null→null | null→null | null→null | null→null | null→null | — |
 | kirkland | pending | 94.48%→null | 4.89%→null | 76.23%→null | 6498→null | 380→null | — |
 
-Résumé cumulé : #12 `7/30→7/30` (293078/298390, 98,22 %→98,22 %); #2 `<5 %` `15/30→15/30` (5,22 %→5,22 % sur 28 munis mesurés); #13 live `110230/298390→110230/298390` (36,94 %→36,94 %). La matrice datée indiquait 110274/298390 (36,96 %); la dérive préexistante de La Prairie (533→472) est séparée et le garde S3 a validé 472→472.
+Résumé cumulé : #12 `7/30→7/30` (293078/298390, 98,22 %→98,22 %); #2 `<5 %` `15/30→15/30` (5,22 %→5,22 % sur 28 munis mesurés); #13 live `110230/298390→110230/298390` (36,94 %→36,94 %).
 
-Gains d'opération : `+0` lot avec `code_zone` au palier 2; `+17` lots avec normes pliées au cumul. Aucun lot hors couverture n'a été inventé; les états restent `couverture incomplete`.
+Gains d'opération : `+0` lot avec `code_zone` au palier 3; `+17` lots avec normes pliées au cumul. Les lots hors couverture restent `couverture incomplete`; aucune valeur n'est inventée.
 
-Stamp : readback S3 sans erreur sur les quatre nouveaux dépôts; le zonage n’est pas écrit par la chaîne, donc `zone_source_url`/`zone_source_level` sont préservés par construction.
+Stamp : readback S3 sans erreur sur Dorval; le zonage n’est pas écrit par la chaîne, donc `zone_source_url`/`zone_source_level` sont préservés par construction.
 
-Sources : matrices `20260802`, stats live des journaux S3 palier 1/2, audit `lot-zone-consistency-audit.ts`, readback `_zone-source-readback-audit.ts`.
+Sources : matrices `20260802`, stats live des journaux S3, audit `lot-zone-consistency-audit.ts`, readback `_zone-source-readback-audit.ts`.
