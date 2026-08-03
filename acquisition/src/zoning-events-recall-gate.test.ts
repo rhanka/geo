@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
+  parseCohortFile,
   parseImmoDesignationEvents,
   partitionEventSets,
   runRecallGate,
@@ -196,6 +197,81 @@ describe("setRecallFor", () => {
       groups: [],
     });
     expect(result.missed_immo[0]?.unmatched_reason).toBe("immo_kind_hors_map");
+  });
+});
+
+describe("parseCohortFile", () => {
+  it("should read a plain slug list, ignoring blanks and comments", () => {
+    expect(parseCohortFile("# 167 cohort\nsaint-raymond\n\n  coaticook  \n", "cohort")).toEqual([
+      "saint-raymond",
+      "coaticook",
+    ]);
+  });
+
+  it("should read the graph_city_slug column of a TSV in preference to slug", () => {
+    const tsv = [
+      "priorityRank\tslug\tgraph_city_slug",
+      "1\tsaint-damase\tsaint-damase--maria",
+      "2\themmingford\themmingford-napierville",
+    ].join("\n");
+    expect(parseCohortFile(tsv, "cohort")).toEqual(["saint-damase--maria", "hemmingford-napierville"]);
+  });
+
+  it("should reject a duplicate slug rather than silently dedup", () => {
+    expect(() => parseCohortFile("coaticook\ncoaticook\n", "cohort")).toThrow(/dupliqués/u);
+  });
+
+  it("should reject a slug outside [a-z0-9-]", () => {
+    expect(() => parseCohortFile("Coaticook\n", "cohort")).toThrow(/slug invalide/u);
+  });
+});
+
+describe("runRecallGate cohort parameterization", () => {
+  it("should score a non-sample cohort slug and honour an explicit denominator", async () => {
+    const outputDirectory = mkdtempSync(join(HERE, ".zoning-events-recall-gate-cohort-"));
+    try {
+      const geo = join(outputDirectory, "geo.json");
+      writeFileSync(geo, JSON.stringify([{
+        type: "FeatureCollection",
+        muni: "granby",
+        events: [{
+          type: "ppcmoi",
+          muni: "granby",
+          url_pdf: "https://granby.ca/a.pdf",
+          date_iso: "2026-03-01",
+          bylaw_numero: null,
+          zone_codes_resolus: [],
+        }],
+      }]));
+      const immo = join(outputDirectory, "immo.json");
+      writeFileSync(immo, JSON.stringify([{
+        node_type: "DesignationEvent",
+        city_slug: "granby",
+        kind: "ppcmoi",
+        date: "2026-03-01",
+        source_url: "https://granby.ca/a.pdf",
+        zone_ref: null,
+        no_lot: null,
+      }]));
+      const result = await runRecallGate({
+        geoEventsPath: geo,
+        immoEventsPath: immo,
+        cohort: ["granby"],
+        denominator: 5,
+        outPath: join(outputDirectory, "gate.json"),
+        markdownPath: join(outputDirectory, "gate.md"),
+      });
+
+      expect(result.report.sample_municipalities).toEqual(["granby"]);
+      expect(result.report.cities.map((city) => city.slug)).toEqual(["granby"]);
+      const granby = result.report.cities[0]!;
+      expect(granby.geo_events).toBe(1);
+      expect(granby.immo_events).toBe(1);
+      expect(granby.set_recall).toMatchObject({ denominator: 5, matched: 1, recall: 1 / 5 });
+      expect(result.report.aggregate.set_recall).toMatchObject({ denominator: 5, matched: 1, recall: 1 / 5 });
+    } finally {
+      rmSync(outputDirectory, { recursive: true, force: true });
+    }
   });
 });
 
