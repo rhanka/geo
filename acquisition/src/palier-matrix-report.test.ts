@@ -25,14 +25,27 @@ describe("palier-matrix contract", () => {
     }
   });
 
-  it("PENDING-GRAPH-NODE : 3 villes, cellules toutes unknown + présence 0", () => {
+  it("PENDING-GRAPH-NODE : colonnes DÉRIVÉES du graphe unknown ; colonnes immo per-slug MESURÉES", () => {
+    // Contrat révisé : `graph_matched` dérive du match zonage-events (set-167-bprime),
+    // qui ne gouverne QUE les colonnes dérivées du graphe. Les colonnes immo
+    // `slug_measured` (14-19) suivent leur artefact per-slug autoritaire même pour
+    // une ville UNMATCHED — bloquer ces cellules à unknown affirmerait unknown sur
+    // un complete PROUVÉ (invention à l'envers). On verrouille : graphe→unknown,
+    // immo→état réel de la source.
+    const graphKeys = payload.columns.filter((c: any) => !c.slug_measured).map((c: any) => c.key);
+    const slugKeys = payload.columns.filter((c: any) => c.slug_measured).map((c: any) => c.key);
+    expect(slugKeys.length).toBe(6); // cols 14-19
     const pending = payload.rows.filter((r: any) => !r.graph_matched);
     expect(pending.length).toBe(5);
     for (const r of pending) {
       expect(r.flag).toBe("PENDING-GRAPH-NODE");
-      expect(r.counts.unknown).toBe(20);
-      expect(r.presence.present).toBe(0);
+      // toutes les colonnes graphe sont unknown (aucune mesure hors du graphe).
+      for (const k of graphKeys) expect(r.cells[k]).toBe("unknown");
+      // les colonnes immo per-slug ne sont PAS forcées à unknown : au moins une
+      // ville pending porte un état mesuré ≠ unknown (donnée immo réelle servie).
     }
+    const anyMeasuredImmo = pending.some((r: any) => slugKeys.some((k: string) => r.cells[k] !== "unknown"));
+    expect(anyMeasuredImmo).toBe(true);
   });
 
   it("cols 5/6/7 (règlement/usage/effet) SONT peuplées per-city (non-gap)", () => {
