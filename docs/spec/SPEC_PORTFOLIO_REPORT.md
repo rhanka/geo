@@ -66,14 +66,15 @@ Contraintes d'exécution : **déterministe**, **0 réseau**, **0 S3**, **0 dépl
 
 ## Liste des KPI
 
-### Existants (17) — repart des matrices de complétion committées
+### Existants (18) — repart des matrices de complétion committées
 
 | KPI | Source | Champ |
 |---|---|---|
 | Zones — complétion | `work/coverage/completion-1-zones-normes-summary-20260723.json` | `lanes.zones.state_counts` |
 | Normes — complétion | idem | `lanes.normes.state_counts` |
 | PV — complétion | `work/coverage/pv-completion-city-audit.json` | `summary.states` (denom = 1 106) |
-| Règlement — complétion | `work/coverage/completion-regdens-20260802.json` | `totals.reglement` |
+| Règlement — complétion déclarée | `work/coverage/completion-regdens-20260802.json` | `totals.reglement_declared` |
+| Règlement — preuve v2 | idem | `totals.reglement_proven` |
 | Usage dominant — complétion | idem | `totals.usage_dominant` |
 | Effet densifiant — complétion | idem | `totals.effet_densifiant` |
 | Provenance zones — jointure exacte | `work/coverage/zone-provenance-quality-matrix-20260723-74345365.json` | `validation.city_identity` (exact vs sans jointure) |
@@ -159,8 +160,13 @@ avec repli sur le libellé `kpi`.
   joints par ` · `, `complete` en premier, signe explicite (`+`/`-`).
 - Pas de snapshot précédent, KPI `unknown`/`insufficient`, ou champ non numérique →
   Précédent/Δ = `—`.
-- Règlement complétion = capture-prouvée v2 (`regdens totals.reglement`) ; def déclarée
-  815 non reproductible (jamais committée) ; Δ non comparable au franchissement de def.
+- Règlement = **DEUX lignes distinctes**, jamais fondues : « complétion déclarée »
+  (`regdens totals.reglement_declared`, source désormais committée) et « preuve v2 »
+  (`totals.reglement_proven`, sous-partie alignée sur une preuve de capture v2). La
+  bascule du 20260803 scinde l'ancienne ligne unique (preuve 542) ; la déclarée (895)
+  est comparable à l'ancienne mesure déclarée 815 (progrès, PAS une régression). Le
+  renommage de clé réinitialise la chaîne de diff (Précédent/Δ = `—` cette fois, aucun
+  Δ fabriqué) — la comparabilité est DITE en note, jamais calculée.
 - **Le snapshot précédent doit lui-même porter une mesure comparable.** Si le KPI y était
   `unknown`/`insufficient` (champs `null`), aucun Δ n'est calculable : la cellule vaut `—`,
   **jamais `0`** (un `0` laisserait croire à une absence de mouvement). Le rapport le DIT
