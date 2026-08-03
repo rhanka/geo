@@ -49,3 +49,4 @@ Manifeste direct : `zones-vecteur-natif-manifest-a-20260803.json`.
 | slug | verdict | features | champ zone | attribution | identité | capture |
 |---|---|---:|---|---:|---|---|
 | ayers-cliff | DÉPOSÉ | 45 | `Zonage` | 0,34 km | ayers-cliff | `zones-20260728T040436Z-1-d515695c-3bf7-4e63-aead-2e4c39afb03b` |
+| boisbriand | DÉPOSÉ | 302 | `ZONAGEMUNICIPALID` | 0,82 km | boisbriand | `zones-20260728T040436Z-1-d515695c-3bf7-4e63-aead-2e4c39afb03b` |
