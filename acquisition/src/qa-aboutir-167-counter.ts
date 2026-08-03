@@ -23,10 +23,13 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const RADAR = "/home/antoinefa/src/radar-immobilier";
-const RECALAGE_REF = "lane/zones:work/coverage/zones-recalage-status-167-20260802T192614Z.json";
+// Ré-pinné au status-167 FRAIS post-masse (zones a634175c, dérivé de la matrice
+// qa 608c23d2 v2=162). Le précédent (192614Z) était antérieur à la vague de
+// capture cluster de 22:00, donc le compteur ne pouvait pas ré-incrémenter.
+const RECALAGE_REF = "lane/zones:work/coverage/zones-recalage-status-167-20260803T003500Z.json";
 const BPRIME_REF = "800ee90:docs/spec/reports/set-167-bprime.tsv";
 const LOTZONE = resolve(ROOT, "work", "coverage", "lot-zone-consistency-scale-20260725.json");
-const OUT = resolve(ROOT, "work", "coverage", "aboutir-167-counter-20260802.json");
+const OUT = resolve(ROOT, "work", "coverage", "aboutir-167-counter-20260803.json");
 
 type Tri = "PASS" | "FAIL" | "INDET";
 type Bucket =
@@ -143,7 +146,7 @@ function main(): void {
     generated_from: "compteur qa (script committé, run local déterministe)",
     provenance: {
       bprime: "radar feat/set-167-canonical@800ee90 (PREVIEW, PR #436 non mergée)",
-      cond1_recalage_cond2_preuve: "lane/zones@zones-recalage-status-167-20260802T192614Z (folde recale_status + bucket overlap 5ec1d919)",
+      cond1_recalage_cond2_preuve: `${RECALAGE_REF} (folde recale_status + bucket overlap 5ec1d919)`,
       cond3_reconcilie: "work/coverage/lot-zone-consistency-scale-20260725.json",
       cond4_recette: "INDET (aucune source rejeu 7221 committée)",
     },
