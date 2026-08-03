@@ -926,7 +926,7 @@ async function fetchFeatures(
   };
 }
 
-function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
+export function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
   return features.map((f) => {
     const raw = f.properties?.[zoneField];
     const zone = raw !== null && raw !== undefined && String(raw).trim() !== "" ? String(raw).trim() : null;
@@ -994,7 +994,7 @@ class PropertyRegressionError extends Error {
  * replays the committed folds, then records a before/after served audit.  The v2
  * proof is already bound to one captured response when this function is called.
  */
-async function depositCapturedZones(
+export async function depositCapturedZones(
   s3: S3Client,
   slug: string,
   norm: GeoFeature[],
