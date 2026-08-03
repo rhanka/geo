@@ -63,6 +63,43 @@ seule, `no_document_bytes_read`) sur les 8 slugs.
 - **5 à re-sourcer** : quebec, saguenay, trois-rivieres, sherbrooke,
   saint-hyacinthe (SPA/viewer/DNS) → prochain beat seeding profond.
 
+## Re-sourcing profond des 5 — `20260803T213000Z` (0/5, MURS INFRA/POLITIQUE)
+Découverte read-only ciblée (evidence box-side datée committée `0793607c` :
+`pv-decouverte-grandes-villes-resource2-20260803T213000Z.json`). Les vraies
+sources PDF sont identifiées mais AUCUNE n'est capturable proprement ce beat —
+mur d'infrastructure ou de politique, pas un défaut de découverte :
+- **saint-hyacinthe** — la plus proche : PV **same-domain**
+  `www.st-hyacinthe.ca/medias/ville/vie-democratique/seances-publiques/AAAA/PVSE*.pdf`.
+  Blocage = **chaîne TLS incomplète du serveur** (« unable to verify the first
+  certificate ») : casse `fetch` strict node ET WebFetch (confirmé aux deux
+  stacks). Mur SERVEUR, pas box. Débloquer = capture-worker qui complète la
+  chaîne (intermédiaire fourni / CA bundle) — enhancement infra.
+- **trois-rivieres, sherbrooke** — famille **maruche OFFSITE**
+  (`conseil-v3r.maruche.ca` / `contenu.maruche.ca`, hôtes ≠ domaine officiel) :
+  la porte `sameOfficialDomain` refuse par conception. Débloquer = décision de
+  politique (allowance maruche avec preuve de rattachement ville) ou un
+  `source_kind` maruche-aware.
+- **saguenay, quebec** — **SPA purs** : PDF chargés par XHR/JS, 0 ancre SSR,
+  aucun endpoint `{html}` same-domain. Émettre un candidat exigerait de sniffer
+  l'endpoint de données (headless) — hors mandat read-only, et le runner
+  interdit de deviner les URLs (anti-invention).
+
+### Prochains beats possibles (hors ce beat, pour l'owner)
+- **Wayback/CDX** (`matchType=domain`, `http://`) pour saint-hyacinthe / saguenay
+  / quebec : l'archive porte un cert valide et des snapshots PDF ancrés — voie la
+  plus probable pour convertir sans toucher l'infra.
+- **capture-worker TLS/CA + egress alternatif** : débloquerait à la fois
+  saint-hyacinthe (chaîne) et terrebonne (WAF 403).
+- **politique maruche** : débloquerait trois-rivieres + sherbrooke (+ d'autres
+  munis de la même famille).
+
+## Bilan NET cohorte grandes villes
+**+2 captés strict committés (laval, rimouski, → couverture 675/1106).**
+6 restants documentés avec preuve reproductible : 1 mur WAF (terrebonne),
+2 murs offsite-politique (trois-rivieres, sherbrooke), 2 SPA (saguenay, quebec),
+1 mur TLS-serveur (saint-hyacinthe). Aucun UNKNOWN fabriqué en N-A ni en
+complete : chaque mur est tracé, rejouable.
+
 ## Résiduels → prochain beat
 - 7 grandes villes à seeder (portails propres) : découvrir l'URL du portail PV
   officiel de chacune (read-only), `--seed-pages slug=URL`, re-découverte →
