@@ -1,0 +1,101 @@
+{
+  "contract": "zones-gonet-capture-report/v1",
+  "generatedAt": "2026-08-03T12:21:42.611Z",
+  "capture_run_id": "zones-20260803T122003Z-25-f381b6a5-aa65-44c2-aa90-e0813df6c596",
+  "deposit": false,
+  "verdict_counts": {
+    "PASS_CAPTURE": 0,
+    "REJECT": 1,
+    "NO_VECTOR": 1
+  },
+  "capture_report": [
+    {
+      "slug": "saint-paul",
+      "source_url_reelle": null,
+      "retrieved_at": null,
+      "sha256_octets": null,
+      "n_features": 0,
+      "codes_distinct": 0,
+      "lettered_pct": 0,
+      "integer_pure_pct": 100,
+      "bbox_diag_km": null,
+      "nearest_registre_muni": null,
+      "nearest_km": null,
+      "verdict": "NO_VECTOR"
+    },
+    {
+      "slug": "saint-pie",
+      "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+      "retrieved_at": "2026-08-03T12:21:42.444Z",
+      "sha256_octets": "33fe9d1f1c468ae828ec40a8ba710ff372b8a0b220b19aeaddb29b38eeccdd1a",
+      "n_features": 136,
+      "codes_distinct": 106,
+      "lettered_pct": 11.76470588235294,
+      "integer_pure_pct": 79.41176470588235,
+      "bbox_diag_km": 19.53330543377193,
+      "nearest_registre_muni": "saint-pie",
+      "nearest_km": 1.7217636398170335,
+      "verdict": "REJECT_LETTERED_LT50_PCT"
+    }
+  ],
+  "byStatus": {
+    "no-zonage-layer": 2
+  },
+  "deposited": [],
+  "results": [
+    {
+      "slug": "saint-paul",
+      "site": "https://www.saintpaul.quebec",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=61005&pl=1"
+      ],
+      "deposited": false,
+      "status": "no-zonage-layer",
+      "detail": "gonet MapServer (147 couches) sans couche 'Zonage municipal'",
+      "captureReport": {
+        "slug": "saint-paul",
+        "source_url_reelle": null,
+        "retrieved_at": null,
+        "sha256_octets": null,
+        "n_features": 0,
+        "codes_distinct": 0,
+        "lettered_pct": 0,
+        "integer_pure_pct": 100,
+        "bbox_diag_km": null,
+        "nearest_registre_muni": null,
+        "nearest_km": null,
+        "verdict": "NO_VECTOR"
+      }
+    },
+    {
+      "slug": "saint-pie",
+      "site": "https://www.villest-pie.ca",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=54008&pl=1"
+      ],
+      "deposited": false,
+      "status": "no-zonage-layer",
+      "detail": "gonet couche Zonage champ 'Num_zone': <50% codes lettrés+numérotés — affectation/décoy suspecté (codeLike=12%, sample=[\"512\",\"508\",\"504\",\"518\",\"517\"]) — rejet anti-invention",
+      "captureReport": {
+        "slug": "saint-pie",
+        "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:21:42.444Z",
+        "sha256_octets": "33fe9d1f1c468ae828ec40a8ba710ff372b8a0b220b19aeaddb29b38eeccdd1a",
+        "n_features": 136,
+        "codes_distinct": 106,
+        "lettered_pct": 11.76470588235294,
+        "integer_pure_pct": 79.41176470588235,
+        "bbox_diag_km": 19.53330543377193,
+        "nearest_registre_muni": "saint-pie",
+        "nearest_km": 1.7217636398170335,
+        "verdict": "REJECT_LETTERED_LT50_PCT"
+      }
+    }
+  ]
+}
