@@ -14,11 +14,11 @@
   "source_files": [
     {
       "path": "work/coverage/coverage-matrix.json",
-      "sha256": "0e6e1a37d8f9ad45b4c1b8ff5e99bb1d7a85550c905d39ae0a666f2bff5991ca"
+      "sha256": "003b0d497c34a67e4ff495684843e63821bdd681a31199a403cd3a8bac4ce6f6"
     },
     {
       "path": "work/coverage/immo-lots.json",
-      "sha256": "fe9f450906e99dd6e4eba6458767e512b7df07718817c6789e1be11899a65f4b"
+      "sha256": "6ffffe69121c5997716fef6e6645eba4bff5c5eb06c517f66f5522c3c998c3db"
     }
   ],
   "status_legend": {
@@ -29,9 +29,9 @@
   },
   "city_count": 1106,
   "reconciliation": {
-    "canonical_immo_city_rows": 874,
-    "cities_without_immo_stats": 232,
-    "immo_source_rows": 877,
+    "canonical_immo_city_rows": 873,
+    "cities_without_immo_stats": 233,
+    "immo_source_rows": 876,
     "noncanonical_duplicate_source_rows": 3,
     "noncanonical_duplicate_source_rows_detail": [
       {
@@ -82,27 +82,27 @@
   "summary": {
     "by_field_status": {
       "lots_served": {
-        "complete": 874,
-        "incomplete": 232,
+        "complete": 873,
+        "incomplete": 233,
         "unknown": 0,
         "N/A": 0
       },
       "surface_m2": {
-        "complete": 868,
+        "complete": 867,
         "incomplete": 0,
-        "unknown": 232,
+        "unknown": 233,
         "N/A": 6
       },
       "postal_code": {
-        "complete": 867,
+        "complete": 866,
         "incomplete": 1,
-        "unknown": 232,
+        "unknown": 233,
         "N/A": 6
       },
       "civic_address": {
         "complete": 22,
-        "incomplete": 846,
-        "unknown": 232,
+        "incomplete": 845,
+        "unknown": 233,
         "N/A": 6
       },
       "tod_applicability": {
@@ -33410,29 +33410,29 @@
     },
     {
       "slug": "saint-simon-les-mines",
-      "immo_source_slug": "saint-simon-les-mines",
+      "immo_source_slug": null,
       "lots_served": {
-        "status": "complete",
-        "reason": "Canonical local Immo perMuni stats row is present and reports 865 served lots.",
-        "observed_lots": 865
+        "status": "incomplete",
+        "reason": "No canonical local Immo perMuni stats row is present in the served-lots snapshot.",
+        "observed_lots": null
       },
       "surface_m2": {
-        "status": "complete",
-        "reason": "Local Immo stats report 865/865 lots with surface_m2.",
-        "observed_lots": 865,
-        "completed_lots": 865
+        "status": "unknown",
+        "reason": "No canonical local Immo perMuni stats row exists; surface_m2 cannot be measured.",
+        "observed_lots": null,
+        "completed_lots": null
       },
       "postal_code": {
-        "status": "complete",
-        "reason": "Local Immo stats report 865/865 lots with code_postal.",
-        "observed_lots": 865,
-        "completed_lots": 865
+        "status": "unknown",
+        "reason": "No canonical local Immo perMuni stats row exists; code_postal cannot be measured.",
+        "observed_lots": null,
+        "completed_lots": null
       },
       "civic_address": {
-        "status": "incomplete",
-        "reason": "Local Immo stats report 730/865 lots with civic address.",
-        "observed_lots": 865,
-        "completed_lots": 730
+        "status": "unknown",
+        "reason": "No canonical local Immo perMuni stats row exists; civic address cannot be measured.",
+        "observed_lots": null,
+        "completed_lots": null
       },
       "tod_applicability": {
         "status": "N/A",

@@ -18,7 +18,7 @@ const JSON_OUTPUT = resolve(HERE, "immo-field-completion-matrix.json");
 const CSV_OUTPUT = resolve(HERE, "immo-field-completion-matrix.csv");
 
 const EXPECTED_CITY_COUNT = 1106;
-const EXPECTED_IMMO_SOURCE_ROW_COUNT = 877;
+const EXPECTED_IMMO_SOURCE_ROW_COUNT = 876;
 const STATUS_VALUES = new Set(["complete", "incomplete", "unknown", "N/A"]);
 const FIELD_COLUMNS = ["lots_served", "surface_m2", "postal_code", "civic_address", "tod_applicability", "tod_completion"];
 
