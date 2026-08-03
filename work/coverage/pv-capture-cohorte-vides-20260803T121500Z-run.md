@@ -31,6 +31,29 @@ maquiller (vert par omission = rouge).
 - CAS attendu sous `raw/pv-index/cas/<sha>.<ext>` → visible par la chaîne de
   couverture.
 
+## Run 4 — PROPRE 7 villes (sans westmount) — `20260803T133000Z`
+- Worklist `work/coverage/pv-cohorte-vides-20260803-capture-lot-0003-pvindex-7.json`
+  (`source=pv-index`), `--shards 7 --concurrency 2 --memory-limit-mi 384`.
+- **Job** : `geo-capture-pv-20260803t133000z` — 7/7 shards `Completed`, run.json
+  terminal pour chacun (le run 3 avait un shard westmount OOM sans run.json qui
+  bloquait le classifieur sur `NoSuchKey`).
+
+## Résultat classification (`capture-octets-classification --lane=pv`)
+Rapport : `work/coverage/pv-capture-octets-20260803T133000Z.json`.
+21 tentatives → 12 `PV_LISIBLE_PROPRIETAIRE_CONFIRME` (propriétaire imprimé
+confirmé par extraction de texte natif) :
+- **INDEXED (4 villes)** : boucherville, hampstead, longueuil, varennes (3 docs
+  chacune). → verdict `pv-lecture-visuelle-cohorte-vides-lot-05-20260803T133000Z.json`.
+- **candiac** : 3 scans `PDF_SANS_COUCHE_TEXTE` → lecture visuelle requise (octets
+  présents, à traiter dans un prochain lot).
+- **saint-basile-le-grand, saint-bruno-de-montarville** : 3 `HTTP_AUTRE` chacune
+  (storage_key null) → capture non-200, **URLs à re-sourcer**.
+- **westmount** : hors run (doc annuel « MINUTES » > 512Mi ; re-sourcer une séance
+  unique).
+
+Couverture recomptée : **666 → 670/1106** (+4 villes, +12 clés CAS) —
+`work/coverage/pv-couverture-municipale-20260803T134500Z.{json,md}`.
+
 ## Cohorte
 boucherville, candiac, hampstead, longueuil, saint-basile-le-grand,
 saint-bruno-de-montarville, varennes, westmount.
