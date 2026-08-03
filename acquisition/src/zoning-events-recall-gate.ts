@@ -58,6 +58,12 @@ export type RecallOutcome = (typeof RECALL_OUTCOMES)[number];
 export const RECALL_THRESHOLD = 0.95;
 
 /**
+ * The ratified v3.4 sample is deliberately fixed: set-recall never silently
+ * improves by dropping an immo DesignationEvent from its denominator.
+ */
+export const RECALL_SET_DENOMINATOR = 85;
+
+/**
  * Candidate immo export fields. The export schema is pending confirmation;
  * this list is intentionally the entire adapter surface, rather than a model
  * of immo internals.
@@ -135,6 +141,68 @@ export interface EventSetPartition {
   readonly extra: readonly PartitionEntry[];
 }
 
+/** A matchable multiset bucket: exact document identity plus neutral geo type. */
+export interface SetRecallGroup {
+  readonly key: {
+    readonly muni: string;
+    readonly source_url_norm: string;
+    readonly date_iso: string;
+    readonly crosswalked_type: string;
+  };
+  readonly immo_count: number;
+  readonly geo_count: number;
+  /** `min(immo_count, geo_count)`: it can never exceed immo_count. */
+  readonly matched: number;
+  /** `geo_count - matched`; it is reported for precision, never recall. */
+  readonly over_split: number;
+}
+
+export type SetRecallMissReason =
+  | "identity_key_incomplete"
+  | "identity_not_aligned"
+  | "immo_kind_hors_map"
+  | "geo_type_absent_on_document"
+  | "set_group_immo_overflow";
+
+/** Deterministic witnesses for the immo events that remain missed by SET-RECALL. */
+export interface SetRecallMiss {
+  readonly immo: NaturalKeyEvent;
+  readonly unmatched_reason: SetRecallMissReason;
+}
+
+/**
+ * Multiset score mandated for the v3.4 transition decision. `recall` is
+ * always a contribution to the fixed 85-event sample, even on a city row.
+ */
+export interface SetRecallMeasurement {
+  readonly denominator: typeof RECALL_SET_DENOMINATOR;
+  readonly matched: number;
+  readonly missed: number;
+  readonly immo_events: number;
+  readonly geo_events: number;
+  readonly geo_unmatchable: number;
+  readonly over_split: number;
+  readonly recall: number;
+  readonly recall_state: "measured" | "no_immo_ground_truth";
+  readonly precision: number | null;
+  readonly precision_state: "measured" | "no_geo_events";
+  readonly groups: readonly SetRecallGroup[];
+  readonly missed_immo: readonly SetRecallMiss[];
+}
+
+/** The pre-v3.4 unique-pair score, retained for a transparent comparison. */
+export interface StrictRecallMeasurement {
+  readonly matched: number;
+  readonly missed: number;
+  readonly extra: number;
+  readonly immo_events: number;
+  readonly geo_events: number;
+  readonly recall: number | null;
+  readonly recall_state: "measured" | "no_immo_ground_truth";
+  /** Same fixed-85 denominator as SET-RECALL, for the headline comparison. */
+  readonly recall_fixed_sample: number;
+}
+
 export type GeoCollectionStatus =
   | "geo_local_events_loaded"
   | "geo_collection_loaded"
@@ -159,6 +227,14 @@ export interface CityRecall {
   /** Non-empty `node_type` values other than DesignationEvent or Signal. */
   readonly immo_node_type_other: number;
   readonly geo_events: number;
+  /** Ratified headline score: multiset per exact document identity and type. */
+  readonly set_recall: SetRecallMeasurement;
+  /** Old unique-pair score, kept alongside the headline rather than replaced. */
+  readonly strict_recall: StrictRecallMeasurement;
+  /**
+   * Compatibility aliases for the v1 unique-pair partition. Consumers must
+   * use `set_recall` for the ratified v3.4 headline.
+   */
   readonly recall: number | null;
   readonly recall_state: "measured" | "no_immo_ground_truth";
 }
@@ -171,7 +247,7 @@ export interface RecallGateReport {
   readonly natural_key_definition: {
     readonly tuple: "(muni, source_url_norm, date_iso) exact + crosswalk(type)";
     readonly source_url_normalization: string;
-    readonly matching: "identity_exact_type_crosswalk_unique_gated";
+    readonly matching: "set_recall: identity_exact_type_crosswalk_multiset; strict_recall: identity_exact_type_crosswalk_unique_gated";
     readonly secondary_key: "disabled; bylaw never relaxes identity";
   };
   readonly taxonomy_crosswalk: {
@@ -184,6 +260,13 @@ export interface RecallGateReport {
     readonly unmapped: "non-match";
   };
   readonly threshold: number;
+  readonly scoring: {
+    readonly headline: "set_recall";
+    readonly set_recall: "Σ_g min(immo_count[g], geo_count[g]) / 85";
+    readonly strict_recall: "unique crosswalk pairs / 85";
+    readonly precision: "Σ_g min(immo_count[g], geo_count[g]) / total_geo_events";
+    readonly over_split: "geo_count[g] - min(immo_count[g], geo_count[g])";
+  };
   readonly input: {
     readonly geo: "local_file" | "s3";
     readonly geo_events_path: string | null;
@@ -206,6 +289,9 @@ export interface RecallGateReport {
     readonly immo_node_type_other: number;
     readonly geo_events: number;
     readonly geo_read_error_count: number;
+    readonly set_recall: SetRecallMeasurement;
+    readonly strict_recall: StrictRecallMeasurement;
+    /** Compatibility aliases for the v1 unique-pair aggregate. */
     readonly recall: number | null;
     readonly recall_state: "measured" | "no_immo_ground_truth";
   };
@@ -247,6 +333,8 @@ interface VendorizedCrosswalk {
   readonly knownImmoCategories: ReadonlySet<string>;
   readonly mappedImmoCategories: ReadonlySet<string>;
   readonly mappings: ReadonlyMap<string, CrosswalkMapping>;
+  /** Reverse crosswalk used only to form the SET-RECALL neutral-type group. */
+  readonly geoTypeByImmoCategory: ReadonlyMap<string, string>;
   readonly unknown: "autre";
 }
 
@@ -324,6 +412,7 @@ function loadVendorizedCrosswalk(): VendorizedCrosswalk {
   const mappingsRaw = record(raw.mappings, "crosswalk.mappings");
   const mappings = new Map<string, CrosswalkMapping>();
   const mappedImmoCategories = new Set<string>();
+  const geoTypeByImmoCategory = new Map<string, string>();
 
   for (const [geoKind, value] of Object.entries(mappingsRaw)) {
     const mapping = record(value, `crosswalk.mappings.${geoKind}`);
@@ -343,7 +432,16 @@ function loadVendorizedCrosswalk(): VendorizedCrosswalk {
     if (new Set(immo).size !== immo.length || immo.some((category) => !knownImmoCategories.has(category))) {
       throw new Error(`crosswalk.mappings.${geoKind}: cible immo invalide`);
     }
-    if (status === "mapped") for (const category of immo) mappedImmoCategories.add(category);
+    if (status === "mapped") {
+      for (const category of immo) {
+        const existingGeoType = geoTypeByImmoCategory.get(category);
+        if (existingGeoType !== undefined && existingGeoType !== geoKind) {
+          throw new Error(`crosswalk: catégorie immo '${category}' mappée vers plusieurs types geo`);
+        }
+        mappedImmoCategories.add(category);
+        geoTypeByImmoCategory.set(category, geoKind);
+      }
+    }
     mappings.set(geoKind, { immoCategories: new Set(immo), status });
   }
   if (mappings.size !== geoKinds.size || [...geoKinds].some((kind) => !mappings.has(kind))) {
@@ -352,7 +450,14 @@ function loadVendorizedCrosswalk(): VendorizedCrosswalk {
   if ([...synonyms.values()].some((category) => !knownImmoCategories.has(category))) {
     throw new Error("crosswalk: synonyme vers une catégorie inconnue");
   }
-  return { synonyms, knownImmoCategories, mappedImmoCategories, mappings, unknown: "autre" };
+  return {
+    synonyms,
+    knownImmoCategories,
+    mappedImmoCategories,
+    mappings,
+    geoTypeByImmoCategory,
+    unknown: "autre",
+  };
 }
 
 const VENDORED_CROSSWALK = loadVendorizedCrosswalk();
@@ -547,6 +652,144 @@ function isCrosswalkPair(geo: NaturalKeyEvent, immo: NaturalKeyEvent): boolean {
   const mapping = crosswalkMapping(geo);
   const immoCategory = immo.natural_key.type;
   return mapping?.status === "mapped" && immoCategory !== null && mapping.immoCategories.has(immoCategory);
+}
+
+/**
+ * The only type relaxation admitted to a SET-RECALL group. Geo contributes
+ * its mapped neutral type; immo travels kind -> canonical category -> that
+ * same neutral type through the frozen vendorized crosswalk. `autre` and all
+ * unmapped categories deliberately return null instead of being guessed.
+ */
+function crosswalkedGeoType(event: NaturalKeyEvent): string | null {
+  if (event.side === "geo") {
+    const mapping = crosswalkMapping(event);
+    return mapping?.status === "mapped" ? event.natural_key.type : null;
+  }
+  const immoCategory = event.natural_key.type;
+  return immoCategory === null ? null : VENDORED_CROSSWALK.geoTypeByImmoCategory.get(immoCategory) ?? null;
+}
+
+interface SetRecallGroupKey {
+  readonly token: string;
+  readonly key: SetRecallGroup["key"];
+}
+
+function setRecallGroupKey(event: NaturalKeyEvent): SetRecallGroupKey | null {
+  const { muni, source_url_norm: sourceUrlNorm, date_iso: dateIso } = event.natural_key;
+  const type = crosswalkedGeoType(event);
+  if (muni === null || sourceUrlNorm === null || dateIso === null || type === null) return null;
+  const key = {
+    muni,
+    source_url_norm: sourceUrlNorm,
+    date_iso: dateIso,
+    crosswalked_type: type,
+  };
+  return { key, token: JSON.stringify([muni, sourceUrlNorm, dateIso, type]) };
+}
+
+interface SetRecallGroupAccumulator {
+  readonly key: SetRecallGroup["key"];
+  readonly immo: NaturalKeyEvent[];
+  readonly geo: NaturalKeyEvent[];
+}
+
+function sortNaturalKeyEvents(events: readonly NaturalKeyEvent[]): NaturalKeyEvent[] {
+  return [...events].sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
+}
+
+/**
+ * Measure ratified SET-RECALL by a document+type multiset.
+ *
+ * For every matchable g = (muni, source_url_norm, date_iso,
+ * crosswalked_type), matched[g] = min(immo_count[g], geo_count[g]). The
+ * recall denominator is the fixed 85-event sample; precision uses all geo
+ * events, and over-split never enters recall. The strict unique-pair score is
+ * intentionally calculated separately by `partitionEventSets`.
+ */
+export function setRecallFor(
+  geoEvents: readonly NaturalKeyEvent[],
+  immoEvents: readonly NaturalKeyEvent[],
+): SetRecallMeasurement {
+  const groups = new Map<string, SetRecallGroupAccumulator>();
+  const add = (event: NaturalKeyEvent): void => {
+    const groupKey = setRecallGroupKey(event);
+    if (groupKey === null) return;
+    const group = groups.get(groupKey.token) ?? {
+      key: groupKey.key,
+      immo: [],
+      geo: [],
+    };
+    if (event.side === "immo") group.immo.push(event);
+    else group.geo.push(event);
+    groups.set(groupKey.token, group);
+  };
+  for (const event of immoEvents) add(event);
+  for (const event of geoEvents) add(event);
+
+  const selectedImmo = new Set<NaturalKeyEvent>();
+  const measuredGroups: SetRecallGroup[] = [];
+  let matched = 0;
+  let overSplit = 0;
+  for (const group of [...groups.values()].sort((left, right) => JSON.stringify(left.key).localeCompare(JSON.stringify(right.key)))) {
+    const immo = sortNaturalKeyEvents(group.immo);
+    const geo = sortNaturalKeyEvents(group.geo);
+    const groupMatched = Math.min(immo.length, geo.length);
+    if (groupMatched > immo.length) throw new Error("set-recall invalide: matched dépasse immo_count");
+    for (const event of immo.slice(0, groupMatched)) selectedImmo.add(event);
+    const groupOverSplit = geo.length - groupMatched;
+    measuredGroups.push({
+      key: group.key,
+      immo_count: immo.length,
+      geo_count: geo.length,
+      matched: groupMatched,
+      over_split: groupOverSplit,
+    });
+    matched += groupMatched;
+    overSplit += groupOverSplit;
+  }
+
+  const missedImmo: SetRecallMiss[] = [];
+  for (const event of sortNaturalKeyEvents(immoEvents)) {
+    if (selectedImmo.has(event)) continue;
+    const groupKey = setRecallGroupKey(event);
+    let unmatchedReason: SetRecallMissReason;
+    if (identityKeyToken(event) === null) {
+      unmatchedReason = "identity_key_incomplete";
+    } else if (crosswalkedGeoType(event) === null) {
+      unmatchedReason = "immo_kind_hors_map";
+    } else {
+      const group = groupKey === null ? undefined : groups.get(groupKey.token);
+      if (group === undefined || group.geo.length === 0) {
+        const sameIdentityGeo = geoEvents.some((geo) => identityKeyToken(geo) === identityKeyToken(event));
+        unmatchedReason = sameIdentityGeo ? "geo_type_absent_on_document" : "identity_not_aligned";
+      } else {
+        unmatchedReason = "set_group_immo_overflow";
+      }
+    }
+    missedImmo.push({ immo: event, unmatched_reason: unmatchedReason });
+  }
+
+  const missed = immoEvents.length - matched;
+  if (missed !== missedImmo.length || matched > immoEvents.length || matched > geoEvents.length) {
+    throw new Error("set-recall invalide: conservation des events rompue");
+  }
+  const geoUnmatchable = geoEvents.filter((event) => setRecallGroupKey(event) === null).length;
+  const precision = geoEvents.length === 0 ? null : matched / geoEvents.length;
+  return {
+    denominator: RECALL_SET_DENOMINATOR,
+    matched,
+    missed,
+    immo_events: immoEvents.length,
+    geo_events: geoEvents.length,
+    geo_unmatchable: geoUnmatchable,
+    over_split: overSplit,
+    recall: matched / RECALL_SET_DENOMINATOR,
+    recall_state: immoEvents.length === 0 ? "no_immo_ground_truth" : "measured",
+    precision,
+    precision_state: precision === null ? "no_geo_events" : "measured",
+    groups: measuredGroups,
+    missed_immo: missedImmo,
+  };
 }
 
 function sortPartitionEntries(entries: PartitionEntry[]): PartitionEntry[] {
@@ -819,31 +1062,47 @@ function populationCount(events: readonly NaturalKeyEvent[], field: "zone_ref" |
   return { populated: populatedCount, null_or_unknown: events.length - populatedCount };
 }
 
-function recallFor(partition: EventSetPartition): { recall: number | null; state: "measured" | "no_immo_ground_truth" } {
+function strictRecallFor(partition: EventSetPartition): StrictRecallMeasurement {
   const denominator = partition.matched.length + partition.missed.length;
-  if (denominator === 0) return { recall: null, state: "no_immo_ground_truth" };
-  return { recall: partition.matched.length / denominator, state: "measured" };
+  const recall = denominator === 0 ? null : partition.matched.length / denominator;
+  return {
+    matched: partition.matched.length,
+    missed: partition.missed.length,
+    extra: partition.extra.length,
+    immo_events: denominator,
+    geo_events: partition.matched.length + partition.extra.length,
+    recall,
+    recall_state: recall === null ? "no_immo_ground_truth" : "measured",
+    recall_fixed_sample: partition.matched.length / RECALL_SET_DENOMINATOR,
+  };
 }
 
 function markdown(report: RecallGateReport): string {
   const cityRows = report.cities.map((city) => {
-    const recall = city.recall === null ? "unknown (no_immo_ground_truth)" : city.recall.toFixed(4);
-    return `| ${city.slug} | ${city.geo_collection_status} | ${city.matched} | ${city.missed} | ${city.extra} | ${city.immo_signals_excluded} | ${recall} | ${city.recall_state} |`;
+    const setRecall = city.set_recall.recall.toFixed(4);
+    const strictRecall = city.strict_recall.recall_fixed_sample.toFixed(4);
+    const precision = city.set_recall.precision === null ? "unknown (no_geo_events)" : city.set_recall.precision.toFixed(4);
+    return `| ${city.slug} | ${city.geo_collection_status} | ${city.set_recall.matched}/85 | ${strictRecall} | ${setRecall} | ${precision} | ${city.set_recall.over_split} | ${city.set_recall.geo_unmatchable} | ${city.immo_signals_excluded} |`;
   });
   const exceptions = report.cities.flatMap((city) => [
+    ...city.set_recall.missed_immo.map((entry) => `- set-recall missed ${city.slug}: ${entry.unmatched_reason}; ${JSON.stringify(entry.immo)}`),
     ...city.partition.missed.map((entry) => `- missed ${city.slug}: ${JSON.stringify(entry.immo)}`),
     ...city.partition.extra.map((entry) => `- extra ${city.slug}: ${JSON.stringify(entry.geo)}`),
   ]);
-  const aggregateRecall = report.aggregate.recall === null ? "unknown (no_immo_ground_truth)" : report.aggregate.recall.toFixed(4);
+  const setAggregate = report.aggregate.set_recall;
+  const strictAggregate = report.aggregate.strict_recall;
+  const aggregatePrecision = setAggregate.precision === null ? "unknown (no_geo_events)" : setAggregate.precision.toFixed(4);
   return [
     "# Recall gate qc-zoning-events vs DesignationEvents immo",
     "",
-    "Mesure read-only du rappel event-set sur l’échantillon contractuel. L’identité (muni, source_url_norm, date_iso) est EXACTE et unicité-gatée; seul le type passe par le crosswalk vendorisé. Aucune clé incomplète, ambiguë ou hors-map n’est forcée.",
+    "Mesure read-only du rappel event-set sur l’échantillon contractuel. **Headline ratifié : SET-RECALL**. Le strict reste visible en parallèle. L’identité (muni, source_url_norm, date_iso) est EXACTE; seul le type passe par le crosswalk vendorisé. Aucune clé incomplète ou hors-map n’est forcée.",
     "",
-    `Seuil : ${report.threshold}. Rappel agrégé : ${aggregateRecall}. État du gate : ${report.gate.status}.`,
+    "Formule exacte : pour chaque groupe matchable g = (muni, source_url_norm, date_iso, crosswalked_type), matched[g] = min(immo_count[g], geo_count[g]). SET-RECALL = Σ_g matched[g] / 85 (dénominateur fixe). Précision = Σ_g matched[g] / total_geo_events; over_split[g] = geo_count[g] − matched[g] et n’entre jamais dans le recall. Les kinds immo hors-map et le type geo `autre` ne créent aucun groupe matchable.",
     "",
-    "| Ville | État geo | Matched | Missed | Extra | Signals écartés | Recall | État recall |",
-    "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+    `Seuil : ${report.threshold}. SET-RECALL agrégé : ${setAggregate.matched}/85 (${setAggregate.recall.toFixed(4)}). Strict agrégé : ${strictAggregate.matched}/85 (${strictAggregate.recall_fixed_sample.toFixed(4)}). Précision agrégée : ${aggregatePrecision} (${setAggregate.matched}/${setAggregate.geo_events}); over_split : ${setAggregate.over_split}. État du gate : ${report.gate.status}.`,
+    "",
+    "| Ville | État geo | SET matched/85 | Strict recall | SET recall | Précision | Over-split | Geo hors groupe | Signals écartés |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...cityRows,
     "",
     "## Entrées immo hors dénominateur",
@@ -888,6 +1147,8 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
   const geo = options.geoEventsPath === undefined ? await loadS3GeoDocuments() : loadLocalGeoDocuments(options.geoEventsPath);
   const cities: CityRecall[] = [];
   const immoEventsOutsideSample: NaturalKeyEvent[] = [];
+  const sampleImmoEvents = immoEvents.filter((event) => sampleSlug(event.natural_key.muni) !== null);
+  const sampleGeoEvents: NaturalKeyEvent[] = [];
 
   for (const event of immoEvents) {
     if (sampleSlug(event.natural_key.muni) === null) immoEventsOutsideSample.push(event);
@@ -902,7 +1163,9 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       .filter((event) => event.natural_key.muni === slug);
     const cityNodeTypeOther = immoInput.nodeTypeOther.filter((event) => event.natural_key.muni === slug);
     const partition = partitionEventSets(geoEvents, cityImmoEvents);
-    const measurement = recallFor(partition);
+    const strictRecall = strictRecallFor(partition);
+    const setRecall = setRecallFor(geoEvents, cityImmoEvents);
+    sampleGeoEvents.push(...geoEvents);
     cities.push({
       slug,
       geo_collection_status: geo.statuses.get(slug)!,
@@ -916,8 +1179,10 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       immo_node_type_missing_or_unknown: cityNodeTypeMissingOrUnknown.length,
       immo_node_type_other: cityNodeTypeOther.length,
       geo_events: geoEvents.length,
-      recall: measurement.recall,
-      recall_state: measurement.state,
+      set_recall: setRecall,
+      strict_recall: strictRecall,
+      recall: strictRecall.recall,
+      recall_state: strictRecall.recall_state,
     });
   }
 
@@ -926,8 +1191,9 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     missed: cities.flatMap((city) => city.partition.missed),
     extra: cities.flatMap((city) => city.partition.extra),
   };
-  const aggregateMeasurement = recallFor(aggregatePartition);
-  const totalGeoEvents = cities.reduce((total, city) => total + city.geo_events, 0);
+  const aggregateStrictRecall = strictRecallFor(aggregatePartition);
+  const aggregateSetRecall = setRecallFor(sampleGeoEvents, sampleImmoEvents);
+  const totalGeoEvents = aggregateSetRecall.geo_events;
   const hasGeoReadError = cities.some((city) => city.geo_collection_status === "geo_read_error");
   const states: string[] = [];
   let gate: RecallGateReport["gate"];
@@ -937,10 +1203,10 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
   } else if (totalGeoEvents === 0) {
     states.push("baseline_geo_not_producing_yet");
     gate = { status: "baseline_geo_not_producing_yet", exit_code: 0 };
-  } else if (aggregateMeasurement.recall === null) {
+  } else if (aggregateSetRecall.recall_state === "no_immo_ground_truth") {
     states.push("no_immo_ground_truth");
     gate = { status: "no_immo_ground_truth", exit_code: 0 };
-  } else if (aggregateMeasurement.recall < RECALL_THRESHOLD) {
+  } else if (aggregateSetRecall.recall < RECALL_THRESHOLD) {
     states.push("recall_below_threshold");
     gate = { status: "recall_below_threshold", exit_code: 1 };
   } else {
@@ -949,7 +1215,7 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
   }
   if (immoEventsOutsideSample.length > 0) states.push("immo_events_outside_sample");
   if (geo.outsideSample.length > 0) states.push("geo_documents_outside_sample");
-  if (cities.some((city) => city.recall_state === "no_immo_ground_truth")) states.push("no_immo_ground_truth");
+  if (cities.some((city) => city.set_recall.recall_state === "no_immo_ground_truth")) states.push("no_immo_ground_truth");
   if (immoInput.nodeTypeMissingOrUnknown.length > 0) states.push("immo_node_type_missing_or_unknown");
   if (immoInput.nodeTypeOther.length > 0) states.push("immo_node_type_other");
 
@@ -961,7 +1227,7 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     natural_key_definition: {
       tuple: "(muni, source_url_norm, date_iso) exact + crosswalk(type)",
       source_url_normalization: "trim; lowercase host; remove trailing pathname slash; remove utm_*, fbclid, gclid, mc_cid, mc_eid, _ga, _gl, ref, source, download, cache, timestamp, ts; sort retained query pairs",
-      matching: "identity_exact_type_crosswalk_unique_gated",
+      matching: "set_recall: identity_exact_type_crosswalk_multiset; strict_recall: identity_exact_type_crosswalk_unique_gated",
       secondary_key: "disabled; bylaw never relaxes identity",
     },
     taxonomy_crosswalk: {
@@ -974,6 +1240,13 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       unmapped: "non-match",
     },
     threshold: RECALL_THRESHOLD,
+    scoring: {
+      headline: "set_recall",
+      set_recall: "Σ_g min(immo_count[g], geo_count[g]) / 85",
+      strict_recall: "unique crosswalk pairs / 85",
+      precision: "Σ_g min(immo_count[g], geo_count[g]) / total_geo_events",
+      over_split: "geo_count[g] - min(immo_count[g], geo_count[g])",
+    },
     input: {
       geo: geo.source,
       geo_events_path: options.geoEventsPath === undefined ? null : displayPath(rootRelativePath(options.geoEventsPath)),
@@ -1005,8 +1278,10 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       immo_node_type_other: immoInput.nodeTypeOther.length,
       geo_events: aggregatePartition.matched.length + aggregatePartition.extra.length,
       geo_read_error_count: cities.filter((city) => city.geo_collection_status === "geo_read_error").length,
-      recall: aggregateMeasurement.recall,
-      recall_state: aggregateMeasurement.state,
+      set_recall: aggregateSetRecall,
+      strict_recall: aggregateStrictRecall,
+      recall: aggregateStrictRecall.recall,
+      recall_state: aggregateStrictRecall.recall_state,
     },
     immo_zone_or_lot_population: {
       designation_events: immoEvents.length,
@@ -1048,26 +1323,22 @@ async function main(): Promise<void> {
   process.stdout.write(`${JSON.stringify({
     json: displayPath(result.output),
     markdown: displayPath(result.markdownOutput),
-    matched: result.report.aggregate.matched,
-    missed: result.report.aggregate.missed,
-    extra: result.report.aggregate.extra,
+    headline: result.report.scoring.headline,
+    set_recall: result.report.aggregate.set_recall,
+    strict_recall: result.report.aggregate.strict_recall,
     immo_events: result.report.aggregate.immo_events,
     immo_signals_excluded: result.report.aggregate.immo_signals_excluded,
     immo_node_type_missing_or_unknown: result.report.aggregate.immo_node_type_missing_or_unknown,
     immo_node_type_other: result.report.aggregate.immo_node_type_other,
     geo_events: result.report.aggregate.geo_events,
-    recall: result.report.aggregate.recall,
     gate: result.report.gate.status,
     exit_code: result.exitCode,
     cities: result.report.cities.map((city) => ({
       slug: city.slug,
-      matched: city.matched,
-      missed: city.missed,
-      extra: city.extra,
+      set_recall: city.set_recall,
+      strict_recall: city.strict_recall,
       immo_events: city.immo_events,
       immo_signals_excluded: city.immo_signals_excluded,
-      recall: city.recall,
-      recall_state: city.recall_state,
       geo_collection_status: city.geo_collection_status,
     })),
   })}\n`);
