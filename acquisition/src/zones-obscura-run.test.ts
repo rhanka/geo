@@ -3,8 +3,10 @@ import { createHash } from "node:crypto";
 
 import {
   isNumericMuniValue,
+  isNumericZonageBypass,
   muniWhereClause,
   normMuniCode,
+  NUMERIC_ZONAGE_MAX_DISTINCT,
   proofFromGonetCapture,
   resolveMuniValueToTargetSlug,
   resolveMuniValueToSlug,
@@ -190,5 +192,34 @@ describe("zones-obscura --zone-field gate anti-invention (value-based)", () => {
     const v = validateExplicitZoneField(feats("ZONE", ["C-1", "H-2", "I-3", null, null, null, ""]), "ZONE");
     expect(v.ok).toBe(false);
     expect(v.reason).toContain("null >50%");
+  });
+});
+
+describe("isNumericZonageBypass — zonage NUMÉRIQUE légitime vs cadastre", () => {
+  it("bypass un Num_zone numerique sur couche titree Zonage (cardinalite zonage)", () => {
+    // Cas reel saint-pie/saint-jude : field Num_zone, titre Zonage, codes 512/402/103...
+    expect(isNumericZonageBypass("Num_zone", "Zonage", 106)).toBe(true);
+    expect(isNumericZonageBypass("No_zone", "Zonage municipal", 40)).toBe(true);
+  });
+
+  it("REJETTE un champ numerique a cardinalite cadastre (milliers de lots)", () => {
+    // Garde anti-cadastre : un role/cadastre porte des milliers de lots distincts.
+    expect(isNumericZonageBypass("Num_zone", "Zonage", NUMERIC_ZONAGE_MAX_DISTINCT + 1)).toBe(false);
+    expect(isNumericZonageBypass("No_zone", "Zonage", 3000)).toBe(false);
+  });
+
+  it("REJETTE quand le titre de couche n'est pas du zonage (cadastre/matrice/affectation)", () => {
+    expect(isNumericZonageBypass("Num_zone", "Cadastre", 100)).toBe(false);
+    expect(isNumericZonageBypass("Num_zone", "Matrice graphique", 100)).toBe(false);
+    expect(isNumericZonageBypass("Num_zone", "Affectation du sol", 100)).toBe(false);
+  });
+
+  it("REJETTE quand le champ n'est pas un identifiant de zone (OBJECTID, champ technique)", () => {
+    expect(isNumericZonageBypass("OBJECTID", "Zonage", 100)).toBe(false);
+    expect(isNumericZonageBypass("Shape_Area", "Zonage", 100)).toBe(false);
+  });
+
+  it("REJETTE en dessous de 3 codes distincts", () => {
+    expect(isNumericZonageBypass("Num_zone", "Zonage", 2)).toBe(false);
   });
 });
