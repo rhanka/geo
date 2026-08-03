@@ -1,0 +1,1296 @@
+{
+  "contract": "zones-recalage-triage-147/v1",
+  "stamp": "20260803T015622Z",
+  "generated_at_utc": "2026-08-03T01:56:22Z",
+  "scope": "WP2 zones; read-only local triage; no web pass; no S3 writes",
+  "population": {
+    "source": {
+      "path": "work/coverage/zones-recalage-status-167-20260803T003500Z.json",
+      "commit": "a634175cf443628d481ecb1fa29a97b66bfa94b6"
+    },
+    "included_statuses": [
+      "recale_missing",
+      "unresolved"
+    ],
+    "expected": 148,
+    "status_counts": {
+      "recale_missing": 147,
+      "unresolved": 1
+    }
+  },
+  "criteria": {
+    "spec": {
+      "path": "docs/spec/SPEC_PALIER_RESOLUTION.md",
+      "commit": "e78c725c"
+    },
+    "RECALABLE": "carte georeferable verifiee: plan local verifie ou ArcGIS vivant renvoyant du GeoJSON",
+    "PAS_DE_CARTE": "N-A seulement avec preuve d'absence reproductible: URL morte CDX matchType=domain et 0 carte georef publique, les deux traces",
+    "NEEDS_WEB_CHECK": "signaux committes insuffisants; aucun classement N-A par simple absence"
+  },
+  "inputs": {
+    "proof_url_audit": {
+      "path": "work/coverage/served-zonage-immo-proof-url-audit-final-20260728T120900Z.json",
+      "commit": "ea9297b603b27fb831d86ecd75c66267ef414e4d",
+      "population_rows_joined": 89,
+      "population_rows_absent": 59,
+      "population_query_or_verifiable": 0,
+      "population_s3_only": 69,
+      "population_none": 20
+    },
+    "v1_liveness": {
+      "path": "work/coverage/zones-v1-proof-url-liveness-20260802T155338Z.json",
+      "commit": "05eaa5b66f56637581b68edc9097327ae398c0cf",
+      "population_rows_joined": 4,
+      "population_rows_missing": 144,
+      "joined_classifications": {
+        "DEAD": 4
+      }
+    },
+    "ondisk_plan_gisement": {
+      "script": "acquisition/src/_ondisk-plan-gisement.ts",
+      "directories": [
+        "work/zonage-plans",
+        "work/zones-recalage"
+      ],
+      "directories_present": false,
+      "files_found": 0,
+      "population_hits": 0
+    }
+  },
+  "web_pass": {
+    "performed": false,
+    "municipal_checks": 0,
+    "cdx_checks": 0,
+    "note": "Aucun check municipal/CDX effectue dans cette passe; PAS_DE_CARTE reste non attribue selon la spec."
+  },
+  "counts": {
+    "RECALABLE": 0,
+    "PAS_DE_CARTE": 0,
+    "NEEDS_WEB_CHECK": 148,
+    "total": 148
+  },
+  "rows": [
+    {
+      "slug": "ange-gardien",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "baie-durfe",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "beaconsfield",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "beauharnois",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "beloeil",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "blainville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "bois-des-filion",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "boucherville",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "brossard",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "calixa-lavallee",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "candiac",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "carignan",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "charlemagne",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "chateauguay",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "clarenceville",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "contrecoeur",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "cote-saint-luc",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "crabtree",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "delson",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "dorval",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "farnham",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "hampstead",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "havelock",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville-2",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "henryville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "howick",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "hudson",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "joliette",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "kirkland",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "la-presentation",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lacolle",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lavaltrie",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lepiphanie",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lery",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "les-cedres",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "les-coteaux",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lile-cadieux",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lile-dorval",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lile-perrot",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "longueuil",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "lorraine",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "marieville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "mascouche",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "mcmasterville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "mercier",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "mont-royal",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "montreal-est",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "montreal-ouest",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "napierville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "noyan",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "oka",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "otterburn-park",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "pincourt",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "pointe-calumet",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "pointe-claire",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "prevost",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "rosemere",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "rougemont",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-alexandre",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-alexis",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-amable",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": {
+        "classification": "DEAD",
+        "url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68005_SaintBernardDeLacolle/MapServer/162/query?where=1%3D1&outFields=*&f=geojson",
+        "http_status": 404,
+        "content_type": "text/html; charset=UTF-8",
+        "is_geojson": false,
+        "detail": "HTTP 404"
+      },
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-calixte",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-cesaire",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-clet",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-colomban",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-constant",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-dominique",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": {
+        "classification": "DEAD",
+        "url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=*&f=geojson",
+        "http_status": 404,
+        "content_type": "text/html; charset=UTF-8",
+        "is_geojson": false,
+        "detail": "HTTP 404"
+      },
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-edouard",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-esprit",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-hippolyte",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-isidore-roussillon",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-jacques",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-jerome",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-jude",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-lambert",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-lazare",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-liguori",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-louis-de-gonzague-beauharnois-salaberry",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-mathieu",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-michel",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-ours",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": {
+        "classification": "DEAD",
+        "url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53032_SaintOurs/MapServer/169/query?where=1%3D1&outFields=*&f=geojson",
+        "http_status": 404,
+        "content_type": "text/html; charset=UTF-8",
+        "is_geojson": false,
+        "detail": "HTTP 404"
+      },
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-paul",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-philippe",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-pie",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": {
+        "classification": "DEAD",
+        "url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=*&f=geojson",
+        "http_status": 404,
+        "content_type": "text/html; charset=UTF-8",
+        "is_geojson": false,
+        "detail": "HTTP 404"
+      },
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-pierre",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-placide",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-remi",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-sebastien-le-haut-richelieu",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-sulpice",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "saint-valentin",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-julie",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-julienne",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-madeleine",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-martine",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-sabine-brome-missisquoi",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-sophie",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "sainte-therese",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "has_proof_url": false,
+      "proof_url_signal": "none",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "senneville",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "terrebonne",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "has_proof_url": false,
+      "proof_url_signal": "audit_row_absent",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    },
+    {
+      "slug": "venise-en-quebec",
+      "has_proof_url": false,
+      "proof_url_signal": "s3_only",
+      "v1_liveness": null,
+      "ondisk_plan": false,
+      "classification": "NEEDS_WEB_CHECK"
+    }
+  ],
+  "recalables": [],
+  "validation": {
+    "population_total": 148,
+    "classified_total": 148,
+    "classification_sum": 148,
+    "sum_equals_population": true,
+    "closed_partition": true,
+    "unique_population_slugs": true,
+    "unresolved_included": true
+  }
+}
