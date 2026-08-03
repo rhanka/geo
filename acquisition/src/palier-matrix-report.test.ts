@@ -57,17 +57,22 @@ describe("palier-matrix contract", () => {
     }
   });
 
-  it("présence = état ≠ unknown ; unknown = absent", () => {
+  it("présence = donnée là ; colonne presence_strict (PV capté) : present ssi complete", () => {
     for (const r of payload.rows.filter((x: any) => x.graph_matched)) {
       let present = 0, absent = 0;
       for (const c of payload.columns) {
         if (c.gate_excluded) continue;
         const st = r.cells[c.key];
-        if (st === "unknown") absent++; else if (st !== "N-A") present++;
+        if (st === "N-A") continue;
+        if (c.presence_strict) { if (st === "complete") present++; else absent++; }
+        else if (st === "unknown") absent++; else present++;
       }
       expect(r.presence.present).toBe(present);
       expect(r.presence.absent).toBe(absent);
     }
+    // col 4 PV est bien presence_strict.
+    const pv = payload.columns.find((c: any) => c.key === "pv");
+    expect(pv.presence_strict).toBe(true);
   });
 
   it("anti-invention : aucune cellule hors des 4 états ; Δ «—» sans snapshot antérieur", () => {
