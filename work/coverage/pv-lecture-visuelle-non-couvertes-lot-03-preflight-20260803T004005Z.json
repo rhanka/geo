@@ -1,0 +1,68 @@
+{
+  "contract": "pv-lecture-visuelle-non-couvertes-preflight/v1",
+  "generated_at": "2026-08-03T00:40:12.469Z",
+  "read_only": true,
+  "source_targets_file": "work/coverage/pv-non-indexe-sur-non-couvertes-20260802T160017Z.json",
+  "slug_filter": [
+    "rosemere",
+    "saint-constant",
+    "saint-lambert"
+  ],
+  "outcomes": [
+    "OWNER_NOT_CONFIRMED",
+    "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+    "NON_INDEXED_OTHER"
+  ],
+  "selection": {
+    "candidate_documents": 3,
+    "prior_documents_skipped": 0,
+    "remaining_documents": 3,
+    "requested": 20,
+    "selected": 3
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du document",
+    "mismatch_stop_threshold": 3
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-non-couvertes-lot-03-preflight-20260803T004005Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/bdca65ce6e2682095a51406e6223428682047fac580a41c81be02facff0325ec.pdf",
+      "slug": "rosemere",
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6980.json",
+      "expected_sha256": "bdca65ce6e2682095a51406e6223428682047fac580a41c81be02facff0325ec",
+      "calculated_sha256": "bdca65ce6e2682095a51406e6223428682047fac580a41c81be02facff0325ec",
+      "streamed_bytes": 551432,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-non-couvertes-lot-03-preflight-20260803T004005Z/bdca65ce6e2682095a51406e6223428682047fac580a41c81be02facff0325ec.pdf",
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d7a03fce3b7c7afedc98d8401fc6971b7adead8c2f2d860a4c01ec7f49a158b1.pdf",
+      "slug": "saint-constant",
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+      "expected_sha256": "d7a03fce3b7c7afedc98d8401fc6971b7adead8c2f2d860a4c01ec7f49a158b1",
+      "calculated_sha256": "d7a03fce3b7c7afedc98d8401fc6971b7adead8c2f2d860a4c01ec7f49a158b1",
+      "streamed_bytes": 91299,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-non-couvertes-lot-03-preflight-20260803T004005Z/d7a03fce3b7c7afedc98d8401fc6971b7adead8c2f2d860a4c01ec7f49a158b1.pdf",
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ce5102564f50d5ab1ec21df0ef691143b195bf824ef33c3327f49d44543adb44.html",
+      "slug": "saint-lambert",
+      "outcome": "NON_INDEXED_OTHER",
+      "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+      "expected_sha256": "ce5102564f50d5ab1ec21df0ef691143b195bf824ef33c3327f49d44543adb44",
+      "calculated_sha256": "ce5102564f50d5ab1ec21df0ef691143b195bf824ef33c3327f49d44543adb44",
+      "streamed_bytes": 225827,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-non-couvertes-lot-03-preflight-20260803T004005Z/ce5102564f50d5ab1ec21df0ef691143b195bf824ef33c3327f49d44543adb44.html",
+      "error": null
+    }
+  ]
+}
