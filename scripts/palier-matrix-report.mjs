@@ -136,12 +136,23 @@ const IDX = {
   immoField: indexBy(SRC.immoField?.cities, 'slug'),
   col20: indexBy(SRC.col20?.rows, 'slug'),
 };
+// Les artefacts immo autoritaires disambiguent les homonymes par un suffixe MRC
+// avec DOUBLE tiret (`hemmingford--les-jardins-de-napierville`) là où la cohorte
+// set-167-bprime porte le tiret SIMPLE. Ce n'est pas deux villes : c'est la même
+// entité, orthographe de slug divergente. On construit un index secondaire par
+// slug NORMALISÉ (tirets multiples → un seul) pour joindre ces 7 cas SANS deviner
+// (fallback strict après échec exact ; jamais de rapprochement flou). L'anti-
+// invention tient : on ne fabrique aucun état, on retrouve l'état DÉJÀ mesuré par
+// l'artefact immo sous une orthographe que la jointure naïve manquait.
+const normSlug = (s) => String(s).replace(/-+/g, '-');
+const immoFieldNorm = new Map();
+for (const [slug, row] of IDX.immoField) { const n = normSlug(slug); if (!immoFieldNorm.has(n)) immoFieldNorm.set(n, row); }
 
 // ---- extracteurs par KPI (état pour UN slug) -------------------------------
 const U = 'unknown';
 const stateFrom = (row, field) => (row ? (normState(row[field]) ?? U) : U);
 function immoFieldStatus(slug, field) {
-  const row = IDX.immoField.get(slug);
+  const row = IDX.immoField.get(slug) ?? immoFieldNorm.get(normSlug(slug));
   if (!row || !row[field]) return U;
   return normState(row[field].status) ?? U;
 }
@@ -221,12 +232,21 @@ const COLUMNS = [
     } },
   { n: 12, key: 'immo_lot_zone', label: 'Immo — assignation lot-zone', extract: (s) => IDX.immoLotZone.get(s) || U },
   { n: 13, key: 'immo_normes_pliees', label: 'Immo — normes pliées', extract: (s) => IDX.immoFolded.get(s) || U },
-  { n: 14, key: 'immo_lots_servis', label: 'Immo — lots servis', extract: (s) => immoFieldStatus(s, 'lots_served') },
-  { n: 15, key: 'immo_surface', label: 'Immo — surface m²', extract: (s) => immoFieldStatus(s, 'surface_m2') },
-  { n: 16, key: 'immo_code_postal', label: 'Immo — code postal', extract: (s) => immoFieldStatus(s, 'postal_code') },
-  { n: 17, key: 'immo_adresse', label: 'Immo — adresse civique', extract: (s) => immoFieldStatus(s, 'civic_address') },
-  { n: 18, key: 'tod_applicabilite', label: 'Immo — applicabilité TOD', extract: (s) => immoFieldStatus(s, 'tod_applicability') },
-  { n: 19, key: 'tod_completion', label: 'Immo — complétion TOD', extract: (s) => immoFieldStatus(s, 'tod_completion') },
+  // Cols 14-19 = champs immo, mesurés PAR SLUG depuis l'artefact immo autoritaire
+  // (immo-field-completion, qui défère lui-même aux verdicts immo par-ville :
+  // adresse-completion, etc.). Cette mesure est INDÉPENDANTE du match zonage-
+  // events (col 20) dont dérive `graph_matched` : une ville UNMATCHED dans
+  // set-167-bprime (donc absente du graphe v3.4) peut avoir des lots immo SERVIS
+  // et une adresse PROUVÉE au rôle. Bloquer ces colonnes à unknown pour une telle
+  // ville, c'est affirmer unknown sur un complete PROUVÉ — une invention à
+  // l'envers. `slug_measured` lève la porte graphe pour ces 6 KPI : ils suivent
+  // leur verdict per-slug autoritaire sur la cohorte ENTIÈRE (dénominateur 167).
+  { n: 14, key: 'immo_lots_servis', label: 'Immo — lots servis', slug_measured: true, extract: (s) => immoFieldStatus(s, 'lots_served') },
+  { n: 15, key: 'immo_surface', label: 'Immo — surface m²', slug_measured: true, extract: (s) => immoFieldStatus(s, 'surface_m2') },
+  { n: 16, key: 'immo_code_postal', label: 'Immo — code postal', slug_measured: true, extract: (s) => immoFieldStatus(s, 'postal_code') },
+  { n: 17, key: 'immo_adresse', label: 'Immo — adresse civique', slug_measured: true, extract: (s) => immoFieldStatus(s, 'civic_address') },
+  { n: 18, key: 'tod_applicabilite', label: 'Immo — applicabilité TOD', slug_measured: true, extract: (s) => immoFieldStatus(s, 'tod_applicability') },
+  { n: 19, key: 'tod_completion', label: 'Immo — complétion TOD', slug_measured: true, extract: (s) => immoFieldStatus(s, 'tod_completion') },
   { n: 20, key: 'v34_qc_zoning_events', label: 'Recall+précision v3.4 qc-zoning-events', gap: GAP_V34, extract: (s) => {
       const r = IDX.col20.get(s);
       if (!r) return U;                                  // hors périmètre mesuré → GAP unknown (anti-invention, jamais fabriqué)
@@ -283,7 +303,10 @@ function build(todayNum) {
     const pending = c.graph_matched === false;
     const cells = {}, deltas = {}, details = {};
     for (const col of COLUMNS) {
-      const state = pending ? U : col.extract(c.slug);
+      // Porte graphe : une ville PENDING-GRAPH-NODE a ses colonnes DÉRIVÉES du
+      // graphe zonage-events blanchies (unknown) — sauf les colonnes `slug_measured`
+      // (champs immo per-slug), qui restent mesurées depuis leur artefact autoritaire.
+      const state = (pending && !col.slug_measured) ? U : col.extract(c.slug);
       cells[col.key] = state;
       if (!pending && col.detail) { const d = col.detail(c.slug); if (d !== undefined) details[col.key] = d; }
       // Δ par cellule : diff avec le snapshot daté précédent ; jamais fabriqué.
@@ -315,17 +338,23 @@ function build(todayNum) {
   const matched = rows.filter((r) => r.graph_matched);
   const pendingRows = rows.filter((r) => !r.graph_matched);
   const perKpi = COLUMNS.map((col) => {
+    // Dénominateur PAR KPI : les colonnes `slug_measured` (champs immo per-slug,
+    // mesurés indépendamment du match graphe) comptent sur la cohorte ENTIÈRE
+    // (167) ; les colonnes dérivées du graphe comptent sur les villes matchées
+    // (les PENDING sont unknown+drapeau, hors dénominateur graphe).
+    const scope = col.slug_measured ? rows : matched;
     const counts = { complete: 0, incomplete: 0, unknown: 0, 'N-A': 0 };
     let present = 0;
-    for (const r of matched) { counts[r.cells[col.key]]++; if (presenceOf(r.cells[col.key], col.presence_strict) === 'present') present++; }
+    for (const r of scope) { counts[r.cells[col.key]]++; if (presenceOf(r.cells[col.key], col.presence_strict) === 'present') present++; }
     const applicable = counts.complete + counts.incomplete + counts.unknown; // hors N-A
     return {
       n: col.n, key: col.key, label: col.label, gap: col.gap ?? null, v2_track: !!col.v2_track,
+      slug_measured: !!col.slug_measured, denom: scope.length,
       ceiling: CEILINGS[col.key] ?? null,
       acquirable_incomplete: counts.incomplete + counts.unknown, // incomplete + unknown = potentiellement acquérable (hors plafond annoté)
-      counts, complete_over_matched: `${counts.complete}/${matched.length}`,
+      counts, complete_over_matched: `${counts.complete}/${scope.length}`,
       cities_100pct: counts.complete, // villes à 100% sur CE KPI = complete
-      pct_complete: matched.length ? Math.round((counts.complete / matched.length) * 1000) / 10 : null,
+      pct_complete: scope.length ? Math.round((counts.complete / scope.length) * 1000) / 10 : null,
       present, pct_present: applicable ? Math.round((present / applicable) * 1000) / 10 : null,
     };
   });
@@ -337,7 +366,7 @@ function build(todayNum) {
   }
   for (const k of perKpi) {
     const tot = STATES.reduce((s, st) => s + k.counts[st], 0);
-    if (tot !== matched.length) errs.push(`KPI ${k.key}: partition villes ${tot} ≠ ${matched.length}`);
+    if (tot !== k.denom) errs.push(`KPI ${k.key}: partition villes ${tot} ≠ ${k.denom}`);
   }
   // Rollup présence global (gate mercredi) sur les villes matchées.
   const summarize = (set) => {
@@ -364,7 +393,7 @@ function build(todayNum) {
     previousSnapshotDate: prev ? prev.date : null,
     owner_target: 'CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.',
     cohort: { name: cohort.cohort, source: cohort.source, path: cohort.path, cities: rows.length, graph_matched: matched.length, pending_graph_node: pendingRows.length },
-    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, presence_strict: !!c.presence_strict, ceiling: CEILINGS[c.key] ?? null })),
+    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, presence_strict: !!c.presence_strict, slug_measured: !!c.slug_measured, ceiling: CEILINGS[c.key] ?? null })),
     anti_invention: 'Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu\'à source per-city.',
     presence_gate: presenceGate,
     subset_palier1_rank_le_30: subset30,
@@ -403,14 +432,15 @@ function renderMarkdown(p) {
   L.push('');
   L.push('Par KPI (villes matchées) : complete / incomplete / unknown / N-A. `incomplete+unknown` = potentiellement ACQUÉRABLE ; ⛰ = plafond externe annoté (contexte owner, PAS un N-A fabriqué).');
   L.push('');
-  L.push('| # | KPI | ✓compl | ◐inc | ·unk | —N-A | %compl | à 100% | plafond / note |');
-  L.push('|---:|---|---:|---:|---:|---:|---:|---:|---|');
+  L.push('| # | KPI | dénom | ✓compl | ◐inc | ·unk | —N-A | %compl | à 100% | plafond / note |');
+  L.push('|---:|---|---:|---:|---:|---:|---:|---:|---:|---|');
   for (const k of p.per_kpi) {
     const note = k.ceiling ? '⛰ ' + k.ceiling : k.gap ? '⚠ ' + k.gap : '';
-    L.push(`| ${k.n} | ${k.label} | ${k.counts.complete} | ${k.counts.incomplete} | ${k.counts.unknown} | ${k.counts['N-A']} | ${k.pct_complete == null ? '—' : k.pct_complete + '%'} | ${k.cities_100pct} | ${note} |`);
+    const denom = `${k.denom}${k.slug_measured ? ' §' : ''}`;
+    L.push(`| ${k.n} | ${k.label} | ${denom} | ${k.counts.complete} | ${k.counts.incomplete} | ${k.counts.unknown} | ${k.counts['N-A']} | ${k.pct_complete == null ? '—' : k.pct_complete + '%'} | ${k.cities_100pct} | ${note} |`);
   }
   L.push('');
-  L.push(`> Dénominateurs sur les ${p.cohort.graph_matched} villes matchées ; les ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE sont exclues (lignes visibles, toutes unknown). Présence = état ≠ unknown, N-A hors dénominateur ; les 20 KPI comptent (cols 10 & 20 incluses).`);
+  L.push(`> Dénominateurs : colonnes dérivées du graphe sur les ${p.cohort.graph_matched} villes matchées (les ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE exclues, lignes visibles) ; **§ colonnes immo per-slug (14-19) sur la cohorte ENTIÈRE ${p.cohort.cities}** — mesurées depuis l'artefact immo autoritaire, indépendamment du match graphe (une ville UNMATCHED peut avoir lots servis + adresse prouvée). Présence = état ≠ unknown, N-A hors dénominateur ; les 20 KPI comptent (cols 10 & 20 incluses).`);
   L.push('');
   L.push('## Sources (provenance)');
   L.push('');
