@@ -42,9 +42,26 @@ seule, `no_document_bytes_read`) sur les 8 slugs.
   pour la couverture-ville). 5 autres grandes villes à re-sourcer (SPA/viewer/DNS).
 - **Job** : `geo-capture-pv-20260803t211500z` (2 shards, concurrency 2, 512Mi ;
   1 ville/pod). Worklist S3 `pv-20260803T211500Z.json`. Aucun polling.
-- **Suite** : classifier ce run → si `INDEXED` (propriétaire confirmé) câbler →
-  recompter → commit du delta. Hosts hors Cloudflare-WP → moins de risque 403
-  qu'à terrebonne.
+- **Classification** (`pv-capture-octets-20260803T211500Z.json`) : run TERMINAL,
+  80 tentatives → **74 `PV_LISIBLE_PROPRIETAIRE_CONFIRME`** (92,5 %) + 6
+  `DOCUMENT_LISIBLE_NON_PV` (ordres-du-jour rimouski). Ventilation confirmés :
+  **rimouski 68**, **laval 6**. Les PV de comité exécutif de laval sont bien
+  classés PV (propriétaire « VILLE DE LAVAL » confirmé par texte natif) — pas
+  besoin des PV de conseil pour la couverture-ville (≥1 INDEXED suffit).
+- **Câblage → verdict → recompte** : générateur capitalisé
+  `acquisition/src/pv-octets-to-verdict.ts` (fonction pure testée
+  `verdictDocumentsFromOctets`, anti-invention : n'indexe qu'une ligne confirmée
+  COMPLÈTE, dédup CAS) → verdict
+  `pv-lecture-visuelle-grandes-villes-lot-01-rimouski-20260803T211500Z.json`
+  (74 INDEXED : laval 6 + rimouski 68) folded par `pv-couverture-municipale`
+  (glob `pv-lecture-visuelle-*`). **Couverture 673 → 675/1106 (+2 : laval,
+  rimouski).**
+
+## Bilan cohorte grandes villes (à ce beat)
+- **+2 capté strict** : laval, rimouski (INDEXED committé).
+- **1 mur capture** : terrebonne (403 WAF/IP ; egress alternatif à tenter).
+- **5 à re-sourcer** : quebec, saguenay, trois-rivieres, sherbrooke,
+  saint-hyacinthe (SPA/viewer/DNS) → prochain beat seeding profond.
 
 ## Résiduels → prochain beat
 - 7 grandes villes à seeder (portails propres) : découvrir l'URL du portail PV
