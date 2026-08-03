@@ -30,7 +30,13 @@ import {
 import { getBytes, s3Client } from "./lib/s3.js";
 import { captureReceiptFromManifest } from "./lib/zone-provenance-quality.js";
 import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
-import { depositCapturedZones, normalize, proofFromGonetCapture } from "./zones-obscura-run.js";
+import { depositCapturedZones, normalize } from "./zones-obscura-run.js";
+import { proofFromCaptureEntry } from "./lib/zonage-proof.js";
+
+// Type de source de preuve v2 selon l'hote (goazimut/GOnet vs FeatureServer ArcGIS).
+function proofSourceType(url: string): "geonet" | "arcgis" {
+  return /goazimut|gonet/i.test(url) ? "geonet" : "arcgis";
+}
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -99,7 +105,7 @@ async function main(): Promise<void> {
       const feats = (Array.isArray(gj.features) ? gj.features : []) as never[];
       if (!c.zone_field) throw new Error("zone_field absent");
       const norm = normalize(feats, c.zone_field, c.source_url, "obscura-gonet-vector");
-      const proof = proofFromGonetCapture(line);
+      const proof = proofFromCaptureEntry(line, { type: proofSourceType(c.source_url), method: "natif", reliability: "directe" });
       if (!commit) {
         report.push({ slug: c.slug, plan: "DRY-RUN", features: norm.length, zone_field: c.zone_field, proof_url: proof.url, sha256: line.sha256 });
         process.stderr.write(`[dry-run] ${c.slug}: ${norm.length} features prêtes, preuve=${proof.url.slice(0, 80)} sha=${String(line.sha256).slice(0, 16)}\n`);
