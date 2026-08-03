@@ -1,0 +1,1902 @@
+{
+  "contract": "zones-recalage-status-167/v1",
+  "generated_at_utc": "2026-08-03T00:36:52.162Z",
+  "provenance": {
+    "radar_preview": "radar@800ee90 (PREVIEW non ratifie; merge PR #436 a venir)",
+    "read_only": true,
+    "join_key": "graph_city_slug",
+    "sources": {
+      "overlap": {
+        "revision": "5ec1d919815e0c2b98e10587c69fdb0e439fd16e",
+        "path": "work/coverage/overlap-bprime167-vs-geo-20260802.json",
+        "contract": "overlap-bprime167-vs-geo/v1"
+      },
+      "discovery": {
+        "revision": "39eefd2da283eb23f67e5f9156df55ec20ff4775",
+        "path": "work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json"
+      },
+      "matrix": {
+        "revision": "608c23d2",
+        "path": "work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json",
+        "contract": "zone-provenance-quality-matrix/v1"
+      }
+    }
+  },
+  "classification_rule": {
+    "proof_live_verifiable": {
+      "v2": "deja_v2_servi",
+      "acceptable_or_candidate": "recale_ok",
+      "otherwise": "recale_missing"
+    },
+    "proof_v1_dead": {
+      "NEEDS_RECALAGE_PDF": "recale_missing",
+      "UNRESOLVED": "unresolved"
+    },
+    "no_proof_url_signal": {
+      "v2": "deja_v2_servi",
+      "otherwise": "recale_missing"
+    },
+    "matrix_absent_or_no_identifiable_served_geometry": "recale_missing",
+    "recale_ok_guard": "recale_ok exige une preuve committee de geometrie issue d'une source autoritaire vivante (matrix acceptable ou candidate)."
+  },
+  "cities": [
+    {
+      "slug": "ange-gardien",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=ange-gardien].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "baie-durfe",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=baie-durfe].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "beaconsfield",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=beaconsfield].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "beauharnois",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=beauharnois].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "beloeil",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=beloeil].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "blainville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=blainville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "bois-des-filion",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=bois-des-filion].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "boisbriand",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=boisbriand].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "boucherville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=boucherville].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "brossard",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=brossard].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "calixa-lavallee",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=calixa-lavallee].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "candiac",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=candiac].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "carignan",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=carignan].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "chambly",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=chambly].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "charlemagne",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=charlemagne].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "chateauguay",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=chateauguay].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "clarenceville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=clarenceville].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "contrecoeur",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=contrecoeur].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "cote-saint-luc",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=cote-saint-luc].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "coteau-du-lac",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=coteau-du-lac].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "crabtree",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=crabtree].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "delson",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=delson].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "deux-montagnes",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=deux-montagnes].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=dollard-des-ormeaux].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "dorval",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=dorval].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "farnham",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=farnham].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "franklin",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=franklin].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "hampstead",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=hampstead].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "havelock",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=havelock].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "NEEDS_RECALAGE_PDF",
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=hemmingford-les-jardins-de-napierville].status=NEEDS_RECALAGE_PDF",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=hemmingford-les-jardins-de-napierville; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville-2",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=hemmingford-les-jardins-de-napierville-2; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "henryville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=henryville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "howick",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=howick].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "hudson",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=hudson].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "joliette",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=joliette].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "kirkland",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=kirkland].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "la-prairie",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_ok",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=la-prairie].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "la-presentation",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=la-presentation].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "lacolle",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lacolle].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "lassomption",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lassomption].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "lavaltrie",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lavaltrie].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "lepiphanie",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lepiphanie].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "lery",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lery].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "les-cedres",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=les-cedres].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "les-coteaux",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=les-coteaux].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "lile-cadieux",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lile-cadieux].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "lile-dorval",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lile-dorval].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "lile-perrot",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lile-perrot].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "longueuil",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=longueuil].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "lorraine",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=lorraine].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "marieville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=marieville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "mascouche",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mascouche].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "mcmasterville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mcmasterville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "mercier",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mercier].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "mirabel",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mirabel].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "mont-royal",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mont-royal].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mont-saint-gregoire].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=mont-saint-hilaire].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "montreal-est",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=montreal-est].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "montreal-ouest",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=montreal-ouest].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "napierville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=napierville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=notre-dame-de-lile-perrot].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=notre-dame-de-stanbridge].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "noyan",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=noyan].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "oka",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "candidate",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=oka].quality_status=candidate"
+      ]
+    },
+    {
+      "slug": "ormstown",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=ormstown].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "otterburn-park",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=otterburn-park].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "pincourt",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=pincourt].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "pointe-calumet",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=pointe-calumet].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "pointe-claire",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=pointe-claire].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=pointe-des-cascades].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "prevost",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=prevost].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "repentigny",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=repentigny].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=richelieu].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "rosemere",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=rosemere].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "rougemont",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "candidate",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=rougemont].quality_status=candidate"
+      ]
+    },
+    {
+      "slug": "saint-alexandre",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-alexandre].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-alexis",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-alexis].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-amable",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "candidate",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-amable].quality_status=candidate"
+      ]
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_ok",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-antoine-sur-richelieu].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-barnabe-sud].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-basile-le-grand].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "NEEDS_RECALAGE_PDF",
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=saint-bernard-de-lacolle].status=NEEDS_RECALAGE_PDF",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-bernard-de-lacolle].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-bernard-de-michaudville].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-blaise-sur-richelieu].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-bruno-de-montarville].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-calixte",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-calixte].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-cesaire",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-cesaire].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-charles-sur-richelieu].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-chrysostome",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-chrysostome].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-clet",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-clet].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-colomban",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-colomban].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-constant",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-constant].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-cyprien-de-napierville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "NEEDS_RECALAGE_PDF",
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=saint-damase-les-maskoutains].status=NEEDS_RECALAGE_PDF",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=saint-damase-les-maskoutains; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-denis-sur-richelieu].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-dominique",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "NEEDS_RECALAGE_PDF",
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=saint-dominique].status=NEEDS_RECALAGE_PDF",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-dominique].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-edouard",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-edouard].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-esprit",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-esprit].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-etienne-de-beauharnois].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-eustache",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-eustache].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "saint-hippolyte",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-hippolyte].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-hyacinthe].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-isidore-roussillon",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=saint-isidore-roussillon; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "saint-jacques",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jacques].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jacques-le-mineur].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jean-baptiste].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jean-sur-richelieu].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-jerome",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "candidate",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jerome].quality_status=candidate"
+      ]
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-joseph-du-lac].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-jude",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-jude].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-lambert",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-lambert].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-lazare",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-lazare].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-liguori",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-liguori].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-lin-laurentides].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-louis-de-gonzague-beauharnois-salaberry",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=saint-louis-de-gonzague-beauharnois-salaberry; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-marc-sur-richelieu].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-mathias-sur-richelieu].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-mathieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-mathieu].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-mathieu-de-beloeil].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "saint-michel",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-michel].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-ours",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "NEEDS_RECALAGE_PDF",
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=saint-ours].status=NEEDS_RECALAGE_PDF",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-ours].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-patrice-de-sherrington].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-paul",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-paul].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-paul-dabbotsford].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-paul-de-lile-aux-noix].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-philippe",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-philippe].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-pie",
+      "bucket": "proof_v1_dead",
+      "discovery_status": "UNRESOLVED",
+      "matrix_quality_status": "acceptable",
+      "recale_status": "unresolved",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_v1_dead",
+        "git:39eefd2da283eb23f67e5f9156df55ec20ff4775:work/coverage/zones-bprime6-source-discovery-20260802T190607Z.json#cities[slug=saint-pie].status=UNRESOLVED",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-pie].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-pierre",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-pierre].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-placide",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-placide].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-remi",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-remi].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-roch-de-lachigan].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-roch-de-richelieu].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-roch-ouest].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-sebastien-le-haut-richelieu",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=saint-sebastien-le-haut-richelieu; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-stanislas-de-kostka].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "saint-sulpice",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-sulpice].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-urbain-premier].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "saint-valentin",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=saint-valentin].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-angele-de-monnoir].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-anne-de-bellevue].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-anne-de-sabrevois].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-anne-des-plaines].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-brigide-diberville].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "sainte-catherine",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-catherine].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "sainte-clotilde",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-clotilde].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "sainte-julie",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-julie].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "sainte-julienne",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-julienne].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "sainte-madeleine",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-madeleine].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-marie-madeleine].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-marie-salome].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-marthe-sur-le-lac].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-martine",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-martine].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "sainte-sabine-brome-missisquoi",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": null,
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows (aucune entree city_slug=sainte-sabine-brome-missisquoi; pas de geometrie servie mesuree)"
+      ]
+    },
+    {
+      "slug": "sainte-sophie",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-sophie].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "sainte-therese",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=sainte-therese].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "orphan",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=salaberry-de-valleyfield].quality_status=orphan"
+      ]
+    },
+    {
+      "slug": "senneville",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=senneville].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=terrasse-vaudreuil].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "terrebonne",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=terrebonne].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=tres-saint-sacrement].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "varennes",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=varennes].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=vaudreuil-dorion].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "unknown",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=vaudreuil-sur-le-lac].quality_status=unknown"
+      ]
+    },
+    {
+      "slug": "venise-en-quebec",
+      "bucket": "no_proof_url_signal",
+      "discovery_status": null,
+      "matrix_quality_status": "acceptable",
+      "recale_status": "recale_missing",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.no_proof_url_signal",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=venise-en-quebec].quality_status=acceptable"
+      ]
+    },
+    {
+      "slug": "vercheres",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=vercheres].quality_status=v2"
+      ]
+    },
+    {
+      "slug": "westmount",
+      "bucket": "proof_live_verifiable",
+      "discovery_status": null,
+      "matrix_quality_status": "v2",
+      "recale_status": "deja_v2_servi",
+      "evidence": [
+        "git:5ec1d919815e0c2b98e10587c69fdb0e439fd16e:work/coverage/overlap-bprime167-vs-geo-20260802.json#buckets.proof_live_verifiable",
+        "git:608c23d2:work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json#rows[city_slug=westmount].quality_status=v2"
+      ]
+    }
+  ],
+  "validation": {
+    "expected_total": 167,
+    "total": 167,
+    "total_matches_expected_167": true,
+    "recale_status_counts": {
+      "recale_ok": 2,
+      "recale_missing": 147,
+      "unresolved": 1,
+      "deja_v2_servi": 17,
+      "hors_scope": 0
+    },
+    "recale_status_sum": 167,
+    "partition_closed": true,
+    "exception": null
+  }
+}
