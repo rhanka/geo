@@ -38,6 +38,19 @@ Chaque porte : `PASS | FAIL | INDET`. Métrique absente ⇒ `INDET` ⇒ verdict
 | G3 | `anti_invention` | `zone_distinct≥3` ET `zone_maxlen≤24` ET `bbox_diag≤35` ET champ zone peuplé (`zone_nonnull_pct>0`) | Gate structurel lane zones (cité `3b7120c3`/`f4bf07f0`) : rejette code-zone dégénéré / géométrie aberrante / champ vide. |
 | G4 | `non_contamination` | **Identité PRIMAIRE** : `nearest_registre_muni === slug` (km informatif). **Repli** si champ absent : `registry_attribution_km < 1.1` ⇒ PASS ; `≥ 1.1` ⇒ INDET (identité invérifiable) | Le km est un PROXY : `< 1.1` rend la contamination implausible, mais `≥ 1.1` sur une grande muni rurale est un simple offset centroïde↔registre, PAS une contamination. Le juge est `nearest_registre_muni`. `nearest ≠ slug` ⇒ FAIL (contamination avérée). |
 
+| G5 | `superset_no_regression` | **CONDITIONNELLE** (dépôt de REMPLACEMENT). Si `prior_served_codes` fourni : PASS ssi ⊆ `zone_codes` captés ; sinon FAIL (régression, codes manquants listés). `zone_codes` absent ⇒ INDET. Porte OMISE si pas de remplacement. | Une capture v2 complète peut être un SOUS-ensemble d'un orphelin servi issu d'une **source tierce réelle** (p.ex. `geomatiquecn-arcgis`, PAS un Voronoï). Déposer régresserait la couverture. « superset » doit être PROUVÉ (deux ensembles de codes dans le manifeste), pas affirmé. |
+
+**Cas orphelin-tiers-plus-riche (3e cas, ruling `b371eb73`→ce commit).** Quand le
+HOLD anti-régression de `depositCapturedZones` tient une capture v2 COMPLÈTE
+(`exceededTransferLimit=false`) parce que la couche servie a PLUS de codes ET que
+cet orphelin n'est PAS un Voronoï mais une **source ArcGIS tierce réelle** : ne pas
+déposer la capture (régression), ne pas forcer. Voie correcte = **capturer la source
+tierce plus riche avec preuve v2** (c'est un FeatureServer), attester (4 portes +
+G5 superset prouvé sur les codes GOnet), déposer ce superset (documented, remplace
+l'orphelin, couvre tout). Si la source tierce est injoignable : **rester HELD**
+(ne pas régresser vers la capture plus pauvre). Le fallback vers la capture plus
+pauvre n'est PAS auto-déposable.
+
 **Amendement G4 (ruling `5c4ddf4f`→ce commit).** Le seuil absolu 1.1 km faux-positive
 sur grande muni rurale (offset centroïde↔point-registre). Cas saint-pie : km 1.72
 mais couche servie depuis le dossier de service propre `54008_SaintPie` — offset
@@ -79,7 +92,9 @@ déjà une passe, sans en faire dépendre le verdict de dépôt.
   "zone_nonnull_pct": 99.3,
   "bbox_diag": 12.4,
   "registry_attribution_km": 0.3,
-  "nearest_registre_muni": "…"
+  "nearest_registre_muni": "…",
+  "zone_codes": ["…"],
+  "prior_served_codes": ["…"]
 } ] }
 ```
 
