@@ -12,7 +12,8 @@
  *     --targets-file=work/coverage/pv-non-indexe-sur-non-couvertes-...json \
  *     --out=work/coverage/pv-lecture-visuelle-non-couvertes-lot-01-preflight-...json \
  *     [--outcomes=OWNER_NOT_CONFIRMED,DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED,NON_INDEXED_OTHER] \
- *     [--limit=20] [--prior-report=work/coverage/pv-lecture-visuelle-non-couvertes-lot-01-...json]
+ *     [--limit=20] [--slugs=rosemere,saint-constant] [--prior-report=work/coverage/pv-lecture-visuelle-non-couvertes-lot-01-...json]
+ *     [--prior-report=work/coverage/pv-lecture-visuelle-non-couvertes-lot-02-...json]
  */
 import { createHash } from "node:crypto";
 import { createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -98,6 +99,25 @@ function optionalArg(name: string): string | null {
   return values[0] ?? null;
 }
 
+function optionalArgs(name: string): readonly string[] {
+  const values = process.argv.slice(2)
+    .filter((value) => value.startsWith(`--${name}=`))
+    .map((value) => value.slice(name.length + 3));
+  if (values.some((value) => !value)) throw new Error(`--${name}=... non vide requis`);
+  return values;
+}
+
+function parseSlugs(): readonly string[] | null {
+  const raw = optionalArg("slugs");
+  if (raw === null) return null;
+  const values = raw.split(",").map((value) => value.trim()).filter(Boolean);
+  if (values.length === 0 || new Set(values).size !== values.length) throw new Error("--slugs: liste non vide et sans doublon requise");
+  for (const value of values) {
+    if (!/^[a-z0-9][a-z0-9-]*$/u.test(value)) throw new Error(`--slugs: slug invalide ${value}`);
+  }
+  return values;
+}
+
 function optionalPositiveIntegerArg(name: string, fallback: number, maximum: number): number {
   const value = optionalArg(name);
   if (value === null) return fallback;
@@ -141,7 +161,7 @@ function parseOutcomes(): readonly ConvertibleOutcome[] {
   return values as ConvertibleOutcome[];
 }
 
-function selectedDocuments(targetsPath: string, allowedOutcomes: readonly ConvertibleOutcome[], priorPath: string | null, limit: number): {
+function selectedDocuments(targetsPath: string, allowedOutcomes: readonly ConvertibleOutcome[], priorPaths: readonly string[], slugs: readonly string[] | null, limit: number): {
   readonly documents: SelectedDocument[];
   readonly candidate_documents: number;
   readonly prior_documents_skipped: number;
@@ -154,10 +174,12 @@ function selectedDocuments(targetsPath: string, allowedOutcomes: readonly Conver
   if (!Array.isArray(municipalities)) throw new Error(`${targetsPath}.municipalities: tableau requis`);
   const candidates: SelectedDocument[] = [];
   const byKey = new Map<string, SelectedDocument>();
+  const slugFilter = slugs === null ? null : new Set(slugs);
   for (const [municipalityIndex, municipalityValue] of municipalities.entries()) {
     const municipality = record(municipalityValue, `${targetsPath}.municipalities[${municipalityIndex}]`);
     const slug = requiredString(municipality.slug, `${targetsPath}.municipalities[${municipalityIndex}].slug`);
     if (!/^[a-z0-9][a-z0-9-]*$/u.test(slug)) throw new Error(`${targetsPath}.municipalities[${municipalityIndex}].slug: slug invalide`);
+    if (slugFilter !== null && !slugFilter.has(slug)) continue;
     if (!Array.isArray(municipality.non_indexed_documents)) throw new Error(`${targetsPath}.municipalities[${municipalityIndex}].non_indexed_documents: tableau requis`);
     for (const [documentIndex, documentValue] of municipality.non_indexed_documents.entries()) {
       const document = record(documentValue, `${targetsPath}.municipalities[${municipalityIndex}].non_indexed_documents[${documentIndex}]`);
@@ -178,7 +200,7 @@ function selectedDocuments(targetsPath: string, allowedOutcomes: readonly Conver
   }
 
   const priorKeys = new Set<string>();
-  if (priorPath !== null) {
+  for (const priorPath of priorPaths) {
     const prior = readSmallJson(priorPath);
     if (!Array.isArray(prior.documents)) throw new Error(`${priorPath}.documents: tableau requis`);
     for (const [index, value] of prior.documents.entries()) {
@@ -254,18 +276,18 @@ function writeAtomic(path: string, value: unknown): void {
 async function main(): Promise<void> {
   const targetsPath = absoluteRepoPath(requiredArg("targets-file"), "--targets-file");
   const output = absoluteRepoPath(requiredArg("out"), "--out");
-  const priorArgument = optionalArg("prior-report");
-  const priorPath = priorArgument === null ? null : absoluteRepoPath(priorArgument, "--prior-report");
+  const priorPaths = optionalArgs("prior-report").map((argument) => absoluteRepoPath(argument, "--prior-report"));
   const requested = optionalPositiveIntegerArg("limit", DEFAULT_LOT_SIZE, MAX_LOT_SIZE);
   const allowedOutcomes = parseOutcomes();
+  const slugs = parseSlugs();
   if (!output.startsWith(`${COVERAGE}/`) || !output.endsWith(".json")) throw new Error("--out doit être un JSON sous work/coverage");
   if (existsSync(output)) throw new Error(`artefact déjà présent: ${output}`);
-  if (priorPath !== null && !priorPath.startsWith(`${COVERAGE}/`)) throw new Error("--prior-report doit rester sous work/coverage");
+  if (priorPaths.some((path) => !path.startsWith(`${COVERAGE}/`))) throw new Error("--prior-report doit rester sous work/coverage");
   assertS3RunEnvironment();
 
   const workspace = resolve(ROOT, "work", "graphify", basename(output, ".json"));
   mkdirSync(workspace, { recursive: true });
-  const selection = selectedDocuments(targetsPath, allowedOutcomes, priorPath, requested);
+  const selection = selectedDocuments(targetsPath, allowedOutcomes, priorPaths, slugs, requested);
   const results: GuardResult[] = [];
   for (const document of selection.documents) {
     const result = await downloadAndHash(document, workspace);
@@ -279,6 +301,7 @@ async function main(): Promise<void> {
     generated_at: new Date().toISOString(),
     read_only: true,
     source_targets_file: selection.source_targets_file,
+    slug_filter: slugs,
     outcomes: allowedOutcomes,
     selection: {
       candidate_documents: selection.candidate_documents,
