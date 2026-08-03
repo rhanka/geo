@@ -387,6 +387,20 @@ const palierHandoff = {
   target: PALIER_TARGET,
   partition: palier167.partition,
   unmatched: palier167.unmatched,
+  // Per-axis gap lists (radar slug + resolved geo slug) so a campaign can shard
+  // exactly the non-complete cities without re-deriving from the per-city rows.
+  gaps: Object.fromEntries(Object.keys(matrix.totals).map((axis) => {
+    const buckets = { unknown: [], incomplete: [] };
+    for (const { slug } of palierRows) {
+      const geoSlug = resolvePalierSlug(slug);
+      const city = geoSlug === undefined ? undefined : cohortCities.get(geoSlug);
+      if (city === undefined) continue;
+      if (city[axis] === "unknown" || city[axis] === "incomplete") {
+        buckets[city[axis]].push(geoSlug);
+      }
+    }
+    return [axis, buckets];
+  })),
   cities: palierRows.map(({ slug, priorityRank }) => {
     const geoSlug = resolvePalierSlug(slug);
     const city = geoSlug === undefined ? undefined : cohortCities.get(geoSlug);
