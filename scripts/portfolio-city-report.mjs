@@ -145,14 +145,20 @@ function discoverProvQuality() {
 const readbackRel = discoverReadback();
 const lotZoneScaleRel = discoverLotZoneScale();
 const provQualityRel = discoverProvQuality();
+// Matrices Immo lot-zone (col. 12) et normes pliées (col. 13) : le nom daté est
+// l'ordre déterministe (discoverLatest), jamais un chemin figé — l'ancien chemin
+// hardcodé (…-20260723 / undated) est désormais absent du checkout et retombait à
+// tort en `unknown`. Repli explicite sur l'ancien nom si aucune passe datée n'existe.
+const immoLotZoneRel = discoverLatest(/^immo-lot-zone-assignment-matrix-.*\.json$/) || 'work/coverage/immo-lot-zone-assignment-matrix-20260723.json';
+const immoFoldedRel = discoverLatest(/^immo-folded-normes-city-matrix-.*\.json$/) || 'work/coverage/immo-folded-normes-city-matrix.json';
 
 const SRC = {
   zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
   pv: loadFile('work/coverage/pv-completion-city-audit.json'),
   regdens: loadFile('work/coverage/completion-regdens-20260723.json'),
   provQuality: provQualityRel ? loadFile(provQualityRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
-  immoLotZone: loadFile('work/coverage/immo-lot-zone-assignment-matrix-20260723.json'),
-  immoFolded: loadFile('work/coverage/immo-folded-normes-city-matrix.json'),
+  immoLotZone: loadFile(immoLotZoneRel),
+  immoFolded: loadFile(immoFoldedRel),
   immoField: loadFile('work/immo-field-completion-matrices/immo-field-completion-matrix.json'),
   readback: readbackRel ? loadFile(readbackRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   // Mesure de cohérence lot-zone à l'échelle (867 villes auditables). Ancien chemin conservé en repli.
