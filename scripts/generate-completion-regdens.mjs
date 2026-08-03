@@ -224,14 +224,67 @@ const effetDensifiantStateForSlug = (slug) => {
   invariant(state !== undefined, `effet densifiant B-prime/${slug} has unsupported state ${row.state}`);
   return state;
 };
-const effetDensifiant = countStates(catalog, effetDensifiantStateForSlug, "effet_densifiant");
+const effetDensifiantRawStateForSlug = effetDensifiantStateForSlug;
 
+// N-A absence-proof registry (SPEC_PALIER_RESOLUTION §1). Each proof is a
+// REPRODUCIBLE proof of legitimate absence carrying {source, date, result}. A
+// proof promotes a NON-complete derived state (unknown|incomplete) to N/A; it is
+// NEVER allowed on a cell that is already complete (that would be a contradiction
+// and fails loud). Anti-invention: a proof missing any required field, naming a
+// slug outside the catalogue, or an unknown axis is rejected here — the registry
+// cannot silently relabel an unproven UNKNOWN as N/A. An EMPTY registry leaves
+// every partition unchanged (mechanism inert until real proofs are deposited).
+const NA_PROOF_PATH = "acquisition/config/palier-na-proofs.json";
+const AXES = ["reglement_declared", "reglement_proven", "usage_dominant", "effet_densifiant"];
+const rawStateForSlugByAxis = {
+  reglement_declared: reglementDeclaredStateForSlug,
+  reglement_proven: reglementProvenStateForSlug,
+  usage_dominant: usageDominantStateForSlug,
+  effet_densifiant: effetDensifiantRawStateForSlug,
+};
+const naProofSource = readJson(NA_PROOF_PATH);
+invariant(naProofSource.contract === "palier-na-proofs/v1",
+  `${NA_PROOF_PATH} has unexpected contract`);
+invariant(Array.isArray(naProofSource.proofs), `${NA_PROOF_PATH} has no proofs array`);
+const naBySlugAxis = new Map();
+for (const proof of naProofSource.proofs) {
+  invariant(proof !== null && typeof proof === "object" && !Array.isArray(proof),
+    `${NA_PROOF_PATH} proof is not an object`);
+  const { geo_slug: geoSlug, axis } = proof;
+  invariant(typeof geoSlug === "string" && catalogSlugs.has(geoSlug),
+    `${NA_PROOF_PATH} proof geo_slug is not a catalogue slug: ${geoSlug}`);
+  invariant(AXES.includes(axis), `${NA_PROOF_PATH} proof axis is unknown: ${axis}`);
+  for (const field of ["criterion", "source", "date", "result"]) {
+    invariant(typeof proof[field] === "string" && proof[field].length > 0,
+      `${NA_PROOF_PATH} proof ${geoSlug}/${axis} is missing ${field} (N-A exige une preuve d'absence reproductible)`);
+  }
+  const key = `${geoSlug} ${axis}`;
+  invariant(!naBySlugAxis.has(key), `${NA_PROOF_PATH} has a duplicate proof for ${geoSlug}/${axis}`);
+  const rawState = rawStateForSlugByAxis[axis](geoSlug);
+  invariant(rawState !== "complete",
+    `${NA_PROOF_PATH} proof ${geoSlug}/${axis} contradicts a COMPLETE derived cell`);
+  naBySlugAxis.set(key, proof);
+}
+function withNaProof(axis, rawStateForSlug) {
+  return (slug) => {
+    const state = rawStateForSlug(slug);
+    if (state === "complete") return state;
+    return naBySlugAxis.has(`${slug} ${axis}`) ? "N/A" : state;
+  };
+}
+const reglementDeclaredResolvedForSlug = withNaProof("reglement_declared", reglementDeclaredStateForSlug);
+const reglementProvenResolvedForSlug = withNaProof("reglement_proven", reglementProvenStateForSlug);
+const usageDominantResolvedForSlug = withNaProof("usage_dominant", usageDominantStateForSlug);
+const effetDensifiantResolvedForSlug = withNaProof("effet_densifiant", effetDensifiantRawStateForSlug);
+
+// Resolved totals fold any deposited N-A proof over the raw partition. With an
+// empty registry these equal the raw partitions above (reglementDeclared, …).
 const matrix = {
   totals: {
-    reglement_declared: reglementDeclared,
-    reglement_proven: reglementProven,
-    usage_dominant: usageDominant,
-    effet_densifiant: effetDensifiant,
+    reglement_declared: countStates(catalog, reglementDeclaredResolvedForSlug, "reglement_declared"),
+    reglement_proven: countStates(catalog, reglementProvenResolvedForSlug, "reglement_proven"),
+    usage_dominant: countStates(catalog, usageDominantResolvedForSlug, "usage_dominant"),
+    effet_densifiant: countStates(catalog, effetDensifiantResolvedForSlug, "effet_densifiant"),
   },
   source_as_of: {
     reglement_declared: REGLEMENT_DECLARED_SOURCE_AS_OF,
@@ -239,13 +292,18 @@ const matrix = {
     usage_dominant: usageSource.generatedAt,
     effet_densifiant: dateFromFileName(effectSource.relativePath),
   },
+  na_proofs: {
+    source: NA_PROOF_PATH,
+    revised: naProofSource.revised,
+    count: naBySlugAxis.size,
+  },
 };
 
 const stateForSlugByAxis = {
-  reglement_declared: reglementDeclaredStateForSlug,
-  reglement_proven: reglementProvenStateForSlug,
-  usage_dominant: usageDominantStateForSlug,
-  effet_densifiant: effetDensifiantStateForSlug,
+  reglement_declared: reglementDeclaredResolvedForSlug,
+  reglement_proven: reglementProvenResolvedForSlug,
+  usage_dominant: usageDominantResolvedForSlug,
+  effet_densifiant: effetDensifiantResolvedForSlug,
 };
 const cities = catalog.map(({ slug }) => ({
   slug,
@@ -374,6 +432,13 @@ const palier167Complete = Object.fromEntries(Object.keys(matrix.totals).map((axi
   axis,
   `${palier167.partition[axis].complete}/${PALIER_TARGET}`,
 ]));
+// The owner target is 100%-RÉSOLU = 0 UNKNOWN: every cell COMPLETE or N-A PROUVÉ.
+// resolved = complete + N/A (an incomplete cell is NOT resolved). This is the
+// number the palier is scored on; complete alone under-reports once N-A lands.
+const palier167Resolved = Object.fromEntries(Object.keys(matrix.totals).map((axis) => [
+  axis,
+  `${palier167.partition[axis].complete + palier167.partition[axis]["N/A"]}/${PALIER_TARGET}`,
+]));
 
 // Handoff artifact for qa: per-axis partition over the 167 plus the per-city
 // rows, so the qa matrix joins statuses on slug without re-deriving anything.
@@ -384,8 +449,11 @@ const palierHandoff = {
   cohort: palierCohortSource.cohort,
   cohort_source: palierCohortSource.source,
   source_as_of: matrix.source_as_of,
+  na_proofs: matrix.na_proofs,
   target: PALIER_TARGET,
   partition: palier167.partition,
+  // resolved = complete + N-A PROUVÉ (the owner's 100%-RÉSOLU scoring line).
+  resolved: palier167Resolved,
   unmatched: palier167.unmatched,
   // Per-axis gap lists (radar slug + resolved geo slug) so a campaign can shard
   // exactly the non-complete cities without re-deriving from the per-city rows.
@@ -427,6 +495,8 @@ console.log(JSON.stringify({
   totals: matrix.totals,
   cohort_complete: cohortComplete,
   palier167_complete: palier167Complete,
+  palier167_resolved: palier167Resolved,
+  na_proofs: matrix.na_proofs,
   palier167_unmatched: palier167.unmatched,
   palier167_partition: palier167.partition,
 }, null, 2));
