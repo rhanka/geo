@@ -6,45 +6,21 @@
  * the acquisition runner nor has a network, S3, deployment, or Track path.
  */
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
-const COVERAGE_DIR = resolve(ROOT, "work/coverage");
 const MATRIX_SOURCE = resolve(ROOT, "work/coverage/coverage-matrix.json");
 const IMMO_SOURCE = resolve(ROOT, "work/coverage/immo-lots.json");
 const JSON_OUTPUT = resolve(HERE, "immo-field-completion-matrix.json");
 const CSV_OUTPUT = resolve(HERE, "immo-field-completion-matrix.csv");
 
 const EXPECTED_CITY_COUNT = 1106;
-// The immo-lots snapshot lost one perMuni row upstream (877 -> 876) via a
-// re-fold; reconciliation still closes exactly (873 canonical + 3 aliases,
-// 0 unaccounted, no duplicate slug), so this is a legitimate snapshot change,
-// not contamination. The tripwire tracks the current committed snapshot.
 const EXPECTED_IMMO_SOURCE_ROW_COUNT = 876;
 const STATUS_VALUES = new Set(["complete", "incomplete", "unknown", "N/A"]);
 const FIELD_COLUMNS = ["lots_served", "surface_m2", "postal_code", "civic_address", "tod_applicability", "tod_completion"];
-
-// col-17 (civic address) is NOT re-derived here from the raw immo-lots snapshot:
-// that naive `completedLots === totalLots` rule reports 0 complete because it
-// ignores MAMH role-proved address ABSENCE, mislabelling every served city
-// incomplete/unknown.  The authoritative per-city verdict is produced by the
-// col-17 acquisition runner into work/coverage/immo-adresse-completion-matrix-*.json
-// (city_measurements[].etat), where complete means "every served lot is either
-// addressed or has a MAMH-proved absence of address" — the resolved semantics
-// the palier gate counts.  This build DEFERS civic_address to that matrix.
-const ADRESSE_MATRIX_PREFIX = "immo-adresse-completion-matrix-";
-// authoritative etat -> field-matrix status (STATUS_VALUES).  foldable means an
-// address exists on a served lot but is not yet folded (geo-side actionable) —
-// a remaining gap, i.e. incomplete.
-const ADRESSE_ETAT_TO_STATUS = Object.freeze({
-  complete: "complete",
-  "N/A": "N/A",
-  unknown: "unknown",
-  foldable: "incomplete",
-});
 
 // These input spellings are duplicate source rows, not additional cities.  The
 // exact city slug is preferred when both rows are present.  The audit below
@@ -114,48 +90,6 @@ function fieldCell(row, sourceField, label) {
   return statusCell("incomplete", `Local Immo stats report ${completedLots}/${totalLots} lots with ${label}.`, {
     observed_lots: totalLots,
     completed_lots: completedLots,
-  });
-}
-
-function pickLatestAdresseMatrix() {
-  const files = readdirSync(COVERAGE_DIR)
-    .filter((name) => name.startsWith(ADRESSE_MATRIX_PREFIX) && name.endsWith(".json"))
-    .sort();
-  invariant(files.length > 0, `no ${ADRESSE_MATRIX_PREFIX}*.json in work/coverage`);
-  return resolve(COVERAGE_DIR, files[files.length - 1]);
-}
-
-function loadAdresseMatrix(path) {
-  const { text, value } = readJson(path);
-  const measurements = value?.city_measurements;
-  invariant(Array.isArray(measurements), "adresse matrix has no city_measurements array");
-  const bySlug = new Map();
-  for (const raw of measurements) {
-    invariant(raw && typeof raw.slug === "string" && raw.slug.length > 0, "adresse measurement has no slug");
-    invariant(!bySlug.has(raw.slug), `duplicate adresse measurement slug ${raw.slug}`);
-    bySlug.set(raw.slug, raw);
-  }
-  invariant(bySlug.size === EXPECTED_CITY_COUNT, `adresse matrix covers ${bySlug.size} cities, not ${EXPECTED_CITY_COUNT}`);
-  return { text, bySlug };
-}
-
-function adresseCell(measurement, slug) {
-  invariant(measurement, `no authoritative col-17 measurement for ${slug}`);
-  const status = ADRESSE_ETAT_TO_STATUS[measurement.etat];
-  invariant(status, `unmapped col-17 etat ${String(measurement.etat)} for ${slug}`);
-  const reason =
-    typeof measurement.reason === "string" && measurement.reason.length > 0
-      ? measurement.reason
-      : `Authoritative col-17 verdict: ${measurement.etat}.`;
-  const observed = Number.isInteger(measurement.lots_served) ? measurement.lots_served : null;
-  const addressed = Number.isInteger(measurement.adresse_servie) ? measurement.adresse_servie : null;
-  const roleProvedAbsent = Number.isInteger(measurement.role_sans_adresse) ? measurement.role_sans_adresse : null;
-  return statusCell(status, reason, {
-    observed_lots: observed,
-    completed_lots: addressed,
-    role_proved_absent_lots: roleProvedAbsent,
-    authoritative_etat: measurement.etat,
-    source: "immo-adresse-completion-matrix",
   });
 }
 
@@ -392,8 +326,6 @@ function toCsv(cities) {
 function buildArtifacts() {
   const coverageSource = readJson(MATRIX_SOURCE);
   const immoSource = readJson(IMMO_SOURCE);
-  const adressePath = pickLatestAdresseMatrix();
-  const adresseMatrix = loadAdresseMatrix(adressePath);
   const coverage = coverageSource.value;
   const immo = immoSource.value;
 
@@ -418,7 +350,7 @@ function buildArtifacts() {
       lots_served: lotsServedCell(row),
       surface_m2: fieldCell(row, "surface_m2", "surface_m2"),
       postal_code: fieldCell(row, "code_postal", "code_postal"),
-      civic_address: adresseCell(adresseMatrix.bySlug.get(slug), slug),
+      civic_address: fieldCell(row, "adresse", "civic address"),
       tod_applicability: todApplicability,
       tod_completion: todCompletionCell(todApplicability, row),
     };
@@ -436,7 +368,6 @@ function buildArtifacts() {
     source_files: [
       { path: relative(ROOT, MATRIX_SOURCE), sha256: sha256(coverageSource.text) },
       { path: relative(ROOT, IMMO_SOURCE), sha256: sha256(immoSource.text) },
-      { path: relative(ROOT, adressePath), sha256: sha256(adresseMatrix.text), role: "col17_civic_address_authoritative" },
     ],
     status_legend: {
       complete: "The local evidence confirms completion for the field's stated denominator.",
