@@ -170,6 +170,9 @@ async function main(): Promise<void> {
         zone_nonnull_pct: d.zone_nonnull_pct,
         bbox_diag: entry.bbox_diag_km ?? null,
         registry_attribution_km: entry.nearest_km ?? null,
+        // Discriminant PRIMAIRE anti-homonyme G4 (ruling qa amende: nearest===slug ;
+        // le km n'est qu'un proxy qui faux-positive sur grande muni rurale).
+        nearest_registre_muni: entry.nearest_registre_muni ?? null,
         capture_run_id: run,
       });
     } catch (e) {
