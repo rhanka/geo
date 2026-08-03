@@ -39,7 +39,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const MAX_INPUT_BYTES = 20 * 1024 * 1024;
 const VENDORED_CROSSWALK_PATH = fileURLToPath(new URL("./data/crosswalk-taxonomie.json", import.meta.url));
 
-/** The fixed recall sample from SPEC_QC_ZONING_EVENTS_V2.md. */
+/**
+ * The original fixed recall sample from SPEC_QC_ZONING_EVENTS_V2.md, kept as the
+ * DEFAULT cohort only. The cohort is now a runtime parameter (`--cohort`) so the
+ * gate can be pointed at the full 167 (`priorityRank ≤ 167` of set-167-bprime.tsv,
+ * joined on `graph_city_slug`) without re-editing this module.
+ */
 export const RECALL_SAMPLE_MUNICIPALITIES = [
   "saint-raymond",
   "saint-stanislas",
@@ -49,7 +54,42 @@ export const RECALL_SAMPLE_MUNICIPALITIES = [
   "saint-eustache",
 ] as const;
 
-export type RecallSampleMunicipality = (typeof RECALL_SAMPLE_MUNICIPALITIES)[number];
+/**
+ * A cohort municipality slug. Formerly a closed union over the fixed 6-city
+ * sample; now any served-collection slug, validated against the active cohort at
+ * runtime rather than by the type system.
+ */
+export type RecallSampleMunicipality = string;
+
+/** Parse a cohort file: one slug per line, or a TSV with a `graph_city_slug`
+ * (fallback `slug`) column. Blank lines and `#` comments are ignored. Order is
+ * preserved, duplicates rejected — a silent dedup would hide an upstream defect. */
+export function parseCohortFile(text: string, where: string): string[] {
+  const lines = text.split(/\r?\n/u).map((line) => line.replace(/\r$/u, ""));
+  const nonEmpty = lines.map((line) => line.trim()).filter((line) => line.length > 0 && !line.startsWith("#"));
+  if (nonEmpty.length === 0) throw new Error(`${where}: cohorte vide`);
+  const looksTabular = nonEmpty.some((line) => line.includes("\t"));
+  let slugs: string[];
+  if (looksTabular) {
+    const header = nonEmpty[0]!.split("\t").map((cell) => cell.trim());
+    const slugColumn = header.indexOf("graph_city_slug") !== -1
+      ? header.indexOf("graph_city_slug")
+      : header.indexOf("slug");
+    if (slugColumn === -1) throw new Error(`${where}: colonne graph_city_slug|slug introuvable dans l'en-tête TSV`);
+    slugs = nonEmpty.slice(1).map((line, index) => {
+      const cell = line.split("\t")[slugColumn]?.trim();
+      if (cell === undefined || cell.length === 0) throw new Error(`${where}: slug vide ligne ${index + 2}`);
+      return cell;
+    });
+  } else {
+    slugs = nonEmpty;
+  }
+  for (const slug of slugs) {
+    if (!/^[a-z0-9-]+$/u.test(slug)) throw new Error(`${where}: slug invalide '${slug}' (attendu [a-z0-9-])`);
+  }
+  if (new Set(slugs).size !== slugs.length) throw new Error(`${where}: cohorte contient des slugs dupliqués`);
+  return slugs;
+}
 
 /** Closed event-set partition: no fourth or implicit outcome is permitted. */
 export const RECALL_OUTCOMES = ["matched", "missed", "extra"] as const;
@@ -58,8 +98,10 @@ export type RecallOutcome = (typeof RECALL_OUTCOMES)[number];
 export const RECALL_THRESHOLD = 0.95;
 
 /**
- * The ratified v3.4 sample is deliberately fixed: set-recall never silently
- * improves by dropping an immo DesignationEvent from its denominator.
+ * DEFAULT set-recall denominator for the fixed 6-city sample. On the 167 cohort
+ * the active denominator is the count of immo DesignationEvents in the cohort
+ * (or an explicit `--denominator`), so recall never silently improves by
+ * dropping an immo DesignationEvent from its denominator.
  */
 export const RECALL_SET_DENOMINATOR = 85;
 
@@ -175,7 +217,7 @@ export interface SetRecallMiss {
  * always a contribution to the fixed 85-event sample, even on a city row.
  */
 export interface SetRecallMeasurement {
-  readonly denominator: typeof RECALL_SET_DENOMINATOR;
+  readonly denominator: number;
   readonly matched: number;
   readonly missed: number;
   readonly immo_events: number;
@@ -314,6 +356,18 @@ export interface RunRecallGateOptions {
   readonly outPath: string;
   readonly markdownPath: string;
   readonly generatedAt?: string;
+  /**
+   * Active cohort of municipality slugs. Defaults to the fixed 6-city sample.
+   * Pass the 167 (`graph_city_slug` of `priorityRank ≤ 167`) to de-cable the
+   * gate from its ratified sample.
+   */
+  readonly cohort?: readonly string[];
+  /**
+   * Active set-recall denominator. Defaults to the fixed `RECALL_SET_DENOMINATOR`
+   * (85). On the 167 cohort, pass the count of immo DesignationEvents so recall
+   * is a fraction of the real ground-truth, not the frozen sample.
+   */
+  readonly denominator?: number;
 }
 
 export interface RunRecallGateResult {
@@ -709,7 +763,11 @@ function sortNaturalKeyEvents(events: readonly NaturalKeyEvent[]): NaturalKeyEve
 export function setRecallFor(
   geoEvents: readonly NaturalKeyEvent[],
   immoEvents: readonly NaturalKeyEvent[],
+  denominator: number = RECALL_SET_DENOMINATOR,
 ): SetRecallMeasurement {
+  if (!Number.isInteger(denominator) || denominator <= 0) {
+    throw new Error(`set-recall: dénominateur entier positif requis, reçu ${denominator}`);
+  }
   const groups = new Map<string, SetRecallGroupAccumulator>();
   const add = (event: NaturalKeyEvent): void => {
     const groupKey = setRecallGroupKey(event);
@@ -776,14 +834,14 @@ export function setRecallFor(
   const geoUnmatchable = geoEvents.filter((event) => setRecallGroupKey(event) === null).length;
   const precision = geoEvents.length === 0 ? null : matched / geoEvents.length;
   return {
-    denominator: RECALL_SET_DENOMINATOR,
+    denominator,
     matched,
     missed,
     immo_events: immoEvents.length,
     geo_events: geoEvents.length,
     geo_unmatchable: geoUnmatchable,
     over_split: overSplit,
-    recall: matched / RECALL_SET_DENOMINATOR,
+    recall: matched / denominator,
     recall_state: immoEvents.length === 0 ? "no_immo_ground_truth" : "measured",
     precision,
     precision_state: precision === null ? "no_geo_events" : "measured",
@@ -963,23 +1021,23 @@ interface LoadedGeoDocuments {
   readonly outsideSample: readonly string[];
 }
 
-function sampleSlug(value: unknown): RecallSampleMunicipality | null {
+function sampleSlug(value: unknown, cohort: ReadonlySet<string>): RecallSampleMunicipality | null {
   const slug = canonicalToken(value);
-  return slug !== null && (RECALL_SAMPLE_MUNICIPALITIES as readonly string[]).includes(slug)
-    ? slug as RecallSampleMunicipality
-    : null;
+  return slug !== null && cohort.has(slug) ? slug : null;
 }
 
 function indexGeoDocuments(
   documents: readonly ZoningEventsDocument[],
   source: "local_file" | "s3",
   missingStatus: GeoCollectionStatus,
+  cohort: readonly string[],
 ): LoadedGeoDocuments {
+  const cohortSet = new Set(cohort);
   const bySlug = new Map<RecallSampleMunicipality, ZoningEventsDocument>();
   const statuses = new Map<RecallSampleMunicipality, GeoCollectionStatus>();
   const outsideSample: string[] = [];
   for (const document of documents) {
-    const slug = sampleSlug(document.muni);
+    const slug = sampleSlug(document.muni, cohortSet);
     if (slug === null) {
       outsideSample.push(asNonEmptyString(document.muni) ?? "unknown");
       continue;
@@ -988,17 +1046,18 @@ function indexGeoDocuments(
     bySlug.set(slug, document);
     statuses.set(slug, source === "local_file" ? "geo_local_events_loaded" : "geo_collection_loaded");
   }
-  for (const slug of RECALL_SAMPLE_MUNICIPALITIES) {
+  for (const slug of cohort) {
     if (!statuses.has(slug)) statuses.set(slug, missingStatus);
   }
   return { source, bySlug, statuses, errors: new Map(), outsideSample: outsideSample.sort() };
 }
 
-function loadLocalGeoDocuments(path: string): LoadedGeoDocuments {
+function loadLocalGeoDocuments(path: string, cohort: readonly string[]): LoadedGeoDocuments {
   return indexGeoDocuments(
     parseZoningEventsDocuments(readJson(path), displayPath(rootRelativePath(path))),
     "local_file",
     "geo_collection_not_in_local_input",
+    cohort,
   );
 }
 
@@ -1006,7 +1065,8 @@ function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-async function loadS3GeoDocuments(): Promise<LoadedGeoDocuments> {
+async function loadS3GeoDocuments(cohort: readonly string[]): Promise<LoadedGeoDocuments> {
+  const cohortSet = new Set(cohort);
   const documents: ZoningEventsDocument[] = [];
   const statuses = new Map<RecallSampleMunicipality, GeoCollectionStatus>();
   const errors = new Map<RecallSampleMunicipality, string>();
@@ -1015,13 +1075,13 @@ async function loadS3GeoDocuments(): Promise<LoadedGeoDocuments> {
     store = s3ZoningEventsStore();
   } catch (error) {
     const message = errorText(error);
-    for (const slug of RECALL_SAMPLE_MUNICIPALITIES) {
+    for (const slug of cohort) {
       statuses.set(slug, "geo_read_error");
       errors.set(slug, message);
     }
     return { source: "s3", bySlug: new Map(), statuses, errors, outsideSample: [] };
   }
-  for (const slug of RECALL_SAMPLE_MUNICIPALITIES) {
+  for (const slug of cohort) {
     try {
       let bytes: Buffer | null = null;
       for (const key of zoningEventsKeys(slug)) {
@@ -1035,7 +1095,7 @@ async function loadS3GeoDocuments(): Promise<LoadedGeoDocuments> {
       const parsed = parseZoningEventsDocuments(JSON.parse(bytes.toString("utf8")) as unknown, `S3 qc-zoning-events-${slug}`);
       if (parsed.length !== 1) throw new Error(`S3 qc-zoning-events-${slug}: un document attendu, reçu ${parsed.length}`);
       const document = parsed[0]!;
-      if (sampleSlug(document.muni) !== slug) {
+      if (sampleSlug(document.muni, cohortSet) !== slug) {
         throw new Error(`S3 qc-zoning-events-${slug}: muni '${String(document.muni)}' ne correspond pas à la collection`);
       }
       documents.push(document);
@@ -1045,7 +1105,7 @@ async function loadS3GeoDocuments(): Promise<LoadedGeoDocuments> {
       errors.set(slug, errorText(error));
     }
   }
-  const indexed = indexGeoDocuments(documents, "s3", "geo_collection_absent");
+  const indexed = indexGeoDocuments(documents, "s3", "geo_collection_absent", cohort);
   return { source: "s3", bySlug: indexed.bySlug, statuses, errors, outsideSample: indexed.outsideSample };
 }
 
@@ -1062,7 +1122,10 @@ function populationCount(events: readonly NaturalKeyEvent[], field: "zone_ref" |
   return { populated: populatedCount, null_or_unknown: events.length - populatedCount };
 }
 
-function strictRecallFor(partition: EventSetPartition): StrictRecallMeasurement {
+function strictRecallFor(
+  partition: EventSetPartition,
+  fixedDenominator: number = RECALL_SET_DENOMINATOR,
+): StrictRecallMeasurement {
   const denominator = partition.matched.length + partition.missed.length;
   const recall = denominator === 0 ? null : partition.matched.length / denominator;
   return {
@@ -1073,7 +1136,7 @@ function strictRecallFor(partition: EventSetPartition): StrictRecallMeasurement 
     geo_events: partition.matched.length + partition.extra.length,
     recall,
     recall_state: recall === null ? "no_immo_ground_truth" : "measured",
-    recall_fixed_sample: partition.matched.length / RECALL_SET_DENOMINATOR,
+    recall_fixed_sample: partition.matched.length / fixedDenominator,
   };
 }
 
@@ -1139,22 +1202,30 @@ function writeArtifact(path: string, body: string): void {
 }
 
 export async function runRecallGate(options: RunRecallGateOptions): Promise<RunRecallGateResult> {
+  const cohort = options.cohort ?? [...RECALL_SAMPLE_MUNICIPALITIES];
+  if (cohort.length === 0) throw new Error("cohorte vide: au moins une municipalité requise");
+  if (cohort.some((slug) => !/^[a-z0-9-]+$/u.test(slug))) throw new Error("cohorte: slugs [a-z0-9-] requis");
+  if (new Set(cohort).size !== cohort.length) throw new Error("cohorte: slugs dupliqués");
+  const cohortSet = new Set(cohort);
+  const denominator = options.denominator ?? RECALL_SET_DENOMINATOR;
   const output = outputPath(options.outPath, ".json");
   const markdownOutput = outputPath(options.markdownPath, ".md");
   const immoPath = readOnlyInputPath(options.immoEventsPath);
   const immoInput = classifyImmoEvents(readImmoEventsInput(options.immoEventsPath));
   const immoEvents = immoInput.designationEvents;
-  const geo = options.geoEventsPath === undefined ? await loadS3GeoDocuments() : loadLocalGeoDocuments(options.geoEventsPath);
+  const geo = options.geoEventsPath === undefined
+    ? await loadS3GeoDocuments(cohort)
+    : loadLocalGeoDocuments(options.geoEventsPath, cohort);
   const cities: CityRecall[] = [];
   const immoEventsOutsideSample: NaturalKeyEvent[] = [];
-  const sampleImmoEvents = immoEvents.filter((event) => sampleSlug(event.natural_key.muni) !== null);
+  const sampleImmoEvents = immoEvents.filter((event) => sampleSlug(event.natural_key.muni, cohortSet) !== null);
   const sampleGeoEvents: NaturalKeyEvent[] = [];
 
   for (const event of immoEvents) {
-    if (sampleSlug(event.natural_key.muni) === null) immoEventsOutsideSample.push(event);
+    if (sampleSlug(event.natural_key.muni, cohortSet) === null) immoEventsOutsideSample.push(event);
   }
 
-  for (const slug of RECALL_SAMPLE_MUNICIPALITIES) {
+  for (const slug of cohort) {
     const document = geo.bySlug.get(slug);
     const geoEvents = document === undefined ? [] : document.events.map(parseGeoEvent);
     const cityImmoEvents = immoEvents.filter((event) => event.natural_key.muni === slug);
@@ -1163,8 +1234,8 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
       .filter((event) => event.natural_key.muni === slug);
     const cityNodeTypeOther = immoInput.nodeTypeOther.filter((event) => event.natural_key.muni === slug);
     const partition = partitionEventSets(geoEvents, cityImmoEvents);
-    const strictRecall = strictRecallFor(partition);
-    const setRecall = setRecallFor(geoEvents, cityImmoEvents);
+    const strictRecall = strictRecallFor(partition, denominator);
+    const setRecall = setRecallFor(geoEvents, cityImmoEvents, denominator);
     sampleGeoEvents.push(...geoEvents);
     cities.push({
       slug,
@@ -1191,8 +1262,8 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     missed: cities.flatMap((city) => city.partition.missed),
     extra: cities.flatMap((city) => city.partition.extra),
   };
-  const aggregateStrictRecall = strictRecallFor(aggregatePartition);
-  const aggregateSetRecall = setRecallFor(sampleGeoEvents, sampleImmoEvents);
+  const aggregateStrictRecall = strictRecallFor(aggregatePartition, denominator);
+  const aggregateSetRecall = setRecallFor(sampleGeoEvents, sampleImmoEvents, denominator);
   const totalGeoEvents = aggregateSetRecall.geo_events;
   const hasGeoReadError = cities.some((city) => city.geo_collection_status === "geo_read_error");
   const states: string[] = [];
@@ -1223,7 +1294,7 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     contract: "qc-zoning-events-recall-gate/v1",
     generated_at: options.generatedAt ?? new Date().toISOString(),
     read_only_aggregation: true,
-    sample_municipalities: RECALL_SAMPLE_MUNICIPALITIES,
+    sample_municipalities: cohort,
     natural_key_definition: {
       tuple: "(muni, source_url_norm, date_iso) exact + crosswalk(type)",
       source_url_normalization: "trim; lowercase host; remove trailing pathname slash; remove utm_*, fbclid, gclid, mc_cid, mc_eid, _ga, _gl, ref, source, download, cache, timestamp, ts; sort retained query pairs",
@@ -1313,9 +1384,20 @@ async function main(): Promise<void> {
   const immoEventsPath = argumentValue("--immo-events");
   if (!immoEventsPath) throw new Error("--immo-events <path> est requis");
   const geoEventsPath = argumentValue("--geo-events");
+  const cohortPath = argumentValue("--cohort");
+  const cohort = cohortPath === undefined
+    ? undefined
+    : parseCohortFile(readFileSync(readOnlyInputPath(cohortPath), "utf8"), displayPath(readOnlyInputPath(cohortPath)));
+  const denominatorRaw = argumentValue("--denominator");
+  const denominator = denominatorRaw === undefined ? undefined : Number.parseInt(denominatorRaw, 10);
+  if (denominatorRaw !== undefined && (denominator === undefined || Number.isNaN(denominator))) {
+    throw new Error(`--denominator entier requis, reçu '${denominatorRaw}'`);
+  }
   const stamp = timestampForFilename(new Date());
   const result = await runRecallGate({
     ...(geoEventsPath === undefined ? {} : { geoEventsPath }),
+    ...(cohort === undefined ? {} : { cohort }),
+    ...(denominator === undefined ? {} : { denominator }),
     immoEventsPath,
     outPath: argumentValue("--out") ?? `work/coverage/zoning-events-recall-gate-${stamp}.json`,
     markdownPath: argumentValue("--markdown") ?? `work/coverage/zoning-events-recall-gate-${stamp}.md`,
