@@ -19,9 +19,14 @@
 //     + sha256). Une URL de PAGE (pas /query…f=geojson) = FAIL.
 //  G3 ANTI-INVENTION STRUCTUREL (gate lane zones) : zone_distinct≥3, zone_maxlen≤24,
 //     bbox_diag≤35, champ zone (No_zone/Num_zone) peuplé (zone_nonnull_pct>0).
-//  G4 IDENTITÉ / NON-CONTAMINATION : attribution spatiale au registre < 1.1 km ET
-//     slug présent. Mémoire ⛔ homonyme/contamination : une couche du bon nom mais
-//     de la MAUVAISE muni doit tomber ici.
+//  G4 IDENTITÉ / NON-CONTAMINATION : discriminant PRIMAIRE = `nearest_registre_muni
+//     === slug` (la couche est attribuée au registre de la BONNE muni). Le
+//     `registry_attribution_km` n'est qu'un PROXY spatial : < 1.1 km auto-propre,
+//     mais ≥ 1.1 km sur une grande muni rurale est un simple offset centroïde↔point-
+//     registre, PAS une contamination — d'où l'identité comme juge, le km en flag.
+//     Mémoire ⛔ homonyme/contamination : une couche du bon nom mais de la MAUVAISE
+//     muni doit tomber ici. Anti-invention : si `nearest_registre_muni` est ABSENT
+//     et km ≥ 1.1, l'identité est INVÉRIFIABLE ⇒ INDET (jamais PASS sur la parole).
 //
 // lot-zone mismatch < 5 % : porte de VÉRIFICATION AVAL (post-dépôt, après fold lane
 // lot) — PAS un bloqueur de dépôt (on ne peut pas plier avant de déposer la zone).
@@ -40,6 +45,7 @@
 //   (le manifeste de capture cluster EST la preuve — cf. principe fondateur.)
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,8 +69,9 @@ const BANC = {
   // preuve v2 par construction
   sha256_hex_len: 64,
   feature_url_re: /[?&]f=(geo)?json\b/i, // endpoint FEATURE, pas page HTML
-  // identité / non-contamination
-  registry_attribution_max_km: 1.1,
+  // identité / non-contamination : le proxy km tight ; l'identité (nearest==slug)
+  // est le juge quand elle est fournie.
+  registry_attribution_km_tight: 1.1,
 };
 
 function readJson(rel) {
@@ -88,7 +95,9 @@ function loadLotZoneMismatch() {
 // ---- logique PURE du banc : métriques -> verdict (testable sans fichiers) ---
 function attestFromMetrics(m, meta = {}) {
   const gate = (val, ok) => (val === null || val === undefined ? 'INDET' : ok ? 'PASS' : 'FAIL');
-  const isHex = (s, n) => typeof s === 'string' && new RegExp(`^[0-9a-f]{${n}}$`, 'i').test(s);
+  // sha256 peut être préfixé « sha256: » (convention du repo) — on strippe avant test.
+  const stripSha = (s) => (typeof s === 'string' ? s.replace(/^sha256:/i, '') : s);
+  const isHex = (s, n) => { const v = stripSha(s); return typeof v === 'string' && new RegExp(`^[0-9a-f]{${n}}$`, 'i').test(v); };
   const isIso = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(s);
 
   const gates = {
@@ -110,9 +119,17 @@ function attestFromMetrics(m, meta = {}) {
                 typeof m.bbox_diag === 'number' && m.bbox_diag <= BANC.bbox_diag_max &&
                 (m.zone_nonnull_pct == null || m.zone_nonnull_pct > 0)),
     // G4 identité / non-contamination.
-    non_contamination: gate(m.registry_attribution_km,
-      typeof m.registry_attribution_km === 'number' &&
-      m.registry_attribution_km < BANC.registry_attribution_max_km && !!meta.slug),
+    //  - `nearest_registre_muni` fourni : c'est le JUGE. nearest===slug ⇒ PASS
+    //    (km informatif) ; nearest≠slug ⇒ FAIL (contamination avérée).
+    //  - champ absent : repli sur le PROXY km. km<1.1 ⇒ PASS (contamination
+    //    implausible) ; km≥1.1 ⇒ identité invérifiable ⇒ INDET (jamais PASS sur
+    //    parole) ; km absent ⇒ INDET.
+    non_contamination: (() => {
+      if (!meta.slug) return 'FAIL';
+      if (m.nearest_registre_muni != null) return m.nearest_registre_muni === meta.slug ? 'PASS' : 'FAIL';
+      if (typeof m.registry_attribution_km !== 'number') return 'INDET';
+      return m.registry_attribution_km < BANC.registry_attribution_km_tight ? 'PASS' : 'INDET';
+    })(),
   };
 
   const failed = Object.entries(gates).filter(([, v]) => v === 'FAIL').map(([k]) => k);
@@ -144,6 +161,7 @@ function attest(entry, lotZone) {
     zone_nonnull_pct: entry.zone_nonnull_pct ?? null,
     bbox_diag: entry.bbox_diag ?? null,
     registry_attribution_km: entry.registry_attribution_km ?? null,
+    nearest_registre_muni: entry.nearest_registre_muni ?? null,
   };
   return attestFromMetrics(m, {
     slug: entry.slug,
@@ -177,9 +195,17 @@ export { attestFromMetrics, BANC };
 function main() {
   const batchPath = opt('batch');
   if (!batchPath) { console.error('requis: --batch=<capture-manifest.json>'); process.exit(2); }
+  const batchAbs = path.isAbsolute(batchPath) ? batchPath : path.resolve(ROOT, batchPath);
   const batch = readJson(batchPath);
   if (!batch) { console.error(`manifest illisible: ${batchPath}`); process.exit(2); }
   const report = run(batch);
+  // provenance du manifeste attesté (reproductibilité : preuve de CE qu'on a attesté).
+  const manifestRef = opt('manifest-ref') ?? path.relative(ROOT, batchAbs);
+  report.source_manifest = {
+    ref: manifestRef,
+    contract: batch.contract ?? null,
+    sha256: 'sha256:' + crypto.createHash('sha256').update(fs.readFileSync(batchAbs)).digest('hex'),
+  };
   const out = opt('out');
   if (out) {
     fs.writeFileSync(path.resolve(ROOT, out), JSON.stringify(report, null, 2) + '\n');
