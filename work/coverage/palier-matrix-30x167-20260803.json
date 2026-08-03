@@ -1,9 +1,9 @@
 {
   "contract": "palier-matrix/v1",
-  "generatedAt": "2026-08-03T02:00:17.935Z",
+  "generatedAt": "2026-08-03T17:30:25.741Z",
   "reportDate": "2026-08-03",
   "previousSnapshotDate": null,
-  "owner_target": "CIBLE MERCREDI = PRÉSENCE 100% sur les 30 (col 10 preuve-v2 = campagne longue séparée).",
+  "owner_target": "CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.",
   "cohort": {
     "name": "set-167-bprime",
     "source": "radar 800ee90:docs/spec/reports/set-167-bprime.tsv (i-cond, canonique priorityRank<=167 figé 2026-08-02) — slug/priorityRank VERBATIM, graph_matched dérivé de match!=UNMATCHED",
@@ -109,7 +109,7 @@
       "label": "Provenance — PREUVE v2 exacte",
       "gap": null,
       "v2_track": true,
-      "gate_excluded": true,
+      "gate_excluded": false,
       "presence_strict": false,
       "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi."
     },
@@ -207,27 +207,27 @@
       "n": 20,
       "key": "v34_qc_zoning_events",
       "label": "Recall+précision v3.4 qc-zoning-events",
-      "gap": "GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)",
+      "gap": "PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)",
       "v2_track": false,
-      "gate_excluded": true,
+      "gate_excluded": false,
       "presence_strict": false,
       "ceiling": "plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour."
     }
   ],
   "anti_invention": "Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu'à source per-city.",
   "presence_gate": {
-    "axis": "présence (donnée là) ; cols 10 (preuve-v2, piste longue) & 20 (v3.4, non mesurable) EXCLUES de la gate",
-    "gate_columns": 18,
+    "axis": "présence (donnée là) sur les 20 KPI — AUCUNE colonne exclue (cols 10 preuve-v2 & 20 v3.4 INCLUSES, décision owner révisée)",
+    "gate_columns": 20,
     "cities_scored": 162,
-    "cities_full_presence": 9,
+    "cities_full_presence": 0,
     "cities_full_completion": 0,
-    "mean_presence_pct": 67.9
+    "mean_presence_pct": 64.1
   },
   "subset_palier1_rank_le_30": {
     "cities_scored": 27,
-    "cities_full_presence": 4,
+    "cities_full_presence": 0,
     "cities_full_completion": 0,
-    "mean_presence_pct": 94
+    "mean_presence_pct": 89.4
   },
   "rows": [
     {
@@ -293,11 +293,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -363,11 +363,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 88.9
+        "denom_applicable": 20,
+        "pct": 85
       }
     },
     {
@@ -433,11 +433,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -503,11 +503,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -573,11 +573,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -643,11 +643,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -713,11 +713,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 88.9
+        "denom_applicable": 20,
+        "pct": 85
       }
     },
     {
@@ -778,9 +778,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -847,11 +847,11 @@
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -917,11 +917,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -987,11 +987,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 100
+        "denom_applicable": 20,
+        "pct": 95
       }
     },
     {
@@ -1057,11 +1057,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -1127,11 +1127,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -1197,11 +1197,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -1267,11 +1267,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 100
+        "denom_applicable": 20,
+        "pct": 95
       }
     },
     {
@@ -1332,9 +1332,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -1401,11 +1401,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -1471,11 +1471,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -1541,11 +1541,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -1611,11 +1611,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 100
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -1681,11 +1681,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 100
+        "denom_applicable": 20,
+        "pct": 95
       }
     },
     {
@@ -1751,11 +1751,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -1821,11 +1821,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -1891,11 +1891,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -1961,11 +1961,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -2031,11 +2031,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -2101,11 +2101,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -2171,11 +2171,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -2241,11 +2241,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 88.9
+        "denom_applicable": 20,
+        "pct": 85
       }
     },
     {
@@ -2306,9 +2306,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -2376,10 +2376,10 @@
       "completion_complete_over_20": 6,
       "presence": {
         "present": 12,
-        "absent": 6,
+        "absent": 8,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 66.7
+        "denom_applicable": 20,
+        "pct": 60
       }
     },
     {
@@ -2446,9 +2446,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -2516,10 +2516,10 @@
       "completion_complete_over_20": 6,
       "presence": {
         "present": 12,
-        "absent": 6,
+        "absent": 8,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 66.7
+        "denom_applicable": 20,
+        "pct": 60
       }
     },
     {
@@ -2586,10 +2586,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -2656,10 +2656,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -2726,10 +2726,10 @@
       "completion_complete_over_20": 3,
       "presence": {
         "present": 6,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 33.3
+        "denom_applicable": 20,
+        "pct": 30
       }
     },
     {
@@ -2795,11 +2795,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -2865,11 +2865,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -2935,11 +2935,11 @@
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 17,
-        "absent": 1,
+        "present": 18,
+        "absent": 2,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 94.4
+        "denom_applicable": 20,
+        "pct": 90
       }
     },
     {
@@ -3006,10 +3006,10 @@
       "completion_complete_over_20": 3,
       "presence": {
         "present": 5,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 27.8
+        "denom_applicable": 20,
+        "pct": 25
       }
     },
     {
@@ -3076,10 +3076,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 27.8
+        "denom_applicable": 20,
+        "pct": 25
       }
     },
     {
@@ -3145,11 +3145,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 100
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -3177,7 +3177,7 @@
         "immo_adresse": "incomplete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "complete"
       },
       "deltas": {
         "zones": "—",
@@ -3205,21 +3205,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured",
+          "geo_events_count": 37,
+          "immo_gt_events": 18,
+          "matched": 12,
+          "recall_pct_si_mesurable": 0.6666666666666666
         }
       },
       "counts": {
-        "complete": 13,
+        "complete": 14,
         "incomplete": 3,
-        "unknown": 2,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 13,
+      "completion_complete_over_20": 14,
       "presence": {
-        "present": 15,
+        "present": 17,
         "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -3285,11 +3292,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -3356,10 +3363,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 27.8
+        "denom_applicable": 20,
+        "pct": 25
       }
     },
     {
@@ -3426,10 +3433,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -3495,11 +3502,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -3566,10 +3573,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -3636,10 +3643,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -3706,10 +3713,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -3776,10 +3783,10 @@
       "completion_complete_over_20": 6,
       "presence": {
         "present": 12,
-        "absent": 6,
+        "absent": 8,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 66.7
+        "denom_applicable": 20,
+        "pct": 60
       }
     },
     {
@@ -3846,10 +3853,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -3916,10 +3923,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -3986,10 +3993,10 @@
       "completion_complete_over_20": 3,
       "presence": {
         "present": 6,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 33.3
+        "denom_applicable": 20,
+        "pct": 30
       }
     },
     {
@@ -4017,7 +4024,7 @@
         "immo_adresse": "incomplete",
         "tod_applicabilite": "N-A",
         "tod_completion": "N-A",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "complete"
       },
       "deltas": {
         "zones": "—",
@@ -4045,21 +4052,28 @@
         "reglement": {
           "declared": "complete",
           "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured",
+          "geo_events_count": 377,
+          "immo_gt_events": 50,
+          "matched": 50,
+          "recall_pct_si_mesurable": 1
         }
       },
       "counts": {
-        "complete": 11,
+        "complete": 12,
         "incomplete": 6,
-        "unknown": 1,
+        "unknown": 0,
         "N-A": 2
       },
-      "completion_complete_over_20": 11,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
+        "present": 17,
         "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -4125,11 +4139,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -4195,11 +4209,11 @@
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 18,
-        "absent": 0,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 100
+        "denom_applicable": 20,
+        "pct": 95
       }
     },
     {
@@ -4266,10 +4280,10 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 2,
-        "absent": 14,
+        "absent": 16,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 12.5
+        "denom_applicable": 18,
+        "pct": 11.1
       }
     },
     {
@@ -4336,10 +4350,10 @@
       "completion_complete_over_20": 5,
       "presence": {
         "present": 11,
-        "absent": 7,
+        "absent": 9,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 61.1
+        "denom_applicable": 20,
+        "pct": 55
       }
     },
     {
@@ -4406,10 +4420,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -4476,10 +4490,10 @@
       "completion_complete_over_20": 6,
       "presence": {
         "present": 12,
-        "absent": 6,
+        "absent": 8,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 66.7
+        "denom_applicable": 20,
+        "pct": 60
       }
     },
     {
@@ -4546,10 +4560,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -4615,11 +4629,11 @@
       },
       "completion_complete_over_20": 14,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 88.9
+        "denom_applicable": 20,
+        "pct": 85
       }
     },
     {
@@ -4686,10 +4700,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -4750,9 +4764,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -4820,10 +4834,10 @@
       "completion_complete_over_20": 3,
       "presence": {
         "present": 6,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 33.3
+        "denom_applicable": 20,
+        "pct": 30
       }
     },
     {
@@ -4889,11 +4903,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -4960,10 +4974,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -5030,10 +5044,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -5100,10 +5114,10 @@
       "completion_complete_over_20": 5,
       "presence": {
         "present": 10,
-        "absent": 6,
+        "absent": 8,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 62.5
+        "denom_applicable": 18,
+        "pct": 55.6
       }
     },
     {
@@ -5170,10 +5184,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -5240,10 +5254,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -5310,10 +5324,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 4,
-        "absent": 14,
+        "absent": 16,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 22.2
+        "denom_applicable": 20,
+        "pct": 20
       }
     },
     {
@@ -5380,10 +5394,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -5449,11 +5463,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -5520,10 +5534,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -5590,10 +5604,10 @@
       "completion_complete_over_20": 4,
       "presence": {
         "present": 9,
-        "absent": 7,
+        "absent": 9,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 56.3
+        "denom_applicable": 18,
+        "pct": 50
       }
     },
     {
@@ -5660,10 +5674,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -5730,10 +5744,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -5799,11 +5813,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -5870,10 +5884,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -5940,10 +5954,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6010,10 +6024,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -6080,10 +6094,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6149,11 +6163,11 @@
       },
       "completion_complete_over_20": 6,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -6220,10 +6234,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6290,10 +6304,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6360,10 +6374,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6430,10 +6444,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -6499,11 +6513,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -6569,11 +6583,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -6639,11 +6653,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -6709,11 +6723,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -6779,11 +6793,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -6849,11 +6863,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 3,
+        "present": 16,
+        "absent": 4,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 83.3
+        "denom_applicable": 20,
+        "pct": 80
       }
     },
     {
@@ -6919,11 +6933,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -6989,11 +7003,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -7059,11 +7073,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -7129,11 +7143,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -7199,11 +7213,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -7269,11 +7283,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 2,
+        "present": 17,
+        "absent": 3,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
-        "pct": 88.9
+        "denom_applicable": 20,
+        "pct": 85
       }
     },
     {
@@ -7339,11 +7353,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -7409,11 +7423,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -7480,9 +7494,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -7549,11 +7563,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -7619,11 +7633,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -7689,11 +7703,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -7759,11 +7773,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -7829,11 +7843,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -7900,10 +7914,10 @@
       "completion_complete_over_20": 3,
       "presence": {
         "present": 7,
-        "absent": 9,
+        "absent": 11,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 43.8
+        "denom_applicable": 18,
+        "pct": 38.9
       }
     },
     {
@@ -7969,11 +7983,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -8040,10 +8054,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -8109,11 +8123,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -8179,11 +8193,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -8249,11 +8263,11 @@
       },
       "completion_complete_over_20": 7,
       "presence": {
-        "present": 10,
-        "absent": 6,
+        "present": 11,
+        "absent": 7,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 62.5
+        "denom_applicable": 18,
+        "pct": 61.1
       }
     },
     {
@@ -8319,11 +8333,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -8390,9 +8404,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -8460,10 +8474,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -8530,10 +8544,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -8600,9 +8614,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -8669,11 +8683,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -8739,11 +8753,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -8809,11 +8823,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -8879,11 +8893,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -8949,11 +8963,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -9019,11 +9033,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -9089,11 +9103,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -9160,10 +9174,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -9229,11 +9243,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -9300,10 +9314,10 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -9369,11 +9383,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -9440,9 +9454,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -9509,11 +9523,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -9579,11 +9593,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -9649,11 +9663,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -9720,9 +9734,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -9789,11 +9803,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -9859,11 +9873,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -9929,11 +9943,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -10000,9 +10014,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -10069,11 +10083,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -10139,11 +10153,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -10209,11 +10223,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 100
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -10279,11 +10293,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -10349,11 +10363,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -10420,10 +10434,10 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 3,
-        "absent": 13,
+        "absent": 15,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 18.8
+        "denom_applicable": 18,
+        "pct": 16.7
       }
     },
     {
@@ -10489,11 +10503,11 @@
       },
       "completion_complete_over_20": 6,
       "presence": {
-        "present": 10,
-        "absent": 6,
+        "present": 11,
+        "absent": 7,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 62.5
+        "denom_applicable": 18,
+        "pct": 61.1
       }
     },
     {
@@ -10560,10 +10574,10 @@
       "completion_complete_over_20": 2,
       "presence": {
         "present": 5,
-        "absent": 11,
+        "absent": 13,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 31.3
+        "denom_applicable": 18,
+        "pct": 27.8
       }
     },
     {
@@ -10629,11 +10643,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -10700,10 +10714,10 @@
       "completion_complete_over_20": 1,
       "presence": {
         "present": 4,
-        "absent": 12,
+        "absent": 14,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 25
+        "denom_applicable": 18,
+        "pct": 22.2
       }
     },
     {
@@ -10769,11 +10783,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -10839,11 +10853,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -10909,11 +10923,11 @@
       },
       "completion_complete_over_20": 13,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 100
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     },
     {
@@ -10979,11 +10993,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -11049,11 +11063,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -11119,11 +11133,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -11189,11 +11203,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -11254,9 +11268,9 @@
       "completion_complete_over_20": 0,
       "presence": {
         "present": 0,
-        "absent": 18,
+        "absent": 20,
         "na_excluded": 0,
-        "denom_excl_v2": 18,
+        "denom_applicable": 20,
         "pct": 0
       }
     },
@@ -11323,11 +11337,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -11393,11 +11407,11 @@
       },
       "completion_complete_over_20": 8,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -11463,11 +11477,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -11533,11 +11547,11 @@
       },
       "completion_complete_over_20": 9,
       "presence": {
-        "present": 13,
-        "absent": 3,
+        "present": 14,
+        "absent": 4,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 81.3
+        "denom_applicable": 18,
+        "pct": 77.8
       }
     },
     {
@@ -11603,11 +11617,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 14,
-        "absent": 2,
+        "present": 15,
+        "absent": 3,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 87.5
+        "denom_applicable": 18,
+        "pct": 83.3
       }
     },
     {
@@ -11673,11 +11687,11 @@
       },
       "completion_complete_over_20": 10,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -11743,11 +11757,11 @@
       },
       "completion_complete_over_20": 11,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -11813,11 +11827,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 15,
-        "absent": 1,
+        "present": 16,
+        "absent": 2,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 93.8
+        "denom_applicable": 18,
+        "pct": 88.9
       }
     },
     {
@@ -11883,11 +11897,11 @@
       },
       "completion_complete_over_20": 12,
       "presence": {
-        "present": 16,
-        "absent": 0,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
-        "denom_excl_v2": 16,
-        "pct": 100
+        "denom_applicable": 18,
+        "pct": 94.4
       }
     }
   ],
@@ -12276,21 +12290,21 @@
       "n": 20,
       "key": "v34_qc_zoning_events",
       "label": "Recall+précision v3.4 qc-zoning-events",
-      "gap": "GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)",
+      "gap": "PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)",
       "v2_track": false,
       "ceiling": "plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour.",
-      "acquirable_incomplete": 162,
+      "acquirable_incomplete": 160,
       "counts": {
-        "complete": 0,
+        "complete": 2,
         "incomplete": 0,
-        "unknown": 162,
+        "unknown": 160,
         "N-A": 0
       },
-      "complete_over_matched": "0/162",
-      "cities_100pct": 0,
-      "pct_complete": 0,
-      "present": 0,
-      "pct_present": 0
+      "complete_over_matched": "2/162",
+      "cities_100pct": 2,
+      "pct_complete": 1.2,
+      "present": 2,
+      "pct_present": 1.2
     }
   ],
   "sources": [
@@ -12358,6 +12372,12 @@
       "role": "immo-field-completion",
       "path": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
       "sha256": "sha256:fb0f8b2df00507b167982accfbeef24e34c70f78fc1fbbf810e833c9fceb9f5c",
+      "present": true
+    },
+    {
+      "role": "col20-recall-v34",
+      "path": "work/coverage/zoning-events-col20-sample6-measured-20260803.json",
+      "sha256": "sha256:1e02b712484362ad2c545178291573288ec31fe3d7821954bbaab6209faf5580",
       "present": true
     }
   ],
