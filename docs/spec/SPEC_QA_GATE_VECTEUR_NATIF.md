@@ -34,9 +34,18 @@ Chaque porte : `PASS | FAIL | INDET`. Métrique absente ⇒ `INDET` ⇒ verdict
 | # | Porte | Critère | Raison |
 |---|---|---|---|
 | G1 | `capture_reelle` | `http_status=200` ET `feature_count≥1` ET `geometry_type ∈ {Polygon,MultiPolygon}` | Anti « ArcGIS = page HTML » : un 200 ne prouve rien ; un endpoint qui ne rend pas de features parsées est une page/erreur masquée. |
-| G2 | `integrite_preuve_v2` | `source_url` matche `…/query?…f=geojson\|f=json` ET `retrieved_at` ISO ET `sha256` (64 hex) | Preuve v2 par construction : URL FEATURE (pas page), horodatage, octets. Une URL de page (MapServer racine, HTML) échoue. |
+| G2 | `integrite_preuve_v2` | `source_url` matche `…/query?…f=geojson\|f=json` ET `retrieved_at` ISO ET `sha256` (64 hex, préfixe `sha256:` accepté) | Preuve v2 par construction : URL FEATURE (pas page), horodatage, octets. Une URL de page (MapServer racine, HTML) échoue. |
 | G3 | `anti_invention` | `zone_distinct≥3` ET `zone_maxlen≤24` ET `bbox_diag≤35` ET champ zone peuplé (`zone_nonnull_pct>0`) | Gate structurel lane zones (cité `3b7120c3`/`f4bf07f0`) : rejette code-zone dégénéré / géométrie aberrante / champ vide. |
-| G4 | `non_contamination` | `registry_attribution_km < 1.1` ET `slug` présent | Identité : la couche est attribuée au bon registre municipal (< 1.1 km). Rejette la couche du bon nom mais de la mauvaise muni (homonyme). |
+| G4 | `non_contamination` | **Identité PRIMAIRE** : `nearest_registre_muni === slug` (km informatif). **Repli** si champ absent : `registry_attribution_km < 1.1` ⇒ PASS ; `≥ 1.1` ⇒ INDET (identité invérifiable) | Le km est un PROXY : `< 1.1` rend la contamination implausible, mais `≥ 1.1` sur une grande muni rurale est un simple offset centroïde↔registre, PAS une contamination. Le juge est `nearest_registre_muni`. `nearest ≠ slug` ⇒ FAIL (contamination avérée). |
+
+**Amendement G4 (ruling `5c4ddf4f`→ce commit).** Le seuil absolu 1.1 km faux-positive
+sur grande muni rurale (offset centroïde↔point-registre). Cas saint-pie : km 1.72
+mais couche servie depuis le dossier de service propre `54008_SaintPie` — offset
+géométrique, pas homonyme. Le discriminant correct et VÉRIFIABLE est
+`nearest_registre_muni === slug`, qui doit figurer **dans le manifeste attesté**
+(pas seulement affirmé). Sans ce champ et avec km ≥ 1.1, l'identité est
+invérifiable ⇒ `INDET` (jamais PASS sur parole). Fournir le champ ⇒ PASS si
+`nearest === slug`.
 
 **Amendement clé sur la proposition (c) « lot-zone mismatch<5% ».** Cette porte
 est une **vérification AVAL (post-dépôt)**, pas un bloqueur de dépôt : on ne peut
@@ -69,7 +78,8 @@ déjà une passe, sans en faire dépendre le verdict de dépôt.
   "zone_maxlen": 8,
   "zone_nonnull_pct": 99.3,
   "bbox_diag": 12.4,
-  "registry_attribution_km": 0.3
+  "registry_attribution_km": 0.3,
+  "nearest_registre_muni": "…"
 } ] }
 ```
 
