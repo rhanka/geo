@@ -133,7 +133,10 @@ function bucketIndex(cityBuckets) {
 // invention : aucune ville ajoutée, aucun statut deviné — seule l'orthographe du statut
 // et le nom des champs de détail sont alignés. Le fichier le plus récent (par
 // generated_at OU $meta.generated_at) l'emporte : le 167-GT supplante l'échantillon 6.
-const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending' };
+// na_proven = N-A PROUVÉ par la lane jointures (PV parsés, 0 DesignationEvent
+// densifiant, attestation OPTIONA_NA_FINAL) → RÉSOLU par preuve d'absence, PAS
+// unknown. gap_acquisition (GT immo absente) reste unknown (immo-gt-pending).
+const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending', na_proven: 'N-A' };
 function normalizeCol20(src) {
   if (!src) return [];
   const list = Array.isArray(src.cities) ? src.cities : Array.isArray(src.rows) ? src.rows : [];
@@ -275,6 +278,7 @@ const COLUMNS = [
       const r = IDX.col20.get(s);
       if (!r) return U;                                  // hors périmètre mesuré → GAP unknown (anti-invention, jamais fabriqué)
       if (r.statut === 'measured') return 'complete';    // recall MESURÉ (GT immo présente) → résolu
+      if (r.statut === 'N-A') return 'N-A';              // na_proven : absence PROUVÉE (0 event densifiant, attestation) → résolu
       if (r.statut === 'measured-geo-empty') return 'incomplete'; // GT existe mais geo n'émet rien
       return U;                                          // immo-gt-pending → GT immo absente → unknown (null jamais inventé)
     }, detail: (s) => {
