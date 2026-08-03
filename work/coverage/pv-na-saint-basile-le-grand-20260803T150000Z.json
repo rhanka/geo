@@ -1,0 +1,35 @@
+{
+  "slug": "saint-basile-le-grand",
+  "verdict": "N-A",
+  "na_reason": "PV_PUBLIES_MAIS_MUR_ROBOTS_SANS_SOURCE_ALTERNATIVE",
+  "na_reason_note": "Les procès-verbaux du conseil EXISTENT et sont publiés, mais uniquement sous un chemin robots-interdit. Aucune source alternative robots-autorisee (hote alternatif, chemin hors /wp-content/uploads/, visionneuse, portail MRC) apres recherche tracee. La capture polie est donc impossible sans contourner robots.txt (interdit, principe fondateur). Ce n'est PAS 'muni sans PV publie' au sens litteral de SPEC_PALIER_RESOLUTION §3 pv ; c'est un mur robots documente, que le cadrage owner du palier accepte comme N-A (murs -> N-A documente).",
+  "evidence": [
+    {
+      "url": "https://www.villesblg.ca/robots.txt",
+      "verbatim": "User-agent: *\nDisallow: /wp-content/uploads/",
+      "absence_observed": "Le robots.txt de l'hote officiel interdit TOUT le chemin /wp-content/uploads/. Or l'integralite des PV du conseil y est publiee (ex. /wp-content/uploads/2025/.../20250407_projet_pv-public.pdf, /wp-content/uploads/2024/.../2024-10-07-PV-public.pdf). Une capture polie ne peut donc fetcher aucun PV."
+    },
+    {
+      "url": "https://www.ville.saint-basile-le-grand.qc.ca/robots.txt",
+      "verbatim": "301 Moved Permanently -> villesblg.ca",
+      "absence_observed": "L'ancien hote .qc.ca redirige (301) vers villesblg.ca (meme site, meme Disallow). Ce n'est pas une source alternative autorisee."
+    },
+    {
+      "url": "https://www.mrcvr.ca/",
+      "verbatim": "MRC de La Vallee-du-Richelieu",
+      "absence_observed": "La MRC heberge les PV de son propre conseil regional, pas les PV municipaux de Saint-Basile-le-Grand. Pas de gisement PV municipal ici."
+    },
+    {
+      "url": "https://www.villesblg.ca/ville/democratie/seances-du-conseil/",
+      "verbatim": "Seances du conseil",
+      "absence_observed": "Tous les liens PV de la page pointent vers /wp-content/uploads/ ; aucun autre chemin, aucune visionneuse/extranet (AptSolutions ou equivalent) n'existe."
+    }
+  ],
+  "reproducible_checks": [
+    "curl -sSI https://www.villesblg.ca/robots.txt  -> User-agent: * / Disallow: /wp-content/uploads/",
+    "curl -sSI https://www.ville.saint-basile-le-grand.qc.ca/robots.txt  -> 301 vers villesblg.ca",
+    "google 'Saint-Basile-le-Grand proces-verbal 2025 filetype:pdf'  -> tous les hits resolvent vers villesblg.ca/wp-content/uploads/",
+    "recherche 'villesblg conseil proces-verbal document viewer extranet'  -> aucune visionneuse/extranet"
+  ],
+  "retrieved_at": "2026-08-03T15:00:00Z"
+}
