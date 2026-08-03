@@ -144,6 +144,17 @@ function immoFieldStatus(slug, field) {
 const qualityRow = (s) => IDX.quality.get(s) || null;
 const GAP_V34 = 'GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)';
 
+// PLAFONDS EXTERNES (contexte d'arbitrage owner) : l'incomplete/unknown de ces
+// colonnes n'est PAS librement acquérable — un mur documentaire ou de recalage
+// le borne. C'est un CONTEXTE annoté, jamais un N-A fabriqué (anti-invention :
+// N-A seulement si PROUVÉ que la donnée n'existe pas — ici on ne peut pas le
+// prouver, donc l'état reste incomplete/unknown, mais on DIT le plafond).
+const CEILINGS = {
+  effet_densifiant: 'plafond DOCUMENTAIRE : l\'effet densifiant n\'est établi que si le document le porte (amendement ne recouvre pas l\'original) — gisement rare ; l\'incomplete/unknown est majoritairement NON acquérable à court terme.',
+  prov_v2: 'plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi.',
+  v34_qc_zoning_events: 'plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour.',
+};
+
 const COLUMNS = [
   { n: 1, key: 'zones', label: 'Zones — complétion', extract: (s) => stateFrom(IDX.zones.get(s), 'state') },
   { n: 2, key: 'coherence_lot_zone', label: 'Zones — cohérence lot-zone', extract: (s) => {
@@ -219,7 +230,7 @@ const presenceOf = (state) => (state === 'unknown' ? 'absent' : state === 'N-A' 
 
 // ---- cohorte & snapshot précédent -----------------------------------------
 function loadCohort() {
-  const p = path.resolve(ROOT, optArg('cohort', 'work/coverage/palier-matrix-cohort-30.json'));
+  const p = path.resolve(ROOT, optArg('cohort', 'work/coverage/palier-matrix-cohort-167.json'));
   const j = JSON.parse(fs.readFileSync(p, 'utf8'));
   if (!Array.isArray(j.cities)) throw new Error('cohorte invalide: cities[] requis');
   return { path: path.relative(ROOT, p), cohort: j.cohort ?? null, source: j.source ?? null, cities: j.cities };
@@ -289,7 +300,10 @@ function build(todayNum) {
     const applicable = counts.complete + counts.incomplete + counts.unknown; // hors N-A
     return {
       n: col.n, key: col.key, label: col.label, gap: col.gap ?? null, v2_track: !!col.v2_track,
+      ceiling: CEILINGS[col.key] ?? null,
+      acquirable_incomplete: counts.incomplete + counts.unknown, // incomplete + unknown = potentiellement acquérable (hors plafond annoté)
       counts, complete_over_matched: `${counts.complete}/${matched.length}`,
+      cities_100pct: counts.complete, // villes à 100% sur CE KPI = complete
       pct_complete: matched.length ? Math.round((counts.complete / matched.length) * 1000) / 10 : null,
       present, pct_present: applicable ? Math.round((present / applicable) * 1000) / 10 : null,
     };
@@ -305,14 +319,22 @@ function build(todayNum) {
     if (tot !== matched.length) errs.push(`KPI ${k.key}: partition villes ${tot} ≠ ${matched.length}`);
   }
   // Rollup présence global (gate mercredi) sur les villes matchées.
-  const presMatched = matched.map((r) => r.presence.pct).filter((p) => p != null);
+  const summarize = (set) => {
+    const presPct = set.map((r) => r.presence.pct).filter((p) => p != null);
+    return {
+      cities_scored: set.length,
+      cities_full_presence: set.filter((r) => r.presence.absent === 0).length,
+      cities_full_completion: set.filter((r) => r.counts.incomplete === 0 && r.counts.unknown === 0).length,
+      mean_presence_pct: presPct.length ? Math.round((presPct.reduce((a, b) => a + b, 0) / presPct.length) * 10) / 10 : null,
+    };
+  };
   const presenceGate = {
     axis: 'présence (donnée là) ; cols 10 (preuve-v2, piste longue) & 20 (v3.4, non mesurable) EXCLUES de la gate',
     gate_columns: COLUMNS.filter((c) => !c.gate_excluded).length,
-    cities_full_presence: matched.filter((r) => r.presence.absent === 0).length,
-    cities_scored: matched.length,
-    mean_pct: presMatched.length ? Math.round((presMatched.reduce((a, b) => a + b, 0) / presMatched.length) * 10) / 10 : null,
+    ...summarize(matched),
   };
+  // Vue 30 (palier 1) comme SOUS-ENSEMBLE du 167 : priorityRank<=30, matchées.
+  const subset30 = summarize(matched.filter((r) => (r.priorityRank ?? 999) <= 30));
 
   return {
     contract: 'palier-matrix/v1',
@@ -321,9 +343,10 @@ function build(todayNum) {
     previousSnapshotDate: prev ? prev.date : null,
     owner_target: 'CIBLE MERCREDI = PRÉSENCE 100% sur les 30 (col 10 preuve-v2 = campagne longue séparée).',
     cohort: { name: cohort.cohort, source: cohort.source, path: cohort.path, cities: rows.length, graph_matched: matched.length, pending_graph_node: pendingRows.length },
-    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded })),
+    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, ceiling: CEILINGS[c.key] ?? null })),
     anti_invention: 'Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu\'à source per-city.',
     presence_gate: presenceGate,
+    subset_palier1_rank_le_30: subset30,
     rows, per_kpi: perKpi, sources: RESOLVED,
     validation: { closed: errs.length === 0, errors: errs },
     warnings: WARNINGS.slice(),
@@ -339,7 +362,10 @@ function renderMarkdown(p) {
   L.push(`Date : ${p.reportDate}${p.previousSnapshotDate ? ` · Précédent : ${p.previousSnapshotDate}` : ' · aucun snapshot antérieur (Δ = «—»)'} · ${p.cohort.cities} villes (${p.cohort.graph_matched} matchées + ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE) · 20 KPI.`);
   L.push(`Cible owner : ${p.owner_target}`);
   L.push('');
-  L.push(`**Gate présence (mercredi)** : ${p.presence_gate.cities_full_presence}/${p.presence_gate.cities_scored} villes à présence complète (0 KPI absent, col 10 exclue) · présence moyenne ${p.presence_gate.mean_pct ?? '—'}%.`);
+  const g = p.presence_gate, s30 = p.subset_palier1_rank_le_30;
+  L.push(`**Gate PRÉSENCE (cible mercredi)** — 167 : ${g.cities_full_presence}/${g.cities_scored} villes à présence complète (0 KPI absent, cols 10 & 20 exclues) · présence moyenne ${g.mean_presence_pct ?? '—'}%. Palier 1 (rang≤30) : ${s30.cities_full_presence}/${s30.cities_scored} · moyenne ${s30.mean_presence_pct ?? '—'}%.`);
+  L.push('');
+  L.push(`Villes à 100% COMPLÉTION (tous KPI applicables complete) — 167 : ${g.cities_full_completion}/${g.cities_scored} · palier 1 : ${s30.cities_full_completion}/${s30.cities_scored}.`);
   L.push('');
   L.push('Légende cellule : ● complete · ◐ incomplete · · unknown · — N-A. Col 5 = déclarée+preuve ; cols 10 (preuve-v2) & 20 (v3.4) HORS gate présence.');
   L.push('');
@@ -354,11 +380,13 @@ function renderMarkdown(p) {
   L.push('');
   L.push('## Colonnes (KPI) — sur les villes matchées graphe');
   L.push('');
-  L.push('| # | KPI | présence | complétion | gap / note |');
-  L.push('|---:|---|---:|---:|---|');
+  L.push('Par KPI (villes matchées) : complete / incomplete / unknown / N-A. `incomplete+unknown` = potentiellement ACQUÉRABLE ; ⛰ = plafond externe annoté (contexte owner, PAS un N-A fabriqué).');
+  L.push('');
+  L.push('| # | KPI | ✓compl | ◐inc | ·unk | —N-A | %compl | à 100% | plafond / note |');
+  L.push('|---:|---|---:|---:|---:|---:|---:|---:|---|');
   for (const k of p.per_kpi) {
-    const note = k.gap ? '⚠ ' + k.gap : k.v2_track ? 'preuve-v2 — piste longue, hors gate présence' : '';
-    L.push(`| ${k.n} | ${k.label} | ${k.pct_present == null ? '—' : k.pct_present + '%'} | ${k.complete_over_matched} (${k.pct_complete == null ? '—' : k.pct_complete + '%'}) | ${note} |`);
+    const note = k.ceiling ? '⛰ ' + k.ceiling : k.gap ? '⚠ ' + k.gap : '';
+    L.push(`| ${k.n} | ${k.label} | ${k.counts.complete} | ${k.counts.incomplete} | ${k.counts.unknown} | ${k.counts['N-A']} | ${k.pct_complete == null ? '—' : k.pct_complete + '%'} | ${k.cities_100pct} | ${note} |`);
   }
   L.push('');
   L.push(`> Dénominateurs sur les ${p.cohort.graph_matched} villes matchées ; les ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE sont exclues (lignes visibles, toutes unknown). Présence = état ≠ unknown, N-A hors dénominateur, col 10 exclue de la gate.`);
