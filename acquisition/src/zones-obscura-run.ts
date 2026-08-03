@@ -1675,7 +1675,10 @@ async function main(): Promise<void> {
     deposited,
     results,
   };
-  const out = args.outFile ?? resolve(HERE, "../../work/delegation-mass/zones-obscura-report.json");
+  // --out est résolu contre la RACINE du dépôt (pas le CWD) : un run lancé depuis
+  // acquisition/ écrivait sinon dans acquisition/work/... inexistant → ENOENT, perte
+  // du rapport malgré une capture S3 réussie. resolve ignore la base si --out est absolu.
+  const out = args.outFile ? resolve(HERE, "../..", args.outFile) : resolve(HERE, "../../work/delegation-mass/zones-obscura-report.json");
   writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
   if (captureReports.length > 0) writeFileSync(out.replace(/\.json$/i, ".md"), captureReportMarkdown(captureReports, captureRun.runId));
   console.error(`\n=== STATUS ${JSON.stringify(byStatus)}`);
