@@ -4,15 +4,16 @@ Dépositeur `acquisition/src/zones-vecteur-natif-deposit-run.ts` (option B : oct
 du CAS, vérifiés octet-pour-octet vs sha, `depositCapturedZones`). Manifeste attesté qa
 `63a2bb7f` (7/7 PASS-banc). Preuve v2 = url+retrieved_at+sha256 du manifeste attesté.
 
-## 5 DÉPOSÉS → `zone_source_level=documented`
+## 6 DÉPOSÉS → `zone_source_level=documented`
 
-| slug | features | AVANT level | APRÈS level | clé servie |
-|---|---:|---|---|---|
-| saint-charles-sur-richelieu | 63→64 | orphan | documented | nested |
-| saint-dominique | 62 | legacy-traceable | documented | flat |
-| saint-michel | 62 | (net-new) | documented | flat |
-| saint-patrice-de-sherrington | 45 | (net-new) | documented | flat |
-| saint-pie | 136 | legacy-traceable | documented | flat |
+| slug | features | AVANT level | APRÈS level | clé servie | source |
+|---|---:|---|---|---|---|
+| saint-charles-sur-richelieu | 63→64 | orphan | documented | nested | gonet |
+| saint-dominique | 62 | legacy-traceable | documented | flat | gonet |
+| saint-michel | 62 | (net-new) | documented | flat | gonet |
+| saint-patrice-de-sherrington | 45 | (net-new) | documented | flat | gonet |
+| saint-pie | 136 | legacy-traceable | documented | flat | gonet |
+| contrecoeur | 164 | orphan | documented | nested | arcgis (qa PASS 0dcb5482) |
 
 Chaque dépôt : backup `_replaced/`, gate identité+couverture OK, re-fold enrichment
 (reglement/norms/usage_dominant/geometry-status/effet-densifiant), re-stamp `zone_source_url`
