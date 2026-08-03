@@ -1,0 +1,69 @@
+{
+  "contract": "zones-recalage-result/v1",
+  "stamp": "20260803T000347Z",
+  "lane": "zones",
+  "wp": "wp2",
+  "scope": {
+    "city": "saint-damase-les-maskoutains",
+    "slug": "saint-damase-les-maskoutains"
+  },
+  "status": "obstacle",
+  "obstacle": "PAS_DE_CARTE",
+  "obstacle_exact": "Le PDF capture est un document de texte réglementaire (extraits des règlements de zonage, chapitres 16Z et 17Z), pas un plan cartographique géoréférençable de Saint-Damase-les-Maskoutains. Aucun T1/T2/T3 n'est admissible sans carte et sans GCP indépendants réels.",
+  "capture": {
+    "run_id": "zones-20260802T234500Z-0-bb641b10-d921-47e4-8f8e-719d596a798f",
+    "manifest_key": "capture/_runs/zones-20260802T234500Z-0-bb641b10-d921-47e4-8f8e-719d596a798f/manifest.jsonl",
+    "manifest_line": 1,
+    "url": "https://www.st-damase.qc.ca/wp-content/uploads/2021/09/zonage.pdf",
+    "retrieved_at": "2026-08-02T23:43:59.444Z",
+    "sha256": "sha256:13e1d63741a75ab2201df99e52b2b720a845b75b3f32bc1f1f7f43202879810f",
+    "http_status": 200,
+    "bytes": 93719,
+    "cas_key": "raw/zones-recalage-plan-pdf/cas/13e1d63741a75ab2201df99e52b2b720a845b75b3f32bc1f1f7f43202879810f"
+  },
+  "document_check": {
+    "pages": 9,
+    "page_size_points": [
+      612,
+      816.96
+    ],
+    "page_rot": 0,
+    "title_observed": "Extraits des règlements de zonages chapitre 16Z (Rives et littoral des cours d’eau) et chapitre 17Z (articles 17 à 17.5)",
+    "all_pages_text_bytes": {
+      "1": 3100,
+      "2": 2869,
+      "3": 2921,
+      "4": 708,
+      "5": 4072,
+      "6": 3069,
+      "7": 3159,
+      "8": 2980,
+      "9": 1160
+    },
+    "embedded_raster_images": 0,
+    "visual_pages_rendered": [1, 9],
+    "map_present": false
+  },
+  "pipeline": {
+    "t1_georef": "not_run",
+    "t2_autogcp": "not_run",
+    "t2_raster_register": "not_run",
+    "t3_chamfer_seed": "not_run",
+    "reason_not_run": "PAS_DE_CARTE"
+  },
+  "metrics": {
+    "rms_m": null,
+    "residual_rms_m": null,
+    "holdout_rms_m": null,
+    "inliers": null,
+    "inliers_pct": null,
+    "mean_dist_m": null,
+    "fx": null,
+    "independent_gcps": 0
+  },
+  "serve": {
+    "deposited": false,
+    "putServedZoneGeojson": "not_called",
+    "served_keys_touched": []
+  }
+}
