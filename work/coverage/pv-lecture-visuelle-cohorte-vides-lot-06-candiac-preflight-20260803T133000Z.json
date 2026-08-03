@@ -1,0 +1,66 @@
+{
+  "contract": "pv-lecture-visuelle-non-couvertes-preflight/v1",
+  "generated_at": "2026-08-03T12:48:39.194Z",
+  "read_only": true,
+  "source_targets_file": "work/coverage/pv-non-indexe-cohorte-vides-candiac-20260803T133000Z.json",
+  "slug_filter": [
+    "candiac"
+  ],
+  "outcomes": [
+    "OWNER_NOT_CONFIRMED",
+    "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+    "NON_INDEXED_OTHER"
+  ],
+  "selection": {
+    "candidate_documents": 3,
+    "prior_documents_skipped": 0,
+    "remaining_documents": 3,
+    "requested": 20,
+    "selected": 3
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du document",
+    "mismatch_stop_threshold": 3
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-cohorte-vides-lot-06-candiac-preflight-20260803T133000Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/6be171364ffe7fb852877b3ef146ab2423226fbd120a82558b866a473e00f181.pdf",
+      "slug": "candiac",
+      "outcome": "NON_INDEXED_OTHER",
+      "source": "pv-index",
+      "expected_sha256": "6be171364ffe7fb852877b3ef146ab2423226fbd120a82558b866a473e00f181",
+      "calculated_sha256": "6be171364ffe7fb852877b3ef146ab2423226fbd120a82558b866a473e00f181",
+      "streamed_bytes": 2280544,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-cohorte-vides-lot-06-candiac-preflight-20260803T133000Z/6be171364ffe7fb852877b3ef146ab2423226fbd120a82558b866a473e00f181.pdf",
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2aa8332fc1b90659b81ad366e2f71e5c70d5c04aa13a876808e3529c15077883.pdf",
+      "slug": "candiac",
+      "outcome": "NON_INDEXED_OTHER",
+      "source": "pv-index",
+      "expected_sha256": "2aa8332fc1b90659b81ad366e2f71e5c70d5c04aa13a876808e3529c15077883",
+      "calculated_sha256": "2aa8332fc1b90659b81ad366e2f71e5c70d5c04aa13a876808e3529c15077883",
+      "streamed_bytes": 1345064,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-cohorte-vides-lot-06-candiac-preflight-20260803T133000Z/2aa8332fc1b90659b81ad366e2f71e5c70d5c04aa13a876808e3529c15077883.pdf",
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1e36d9df3361e6193977a20d271422a6875eca6fcdf396e39cb0ca978bf1a4a2.pdf",
+      "slug": "candiac",
+      "outcome": "NON_INDEXED_OTHER",
+      "source": "pv-index",
+      "expected_sha256": "1e36d9df3361e6193977a20d271422a6875eca6fcdf396e39cb0ca978bf1a4a2",
+      "calculated_sha256": "1e36d9df3361e6193977a20d271422a6875eca6fcdf396e39cb0ca978bf1a4a2",
+      "streamed_bytes": 1384117,
+      "integrity_outcome": "SHA_PASSED",
+      "local_path": "/home/antoinefa/src/geo/.lanes/pv/work/graphify/pv-lecture-visuelle-cohorte-vides-lot-06-candiac-preflight-20260803T133000Z/1e36d9df3361e6193977a20d271422a6875eca6fcdf396e39cb0ca978bf1a4a2.pdf",
+      "error": null
+    }
+  ]
+}
