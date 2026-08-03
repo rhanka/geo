@@ -31,13 +31,26 @@ dernière matrice full, date affichée, **jamais une valeur fabriquée**.
 
 ## Lignes = cohorte de slugs (paramétrable)
 
-- Défaut : `work/coverage/palier-matrix-cohort-30.json` (SET-30 sélection A =
-  `priorityRank<=30` du `set-167-bprime.tsv` FIGÉ ; extensible au 167 via
-  `--cohort=<liste>.json`).
-- **27 matchées graphe** + **3 PENDING-GRAPH-NODE** (`brossard`, `ile-dorval`,
-  `kirkland`) : lignes visibles, **toutes cellules `unknown` + drapeau**, EXCLUES
-  de tous les dénominateurs (rollups KPI et gate). Ajoutées dès qu'i-cond cadre
-  les nœuds.
+- Défaut : `work/coverage/palier-matrix-cohort-167.json` (**SET-167 B′ complet**),
+  dérivé du `set-167-bprime.tsv` FIGÉ (i-cond) par `scripts/build-palier-cohort-167.mjs`
+  (slug/priorityRank VERBATIM ; `graph_matched` = `match!=UNMATCHED`). La **vue 30**
+  (palier 1) = `priorityRank<=30`, exposée en sous-ensemble (`subset_palier1_rank_le_30`).
+  Cohorte 30 seule : `--cohort=work/coverage/palier-matrix-cohort-30.json`.
+- **PENDING-GRAPH-NODE** (`match=UNMATCHED`, aucun nœud graphe — 5 sur 167, dont
+  `brossard`/`ile-dorval`/`kirkland` dans le top-30) : lignes visibles, **toutes
+  cellules `unknown` + drapeau**, EXCLUES de tous les dénominateurs (rollups KPI et
+  gate). Ajoutées dès qu'i-cond cadre les nœuds.
+- Élargissement : 30 → **167** → 1106 (même générateur, autre `--cohort`).
+
+## Plafonds externes (arbitrage owner) — ⛰
+
+Certaines colonnes sont bornées par un mur EXTERNE, pas par un défaut d'acquisition ;
+leur `incomplete`/`unknown` n'est PAS librement acquérable. C'est un **contexte annoté**
+(`per_kpi[].ceiling`), **jamais un N-A fabriqué** (anti-invention : N-A seulement si
+PROUVÉ que la donnée n'existe pas). Colonnes plafonnées : **7 effet-densifiant**
+(plafond documentaire), **10 preuve-v2** (~48 % URL mortes, mur de recalage), **20
+recall-v3.4** (maturité WP5, non per-ville). `incomplete+unknown` des AUTRES colonnes
+= gisement ACQUÉRABLE. Seul un N-A **prouvé** (p.ex. TOD hors des 39) est classé N-A.
 
 ## Colonnes = 20 KPI
 
