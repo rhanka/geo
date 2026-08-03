@@ -33,17 +33,30 @@ for (const r of root.rows as Array<Record<string, unknown>>) {
   if (typeof r.city_slug === "string" && typeof r.quality_status === "string") bySlug.set(r.city_slug, r.quality_status);
 }
 
-const SERVED = new Set(["v2", "acceptable", "candidate"]);
+// KPI 1 = geometrie SERVIE (orphan = servi SANS preuve, donc PRESENT en geometrie).
+const SERVED_GEOM = new Set(["v2", "acceptable", "candidate", "orphan"]);
+// KPI 11 = provenance/url presente (proof non-null) : orphan exclu (proof:null).
+const PROVENANCE = new Set(["v2", "acceptable", "candidate"]);
 const rows = COHORT30.map((slug) => {
   const q = bySlug.get(slug) ?? null;
-  return { slug, quality_status: q, served: q !== null && SERVED.has(q), v2: q === "v2", absent_from_matrix: q === null };
+  return {
+    slug,
+    quality_status: q,
+    served_geometry: q !== null && SERVED_GEOM.has(q),
+    provenance_present: q !== null && PROVENANCE.has(q),
+    v2: q === "v2",
+    orphan_no_proof: q === "orphan",
+    absent_from_matrix: q === null,
+  };
 });
 
 const counts = {
   total: rows.length,
-  served: rows.filter((r) => r.served).length,
+  served_geometry: rows.filter((r) => r.served_geometry).length,
+  provenance_present: rows.filter((r) => r.provenance_present).length,
   v2: rows.filter((r) => r.v2).length,
-  not_served: rows.filter((r) => !r.served).length,
+  orphan_no_proof: rows.filter((r) => r.orphan_no_proof).length,
+  not_served: rows.filter((r) => !r.served_geometry).length,
   absent_from_matrix: rows.filter((r) => r.absent_from_matrix).length,
 };
 
@@ -58,7 +71,8 @@ const outPath = opt("out");
 const mdPath = opt("markdown");
 if (outPath) writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);
 if (mdPath) {
-  const gaps = rows.filter((r) => !r.served).map((r) => `${r.slug} (${r.quality_status ?? "absent-matrice"})`).join(", ") || "aucun";
-  writeFileSync(mdPath, `# Presence zones cohorte-30 (matrice 608c23d2)\n\nServies ${counts.served}/30 ; v2 ${counts.v2}/30 ; non-servies ${counts.not_served} ; absentes-matrice ${counts.absent_from_matrix}.\nGaps presence : ${gaps}.\n`);
+  const presenceGaps = rows.filter((r) => !r.served_geometry).map((r) => `${r.slug} (${r.quality_status ?? "absent-matrice"})`).join(", ") || "aucun";
+  const provGaps = rows.filter((r) => r.served_geometry && !r.provenance_present).map((r) => `${r.slug} (${r.quality_status})`).join(", ") || "aucun";
+  writeFileSync(mdPath, `# Cohorte-30 zones (matrice 608c23d2)\n\nKPI1 geometrie SERVIE ${counts.served_geometry}/30 ; KPI11 provenance presente ${counts.provenance_present}/30 ; v2 ${counts.v2}/30.\nGaps PRESENCE (KPI1, non-servi) : ${presenceGaps}.\nGaps PROVENANCE (KPI11, servi mais orphan/no-proof) : ${provGaps}.\n`);
 }
 process.stdout.write(`${JSON.stringify(counts)}\n`);
