@@ -1,0 +1,101 @@
+{
+  "contract": "zones-gonet-capture-report/v1",
+  "generatedAt": "2026-08-03T12:29:27.267Z",
+  "capture_run_id": "zones-20260803T122745Z-25-845baa6c-e46d-42a4-95cb-cffe6ac66eb0",
+  "deposit": false,
+  "verdict_counts": {
+    "PASS_CAPTURE": 0,
+    "REJECT": 1,
+    "NO_VECTOR": 1
+  },
+  "capture_report": [
+    {
+      "slug": "saint-edouard",
+      "source_url_reelle": null,
+      "retrieved_at": null,
+      "sha256_octets": null,
+      "n_features": 0,
+      "codes_distinct": 0,
+      "lettered_pct": 0,
+      "integer_pure_pct": 100,
+      "bbox_diag_km": null,
+      "nearest_registre_muni": null,
+      "nearest_km": null,
+      "verdict": "NO_VECTOR"
+    },
+    {
+      "slug": "saint-jude",
+      "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54110_SaintJude/MapServer/152/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+      "retrieved_at": "2026-08-03T12:29:26.534Z",
+      "sha256_octets": "dcf66e10548bf62deaee90b2feee3d96b753b26164bbc9e3a36531ea242ff297",
+      "n_features": 43,
+      "codes_distinct": 43,
+      "lettered_pct": 30.23255813953488,
+      "integer_pure_pct": 69.76744186046511,
+      "bbox_diag_km": 17.888862183385037,
+      "nearest_registre_muni": "saint-jude",
+      "nearest_km": 0.6371391349783031,
+      "verdict": "REJECT_LETTERED_LT50_PCT"
+    }
+  ],
+  "byStatus": {
+    "no-zonage-layer": 2
+  },
+  "deposited": [],
+  "results": [
+    {
+      "slug": "saint-edouard",
+      "site": "https://www.saintedouard.ca",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=68045&pl=1"
+      ],
+      "deposited": false,
+      "status": "no-zonage-layer",
+      "detail": "gonet MapServer (148 couches) sans couche 'Zonage municipal'",
+      "captureReport": {
+        "slug": "saint-edouard",
+        "source_url_reelle": null,
+        "retrieved_at": null,
+        "sha256_octets": null,
+        "n_features": 0,
+        "codes_distinct": 0,
+        "lettered_pct": 0,
+        "integer_pure_pct": 100,
+        "bbox_diag_km": null,
+        "nearest_registre_muni": null,
+        "nearest_km": null,
+        "verdict": "NO_VECTOR"
+      }
+    },
+    {
+      "slug": "saint-jude",
+      "site": "https://www.saint-jude.ca",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=54110&pl=1"
+      ],
+      "deposited": false,
+      "status": "no-zonage-layer",
+      "detail": "gonet couche Zonage champ 'Num_zone': <50% codes lettrés+numérotés — affectation/décoy suspecté (codeLike=30%, sample=[\"512\",\"506\",\"507\",\"504\",\"505\"]) — rejet anti-invention",
+      "captureReport": {
+        "slug": "saint-jude",
+        "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54110_SaintJude/MapServer/152/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:29:26.534Z",
+        "sha256_octets": "dcf66e10548bf62deaee90b2feee3d96b753b26164bbc9e3a36531ea242ff297",
+        "n_features": 43,
+        "codes_distinct": 43,
+        "lettered_pct": 30.23255813953488,
+        "integer_pure_pct": 69.76744186046511,
+        "bbox_diag_km": 17.888862183385037,
+        "nearest_registre_muni": "saint-jude",
+        "nearest_km": 0.6371391349783031,
+        "verdict": "REJECT_LETTERED_LT50_PCT"
+      }
+    }
+  ]
+}
