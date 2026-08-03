@@ -143,3 +143,31 @@ Sample of 5-8 cities where immo has rich DesignationEvents; geo serves qc-zoning
 compare event-set recall by natural key; target ≥95%, geo NAMES the misses. immo does NOT
 unplug until ≥95%. Proposed sample: saint-raymond (verifies HC→Compton fix) + saint-stanislas
 + sutton + coaticook + saint-mathieu-de-beloeil + saint-eustache (large PV-corps volume).
+
+### v3.4 scoring criterion — SET-RECALL and precision together
+The ratified headline is **SET-RECALL**, while the former strict unique-pair score remains
+visible in the same gate output for comparison. Its denominator is fixed at **85** immo
+`DesignationEvent`s: no event is removed from the denominator when its identity or taxonomy
+is not matchable.
+
+For each matchable multiset group
+`g = (muni, source_url_norm, date_iso, crosswalked_type)`, where the first three components
+are exact and `source_url_norm` uses the gate's existing normalization, compute:
+
+- `matched[g] = min(immo_count[g], geo_count[g])`, therefore `matched[g] ≤ immo_count[g]`;
+- `SET-RECALL = Σ_g matched[g] / 85`;
+- `precision = Σ_g matched[g] / total_geo_events`;
+- `over_split[g] = geo_count[g] − matched[g]`.
+
+`over_split` is evidence for precision only and never improves recall. The only relaxed
+component is type: immo `kind` → canonical category → neutral geo type uses the frozen
+vendorized `acquisition/src/data/crosswalk-taxonomie.json`. An immo category with no mapped
+neutral type (including `piia`, `modification_reglementation` canonicalized to `autre`) and
+geo type `autre` create no group; immo events then remain `missed`. This establishes the
+frozen current ceiling of 81/85, not an inferred match.
+
+Reference implementation: `setRecallFor` is
+`acquisition/src/zoning-events-recall-gate.ts:709`; the unchanged URL normalization is
+`normalizeSourceUrl` in `acquisition/src/zoning-events-recall-gate.ts:491`. The output records
+SET-RECALL, strict recall, precision, group-level `over_split`, and missed-immo witnesses
+together; a recall-only promotion is not permitted.

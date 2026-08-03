@@ -10,6 +10,7 @@ import {
   parseImmoDesignationEvents,
   partitionEventSets,
   runRecallGate,
+  setRecallFor,
   type NaturalKeyEvent,
 } from "./zoning-events-recall-gate.js";
 
@@ -143,6 +144,61 @@ describe("partitionEventSets", () => {
   });
 });
 
+describe("setRecallFor", () => {
+  it("should score duplicate exact doc-and-type events as a multiset while retaining strict recall separately", () => {
+    const geo = Array.from({ length: 5 }, () => event("geo", "https://coaticook.ca/docs/shared.pdf", null));
+    const immo = Array.from({ length: 3 }, () => event("immo", "https://coaticook.ca/docs/shared.pdf", null));
+
+    const setRecall = setRecallFor(geo, immo);
+    expect(setRecall).toMatchObject({
+      denominator: 85,
+      matched: 3,
+      missed: 0,
+      immo_events: 3,
+      geo_events: 5,
+      over_split: 2,
+      recall: 3 / 85,
+      precision: 3 / 5,
+    });
+    expect(setRecall.groups).toEqual([{
+      key: {
+        muni: "coaticook",
+        source_url_norm: "https://coaticook.ca/docs/shared.pdf",
+        date_iso: "2026-02-10",
+        crosswalked_type: "ppcmoi",
+      },
+      immo_count: 3,
+      geo_count: 5,
+      matched: 3,
+      over_split: 2,
+    }]);
+    expect(partitionEventSets(geo, immo).matched).toHaveLength(0);
+  });
+
+  it("should leave an unmapped piia immo event missed instead of creating an autre group", () => {
+    const immo = parseImmoDesignationEvents([{
+      city_slug: "coaticook",
+      kind: "piia",
+      date: "2026-02-10",
+      source_url: "https://coaticook.ca/docs/piia.pdf",
+    }]);
+    const result = setRecallFor([
+      event("geo", "https://coaticook.ca/docs/piia.pdf", null, "autre"),
+    ], immo);
+
+    expect(result).toMatchObject({
+      matched: 0,
+      missed: 1,
+      over_split: 0,
+      geo_unmatchable: 1,
+      recall: 0,
+      precision: 0,
+      groups: [],
+    });
+    expect(result.missed_immo[0]?.unmatched_reason).toBe("immo_kind_hors_map");
+  });
+});
+
 describe("runRecallGate", () => {
   it("should write the local-fixture closed partition without S3 and fail its recall gate honestly", async () => {
     const outputDirectory = mkdtempSync(join(tmpdir(), "zoning-events-recall-gate-"));
@@ -163,6 +219,17 @@ describe("runRecallGate", () => {
         recall: 0.5,
         geo_read_error_count: 0,
       });
+      expect(result.report.scoring.headline).toBe("set_recall");
+      expect(result.report.aggregate.set_recall).toMatchObject({
+        denominator: 85,
+        matched: 1,
+        missed: 1,
+        geo_events: 2,
+        over_split: 1,
+        recall: 1 / 85,
+        precision: 0.5,
+      });
+      expect(result.report.aggregate.strict_recall.recall_fixed_sample).toBe(1 / 85);
       expect(result.report.cities.find((city) => city.slug === "coaticook")?.partition.missed[0]?.immo?.natural_key.muni)
         .toBe("coaticook");
       expect(result.report.immo_zone_or_lot_population).toEqual({
