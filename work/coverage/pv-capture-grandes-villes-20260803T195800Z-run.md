@@ -27,10 +27,24 @@ seule, `no_document_bytes_read`) sur les 8 slugs.
 - **Worklist S3 (contrat)** : `s3://sentropic-geo/registry/capture-worklists/pv-20260803T210500Z.json`.
 - `--shards 1 --concurrency 1 --memory-limit-mi 512` (1 ville/pod). CAS attendu
   sous `raw/pv-index/cas/<sha>.<ext>`. Aucun polling local.
-- **Suite** : `pv-capture-octets-classification --lane=pv` → si `INDEXED`
-  (propriétaire imprimé « VILLE DE TERREBONNE » confirmé) câbler le verdict →
-  `pv-couverture-municipale` recompte → commit du delta. Chaque INDEXED committé
-  fait monter col-4.
+- **Classification** (`pv-capture-octets-20260803T210500Z.json`) : run TERMINAL,
+  23 tentatives → **23× `HTTP_403` (« malgré User-Agent navigateur »)**,
+  0 confirmé, 0 octet durable (`storage_key=null`). `terrebonne.ca` bloque le
+  fetch PDF depuis l'egress cluster (WAF/IP datacenter ou protection hotlink sur
+  `/wp-content/uploads/`) — la découverte lisait le HTML en 200, mais l'octet du
+  document est muré. **Terrebonne NE monte PAS** : mur de capture réel, pas une
+  invention de couverture. À retenter via un egress alternatif (`--egress tor:pv`
+  / proxy) ou une source hors-WAF ; sinon capture-bound documenté.
+
+## Soumission cluster 2 — laval + rimouski (seed) — `20260803T211500Z`
+- Seed découverte (`45436fc6`) : **rimouski 74 PV** (`/storage/app/media/…`,
+  robots OK), **laval 6 PV** (comité exécutif, Azure blob ; ≥1 INDEXED suffit
+  pour la couverture-ville). 5 autres grandes villes à re-sourcer (SPA/viewer/DNS).
+- **Job** : `geo-capture-pv-20260803t211500z` (2 shards, concurrency 2, 512Mi ;
+  1 ville/pod). Worklist S3 `pv-20260803T211500Z.json`. Aucun polling.
+- **Suite** : classifier ce run → si `INDEXED` (propriétaire confirmé) câbler →
+  recompter → commit du delta. Hosts hors Cloudflare-WP → moins de risque 403
+  qu'à terrebonne.
 
 ## Résiduels → prochain beat
 - 7 grandes villes à seeder (portails propres) : découvrir l'URL du portail PV
