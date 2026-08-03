@@ -7,10 +7,14 @@ Générateur : `scripts/palier-matrix-report.mjs`. Sorties datées :
 > Comme le portfolio : **corriger le générateur, jamais la sortie**. Ce format
 > est figé ; toute évolution passe par ce SPEC + le générateur + son test.
 
-## Décision owner (20260803)
+## Décision owner (20260803, RÉVISÉE)
 
-- **CIBLE MERCREDI = PRÉSENCE** (donnée là) sur les 30 villes sélection A.
-- La **preuve-v2 exacte (col 10)** est une campagne **LONGUE séparée**, PAS la gate.
+- **Les 20 KPI comptent TOUS** dans la cible : la **preuve-v2 exacte (col 10)** ET
+  le **recall/précision v3.4 (col 20)** sont **DANS la gate** — aucune colonne exclue.
+- **%/ville sur les 20 KPI applicables** (N-A hors dénominateur), plus sur 18.
+- Le **résultat v3.4 (col 20) est VISIBLE** : il compte comme `absent` tant qu'aucune
+  source per-ville (jointures WP5) n'est intégrée (anti-invention — jamais fabriqué).
+- Cible durable = **100%-RÉSOLU** (0 `unknown` : `complete` OU N-A **prouvé**) sur 20.
 - Inscription durable = **matrice committée + track + SPEC**.
 
 ## Gouvernance & ownership
@@ -57,8 +61,11 @@ leur `incomplete`/`unknown` n'est PAS librement acquérable. C'est un **contexte
 (`per_kpi[].ceiling`), **jamais un N-A fabriqué** (anti-invention : N-A seulement si
 PROUVÉ que la donnée n'existe pas). Colonnes plafonnées : **7 effet-densifiant**
 (plafond documentaire), **10 preuve-v2** (~48 % URL mortes, mur de recalage), **20
-recall-v3.4** (maturité WP5, non per-ville). `incomplete+unknown` des AUTRES colonnes
-= gisement ACQUÉRABLE. Seul un N-A **prouvé** (p.ex. TOD hors des 39) est classé N-A.
+recall-v3.4** (maturité WP5, non per-ville). Le plafond est un **contexte annoté**,
+PAS une exclusion de gate : depuis la révision owner, **ces colonnes comptent DANS
+la gate** (leur absence est réelle, juste bornée par un mur externe qu'on DIT).
+`incomplete+unknown` des AUTRES colonnes = gisement ACQUÉRABLE. Seul un N-A
+**prouvé** (p.ex. TOD hors des 39) est classé N-A.
 
 ## Colonnes = 20 KPI
 
@@ -73,12 +80,12 @@ recall-v3.4** (maturité WP5, non per-ville). `incomplete+unknown` des AUTRES co
 | 7 | Effet densifiant — complétion | `completion-regdens-percity-*` `cities[].effet_densifiant` | état direct |
 | 8 | Provenance — jointure exacte | `zone-provenance-quality-matrix-*` `rows[]` | complete ssi `collection_key` non-null ; sinon unknown |
 | 9 | Provenance — qualité retained | idem `quality_status` | {acceptable,v2}→complete ; {candidate,orphan}→incomplete ; unknown |
-| 10 | Provenance — PREUVE v2 exacte | idem `quality_status` | v2→complete ; {acceptable,candidate,orphan}→incomplete ; unknown. **HORS gate** |
+| 10 | Provenance — PREUVE v2 exacte | idem `quality_status` | v2→complete ; {acceptable,candidate,orphan}→incomplete ; unknown. **DANS la gate** (plafond recalage annoté) |
 | 11 | Provenance — URL source servie | `zone-source-readback-audit-*` `details[].status` | STAMPED→complete ; STAMPED_NULL/UNSTAMPED→incomplete ; read_error/absent→unknown |
 | 12 | Immo — assignation lot-zone | `immo-lot-zone-assignment-matrix-*` `city_buckets` | bucket → état |
 | 13 | Immo — normes pliées | `immo-folded-normes-city-matrix-*` `city_buckets` | bucket → état (`not_applicable`→N-A) |
 | 14–19 | Immo champs / TOD | `immo-field-completion-matrix.json` `cities[].<champ>.status` | état direct (`lots_served`, `surface_m2`, `postal_code`, `civic_address`, `tod_applicability`, `tod_completion`) |
-| 20 | Recall+précision v3.4 qc-zoning-events | — (aucune source per-ville) | **GAP → unknown** ; **HORS gate** jusqu'aux jointures WP5 |
+| 20 | Recall+précision v3.4 qc-zoning-events | `zoning-events-col20-*-<YYYYMMDD>.json` `rows[]` (artefact jointures WP5, capitalisé octet-pour-octet depuis `lane/jointures@a5c0cf41`) | `statut=measured`→complete ; `measured-geo-empty`→incomplete ; `immo-gt-pending`→unknown ; hors périmètre mesuré→unknown (GAP). `details` : statut, geo_events_count, immo_gt_events, matched, recall_pct. **DANS la gate** ; VISIBLE. Périmètre limité aux villes à GT immo (167 bloqué sur 2 handoffs immo) |
 
 Sélection des sources datées : la **plus récente** (par champ horodaté interne
 pour capture-kpi/effet, par nom sinon) — le nom/champ EST le contrat de découverte.
@@ -87,11 +94,12 @@ pour capture-kpi/effet, par nom sinon) — le nom/champ EST le contrat de décou
 
 1. **Complétion** (état fin) : `%/KPI` = complete / villes matchées ; `compl` par
    ville = complete /20.
-2. **Présence** (gate mercredi) : `présence(cellule)` = `present` si état ≠
-   `unknown` (∧ ≠ N-A), `absent` si `unknown`, N-A hors dénominateur. **Cols 10
-   (preuve-v2) et 20 (v3.4) EXCLUES** de la gate (pistes longues / non mesurables
-   per-ville). `%présence/ville` = present / (present+absent) sur les 18 colonnes
-   de gate. `presence_gate.cities_full_presence` = villes à 0 absent.
+2. **Présence** (gate) : `présence(cellule)` = `present` si état ≠ `unknown`
+   (∧ ≠ N-A), `absent` si `unknown`, N-A hors dénominateur. **Les 20 KPI comptent —
+   AUCUNE colonne exclue** (cols 10 preuve-v2 & 20 v3.4 INCLUSES, décision owner
+   révisée). `%présence/ville` = present / (present+absent) sur les 20 colonnes
+   applicables (`presence.denom_applicable`). `presence_gate.cities_full_presence`
+   = villes à 0 absent sur les 20.
 
 ## Précédent / Δ — PAR CELLULE
 

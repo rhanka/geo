@@ -4,10 +4,12 @@
 // sélection A = priorityRank<=30 du set-167-bprime ; extensible au 167).
 // Colonnes = 20 KPI. Chaque cellule = complete | incomplete | unknown | N-A.
 //
-// Décision owner (20260803) : la CIBLE MERCREDI est la PRÉSENCE (donnée là) sur
-// les 30 ; la preuve-v2 exacte (col 10) est une campagne LONGUE séparée, PAS la
-// gate. Ce rapport porte donc DEUX vues : complétion (état fin) ET présence
-// (donnée présente = état ≠ unknown), col 10 exclue de la gate présence.
+// Décision owner (20260803, RÉVISÉE) : les 20 KPI comptent TOUS dans la cible —
+// la preuve-v2 exacte (col 10) ET le recall/précision v3.4 (col 20) sont DANS la
+// gate, plus aucune colonne exclue. %/ville calculé sur les 20 KPI applicables
+// (N-A hors dénominateur). Le résultat v3.4 (col 20) est VISIBLE et compte comme
+// absent tant qu'aucune source per-ville n'est intégrée (anti-invention). Ce
+// rapport porte DEUX vues : complétion (état fin) ET présence (donnée là).
 //
 // C'est un PIVOT par-ville des mêmes matrices de complétion committées que le
 // portfolio agrège ; il n'invente aucune donnée. Anti-invention ABSOLU :
@@ -90,6 +92,11 @@ const SRC = {
   immoLotZone: loadJson('immo-lot-zone', pickLatestByPrefix(COV, /^immo-lot-zone-assignment-matrix-\d{8}\.json$/)),
   immoFolded: loadJson('immo-folded-normes', pickLatestByPrefix(COV, /^immo-folded-normes-city-matrix-\d{8}\.json$/)),
   immoField: loadJson('immo-field-completion', path.join(ROOT, 'work', 'immo-field-completion-matrices', 'immo-field-completion-matrix.json')),
+  // col 20 = recall directionnel v3.4 immo→geo, artefact par-ville produit par la
+  // lane jointures (geo-jointures-167). Capitalisé octet-pour-octet dans lane/qa
+  // (ref lane/jointures@a5c0cf41) pour rejouabilité sur checkout propre. Partition
+  // fermée : measured | measured-geo-empty | immo-gt-pending. Plus récent par ts interne.
+  col20: loadJson('col20-recall-v34', pickLatestByField(COV, /^zoning-events-col20-.*-\d{8}\.json$/, 'generated_at'), { optional: true }),
 };
 
 // ---- index par-ville -------------------------------------------------------
@@ -127,6 +134,7 @@ const IDX = {
   immoLotZone: bucketIndex(SRC.immoLotZone?.city_buckets),
   immoFolded: bucketIndex(SRC.immoFolded?.city_buckets),
   immoField: indexBy(SRC.immoField?.cities, 'slug'),
+  col20: indexBy(SRC.col20?.rows, 'slug'),
 };
 
 // ---- extracteurs par KPI (état pour UN slug) -------------------------------
@@ -138,7 +146,7 @@ function immoFieldStatus(slug, field) {
   return normState(row[field].status) ?? U;
 }
 const qualityRow = (s) => IDX.quality.get(s) || null;
-const GAP_V34 = 'GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)';
+const GAP_V34 = 'PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)';
 
 // PLAFONDS EXTERNES (contexte d'arbitrage owner) : l'incomplete/unknown de ces
 // colonnes n'est PAS librement acquérable — un mur documentaire ou de recalage
@@ -147,8 +155,8 @@ const GAP_V34 = 'GAP: aucune source recall/précision v3.4 qc-zoning-events (joi
 // prouver, donc l'état reste incomplete/unknown, mais on DIT le plafond).
 const CEILINGS = {
   effet_densifiant: 'plafond DOCUMENTAIRE : l\'effet densifiant n\'est établi que si le document le porte (amendement ne recouvre pas l\'original) — gisement rare ; l\'incomplete/unknown est majoritairement NON acquérable à court terme.',
-  prov_v2: 'plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi.',
-  v34_qc_zoning_events: 'plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour.',
+  prov_v2: 'plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE (DANS la gate depuis la révision owner) ; le vecteur natif GOnet/ArcGIS débloque une partie de ce plafond.',
+  v34_qc_zoning_events: 'plafond MATURITÉ : recall v3.4 (WP5) MESURABLE seulement là où la GT immo existe — quelques villes à ce jour ; 167 bloqué sur 2 handoffs immo (liste + export 161). DANS la gate ; per-ville dès handoff.',
 };
 
 const COLUMNS = [
@@ -197,7 +205,7 @@ const COLUMNS = [
       if (r.quality_status === 'candidate' || r.quality_status === 'orphan') return 'incomplete';
       return U;
     } },
-  { n: 10, key: 'prov_v2', label: 'Provenance — PREUVE v2 exacte', v2_track: true, gate_excluded: true, extract: (s) => {
+  { n: 10, key: 'prov_v2', label: 'Provenance — PREUVE v2 exacte', v2_track: true, extract: (s) => {
       const r = qualityRow(s);
       if (!r) return U;
       if (r.quality_status === 'v2') return 'complete';
@@ -219,7 +227,17 @@ const COLUMNS = [
   { n: 17, key: 'immo_adresse', label: 'Immo — adresse civique', extract: (s) => immoFieldStatus(s, 'civic_address') },
   { n: 18, key: 'tod_applicabilite', label: 'Immo — applicabilité TOD', extract: (s) => immoFieldStatus(s, 'tod_applicability') },
   { n: 19, key: 'tod_completion', label: 'Immo — complétion TOD', extract: (s) => immoFieldStatus(s, 'tod_completion') },
-  { n: 20, key: 'v34_qc_zoning_events', label: 'Recall+précision v3.4 qc-zoning-events', gap: GAP_V34, gate_excluded: true, extract: () => U },
+  { n: 20, key: 'v34_qc_zoning_events', label: 'Recall+précision v3.4 qc-zoning-events', gap: GAP_V34, extract: (s) => {
+      const r = IDX.col20.get(s);
+      if (!r) return U;                                  // hors périmètre mesuré → GAP unknown (anti-invention, jamais fabriqué)
+      if (r.statut === 'measured') return 'complete';    // recall MESURÉ (GT immo présente) → résolu
+      if (r.statut === 'measured-geo-empty') return 'incomplete'; // GT existe mais geo n'émet rien
+      return U;                                          // immo-gt-pending → GT immo absente → unknown (null jamais inventé)
+    }, detail: (s) => {
+      const r = IDX.col20.get(s);
+      if (!r) return undefined;
+      return { statut: r.statut, geo_events_count: r.geo_events_count, immo_gt_events: r.immo_gt_events, matched: r.matched, recall_pct_si_mesurable: r.recall_pct_si_mesurable };
+    } },
 ];
 
 // présence = donnée là. Par défaut : état déterminé (complete|incomplete) = present,
@@ -267,7 +285,7 @@ function build(todayNum) {
     for (const col of COLUMNS) {
       const state = pending ? U : col.extract(c.slug);
       cells[col.key] = state;
-      if (!pending && col.detail) details[col.key] = col.detail(c.slug);
+      if (!pending && col.detail) { const d = col.detail(c.slug); if (d !== undefined) details[col.key] = d; }
       // Δ par cellule : diff avec le snapshot daté précédent ; jamais fabriqué.
       if (!prev) deltas[col.key] = '—';
       else {
@@ -277,11 +295,10 @@ function build(todayNum) {
     }
     const counts = { complete: 0, incomplete: 0, unknown: 0, 'N-A': 0 };
     for (const col of COLUMNS) counts[cells[col.key]]++;
-    // Présence (gate mercredi) : cols hors-gate (10 preuve-v2 piste longue, 20
-    // v3.4 non mesurable) EXCLUES ; dénominateur = KPI applicables (non N-A).
+    // Présence (gate) : les 20 KPI comptent (décision owner révisée — aucune
+    // colonne exclue) ; dénominateur = KPI applicables (non N-A) sur les 20.
     let present = 0, absent = 0, na = 0;
     for (const col of COLUMNS) {
-      if (col.gate_excluded) continue;
       const pr = presenceOf(cells[col.key], col.presence_strict);
       if (pr === 'present') present++; else if (pr === 'absent') absent++; else na++;
     }
@@ -291,7 +308,7 @@ function build(todayNum) {
       flag: pending ? 'PENDING-GRAPH-NODE' : null,
       cells, deltas, details: Object.keys(details).length ? details : undefined, counts,
       completion_complete_over_20: counts.complete,
-      presence: { present, absent, na_excluded: na, denom_excl_v2: presDenom, pct: presDenom > 0 ? Math.round((present / presDenom) * 1000) / 10 : null },
+      presence: { present, absent, na_excluded: na, denom_applicable: presDenom, pct: presDenom > 0 ? Math.round((present / presDenom) * 1000) / 10 : null },
     };
   });
 
@@ -333,8 +350,8 @@ function build(todayNum) {
     };
   };
   const presenceGate = {
-    axis: 'présence (donnée là) ; cols 10 (preuve-v2, piste longue) & 20 (v3.4, non mesurable) EXCLUES de la gate',
-    gate_columns: COLUMNS.filter((c) => !c.gate_excluded).length,
+    axis: 'présence (donnée là) sur les 20 KPI — AUCUNE colonne exclue (cols 10 preuve-v2 & 20 v3.4 INCLUSES, décision owner révisée)',
+    gate_columns: COLUMNS.length,
     ...summarize(matched),
   };
   // Vue 30 (palier 1) comme SOUS-ENSEMBLE du 167 : priorityRank<=30, matchées.
@@ -345,7 +362,7 @@ function build(todayNum) {
     generatedAt: new Date().toISOString(),
     reportDate: `${todayNum.slice(0, 4)}-${todayNum.slice(4, 6)}-${todayNum.slice(6, 8)}`,
     previousSnapshotDate: prev ? prev.date : null,
-    owner_target: 'CIBLE MERCREDI = PRÉSENCE 100% sur les 30 (col 10 preuve-v2 = campagne longue séparée).',
+    owner_target: 'CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.',
     cohort: { name: cohort.cohort, source: cohort.source, path: cohort.path, cities: rows.length, graph_matched: matched.length, pending_graph_node: pendingRows.length },
     columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, presence_strict: !!c.presence_strict, ceiling: CEILINGS[c.key] ?? null })),
     anti_invention: 'Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu\'à source per-city.',
@@ -367,18 +384,18 @@ function renderMarkdown(p) {
   L.push(`Cible owner : ${p.owner_target}`);
   L.push('');
   const g = p.presence_gate, s30 = p.subset_palier1_rank_le_30;
-  L.push(`**Gate PRÉSENCE (cible mercredi)** — 167 : ${g.cities_full_presence}/${g.cities_scored} villes à présence complète (0 KPI absent, cols 10 & 20 exclues) · présence moyenne ${g.mean_presence_pct ?? '—'}%. Palier 1 (rang≤30) : ${s30.cities_full_presence}/${s30.cities_scored} · moyenne ${s30.mean_presence_pct ?? '—'}%.`);
+  L.push(`**Gate PRÉSENCE (les 20 KPI)** — 167 : ${g.cities_full_presence}/${g.cities_scored} villes à présence complète (0 KPI absent sur les 20, cols 10 & 20 INCLUSES) · présence moyenne ${g.mean_presence_pct ?? '—'}%. Palier 1 (rang≤30) : ${s30.cities_full_presence}/${s30.cities_scored} · moyenne ${s30.mean_presence_pct ?? '—'}%.`);
   L.push('');
   L.push(`Villes à 100% COMPLÉTION (tous KPI applicables complete) — 167 : ${g.cities_full_completion}/${g.cities_scored} · palier 1 : ${s30.cities_full_completion}/${s30.cities_scored}.`);
   L.push('');
-  L.push('Légende cellule : ● complete · ◐ incomplete · · unknown · — N-A. Col 5 = déclarée+preuve ; cols 10 (preuve-v2) & 20 (v3.4) HORS gate présence.');
+  L.push('Légende cellule : ● complete · ◐ incomplete · · unknown · — N-A. Col 5 = déclarée+preuve ; cols 10 (preuve-v2) & 20 (v3.4) comptent DANS la gate (décision owner révisée) ; %/ville sur les 20 applicables.');
   L.push('');
   L.push('| # | Ville | ' + p.columns.map((c) => c.n + (c.v2_track ? '¹⁰' : '')).join(' | ') + ' | présence | compl |');
   L.push('|---:|---|' + p.columns.map(() => ':-:').join('|') + '|---:|---:|');
   for (const r of p.rows) {
     const tag = r.flag ? ' ⚠' : '';
     const cells = p.columns.map((c) => GLYPH[r.cells[c.key]] ?? '?').join(' | ');
-    const pres = r.presence.pct == null ? '—' : `${r.presence.present}/${r.presence.denom_excl_v2} ${r.presence.pct}%`;
+    const pres = r.presence.pct == null ? '—' : `${r.presence.present}/${r.presence.denom_applicable} ${r.presence.pct}%`;
     L.push(`| ${r.priorityRank ?? ''} | ${r.slug}${tag} | ${cells} | ${pres} | ${r.completion_complete_over_20}/20 |`);
   }
   L.push('');
@@ -393,7 +410,7 @@ function renderMarkdown(p) {
     L.push(`| ${k.n} | ${k.label} | ${k.counts.complete} | ${k.counts.incomplete} | ${k.counts.unknown} | ${k.counts['N-A']} | ${k.pct_complete == null ? '—' : k.pct_complete + '%'} | ${k.cities_100pct} | ${note} |`);
   }
   L.push('');
-  L.push(`> Dénominateurs sur les ${p.cohort.graph_matched} villes matchées ; les ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE sont exclues (lignes visibles, toutes unknown). Présence = état ≠ unknown, N-A hors dénominateur, col 10 exclue de la gate.`);
+  L.push(`> Dénominateurs sur les ${p.cohort.graph_matched} villes matchées ; les ${p.cohort.pending_graph_node} PENDING-GRAPH-NODE sont exclues (lignes visibles, toutes unknown). Présence = état ≠ unknown, N-A hors dénominateur ; les 20 KPI comptent (cols 10 & 20 incluses).`);
   L.push('');
   L.push('## Sources (provenance)');
   L.push('');
