@@ -1,0 +1,97 @@
+{
+  "$meta": {
+    "kpi": "20 — recall qc-zoning-events vs immo DesignationEvents",
+    "date": "2026-08-03",
+    "lane": "geo-jointures (WP5)",
+    "nature": "dry-run read-only; PAS de dépôt",
+    "gate_depot": "recall >= 0.95 ET precision 0-faux-split (NON franchi; voir FEASIBILITY-V34)",
+    "denominator_immo_events": 85,
+    "grain_headline": "action (fix over-split)",
+    "grains_disponibles": {
+      "doc_type": "zoning-events-recall-gate-setrecall-20260803T003143Z (recall 79/85=0.929, precision 0.0658, over_split 1042)",
+      "action": "zoning-events-recall-gate-action-grain-20260803 (recall 70/85=0.824, precision 0.155, over_split 374)"
+    },
+    "avertissement": "Le banc immo est CODE EN DUR sur 6 villes; 5 mesurables. Il n'existe AUCUN export immo ni liste pour les 161 autres du palier de 167. Les 161 sont 'unmeasurable_no_immo_ground_truth' = unknown, PAS N-A (N-A exigerait de PROUVER 0 DesignationEvent attendu)."
+  },
+  "cities": [
+    {
+      "slug": "saint-raymond",
+      "statut": "incomplete",
+      "immo_ground_truth": true,
+      "geo_events": 22,
+      "set_matched_action": 5,
+      "precision_action": 0.2273,
+      "over_split_action": 17,
+      "set_matched_doc_type": 8,
+      "precision_doc_type": 0.1778,
+      "over_split_doc_type": 35,
+      "note": "missed dominés par geo_type_absent (derogation immo absente du doc geo) + rezonage identity."
+    },
+    {
+      "slug": "sutton",
+      "statut": "incomplete",
+      "immo_ground_truth": true,
+      "geo_events": 10,
+      "set_matched_action": 1,
+      "precision_action": 0.1000,
+      "over_split_action": 9,
+      "set_matched_doc_type": 1,
+      "precision_doc_type": 0.0556,
+      "over_split_doc_type": 17,
+      "note": "identity_not_aligned: immo date au PV 2026-06-03, geo à la seance 2026-05-27."
+    },
+    {
+      "slug": "coaticook",
+      "statut": "incomplete",
+      "immo_ground_truth": true,
+      "geo_events": 5,
+      "set_matched_action": 2,
+      "precision_action": 0.4000,
+      "over_split_action": 3,
+      "set_matched_doc_type": 6,
+      "precision_doc_type": 0.2400,
+      "over_split_doc_type": 17,
+      "note": "geo_type_absent (derogation) + identity (cptaq)."
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "statut": "incomplete",
+      "immo_ground_truth": true,
+      "geo_events": 37,
+      "set_matched_action": 12,
+      "precision_action": 0.3243,
+      "over_split_action": 21,
+      "set_matched_doc_type": 14,
+      "precision_doc_type": 0.1148,
+      "over_split_doc_type": 86,
+      "note": "piia (3) hors-map; modification_zonage vs changement-de-zonage; derogation_mineure geo_type_absent."
+    },
+    {
+      "slug": "saint-eustache",
+      "statut": "incomplete",
+      "immo_ground_truth": true,
+      "geo_events": 377,
+      "set_matched_action": 50,
+      "precision_action": 0.1326,
+      "over_split_action": 324,
+      "set_matched_doc_type": 50,
+      "precision_doc_type": 0.0505,
+      "over_split_doc_type": 887,
+      "note": "domine l'over-split; ecart d'ontologie geo (cycle reglementaire complet) vs immo (acte-sur-lot)."
+    },
+    {
+      "slug": "saint-stanislas",
+      "statut": "no_immo_ground_truth",
+      "immo_ground_truth": false,
+      "geo_events": 0,
+      "note": "slug ambigu (de-kostka / des-chenaux / maria-chapdelaine); export immo ne fournit rien sous le slug nu; geo zone_set indisponible."
+    }
+  ],
+  "palier_167": {
+    "villes_avec_verite_terrain_immo": 5,
+    "villes_dans_banc": 6,
+    "villes_restantes_sur_167": "inconnu — aucune liste des 167 dans le worktree",
+    "statut_161_autres": "unmeasurable_no_immo_ground_truth (unknown, PAS N-A)",
+    "conclusion": "col 20 = incomplete sur 5, no_immo_ground_truth sur 1, unknown sur le reste. 0-unknown sur 167 hors d'atteinte cote mesure."
+  }
+}
