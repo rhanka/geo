@@ -56,6 +56,12 @@ interface ZonePolygon {
   max_y: number;
 }
 
+interface ZoneIndex {
+  cell_size: number;
+  cells: Map<string, ZonePolygon[]>;
+  global: ZonePolygon[];
+}
+
 interface Example {
   no_lot: string;
   /** All codes containing the centroid; no winner is fabricated on overlaps. */
@@ -97,6 +103,7 @@ interface Args {
   maxSeconds: number;
   examples: number;
   output: string;
+  shortMarkdown: boolean;
 }
 
 /** Un anneau valide = >=3 points [x,y] numeriques. Copie de l'audit existant. */
@@ -224,9 +231,53 @@ function bboxOf(polygon: Poly): Omit<ZonePolygon, "code_zone" | "poly"> {
  * All served polygons are considered. The bbox is only an exact negative
  * prefilter; it never turns an exterior point into an interior one.
  */
-function servedCodesAt(point: [number, number], zones: readonly ZonePolygon[]): string[] {
-  const codes = new Set<string>();
+function cellKey(x: number, y: number): string {
+  return `${x}:${y}`;
+}
+
+/**
+ * Index uniforme exact : chaque polygone est placé dans toutes les cellules
+ * touchées par sa bbox. Une cellule n'écarte donc jamais un polygone qui peut
+ * contenir le point; elle évite seulement les tests PIP impossibles.
+ */
+function zoneIndexOf(zones: readonly ZonePolygon[]): ZoneIndex {
+  const minX = Math.min(...zones.map((zone) => zone.min_x));
+  const minY = Math.min(...zones.map((zone) => zone.min_y));
+  const maxX = Math.max(...zones.map((zone) => zone.max_x));
+  const maxY = Math.max(...zones.map((zone) => zone.max_y));
+  const span = Math.max(maxX - minX, maxY - minY);
+  const cellSize = Math.max(0.002, Math.min(0.05, span / 32));
+  const cells = new Map<string, ZonePolygon[]>();
+  const global: ZonePolygon[] = [];
   for (const zone of zones) {
+    const fromX = Math.floor(zone.min_x / cellSize);
+    const toX = Math.floor(zone.max_x / cellSize);
+    const fromY = Math.floor(zone.min_y / cellSize);
+    const toY = Math.floor(zone.max_y / cellSize);
+    if ((toX - fromX + 1) * (toY - fromY + 1) > 64) {
+      global.push(zone);
+      continue;
+    }
+    for (let x = fromX; x <= toX; x++) for (let y = fromY; y <= toY; y++) {
+      const key = cellKey(x, y);
+      const bucket = cells.get(key) ?? [];
+      bucket.push(zone);
+      cells.set(key, bucket);
+    }
+  }
+  return { cell_size: cellSize, cells, global };
+}
+
+function servedCodesAt(point: [number, number], index: ZoneIndex): string[] {
+  const codes = new Set<string>();
+  const x = Math.floor(point[0] / index.cell_size);
+  const y = Math.floor(point[1] / index.cell_size);
+  const candidates = index.cells.get(cellKey(x, y)) ?? [];
+  for (const zone of candidates) {
+    if (point[0] < zone.min_x || point[0] > zone.max_x || point[1] < zone.min_y || point[1] > zone.max_y) continue;
+    if (inPolygon(point, zone.poly)) codes.add(zone.code_zone);
+  }
+  for (const zone of index.global) {
     if (point[0] < zone.min_x || point[0] > zone.max_x || point[1] < zone.min_y || point[1] > zone.max_y) continue;
     if (inPolygon(point, zone.poly)) codes.add(zone.code_zone);
   }
@@ -261,7 +312,7 @@ function updatePct(city: CityResult): void {
     : null;
 }
 
-function classify(city: CityResult, feature: Feature, zones: readonly ZonePolygon[], exampleLimit: number): void {
+function classify(city: CityResult, feature: Feature, zones: ZoneIndex, exampleLimit: number): void {
   city.unassigned_total++;
   const centroid = lotCentroid(feature.geometry);
   if (!centroid) {
@@ -290,13 +341,31 @@ function parseArgs(argv: readonly string[]): Args {
   let maxSeconds: number | null = null;
   let examples = DEFAULT_EXAMPLES;
   let output: string | null = null;
+  let scaleReport: string | null = null;
+  let shortMarkdown = false;
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index]!;
     if (arg === "--slugs") slugs = String(argv[++index] ?? "").split(",").map((slug) => slug.trim()).filter(Boolean);
+    else if (arg === "--scale-report") scaleReport = String(argv[++index] ?? "");
     else if (arg === "--max-seconds") maxSeconds = Number(argv[++index]);
     else if (arg === "--examples") examples = Number(argv[++index]);
     else if (arg === "--out") output = String(argv[++index] ?? "");
+    else if (arg === "--short-markdown") shortMarkdown = true;
     else throw new Error(`argument inconnu: ${arg}`);
+  }
+  if (scaleReport) {
+    if (slugs.length) throw new Error("--slugs et --scale-report sont exclusifs");
+    const path = resolve(ROOT, scaleReport);
+    const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+    if (!parsed || typeof parsed !== "object") throw new Error(`${path}: rapport scale invalide`);
+    const report = parsed as { coverage?: { still_pending?: unknown }; cities?: unknown };
+    if (report.coverage?.still_pending !== 0 || !Array.isArray(report.cities)) {
+      throw new Error(`${path}: le rapport scale doit être FULL (still_pending=0)`);
+    }
+    slugs = report.cities.map((city) => typeof city === "object" && city !== null && typeof (city as { slug?: unknown }).slug === "string"
+      ? (city as { slug: string }).slug
+      : null).filter((slug): slug is string => slug !== null);
+    if (!slugs.length || new Set(slugs).size !== slugs.length) throw new Error(`${path}: villes scale invalides ou dupliquées`);
   }
   if (!slugs.length) throw new Error("--slugs a,b,c est requis");
   if (!Number.isFinite(maxSeconds) || maxSeconds === null || maxSeconds <= 0) throw new Error("--max-seconds N positif est requis");
@@ -305,6 +374,7 @@ function parseArgs(argv: readonly string[]): Args {
   return {
     slugs: [...new Set(slugs)], maxSeconds, examples,
     output: resolve(ROOT, output || `work/coverage/lot-unassigned-cause-${date}.json`),
+    shortMarkdown,
   };
 }
 
@@ -319,7 +389,53 @@ function writeAtomic(path: string, contents: string): void {
   renameSync(temporary, path);
 }
 
-function renderMarkdown(report: Report): string {
+function priority167Slugs(): Set<string> {
+  const path = resolve(ROOT, "packages/qc-sources/src/geo/municipalities.qc.json");
+  const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+  if (!Array.isArray(parsed)) throw new Error(`${path}: registre municipal invalide`);
+  const slugs = parsed.flatMap((city) => typeof city === "object" && city !== null
+    && typeof (city as { slug?: unknown }).slug === "string"
+    && typeof (city as { priorityRank?: unknown }).priorityRank === "number"
+    && (city as { priorityRank: number }).priorityRank <= 167
+    ? [(city as { slug: string }).slug]
+    : []);
+  if (slugs.length !== 167 || new Set(slugs).size !== 167) throw new Error(`${path}: priorité 167 invalide`);
+  return new Set(slugs);
+}
+
+function summaryRows(report: Report, scope: ReadonlySet<string>): { requested: number; complete: number; unassigned: number; inside: number; outside: number; noGeometry: number } {
+  const requested = report.args.slugs.filter((slug) => scope.has(slug)).length;
+  const complete = report.cities.filter((city) => city.status === "complete" && scope.has(city.slug));
+  return {
+    requested,
+    complete: complete.length,
+    unassigned: complete.reduce((total, city) => total + city.unassigned_total, 0),
+    inside: complete.reduce((total, city) => total + city.inside_served, 0),
+    outside: complete.reduce((total, city) => total + city.outside_all, 0),
+    noGeometry: complete.reduce((total, city) => total + city.no_geometry, 0),
+  };
+}
+
+function renderShortMarkdown(report: Report): string {
+  const province = summaryRows(report, new Set(report.args.slugs));
+  const priority167 = summaryRows(report, priority167Slugs());
+  return [
+    "# Annexe — preuve N-A des coverage gaps lot↔zone",
+    "",
+    "Lecture S3 seule. Un lot sans `code_zone` est **coverage-gap prouvé** seulement si son centroïde shoelace est hors de toute zone servie; `inside_served` reste une jointure à traiter et `no_geometry` n'est jamais crédité.",
+    "",
+    "| Ensemble | Villes complètes / demandées | Lots sans code examinés | Coverage-gap prouvé (hors zones) | Dans zone servie | Sans géométrie |",
+    "| --- | ---: | ---: | ---: | ---: | ---: |",
+    `| Province auditable | ${province.complete} / ${province.requested} | ${province.unassigned} | ${province.outside} | ${province.inside} | ${province.noGeometry} |`,
+    `| Priorité ≤ 167 (registre committé) | ${priority167.complete} / ${priority167.requested} | ${priority167.unassigned} | ${priority167.outside} | ${priority167.inside} | ${priority167.noGeometry} |`,
+    "",
+    "Les comptes ne couvrent que les villes terminées; aucune extrapolation aux villes partielles ou inconnues.",
+    "",
+  ].join("\n");
+}
+
+function renderMarkdown(report: Report, shortMarkdown: boolean): string {
+  if (shortMarkdown) return renderShortMarkdown(report);
   const lines = [
     "# Sonde cause des lots sans code_zone",
     "",
@@ -338,9 +454,9 @@ function renderMarkdown(report: Report): string {
   return `${lines.join("\n")}\n`;
 }
 
-function writeReport(output: string, report: Report): void {
+function writeReport(output: string, report: Report, shortMarkdown: boolean): void {
   writeAtomic(output, `${JSON.stringify(report, null, 2)}\n`);
-  writeAtomic(markdownPath(output), renderMarkdown(report));
+  writeAtomic(markdownPath(output), renderMarkdown(report, shortMarkdown));
 }
 
 function loadResume(output: string, args: Args): Map<string, CityResult> {
@@ -409,13 +525,14 @@ async function measureCity(
     persist(city);
     return city;
   }
+  const zoneIndex = zoneIndexOf(zones);
   const city = resumed ? structuredClone(resumed) : emptyCity(slug, lots, zonage);
   city.lots_total = lotsFc.features.length;
   const start = city.next_lot_index;
   if (start < 0 || start > lotsFc.features.length || city.lots_traites !== start) throw new Error(`${slug}: checkpoint de lot invalide`);
   for (let index = start; index < lotsFc.features.length; index++) {
     const lot = lotsFc.features[index]!;
-    if (!codeZoneOf(lot.properties)) classify(city, lot, zones, args.examples);
+    if (!codeZoneOf(lot.properties)) classify(city, lot, zoneIndex, args.examples);
     city.lots_traites = index + 1;
     city.next_lot_index = index + 1;
     if (city.lots_traites % CHECKPOINT_EVERY_LOTS === 0) {
@@ -448,16 +565,18 @@ async function main(argv: readonly string[]): Promise<void> {
     args: { slugs: args.slugs, max_seconds: args.maxSeconds, examples_per_bucket: args.examples },
     cities: args.slugs.map((slug) => cities.get(slug)).filter((city): city is CityResult => !!city),
   });
-  const persist = (city: CityResult): void => { cities.set(city.slug, city); writeReport(args.output, report()); };
+  const persist = (city: CityResult): void => { cities.set(city.slug, city); writeReport(args.output, report(), args.shortMarkdown); };
   const deadline = Date.now() + args.maxSeconds * 1000;
   const s3 = s3Client();
   for (const slug of args.slugs) {
     if (Date.now() >= deadline) break;
-    const city = await measureCity(s3, slug, resumed.get(slug), args, deadline, persist);
+    const previous = resumed.get(slug);
+    if (previous?.status === "unknown") continue;
+    const city = await measureCity(s3, slug, previous, args, deadline, persist);
     cities.set(slug, city);
-    if (city.status !== "complete") break;
+    if (city.status === "partial") break;
   }
-  writeReport(args.output, report());
+  writeReport(args.output, report(), args.shortMarkdown);
   for (const city of report().cities) {
     console.log(`${city.slug} ${city.status} lots=${city.lots_traites}/${city.lots_total ?? "unknown"} unassigned=${city.unassigned_total} inside=${city.inside_served} outside=${city.outside_all} no_geometry=${city.no_geometry}`);
   }
