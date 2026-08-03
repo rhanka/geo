@@ -136,3 +136,23 @@ snapshots verdict committés, pas S3 en vif. Il faut ensuite classifier/lire les
 octets → verdict `INDEXED` (propriétaire imprimé confirmé) → câbler le fichier
 verdict dans la mesure → recompter → committer. Le delta committé seul est
 remonté à claude:geo.
+
+## Reprise post-suspension — `20260803T…` (ACK)
+Machine suspendue ~3 h après le commit `2a1015f8` (673). Vérification à la
+reprise (lecture seule) :
+- **Instruction #1 (capture cluster 8 villes) : RÉSOLUE et committée. Rien à
+  relancer.** Les jobs OVH `…t133000z`, `…t173311z`, `…t174742z` sont
+  `Completed`, octets classifiés `PV_LISIBLE_PROPRIETAIRE_CONFIRME`, verdicts
+  `INDEXED` câblés, couverture recomptée **673/1106**. La cohorte zéro-capture
+  est SOLDÉE 8/8 (7 complete + 1 N-A saint-basile). La suspension a suivi la
+  complétion — aucun job orphelin/expiré à re-soumettre.
+- **Instruction #2 (tuer les unknown) — prochaine cohorte à HAUTE valeur.**
+  Croisement de la liste `municipal_coverage.slugs` (673 couverts, `2a1015f8`)
+  contre le référentiel 1106 : plusieurs **grandes villes** restent
+  ZÉRO-CAPTURE — dont **Québec, Laval, Sherbrooke, Saguenay, Trois-Rivières,
+  Terrebonne, Saint-Hyacinthe, Rimouski**. Lot suivant = ces 8 (plafond
+  `MAX_LOT_SIZE=8`) → découverte read-only `pv-decouverte-worklist`
+  (source=pv-index) → capture cluster (1 ville/pod, `--memory-limit-mi 512`,
+  préférer les PV de séance UNIQUE, éviter les compilations annuelles qui
+  OOMaient) → classifier → indexer → recompter. Chaque INDEXED committé fait
+  monter col-4.
