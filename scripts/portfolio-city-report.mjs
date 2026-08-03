@@ -182,9 +182,10 @@ function computeAsOf() {
   if (s.regdens.data) {
     const a = s.regdens.data.source_as_of || {};
     const parts = [];
-    if (a['coverage-matrix']) parts.push(`couverture ${a['coverage-matrix']}`);
-    if (a['zonage-enrichment']) parts.push(`enrichissement ${a['zonage-enrichment']}`);
-    if (a['event-detect-4a-audit']) parts.push(`audit événements ${a['event-detect-4a-audit']}`);
+    if (a['reglement_declared']) parts.push(`règl. déclarée ${a['reglement_declared']}`);
+    if (a['reglement_proven']) parts.push(`règl. preuve v2 ${a['reglement_proven']}`);
+    if (a['usage_dominant']) parts.push(`usage ${a['usage_dominant']}`);
+    if (a['effet_densifiant']) parts.push(`effet ${a['effet_densifiant']}`);
     s.regdens.asOf = parts.join(' ; ') || null;
   }
   if (s.provQuality.data) s.provQuality.asOf = s.provQuality.data.as_of || null;
@@ -523,11 +524,24 @@ const KPIS = [
   { key: 'coherence_lot_zone', label: 'Zones — cohérence lot-zone', extract: kpiCoherenceLotZone },
   { key: 'normes', label: 'Normes — complétion', extract: kpiNormes },
   { key: 'pv', label: 'PV — complétion', extract: kpiPv },
+  // Règlement scindé en DEUX lignes (conducteur 20260803) : la « déclarée » est
+  // la présence d'un règlement déclaré (source regdens désormais committée), la
+  // « preuve v2 » est la sous-partie alignée sur une preuve de capture v2. Sans
+  // le split, la ligne unique affichait 542 (preuve) et laissait croire à une
+  // chute face à l'ancienne mesure déclarée 815 — fausse régression. Le split
+  // renomme la clé, donc la chaîne de diff repart proprement (Précédent/Δ = «—»
+  // une fois, aucun Δ fabriqué) ; la comparabilité 815→895 est dite en note.
   {
-    key: 'reglement',
-    label: 'Règlement — complétion',
-    definitionChangedAsOf: '20260802',
-    extract: () => regdensCell('reglement'),
+    key: 'reglement_declared',
+    label: 'Règlement — complétion déclarée',
+    definitionChangedAsOf: '20260803',
+    extract: () => regdensCell('reglement_declared'),
+  },
+  {
+    key: 'reglement_proven',
+    label: 'Règlement — preuve v2',
+    definitionChangedAsOf: '20260803',
+    extract: () => regdensCell('reglement_proven'),
   },
   { key: 'usage_dominant', label: 'Usage dominant — complétion', extract: () => regdensCell('usage_dominant') },
   { key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: () => regdensCell('effet_densifiant') },
@@ -715,15 +729,26 @@ function renderMarkdown(payload) {
   L.push(
     '- **Alignement présence + qualité/provenance** : le rapport mesure la PRÉSENCE (données servies) ET la QUALITÉ/PROVENANCE (URL de source servie, cohérence lot-zone) ; sans cet axe, la ré-acquisition et le stampage sont invisibles.'
   );
-  const reglement = payload.kpis.find((k) => k.key === 'reglement');
-  if (
-    reglement?.definitionChangedAsOf &&
-    payload.previousSnapshotDate &&
-    payload.previousSnapshotDate < reglement.definitionChangedAsOf
-  ) {
+  const reglDeclared = payload.kpis.find((k) => k.key === 'reglement_declared');
+  const reglProven = payload.kpis.find((k) => k.key === 'reglement_proven');
+  if (reglDeclared && reglProven) {
     L.push(
-      '- Règlement complétion : définition DURCIE déclarée (815, source jamais committée = non reproductible) -> capture-prouvée v2 (542, committée, alignée preuve v2). Δ non comparable, aucune régression.'
+      '- **Règlement — DEUX lignes** : « complétion déclarée » (présence d’un règlement déclaré, ' +
+        'source `regdens totals.reglement_declared` désormais committée) ET « preuve v2 » ' +
+        '(`totals.reglement_proven`, sous-partie alignée sur une preuve de capture v2). ' +
+        'Elles mesurent deux choses distinctes ; jamais fondues.'
     );
+    const splitBoundary =
+      reglDeclared.definitionChangedAsOf &&
+      payload.previousSnapshotDate &&
+      payload.previousSnapshotDate < reglDeclared.definitionChangedAsOf;
+    if (splitBoundary) {
+      L.push(
+        '- Règlement — bascule du 20260803 : la ligne unique (preuve 542) est scindée en déclarée + preuve. ' +
+          'La déclarée (895) est comparable à l’ancienne mesure déclarée 815 (progrès, PAS une régression) ; ' +
+          'le renommage de clé réinitialise la chaîne de diff (Précédent/Δ = «—» cette fois, aucun Δ fabriqué).'
+      );
+    }
   }
   const url = payload.kpis.find((k) => k.key === 'prov_url_servie');
   if (url && url.actuel.status === 'ok') {
