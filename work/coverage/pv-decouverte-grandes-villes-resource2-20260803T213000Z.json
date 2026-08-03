@@ -1,0 +1,87 @@
+{
+  "contract": "pv-decouverte-worklist/v1",
+  "generated_at": "2026-08-03T21:27:49.143Z",
+  "read_only_web_discovery": true,
+  "no_document_bytes_read": true,
+  "input": {
+    "path": "packages/qc-sources/src/geo/municipalities.qc.json",
+    "sha256": "sha256:7569b3ae83b61a589ccef3aa20b08747370904eba82b0c8c63792d28c5f966ef",
+    "target_municipalities": 1106,
+    "kind": "municipal-reference"
+  },
+  "batch": {
+    "slugs": [
+      "saguenay",
+      "quebec",
+      "trois-rivieres",
+      "sherbrooke",
+      "saint-hyacinthe"
+    ],
+    "max_lot_size": 8
+  },
+  "coverage": {
+    "municipalities_with_at_least_one_discovered_candidate": 0,
+    "municipalities_without_discovered_candidate": 1106,
+    "municipalities_observed": 5,
+    "municipalities_not_yet_observed": 1101,
+    "observations": {
+      "candidate": 0,
+      "no_candidate": 4,
+      "indeterminate": 1
+    }
+  },
+  "candidates": [],
+  "observations": [
+    {
+      "slug": "quebec",
+      "mrc": null,
+      "status": "no_candidate",
+      "notes": [
+        "Wix non observé",
+        "hors portail MDQ",
+        "tables CMS SSR lues: https://www.ville.quebec.qc.ca/apropos/gouvernance/conseil-municipal/proces_verbaux.aspx; candidats=0",
+        "index seed lu: https://www.ville.quebec.qc.ca/apropos/gouvernance/conseil-municipal/proces_verbaux.aspx"
+      ]
+    },
+    {
+      "slug": "saguenay",
+      "mrc": null,
+      "status": "no_candidate",
+      "notes": [
+        "Wix non observé",
+        "hors portail MDQ",
+        "tables CMS SSR lues: https://ville.saguenay.ca/la-ville-et-vie-democratique/publications/proces-verbaux?archiveAnnee=2025&categorie=473; candidats=0",
+        "index seed lu: https://ville.saguenay.ca/la-ville-et-vie-democratique/publications/proces-verbaux?archiveAnnee=2025&categorie=473"
+      ]
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "mrc": "Les Maskoutains",
+      "status": "indeterminate",
+      "notes": [
+        "accueil fetch_failed_dns_resolves"
+      ]
+    },
+    {
+      "slug": "sherbrooke",
+      "mrc": null,
+      "status": "no_candidate",
+      "notes": [
+        "Wix non observé",
+        "hors portail MDQ",
+        "tables CMS SSR lues: https://www.sherbrooke.ca/fr/vie-municipale/seances-du-conseil-municipal-et-des-conseils-d-arrondissements; candidats=0",
+        "index seed lu: https://www.sherbrooke.ca/fr/vie-municipale/seances-du-conseil-municipal-et-des-conseils-d-arrondissements"
+      ]
+    },
+    {
+      "slug": "trois-rivieres",
+      "mrc": null,
+      "status": "no_candidate",
+      "notes": [
+        "Wix non observé",
+        "hors portail MDQ",
+        "index seed rejeté (domaine non officiel): https://conseil-v3r.maruche.ca/"
+      ]
+    }
+  ]
+}
