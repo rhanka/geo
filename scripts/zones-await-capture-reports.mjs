@@ -10,9 +10,9 @@ import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const DIR = new URL("../work/coverage/", import.meta.url).pathname;
-const PATTERNS = [/arcgis-b1.*report.*\.json$/i, /azimut.*b2.*report.*\.json$/i];
+const PATTERNS = [/-b1-report.*\.json$/i, /-b2-report.*\.json$/i];
 const START = Date.now();
-const CAP_MS = 25 * 60 * 1000; // plafond 25 min
+const CAP_MS = 40 * 60 * 1000; // plafond 40 min
 const POLL_MS = 30 * 1000;
 
 // Baseline : rapports déjà présents au démarrage (on ne signale que le NOUVEAU).
