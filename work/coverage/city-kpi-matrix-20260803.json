@@ -1,0 +1,1561 @@
+{
+  "contract": "city-kpi-matrix/v1",
+  "generatedAt": "2026-08-03T00:44:21.716Z",
+  "reportDate": "2026-08-03",
+  "cohort": {
+    "name": "set-30-selection-A",
+    "source": "priorityRank<=30 du set-167-bprime.tsv FIGÉ (confirmé i-cond 20260803) — sous-ensemble déterministe stable du 167",
+    "path": "work/coverage/city-kpi-matrix-set30.json",
+    "cities": 30,
+    "graph_matched": 27,
+    "pending_graph_node": 3
+  },
+  "columns": [
+    {
+      "n": 1,
+      "key": "zones",
+      "label": "Zones — complétion",
+      "gap": null
+    },
+    {
+      "n": 2,
+      "key": "coherence_lot_zone",
+      "label": "Zones — cohérence lot-zone",
+      "gap": null
+    },
+    {
+      "n": 3,
+      "key": "normes",
+      "label": "Normes — complétion",
+      "gap": null
+    },
+    {
+      "n": 4,
+      "key": "pv",
+      "label": "PV — complétion",
+      "gap": null
+    },
+    {
+      "n": 5,
+      "key": "reglement",
+      "label": "Règlement — complétion (déclarée+preuve)",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)"
+    },
+    {
+      "n": 6,
+      "key": "usage_dominant",
+      "label": "Usage dominant — complétion",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)"
+    },
+    {
+      "n": 7,
+      "key": "effet_densifiant",
+      "label": "Effet densifiant — complétion",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)"
+    },
+    {
+      "n": 8,
+      "key": "prov_jointure",
+      "label": "Provenance — jointure exacte",
+      "gap": null
+    },
+    {
+      "n": 9,
+      "key": "prov_qualite",
+      "label": "Provenance — qualité retained",
+      "gap": null
+    },
+    {
+      "n": 10,
+      "key": "prov_v2",
+      "label": "Provenance — PREUVE v2 exacte",
+      "gap": null
+    },
+    {
+      "n": 11,
+      "key": "prov_url_servie",
+      "label": "Provenance — URL source servie",
+      "gap": null
+    },
+    {
+      "n": 12,
+      "key": "immo_lot_zone",
+      "label": "Immo — assignation lot-zone",
+      "gap": null
+    },
+    {
+      "n": 13,
+      "key": "immo_normes_pliees",
+      "label": "Immo — normes pliées",
+      "gap": null
+    },
+    {
+      "n": 14,
+      "key": "immo_lots_servis",
+      "label": "Immo — lots servis",
+      "gap": null
+    },
+    {
+      "n": 15,
+      "key": "immo_surface",
+      "label": "Immo — surface m²",
+      "gap": null
+    },
+    {
+      "n": 16,
+      "key": "immo_code_postal",
+      "label": "Immo — code postal",
+      "gap": null
+    },
+    {
+      "n": 17,
+      "key": "immo_adresse",
+      "label": "Immo — adresse civique",
+      "gap": null
+    },
+    {
+      "n": 18,
+      "key": "tod_applicabilite",
+      "label": "Immo — applicabilité TOD",
+      "gap": null
+    },
+    {
+      "n": 19,
+      "key": "tod_completion",
+      "label": "Immo — complétion TOD",
+      "gap": null
+    },
+    {
+      "n": 20,
+      "key": "v34_qc_zoning_events",
+      "label": "Recall+précision v3.4 qc-zoning-events",
+      "gap": "GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)"
+    }
+  ],
+  "anti_invention": "Entrée manquante -> unknown ; jamais deviné. Villes PENDING-GRAPH-NODE : toutes cellules unknown + drapeau. Cols 5/6/7 (regdens totals-only) et 20 (v3.4) : GAP -> unknown flaggé jusqu'à source per-city committée.",
+  "rows": [
+    {
+      "priorityRank": 1,
+      "slug": "westmount",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 4,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 55.6
+    },
+    {
+      "priorityRank": 2,
+      "slug": "saint-lambert",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 3,
+      "slug": "hampstead",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "incomplete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 7,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 7,
+      "pct_complete_non_na": 38.9
+    },
+    {
+      "priorityRank": 4,
+      "slug": "mont-royal",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 5,
+      "slug": "montreal-ouest",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 6,
+      "slug": "cote-saint-luc",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "incomplete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 7,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 7,
+      "pct_complete_non_na": 38.9
+    },
+    {
+      "priorityRank": 7,
+      "slug": "longueuil",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 45
+    },
+    {
+      "priorityRank": 8,
+      "slug": "brossard",
+      "graph_matched": false,
+      "flag": "PENDING-GRAPH-NODE",
+      "cells": {
+        "zones": "unknown",
+        "coherence_lot_zone": "unknown",
+        "normes": "unknown",
+        "pv": "unknown",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "unknown",
+        "prov_qualite": "unknown",
+        "prov_v2": "unknown",
+        "prov_url_servie": "unknown",
+        "immo_lot_zone": "unknown",
+        "immo_normes_pliees": "unknown",
+        "immo_lots_servis": "unknown",
+        "immo_surface": "unknown",
+        "immo_code_postal": "unknown",
+        "immo_adresse": "unknown",
+        "tod_applicabilite": "unknown",
+        "tod_completion": "unknown",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 20,
+        "N-A": 0
+      },
+      "complete_over_20": 0,
+      "pct_complete_non_na": 0
+    },
+    {
+      "priorityRank": 9,
+      "slug": "sainte-catherine",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "complete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 12,
+        "incomplete": 4,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 12,
+      "pct_complete_non_na": 60
+    },
+    {
+      "priorityRank": 10,
+      "slug": "la-prairie",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 11,
+      "slug": "delson",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "complete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 11,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 11,
+      "pct_complete_non_na": 55
+    },
+    {
+      "priorityRank": 12,
+      "slug": "candiac",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "complete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 11,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 11,
+      "pct_complete_non_na": 55
+    },
+    {
+      "priorityRank": 13,
+      "slug": "montreal-est",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "complete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 4,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 55.6
+    },
+    {
+      "priorityRank": 14,
+      "slug": "boucherville",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 45
+    },
+    {
+      "priorityRank": 15,
+      "slug": "dorval",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "incomplete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 45
+    },
+    {
+      "priorityRank": 16,
+      "slug": "ile-dorval",
+      "graph_matched": false,
+      "flag": "PENDING-GRAPH-NODE",
+      "cells": {
+        "zones": "unknown",
+        "coherence_lot_zone": "unknown",
+        "normes": "unknown",
+        "pv": "unknown",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "unknown",
+        "prov_qualite": "unknown",
+        "prov_v2": "unknown",
+        "prov_url_servie": "unknown",
+        "immo_lot_zone": "unknown",
+        "immo_normes_pliees": "unknown",
+        "immo_lots_servis": "unknown",
+        "immo_surface": "unknown",
+        "immo_code_postal": "unknown",
+        "immo_adresse": "unknown",
+        "tod_applicabilite": "unknown",
+        "tod_completion": "unknown",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 20,
+        "N-A": 0
+      },
+      "complete_over_20": 0,
+      "pct_complete_non_na": 0
+    },
+    {
+      "priorityRank": 17,
+      "slug": "saint-constant",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "complete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 11,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 11,
+      "pct_complete_non_na": 55
+    },
+    {
+      "priorityRank": 18,
+      "slug": "saint-bruno-de-montarville",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 19,
+      "slug": "carignan",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 4,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 55.6
+    },
+    {
+      "priorityRank": 20,
+      "slug": "dollard-des-ormeaux",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 21,
+      "slug": "pointe-claire",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 11,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 11,
+      "pct_complete_non_na": 55
+    },
+    {
+      "priorityRank": 22,
+      "slug": "saint-philippe",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 23,
+      "slug": "saint-mathieu",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "N-A",
+        "tod_completion": "N-A",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 2
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 24,
+      "slug": "chateauguay",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 25,
+      "slug": "sainte-julie",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 26,
+      "slug": "saint-basile-le-grand",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 10,
+        "incomplete": 6,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 10,
+      "pct_complete_non_na": 50
+    },
+    {
+      "priorityRank": 27,
+      "slug": "chambly",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 11,
+        "incomplete": 5,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 11,
+      "pct_complete_non_na": 55
+    },
+    {
+      "priorityRank": 28,
+      "slug": "rosemere",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 9,
+        "incomplete": 7,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 9,
+      "pct_complete_non_na": 45
+    },
+    {
+      "priorityRank": 29,
+      "slug": "varennes",
+      "graph_matched": true,
+      "flag": null,
+      "cells": {
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "complete",
+        "immo_normes_pliees": "incomplete",
+        "immo_lots_servis": "complete",
+        "immo_surface": "complete",
+        "immo_code_postal": "complete",
+        "immo_adresse": "incomplete",
+        "tod_applicabilite": "complete",
+        "tod_completion": "incomplete",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 12,
+        "incomplete": 4,
+        "unknown": 4,
+        "N-A": 0
+      },
+      "complete_over_20": 12,
+      "pct_complete_non_na": 60
+    },
+    {
+      "priorityRank": 30,
+      "slug": "kirkland",
+      "graph_matched": false,
+      "flag": "PENDING-GRAPH-NODE",
+      "cells": {
+        "zones": "unknown",
+        "coherence_lot_zone": "unknown",
+        "normes": "unknown",
+        "pv": "unknown",
+        "reglement": "unknown",
+        "usage_dominant": "unknown",
+        "effet_densifiant": "unknown",
+        "prov_jointure": "unknown",
+        "prov_qualite": "unknown",
+        "prov_v2": "unknown",
+        "prov_url_servie": "unknown",
+        "immo_lot_zone": "unknown",
+        "immo_normes_pliees": "unknown",
+        "immo_lots_servis": "unknown",
+        "immo_surface": "unknown",
+        "immo_code_postal": "unknown",
+        "immo_adresse": "unknown",
+        "tod_applicabilite": "unknown",
+        "tod_completion": "unknown",
+        "v34_qc_zoning_events": "unknown"
+      },
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 20,
+        "N-A": 0
+      },
+      "complete_over_20": 0,
+      "pct_complete_non_na": 0
+    }
+  ],
+  "per_kpi": [
+    {
+      "n": 1,
+      "key": "zones",
+      "label": "Zones — complétion",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 2,
+      "key": "coherence_lot_zone",
+      "label": "Zones — cohérence lot-zone",
+      "gap": null,
+      "counts": {
+        "complete": 13,
+        "incomplete": 14,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "13/27",
+      "pct_complete": 48.1
+    },
+    {
+      "n": 3,
+      "key": "normes",
+      "label": "Normes — complétion",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 4,
+      "key": "pv",
+      "label": "PV — complétion",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 5,
+      "key": "reglement",
+      "label": "Règlement — complétion (déclarée+preuve)",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)",
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 27,
+        "N-A": 0
+      },
+      "complete_over_matched": "0/27",
+      "pct_complete": 0
+    },
+    {
+      "n": 6,
+      "key": "usage_dominant",
+      "label": "Usage dominant — complétion",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)",
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 27,
+        "N-A": 0
+      },
+      "complete_over_matched": "0/27",
+      "pct_complete": 0
+    },
+    {
+      "n": 7,
+      "key": "effet_densifiant",
+      "label": "Effet densifiant — complétion",
+      "gap": "GAP: regdens totals-only, aucune matrice per-city committée (attend reglement)",
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 27,
+        "N-A": 0
+      },
+      "complete_over_matched": "0/27",
+      "pct_complete": 0
+    },
+    {
+      "n": 8,
+      "key": "prov_jointure",
+      "label": "Provenance — jointure exacte",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 9,
+      "key": "prov_qualite",
+      "label": "Provenance — qualité retained",
+      "gap": null,
+      "counts": {
+        "complete": 24,
+        "incomplete": 3,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "24/27",
+      "pct_complete": 88.9
+    },
+    {
+      "n": 10,
+      "key": "prov_v2",
+      "label": "Provenance — PREUVE v2 exacte",
+      "gap": null,
+      "counts": {
+        "complete": 4,
+        "incomplete": 23,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "4/27",
+      "pct_complete": 14.8
+    },
+    {
+      "n": 11,
+      "key": "prov_url_servie",
+      "label": "Provenance — URL source servie",
+      "gap": null,
+      "counts": {
+        "complete": 5,
+        "incomplete": 22,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "5/27",
+      "pct_complete": 18.5
+    },
+    {
+      "n": 12,
+      "key": "immo_lot_zone",
+      "label": "Immo — assignation lot-zone",
+      "gap": null,
+      "counts": {
+        "complete": 7,
+        "incomplete": 20,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "7/27",
+      "pct_complete": 25.9
+    },
+    {
+      "n": 13,
+      "key": "immo_normes_pliees",
+      "label": "Immo — normes pliées",
+      "gap": null,
+      "counts": {
+        "complete": 1,
+        "incomplete": 26,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "1/27",
+      "pct_complete": 3.7
+    },
+    {
+      "n": 14,
+      "key": "immo_lots_servis",
+      "label": "Immo — lots servis",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 15,
+      "key": "immo_surface",
+      "label": "Immo — surface m²",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 16,
+      "key": "immo_code_postal",
+      "label": "Immo — code postal",
+      "gap": null,
+      "counts": {
+        "complete": 27,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "27/27",
+      "pct_complete": 100
+    },
+    {
+      "n": 17,
+      "key": "immo_adresse",
+      "label": "Immo — adresse civique",
+      "gap": null,
+      "counts": {
+        "complete": 0,
+        "incomplete": 27,
+        "unknown": 0,
+        "N-A": 0
+      },
+      "complete_over_matched": "0/27",
+      "pct_complete": 0
+    },
+    {
+      "n": 18,
+      "key": "tod_applicabilite",
+      "label": "Immo — applicabilité TOD",
+      "gap": null,
+      "counts": {
+        "complete": 17,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 10
+      },
+      "complete_over_matched": "17/27",
+      "pct_complete": 63
+    },
+    {
+      "n": 19,
+      "key": "tod_completion",
+      "label": "Immo — complétion TOD",
+      "gap": null,
+      "counts": {
+        "complete": 4,
+        "incomplete": 13,
+        "unknown": 0,
+        "N-A": 10
+      },
+      "complete_over_matched": "4/27",
+      "pct_complete": 14.8
+    },
+    {
+      "n": 20,
+      "key": "v34_qc_zoning_events",
+      "label": "Recall+précision v3.4 qc-zoning-events",
+      "gap": "GAP: aucune source recall/précision v3.4 qc-zoning-events (jointures WP5)",
+      "counts": {
+        "complete": 0,
+        "incomplete": 0,
+        "unknown": 27,
+        "N-A": 0
+      },
+      "complete_over_matched": "0/27",
+      "pct_complete": 0
+    }
+  ],
+  "sources": [
+    {
+      "role": "zones-completion",
+      "path": "work/coverage/completion-1-zones-matrix-20260723.json",
+      "sha256": "sha256:518e7a7eb1b1626045fd5dc1b9ae0ac23745678752f82ef2e893901ec3488f22",
+      "present": true
+    },
+    {
+      "role": "normes-completion",
+      "path": "work/coverage/completion-1-normes-matrix-20260723.json",
+      "sha256": "sha256:c98c374ab572c5e5e1c26122143d2a439dc416f3b5bdc3fb47cf1991793bd12d",
+      "present": true
+    },
+    {
+      "role": "lot-zone-consistency",
+      "path": "work/coverage/lot-zone-consistency-scale-20260725.json",
+      "sha256": "sha256:36cccc45e94ee81a7736f309609d2eec03c69dcab533bb6118d7f903d68268d3",
+      "present": true
+    },
+    {
+      "role": "pv-completion",
+      "path": "work/coverage/pv-completion-city-audit.json",
+      "sha256": "sha256:0352d5ffb08309ae0516f370c29980ed93f2adbe1459c2825eccc24319a15e25",
+      "present": true
+    },
+    {
+      "role": "zone-provenance-quality",
+      "path": "work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json",
+      "sha256": "sha256:81de8d776a7d73c91644d8f9306517f46c12adf55ed96d6a7a6d9c95f57470b4",
+      "present": true
+    },
+    {
+      "role": "zone-source-readback",
+      "path": "work/coverage/zone-source-readback-audit-20260802.json",
+      "sha256": "sha256:182068b736a5f199ea62f7a70cabf566926ac0f55a3accd1db4cd41746fddf60",
+      "present": true
+    },
+    {
+      "role": "immo-lot-zone",
+      "path": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+      "sha256": "sha256:95e5c7bc077bdf0b3087483dd99b95de6b07b3903ded0971a53ef52879da208d",
+      "present": true
+    },
+    {
+      "role": "immo-folded-normes",
+      "path": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+      "sha256": "sha256:e6dd636758a0d2e3bf706d78cc5c117659f5d663ba98ff3a043637da0b75ff8f",
+      "present": true
+    },
+    {
+      "role": "immo-field-completion",
+      "path": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "sha256": "sha256:fb0f8b2df00507b167982accfbeef24e34c70f78fc1fbbf810e833c9fceb9f5c",
+      "present": true
+    }
+  ],
+  "validation": {
+    "closed": true,
+    "errors": []
+  },
+  "warnings": []
+}
