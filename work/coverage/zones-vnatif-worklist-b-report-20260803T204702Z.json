@@ -1,0 +1,29 @@
+{
+  "contract": "zones-vnatif-worklist-report/v1",
+  "batch": "b",
+  "qa_lane_sha": "19518d56b4cb5f92ca0f7bba601fec5a229dbcc6",
+  "direct": "work/coverage/zones-vnatif-direct-b-20260803T204702Z.json",
+  "manifest": "work/coverage/zones-vecteur-natif-manifest-b-20260803T204702Z.json",
+  "native_attestation": "work/coverage/vecteur-natif-attestation-b-20260803T204702Z.json",
+  "recalage_attestation": "work/coverage/recalage-attestation-b-20260803T204702Z.json",
+  "deposits": [],
+  "no_capture": [
+    {
+      "slug": "saint-jean-de-lile-dorleans",
+      "url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1%3D1&outFields=*&f=geojson",
+      "reason": "seule capture exacte trouvée non probante : run.json absent ; aucun run durable admissible"
+    }
+  ],
+  "results": [
+    {"slug":"lassomption","verdict":"HELD","features":359,"reason":"vecteur PASS ; recalage FAIL-BANC (lot_zone)"},
+    {"slug":"laval","verdict":"HELD","features":2657,"reason":"vecteur FAIL-BANC (anti_invention ; bbox_diag 35.85 km)"},
+    {"slug":"saint-francois-xavier-de-brompton","verdict":"HELD","features":1446,"reason":"vecteur FAIL-BANC (anti_invention, identité : nearest=windsor)"},
+    {"slug":"saint-honore-de-temiscouata","verdict":"HELD","features":1180,"reason":"vecteur FAIL-BANC (agrégat MRC ; nearest=saint-louis-du-ha-ha)"},
+    {"slug":"saint-jean-de-la-lande","verdict":"HELD","features":1180,"reason":"vecteur FAIL-BANC (agrégat MRC ; nearest=saint-louis-du-ha-ha)"},
+    {"slug":"saint-jean-de-lile-dorleans","verdict":"NO_CAPTURE","features":null,"reason":"run exact non probant ; run.json absent"},
+    {"slug":"saint-juste-du-lac","verdict":"HELD","features":1180,"reason":"vecteur FAIL-BANC (agrégat MRC ; nearest=saint-louis-du-ha-ha)"},
+    {"slug":"saint-louis-de-blandford","verdict":"HELD","features":56,"reason":"vecteur PASS ; recalage FAIL-INDET (gcp_residual, orientation)"},
+    {"slug":"saint-louis-du-ha-ha","verdict":"HELD","features":1180,"reason":"vecteur FAIL-BANC (anti_invention ; bbox_diag 125.55 km)"},
+    {"slug":"saint-ludger","verdict":"HELD","features":1431,"reason":"vecteur FAIL-BANC (agrégat ; nearest=lac-megantic)"}
+  ]
+}
