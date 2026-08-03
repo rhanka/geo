@@ -41,3 +41,11 @@ capture propre devrait remplacer. Tant que non tranché : held, pas de dépôt f
 
 Note technique : le stdout du dépositeur est pollué par le stdout des folds enrichment
 (sous-process) — le record fait foi via stderr ; à assainir (rediriger le stdout des folds).
+
+## Lot `recalage/v2` — rapport A
+
+Manifeste direct : `zones-vecteur-natif-manifest-a-20260803.json`.
+
+| slug | verdict | features | champ zone | attribution | identité | capture |
+|---|---|---:|---|---:|---|---|
+| ayers-cliff | DÉPOSÉ | 45 | `Zonage` | 0,34 km | ayers-cliff | `zones-20260728T040436Z-1-d515695c-3bf7-4e63-aead-2e4c39afb03b` |
