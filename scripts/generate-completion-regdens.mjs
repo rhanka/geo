@@ -13,7 +13,42 @@ const CITY_TARGET = 1106;
 const STATES = ["complete", "incomplete", "unknown", "N/A"];
 const OUTPUT_DATE = new Date().toISOString().slice(0, 10).replaceAll("-", "");
 const OUTPUT = `work/coverage/completion-regdens-${OUTPUT_DATE}.json`;
+const PERCITY_OUTPUT = `work/coverage/completion-regdens-percity-${OUTPUT_DATE}.json`;
+const COMMITTED_TOTALS_OUTPUT = "work/coverage/completion-regdens-20260802.json";
+const OUTPUT_AS_OF = `${OUTPUT_DATE.slice(0, 4)}-${OUTPUT_DATE.slice(4, 6)}-${OUTPUT_DATE.slice(6, 8)}`;
 const REGLEMENT_DECLARED_SOURCE_AS_OF = "2026-08-02";
+const COHORT_SLUGS = [
+  "westmount",
+  "saint-lambert",
+  "hampstead",
+  "mont-royal",
+  "montreal-ouest",
+  "cote-saint-luc",
+  "longueuil",
+  "sainte-catherine",
+  "la-prairie",
+  "delson",
+  "candiac",
+  "montreal-est",
+  "boucherville",
+  "dorval",
+  "saint-constant",
+  "saint-bruno-de-montarville",
+  "carignan",
+  "dollard-des-ormeaux",
+  "pointe-claire",
+  "saint-philippe",
+  "saint-mathieu",
+  "chateauguay",
+  "sainte-julie",
+  "saint-basile-le-grand",
+  "chambly",
+  "rosemere",
+  "varennes",
+  "brossard",
+  "lile-dorval",
+  "kirkland",
+];
 
 function absolute(relativePath) {
   return resolve(REPO_ROOT, relativePath);
@@ -78,6 +113,24 @@ function countStates(catalog, stateForSlug, axis) {
   return totals;
 }
 
+function countCityStates(cities, axis) {
+  const totals = freshTotals();
+  for (const city of cities) {
+    const state = city[axis];
+    invariant(STATES.includes(state), `${axis}/${city.slug} has invalid state ${state}`);
+    totals[state] += 1;
+  }
+  invariant(cities.length === CITY_TARGET, `${axis} has ${cities.length} cities, expected ${CITY_TARGET}`);
+  return totals;
+}
+
+function assertMatchingTotals(expected, actual, label) {
+  for (const state of STATES) {
+    invariant(actual[state] === expected[state],
+      `${label}/${state} is ${actual[state]}, expected ${expected[state]}`);
+  }
+}
+
 const catalog = readJson("packages/qc-sources/src/geo/municipalities.qc.json");
 invariant(Array.isArray(catalog), "municipal catalogue must be an array");
 invariant(catalog.length === CITY_TARGET, `municipal catalogue has ${catalog.length} cities, expected ${CITY_TARGET}`);
@@ -107,13 +160,14 @@ const reglementDeclaredBySlug = uniqueSlugs(
   "reglement declared registry",
   catalogSlugs,
 );
-const reglementDeclared = countStates(catalog, (slug) => {
+const reglementDeclaredStateForSlug = (slug) => {
   const row = reglementDeclaredBySlug.get(slug);
   if (row === undefined) return "unknown";
   return row.reglement_numero !== null && row.reglement_numero !== undefined
     ? "complete"
     : "incomplete";
-}, "reglement_declared");
+};
+const reglementDeclared = countStates(catalog, reglementDeclaredStateForSlug, "reglement_declared");
 
 // Authoritative regulation provenance/capture registry: a captured unchanged
 // regulation is complete; a missing or changed capture is incomplete; an
@@ -127,13 +181,14 @@ const reglementStates = new Map([
   ["change", "incomplete"],
   ["unknown", "unknown"],
 ]);
-const reglementProven = countStates(catalog, (slug) => {
+const reglementProvenStateForSlug = (slug) => {
   const row = reglementBySlug.get(slug);
   if (row === undefined) return "unknown";
   const state = reglementStates.get(row.state);
   invariant(state !== undefined, `reglement capture registry/${slug} has unsupported state ${row.state}`);
   return state;
-}, "reglement_proven");
+};
+const reglementProven = countStates(catalog, reglementProvenStateForSlug, "reglement_proven");
 
 // The enrichment coverage reports a per-city boolean for usage dominant. A
 // city omitted from its finite coverage is unknown, rather than incomplete.
@@ -142,13 +197,14 @@ const usageSource = readJson(usageSourcePath);
 invariant(typeof usageSource.generatedAt === "string", `${usageSourcePath} is missing generatedAt`);
 invariant(Array.isArray(usageSource.perMuni), `${usageSourcePath} has no perMuni array`);
 const usageBySlug = uniqueSlugs(usageSource.perMuni, "slug", "usage dominant coverage", catalogSlugs);
-const usageDominant = countStates(catalog, (slug) => {
+const usageDominantStateForSlug = (slug) => {
   const row = usageBySlug.get(slug);
   if (row === undefined) return "unknown";
   invariant(typeof row.usage_dominant === "boolean",
     `usage dominant coverage/${slug} has non-boolean usage_dominant`);
   return row.usage_dominant ? "complete" : "incomplete";
-}, "usage_dominant");
+};
+const usageDominant = countStates(catalog, usageDominantStateForSlug, "usage_dominant");
 
 // B-prime is the authoritative effect assessment. "unserved" establishes no
 // structural N/A condition, so it stays unknown along with absent source rows.
@@ -161,13 +217,14 @@ const effectStates = new Map([
   ["unknown_only", "unknown"],
   ["unserved", "unknown"],
 ]);
-const effetDensifiant = countStates(catalog, (slug) => {
+const effetDensifiantStateForSlug = (slug) => {
   const row = effectBySlug.get(slug);
   if (row === undefined) return "unknown";
   const state = effectStates.get(row.state);
   invariant(state !== undefined, `effet densifiant B-prime/${slug} has unsupported state ${row.state}`);
   return state;
-}, "effet_densifiant");
+};
+const effetDensifiant = countStates(catalog, effetDensifiantStateForSlug, "effet_densifiant");
 
 const matrix = {
   totals: {
@@ -184,10 +241,53 @@ const matrix = {
   },
 };
 
+const stateForSlugByAxis = {
+  reglement_declared: reglementDeclaredStateForSlug,
+  reglement_proven: reglementProvenStateForSlug,
+  usage_dominant: usageDominantStateForSlug,
+  effet_densifiant: effetDensifiantStateForSlug,
+};
+const cities = catalog.map(({ slug }) => ({
+  slug,
+  ...Object.fromEntries(Object.entries(stateForSlugByAxis)
+    .map(([axis, stateForSlug]) => [axis, stateForSlug(slug)])),
+}));
+const perCity = {
+  contract: "completion-regdens-percity/v1",
+  as_of: OUTPUT_AS_OF,
+  source_as_of: matrix.source_as_of,
+  cities,
+};
+
 for (const [axis, totals] of Object.entries(matrix.totals)) {
   const total = STATES.reduce((sum, state) => sum + totals[state], 0);
   invariant(total === CITY_TARGET, `${axis} output partition is ${total}, expected ${CITY_TARGET}`);
+  assertMatchingTotals(totals, countCityStates(cities, axis), `${axis} per-city totals`);
 }
 
+const committedTotals = readJson(COMMITTED_TOTALS_OUTPUT);
+invariant(committedTotals !== null && typeof committedTotals === "object"
+  && committedTotals.totals !== null && typeof committedTotals.totals === "object",
+`${COMMITTED_TOTALS_OUTPUT} has no totals object`);
+for (const [axis, totals] of Object.entries(matrix.totals)) {
+  assertMatchingTotals(totals, committedTotals.totals[axis], `${axis} committed totals`);
+}
+
+const cohortCities = new Map(cities.map((city) => [city.slug, city]));
+invariant(new Set(COHORT_SLUGS).size === COHORT_SLUGS.length, "cohort has duplicate slugs");
+for (const slug of COHORT_SLUGS) {
+  invariant(cohortCities.has(slug), `cohort slug is absent from municipal catalogue: ${slug}`);
+}
+const cohortComplete = Object.fromEntries(Object.keys(matrix.totals).map((axis) => [
+  axis,
+  `${COHORT_SLUGS.filter((slug) => cohortCities.get(slug)[axis] === "complete").length}/${COHORT_SLUGS.length}`,
+]));
+
 writeFileSync(absolute(OUTPUT), `${JSON.stringify(matrix, null, 2)}\n`);
-console.log(JSON.stringify({ output: OUTPUT, totals: matrix.totals }, null, 2));
+writeFileSync(absolute(PERCITY_OUTPUT), `${JSON.stringify(perCity, null, 2)}\n`);
+console.log(JSON.stringify({
+  output: OUTPUT,
+  per_city_output: PERCITY_OUTPUT,
+  totals: matrix.totals,
+  cohort_complete: cohortComplete,
+}, null, 2));
