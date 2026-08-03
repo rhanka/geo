@@ -50,3 +50,12 @@ Manifeste direct : `zones-vecteur-natif-manifest-a-20260803.json`.
 |---|---|---:|---|---:|---|---|
 | ayers-cliff | DÉPOSÉ | 45 | `Zonage` | 0,34 km | ayers-cliff | `zones-20260728T040436Z-1-d515695c-3bf7-4e63-aead-2e4c39afb03b` |
 | boisbriand | DÉPOSÉ | 302 | `ZONAGEMUNICIPALID` | 0,82 km | boisbriand | `zones-20260728T040436Z-1-d515695c-3bf7-4e63-aead-2e4c39afb03b` |
+
+| slug | verdict | features | champ zone | attribution | identité | raison HELD |
+|---|---|---:|---|---:|---|---|
+| audet | HELD | 1431 | `NO_ZONE` | 0,82 km | lac-megantic | couche agrégée ; nearest registre ≠ slug |
+| biencourt | HELD | 1180 | `ZONE` | 2,97 km | saint-louis-du-ha-ha | attribution ≥ 1,1 km et nearest registre ≠ slug |
+| cleveland | HELD | 1446 | `Sect` | 3,77 km | windsor | attribution ≥ 1,1 km et nearest registre ≠ slug |
+| caplan | HELD | — | — | — | — | `gis.altusquebec.com` + `MapServer`, hors plateforme autorisée |
+| carleton-sur-mer | HELD | — | — | — | — | `gis.altusquebec.com` + `MapServer`, hors plateforme autorisée |
+| cascapedia-saint-jules | HELD | — | — | — | — | `gis.altusquebec.com` + `MapServer`, hors plateforme autorisée |
