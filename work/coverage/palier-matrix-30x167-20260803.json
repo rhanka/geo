@@ -1,6 +1,6 @@
 {
   "contract": "palier-matrix/v1",
-  "generatedAt": "2026-08-03T17:30:25.741Z",
+  "generatedAt": "2026-08-03T17:35:23.063Z",
   "reportDate": "2026-08-03",
   "previousSnapshotDate": null,
   "owner_target": "CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.",
@@ -111,7 +111,7 @@
       "v2_track": true,
       "gate_excluded": false,
       "presence_strict": false,
-      "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi."
+      "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE (DANS la gate depuis la révision owner) ; le vecteur natif GOnet/ArcGIS débloque une partie de ce plafond."
     },
     {
       "n": 11,
@@ -211,7 +211,7 @@
       "v2_track": false,
       "gate_excluded": false,
       "presence_strict": false,
-      "ceiling": "plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour."
+      "ceiling": "plafond MATURITÉ : recall v3.4 (WP5) MESURABLE seulement là où la GT immo existe — quelques villes à ce jour ; 167 bloqué sur 2 handoffs immo (liste + export 161). DANS la gate ; per-ville dès handoff."
     }
   ],
   "anti_invention": "Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu'à source per-city.",
@@ -221,7 +221,7 @@
     "cities_scored": 162,
     "cities_full_presence": 0,
     "cities_full_completion": 0,
-    "mean_presence_pct": 64.1
+    "mean_presence_pct": 64.3
   },
   "subset_palier1_rank_le_30": {
     "cities_scored": 27,
@@ -4369,9 +4369,9 @@
         "reglement": "unknown",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
         "prov_url_servie": "unknown",
         "immo_lot_zone": "unknown",
         "immo_normes_pliees": "unknown",
@@ -4412,18 +4412,18 @@
         }
       },
       "counts": {
-        "complete": 1,
+        "complete": 4,
         "incomplete": 2,
-        "unknown": 15,
+        "unknown": 12,
         "N-A": 2
       },
-      "completion_complete_over_20": 1,
+      "completion_complete_over_20": 4,
       "presence": {
-        "present": 3,
-        "absent": 15,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 16.7
+        "pct": 33.3
       }
     },
     {
@@ -5764,8 +5764,8 @@
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
         "prov_jointure": "complete",
-        "prov_qualite": "incomplete",
-        "prov_v2": "incomplete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
         "prov_url_servie": "incomplete",
         "immo_lot_zone": "incomplete",
         "immo_normes_pliees": "incomplete",
@@ -5806,12 +5806,12 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 6,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 12,
       "presence": {
         "present": 16,
         "absent": 2,
@@ -6253,9 +6253,9 @@
         "reglement": "incomplete",
         "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
         "prov_url_servie": "unknown",
         "immo_lot_zone": "unknown",
         "immo_normes_pliees": "unknown",
@@ -6296,18 +6296,18 @@
         }
       },
       "counts": {
-        "complete": 1,
+        "complete": 4,
         "incomplete": 4,
-        "unknown": 13,
+        "unknown": 10,
         "N-A": 2
       },
-      "completion_complete_over_20": 1,
+      "completion_complete_over_20": 4,
       "presence": {
-        "present": 4,
-        "absent": 14,
+        "present": 7,
+        "absent": 11,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 22.2
+        "pct": 38.9
       }
     },
     {
@@ -9054,8 +9054,8 @@
         "usage_dominant": "complete",
         "effet_densifiant": "unknown",
         "prov_jointure": "complete",
-        "prov_qualite": "incomplete",
-        "prov_v2": "incomplete",
+        "prov_qualite": "complete",
+        "prov_v2": "complete",
         "prov_url_servie": "incomplete",
         "immo_lot_zone": "incomplete",
         "immo_normes_pliees": "incomplete",
@@ -9096,12 +9096,12 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 6,
+        "complete": 12,
+        "incomplete": 4,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 12,
       "presence": {
         "present": 16,
         "absent": 2,
@@ -9825,7 +9825,7 @@
         "effet_densifiant": "unknown",
         "prov_jointure": "complete",
         "prov_qualite": "complete",
-        "prov_v2": "incomplete",
+        "prov_v2": "complete",
         "prov_url_servie": "complete",
         "immo_lot_zone": "incomplete",
         "immo_normes_pliees": "incomplete",
@@ -9866,12 +9866,12 @@
         }
       },
       "counts": {
-        "complete": 10,
-        "incomplete": 6,
+        "complete": 11,
+        "incomplete": 5,
         "unknown": 2,
         "N-A": 2
       },
-      "completion_complete_over_20": 10,
+      "completion_complete_over_20": 11,
       "presence": {
         "present": 16,
         "absent": 2,
@@ -11849,7 +11849,7 @@
         "effet_densifiant": "incomplete",
         "prov_jointure": "complete",
         "prov_qualite": "complete",
-        "prov_v2": "incomplete",
+        "prov_v2": "complete",
         "prov_url_servie": "complete",
         "immo_lot_zone": "incomplete",
         "immo_normes_pliees": "incomplete",
@@ -11890,12 +11890,12 @@
         }
       },
       "counts": {
-        "complete": 12,
-        "incomplete": 5,
+        "complete": 13,
+        "incomplete": 4,
         "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 12,
+      "completion_complete_over_20": 13,
       "presence": {
         "present": 17,
         "absent": 1,
@@ -12053,18 +12053,18 @@
       "gap": null,
       "v2_track": false,
       "ceiling": null,
-      "acquirable_incomplete": 57,
+      "acquirable_incomplete": 55,
       "counts": {
-        "complete": 105,
+        "complete": 107,
         "incomplete": 0,
-        "unknown": 57,
+        "unknown": 55,
         "N-A": 0
       },
-      "complete_over_matched": "105/162",
-      "cities_100pct": 105,
-      "pct_complete": 64.8,
-      "present": 105,
-      "pct_present": 64.8
+      "complete_over_matched": "107/162",
+      "cities_100pct": 107,
+      "pct_complete": 66,
+      "present": 107,
+      "pct_present": 66
     },
     {
       "n": 9,
@@ -12073,18 +12073,18 @@
       "gap": null,
       "v2_track": false,
       "ceiling": null,
-      "acquirable_incomplete": 84,
+      "acquirable_incomplete": 80,
       "counts": {
-        "complete": 78,
-        "incomplete": 26,
-        "unknown": 58,
+        "complete": 82,
+        "incomplete": 24,
+        "unknown": 56,
         "N-A": 0
       },
-      "complete_over_matched": "78/162",
-      "cities_100pct": 78,
-      "pct_complete": 48.1,
-      "present": 104,
-      "pct_present": 64.2
+      "complete_over_matched": "82/162",
+      "cities_100pct": 82,
+      "pct_complete": 50.6,
+      "present": 106,
+      "pct_present": 65.4
     },
     {
       "n": 10,
@@ -12092,19 +12092,19 @@
       "label": "Provenance — PREUVE v2 exacte",
       "gap": null,
       "v2_track": true,
-      "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE, hors gate mercredi.",
-      "acquirable_incomplete": 145,
+      "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE (DANS la gate depuis la révision owner) ; le vecteur natif GOnet/ArcGIS débloque une partie de ce plafond.",
+      "acquirable_incomplete": 139,
       "counts": {
-        "complete": 17,
-        "incomplete": 87,
-        "unknown": 58,
+        "complete": 23,
+        "incomplete": 83,
+        "unknown": 56,
         "N-A": 0
       },
-      "complete_over_matched": "17/162",
-      "cities_100pct": 17,
-      "pct_complete": 10.5,
-      "present": 104,
-      "pct_present": 64.2
+      "complete_over_matched": "23/162",
+      "cities_100pct": 23,
+      "pct_complete": 14.2,
+      "present": 106,
+      "pct_present": 65.4
     },
     {
       "n": 11,
@@ -12292,7 +12292,7 @@
       "label": "Recall+précision v3.4 qc-zoning-events",
       "gap": "PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)",
       "v2_track": false,
-      "ceiling": "plafond MATURITÉ : recall/précision v3.4 immature (WP5, jointures L1) et non per-ville — aucune donnée per-ville à ce jour.",
+      "ceiling": "plafond MATURITÉ : recall v3.4 (WP5) MESURABLE seulement là où la GT immo existe — quelques villes à ce jour ; 167 bloqué sur 2 handoffs immo (liste + export 161). DANS la gate ; per-ville dès handoff.",
       "acquirable_incomplete": 160,
       "counts": {
         "complete": 2,
@@ -12346,8 +12346,8 @@
     },
     {
       "role": "zone-provenance-quality",
-      "path": "work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json",
-      "sha256": "sha256:81de8d776a7d73c91644d8f9306517f46c12adf55ed96d6a7a6d9c95f57470b4",
+      "path": "work/coverage/zone-provenance-quality-matrix-20260803T173444Z-5b0c7a768adc78e2.json",
+      "sha256": "sha256:5b0c7a768adc78e27917c4006cb0e8c89ec65717bfb9eb5e17e36625b94b307b",
       "present": true
     },
     {
