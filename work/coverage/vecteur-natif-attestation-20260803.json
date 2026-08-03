@@ -16,12 +16,10 @@
   },
   "lot_zone_source_post_depot": "work/coverage/lot-zone-consistency-scale-20260725.json",
   "total": 7,
-  "pass_banc": 6,
-  "fail": 1,
-  "fail_breakdown": {
-    "FAIL-INDET": 1
-  },
-  "aggregate": "6 vecteur-natif PASS-banc / 1 FAIL",
+  "pass_banc": 7,
+  "fail": 0,
+  "fail_breakdown": {},
+  "aggregate": "7 vecteur-natif PASS-banc / 0 FAIL",
   "attestations": [
     {
       "slug": "saint-bernard-de-michaudville",
@@ -46,7 +44,7 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 18.303347087209964,
         "registry_attribution_km": 0.34370517815895324,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-bernard-de-michaudville"
       },
       "lot_zone_mismatch_pct_post_depot": 2.18
     },
@@ -73,7 +71,7 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 17.524207410595963,
         "registry_attribution_km": 0.06998802042238875,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-charles-sur-richelieu"
       },
       "lot_zone_mismatch_pct_post_depot": 4.97
     },
@@ -100,7 +98,7 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 18.76497724770672,
         "registry_attribution_km": 0.8385905768431886,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-dominique"
       },
       "lot_zone_mismatch_pct_post_depot": 3.37
     },
@@ -127,7 +125,7 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 18.053983638006308,
         "registry_attribution_km": 0.37199394315081447,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-michel"
       },
       "lot_zone_mismatch_pct_post_depot": null
     },
@@ -154,19 +152,19 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 18.22047093630074,
         "registry_attribution_km": 1.016707384837339,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-patrice-de-sherrington"
       },
       "lot_zone_mismatch_pct_post_depot": null
     },
     {
       "slug": "saint-pie",
-      "verdict": "FAIL-INDET",
-      "motif": "métrique(s) absente(s), non déposable: non_contamination",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
       "gates": {
         "capture_reelle": "PASS",
         "integrite_preuve_v2": "PASS",
         "anti_invention": "PASS",
-        "non_contamination": "INDET"
+        "non_contamination": "PASS"
       },
       "metrics": {
         "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
@@ -181,7 +179,7 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 19.53330543377193,
         "registry_attribution_km": 1.7217636398170335,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-pie"
       },
       "lot_zone_mismatch_pct_post_depot": 4.46
     },
@@ -208,14 +206,14 @@
         "zone_nonnull_pct": 100,
         "bbox_diag": 17.888862183385037,
         "registry_attribution_km": 0.6371391349783031,
-        "nearest_registre_muni": null
+        "nearest_registre_muni": "saint-jude"
       },
       "lot_zone_mismatch_pct_post_depot": 1.82
     }
   ],
   "source_manifest": {
-    "ref": "lane/zones@5c4ddf4f:work/coverage/zones-vecteur-natif-manifest-20260803.json",
+    "ref": "lane/zones@89a17ea7:work/coverage/zones-vecteur-natif-manifest-20260803.json",
     "contract": "zones-vecteur-natif-capture-manifest/v1",
-    "sha256": "sha256:ce8f41d078ee3bd63a6c737d218aae4e5830afa0629c708d32dae8226c450383"
+    "sha256": "sha256:30393e889bdff7e98af8cefbd55015bb236dc1ddd39680f613dd31c0b4bca272"
   }
 }
