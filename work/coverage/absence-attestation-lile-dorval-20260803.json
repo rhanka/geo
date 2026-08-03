@@ -1,0 +1,195 @@
+{
+  "$schema": "absence-source-attestation/v1",
+  "asOf": "2026-08-03",
+  "subject": {
+    "slug": "lile-dorval",
+    "name": "L'Île-Dorval",
+    "priorityRank": 16,
+    "mamhCode": "66092"
+  },
+  "mapping": {
+    "present": "COMPLET",
+    "absent": "N-A PROUVE",
+    "source-inaccessible": "GAP/UNKNOWN",
+    "rule": "N-A is permitted only for result=absent with a complete proof. A missing served collection, a protected source, or an unmeasured field is never N-A."
+  },
+  "replay": {
+    "s3ReadEnvironment": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10",
+    "cadastreRole": "npx tsx acquisition/src/cadastre-role-absence-attestation.ts --slug lile-dorval --lots 0 --field lot,adresse,code_postal,surface --date 20260803 --max-seconds 55",
+    "coverage167": "npx tsx acquisition/src/cadastre-role-absence-attestation.ts --coverage-dump-167 --date 20260803 --max-seconds 55",
+    "zonageReattribution": "npx tsx acquisition/src/zonage-inspect.ts --find lile-dorval",
+    "readOnly": true,
+    "note": "The required --lots value 0 is a sentry selector: the tool first resolves the two served qc-lots layouts. It is not asserted to be an L'Île-Dorval lot."
+  },
+  "attestations": [
+    {
+      "column": 2,
+      "field": "zonage propre",
+      "source": "site officiel de la Ville de L'Île-Dorval — portail des règlements",
+      "asOf": "2026-08-03",
+      "query": {
+        "url": "https://liledorvalisland.ca/fr/portail/reglements",
+        "selector": "HTTP GET avec suivi des redirections; la ressource doit rester le portail des règlements, pas /fr/connexion."
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "observed": "HTTP 200 après redirection vers https://liledorvalisland.ca/fr/connexion",
+        "publicCorroboration": {
+          "url": "https://liledorvalisland.ca/fr",
+          "selector": "texte « Une île du fleuve Saint-Laurent, autonome depuis 1915. »"
+        },
+        "interpretation": "Le portail réglementaire n'est pas publiquement lisible. Le texte « autonome » et les avis publics de règlements ne prouvent ni un règlement de zonage propre ni une délégation à l'agglomération."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 12,
+      "field": "code_zone par lot",
+      "source": "S3 sentropic-geo — qc-lots servi, jointure lot-zone",
+      "asOf": "2026-08-03",
+      "query": {
+        "s3_bucket": "sentropic-geo",
+        "s3_keys": [
+          "normalized/qc-lots/qc-lots-lile-dorval/qc-lots-lile-dorval.geojson",
+          "normalized/qc-lots/qc-lots-lile-dorval.geojson"
+        ],
+        "selector": "nested avant flat, puis stats du même layout; commande replay.coverage167."
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "qcLotsServed": false,
+        "servedKey": null,
+        "numberMatched": null,
+        "noLotCount": null,
+        "zonageReattribution": {
+          "s3_key": "exchange/geo-immo/grilles-reattribution.json",
+          "selector": "municipalite_reelle normalisée = lile-dorval",
+          "observed": "0 grille ArcGIS réattribuée"
+        },
+        "interpretation": "Sans lot servi, aucun code_zone ne peut être mesuré ou joint; l'absence de grille réattribuée n'est pas une preuve d'absence de zonage."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 13,
+      "field": "normes pliées par lot",
+      "source": "matrice Immo normes pliées + portail officiel des règlements",
+      "asOf": "2026-08-03",
+      "query": {
+        "path": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+        "selector": "cities[slug=lile-dorval]",
+        "url": "https://liledorvalisland.ca/fr/portail/reglements",
+        "url_selector": "HTTP GET avec suivi des redirections; final URL doit ne pas être /fr/connexion."
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "matrixState": "unknown",
+        "matrixReason": "No canonical committed Immo perMuni stats row exists.",
+        "portalObserved": "protégé par connexion",
+        "interpretation": "Ni normes pliées ni source réglementaire de zonage vérifiable ne sont disponibles."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 14,
+      "field": "lots qc-lots servis",
+      "source": "S3 sentropic-geo — qc-lots servi",
+      "asOf": "2026-08-03",
+      "query": {
+        "s3_bucket": "sentropic-geo",
+        "s3_keys": [
+          "normalized/qc-lots/qc-lots-lile-dorval/qc-lots-lile-dorval.geojson",
+          "normalized/qc-lots/qc-lots-lile-dorval.geojson"
+        ],
+        "selector": "nested avant flat; commande replay.cadastreRole ou replay.coverage167."
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "toolState": "qc-lots-not-served-in-supported-layouts",
+        "coverage167": {
+          "priorityRank": 16,
+          "present": false,
+          "served_key": null,
+          "numberMatched": null,
+          "noLot_count": null
+        },
+        "interpretation": "C'est un GAP de dépôt qc-lots, pas la preuve que la municipalité n'a aucun lot."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 15,
+      "field": "surface_m2",
+      "source": "qc-lots servi + rôle foncier MAMH",
+      "asOf": "2026-08-03",
+      "query": {
+        "s3_keys": [
+          "normalized/qc-lots/qc-lots-lile-dorval/qc-lots-lile-dorval.geojson",
+          "normalized/qc-lots/qc-lots-lile-dorval.geojson"
+        ],
+        "lot_selector": "NO_LOT = 0 (sentry; non affirmé comme lot)",
+        "role_url": "https://donneesouvertes.affmunqc.net/role/RL66092_2026.xml",
+        "role_selector": "RL0103Ax = NO_LOT sans espaces; valeur surface RL0302A",
+        "field_selector": "served properties.surface_m2; role RL0302A (superficie_terrain_m2_role)"
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "toolState": "qc-lots-not-served-in-supported-layouts",
+        "roleEndpoint": "HTTP 200, mais le rôle n'est pas qualifiable sans NO_LOT d'un lot qc-lots servi.",
+        "interpretation": "La présence d'un endpoint MAMH ne remplace pas le dénominateur de lots servi."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 16,
+      "field": "code_postal",
+      "source": "qc-lots servi + contrat rôle foncier MAMH",
+      "asOf": "2026-08-03",
+      "query": {
+        "s3_keys": [
+          "normalized/qc-lots/qc-lots-lile-dorval/qc-lots-lile-dorval.geojson",
+          "normalized/qc-lots/qc-lots-lile-dorval.geojson"
+        ],
+        "lot_selector": "NO_LOT = 0 (sentry; non affirmé comme lot)",
+        "role_url": "https://donneesouvertes.affmunqc.net/role/RL66092_2026.xml",
+        "field_selector": "served properties.code_postal; role code_postal (null by role-foncier contract)"
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "toolState": "qc-lots-not-served-in-supported-layouts",
+        "roleContract": "Le rôle foncier ne porte pas le code postal; celui-ci exige la géométrie du lot pour le géocodage FSA/RTA.",
+        "interpretation": "L'absence contractuelle du champ rôle n'est pas une attestation N-A pour la colonne Immo."
+      },
+      "verdict": "GAP"
+    },
+    {
+      "column": 17,
+      "field": "adresse civique",
+      "source": "qc-lots servi + rôle foncier MAMH",
+      "asOf": "2026-08-03",
+      "query": {
+        "s3_keys": [
+          "normalized/qc-lots/qc-lots-lile-dorval/qc-lots-lile-dorval.geojson",
+          "normalized/qc-lots/qc-lots-lile-dorval.geojson"
+        ],
+        "lot_selector": "NO_LOT = 0 (sentry; non affirmé comme lot)",
+        "role_url": "https://donneesouvertes.affmunqc.net/role/RL66092_2026.xml",
+        "role_selector": "RL0103Ax = NO_LOT sans espaces",
+        "field_selector": "served properties.adresse; role RL0101Ax/RL0101Ex/RL0101Gx (parseRole canonical address)"
+      },
+      "result": "source-inaccessible",
+      "evidence": {
+        "toolState": "qc-lots-not-served-in-supported-layouts",
+        "roleEndpoint": "HTTP 200, mais aucun NO_LOT servi ne permet la résolution MAMH exigée par l'outil.",
+        "interpretation": "Un absent de collection est un GAP d'acquisition Immo (col. 14), jamais une adresse N-A."
+      },
+      "verdict": "GAP"
+    }
+  ],
+  "conclusion": {
+    "verdict": "GAP",
+    "naProvedColumns": [],
+    "reason": "Aucune attestation n'a result=absent. L'Île-Dorval ne peut donc recevoir aucun N-A PROUVE pour les colonnes 2, 12, 13, 14, 15, 16 ou 17.",
+    "kirklandReminder": "Kirkland demeure GAP: la source existe mais son 403 anti-bot la rend inaccessible; ce n'est pas un N-A."
+  }
+}
