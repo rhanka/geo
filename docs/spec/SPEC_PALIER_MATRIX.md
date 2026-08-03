@@ -13,6 +13,22 @@ Générateur : `scripts/palier-matrix-report.mjs`. Sorties datées :
 - La **preuve-v2 exacte (col 10)** est une campagne **LONGUE séparée**, PAS la gate.
 - Inscription durable = **matrice committée + track + SPEC**.
 
+## Gouvernance & ownership
+
+Ce document est la **matrice de MESURE** (qa) ; la **gouvernance** (cohorte, les
+20 KPI, l'ownership lane→colonne, la cible) vit dans `docs/spec/SPEC_PALIER_OWNERSHIP.md`
+(durable, verbatim de la décision owner). Cette matrice mesure ; elle ne décide pas.
+
+Ownership des colonnes (source de vérité = SPEC_PALIER_OWNERSHIP §3) : zones
+possède 1, 2, 3, 8, 9, 10, 11 ; reglement 5, 6, 7 ; pv 4 ; lot 2, 12, 13 ; WP5
+(jointures) 20 ; immo 14–19. **KPI 2 (cohérence lot-zone) est CO-PORTÉ zones+lot.**
+
+Chaque cellule reflète la **source committée autoritaire la plus récente** et STAMPE
+sa date (section Sources). Une mesure de lane plus fraîche non encore committée en
+matrice full (p.ex. un re-fold cohorte lot) N'EST PAS auto-captée tant qu'elle
+n'est pas déposée sous le nom/schéma attendu — le palier reste alors sur la
+dernière matrice full, date affichée, **jamais une valeur fabriquée**.
+
 ## Lignes = cohorte de slugs (paramétrable)
 
 - Défaut : `work/coverage/palier-matrix-cohort-30.json` (SET-30 sélection A =
