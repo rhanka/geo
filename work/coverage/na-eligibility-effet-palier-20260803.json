@@ -1,0 +1,1350 @@
+{
+  "contract": "na-eligibility-effet-palier/v1",
+  "as_of": "2026-08-03",
+  "kpi": "effet_densifiant",
+  "criterion": "SPEC_PALIER_RESOLUTION §2 : N-A PROUVÉ ssi 0 avis public + 0 certificat MRC 137.3 après recherche exhaustive tracée.",
+  "source_bprime": "work/coverage/effet-densifiant-bprime-acquisition-universe-20260727.json",
+  "bprime_universe_rule": "B' served, no known effect, zero finite densite_value features",
+  "cohort": "set-167-bprime",
+  "cohort_size": 167,
+  "finding": "Aucun état B-prime (absent|unknown_only|unserved|absent-from-source) n'établit l'absence d'avis public / certificat 137.3 : la source mesure le PAIRAGE de densité, orthogonal à l'existence de l'instrument légal. Le plafond '8/141' est known_effect (succès de PREUVE d'effet), PAS l'existence d'EEV. Levier réel de col 7 = PROUVER plus d'effets (acquisition d'états de grille antérieurs) OU amendement owner+immo du critère §2.",
+  "bprime_state_census": {
+    "known": 1,
+    "absent": 19,
+    "unknown_only": 12,
+    "unserved": 16,
+    "absent-from-source": 119
+  },
+  "s2_legitimate_na_count": 0,
+  "non_complete_cells": 166,
+  "rows": [
+    {
+      "geo_slug": "westmount",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "saint-lambert",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "hampstead",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "mont-royal",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "montreal-ouest",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "cote-saint-luc",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "longueuil",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "brossard",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-catherine",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "la-prairie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "delson",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "candiac",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "montreal-est",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "boucherville",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "dorval",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "lile-dorval",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-constant",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-bruno-de-montarville",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "carignan",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "dollard-des-ormeaux",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "pointe-claire",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-philippe",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-mathieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "chateauguay",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-julie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-basile-le-grand",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "chambly",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "rosemere",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "varennes",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "kirkland",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "bois-des-filion",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-isidore--roussillon",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "beaconsfield",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lorraine",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lery",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "mercier",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "charlemagne",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "boisbriand",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "deux-montagnes",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "mcmasterville",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "sainte-therese",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-mathias-sur-richelieu",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-mathieu-de-beloeil",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "saint-amable",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "terrebonne",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-remi",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "otterburn-park",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-jacques-le-mineur",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "richelieu",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "beloeil",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "baie-durfe",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-marthe-sur-le-lac",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-jean-sur-richelieu",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "mascouche",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-eustache",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "notre-dame-de-lile-perrot",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "repentigny",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-edouard",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-anne-de-bellevue",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-michel",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "blainville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "pointe-calumet",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "mont-saint-hilaire",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "senneville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "marieville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lile-perrot",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "vercheres",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-marc-sur-richelieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-martine",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "beauharnois",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-anne-des-plaines",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-urbain-premier",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "terrasse-vaudreuil",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-joseph-du-lac",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-jean-baptiste",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "pincourt",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "calixa-lavallee",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lile-cadieux",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "pointe-des-cascades",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-charles-sur-richelieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "napierville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "vaudreuil-sur-le-lac",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-blaise-sur-richelieu",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "mont-saint-gregoire",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-madeleine",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-cyprien-de-napierville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-patrice-de-sherrington",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-roch-de-lachigan",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-angele-de-monnoir",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "lepiphanie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "oka",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-marie-madeleine",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-etienne-de-beauharnois",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-clotilde",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "vaudreuil-dorion",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "rougemont",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-roch-ouest",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-sulpice",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lassomption",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "howick",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "mirabel",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-anne-de-sabrevois",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-lin-laurentides",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-damase--les-maskoutains",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-antoine-sur-richelieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-denis-sur-richelieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "tres-saint-sacrement",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "la-presentation",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-brigide-diberville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "les-cedres",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-esprit",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-valentin",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-sophie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "hudson",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-alexandre",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-chrysostome",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "hemmingford--les-jardins-de-napierville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-cesaire",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-paul-de-lile-aux-noix",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "salaberry-de-valleyfield",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-lazare",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-bernard-de-lacolle",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-alexis",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-marie-salome",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lavaltrie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "contrecoeur",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "henryville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-jerome",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-placide",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-jacques",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "hemmingford--les-jardins-de-napierville--2",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "saint-colomban",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-hyacinthe",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "lacolle",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-sebastien--le-haut-richelieu",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-paul",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-pie",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "havelock",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "sainte-sabine--brome-missisquoi",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-bernard-de-michaudville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "crabtree",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "coteau-du-lac",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "norms_present_one_density",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "sainte-julienne",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "farnham",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-paul-dabbotsford",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-clet",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-roch-de-richelieu",
+      "bprime_state": "unserved",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unserved' = collection non servie → indéterminé, pas une absence d'avis public prouvée."
+    },
+    {
+      "geo_slug": "saint-jude",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "noyan",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "ormstown",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "ange-gardien",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-ours",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    },
+    {
+      "geo_slug": "prevost",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-calixte",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-barnabe-sud",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "notre-dame-de-stanbridge",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "franklin",
+      "bprime_state": "unknown_only",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "B-prime 'unknown_only' = 0 feature de densité exploitable → indéterminé. SPEC §1 interdit de relabel un UNKNOWN en N-A sans preuve d'absence."
+    },
+    {
+      "geo_slug": "saint-pierre",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-liguori",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-hippolyte",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "venise-en-quebec",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "clarenceville",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "joliette",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "les-coteaux",
+      "bprime_state": "absent-from-source",
+      "derived_status": "unknown",
+      "primary_cause": null,
+      "s2_na_eligible": false,
+      "reason": "Slug absent de l'univers B-prime → aucune observation, indéterminé."
+    },
+    {
+      "geo_slug": "saint-dominique",
+      "bprime_state": "absent",
+      "derived_status": "incomplete",
+      "primary_cause": "no_norms_folded",
+      "s2_na_eligible": false,
+      "reason": "B-prime 'absent' = servi + normes de densité présentes mais 0 delta apparié (amendement non recouvrant / grille AVANT absente / date non verbatim). L'instrument peut exister (ex. amherst 602-25) — §2 '0 avis public' NON établi."
+    }
+  ]
+}
