@@ -6,8 +6,14 @@
  *
  * Entrées:
  *   --input=work/coverage/pv-decouverte-municipalites-vierges-....json
- *   --slugs=slug-a,slug-b  (1..8 slugs de l'univers d'entrée)
+ *     ou --municipalities=packages/qc-sources/src/geo/municipalities.qc.json
+ *   --slugs=slug-a,slug-b  (1..8 slugs de l'univers choisi)
  *   --out=work/coverage/pv-decouverte-worklist-....json
+ *   [--out-capture-worklist=work/coverage/pv-decouverte-...-lot-0001.json]
+ *   [--max-candidates-per-municipality=0] (0 = tous)
+ *   [--seed-pages=slug=https://index-officiel,...]
+ *   [--seed-json=slug=https://endpoint-cms-officiel,...]
+ *   [--seed-only] (ne suit pas les pages de navigation hors index fourni)
  *   [--prior=work/coverage/pv-decouverte-worklist-....json]
  *
  * Les voies sont volontairement bornées et observables:
@@ -40,10 +46,12 @@ const MAX_TEXT_BYTES = 2 * 1024 * 1024;
 const MAX_LOT_SIZE = 8;
 const MAX_NAVIGATION_PAGES = 3;
 const MAX_WIX_POSTS = 12;
+const MAX_PV_DETAIL_PAGES = 12;
 const BROWSER_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36";
 const RESEARCH_UA = "sentropic-geo-pv-discovery/1.0 (+https://github.com/rhanka/radar-immobilier)";
 const ACCEPT = "text/html,application/xhtml+xml,application/xml,text/xml,application/json,text/plain;q=0.8,*/*;q=0.1";
 const PV_TEXT = /proc[eè]s[-\s]?verbaux?|\bp\.?\s?v\.?\b|s[eé]ances?\s+(?:ordinaires?|extraordinaires?|du\s+conseil)|meeting\s+minutes|\bminutes\b/i;
+const PV_DOCUMENT_TEXT = /proc[eè]s[-\s]?verbaux?|(?:^|[^a-z0-9])p\.?\s?v\.?(?=$|[^a-z0-9])|meeting\s+minutes|\bminutes\b/i;
 const NON_PV_TEXT = /avis\s+public|avis\s+de\s+motion|ordre\s+du\s+jour|\bodj\b|agenda|budget|r[eè]glement|politique|formulaire/i;
 const NAV_TEXT = /proc[eè]s|verbaux?|\bp\.?\s?v\.?\b|s[eé]ance|conseil|vie[-\s]?d[eé]mocratique|d[eé]mocratie|documents?/i;
 const MRC_TEXT = /\bmrc\b|municipalit[eé]\s+r[eé]gionale|r[eé]gion(?:ale)?\s+de\s+comt[eé]/i;
@@ -67,11 +75,20 @@ interface DirectoryArtifact {
   readonly entries: Readonly<Record<string, { readonly website?: unknown }>>;
 }
 
+interface MunicipalReferenceArtifact {
+  readonly slug: string;
+  readonly name: string;
+  readonly mrc: string | null;
+}
+
 type SourceKind =
   | "municipal-site-anchor"
   | "municipalites-du-quebec-json"
   | "wix-blog-feed"
   | "mrc-portal-anchor"
+  | "wordpress-media-json"
+  | "cms-json-table"
+  | "cms-embedded-table"
   | "youtube-description";
 
 interface Candidate {
@@ -262,6 +279,8 @@ function candidateFromAnchor(
   retrievedAt: string,
 ): Candidate | null {
   if (!DOCUMENT_URL.test(anchor.url)) return null;
+  if (!PV_DOCUMENT_TEXT.test(`${anchor.text} ${anchor.href}`)) return null;
+  if (/comit[eé]|commission|demolition|pl[ée]nier/i.test(sourcePage)) return null;
   const classification = classifyPvObservableDocument({
     url: anchor.url,
     titles: new Set([anchor.text]),
@@ -276,6 +295,209 @@ function candidateFromAnchor(
     evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; page lue: ${sourcePage}; ancre verbatim: «${anchor.text}» (href: ${anchor.href}).`,
     retrieved_at: retrievedAt,
   };
+}
+
+/** Table sérialisée dans le HTML SSR (Nuxt, CMS, etc.), sans télécharger le document. */
+function discoverEmbeddedCouncilTables(
+  municipality: Municipality,
+  officialWebsite: string,
+  sourcePage: string,
+  sourcePageText: string,
+  retrievedAt: string,
+): Candidate[] {
+  const html = sourcePageText
+    .replace(/\\\\/g, "\\")
+    .replace(/\\u([0-9a-fA-F]{4})/g, (_match, code: string) => String.fromCharCode(Number.parseInt(code, 16)))
+    .replace(/\\"/g, "\"")
+    .replace(/\\r\\n|\\n/g, "\n");
+  const candidates: Candidate[] = [];
+  if (/proc[eè]s[-\s]?verbaux?/i.test(html)) {
+    for (const anchor of anchors(html, sourcePage)) {
+      const direct = candidateFromAnchor(municipality, anchor, "municipal-site-anchor", sourcePage, officialWebsite, retrievedAt);
+      if (direct === null) continue;
+      candidates.push({
+        ...direct,
+        source_kind: "cms-embedded-table",
+        evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; page officielle lue: ${sourcePage}; colonne verbatim «Procès-verbal» dans le tableau des séances; ancre documentaire verbatim: «${anchor.text}» (href: ${anchor.href}).`,
+      });
+    }
+  }
+  const tables = [...html.matchAll(/<table[^>]*>([\s\S]*?)<\/table>/gi)];
+  for (const table of tables) {
+    const rows = [...(table[1] ?? "").matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)].map((match) => match[1] ?? "");
+    const header = rows.find((row) => /proc[eè]s[-\s]?verbaux?/i.test(decodeHtml(row)));
+    if (header === undefined) continue;
+    const columns = [...header.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi)].map((match) => decodeHtml(match[1] ?? ""));
+    const pvColumn = columns.findIndex((column) => /proc[eè]s[-\s]?verbaux?/i.test(column));
+    if (pvColumn < 0) continue;
+    for (const row of rows) {
+      if (row === header) continue;
+      const cells = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((match) => match[1] ?? "");
+      const cell = cells[pvColumn];
+      if (cell === undefined) continue;
+      const document = anchors(cell, sourcePage).find((anchor) => DOCUMENT_URL.test(anchor.url));
+      if (document === undefined) continue;
+      const rowText = decodeHtml(row);
+      if (!rowText) continue;
+      candidates.push({
+        slug: municipality.slug,
+        mrc: municipality.mrc,
+        candidate_url: document.url,
+        source_kind: "cms-embedded-table",
+        evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; page officielle lue: ${sourcePage}; en-tête de tableau verbatim: «${columns[pvColumn]}»; ligne de séance verbatim: «${rowText}»; document dans cette colonne: ${document.url}.`,
+        retrieved_at: retrievedAt,
+      });
+    }
+  }
+  return candidates;
+}
+
+function sameOfficialDomain(seed: string, officialWebsite: string): boolean {
+  try {
+    const normalized = (hostname: string): string => hostname.toLowerCase().replace(/^www\d*\./, "");
+    return normalized(new URL(seed).hostname) === normalized(new URL(officialWebsite).hostname);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Certaines pages d'index (notamment WordPress) nomment le PV mais pointent
+ * d'abord vers une publication HTML. Cette seconde lecture reste textuelle :
+ * elle n'accepte que les ancres documentaires réellement présentes dans la
+ * publication et conserve l'intitulé de la séance qui les rattache à la ville.
+ */
+async function discoverPvPublication(
+  municipality: Municipality,
+  officialWebsite: string,
+  sourcePage: string,
+  publication: Anchor,
+): Promise<Candidate[]> {
+  if (DOCUMENT_URL.test(publication.url) || !PV_TEXT.test(`${publication.text} ${publication.href}`) || NON_PV_TEXT.test(publication.text)) {
+    return [];
+  }
+  const response = await fetchText(publication.url);
+  if (response.status !== 200 || response.text === null || response.finalUrl === null) return [];
+  const candidates: Candidate[] = [];
+  for (const anchor of anchors(response.text, response.finalUrl)) {
+    const direct = candidateFromAnchor(municipality, anchor, "municipal-site-anchor", response.finalUrl, officialWebsite, response.retrievedAt);
+    if (direct === null) continue;
+    candidates.push({
+      ...direct,
+      evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; page d'index: ${sourcePage}; lien de séance verbatim: «${publication.text}» (href: ${publication.href}); publication lue: ${response.finalUrl}; ancre documentaire verbatim: «${anchor.text}» (href: ${anchor.href}).`,
+    });
+  }
+  return candidates;
+}
+
+interface WordPressMedia {
+  readonly source_url?: unknown;
+  readonly date?: unknown;
+  readonly slug?: unknown;
+  readonly title?: { readonly rendered?: unknown };
+  readonly caption?: { readonly rendered?: unknown };
+  readonly description?: { readonly rendered?: unknown };
+}
+
+function mediaText(media: WordPressMedia): string {
+  return [media.title?.rendered, media.caption?.rendered, media.description?.rendered]
+    .filter((value): value is string => typeof value === "string")
+    .map(decodeHtml)
+    .filter(Boolean)
+    .join(" | ");
+}
+
+/** Endpoint standard WordPress, seulement quand le CMS est observé sur le site officiel. */
+async function discoverWordpressMedia(
+  municipality: Municipality,
+  officialWebsite: string,
+  homeText: string,
+): Promise<Candidate[]> {
+  if (!/(?:wp-content|wp-includes|wp-json)/i.test(homeText)) return [];
+  let origin: string;
+  try {
+    origin = new URL(officialWebsite).origin;
+  } catch {
+    return [];
+  }
+  const candidates: Candidate[] = [];
+  for (const search of ["proces-verbal", "PV"]) {
+    const endpoint = `${origin}/wp-json/wp/v2/media?search=${encodeURIComponent(search)}&per_page=20&orderby=date&order=desc`;
+    const response = await fetchText(endpoint);
+    if (response.status !== 200 || response.text === null) continue;
+    let medias: unknown;
+    try {
+      medias = JSON.parse(response.text);
+    } catch {
+      continue;
+    }
+    if (!Array.isArray(medias)) continue;
+    for (const raw of medias) {
+      if (raw === null || typeof raw !== "object" || Array.isArray(raw)) continue;
+      const media = raw as WordPressMedia;
+      const candidateUrl = typeof media.source_url === "string" ? media.source_url.trim() : "";
+      const text = mediaText(media);
+      if (!DOCUMENT_URL.test(candidateUrl) || !PV_DOCUMENT_TEXT.test(`${text} ${candidateUrl}`) || NON_PV_TEXT.test(text)) continue;
+      if (classifyPvObservableDocument({ url: candidateUrl, titles: new Set([text]), selfReference: false }).class !== "pv_probable") continue;
+      const date = typeof media.date === "string" ? media.date : "date absente";
+      candidates.push({
+        slug: municipality.slug,
+        mrc: municipality.mrc,
+        candidate_url: candidateUrl,
+        source_kind: "wordpress-media-json",
+        evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; endpoint WordPress lu: ${response.finalUrl ?? endpoint}; titre/caption/description verbatim: «${text}»; date média verbatim: «${date}»; URL média verbatim: ${candidateUrl}.`,
+        retrieved_at: response.retrievedAt,
+      });
+    }
+  }
+  return candidates;
+}
+
+/**
+ * Certains CMS livrent le contenu de leur tableau de séances dans un champ
+ * JSON `html`. La page officielle reste la preuve de la colonne « Procès-
+ * verbal »; le JSON ne fait que matérialiser les lignes. Une URL est retenue
+ * seulement comme premier document de cette colonne, jamais sur son extension.
+ */
+async function discoverCmsJsonTable(
+  municipality: Municipality,
+  officialWebsite: string,
+  sourcePage: string,
+  sourcePageText: string,
+  endpoint: string,
+): Promise<Candidate[]> {
+  if (!sourcePageText || !sameOfficialDomain(sourcePage, officialWebsite)) return [];
+  if (!sameOfficialDomain(endpoint, officialWebsite)) return [];
+  const response = await fetchText(endpoint);
+  if (response.status !== 200 || response.text === null) return [];
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(response.text);
+  } catch {
+    return [];
+  }
+  const html = parsed !== null && typeof parsed === "object" && !Array.isArray(parsed) && typeof (parsed as { html?: unknown }).html === "string"
+    ? (parsed as { html: string }).html
+    : null;
+  if (html === null) return [];
+  const candidates: Candidate[] = [];
+  for (const match of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const row = match[1] ?? "";
+    const documents = anchors(row, response.finalUrl ?? endpoint).filter((anchor) => DOCUMENT_URL.test(anchor.url));
+    const candidate = documents[0];
+    if (candidate === undefined) continue;
+    const rowText = decodeHtml(row);
+    if (!rowText) continue;
+    candidates.push({
+      slug: municipality.slug,
+      mrc: municipality.mrc,
+      candidate_url: candidate.url,
+      source_kind: "cms-json-table",
+      evidence: `Annuaire MAMH (site officiel): ${officialWebsite}; page officielle lue: ${sourcePage}, tableau avec colonne verbatim «Procès-verbal»; endpoint JSON CMS lu: ${response.finalUrl ?? endpoint}; ligne de séance verbatim: «${rowText}»; premier document de la colonne Procès-verbal: ${candidate.url}.`,
+      retrieved_at: response.retrievedAt,
+    });
+  }
+  return candidates;
 }
 
 function mdqAliases(slug: string, officialWebsite: string): string[] {
@@ -450,7 +672,13 @@ async function discoverYoutube(
   });
 }
 
-async function discoverMunicipality(municipality: Municipality, directory: DirectoryArtifact): Promise<{ candidates: Candidate[]; observation: Observation }> {
+async function discoverMunicipality(
+  municipality: Municipality,
+  directory: DirectoryArtifact,
+  seedPages: readonly string[],
+  seedJson: readonly string[],
+  followNavigation: boolean,
+): Promise<{ candidates: Candidate[]; observation: Observation }> {
   const officialWebsite = directory.entries[municipality.slug]?.website;
   if (typeof officialWebsite !== "string" || !officialWebsite) {
     return { candidates: [], observation: { slug: municipality.slug, mrc: municipality.mrc, status: "no_candidate", notes: ["site officiel absent de l'annuaire MAMH"] } };
@@ -474,6 +702,10 @@ async function discoverMunicipality(municipality: Municipality, directory: Direc
     const candidate = candidateFromAnchor(municipality, anchor, "municipal-site-anchor", home.finalUrl, officialWebsite, home.retrievedAt);
     if (candidate) candidates.push(candidate);
   }
+  candidates.push(...await discoverWordpressMedia(municipality, officialWebsite, home.text));
+  for (const publication of homeAnchors.filter((anchor) => PV_TEXT.test(`${anchor.text} ${anchor.href}`)).slice(0, MAX_PV_DETAIL_PAGES)) {
+    candidates.push(...await discoverPvPublication(municipality, officialWebsite, home.finalUrl, publication));
+  }
   const wix = await discoverWix(municipality, officialWebsite, home.text);
   candidates.push(...wix.candidates);
   notes.push(wix.note);
@@ -481,7 +713,38 @@ async function discoverMunicipality(municipality: Municipality, directory: Direc
   candidates.push(...mdq.candidates);
   notes.push(mdq.note);
 
-  const navigation = homeAnchors.filter((anchor) => !DOCUMENT_URL.test(anchor.url) && NAV_TEXT.test(`${anchor.text} ${anchor.href}`)).slice(0, MAX_NAVIGATION_PAGES);
+  for (const seed of seedPages) {
+    if (!sameOfficialDomain(seed, officialWebsite)) {
+      notes.push(`index seed rejeté (domaine non officiel): ${seed}`);
+      continue;
+    }
+    const page = await fetchText(seed);
+    if (page.status !== 200 || page.text === null || page.finalUrl === null) {
+      notes.push(`index seed ${seed}: ${page.status ?? page.error ?? "indéterminé"}`);
+      continue;
+    }
+    const pageAnchors = anchors(page.text, page.finalUrl);
+    const embeddedCandidates = discoverEmbeddedCouncilTables(municipality, officialWebsite, page.finalUrl, page.text, page.retrievedAt);
+    candidates.push(...embeddedCandidates);
+    notes.push(`tables CMS SSR lues: ${page.finalUrl}; candidats=${embeddedCandidates.length}`);
+    for (const anchor of pageAnchors) {
+      const candidate = candidateFromAnchor(municipality, anchor, "municipal-site-anchor", page.finalUrl, officialWebsite, page.retrievedAt);
+      if (candidate) candidates.push(candidate);
+    }
+    for (const publication of pageAnchors.filter((anchor) => PV_TEXT.test(`${anchor.text} ${anchor.href}`)).slice(0, MAX_PV_DETAIL_PAGES)) {
+      candidates.push(...await discoverPvPublication(municipality, officialWebsite, page.finalUrl, publication));
+    }
+    for (const endpoint of seedJson) {
+      const cmsCandidates = await discoverCmsJsonTable(municipality, officialWebsite, page.finalUrl, page.text, endpoint);
+      candidates.push(...cmsCandidates);
+      notes.push(`endpoint JSON CMS lu: ${endpoint}; candidats=${cmsCandidates.length}`);
+    }
+    notes.push(`index seed lu: ${page.finalUrl}`);
+  }
+
+  const navigation = followNavigation
+    ? homeAnchors.filter((anchor) => !DOCUMENT_URL.test(anchor.url) && NAV_TEXT.test(`${anchor.text} ${anchor.href}`)).slice(0, MAX_NAVIGATION_PAGES)
+    : [];
   for (const anchor of navigation) {
     const page = await fetchText(anchor.url);
     if (page.status !== 200 || page.text === null || page.finalUrl === null) continue;
@@ -490,10 +753,13 @@ async function discoverMunicipality(municipality: Municipality, directory: Direc
       const candidate = candidateFromAnchor(municipality, nested, "municipal-site-anchor", page.finalUrl, officialWebsite, page.retrievedAt);
       if (candidate) candidates.push(candidate);
     }
+    for (const publication of pageAnchors.filter((nested) => PV_TEXT.test(`${nested.text} ${nested.href}`)).slice(0, MAX_PV_DETAIL_PAGES)) {
+      candidates.push(...await discoverPvPublication(municipality, officialWebsite, page.finalUrl, publication));
+    }
     candidates.push(...await discoverYoutube(municipality, officialWebsite, page.finalUrl, pageAnchors));
   }
 
-  const mrcPortal = homeAnchors.find((anchor) => !DOCUMENT_URL.test(anchor.url) && MRC_TEXT.test(`${anchor.text} ${anchor.href}`));
+  const mrcPortal = followNavigation ? homeAnchors.find((anchor) => !DOCUMENT_URL.test(anchor.url) && MRC_TEXT.test(`${anchor.text} ${anchor.href}`)) : undefined;
   if (mrcPortal) {
     const page = await fetchText(mrcPortal.url);
     if (page.status === 200 && page.text !== null && page.finalUrl !== null) {
@@ -519,15 +785,67 @@ function validateCandidate(candidate: Candidate, municipalities: ReadonlySet<str
   if (!/^https?:\/\//i.test(candidate.candidate_url) || !candidate.evidence.trim()) throw new Error(`candidate prior invalide: ${candidate.slug}`);
 }
 
+function seedUrls(raw: string | null, selectedSlugs: ReadonlySet<string>, optionName: string): ReadonlyMap<string, readonly string[]> {
+  const result = new Map<string, string[]>();
+  if (raw === null || !raw.trim()) return result;
+  for (const value of raw.split(",").map((item) => item.trim()).filter(Boolean)) {
+    const separator = value.indexOf("=");
+    if (separator < 1) throw new Error(`--${optionName} invalide: ${value}`);
+    const slug = value.slice(0, separator);
+    const page = value.slice(separator + 1);
+    if (!selectedSlugs.has(slug) || !/^https?:\/\//i.test(page)) throw new Error(`--${optionName} hors lot ou URL invalide: ${value}`);
+    const pages = result.get(slug) ?? [];
+    pages.push(page);
+    result.set(slug, pages);
+  }
+  return result;
+}
+
 async function main(): Promise<void> {
-  const inputPath = insideRepo(required("input"), "input");
   const outPath = insideRepo(required("out"), "out");
+  const rawInputPath = arg("input");
+  const rawMunicipalitiesPath = arg("municipalities");
+  if ((rawInputPath === null) === (rawMunicipalitiesPath === null)) {
+    throw new Error("un seul de --input ou --municipalities est requis");
+  }
+  const inputPath = rawInputPath === null ? null : insideRepo(rawInputPath, "input");
+  const municipalitiesPath = rawMunicipalitiesPath === null ? null : insideRepo(rawMunicipalitiesPath, "municipalities");
+  const outCaptureWorklist = arg("out-capture-worklist");
+  const captureWorklistPath = outCaptureWorklist === null ? null : insideRepo(outCaptureWorklist, "out-capture-worklist");
+  const maxCandidatesRaw = arg("max-candidates-per-municipality") ?? "0";
+  const maxCandidatesPerMunicipality = Number(maxCandidatesRaw);
+  if (!Number.isInteger(maxCandidatesPerMunicipality) || maxCandidatesPerMunicipality < 0) {
+    throw new Error("--max-candidates-per-municipality doit être un entier >= 0");
+  }
   const priorPath = arg("prior");
-  if (statSync(inputPath).size > MAX_LOCAL_BYTES) throw new Error("--input dépasse le plafond local");
-  const input = readSmallJson<TargetArtifact>(inputPath);
-  if (input.contract !== "pv-decouverte-municipalites-vierges/v1") throw new Error("--input doit être l'univers vierge PV autoritaire");
-  const universe = new Map(input.municipalities.map((municipality) => [municipality.slug, municipality]));
-  if (universe.size !== input.municipalities.length || universe.size !== input.cardinality.missing_without_candidate) throw new Error("univers vierge incohérent");
+  let universe: Map<string, Municipality>;
+  let universeSource: { path: string; sha256: `sha256:${string}`; target_municipalities: number; kind: "missing-universe" | "municipal-reference" };
+  if (inputPath !== null) {
+    if (statSync(inputPath).size > MAX_LOCAL_BYTES) throw new Error("--input dépasse le plafond local");
+    const input = readSmallJson<TargetArtifact>(inputPath);
+    if (input.contract !== "pv-decouverte-municipalites-vierges/v1") throw new Error("--input doit être l'univers vierge PV autoritaire");
+    universe = new Map(input.municipalities.map((municipality) => [municipality.slug, municipality]));
+    if (universe.size !== input.municipalities.length || universe.size !== input.cardinality.missing_without_candidate) throw new Error("univers vierge incohérent");
+    universeSource = {
+      path: inputPath.slice(ROOT.length + 1),
+      sha256: sha256File(inputPath),
+      target_municipalities: universe.size,
+      kind: "missing-universe",
+    };
+  } else {
+    const municipalities = readSmallJson<MunicipalReferenceArtifact[]>(municipalitiesPath!);
+    if (!Array.isArray(municipalities)) throw new Error("--municipalities doit être un tableau municipal");
+    universe = new Map(municipalities.map((municipality) => [municipality.slug, municipality]));
+    if (universe.size !== municipalities.length || [...universe.values()].some((municipality) => !municipality.slug || !municipality.name)) {
+      throw new Error("référentiel municipal incohérent");
+    }
+    universeSource = {
+      path: municipalitiesPath!.slice(ROOT.length + 1),
+      sha256: sha256File(municipalitiesPath!),
+      target_municipalities: universe.size,
+      kind: "municipal-reference",
+    };
+  }
   const requestedSlugs = required("slugs").split(",").map((slug) => slug.trim()).filter(Boolean);
   if (requestedSlugs.length === 0 || requestedSlugs.length > MAX_LOT_SIZE || new Set(requestedSlugs).size !== requestedSlugs.length) {
     throw new Error(`--slugs doit contenir entre 1 et ${MAX_LOT_SIZE} slugs distincts`);
@@ -537,6 +855,10 @@ async function main(): Promise<void> {
     if (!municipality) throw new Error(`slug hors univers vierge: ${slug}`);
     return municipality;
   });
+  const selectedSlugs = new Set(selected.map((municipality) => municipality.slug));
+  const seeds = seedUrls(arg("seed-pages"), selectedSlugs, "seed-pages");
+  const jsonSeeds = seedUrls(arg("seed-json"), selectedSlugs, "seed-json");
+  const followNavigation = !process.argv.includes("--seed-only");
   const directory = readSmallJson<DirectoryArtifact>(resolve(ROOT, MUNICIPAL_DIRECTORY_PATH));
   const prior = priorPath === null ? null : readSmallJson<PriorWorklist>(insideRepo(priorPath, "prior"));
   if (prior !== null && prior.contract !== "pv-decouverte-worklist/v1") throw new Error("--prior doit être une worklist de découverte PV");
@@ -545,15 +867,23 @@ async function main(): Promise<void> {
   const observations = new Map<string, Observation>();
   for (const candidate of prior?.candidates ?? []) {
     validateCandidate(candidate, allSlugs);
+    if (selectedSlugs.has(candidate.slug)) continue;
     candidates.set(`${candidate.slug}\u0000${candidate.candidate_url}`, candidate);
   }
   for (const observation of prior?.observations ?? []) {
     if (!allSlugs.has(observation.slug)) throw new Error(`observation prior hors univers: ${observation.slug}`);
+    if (selectedSlugs.has(observation.slug)) continue;
     observations.set(observation.slug, observation);
   }
 
   for (const [index, municipality] of selected.entries()) {
-    const found = await discoverMunicipality(municipality, directory);
+    const found = await discoverMunicipality(
+      municipality,
+      directory,
+      seeds.get(municipality.slug) ?? [],
+      jsonSeeds.get(municipality.slug) ?? [],
+      followNavigation,
+    );
     for (const candidate of found.candidates) candidates.set(`${candidate.slug}\u0000${candidate.candidate_url}`, candidate);
     observations.set(municipality.slug, found.observation);
     process.stderr.write(`[pv-decouverte] ${index + 1}/${selected.length} ${municipality.slug}: ${found.observation.status}, candidats=${found.candidates.length}\n`);
@@ -571,7 +901,7 @@ async function main(): Promise<void> {
     generated_at: new Date().toISOString(),
     read_only_web_discovery: true,
     no_document_bytes_read: true,
-    input: { path: inputPath.slice(ROOT.length + 1), sha256: sha256File(inputPath), target_municipalities: universe.size },
+    input: universeSource,
     batch: { slugs: selected.map((municipality) => municipality.slug), max_lot_size: MAX_LOT_SIZE },
     coverage: {
       municipalities_with_at_least_one_discovered_candidate: withCandidate.size,
@@ -584,7 +914,22 @@ async function main(): Promise<void> {
     observations: sortedObservations,
   } as const;
   writeFileSync(outPath, `${JSON.stringify(worklist, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
-  process.stdout.write(`${JSON.stringify({ out: outPath.slice(ROOT.length + 1), candidates: sortedCandidates.length, municipalities: withCandidate.size, observed: sortedObservations.length, universe: universe.size }, null, 2)}\n`);
+  let captureTargets = 0;
+  if (captureWorklistPath !== null) {
+    const bySlug = new Map<string, Candidate[]>();
+    for (const candidate of sortedCandidates) {
+      const current = bySlug.get(candidate.slug) ?? [];
+      if (maxCandidatesPerMunicipality === 0 || current.length < maxCandidatesPerMunicipality) current.push(candidate);
+      bySlug.set(candidate.slug, current);
+    }
+    const targets = [...bySlug.entries()]
+      .map(([slug, found]) => ({ slug, source: "pv-discovery", urls: found.map((candidate) => candidate.candidate_url) }))
+      .filter((target) => target.urls.length > 0)
+      .sort((left, right) => left.slug.localeCompare(right.slug));
+    writeFileSync(captureWorklistPath, `${JSON.stringify(targets, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
+    captureTargets = targets.length;
+  }
+  process.stdout.write(`${JSON.stringify({ out: outPath.slice(ROOT.length + 1), candidates: sortedCandidates.length, municipalities: withCandidate.size, observed: sortedObservations.length, universe: universe.size, capture_worklist: captureWorklistPath?.slice(ROOT.length + 1) ?? null, capture_targets: captureTargets }, null, 2)}\n`);
 }
 
 main().catch((error: unknown) => {
