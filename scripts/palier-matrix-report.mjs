@@ -60,7 +60,7 @@ function pickLatestByField(dir, re, field) {
   const cands = fs.readdirSync(dir).filter((f) => re.test(f)).map((f) => {
     const p = path.join(dir, f);
     let ts = '';
-    try { ts = String(JSON.parse(fs.readFileSync(p, 'utf8'))[field] ?? ''); } catch { ts = ''; }
+    try { const o = JSON.parse(fs.readFileSync(p, 'utf8')); ts = String(o[field] ?? o?.$meta?.[field] ?? ''); } catch { ts = ''; }
     return { p, ts, f };
   }).sort((a, b) => a.ts.localeCompare(b.ts) || a.f.localeCompare(b.f));
   return cands.length ? cands[cands.length - 1].p : null;
@@ -122,6 +122,30 @@ function bucketIndex(cityBuckets) {
   }
   return m;
 }
+// Le col-20 existe en DEUX contrats committés par la lane jointures :
+//  (a) ancien échantillon 6-villes : { generated_at, rows[] }, vocab statut
+//      { measured | immo-gt-pending } ;
+//  (b) 167-GT S3 (AUTORITAIRE, qc-zoning-events-col20-s3gt) : { $meta.generated_at,
+//      cities[] }, vocab statut { measured | no_geo_events | gap_acquisition }.
+// On NORMALISE vers le vocab du générateur SANS fabriquer d'état : le statut de la
+// lane est traduit 1:1 (no_geo_events = GT présente mais geo muet → measured-geo-empty
+// = incomplete ; gap_acquisition = GT immo absente → immo-gt-pending = unknown). Anti-
+// invention : aucune ville ajoutée, aucun statut deviné — seule l'orthographe du statut
+// et le nom des champs de détail sont alignés. Le fichier le plus récent (par
+// generated_at OU $meta.generated_at) l'emporte : le 167-GT supplante l'échantillon 6.
+const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending' };
+function normalizeCol20(src) {
+  if (!src) return [];
+  const list = Array.isArray(src.cities) ? src.cities : Array.isArray(src.rows) ? src.rows : [];
+  return list.map((r) => ({
+    slug: r.slug,
+    statut: COL20_STATUT[r.statut] ?? r.statut,
+    geo_events_count: r.geo_events_count ?? r.geo_events ?? null,
+    immo_gt_events: r.immo_gt_events ?? r.immo_events ?? null,
+    matched: r.matched ?? null,
+    recall_pct_si_mesurable: r.recall_pct_si_mesurable ?? r.recall_pct ?? null,
+  }));
+}
 const IDX = {
   zones: indexBy(SRC.zones?.cities, 'slug'),
   normes: indexBy(SRC.normes?.cities, 'slug'),
@@ -134,7 +158,7 @@ const IDX = {
   immoLotZone: bucketIndex(SRC.immoLotZone?.city_buckets),
   immoFolded: bucketIndex(SRC.immoFolded?.city_buckets),
   immoField: indexBy(SRC.immoField?.cities, 'slug'),
-  col20: indexBy(SRC.col20?.rows, 'slug'),
+  col20: indexBy(normalizeCol20(SRC.col20), 'slug'),
 };
 // Les artefacts immo autoritaires disambiguent les homonymes par un suffixe MRC
 // avec DOUBLE tiret (`hemmingford--les-jardins-de-napierville`) là où la cohorte
