@@ -74,6 +74,30 @@ Couverture recomptée : **666 → 670/1106** (+4 villes, +12 clés CAS) —
 boucherville, candiac, hampstead, longueuil, saint-basile-le-grand,
 saint-bruno-de-montarville, varennes, westmount.
 
+## Run 5 — RE-SOURCING des 3 résiduels — `20260803T150000Z`
+Découverte read-only (agent, périmètre strict 3 slugs) : re-vérification robots
+verbatim par hôte + URLs PDF octet-vérifiées.
+- **saint-bruno-de-montarville → CAPTURABLE.** L'hôte officiel
+  `www.ville.saint-bruno.qc.ca` a un robots OUVERT (`User-agent: * / Disallow:`
+  vide) et sert les MÊMES PV sous `/wp-content/uploads/` (chemin autorisé). 3 PV
+  séance-unique octet-vérifiés `application/pdf`, 220–285 Ko. Le CDN
+  `saintbruno-site.s3…` (`Disallow: /`) était la MAUVAISE source — corrigée.
+- **westmount → CAPTURABLE.** robots n'interdit que `/administration` ;
+  `/storage/app/media/` est autorisé. 3 PV séance-**individuelle** trouvés
+  (2025-09-08 3,5 Mo, 2025-12-08 1,3 Mo, 2025-05-05 >10 Mo) — PAS les
+  compilations annuelles `*-PROCES-VERBAL-MINUTES.pdf` qui OOMaient.
+- **saint-basile-le-grand → N-A DOCUMENTÉ (mur robots).** `villesblg.ca` interdit
+  `/wp-content/uploads/` où sont TOUS les PV ; ancien `.qc.ca` 301→villesblg.ca ;
+  MRC ne sert que ses PV régionaux ; aucune visionneuse/extranet. Absence de
+  source robots-autorisée TRACÉE → `pv-na-saint-basile-le-grand-20260803T150000Z.json`.
+  On ne contourne PAS robots (principe fondateur). Cadrage owner « murs → N-A
+  documenté ».
+
+Worklist corrigée (2 villes capturables) :
+`work/coverage/pv-cohorte-vides-20260803-capture-lot-0004-pvindex-resource.json`
+(`source=pv-index`). Prochain beat : capture cluster (1 ville/shard,
+`--memory-limit-mi 512`) → classifier → recompter.
+
 ## Suite (capture ≠ couverture)
 Capturer les octets NE bouge PAS le chiffre : `pv-couverture-municipale` lit des
 snapshots verdict committés, pas S3 en vif. Il faut ensuite classifier/lire les
