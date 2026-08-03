@@ -278,16 +278,110 @@ invariant(new Set(COHORT_SLUGS).size === COHORT_SLUGS.length, "cohort has duplic
 for (const slug of COHORT_SLUGS) {
   invariant(cohortCities.has(slug), `cohort slug is absent from municipal catalogue: ${slug}`);
 }
+
+// Palier cohort = the owner's 167-city resolution target (SPEC_PALIER_RESOLUTION,
+// qa commit e78c725c). This file is a byte-for-byte mirror of the authoritative
+// artifact work/coverage/palier-matrix-cohort-167.json produced on lane/qa
+// (commit 8754014b) from radar 800ee90:docs/spec/reports/set-167-bprime.tsv —
+// slug/priorityRank VERBATIM. Committed here so this generator stays reproducible
+// on a clean lane/reglement checkout. A palier slug that is not a geo catalogue
+// slug is reported as `unmatched`, never silently assigned a status.
+const PALIER_COHORT_PATH = "work/coverage/palier-cohort-167.json";
+const palierCohortSource = readJson(PALIER_COHORT_PATH);
+invariant(palierCohortSource.contract === "city-kpi-matrix-slug-cohort/v1",
+  `${PALIER_COHORT_PATH} has unexpected contract`);
+invariant(Array.isArray(palierCohortSource.cities), `${PALIER_COHORT_PATH} has no cities array`);
+const PALIER_TARGET = 167;
+invariant(palierCohortSource.cities.length === PALIER_TARGET,
+  `${PALIER_COHORT_PATH} has ${palierCohortSource.cities.length} cities, expected ${PALIER_TARGET}`);
+const palierRows = palierCohortSource.cities.map((row) => {
+  invariant(typeof row.slug === "string" && row.slug.length > 0, `${PALIER_COHORT_PATH} row has no slug`);
+  invariant(Number.isInteger(row.priorityRank), `${PALIER_COHORT_PATH}/${row.slug} has no integer priorityRank`);
+  return { slug: row.slug, priorityRank: row.priorityRank };
+});
+invariant(new Set(palierRows.map((r) => r.slug)).size === PALIER_TARGET, "palier cohort has duplicate slugs");
+invariant(new Set(palierRows.map((r) => r.priorityRank)).size === PALIER_TARGET, "palier cohort has duplicate ranks");
+for (const { priorityRank } of palierRows) {
+  invariant(priorityRank >= 1 && priorityRank <= PALIER_TARGET,
+    `palier cohort priorityRank ${priorityRank} out of 1..${PALIER_TARGET}`);
+}
+
+// Continuity guard: the historical hand-maintained 30-cohort must equal the
+// priorityRank<=30 view of the authoritative 167. A drift here means the two
+// definitions diverged and the report would silently misreport the 30-slice.
+const palier30Slugs = palierRows.filter((r) => r.priorityRank <= 30).map((r) => r.slug);
+invariant(palier30Slugs.length === 30, `palier rank<=30 view has ${palier30Slugs.length} slugs, expected 30`);
+invariant(new Set(palier30Slugs).size === new Set(COHORT_SLUGS).size
+  && [...COHORT_SLUGS].every((slug) => palier30Slugs.includes(slug)),
+  "legacy 30-cohort set differs from palier rank<=30 view");
+
+// Per-axis partition over a slug list; a slug absent from the municipal catalogue
+// (radar slug space ≠ geo catalogue) is counted as `unmatched`, not guessed.
+function sliceForSlugs(slugs, label) {
+  const axes = Object.keys(matrix.totals);
+  const partition = Object.fromEntries(axes.map((axis) => [axis,
+    Object.fromEntries([...STATES, "unmatched"].map((state) => [state, 0]))]));
+  const unmatched = [];
+  for (const slug of slugs) {
+    const city = cohortCities.get(slug);
+    if (city === undefined) {
+      unmatched.push(slug);
+      for (const axis of axes) partition[axis].unmatched += 1;
+      continue;
+    }
+    for (const axis of axes) partition[axis][city[axis]] += 1;
+  }
+  for (const axis of axes) {
+    const total = [...STATES, "unmatched"].reduce((sum, state) => sum + partition[axis][state], 0);
+    invariant(total === slugs.length, `${label}/${axis} partition is ${total}, expected ${slugs.length}`);
+  }
+  return { count: slugs.length, unmatched, partition };
+}
+
+const palier167Slugs = palierRows.map((r) => r.slug);
+const palier167 = sliceForSlugs(palier167Slugs, "palier167");
+const palier30 = sliceForSlugs(palier30Slugs, "palier30");
 const cohortComplete = Object.fromEntries(Object.keys(matrix.totals).map((axis) => [
   axis,
-  `${COHORT_SLUGS.filter((slug) => cohortCities.get(slug)[axis] === "complete").length}/${COHORT_SLUGS.length}`,
+  `${palier30.partition[axis].complete}/30`,
 ]));
+const palier167Complete = Object.fromEntries(Object.keys(matrix.totals).map((axis) => [
+  axis,
+  `${palier167.partition[axis].complete}/${PALIER_TARGET}`,
+]));
+
+// Handoff artifact for qa: per-axis partition over the 167 plus the per-city
+// rows, so the qa matrix joins statuses on slug without re-deriving anything.
+const PALIER_OUTPUT = `work/coverage/completion-regdens-palier167-${OUTPUT_DATE}.json`;
+const palierHandoff = {
+  contract: "completion-regdens-palier167/v1",
+  as_of: OUTPUT_AS_OF,
+  cohort: palierCohortSource.cohort,
+  cohort_source: palierCohortSource.source,
+  source_as_of: matrix.source_as_of,
+  target: PALIER_TARGET,
+  partition: palier167.partition,
+  unmatched: palier167.unmatched,
+  cities: palierRows.map(({ slug, priorityRank }) => ({
+    priorityRank,
+    slug,
+    matched: cohortCities.has(slug),
+    ...(cohortCities.has(slug)
+      ? Object.fromEntries(Object.keys(matrix.totals).map((axis) => [axis, cohortCities.get(slug)[axis]]))
+      : {}),
+  })),
+};
 
 writeFileSync(absolute(OUTPUT), `${JSON.stringify(matrix, null, 2)}\n`);
 writeFileSync(absolute(PERCITY_OUTPUT), `${JSON.stringify(perCity, null, 2)}\n`);
+writeFileSync(absolute(PALIER_OUTPUT), `${JSON.stringify(palierHandoff, null, 2)}\n`);
 console.log(JSON.stringify({
   output: OUTPUT,
   per_city_output: PERCITY_OUTPUT,
+  palier167_output: PALIER_OUTPUT,
   totals: matrix.totals,
   cohort_complete: cohortComplete,
+  palier167_complete: palier167Complete,
+  palier167_unmatched: palier167.unmatched,
+  palier167_partition: palier167.partition,
 }, null, 2));
