@@ -107,6 +107,29 @@ Worklist corrigée (2 villes capturables) :
 - Suite : `capture-octets-classification --lane=pv` → si `INDEXED` (propriétaire
   imprimé confirmé) câbler le verdict → recompter (`pv-couverture-municipale`).
 
+## Run 7 — CORRECTION HOMONYME saint-bruno → couverture 672→673 — `20260803T174742Z`
+Le run 6 avait re-sourcé saint-bruno vers `www.ville.saint-bruno.qc.ca` — mais
+c'est l'**HOMONYME** : Municipalité de **Saint-Bruno (Lac-Saint-Jean-Est)**, en
+fusion 2026 avec **Hébertville** (d'où le verbatim « municipalité d'Hébertville »).
+Ses PV impriment « MUNICIPALITÉ D'HÉBERTVILLE » → le garant d'ownership a REFUSÉ
+(`NON_CONFIRME`) = **vrai négatif correct**, pas un faux-négatif du matcher.
+- Diagnostic read-only (agent, 1 slug) : couche texte présente, mauvais
+  propriétaire. Vraie cible **Saint-Bruno-de-Montarville** (Montérégie) sur
+  `stbruno.ca` (robots ouvert : n'interdit que `/wp-json/`, `/?rest_route=`).
+  ⚠️ Les PV **récents 2024-2026 sont offloadés vers le CDN S3 robots-fermé** ;
+  l'origine ne sert que ≤~2022 — la couverture n'exige qu'1 INDEXED, donc suffit.
+- **Job** : `geo-capture-pv-20260803t174742z` (1 shard, 512Mi), Complete 1/1.
+  Worklist `work/coverage/pv-cohorte-vides-20260803-capture-lot-0005-saint-bruno-stbruno.json`.
+- Classification `pv-capture-octets-20260803T174742Z.json` : **3/3
+  PV_LISIBLE_PROPRIETAIRE_CONFIRME**, propriétaire « VILLE DE SAINT-BRUNO-DE-MONTARVILLE ».
+  Verdict `pv-lecture-visuelle-cohorte-vides-lot-08-saint-bruno-20260803T174742Z.json`.
+- Couverture recomptée : **672 → 673/1106**.
+
+### Cohorte zéro-capture — SOLDÉE (8/8)
+6 complete (boucherville, candiac, hampstead, longueuil, varennes, westmount) +
+1 complete (saint-bruno-de-montarville, source corrigée) + 1 N-A documenté
+(saint-basile-le-grand, mur robots tracé). **7 complete / 1 N-A prouvé = 0 unknown.**
+
 ## Suite (capture ≠ couverture)
 Capturer les octets NE bouge PAS le chiffre : `pv-couverture-municipale` lit des
 snapshots verdict committés, pas S3 en vif. Il faut ensuite classifier/lire les
