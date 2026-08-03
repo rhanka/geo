@@ -17,7 +17,15 @@ Générateur : `scripts/palier-matrix-report.mjs`. Sorties datées :
 
 Ce document est la **matrice de MESURE** (qa) ; la **gouvernance** (cohorte, les
 20 KPI, l'ownership lane→colonne, la cible) vit dans `docs/spec/SPEC_PALIER_OWNERSHIP.md`
-(durable, verbatim de la décision owner). Cette matrice mesure ; elle ne décide pas.
+et les **critères de résolution N-A** dans `docs/spec/SPEC_PALIER_RESOLUTION.md`
+(durables, verbatim de la décision owner). Cette matrice mesure ; elle ne décide pas.
+
+**Règle d'or N-A (SPEC_PALIER_RESOLUTION §1)** : une cellule ne devient `N-A` que
+sur **preuve d'absence REPRODUCTIBLE** (requête/source re-jouable établissant que la
+donnée n'existe pas), portée par la lane propriétaire. Un vide NON prouvé reste
+`unknown` — **INTERDIT** de le relabeller `N-A`. Ce générateur ne fabrique donc
+JAMAIS un N-A : il ne classe N-A que ce que la source committée porte déjà comme tel
+(p.ex. TOD hors-39). Les preuves N-A sont produites par les lanes, pas par la mesure.
 
 Ownership des colonnes (source de vérité = SPEC_PALIER_OWNERSHIP §3) : zones
 possède 1, 2, 3, 8, 9, 10, 11 ; reglement 5, 6, 7 ; pv 4 ; lot 2, 12, 13 ; WP5
@@ -60,9 +68,9 @@ recall-v3.4** (maturité WP5, non per-ville). `incomplete+unknown` des AUTRES co
 | 2 | Zones — cohérence lot-zone | `lot-zone-consistency-scale-*` `cities[]` | complete ssi `status=measured` ∧ `mismatch_pct<5` ; sinon unknown |
 | 3 | Normes — complétion | `completion-1-normes-matrix-*` `cities[].state` | état direct |
 | 4 | PV — **capté (indexé)** | capté `pv-couverture-municipale-*` `municipal_coverage.slugs[]` (≥1 doc INDEXED owner-confirmé) + déclaratif `pv-completion-city-audit.json` `cities[].state` | complete ssi CAPTÉ ; N-A si déclaratif N-A ; sinon incomplete (attendu, 0 octet capté) / unknown. **`presence_strict`** : présent ssi complete (capté) — un vert déclaratif non capté est ABSENT (vert par omission = rouge) |
-| 5 | Règlement — déclarée+preuve | déclarée `acquisition/config/reglement-provenance.json` (`reglement_numero`) + preuve `reglement-capture-kpi-*` (`state`) | complete ssi preuve `capture_inchange` ; incomplete ssi déclaré OU preuve incomplète ; sinon unknown. `details.{declared,proven}` en JSON |
-| 6 | Usage dominant — complétion | `zonage-enrichment.json` `perMuni[].usage_dominant` (bool) | true→complete, false→incomplete, absent→unknown |
-| 7 | Effet densifiant — complétion | `effet-densifiant-bprime-acquisition-universe-*` `rows[].state` | known→complete, absent→incomplete, unknown_only/unserved→unknown |
+| 5 | Règlement — déclarée+preuve | `completion-regdens-percity-*` `cities[].{reglement_declared,reglement_proven}` (source UNIFIÉE reglement) | complete ssi `reglement_proven=complete` ; incomplete ssi `reglement_declared=complete` OU `reglement_proven=incomplete` ; sinon unknown. `details.{declared,proven}` en JSON |
+| 6 | Usage dominant — complétion | `completion-regdens-percity-*` `cities[].usage_dominant` | état direct |
+| 7 | Effet densifiant — complétion | `completion-regdens-percity-*` `cities[].effet_densifiant` | état direct |
 | 8 | Provenance — jointure exacte | `zone-provenance-quality-matrix-*` `rows[]` | complete ssi `collection_key` non-null ; sinon unknown |
 | 9 | Provenance — qualité retained | idem `quality_status` | {acceptable,v2}→complete ; {candidate,orphan}→incomplete ; unknown |
 | 10 | Provenance — PREUVE v2 exacte | idem `quality_status` | v2→complete ; {acceptable,candidate,orphan}→incomplete ; unknown. **HORS gate** |
