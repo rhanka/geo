@@ -1,0 +1,106 @@
+{
+  "contract": "zones-gonet-capture-report/v1",
+  "generatedAt": "2026-08-03T12:24:24.072Z",
+  "capture_run_id": "zones-20260803T122242Z-25-da4a3c61-ca28-4e90-a059-45ebaa682a86",
+  "deposit": false,
+  "verdict_counts": {
+    "PASS_CAPTURE": 1,
+    "REJECT": 1,
+    "NO_VECTOR": 0
+  },
+  "capture_report": [
+    {
+      "slug": "saint-barnabe-sud",
+      "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54105_SaintBarnabeSud/MapServer/146/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+      "retrieved_at": "2026-08-03T12:23:33.669Z",
+      "sha256_octets": "bd3ff179c424a31a7d88976882bf9106671e013cc80e07ed978df40b759913ee",
+      "n_features": 26,
+      "codes_distinct": 26,
+      "lettered_pct": 26.923076923076923,
+      "integer_pure_pct": 73.07692307692307,
+      "bbox_diag_km": 16.111114499156614,
+      "nearest_registre_muni": "saint-barnabe-sud",
+      "nearest_km": 0.8981657627802744,
+      "verdict": "REJECT_LETTERED_LT50_PCT"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54115_SaintBernardDeMichaudville/MapServer/224/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+      "retrieved_at": "2026-08-03T12:24:23.670Z",
+      "sha256_octets": "4316832b1d50bfce845b72e0a7f93a9ce545f55d2b08ea9529d2fbdbf64f4649",
+      "n_features": 39,
+      "codes_distinct": 37,
+      "lettered_pct": 100,
+      "integer_pure_pct": 0,
+      "bbox_diag_km": 18.303347087209964,
+      "nearest_registre_muni": "saint-bernard-de-michaudville",
+      "nearest_km": 0.34370517815895324,
+      "verdict": "PASS_CAPTURE"
+    }
+  ],
+  "byStatus": {
+    "no-zonage-layer": 1,
+    "deposited": 1
+  },
+  "deposited": [],
+  "results": [
+    {
+      "slug": "saint-barnabe-sud",
+      "site": "https://www.saintbarnabesud.ca",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=54105&pl=1"
+      ],
+      "deposited": false,
+      "status": "no-zonage-layer",
+      "detail": "gonet couche Zonage champ 'Num_zone': <50% codes lettrés+numérotés — affectation/décoy suspecté (codeLike=27%, sample=[\"302\",\"402\",\"103\",\"401\",\"203\"]) — rejet anti-invention",
+      "captureReport": {
+        "slug": "saint-barnabe-sud",
+        "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54105_SaintBarnabeSud/MapServer/146/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:23:33.669Z",
+        "sha256_octets": "bd3ff179c424a31a7d88976882bf9106671e013cc80e07ed978df40b759913ee",
+        "n_features": 26,
+        "codes_distinct": 26,
+        "lettered_pct": 26.923076923076923,
+        "integer_pure_pct": 73.07692307692307,
+        "bbox_diag_km": 16.111114499156614,
+        "nearest_registre_muni": "saint-barnabe-sud",
+        "nearest_km": 0.8981657627802744,
+        "verdict": "REJECT_LETTERED_LT50_PCT"
+      }
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "site": "https://www.saintbernarddemichaudville.qc.ca",
+      "platforms": [
+        "goazimut"
+      ],
+      "viewerUrls": [
+        "https://www.goazimut.com/GOnet6/?m=54115&pl=1"
+      ],
+      "deposited": false,
+      "status": "deposited",
+      "detail": "PROBE OK (non déposé): 39 zones (champ Num_zone) via GoNet https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54115_SaintBernardDeMichaudville/MapServer/224",
+      "captureReport": {
+        "slug": "saint-bernard-de-michaudville",
+        "source_url_reelle": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54115_SaintBernardDeMichaudville/MapServer/224/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:24:23.670Z",
+        "sha256_octets": "4316832b1d50bfce845b72e0a7f93a9ce545f55d2b08ea9529d2fbdbf64f4649",
+        "n_features": 39,
+        "codes_distinct": 37,
+        "lettered_pct": 100,
+        "integer_pure_pct": 0,
+        "bbox_diag_km": 18.303347087209964,
+        "nearest_registre_muni": "saint-bernard-de-michaudville",
+        "nearest_km": 0.34370517815895324,
+        "verdict": "PASS_CAPTURE"
+      },
+      "zonageLayerUrl": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54115_SaintBernardDeMichaudville/MapServer/224",
+      "zoneCodeField": "Num_zone",
+      "featureCount": 39,
+      "distanceKm": 0.34370517815895324
+    }
+  ]
+}
