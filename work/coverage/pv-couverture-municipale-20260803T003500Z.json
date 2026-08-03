@@ -1,0 +1,2874 @@
+{
+  "contract": "pv-couverture-municipale/v1",
+  "generated_at": "2026-08-03T00:34:33.329Z",
+  "read_only_aggregation": true,
+  "definition": {
+    "covered_if": "Au moins un document est attribué à la municipalité comme INDEXED après déduplication par clé CAS, avec le propriétaire imprimé dans le document confirmé.",
+    "excluded": [
+      "capture sans INDEXED",
+      "OWNER_NOT_CONFIRMED",
+      "CONTAMINATION_OWNER_MISMATCH",
+      "échec d'extraction/lecture",
+      "tout verdict non INDEXED"
+    ],
+    "cas_key": "storage_key raw/pv-index/cas/<sha256>.<extension>",
+    "projection": "slug du document portant le verdict INDEXED; un conflit de slugs n'ouvre aucune municipalité"
+  },
+  "reference": {
+    "path": "packages/qc-sources/src/geo/municipalities.qc.json",
+    "municipalities": 1106
+  },
+  "sources": {
+    "snapshot": {
+      "files_discovered": 0,
+      "files_read": 1,
+      "excluded_files": 0,
+      "rows": 6382,
+      "joined_rows": 6382,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 6382,
+      "indexed_rows": 815,
+      "raw_verdicts": {},
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "historical_graphify": {
+      "files_discovered": 25,
+      "files_read": 26,
+      "excluded_files": 0,
+      "rows": 830,
+      "joined_rows": 830,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 815,
+      "indexed_rows": 830,
+      "raw_verdicts": {},
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "graphify_real_universe": {
+      "files_discovered": 607,
+      "files_read": 607,
+      "excluded_files": 18,
+      "rows": 6080,
+      "joined_rows": 6080,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 5997,
+      "indexed_rows": 4909,
+      "raw_verdicts": {
+        "CONTAMINATION_OWNER_MISMATCH": 61,
+        "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 664,
+        "INDEXED": 4909,
+        "OWNER_NOT_CONFIRMED": 363,
+        "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 83
+      },
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "visual_reading": {
+      "files_discovered": 26,
+      "files_read": 26,
+      "excluded_files": 13,
+      "rows": 287,
+      "joined_rows": 287,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 287,
+      "indexed_rows": 256,
+      "raw_verdicts": {
+        "CONTAMINATION_OWNER_MISMATCH": 4,
+        "DOCUMENT_LISIBLE_NON_PV": 22,
+        "INDEXED": 256,
+        "OWNER_NOT_CONFIRMED": 4,
+        "VISUALLY_UNREADABLE": 1
+      },
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "partition": {
+      "files_discovered": 0,
+      "files_read": 1,
+      "excluded_files": 0,
+      "rows": 397,
+      "joined_rows": 397,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 186,
+      "indexed_rows": 185,
+      "raw_verdicts": {
+        "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 211,
+        "INDEXED": 185,
+        "OWNER_NOT_CONFIRMED": 1
+      },
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "territorial_wave1": {
+      "files_discovered": 0,
+      "files_read": 1,
+      "excluded_files": 0,
+      "rows": 279,
+      "joined_rows": 279,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 279,
+      "indexed_rows": 203,
+      "raw_verdicts": {
+        "CONTAMINATION_OWNER_MISMATCH": 2,
+        "DOCUMENT_LISIBLE_NON_PV": 6,
+        "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 45,
+        "HTML_NON_PV_CALENDRIER_SEANCES": 1,
+        "HTML_NON_PV_VIDEO_SEANCE": 1,
+        "HTML_PORTAL_NOT_PV": 2,
+        "HTML_PV_LANDING_PAGE_NOT_INDEXED": 5,
+        "HTML_PV_RESOURCE_RECAPTURE_REQUIRED": 2,
+        "INDEXED": 203,
+        "OWNER_NOT_CONFIRMED": 12
+      },
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "territorial_wave2": {
+      "files_discovered": 0,
+      "files_read": 1,
+      "excluded_files": 0,
+      "rows": 273,
+      "joined_rows": 273,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 273,
+      "indexed_rows": 207,
+      "raw_verdicts": {
+        "AUTRE_NON_INDEXE": 6,
+        "CONTAMINATION_OWNER_MISMATCH": 1,
+        "DOCUMENT_LISIBLE_NON_PV": 5,
+        "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 32,
+        "HTML_PORTAL_OR_SOFT_404": 8,
+        "INDEXED": 207,
+        "OWNER_NOT_CONFIRMED": 14
+      },
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    },
+    "unverdict_queue": {
+      "files_discovered": 0,
+      "files_read": 1,
+      "excluded_files": 0,
+      "rows": 83,
+      "joined_rows": 83,
+      "unjoinable_rows": 0,
+      "unique_cas_keys": 83,
+      "indexed_rows": 0,
+      "raw_verdicts": {},
+      "missing_files": [],
+      "unreadable_files": [],
+      "unjoinable_reasons": []
+    }
+  },
+  "universe": {
+    "partition_base_cas_keys": 6382,
+    "partition_report_cas_keys": 6382,
+    "all_source_cas_keys": 6934,
+    "new_cas_keys_beyond_partition_base": 552,
+    "cas_keys_without_any_observation": []
+  },
+  "deduplication": {
+    "observations": 9044,
+    "unique_cas_keys": 6934,
+    "indexed_cas_keys": 5973,
+    "final_outcomes": {
+      "INDEXED": 5973,
+      "CONTAMINATION_OWNER_MISMATCH": 60,
+      "OWNER_NOT_CONFIRMED": 359,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 426,
+      "NON_INDEXED_OTHER": 33,
+      "VISUALLY_UNREADABLE": 0,
+      "CAS_SHA_MISMATCH": 0,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 83,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0,
+      "UNCLASSIFIED_NO_TERMINAL_VERDICT": 0
+    },
+    "conflicting_cas_keys": 0
+  },
+  "municipal_coverage": {
+    "covered": 655,
+    "denominator": 1106,
+    "slugs": [
+      {
+        "slug": "abercorn",
+        "name": "Abercorn"
+      },
+      {
+        "slug": "acton-vale",
+        "name": "Acton Vale"
+      },
+      {
+        "slug": "adstock",
+        "name": "Adstock"
+      },
+      {
+        "slug": "aguanish",
+        "name": "Aguanish"
+      },
+      {
+        "slug": "albanel",
+        "name": "Albanel"
+      },
+      {
+        "slug": "albertville",
+        "name": "Albertville"
+      },
+      {
+        "slug": "alleyn-et-cawood",
+        "name": "Alleyn-et-Cawood"
+      },
+      {
+        "slug": "amherst",
+        "name": "Amherst"
+      },
+      {
+        "slug": "amos",
+        "name": "Amos"
+      },
+      {
+        "slug": "amqui",
+        "name": "Amqui"
+      },
+      {
+        "slug": "armagh",
+        "name": "Armagh"
+      },
+      {
+        "slug": "arundel",
+        "name": "Arundel"
+      },
+      {
+        "slug": "ascot-corner",
+        "name": "Ascot Corner"
+      },
+      {
+        "slug": "aston-jonction",
+        "name": "Aston-Jonction"
+      },
+      {
+        "slug": "auclair",
+        "name": "Auclair"
+      },
+      {
+        "slug": "audet",
+        "name": "Audet"
+      },
+      {
+        "slug": "aumond",
+        "name": "Aumond"
+      },
+      {
+        "slug": "authier",
+        "name": "Authier"
+      },
+      {
+        "slug": "authier-nord",
+        "name": "Authier-Nord"
+      },
+      {
+        "slug": "ayers-cliff",
+        "name": "Ayer's Cliff"
+      },
+      {
+        "slug": "baie-comeau",
+        "name": "Baie-Comeau"
+      },
+      {
+        "slug": "baie-des-sables",
+        "name": "Baie-des-Sables"
+      },
+      {
+        "slug": "baie-durfe",
+        "name": "Baie-D'Urfé"
+      },
+      {
+        "slug": "baie-johan-beetz",
+        "name": "Baie-Johan-Beetz"
+      },
+      {
+        "slug": "baie-saint-paul",
+        "name": "Baie-Saint-Paul"
+      },
+      {
+        "slug": "baie-sainte-catherine",
+        "name": "Baie-Sainte-Catherine"
+      },
+      {
+        "slug": "baie-trinite",
+        "name": "Baie-Trinité"
+      },
+      {
+        "slug": "barkmere",
+        "name": "Barkmere"
+      },
+      {
+        "slug": "barnston-ouest",
+        "name": "Barnston-Ouest"
+      },
+      {
+        "slug": "beaconsfield",
+        "name": "Beaconsfield"
+      },
+      {
+        "slug": "bearn",
+        "name": "Béarn"
+      },
+      {
+        "slug": "beauceville",
+        "name": "Beauceville"
+      },
+      {
+        "slug": "beauharnois",
+        "name": "Beauharnois"
+      },
+      {
+        "slug": "beaulac-garthby",
+        "name": "Beaulac-Garthby"
+      },
+      {
+        "slug": "becancour",
+        "name": "Bécancour"
+      },
+      {
+        "slug": "bedford--brome-missisquoi",
+        "name": "Bedford"
+      },
+      {
+        "slug": "bedford--brome-missisquoi--2",
+        "name": "Bedford"
+      },
+      {
+        "slug": "begin",
+        "name": "Bégin"
+      },
+      {
+        "slug": "beloeil",
+        "name": "Beloeil"
+      },
+      {
+        "slug": "berry",
+        "name": "Berry"
+      },
+      {
+        "slug": "berthier-sur-mer",
+        "name": "Berthier-sur-Mer"
+      },
+      {
+        "slug": "berthierville",
+        "name": "Berthierville"
+      },
+      {
+        "slug": "bethanie",
+        "name": "Béthanie"
+      },
+      {
+        "slug": "blainville",
+        "name": "Blainville"
+      },
+      {
+        "slug": "blue-sea",
+        "name": "Blue Sea"
+      },
+      {
+        "slug": "boileau",
+        "name": "Boileau"
+      },
+      {
+        "slug": "bois-des-filion",
+        "name": "Bois-des-Filion"
+      },
+      {
+        "slug": "bois-franc",
+        "name": "Bois-Franc"
+      },
+      {
+        "slug": "boisbriand",
+        "name": "Boisbriand"
+      },
+      {
+        "slug": "boischatel",
+        "name": "Boischatel"
+      },
+      {
+        "slug": "bolton-est",
+        "name": "Bolton-Est"
+      },
+      {
+        "slug": "bolton-ouest",
+        "name": "Bolton-Ouest"
+      },
+      {
+        "slug": "bonaventure",
+        "name": "Bonaventure"
+      },
+      {
+        "slug": "bonsecours",
+        "name": "Bonsecours"
+      },
+      {
+        "slug": "bouchette",
+        "name": "Bouchette"
+      },
+      {
+        "slug": "bowman",
+        "name": "Bowman"
+      },
+      {
+        "slug": "brigham",
+        "name": "Brigham"
+      },
+      {
+        "slug": "bristol",
+        "name": "Bristol"
+      },
+      {
+        "slug": "brome",
+        "name": "Brome"
+      },
+      {
+        "slug": "bromont",
+        "name": "Bromont"
+      },
+      {
+        "slug": "brossard",
+        "name": "Brossard"
+      },
+      {
+        "slug": "brownsburg-chatham",
+        "name": "Brownsburg-Chatham"
+      },
+      {
+        "slug": "bury",
+        "name": "Bury"
+      },
+      {
+        "slug": "cacouna",
+        "name": "Cacouna"
+      },
+      {
+        "slug": "calixa-lavallee",
+        "name": "Calixa-Lavallée"
+      },
+      {
+        "slug": "campbells-bay",
+        "name": "Campbell's Bay"
+      },
+      {
+        "slug": "cantley",
+        "name": "Cantley"
+      },
+      {
+        "slug": "cap-chat",
+        "name": "Cap-Chat"
+      },
+      {
+        "slug": "cap-saint-ignace",
+        "name": "Cap-Saint-Ignace"
+      },
+      {
+        "slug": "caplan",
+        "name": "Caplan"
+      },
+      {
+        "slug": "carignan",
+        "name": "Carignan"
+      },
+      {
+        "slug": "carleton-sur-mer",
+        "name": "Carleton-sur-Mer"
+      },
+      {
+        "slug": "causapscal",
+        "name": "Causapscal"
+      },
+      {
+        "slug": "cayamant",
+        "name": "Cayamant"
+      },
+      {
+        "slug": "chambly",
+        "name": "Chambly"
+      },
+      {
+        "slug": "champlain",
+        "name": "Champlain"
+      },
+      {
+        "slug": "chandler",
+        "name": "Chandler"
+      },
+      {
+        "slug": "charlemagne",
+        "name": "Charlemagne"
+      },
+      {
+        "slug": "chartierville",
+        "name": "Chartierville"
+      },
+      {
+        "slug": "chateau-richer",
+        "name": "Château-Richer"
+      },
+      {
+        "slug": "chateauguay",
+        "name": "Châteauguay"
+      },
+      {
+        "slug": "chazel",
+        "name": "Chazel"
+      },
+      {
+        "slug": "cheneville",
+        "name": "Chénéville"
+      },
+      {
+        "slug": "chertsey",
+        "name": "Chertsey"
+      },
+      {
+        "slug": "chesterville",
+        "name": "Chesterville"
+      },
+      {
+        "slug": "chibougamau",
+        "name": "Chibougamau"
+      },
+      {
+        "slug": "chute-aux-outardes",
+        "name": "Chute-aux-Outardes"
+      },
+      {
+        "slug": "chute-saint-philippe",
+        "name": "Chute-Saint-Philippe"
+      },
+      {
+        "slug": "clarenceville",
+        "name": "Clarenceville"
+      },
+      {
+        "slug": "clarendon",
+        "name": "Clarendon"
+      },
+      {
+        "slug": "clermont--abitibi-ouest",
+        "name": "Clermont"
+      },
+      {
+        "slug": "clermont--charlevoix-est",
+        "name": "Clermont"
+      },
+      {
+        "slug": "clerval",
+        "name": "Clerval"
+      },
+      {
+        "slug": "cleveland",
+        "name": "Cleveland"
+      },
+      {
+        "slug": "cloridorme",
+        "name": "Cloridorme"
+      },
+      {
+        "slug": "coaticook",
+        "name": "Coaticook"
+      },
+      {
+        "slug": "compton",
+        "name": "Compton"
+      },
+      {
+        "slug": "contrecoeur",
+        "name": "Contrecoeur"
+      },
+      {
+        "slug": "cookshire-eaton",
+        "name": "Cookshire-Eaton"
+      },
+      {
+        "slug": "cote-saint-luc",
+        "name": "Côte-Saint-Luc"
+      },
+      {
+        "slug": "coteau-du-lac",
+        "name": "Coteau-du-Lac"
+      },
+      {
+        "slug": "courcelles-saint-evariste",
+        "name": "Courcelles-Saint-Évariste"
+      },
+      {
+        "slug": "cowansville",
+        "name": "Cowansville"
+      },
+      {
+        "slug": "danville",
+        "name": "Danville"
+      },
+      {
+        "slug": "daveluyville",
+        "name": "Daveluyville"
+      },
+      {
+        "slug": "deleage",
+        "name": "Déléage"
+      },
+      {
+        "slug": "delson",
+        "name": "Delson"
+      },
+      {
+        "slug": "denholm",
+        "name": "Denholm"
+      },
+      {
+        "slug": "deschaillons-sur-saint-laurent",
+        "name": "Deschaillons-sur-Saint-Laurent"
+      },
+      {
+        "slug": "deux-montagnes",
+        "name": "Deux-Montagnes"
+      },
+      {
+        "slug": "disraeli--les-appalaches",
+        "name": "Disraeli"
+      },
+      {
+        "slug": "dixville",
+        "name": "Dixville"
+      },
+      {
+        "slug": "dolbeau-mistassini",
+        "name": "Dolbeau-Mistassini"
+      },
+      {
+        "slug": "dollard-des-ormeaux",
+        "name": "Dollard-Des Ormeaux"
+      },
+      {
+        "slug": "donnacona",
+        "name": "Donnacona"
+      },
+      {
+        "slug": "dorval",
+        "name": "Dorval"
+      },
+      {
+        "slug": "dosquet",
+        "name": "Dosquet"
+      },
+      {
+        "slug": "drummondville",
+        "name": "Drummondville"
+      },
+      {
+        "slug": "dudswell",
+        "name": "Dudswell"
+      },
+      {
+        "slug": "duhamel",
+        "name": "Duhamel"
+      },
+      {
+        "slug": "duhamel-ouest",
+        "name": "Duhamel-Ouest"
+      },
+      {
+        "slug": "dunham",
+        "name": "Dunham"
+      },
+      {
+        "slug": "duparquet",
+        "name": "Duparquet"
+      },
+      {
+        "slug": "dupuy",
+        "name": "Dupuy"
+      },
+      {
+        "slug": "durham-sud",
+        "name": "Durham-Sud"
+      },
+      {
+        "slug": "east-angus",
+        "name": "East Angus"
+      },
+      {
+        "slug": "east-hereford",
+        "name": "East Hereford"
+      },
+      {
+        "slug": "eastman",
+        "name": "Eastman"
+      },
+      {
+        "slug": "egan-sud",
+        "name": "Egan-Sud"
+      },
+      {
+        "slug": "elgin",
+        "name": "Elgin"
+      },
+      {
+        "slug": "entrelacs",
+        "name": "Entrelacs"
+      },
+      {
+        "slug": "escuminac",
+        "name": "Escuminac"
+      },
+      {
+        "slug": "esterel",
+        "name": "Estérel"
+      },
+      {
+        "slug": "farnham",
+        "name": "Farnham"
+      },
+      {
+        "slug": "ferme-neuve",
+        "name": "Ferme-Neuve"
+      },
+      {
+        "slug": "fermont",
+        "name": "Fermont"
+      },
+      {
+        "slug": "fort-coulonge",
+        "name": "Fort-Coulonge"
+      },
+      {
+        "slug": "fortierville",
+        "name": "Fortierville"
+      },
+      {
+        "slug": "franklin",
+        "name": "Franklin"
+      },
+      {
+        "slug": "franquelin",
+        "name": "Franquelin"
+      },
+      {
+        "slug": "frelighsburg",
+        "name": "Frelighsburg"
+      },
+      {
+        "slug": "frontenac",
+        "name": "Frontenac"
+      },
+      {
+        "slug": "fugereville",
+        "name": "Fugèreville"
+      },
+      {
+        "slug": "gallichan",
+        "name": "Gallichan"
+      },
+      {
+        "slug": "gatineau",
+        "name": "Gatineau"
+      },
+      {
+        "slug": "girardville",
+        "name": "Girardville"
+      },
+      {
+        "slug": "godmanchester",
+        "name": "Godmanchester"
+      },
+      {
+        "slug": "gore",
+        "name": "Gore"
+      },
+      {
+        "slug": "gracefield",
+        "name": "Gracefield"
+      },
+      {
+        "slug": "granby",
+        "name": "Granby"
+      },
+      {
+        "slug": "grand-metis",
+        "name": "Grand-Métis"
+      },
+      {
+        "slug": "grand-remous",
+        "name": "Grand-Remous"
+      },
+      {
+        "slug": "grand-saint-esprit",
+        "name": "Grand-Saint-Esprit"
+      },
+      {
+        "slug": "grande-riviere",
+        "name": "Grande-Rivière"
+      },
+      {
+        "slug": "grande-vallee",
+        "name": "Grande-Vallée"
+      },
+      {
+        "slug": "grandes-piles",
+        "name": "Grandes-Piles"
+      },
+      {
+        "slug": "grenville",
+        "name": "Grenville"
+      },
+      {
+        "slug": "grenville-sur-la-rouge",
+        "name": "Grenville-sur-la-Rouge"
+      },
+      {
+        "slug": "grosse-ile",
+        "name": "Grosse-Île"
+      },
+      {
+        "slug": "grosses-roches",
+        "name": "Grosses-Roches"
+      },
+      {
+        "slug": "ham-nord",
+        "name": "Ham-Nord"
+      },
+      {
+        "slug": "ham-sud",
+        "name": "Ham-Sud"
+      },
+      {
+        "slug": "harrington",
+        "name": "Harrington"
+      },
+      {
+        "slug": "hatley",
+        "name": "Hatley"
+      },
+      {
+        "slug": "hatley-township-municipality",
+        "name": "Hatley (township municipality)"
+      },
+      {
+        "slug": "havelock",
+        "name": "Havelock"
+      },
+      {
+        "slug": "havre-saint-pierre",
+        "name": "Havre-Saint-Pierre"
+      },
+      {
+        "slug": "hebertville",
+        "name": "Hébertville"
+      },
+      {
+        "slug": "hemmingford--les-jardins-de-napierville",
+        "name": "Hemmingford"
+      },
+      {
+        "slug": "hemmingford--les-jardins-de-napierville--2",
+        "name": "Hemmingford"
+      },
+      {
+        "slug": "henryville",
+        "name": "Henryville"
+      },
+      {
+        "slug": "herouxville",
+        "name": "Hérouxville"
+      },
+      {
+        "slug": "hinchinbrooke",
+        "name": "Hinchinbrooke"
+      },
+      {
+        "slug": "honfleur",
+        "name": "Honfleur"
+      },
+      {
+        "slug": "hope-town",
+        "name": "Hope Town"
+      },
+      {
+        "slug": "huberdeau",
+        "name": "Huberdeau"
+      },
+      {
+        "slug": "hudson",
+        "name": "Hudson"
+      },
+      {
+        "slug": "huntingdon",
+        "name": "Huntingdon"
+      },
+      {
+        "slug": "inverness",
+        "name": "Inverness"
+      },
+      {
+        "slug": "joliette",
+        "name": "Joliette"
+      },
+      {
+        "slug": "kamouraska",
+        "name": "Kamouraska"
+      },
+      {
+        "slug": "kazabazua",
+        "name": "Kazabazua"
+      },
+      {
+        "slug": "kiamika",
+        "name": "Kiamika"
+      },
+      {
+        "slug": "kingsbury",
+        "name": "Kingsbury"
+      },
+      {
+        "slug": "kingsey-falls",
+        "name": "Kingsey Falls"
+      },
+      {
+        "slug": "kinnears-mills",
+        "name": "Kinnear's Mills"
+      },
+      {
+        "slug": "kirkland",
+        "name": "Kirkland"
+      },
+      {
+        "slug": "la-bostonnais",
+        "name": "La Bostonnais"
+      },
+      {
+        "slug": "la-corne",
+        "name": "La Corne"
+      },
+      {
+        "slug": "la-dore",
+        "name": "La Doré"
+      },
+      {
+        "slug": "la-durantaye",
+        "name": "La Durantaye"
+      },
+      {
+        "slug": "la-martre",
+        "name": "La Martre"
+      },
+      {
+        "slug": "la-minerve",
+        "name": "La Minerve"
+      },
+      {
+        "slug": "la-motte",
+        "name": "La Motte"
+      },
+      {
+        "slug": "la-patrie",
+        "name": "La Patrie"
+      },
+      {
+        "slug": "la-peche",
+        "name": "La Pêche"
+      },
+      {
+        "slug": "la-pocatiere",
+        "name": "La Pocatière"
+      },
+      {
+        "slug": "la-prairie",
+        "name": "La Prairie"
+      },
+      {
+        "slug": "la-presentation",
+        "name": "La Présentation"
+      },
+      {
+        "slug": "la-redemption",
+        "name": "La Rédemption"
+      },
+      {
+        "slug": "la-sarre",
+        "name": "La Sarre"
+      },
+      {
+        "slug": "la-trinite-des-monts",
+        "name": "La Trinité-des-Monts"
+      },
+      {
+        "slug": "labelle",
+        "name": "Labelle"
+      },
+      {
+        "slug": "labrecque",
+        "name": "Labrecque"
+      },
+      {
+        "slug": "lac-aux-sables",
+        "name": "Lac-aux-Sables"
+      },
+      {
+        "slug": "lac-beauport",
+        "name": "Lac-Beauport"
+      },
+      {
+        "slug": "lac-bouchette",
+        "name": "Lac-Bouchette"
+      },
+      {
+        "slug": "lac-brome",
+        "name": "Lac-Brome"
+      },
+      {
+        "slug": "lac-delage",
+        "name": "Lac-Delage"
+      },
+      {
+        "slug": "lac-des-aigles",
+        "name": "Lac-des-Aigles"
+      },
+      {
+        "slug": "lac-des-ecorces",
+        "name": "Lac-des-Écorces"
+      },
+      {
+        "slug": "lac-des-plages",
+        "name": "Lac-des-Plages"
+      },
+      {
+        "slug": "lac-des-seize-iles",
+        "name": "Lac-des-Seize-Îles"
+      },
+      {
+        "slug": "lac-du-cerf",
+        "name": "Lac-du-Cerf"
+      },
+      {
+        "slug": "lac-edouard",
+        "name": "Lac-Édouard"
+      },
+      {
+        "slug": "lac-etchemin",
+        "name": "Lac-Etchemin"
+      },
+      {
+        "slug": "lac-megantic",
+        "name": "Lac-Mégantic"
+      },
+      {
+        "slug": "lac-poulin",
+        "name": "Lac-Poulin"
+      },
+      {
+        "slug": "lac-saguay",
+        "name": "Lac-Saguay"
+      },
+      {
+        "slug": "lac-saint-joseph",
+        "name": "Lac-Saint-Joseph"
+      },
+      {
+        "slug": "lac-saint-paul",
+        "name": "Lac-Saint-Paul"
+      },
+      {
+        "slug": "lac-sainte-marie",
+        "name": "Lac-Sainte-Marie"
+      },
+      {
+        "slug": "lac-sergent",
+        "name": "Lac-Sergent"
+      },
+      {
+        "slug": "lac-simon",
+        "name": "Lac-Simon"
+      },
+      {
+        "slug": "lac-superieur",
+        "name": "Lac-Supérieur"
+      },
+      {
+        "slug": "lac-tremblant-nord",
+        "name": "Lac-Tremblant-Nord"
+      },
+      {
+        "slug": "lachute",
+        "name": "Lachute"
+      },
+      {
+        "slug": "laforce",
+        "name": "Laforce"
+      },
+      {
+        "slug": "lamarche",
+        "name": "Lamarche"
+      },
+      {
+        "slug": "lambton",
+        "name": "Lambton"
+      },
+      {
+        "slug": "lancienne-lorette",
+        "name": "L'Ancienne-Lorette"
+      },
+      {
+        "slug": "lanoraie",
+        "name": "Lanoraie"
+      },
+      {
+        "slug": "lanse-saint-jean",
+        "name": "L'Anse-Saint-Jean"
+      },
+      {
+        "slug": "lantier",
+        "name": "Lantier"
+      },
+      {
+        "slug": "larouche",
+        "name": "Larouche"
+      },
+      {
+        "slug": "lascension",
+        "name": "L'Ascension"
+      },
+      {
+        "slug": "lascension-de-notre-seigneur",
+        "name": "L'Ascension-de-Notre-Seigneur"
+      },
+      {
+        "slug": "lascension-de-patapedia",
+        "name": "L'Ascension-de-Patapédia"
+      },
+      {
+        "slug": "lassomption",
+        "name": "L'Assomption"
+      },
+      {
+        "slug": "latulipe-et-gaboury",
+        "name": "Latulipe-et-Gaboury"
+      },
+      {
+        "slug": "launay",
+        "name": "Launay"
+      },
+      {
+        "slug": "laurier-station",
+        "name": "Laurier-Station"
+      },
+      {
+        "slug": "laurierville",
+        "name": "Laurierville"
+      },
+      {
+        "slug": "lavaltrie",
+        "name": "Lavaltrie"
+      },
+      {
+        "slug": "lavenir",
+        "name": "L'Avenir"
+      },
+      {
+        "slug": "lawrenceville",
+        "name": "Lawrenceville"
+      },
+      {
+        "slug": "leclercville",
+        "name": "Leclercville"
+      },
+      {
+        "slug": "lefebvre",
+        "name": "Lefebvre"
+      },
+      {
+        "slug": "lemieux",
+        "name": "Lemieux"
+      },
+      {
+        "slug": "lepiphanie",
+        "name": "L'Épiphanie"
+      },
+      {
+        "slug": "lery",
+        "name": "Léry"
+      },
+      {
+        "slug": "les-bergeronnes",
+        "name": "Les Bergeronnes"
+      },
+      {
+        "slug": "les-coteaux",
+        "name": "Les Coteaux"
+      },
+      {
+        "slug": "les-eboulements",
+        "name": "Les Éboulements"
+      },
+      {
+        "slug": "les-escoumins",
+        "name": "Les Escoumins"
+      },
+      {
+        "slug": "les-hauteurs",
+        "name": "Les Hauteurs"
+      },
+      {
+        "slug": "levis",
+        "name": "Lévis"
+      },
+      {
+        "slug": "lile-danticosti",
+        "name": "L'Île-d'Anticosti"
+      },
+      {
+        "slug": "lile-du-grand-calumet",
+        "name": "L'Île-du-Grand-Calumet"
+      },
+      {
+        "slug": "lile-perrot",
+        "name": "L'Île-Perrot"
+      },
+      {
+        "slug": "lisle-aux-coudres",
+        "name": "L'Isle-aux-Coudres"
+      },
+      {
+        "slug": "lislet",
+        "name": "L'Islet"
+      },
+      {
+        "slug": "lorraine",
+        "name": "Lorraine"
+      },
+      {
+        "slug": "lorrainville",
+        "name": "Lorrainville"
+      },
+      {
+        "slug": "low",
+        "name": "Low"
+      },
+      {
+        "slug": "lyster",
+        "name": "Lyster"
+      },
+      {
+        "slug": "maddington-falls",
+        "name": "Maddington Falls"
+      },
+      {
+        "slug": "mandeville",
+        "name": "Mandeville"
+      },
+      {
+        "slug": "mansfield-et-pontefract",
+        "name": "Mansfield-et-Pontefract"
+      },
+      {
+        "slug": "maria",
+        "name": "Maria"
+      },
+      {
+        "slug": "marieville",
+        "name": "Marieville"
+      },
+      {
+        "slug": "marsoui",
+        "name": "Marsoui"
+      },
+      {
+        "slug": "marston",
+        "name": "Marston"
+      },
+      {
+        "slug": "martinville",
+        "name": "Martinville"
+      },
+      {
+        "slug": "mascouche",
+        "name": "Mascouche"
+      },
+      {
+        "slug": "matagami",
+        "name": "Matagami"
+      },
+      {
+        "slug": "matane",
+        "name": "Matane"
+      },
+      {
+        "slug": "mcmasterville",
+        "name": "McMasterville"
+      },
+      {
+        "slug": "melbourne",
+        "name": "Melbourne"
+      },
+      {
+        "slug": "mercier",
+        "name": "Mercier"
+      },
+      {
+        "slug": "messines",
+        "name": "Messines"
+      },
+      {
+        "slug": "metabetchouan-lac-a-la-croix",
+        "name": "Métabetchouan-Lac-à-la-Croix"
+      },
+      {
+        "slug": "metis-sur-mer",
+        "name": "Métis-sur-Mer"
+      },
+      {
+        "slug": "milan",
+        "name": "Milan"
+      },
+      {
+        "slug": "mille-isles",
+        "name": "Mille-Isles"
+      },
+      {
+        "slug": "mirabel",
+        "name": "Mirabel"
+      },
+      {
+        "slug": "mont-blanc",
+        "name": "Mont-Blanc"
+      },
+      {
+        "slug": "mont-carmel",
+        "name": "Mont-Carmel"
+      },
+      {
+        "slug": "mont-laurier",
+        "name": "Mont-Laurier"
+      },
+      {
+        "slug": "mont-royal",
+        "name": "Mont-Royal"
+      },
+      {
+        "slug": "mont-saint-hilaire",
+        "name": "Mont-Saint-Hilaire"
+      },
+      {
+        "slug": "mont-saint-michel",
+        "name": "Mont-Saint-Michel"
+      },
+      {
+        "slug": "mont-tremblant",
+        "name": "Mont-Tremblant"
+      },
+      {
+        "slug": "montcalm",
+        "name": "Montcalm"
+      },
+      {
+        "slug": "montcerf-lytton",
+        "name": "Montcerf-Lytton"
+      },
+      {
+        "slug": "montebello",
+        "name": "Montebello"
+      },
+      {
+        "slug": "montmagny",
+        "name": "Montmagny"
+      },
+      {
+        "slug": "montpellier",
+        "name": "Montpellier"
+      },
+      {
+        "slug": "montreal",
+        "name": "Montréal"
+      },
+      {
+        "slug": "montreal-est",
+        "name": "Montréal-Est"
+      },
+      {
+        "slug": "montreal-ouest",
+        "name": "Montréal-Ouest"
+      },
+      {
+        "slug": "mulgrave-et-derry",
+        "name": "Mulgrave-et-Derry"
+      },
+      {
+        "slug": "namur",
+        "name": "Namur"
+      },
+      {
+        "slug": "nantes",
+        "name": "Nantes"
+      },
+      {
+        "slug": "napierville",
+        "name": "Napierville"
+      },
+      {
+        "slug": "natashquan",
+        "name": "Natashquan"
+      },
+      {
+        "slug": "nedelec",
+        "name": "Nédélec"
+      },
+      {
+        "slug": "neuville",
+        "name": "Neuville"
+      },
+      {
+        "slug": "nicolet",
+        "name": "Nicolet"
+      },
+      {
+        "slug": "nominingue",
+        "name": "Nominingue"
+      },
+      {
+        "slug": "normandin",
+        "name": "Normandin"
+      },
+      {
+        "slug": "normetal",
+        "name": "Normétal"
+      },
+      {
+        "slug": "north-hatley",
+        "name": "North Hatley"
+      },
+      {
+        "slug": "notre-dame-auxiliatrice-de-buckland",
+        "name": "Notre-Dame-Auxiliatrice-de-Buckland"
+      },
+      {
+        "slug": "notre-dame-de-bonsecours",
+        "name": "Notre-Dame-de-Bonsecours"
+      },
+      {
+        "slug": "notre-dame-de-ham",
+        "name": "Notre-Dame-de-Ham"
+      },
+      {
+        "slug": "notre-dame-de-la-merci",
+        "name": "Notre-Dame-de-la-Merci"
+      },
+      {
+        "slug": "notre-dame-de-la-paix",
+        "name": "Notre-Dame-de-la-Paix"
+      },
+      {
+        "slug": "notre-dame-de-lorette",
+        "name": "Notre-Dame-de-Lorette"
+      },
+      {
+        "slug": "notre-dame-de-lourdes--joliette",
+        "name": "Notre-Dame-de-Lourdes"
+      },
+      {
+        "slug": "notre-dame-de-lourdes--lerable",
+        "name": "Notre-Dame-de-Lourdes"
+      },
+      {
+        "slug": "notre-dame-de-pontmain",
+        "name": "Notre-Dame-de-Pontmain"
+      },
+      {
+        "slug": "notre-dame-de-stanbridge",
+        "name": "Notre-Dame-de-Stanbridge"
+      },
+      {
+        "slug": "notre-dame-des-bois",
+        "name": "Notre-Dame-des-Bois"
+      },
+      {
+        "slug": "notre-dame-des-pins",
+        "name": "Notre-Dame-des-Pins"
+      },
+      {
+        "slug": "notre-dame-des-prairies",
+        "name": "Notre-Dame-des-Prairies"
+      },
+      {
+        "slug": "notre-dame-des-sept-douleurs",
+        "name": "Notre-Dame-des-Sept-Douleurs"
+      },
+      {
+        "slug": "notre-dame-du-bon-conseil--drummond",
+        "name": "Notre-Dame-du-Bon-Conseil"
+      },
+      {
+        "slug": "notre-dame-du-bon-conseil--drummond--2",
+        "name": "Notre-Dame-du-Bon-Conseil"
+      },
+      {
+        "slug": "notre-dame-du-portage",
+        "name": "Notre-Dame-du-Portage"
+      },
+      {
+        "slug": "notre-dame-du-sacre-coeur-dissoudun",
+        "name": "Notre-Dame-du-Sacré-Coeur-d'Issoudun"
+      },
+      {
+        "slug": "nouvelle",
+        "name": "Nouvelle"
+      },
+      {
+        "slug": "noyan",
+        "name": "Noyan"
+      },
+      {
+        "slug": "ogden",
+        "name": "Ogden"
+      },
+      {
+        "slug": "ormstown",
+        "name": "Ormstown"
+      },
+      {
+        "slug": "otter-lake",
+        "name": "Otter Lake"
+      },
+      {
+        "slug": "otterburn-park",
+        "name": "Otterburn Park"
+      },
+      {
+        "slug": "packington",
+        "name": "Packington"
+      },
+      {
+        "slug": "padoue",
+        "name": "Padoue"
+      },
+      {
+        "slug": "papineauville",
+        "name": "Papineauville"
+      },
+      {
+        "slug": "parisville",
+        "name": "Parisville"
+      },
+      {
+        "slug": "paspebiac",
+        "name": "Paspébiac"
+      },
+      {
+        "slug": "perce",
+        "name": "Percé"
+      },
+      {
+        "slug": "peribonka",
+        "name": "Péribonka"
+      },
+      {
+        "slug": "petit-saguenay",
+        "name": "Petit-Saguenay"
+      },
+      {
+        "slug": "petite-riviere-saint-francois",
+        "name": "Petite-Rivière-Saint-François"
+      },
+      {
+        "slug": "piedmont",
+        "name": "Piedmont"
+      },
+      {
+        "slug": "pierreville",
+        "name": "Pierreville"
+      },
+      {
+        "slug": "pike-river",
+        "name": "Pike River"
+      },
+      {
+        "slug": "pincourt",
+        "name": "Pincourt"
+      },
+      {
+        "slug": "plaisance",
+        "name": "Plaisance"
+      },
+      {
+        "slug": "pohenegamook",
+        "name": "Pohénégamook"
+      },
+      {
+        "slug": "pointe-a-la-croix",
+        "name": "Pointe-à-la-Croix"
+      },
+      {
+        "slug": "pointe-aux-outardes",
+        "name": "Pointe-aux-Outardes"
+      },
+      {
+        "slug": "pointe-calumet",
+        "name": "Pointe-Calumet"
+      },
+      {
+        "slug": "pointe-claire",
+        "name": "Pointe-Claire"
+      },
+      {
+        "slug": "pointe-des-cascades",
+        "name": "Pointe-des-Cascades"
+      },
+      {
+        "slug": "pointe-fortune",
+        "name": "Pointe-Fortune"
+      },
+      {
+        "slug": "pointe-lebel",
+        "name": "Pointe-Lebel"
+      },
+      {
+        "slug": "pont-rouge",
+        "name": "Pont-Rouge"
+      },
+      {
+        "slug": "pontiac",
+        "name": "Pontiac"
+      },
+      {
+        "slug": "port-daniel-gascons",
+        "name": "Port-Daniel-Gascons"
+      },
+      {
+        "slug": "portneuf",
+        "name": "Portneuf"
+      },
+      {
+        "slug": "portneuf-sur-mer",
+        "name": "Portneuf-sur-Mer"
+      },
+      {
+        "slug": "poularies",
+        "name": "Poularies"
+      },
+      {
+        "slug": "price",
+        "name": "Price"
+      },
+      {
+        "slug": "princeville",
+        "name": "Princeville"
+      },
+      {
+        "slug": "racine",
+        "name": "Racine"
+      },
+      {
+        "slug": "ragueneau",
+        "name": "Ragueneau"
+      },
+      {
+        "slug": "rapide-danseur",
+        "name": "Rapide-Danseur"
+      },
+      {
+        "slug": "rapides-des-joachims",
+        "name": "Rapides-des-Joachims"
+      },
+      {
+        "slug": "remigny",
+        "name": "Rémigny"
+      },
+      {
+        "slug": "repentigny",
+        "name": "Repentigny"
+      },
+      {
+        "slug": "richelieu",
+        "name": "Richelieu"
+      },
+      {
+        "slug": "richmond",
+        "name": "Richmond"
+      },
+      {
+        "slug": "ripon",
+        "name": "Ripon"
+      },
+      {
+        "slug": "riviere-a-claude",
+        "name": "Rivière-à-Claude"
+      },
+      {
+        "slug": "riviere-a-pierre",
+        "name": "Rivière-à-Pierre"
+      },
+      {
+        "slug": "riviere-au-tonnerre",
+        "name": "Rivière-au-Tonnerre"
+      },
+      {
+        "slug": "riviere-du-loup",
+        "name": "Rivière-du-Loup"
+      },
+      {
+        "slug": "riviere-ouelle",
+        "name": "Rivière-Ouelle"
+      },
+      {
+        "slug": "roquemaure",
+        "name": "Roquemaure"
+      },
+      {
+        "slug": "rougemont",
+        "name": "Rougemont"
+      },
+      {
+        "slug": "rouyn-noranda",
+        "name": "Rouyn-Noranda"
+      },
+      {
+        "slug": "roxton",
+        "name": "Roxton"
+      },
+      {
+        "slug": "roxton-falls",
+        "name": "Roxton Falls"
+      },
+      {
+        "slug": "roxton-pond",
+        "name": "Roxton Pond"
+      },
+      {
+        "slug": "saint-adalbert",
+        "name": "Saint-Adalbert"
+      },
+      {
+        "slug": "saint-adrien",
+        "name": "Saint-Adrien"
+      },
+      {
+        "slug": "saint-agapit",
+        "name": "Saint-Agapit"
+      },
+      {
+        "slug": "saint-aime",
+        "name": "Saint-Aimé"
+      },
+      {
+        "slug": "saint-aime-du-lac-des-iles",
+        "name": "Saint-Aimé-du-Lac-des-Îles"
+      },
+      {
+        "slug": "saint-alban",
+        "name": "Saint-Alban"
+      },
+      {
+        "slug": "saint-albert",
+        "name": "Saint-Albert"
+      },
+      {
+        "slug": "saint-alexandre",
+        "name": "Saint-Alexandre"
+      },
+      {
+        "slug": "saint-alexis",
+        "name": "Saint-Alexis"
+      },
+      {
+        "slug": "saint-alexis-des-monts",
+        "name": "Saint-Alexis-des-Monts"
+      },
+      {
+        "slug": "saint-alfred",
+        "name": "Saint-Alfred"
+      },
+      {
+        "slug": "saint-alphonse",
+        "name": "Saint-Alphonse"
+      },
+      {
+        "slug": "saint-amable",
+        "name": "Saint-Amable"
+      },
+      {
+        "slug": "saint-andre-avellin",
+        "name": "Saint-André-Avellin"
+      },
+      {
+        "slug": "saint-andre-dargenteuil",
+        "name": "Saint-André-d'Argenteuil"
+      },
+      {
+        "slug": "saint-anicet",
+        "name": "Saint-Anicet"
+      },
+      {
+        "slug": "saint-antoine-de-lisle-aux-grues",
+        "name": "Saint-Antoine-de-l'Isle-aux-Grues"
+      },
+      {
+        "slug": "saint-antoine-de-tilly",
+        "name": "Saint-Antoine-de-Tilly"
+      },
+      {
+        "slug": "saint-antoine-sur-richelieu",
+        "name": "Saint-Antoine-sur-Richelieu"
+      },
+      {
+        "slug": "saint-antonin",
+        "name": "Saint-Antonin"
+      },
+      {
+        "slug": "saint-arsene",
+        "name": "Saint-Arsène"
+      },
+      {
+        "slug": "saint-aubert",
+        "name": "Saint-Aubert"
+      },
+      {
+        "slug": "saint-augustin--le-golfe-du-saint-laurent",
+        "name": "Saint-Augustin"
+      },
+      {
+        "slug": "saint-augustin-de-woburn",
+        "name": "Saint-Augustin-de-Woburn"
+      },
+      {
+        "slug": "saint-barnabe",
+        "name": "Saint-Barnabé"
+      },
+      {
+        "slug": "saint-barnabe-sud",
+        "name": "Saint-Barnabé-Sud"
+      },
+      {
+        "slug": "saint-basile",
+        "name": "Saint-Basile"
+      },
+      {
+        "slug": "saint-benoit-labre",
+        "name": "Saint-Benoît-Labre"
+      },
+      {
+        "slug": "saint-bernard",
+        "name": "Saint-Bernard"
+      },
+      {
+        "slug": "saint-bernard-de-lacolle",
+        "name": "Saint-Bernard-de-Lacolle"
+      },
+      {
+        "slug": "saint-bernard-de-michaudville",
+        "name": "Saint-Bernard-de-Michaudville"
+      },
+      {
+        "slug": "saint-bonaventure",
+        "name": "Saint-Bonaventure"
+      },
+      {
+        "slug": "saint-boniface",
+        "name": "Saint-Boniface"
+      },
+      {
+        "slug": "saint-bruno",
+        "name": "Saint-Bruno"
+      },
+      {
+        "slug": "saint-bruno-de-guigues",
+        "name": "Saint-Bruno-de-Guigues"
+      },
+      {
+        "slug": "saint-bruno-de-kamouraska",
+        "name": "Saint-Bruno-de-Kamouraska"
+      },
+      {
+        "slug": "saint-camille",
+        "name": "Saint-Camille"
+      },
+      {
+        "slug": "saint-cesaire",
+        "name": "Saint-Césaire"
+      },
+      {
+        "slug": "saint-charles-de-bourget",
+        "name": "Saint-Charles-de-Bourget"
+      },
+      {
+        "slug": "saint-charles-sur-richelieu",
+        "name": "Saint-Charles-sur-Richelieu"
+      },
+      {
+        "slug": "saint-christophe-darthabaska",
+        "name": "Saint-Christophe-d'Arthabaska"
+      },
+      {
+        "slug": "saint-chrysostome",
+        "name": "Saint-Chrysostome"
+      },
+      {
+        "slug": "saint-claude",
+        "name": "Saint-Claude"
+      },
+      {
+        "slug": "saint-cleophas-de-brandon",
+        "name": "Saint-Cléophas-de-Brandon"
+      },
+      {
+        "slug": "saint-colomban",
+        "name": "Saint-Colomban"
+      },
+      {
+        "slug": "saint-come",
+        "name": "Saint-Côme"
+      },
+      {
+        "slug": "saint-come-liniere",
+        "name": "Saint-Come-Liniere"
+      },
+      {
+        "slug": "saint-cuthbert",
+        "name": "Saint-Cuthbert"
+      },
+      {
+        "slug": "saint-cyprien--les-etchemins",
+        "name": "Saint-Cyprien"
+      },
+      {
+        "slug": "saint-cyprien-de-napierville",
+        "name": "Saint-Cyprien-de-Napierville"
+      },
+      {
+        "slug": "saint-damase--la-matapedia",
+        "name": "Saint-Damase"
+      },
+      {
+        "slug": "saint-damase--les-maskoutains",
+        "name": "Saint-Damase"
+      },
+      {
+        "slug": "saint-damase-de-lislet",
+        "name": "Saint-Damase-de-L'Islet"
+      },
+      {
+        "slug": "saint-damien-de-buckland",
+        "name": "Saint-Damien-de-Buckland"
+      },
+      {
+        "slug": "saint-denis-de-brompton",
+        "name": "Saint-Denis-de-Brompton"
+      },
+      {
+        "slug": "saint-denis-sur-richelieu",
+        "name": "Saint-Denis-sur-Richelieu"
+      },
+      {
+        "slug": "saint-dominique",
+        "name": "Saint-Dominique"
+      },
+      {
+        "slug": "saint-donat--matawinie",
+        "name": "Saint-Donat"
+      },
+      {
+        "slug": "saint-edmond-de-grantham",
+        "name": "Saint-Edmond-de-Grantham"
+      },
+      {
+        "slug": "saint-edouard-de-lotbiniere",
+        "name": "Saint-Édouard-de-Lotbinière"
+      },
+      {
+        "slug": "saint-elie-de-caxton",
+        "name": "Saint-Élie-de-Caxton"
+      },
+      {
+        "slug": "saint-elzear--bonaventure",
+        "name": "Saint-Elzéar"
+      },
+      {
+        "slug": "saint-epiphane",
+        "name": "Saint-Épiphane"
+      },
+      {
+        "slug": "saint-esprit",
+        "name": "Saint-Esprit"
+      },
+      {
+        "slug": "saint-etienne-de-beauharnois",
+        "name": "Saint-Étienne-de-Beauharnois"
+      },
+      {
+        "slug": "saint-etienne-de-bolton",
+        "name": "Saint-Étienne-de-Bolton"
+      },
+      {
+        "slug": "saint-etienne-des-gres",
+        "name": "Saint-Étienne-des-Grès"
+      },
+      {
+        "slug": "saint-eugene",
+        "name": "Saint-Eugène"
+      },
+      {
+        "slug": "saint-eugene-de-ladriere",
+        "name": "Saint-Eugène-de-Ladrière"
+      },
+      {
+        "slug": "saint-fabien",
+        "name": "Saint-Fabien"
+      },
+      {
+        "slug": "saint-fabien-de-panet",
+        "name": "Saint-Fabien-de-Panet"
+      },
+      {
+        "slug": "saint-felicien",
+        "name": "Saint-Félicien"
+      },
+      {
+        "slug": "saint-felix-de-kingsey",
+        "name": "Saint-Félix-de-Kingsey"
+      },
+      {
+        "slug": "saint-felix-de-valois",
+        "name": "Saint-Félix-de-Valois"
+      },
+      {
+        "slug": "saint-felix-dotis",
+        "name": "Saint-Félix-d'Otis"
+      },
+      {
+        "slug": "saint-francois-de-sales",
+        "name": "Saint-François-de-Sales"
+      },
+      {
+        "slug": "saint-francois-du-lac",
+        "name": "Saint-François-du-Lac"
+      },
+      {
+        "slug": "saint-francois-xavier-de-viger",
+        "name": "Saint-François-Xavier-de-Viger"
+      },
+      {
+        "slug": "saint-gabriel",
+        "name": "Saint-Gabriel"
+      },
+      {
+        "slug": "saint-gabriel-de-rimouski",
+        "name": "Saint-Gabriel-de-Rimouski"
+      },
+      {
+        "slug": "saint-gedeon",
+        "name": "Saint-Gédéon"
+      },
+      {
+        "slug": "saint-gedeon-de-beauce",
+        "name": "Saint-Gédéon-de-Beauce"
+      },
+      {
+        "slug": "saint-georges-de-windsor",
+        "name": "Saint-Georges-de-Windsor"
+      },
+      {
+        "slug": "saint-gerard-majella",
+        "name": "Saint-Gérard-Majella"
+      },
+      {
+        "slug": "saint-germain-de-grantham",
+        "name": "Saint-Germain-de-Grantham"
+      },
+      {
+        "slug": "saint-germain-de-kamouraska",
+        "name": "Saint-Germain-de-Kamouraska"
+      },
+      {
+        "slug": "saint-gervais",
+        "name": "Saint-Gervais"
+      },
+      {
+        "slug": "saint-gilbert",
+        "name": "Saint-Gilbert"
+      },
+      {
+        "slug": "saint-godefroi",
+        "name": "Saint-Godefroi"
+      },
+      {
+        "slug": "saint-guillaume",
+        "name": "Saint-Guillaume"
+      },
+      {
+        "slug": "saint-henri-de-taillon",
+        "name": "Saint-Henri-de-Taillon"
+      },
+      {
+        "slug": "saint-hilaire-de-dorset",
+        "name": "Saint-Hilaire-de-Dorset"
+      },
+      {
+        "slug": "saint-hilarion",
+        "name": "Saint-Hilarion"
+      },
+      {
+        "slug": "saint-honore-de-shenley",
+        "name": "Saint-Honoré-de-Shenley"
+      },
+      {
+        "slug": "saint-honore-de-temiscouata",
+        "name": "Saint-Honoré-de-Témiscouata"
+      },
+      {
+        "slug": "saint-hubert-de-riviere-du-loup",
+        "name": "Saint-Hubert-de-Rivière-du-Loup"
+      },
+      {
+        "slug": "saint-hugues",
+        "name": "Saint-Hugues"
+      },
+      {
+        "slug": "saint-ignace-de-loyola",
+        "name": "Saint-Ignace-de-Loyola"
+      },
+      {
+        "slug": "saint-isidore--la-nouvelle-beauce",
+        "name": "Saint-Isidore"
+      },
+      {
+        "slug": "saint-isidore--roussillon",
+        "name": "Saint-Isidore"
+      },
+      {
+        "slug": "saint-isidore-de-clifton",
+        "name": "Saint-Isidore-de-Clifton"
+      },
+      {
+        "slug": "saint-jacques",
+        "name": "Saint-Jacques"
+      },
+      {
+        "slug": "saint-jacques-de-leeds",
+        "name": "Saint-Jacques-de-Leeds"
+      },
+      {
+        "slug": "saint-janvier-de-joly",
+        "name": "Saint-Janvier-de-Joly"
+      },
+      {
+        "slug": "saint-jean-baptiste",
+        "name": "Saint-Jean-Baptiste"
+      },
+      {
+        "slug": "saint-jean-de-dieu",
+        "name": "Saint-Jean-de-Dieu"
+      },
+      {
+        "slug": "saint-jean-de-matha",
+        "name": "Saint-Jean-de-Matha"
+      },
+      {
+        "slug": "saint-jean-sur-richelieu",
+        "name": "Saint-Jean-sur-Richelieu"
+      },
+      {
+        "slug": "saint-jerome",
+        "name": "Saint-Jérôme"
+      },
+      {
+        "slug": "saint-joseph-de-beauce",
+        "name": "Saint-Joseph-de-Beauce"
+      },
+      {
+        "slug": "saint-joseph-de-coleraine",
+        "name": "Saint-Joseph-de-Coleraine"
+      },
+      {
+        "slug": "saint-joseph-de-kamouraska",
+        "name": "Saint-Joseph-de-Kamouraska"
+      },
+      {
+        "slug": "saint-joseph-de-lepage",
+        "name": "Saint-Joseph-de-Lepage"
+      },
+      {
+        "slug": "saint-joseph-de-sorel",
+        "name": "Saint-Joseph-de-Sorel"
+      },
+      {
+        "slug": "saint-joseph-du-lac",
+        "name": "Saint-Joseph-du-Lac"
+      },
+      {
+        "slug": "saint-jude",
+        "name": "Saint-Jude"
+      },
+      {
+        "slug": "saint-jules",
+        "name": "Saint-Jules"
+      },
+      {
+        "slug": "saint-julien",
+        "name": "Saint-Julien"
+      },
+      {
+        "slug": "saint-juste-du-lac",
+        "name": "Saint-Juste-du-Lac"
+      },
+      {
+        "slug": "saint-justin",
+        "name": "Saint-Justin"
+      },
+      {
+        "slug": "saint-lambert-de-lauzon",
+        "name": "Saint-Lambert-de-Lauzon"
+      },
+      {
+        "slug": "saint-laurent-de-lile-dorleans",
+        "name": "Saint-Laurent-de-l'Île-d'Orléans"
+      },
+      {
+        "slug": "saint-lazare",
+        "name": "Saint-Lazare"
+      },
+      {
+        "slug": "saint-leon-le-grand--la-matapedia",
+        "name": "Saint-Léon-le-Grand"
+      },
+      {
+        "slug": "saint-leonard-daston",
+        "name": "Saint-Léonard-d'Aston"
+      },
+      {
+        "slug": "saint-liboire",
+        "name": "Saint-Liboire"
+      },
+      {
+        "slug": "saint-lin-laurentides",
+        "name": "Saint-Lin-Laurentides"
+      },
+      {
+        "slug": "saint-louis",
+        "name": "Saint-Louis"
+      },
+      {
+        "slug": "saint-louis-de-blandford",
+        "name": "Saint-Louis-de-Blandford"
+      },
+      {
+        "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+        "name": "Saint-Louis-de-Gonzague"
+      },
+      {
+        "slug": "saint-louis-de-gonzague--les-etchemins",
+        "name": "Saint-Louis-de-Gonzague"
+      },
+      {
+        "slug": "saint-luc-de-bellechasse",
+        "name": "Saint-Luc-de-Bellechasse"
+      },
+      {
+        "slug": "saint-luc-de-vincennes",
+        "name": "Saint-Luc-de-Vincennes"
+      },
+      {
+        "slug": "saint-ludger",
+        "name": "Saint-Ludger"
+      },
+      {
+        "slug": "saint-magloire",
+        "name": "Saint-Magloire"
+      },
+      {
+        "slug": "saint-majorique-de-grantham",
+        "name": "Saint-Majorique-de-Grantham"
+      },
+      {
+        "slug": "saint-malachie",
+        "name": "Saint-Malachie"
+      },
+      {
+        "slug": "saint-malo",
+        "name": "Saint-Malo"
+      },
+      {
+        "slug": "saint-marc-des-carrieres",
+        "name": "Saint-Marc-des-Carrières"
+      },
+      {
+        "slug": "saint-marc-du-lac-long",
+        "name": "Saint-Marc-du-Lac-Long"
+      },
+      {
+        "slug": "saint-marc-sur-richelieu",
+        "name": "Saint-Marc-sur-Richelieu"
+      },
+      {
+        "slug": "saint-marcel",
+        "name": "Saint-Marcel"
+      },
+      {
+        "slug": "saint-marcel-de-richelieu",
+        "name": "Saint-Marcel-de-Richelieu"
+      },
+      {
+        "slug": "saint-martin",
+        "name": "Saint-Martin"
+      },
+      {
+        "slug": "saint-mathias-sur-richelieu",
+        "name": "Saint-Mathias-sur-Richelieu"
+      },
+      {
+        "slug": "saint-mathieu",
+        "name": "Saint-Mathieu"
+      },
+      {
+        "slug": "saint-mathieu-de-beloeil",
+        "name": "Saint-Mathieu-de-Beloeil"
+      },
+      {
+        "slug": "saint-mathieu-de-rioux",
+        "name": "Saint-Mathieu-de-Rioux"
+      },
+      {
+        "slug": "saint-mathieu-du-parc",
+        "name": "Saint-Mathieu-du-Parc"
+      },
+      {
+        "slug": "saint-maurice",
+        "name": "Saint-Maurice"
+      },
+      {
+        "slug": "saint-maxime-du-mont-louis",
+        "name": "Saint-Maxime-du-Mont-Louis"
+      },
+      {
+        "slug": "saint-michel",
+        "name": "Saint-Michel"
+      },
+      {
+        "slug": "saint-michel-de-bellechasse",
+        "name": "Saint-Michel-de-Bellechasse"
+      },
+      {
+        "slug": "saint-michel-des-saints",
+        "name": "Saint-Michel-des-Saints"
+      },
+      {
+        "slug": "saint-michel-du-squatec",
+        "name": "Saint-Michel-du-Squatec"
+      },
+      {
+        "slug": "saint-narcisse",
+        "name": "Saint-Narcisse"
+      },
+      {
+        "slug": "saint-narcisse-de-beaurivage",
+        "name": "Saint-Narcisse-de-Beaurivage"
+      },
+      {
+        "slug": "saint-nazaire",
+        "name": "Saint-Nazaire"
+      },
+      {
+        "slug": "saint-nazaire-dacton",
+        "name": "Saint-Nazaire-d'Acton"
+      },
+      {
+        "slug": "saint-noel",
+        "name": "Saint-Noël"
+      },
+      {
+        "slug": "saint-norbert-darthabaska",
+        "name": "Saint-Norbert-d'Arthabaska"
+      },
+      {
+        "slug": "saint-odilon-de-cranbourne",
+        "name": "Saint-Odilon-de-Cranbourne"
+      },
+      {
+        "slug": "saint-onesime-dixworth",
+        "name": "Saint-Onésime-d'Ixworth"
+      },
+      {
+        "slug": "saint-ours",
+        "name": "Saint-Ours"
+      },
+      {
+        "slug": "saint-pacome",
+        "name": "Saint-Pacôme"
+      },
+      {
+        "slug": "saint-pamphile",
+        "name": "Saint-Pamphile"
+      },
+      {
+        "slug": "saint-patrice-de-beaurivage",
+        "name": "Saint-Patrice-de-Beaurivage"
+      },
+      {
+        "slug": "saint-paul-de-lile-aux-noix",
+        "name": "Saint-Paul-de-l'Île-aux-Noix"
+      },
+      {
+        "slug": "saint-paul-de-montminy",
+        "name": "Saint-Paul-de-Montminy"
+      },
+      {
+        "slug": "saint-paulin",
+        "name": "Saint-Paulin"
+      },
+      {
+        "slug": "saint-philemon",
+        "name": "Saint-Philémon"
+      },
+      {
+        "slug": "saint-philibert",
+        "name": "Saint-Philibert"
+      },
+      {
+        "slug": "saint-philippe",
+        "name": "Saint-Philippe"
+      },
+      {
+        "slug": "saint-pie",
+        "name": "Saint-Pie"
+      },
+      {
+        "slug": "saint-pie-de-guire",
+        "name": "Saint-Pie-de-Guire"
+      },
+      {
+        "slug": "saint-pierre-baptiste",
+        "name": "Saint-Pierre-Baptiste"
+      },
+      {
+        "slug": "saint-pierre-de-broughton",
+        "name": "Saint-Pierre-de-Broughton"
+      },
+      {
+        "slug": "saint-pierre-les-becquets",
+        "name": "Saint-Pierre-les-Becquets"
+      },
+      {
+        "slug": "saint-polycarpe",
+        "name": "Saint-Polycarpe"
+      },
+      {
+        "slug": "saint-prosper-de-champlain",
+        "name": "Saint-Prosper-de-Champlain"
+      },
+      {
+        "slug": "saint-raymond",
+        "name": "Saint-Raymond"
+      },
+      {
+        "slug": "saint-rene",
+        "name": "Saint-René"
+      },
+      {
+        "slug": "saint-robert",
+        "name": "Saint-Robert"
+      },
+      {
+        "slug": "saint-robert-bellarmin",
+        "name": "Saint-Robert-Bellarmin"
+      },
+      {
+        "slug": "saint-roch-de-lachigan",
+        "name": "Saint-Roch-de-l'Achigan"
+      },
+      {
+        "slug": "saint-roch-de-mekinac",
+        "name": "Saint-Roch-de-Mékinac"
+      },
+      {
+        "slug": "saint-roch-de-richelieu",
+        "name": "Saint-Roch-de-Richelieu"
+      },
+      {
+        "slug": "saint-roch-ouest",
+        "name": "Saint-Roch-Ouest"
+      },
+      {
+        "slug": "saint-romain",
+        "name": "Saint-Romain"
+      },
+      {
+        "slug": "saint-rosaire",
+        "name": "Saint-Rosaire"
+      },
+      {
+        "slug": "saint-sebastien--le-haut-richelieu",
+        "name": "Saint-Sébastien"
+      },
+      {
+        "slug": "saint-severe",
+        "name": "Saint-Sévère"
+      },
+      {
+        "slug": "saint-severin--beauce-centre",
+        "name": "Saint-Séverin"
+      },
+      {
+        "slug": "saint-severin--mekinac",
+        "name": "Saint-Séverin"
+      },
+      {
+        "slug": "saint-simeon--charlevoix-est",
+        "name": "Saint-Siméon"
+      },
+      {
+        "slug": "saint-simon",
+        "name": "Saint-Simon"
+      },
+      {
+        "slug": "saint-simon-de-rimouski",
+        "name": "Saint-Simon-de-Rimouski"
+      },
+      {
+        "slug": "saint-sixte",
+        "name": "Saint-Sixte"
+      },
+      {
+        "slug": "saint-stanislas--des-chenaux",
+        "name": "Saint-Stanislas"
+      },
+      {
+        "slug": "saint-stanislas--maria-chapdelaine",
+        "name": "Saint-Stanislas"
+      },
+      {
+        "slug": "saint-stanislas-de-kostka",
+        "name": "Saint-Stanislas-de-Kostka"
+      },
+      {
+        "slug": "saint-sylvere",
+        "name": "Saint-Sylvère"
+      },
+      {
+        "slug": "saint-sylvestre",
+        "name": "Saint-Sylvestre"
+      },
+      {
+        "slug": "saint-theodore-dacton",
+        "name": "Saint-Théodore-d'Acton"
+      },
+      {
+        "slug": "saint-theophile",
+        "name": "Saint-Théophile"
+      },
+      {
+        "slug": "saint-thomas",
+        "name": "Saint-Thomas"
+      },
+      {
+        "slug": "saint-thomas-didyme",
+        "name": "Saint-Thomas-Didyme"
+      },
+      {
+        "slug": "saint-thuribe",
+        "name": "Saint-Thuribe"
+      },
+      {
+        "slug": "saint-tite",
+        "name": "Saint-Tite"
+      },
+      {
+        "slug": "saint-tite-des-caps",
+        "name": "Saint-Tite-des-Caps"
+      },
+      {
+        "slug": "saint-ubalde",
+        "name": "Saint-Ubalde"
+      },
+      {
+        "slug": "saint-urbain",
+        "name": "Saint-Urbain"
+      },
+      {
+        "slug": "saint-urbain-premier",
+        "name": "Saint-Urbain-Premier"
+      },
+      {
+        "slug": "saint-valentin",
+        "name": "Saint-Valentin"
+      },
+      {
+        "slug": "saint-valerien-de-milton",
+        "name": "Saint-Valérien-de-Milton"
+      },
+      {
+        "slug": "saint-venant-de-paquette",
+        "name": "Saint-Venant-de-Paquette"
+      },
+      {
+        "slug": "saint-victor",
+        "name": "Saint-Victor"
+      },
+      {
+        "slug": "saint-wenceslas",
+        "name": "Saint-Wenceslas"
+      },
+      {
+        "slug": "saint-zacharie",
+        "name": "Saint-Zacharie"
+      },
+      {
+        "slug": "saint-zenon",
+        "name": "Saint-Zénon"
+      },
+      {
+        "slug": "saint-zotique",
+        "name": "Saint-Zotique"
+      },
+      {
+        "slug": "sainte-agathe-de-lotbiniere",
+        "name": "Sainte-Agathe-de-Lotbinière"
+      },
+      {
+        "slug": "sainte-angele-de-merici",
+        "name": "Sainte-Angèle-de-Mérici"
+      },
+      {
+        "slug": "sainte-angele-de-monnoir",
+        "name": "Sainte-Angèle-de-Monnoir"
+      },
+      {
+        "slug": "sainte-angele-de-premont",
+        "name": "Sainte-Angèle-de-Prémont"
+      },
+      {
+        "slug": "sainte-anne-de-bellevue",
+        "name": "Sainte-Anne-de-Bellevue"
+      },
+      {
+        "slug": "sainte-anne-de-la-perade",
+        "name": "Sainte-Anne-de-la-Pérade"
+      },
+      {
+        "slug": "sainte-anne-de-la-pocatiere",
+        "name": "Sainte-Anne-de-la-Pocatière"
+      },
+      {
+        "slug": "sainte-anne-de-la-rochelle",
+        "name": "Sainte-Anne-de-la-Rochelle"
+      },
+      {
+        "slug": "sainte-anne-de-sorel",
+        "name": "Sainte-Anne-de-Sorel"
+      },
+      {
+        "slug": "sainte-anne-des-lacs",
+        "name": "Sainte-Anne-des-Lacs"
+      },
+      {
+        "slug": "sainte-anne-des-monts",
+        "name": "Sainte-Anne-des-Monts"
+      },
+      {
+        "slug": "sainte-anne-des-plaines",
+        "name": "Sainte-Anne-des-Plaines"
+      },
+      {
+        "slug": "sainte-apolline-de-patton",
+        "name": "Sainte-Apolline-de-Patton"
+      },
+      {
+        "slug": "sainte-aurelie",
+        "name": "Sainte-Aurélie"
+      },
+      {
+        "slug": "sainte-barbe",
+        "name": "Sainte-Barbe"
+      },
+      {
+        "slug": "sainte-brigide-diberville",
+        "name": "Sainte-Brigide-d'Iberville"
+      },
+      {
+        "slug": "sainte-brigitte-des-saults",
+        "name": "Sainte-Brigitte-des-Saults"
+      },
+      {
+        "slug": "sainte-catherine",
+        "name": "Sainte-Catherine"
+      },
+      {
+        "slug": "sainte-catherine-de-hatley",
+        "name": "Sainte-Catherine-de-Hatley"
+      },
+      {
+        "slug": "sainte-catherine-de-la-jacques-cartier",
+        "name": "Sainte-Catherine-de-la-Jacques-Cartier"
+      },
+      {
+        "slug": "sainte-cecile-de-levrard",
+        "name": "Sainte-Cécile-de-Lévrard"
+      },
+      {
+        "slug": "sainte-cecile-de-milton",
+        "name": "Sainte-Cécile-de-Milton"
+      },
+      {
+        "slug": "sainte-cecile-de-whitton",
+        "name": "Sainte-Cécile-de-Whitton"
+      },
+      {
+        "slug": "sainte-christine",
+        "name": "Sainte-Christine"
+      },
+      {
+        "slug": "sainte-claire",
+        "name": "Sainte-Claire"
+      },
+      {
+        "slug": "sainte-clotilde",
+        "name": "Sainte-Clotilde"
+      },
+      {
+        "slug": "sainte-clotilde-de-horton",
+        "name": "Sainte-Clotilde-de-Horton"
+      },
+      {
+        "slug": "sainte-croix",
+        "name": "Sainte-Croix"
+      },
+      {
+        "slug": "sainte-elizabeth-de-warwick",
+        "name": "Sainte-Élizabeth-de-Warwick"
+      },
+      {
+        "slug": "sainte-emelie-de-lenergie",
+        "name": "Sainte-Émélie-de-l'Énergie"
+      },
+      {
+        "slug": "sainte-eulalie",
+        "name": "Sainte-Eulalie"
+      },
+      {
+        "slug": "sainte-famille-de-lile-dorleans",
+        "name": "Sainte-Famille-de-l'Île-d'Orléans"
+      },
+      {
+        "slug": "sainte-felicite--la-matanie",
+        "name": "Sainte-Félicité"
+      },
+      {
+        "slug": "sainte-felicite--lislet",
+        "name": "Sainte-Félicité"
+      },
+      {
+        "slug": "sainte-flavie",
+        "name": "Sainte-Flavie"
+      },
+      {
+        "slug": "sainte-francoise--becancour",
+        "name": "Sainte-Françoise"
+      },
+      {
+        "slug": "sainte-genevieve-de-batiscan",
+        "name": "Sainte-Geneviève-de-Batiscan"
+      },
+      {
+        "slug": "sainte-genevieve-de-berthier",
+        "name": "Sainte-Geneviève-de-Berthier"
+      },
+      {
+        "slug": "sainte-germaine-boule",
+        "name": "Sainte-Germaine-Boulé"
+      },
+      {
+        "slug": "sainte-helene-de-bagot",
+        "name": "Sainte-Hélène-de-Bagot"
+      },
+      {
+        "slug": "sainte-helene-de-chester",
+        "name": "Sainte-Hélène-de-Chester"
+      },
+      {
+        "slug": "sainte-helene-de-kamouraska",
+        "name": "Sainte-Hélène-de-Kamouraska"
+      },
+      {
+        "slug": "sainte-helene-de-mancebourg",
+        "name": "Sainte-Hélène-de-Mancebourg"
+      },
+      {
+        "slug": "sainte-henedine",
+        "name": "Sainte-Hénédine"
+      },
+      {
+        "slug": "sainte-irene",
+        "name": "Sainte-Irène"
+      },
+      {
+        "slug": "sainte-julie",
+        "name": "Sainte-Julie"
+      },
+      {
+        "slug": "sainte-justine",
+        "name": "Sainte-Justine"
+      }
+    ],
+    "indexed_pvs_without_municipality": [],
+    "indexed_pvs_with_conflicting_municipalities": [],
+    "indexed_pvs_with_unknown_reference_municipality": [],
+    "partition_slugs_not_reprojected": []
+  },
+  "checkpoints": {
+    "announced_sequence": [
+      {
+        "name": "partition_finale",
+        "source": "work/coverage/pv-univers-partition-finale-20260729T215104Z.json",
+        "indexed_municipalities": 174,
+        "overlaps_with_prior_components": 0
+      },
+      {
+        "name": "vague_territoriale_1",
+        "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+        "indexed_municipalities": 203,
+        "overlaps_with_prior_components": 0
+      },
+      {
+        "name": "lecture_visuelle_v1",
+        "source": "work/coverage/pv-lecture-visuelle-territorial-v1-20260730T004831Z.json",
+        "indexed_municipalities": 31,
+        "overlaps_with_prior_components": 0
+      },
+      {
+        "name": "vague_territoriale_2",
+        "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+        "indexed_municipalities": 207,
+        "overlaps_with_prior_components": 0
+      },
+      {
+        "name": "lecture_visuelle_v2",
+        "source": "work/coverage/pv-lecture-visuelle-territorial-v2-20260730T012018Z.json",
+        "indexed_municipalities": 25,
+        "overlaps_with_prior_components": 0
+      }
+    ],
+    "union_municipalities": 640,
+    "component_overlaps": 0
+  },
+  "discrepancy_vs_640": {
+    "announced": 640,
+    "measured": 655,
+    "difference": 15,
+    "explanation": "La mesure est la projection CAS-dédoublonnée des sources disponibles; les composantes annoncées ne sont pas une addition réputée fiable."
+  },
+  "unknown": {
+    "cas_keys": 83,
+    "breakdown": "UNKNOWN_NO_TERMINAL_PV_MANIFEST=83, UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE=0, UNCLASSIFIED_NO_TERMINAL_VERDICT=0",
+    "sources_unavailable": 0,
+    "unavailable_source_paths": []
+  }
+}
