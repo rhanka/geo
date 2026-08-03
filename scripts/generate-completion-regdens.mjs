@@ -315,15 +315,40 @@ invariant(new Set(palier30Slugs).size === new Set(COHORT_SLUGS).size
   && [...COHORT_SLUGS].every((slug) => palier30Slugs.includes(slug)),
   "legacy 30-cohort set differs from palier rank<=30 view");
 
-// Per-axis partition over a slug list; a slug absent from the municipal catalogue
-// (radar slug space ≠ geo catalogue) is counted as `unmatched`, not guessed.
+// The radar slug space (set-167-bprime) joins some cities on a SINGLE hyphen
+// before the MRC disambiguation suffix, whereas the geo catalogue uses a DOUBLE
+// hyphen `--` there. These 7 are the exact, verified 1:1 equivalents (matched on
+// municipality name + MRC in packages/qc-sources/src/geo/municipalities.qc.json);
+// this is an explicit whitelist, NOT a hyphen heuristic — each target is asserted
+// present in the catalogue below, so a wrong alias fails loud rather than guessing.
+const PALIER_SLUG_ALIASES = {
+  "saint-isidore-roussillon": "saint-isidore--roussillon",
+  "saint-damase-les-maskoutains": "saint-damase--les-maskoutains",
+  "hemmingford-les-jardins-de-napierville": "hemmingford--les-jardins-de-napierville",
+  "saint-louis-de-gonzague-beauharnois-salaberry": "saint-louis-de-gonzague--beauharnois-salaberry",
+  "hemmingford-les-jardins-de-napierville-2": "hemmingford--les-jardins-de-napierville--2",
+  "saint-sebastien-le-haut-richelieu": "saint-sebastien--le-haut-richelieu",
+  "sainte-sabine-brome-missisquoi": "sainte-sabine--brome-missisquoi",
+};
+function resolvePalierSlug(slug) {
+  if (cohortCities.has(slug)) return slug;
+  const alias = PALIER_SLUG_ALIASES[slug];
+  if (alias === undefined) return undefined;
+  invariant(cohortCities.has(alias),
+    `palier alias target absent from municipal catalogue: ${slug} -> ${alias}`);
+  return alias;
+}
+
+// Per-axis partition over a slug list; a slug that resolves to no catalogue city
+// (even after the verified alias whitelist) is counted as `unmatched`, not guessed.
 function sliceForSlugs(slugs, label) {
   const axes = Object.keys(matrix.totals);
   const partition = Object.fromEntries(axes.map((axis) => [axis,
     Object.fromEntries([...STATES, "unmatched"].map((state) => [state, 0]))]));
   const unmatched = [];
   for (const slug of slugs) {
-    const city = cohortCities.get(slug);
+    const geoSlug = resolvePalierSlug(slug);
+    const city = geoSlug === undefined ? undefined : cohortCities.get(geoSlug);
     if (city === undefined) {
       unmatched.push(slug);
       for (const axis of axes) partition[axis].unmatched += 1;
@@ -362,14 +387,20 @@ const palierHandoff = {
   target: PALIER_TARGET,
   partition: palier167.partition,
   unmatched: palier167.unmatched,
-  cities: palierRows.map(({ slug, priorityRank }) => ({
-    priorityRank,
-    slug,
-    matched: cohortCities.has(slug),
-    ...(cohortCities.has(slug)
-      ? Object.fromEntries(Object.keys(matrix.totals).map((axis) => [axis, cohortCities.get(slug)[axis]]))
-      : {}),
-  })),
+  cities: palierRows.map(({ slug, priorityRank }) => {
+    const geoSlug = resolvePalierSlug(slug);
+    const city = geoSlug === undefined ? undefined : cohortCities.get(geoSlug);
+    return {
+      priorityRank,
+      slug,
+      geo_slug: geoSlug ?? null,
+      aliased: geoSlug !== undefined && geoSlug !== slug,
+      matched: city !== undefined,
+      ...(city !== undefined
+        ? Object.fromEntries(Object.keys(matrix.totals).map((axis) => [axis, city[axis]]))
+        : {}),
+    };
+  }),
 };
 
 writeFileSync(absolute(OUTPUT), `${JSON.stringify(matrix, null, 2)}\n`);
