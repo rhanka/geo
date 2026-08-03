@@ -79,7 +79,8 @@ const SRC = {
   zones: loadJson('zones-completion', pickLatestByPrefix(COV, /^completion-1-zones-matrix-\d{8}\.json$/)),
   normes: loadJson('normes-completion', pickLatestByPrefix(COV, /^completion-1-normes-matrix-\d{8}\.json$/)),
   coherence: loadJson('lot-zone-consistency', pickLatestByPrefix(COV, /^lot-zone-consistency-scale-\d{8}\.json$/)),
-  pv: loadJson('pv-completion', path.join(COV, 'pv-completion-city-audit.json')),
+  pv: loadJson('pv-completion-declared', path.join(COV, 'pv-completion-city-audit.json')),
+  pvCaptured: loadJson('pv-couverture-captee', pickLatestByPrefix(COV, /^pv-couverture-municipale-.*\.json$/)),
   reglDeclared: loadJson('reglement-declared-registry', path.join(ROOT, 'acquisition', 'config', 'reglement-provenance.json')),
   reglProven: loadJson('reglement-capture-kpi', pickLatestByField(COV, /^reglement-capture-kpi-.*\.json$/, 'generated_at')),
   usage: loadJson('usage-dominant-enrichment', path.join(COV, 'zonage-enrichment.json')),
@@ -126,6 +127,7 @@ const IDX = {
   reglProven: indexBy(SRC.reglProven?.cities, 'city_slug'),
   usage: indexBy(SRC.usage?.perMuni, 'slug'),
   effet: indexBy(SRC.effet?.rows, 'slug'),
+  pvCaptured: new Set((SRC.pvCaptured?.municipal_coverage?.slugs ?? []).map((s) => s.slug)),
   quality: indexBy(SRC.quality?.rows, 'city_slug'),
   readback: indexBy(SRC.readback?.details, 'slug'),
   immoLotZone: bucketIndex(SRC.immoLotZone?.city_buckets),
@@ -163,7 +165,17 @@ const COLUMNS = [
       return r.mismatch_pct < 5 ? 'complete' : 'incomplete';
     } },
   { n: 3, key: 'normes', label: 'Normes — complétion', extract: (s) => stateFrom(IDX.normes.get(s), 'state') },
-  { n: 4, key: 'pv', label: 'PV — complétion', extract: (s) => stateFrom(IDX.pv.get(s), 'state') },
+  // col 4 = PV CAPTÉ (présence honnête, pas déclaratif). Principe fondateur :
+  // « vert par omission = rouge » — une ville à ZÉRO octet PV indexé n'est PAS
+  // complete même si le coverage-status déclaratif dit "done". complete ssi ≥1 PV
+  // INDEXED owner-confirmé (pv-couverture-municipale) ; le déclaratif ne sert plus
+  // qu'à distinguer N-A (hors périmètre prouvé) et incomplete (attendu, non capté).
+  { n: 4, key: 'pv', label: 'PV — capté (indexé)', presence_strict: true, extract: (s) => {
+      const decl = normState(IDX.pv.get(s)?.state) ?? U;
+      if (decl === 'N-A') return 'N-A';
+      if (IDX.pvCaptured.has(s)) return 'complete';
+      return decl === 'complete' || decl === 'incomplete' ? 'incomplete' : U;
+    } },
   // col 5 = règlement sur les DEUX axes (conducteur) : preuve-capture live =
   // complete ; déclaré (reglement_numero connu) mais non prouvé live = incomplete ;
   // ni déclaré ni prouvé = unknown. Détail declared/proven exposé en JSON.
@@ -225,8 +237,15 @@ const COLUMNS = [
   { n: 20, key: 'v34_qc_zoning_events', label: 'Recall+précision v3.4 qc-zoning-events', gap: GAP_V34, gate_excluded: true, extract: () => U },
 ];
 
-// présence = donnée là (état déterminé) ; unknown = absente ; N-A hors gate.
-const presenceOf = (state) => (state === 'unknown' ? 'absent' : state === 'N-A' ? 'N-A' : 'present');
+// présence = donnée là. Par défaut : état déterminé (complete|incomplete) = present,
+// unknown = absent, N-A hors gate. Colonne `presence_strict` (mesure binaire captée,
+// p.ex. PV capté) : SEUL `complete` (capté) est present — un `incomplete` déclaratif
+// (attendu mais 0 octet capté) est ABSENT (principe fondateur : vert par omission = rouge).
+const presenceOf = (state, strict) => {
+  if (state === 'N-A') return 'N-A';
+  if (strict) return state === 'complete' ? 'present' : 'absent';
+  return state === 'unknown' ? 'absent' : 'present';
+};
 
 // ---- cohorte & snapshot précédent -----------------------------------------
 function loadCohort() {
@@ -278,7 +297,7 @@ function build(todayNum) {
     let present = 0, absent = 0, na = 0;
     for (const col of COLUMNS) {
       if (col.gate_excluded) continue;
-      const pr = presenceOf(cells[col.key]);
+      const pr = presenceOf(cells[col.key], col.presence_strict);
       if (pr === 'present') present++; else if (pr === 'absent') absent++; else na++;
     }
     const presDenom = present + absent;
@@ -296,7 +315,7 @@ function build(todayNum) {
   const perKpi = COLUMNS.map((col) => {
     const counts = { complete: 0, incomplete: 0, unknown: 0, 'N-A': 0 };
     let present = 0;
-    for (const r of matched) { counts[r.cells[col.key]]++; if (presenceOf(r.cells[col.key]) === 'present') present++; }
+    for (const r of matched) { counts[r.cells[col.key]]++; if (presenceOf(r.cells[col.key], col.presence_strict) === 'present') present++; }
     const applicable = counts.complete + counts.incomplete + counts.unknown; // hors N-A
     return {
       n: col.n, key: col.key, label: col.label, gap: col.gap ?? null, v2_track: !!col.v2_track,
@@ -343,7 +362,7 @@ function build(todayNum) {
     previousSnapshotDate: prev ? prev.date : null,
     owner_target: 'CIBLE MERCREDI = PRÉSENCE 100% sur les 30 (col 10 preuve-v2 = campagne longue séparée).',
     cohort: { name: cohort.cohort, source: cohort.source, path: cohort.path, cities: rows.length, graph_matched: matched.length, pending_graph_node: pendingRows.length },
-    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, ceiling: CEILINGS[c.key] ?? null })),
+    columns: COLUMNS.map((c) => ({ n: c.n, key: c.key, label: c.label, gap: c.gap ?? null, v2_track: !!c.v2_track, gate_excluded: !!c.gate_excluded, presence_strict: !!c.presence_strict, ceiling: CEILINGS[c.key] ?? null })),
     anti_invention: 'Entrée manquante -> unknown ; jamais deviné. PENDING-GRAPH-NODE : toutes cellules unknown + drapeau, exclues des dénominateurs. Δ par diff de snapshots datés, jamais fabriqué. Col 20 (v3.4) : GAP jusqu\'à source per-city.',
     presence_gate: presenceGate,
     subset_palier1_rank_le_30: subset30,
