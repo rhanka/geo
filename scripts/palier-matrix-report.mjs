@@ -81,10 +81,10 @@ const SRC = {
   coherence: loadJson('lot-zone-consistency', pickLatestByPrefix(COV, /^lot-zone-consistency-scale-\d{8}\.json$/)),
   pv: loadJson('pv-completion-declared', path.join(COV, 'pv-completion-city-audit.json')),
   pvCaptured: loadJson('pv-couverture-captee', pickLatestByPrefix(COV, /^pv-couverture-municipale-.*\.json$/)),
-  reglDeclared: loadJson('reglement-declared-registry', path.join(ROOT, 'acquisition', 'config', 'reglement-provenance.json')),
-  reglProven: loadJson('reglement-capture-kpi', pickLatestByField(COV, /^reglement-capture-kpi-.*\.json$/, 'generated_at')),
-  usage: loadJson('usage-dominant-enrichment', path.join(COV, 'zonage-enrichment.json')),
-  effet: loadJson('effet-densifiant-bprime', pickLatestByField(COV, /^effet-densifiant-bprime-acquisition-universe-.*\.json$/, 'universe_rule')),
+  // Cols 5/6/7 : source UNIFIÉE per-city fournie par reglement (owner cols 5/6/7,
+  // cf. SPEC_PALIER_OWNERSHIP §3) — slug→{reglement_declared, reglement_proven,
+  // usage_dominant, effet_densifiant}, cohérente avec les totals regdens du portfolio.
+  regdensPerCity: loadJson('regdens-per-city', pickLatestByPrefix(COV, /^completion-regdens-percity-\d{8}\.json$/)),
   quality: loadJson('zone-provenance-quality', qualityMatrixName ? path.join(COV, qualityMatrixName) : null),
   readback: loadJson('zone-source-readback', pickLatestByPrefix(COV, /^zone-source-readback-audit-\d{8}\.json$/)),
   immoLotZone: loadJson('immo-lot-zone', pickLatestByPrefix(COV, /^immo-lot-zone-assignment-matrix-\d{8}\.json$/)),
@@ -115,18 +115,12 @@ function bucketIndex(cityBuckets) {
   }
   return m;
 }
-const REGL_PROVEN = { capture_inchange: 'complete', jamais_capture: 'incomplete', change: 'incomplete', unknown: 'unknown' };
-const EFFET = { known: 'complete', absent: 'incomplete', unknown_only: 'unknown', unserved: 'unknown' };
-
 const IDX = {
   zones: indexBy(SRC.zones?.cities, 'slug'),
   normes: indexBy(SRC.normes?.cities, 'slug'),
   coherence: indexBy(SRC.coherence?.cities, 'slug'),
   pv: indexBy(SRC.pv?.cities, 'slug'),
-  reglDeclared: new Map(SRC.reglDeclared?.slugs ? Object.entries(SRC.reglDeclared.slugs) : []),
-  reglProven: indexBy(SRC.reglProven?.cities, 'city_slug'),
-  usage: indexBy(SRC.usage?.perMuni, 'slug'),
-  effet: indexBy(SRC.effet?.rows, 'slug'),
+  regdensPerCity: indexBy(SRC.regdensPerCity?.cities, 'slug'),
   pvCaptured: new Set((SRC.pvCaptured?.municipal_coverage?.slugs ?? []).map((s) => s.slug)),
   quality: indexBy(SRC.quality?.rows, 'city_slug'),
   readback: indexBy(SRC.readback?.details, 'slug'),
@@ -180,28 +174,19 @@ const COLUMNS = [
   // complete ; déclaré (reglement_numero connu) mais non prouvé live = incomplete ;
   // ni déclaré ni prouvé = unknown. Détail declared/proven exposé en JSON.
   { n: 5, key: 'reglement', label: 'Règlement — déclarée+preuve', extract: (s) => {
-      const d = IDX.reglDeclared.get(s);
-      const declared = d ? (d.reglement_numero != null ? 'complete' : 'incomplete') : U;
-      const p = IDX.reglProven.get(s);
-      const proven = p ? (REGL_PROVEN[p.state] ?? U) : U;
+      const r = IDX.regdensPerCity.get(s);
+      if (!r) return U;
+      const declared = normState(r.reglement_declared) ?? U;
+      const proven = normState(r.reglement_proven) ?? U;
       if (proven === 'complete') return 'complete';
       if (declared === 'complete' || proven === 'incomplete') return 'incomplete';
       return U;
     }, detail: (s) => {
-      const d = IDX.reglDeclared.get(s);
-      const p = IDX.reglProven.get(s);
-      return { declared: d ? (d.reglement_numero != null ? 'complete' : 'incomplete') : U, proven: p ? (REGL_PROVEN[p.state] ?? U) : U };
+      const r = IDX.regdensPerCity.get(s);
+      return { declared: r ? (normState(r.reglement_declared) ?? U) : U, proven: r ? (normState(r.reglement_proven) ?? U) : U };
     } },
-  { n: 6, key: 'usage_dominant', label: 'Usage dominant — complétion', extract: (s) => {
-      const r = IDX.usage.get(s);
-      if (!r || typeof r.usage_dominant !== 'boolean') return U;
-      return r.usage_dominant ? 'complete' : 'incomplete';
-    } },
-  { n: 7, key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: (s) => {
-      const r = IDX.effet.get(s);
-      if (!r) return U;
-      return EFFET[r.state] ?? U;
-    } },
+  { n: 6, key: 'usage_dominant', label: 'Usage dominant — complétion', extract: (s) => stateFrom(IDX.regdensPerCity.get(s), 'usage_dominant') },
+  { n: 7, key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: (s) => stateFrom(IDX.regdensPerCity.get(s), 'effet_densifiant') },
   { n: 8, key: 'prov_jointure', label: 'Provenance — jointure exacte', extract: (s) => {
       const r = qualityRow(s); return r && r.collection_key ? 'complete' : U;
     } },
