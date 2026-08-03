@@ -59,7 +59,7 @@ recall-v3.4** (maturité WP5, non per-ville). `incomplete+unknown` des AUTRES co
 | 1 | Zones — complétion | `completion-1-zones-matrix-*` `cities[].state` | état direct |
 | 2 | Zones — cohérence lot-zone | `lot-zone-consistency-scale-*` `cities[]` | complete ssi `status=measured` ∧ `mismatch_pct<5` ; sinon unknown |
 | 3 | Normes — complétion | `completion-1-normes-matrix-*` `cities[].state` | état direct |
-| 4 | PV — complétion | `pv-completion-city-audit.json` `cities[].state` | état direct |
+| 4 | PV — **capté (indexé)** | capté `pv-couverture-municipale-*` `municipal_coverage.slugs[]` (≥1 doc INDEXED owner-confirmé) + déclaratif `pv-completion-city-audit.json` `cities[].state` | complete ssi CAPTÉ ; N-A si déclaratif N-A ; sinon incomplete (attendu, 0 octet capté) / unknown. **`presence_strict`** : présent ssi complete (capté) — un vert déclaratif non capté est ABSENT (vert par omission = rouge) |
 | 5 | Règlement — déclarée+preuve | déclarée `acquisition/config/reglement-provenance.json` (`reglement_numero`) + preuve `reglement-capture-kpi-*` (`state`) | complete ssi preuve `capture_inchange` ; incomplete ssi déclaré OU preuve incomplète ; sinon unknown. `details.{declared,proven}` en JSON |
 | 6 | Usage dominant — complétion | `zonage-enrichment.json` `perMuni[].usage_dominant` (bool) | true→complete, false→incomplete, absent→unknown |
 | 7 | Effet densifiant — complétion | `effet-densifiant-bprime-acquisition-universe-*` `rows[].state` | known→complete, absent→incomplete, unknown_only/unserved→unknown |
