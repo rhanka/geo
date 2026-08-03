@@ -1,28 +1,43 @@
 # Run capture cluster — cohorte zéro-capture (8 grosses villes)
 
-Soumission d'un Job Kubernetes Indexed de capture PV sur le cluster déclaré
-(OVH `poc-ca`, ns `geo`), sans polling local (le contrôleur gère la concurrence).
+Journal HONNÊTE de la campagne de capture PV de la cohorte zéro-capture sur le
+cluster déclaré (OVH `poc-ca`, ns `geo`), sans polling local. Trois soumissions :
+les deux premières sont des échecs/erreurs corrigés, documentés ici pour ne rien
+maquiller (vert par omission = rouge).
 
-- **Lane** : `pv`
-- **Run stamp** : `20260803T121500Z`
-- **Job** : `geo-capture-pv-20260803t121500z`
-- **Worklist locale** : `work/coverage/pv-decouverte-cohorte-vides-20260803T041000Z-capture-lot-0001.json` (committée `486ff898`)
-- **Worklist S3 (contrat soumis)** : `s3://sentropic-geo/registry/capture-worklists/pv-20260803T121500Z.json`
-- **Cibles** : 8 municipalités, 24 URLs (3/ville), `source=pv-discovery`
-- **shards/concurrency** : 1/1 — capture séquentielle, `delay_ms=2000`
-- **Résultat apply** : `job.batch/geo-capture-pv-20260803t121500z created`
+## Run 1 — ÉCHEC (OOM) — `20260803T121500Z`
+- `--shards 1 --concurrency 1`, mémoire par défaut **176Mi**.
+- Un seul pod traite les 8 villes en séquence → **OOMKilled** (3 tentatives),
+  Job `Failed`. Cause : `capturedFetch` retombe sur le chemin `arrayBuffer()`
+  (bufferise tout le PDF) pour un PV volumineux et dépasse 176Mi.
+- Job supprimé.
+
+## Run 2 — ERREUR DE TAG (orphelin) — `20260803T124500Z`
+- `--shards 8 --concurrency 1 --memory-limit-mi 384` : 7/8 villes captées,
+  westmount OOM même à 384Mi (compilations annuelles « MINUTES »).
+- **Défaut** : worklist taguée `source=pv-discovery` → CAS déposé sous
+  `raw/pv-discovery/cas/`. Or TOUTE la chaîne PV (classifieur, lecture visuelle,
+  `pv-couverture-municipale`) clé sur `raw/pv-index/cas/`. Ces octets sont
+  **orphelins de la métrique** (aucun producteur de couverture ne lit
+  `pv-discovery`). Job supprimé.
+
+## Run 3 — CORRIGÉ (en cours) — `20260803T130000Z`
+- Worklist corrigée `source=pv-index` :
+  `work/coverage/pv-cohorte-vides-20260803-capture-lot-0002-pvindex.json`.
+- **Job** : `geo-capture-pv-20260803t130000z`
+- **Worklist S3 (contrat)** : `s3://sentropic-geo/registry/capture-worklists/pv-20260803T130000Z.json`
+- `--shards 8 --concurrency 1 --memory-limit-mi 512` (1 ville/pod, isole toute
+  ville pathologique ; westmount reste à risque à 512Mi).
+- CAS attendu sous `raw/pv-index/cas/<sha>.<ext>` → visible par la chaîne de
+  couverture.
 
 ## Cohorte
-
 boucherville, candiac, hampstead, longueuil, saint-basile-le-grand,
 saint-bruno-de-montarville, varennes, westmount.
 
-## Suite
-
-1. Les octets bruts + manifeste de capture (`url`, `retrieved_at`, `sha256`,
-   robots, statut HTTP) se déposent sur S3 par le pod — **preuve v2 par
-   construction**.
-2. Indexation (`pv-index-run.ts`) sur les CAS déposés → verdict `INDEXED`.
-3. Re-mesure `pv-couverture-municipale.ts` : ces villes passent de zéro-capture à
-   captées strict seulement si ≥1 PV réellement indexé avec propriétaire imprimé.
-   Vert déclaratif interdit (principe fondateur).
+## Suite (capture ≠ couverture)
+Capturer les octets NE bouge PAS le chiffre : `pv-couverture-municipale` lit des
+snapshots verdict committés, pas S3 en vif. Il faut ensuite classifier/lire les
+octets → verdict `INDEXED` (propriétaire imprimé confirmé) → câbler le fichier
+verdict dans la mesure → recompter → committer. Le delta committé seul est
+remonté à claude:geo.
