@@ -98,6 +98,15 @@ Worklist corrigée (2 villes capturables) :
 (`source=pv-index`). Prochain beat : capture cluster (1 ville/shard,
 `--memory-limit-mi 512`) → classifier → recompter.
 
+## Run 6 — CAPTURE cluster saint-bruno + westmount — `20260803T173311Z`
+- **Job** : `geo-capture-pv-20260803t173311z` (OVH `poc-ca`, ns `geo`).
+- **Worklist S3** : `s3://sentropic-geo/registry/capture-worklists/pv-20260803T173311Z.json`.
+- `--shards 2 --concurrency 2 --memory-limit-mi 512` (1 ville/pod). Cluster =
+  cible déclarée `acquisition/config/k8s-target.json` (garde anti-mauvais-cluster
+  PASS). Aucun polling local. CAS attendu sous `raw/pv-index/cas/<sha>.<ext>`.
+- Suite : `capture-octets-classification --lane=pv` → si `INDEXED` (propriétaire
+  imprimé confirmé) câbler le verdict → recompter (`pv-couverture-municipale`).
+
 ## Suite (capture ≠ couverture)
 Capturer les octets NE bouge PAS le chiffre : `pv-couverture-municipale` lit des
 snapshots verdict committés, pas S3 en vif. Il faut ensuite classifier/lire les
