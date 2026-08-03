@@ -71,109 +71,158 @@ function zoneFieldFromUrl(url: string): string | null {
   return f[0] ?? null;
 }
 
-interface GeoDerived { geometry_type: string | null; feature_count: number; zone_maxlen: number | null; zone_nonnull_pct: number | null }
+// ── Registre municipal + géométrie (dérivation du gate depuis les OCTETS) ──────
+const MUNIS_PATH = resolve(ROOT, "packages/qc-sources/src/geo/municipalities.qc.json");
+interface MuniEntry { slug: string; lat: number; lon: number }
+function loadRegistry(): MuniEntry[] {
+  const raw = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as unknown;
+  const arr = (Array.isArray(raw) ? raw : Object.values(raw as Record<string, unknown>).find(Array.isArray)) as Array<Record<string, unknown>>;
+  return arr.map((m) => ({
+    slug: String(m["slug"] ?? ""),
+    lat: Number(m["lat"] ?? m["latitude"]),
+    lon: Number(m["lon"] ?? m["lng"] ?? m["longitude"]),
+  })).filter((m) => m.slug && Number.isFinite(m.lat) && Number.isFinite(m.lon));
+}
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371, dLat = ((lat2 - lat1) * Math.PI) / 180, dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+function* positions(coords: unknown): Generator<[number, number]> {
+  if (!Array.isArray(coords)) return;
+  if (typeof coords[0] === "number" && typeof coords[1] === "number") { yield [coords[0], coords[1]]; return; }
+  for (const c of coords) yield* positions(c);
+}
 
-function deriveFromGeojson(bytes: Buffer, zoneField: string | null): GeoDerived {
-  const gj = JSON.parse(bytes.toString("utf8")) as { features?: Array<{ geometry?: { type?: string }; properties?: Record<string, unknown> }> };
+interface GeoDerived {
+  geometry_type: string | null; feature_count: number;
+  zone_distinct: number; zone_maxlen: number | null; zone_nonnull_pct: number | null;
+  bbox_diag: number | null; nearest_registre_muni: string | null; registry_attribution_km: number | null;
+}
+
+function deriveFromGeojson(bytes: Buffer, zoneField: string | null, registry: MuniEntry[]): GeoDerived {
+  const gj = JSON.parse(bytes.toString("utf8")) as { features?: Array<{ geometry?: { type?: string; coordinates?: unknown }; properties?: Record<string, unknown> }> };
   const feats = Array.isArray(gj.features) ? gj.features : [];
   const types = new Set<string>();
-  let nonNull = 0;
-  let maxLen = 0;
+  const codes = new Set<string>();
+  let nonNull = 0, maxLen = 0;
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
   for (const f of feats) {
     const gt = f.geometry?.type;
     if (typeof gt === "string") types.add(gt);
+    for (const [x, y] of positions(f.geometry?.coordinates)) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y;
+    }
     if (zoneField) {
       const v = f.properties?.[zoneField];
-      if (v !== null && v !== undefined && String(v).trim() !== "") {
-        nonNull++;
-        maxLen = Math.max(maxLen, String(v).trim().length);
-      }
+      if (v !== null && v !== undefined && String(v).trim() !== "") { nonNull++; const s = String(v).trim(); codes.add(s); maxLen = Math.max(maxLen, s.length); }
     }
   }
-  // geometry_type unique attendu ; si mixte polygonal, garder le surtype MultiPolygon.
   let geometry_type: string | null = null;
   if (types.size === 1) geometry_type = [...types][0]!;
   else if (types.size > 1 && [...types].every((t) => /Polygon/.test(t))) geometry_type = "MultiPolygon";
-  else if (types.size > 1) geometry_type = [...types].sort().join("+"); // signale l'anomalie, laissera G1 échouer
+  else if (types.size > 1) geometry_type = [...types].sort().join("+");
+  const bboxOk = [minx, miny, maxx, maxy].every(Number.isFinite);
+  const bbox_diag = bboxOk ? haversineKm(miny, minx, maxy, maxx) : null;
+  let nearest: { slug: string; km: number } | null = null;
+  if (bboxOk) {
+    const clat = (miny + maxy) / 2, clon = (minx + maxx) / 2;
+    for (const m of registry) { const km = haversineKm(m.lat, m.lon, clat, clon); if (nearest === null || km < nearest.km) nearest = { slug: m.slug, km }; }
+  }
   return {
-    geometry_type,
-    feature_count: feats.length,
+    geometry_type, feature_count: feats.length,
+    zone_distinct: codes.size,
     zone_maxlen: zoneField ? maxLen : null,
     zone_nonnull_pct: zoneField && feats.length > 0 ? Math.round((nonNull / feats.length) * 1000) / 10 : null,
+    bbox_diag, nearest_registre_muni: nearest?.slug ?? null,
+    registry_attribution_km: nearest ? Math.round(nearest.km * 100) / 100 : null,
   };
 }
 
-async function readCasBytes(s3: ReturnType<typeof s3Client>, run: string, url: string): Promise<{ bytes: Buffer; http_status: number; retrieved_at: string; sha256: string }> {
+// Localise la ligne de capture : par URL exacte, sinon par sous-chaîne (mode --direct
+// robuste à l'encodage), en préférant une réponse /query f=geojson.
+async function readCasLine(s3: ReturnType<typeof s3Client>, run: string, match: { url?: string; contains?: string }): Promise<{ bytes: Buffer; url: string; http_status: number; retrieved_at: string; sha256: string }> {
   const keys = captureRunKeys(run);
   const header = CaptureRunHeaderSchema.parse(JSON.parse((await getBytes(s3, keys.header)).toString("utf8")));
   if (header.run_id !== run || header.finished_at === null || header.exit_code !== 0) {
     throw new Error(`run non probant ${run}: finished=${String(header.finished_at)} exit=${String(header.exit_code)}`);
   }
   const manifest = parseManifestJsonl((await getBytes(s3, keys.manifest)).toString("utf8"));
-  const direct = manifest.map((line, index) => ({ line, index })).filter(({ line }) => line.url === url);
-  const matches = direct.length > 0 ? direct : manifest.map((line, index) => ({ line, index })).filter(({ line }) => line.final_url === url);
-  if (matches.length !== 1) throw new Error(`capture exacte attendue 1x, trouvée ${matches.length}: ${url}`);
-  const { line } = matches[0]!;
+  let picks;
+  if (match.url) {
+    picks = manifest.filter((l) => l.url === match.url);
+    if (picks.length === 0) picks = manifest.filter((l) => l.final_url === match.url);
+  } else if (match.contains) {
+    picks = manifest.filter((l) => l.url.includes(match.contains!) && /f=geojson/i.test(l.url) && /outFields=/i.test(l.url));
+  } else throw new Error("readCasLine: url ou contains requis");
+  if (picks.length !== 1) throw new Error(`capture attendue 1x, trouvée ${picks.length} (${match.url ?? match.contains})`);
+  const line = picks[0]!;
   if (line.http_status === null || line.storage_key === null || line.sha256 === null) {
     throw new Error(`ligne non matérialisable: status=${String(line.http_status)} sha=${String(line.sha256)}`);
   }
   const bytes = await getBytes(s3, line.storage_key);
-  return { bytes, http_status: line.http_status, retrieved_at: line.retrieved_at, sha256: line.sha256 };
+  return { bytes, url: line.url, http_status: line.http_status, retrieved_at: line.retrieved_at, sha256: line.sha256 };
 }
+
+interface Spec { slug: string; run: string; zoneField: string | null; match: { url?: string; contains?: string } }
 
 async function main(): Promise<void> {
   requireS3();
   const reportsArg = arg("reports");
+  const directArg = arg("direct");
   const slugsArg = arg("slugs");
   const out = arg("out");
-  if (!reportsArg || !out) throw new Error("usage: --reports a.json,b.json [--slugs a,b] --out f.json");
+  if (!out || (!reportsArg && !directArg)) throw new Error("usage: (--reports a.json,b.json [--slugs a,b] | --direct cities.json) --out f.json");
   const wantSlugs = slugsArg ? new Set(slugsArg.split(",").map((s) => s.trim()).filter(Boolean)) : null;
 
-  // Collecte les entrées PASS (dedup par slug ; 1re rencontrée = retenue).
-  const bySlug = new Map<string, { entry: ReportEntry; run: string }>();
-  for (const rel of reportsArg.split(",").map((s) => s.trim()).filter(Boolean)) {
-    const rf = JSON.parse(readFileSync(resolve(ROOT, rel), "utf8")) as ReportFile;
-    const run = rf.capture_run_id;
-    if (!run) continue;
-    for (const e of rf.capture_report ?? []) {
-      if (!e.verdict || !PASS.has(e.verdict)) continue;
-      if (wantSlugs && !wantSlugs.has(e.slug)) continue;
-      if (!bySlug.has(e.slug)) bySlug.set(e.slug, { entry: e, run });
+  // Sources : rapports gonet (capture_report[] PASS) + entrees DIRECTES (arcgis etc.).
+  const specs = new Map<string, Spec>();
+  if (reportsArg) {
+    for (const rel of reportsArg.split(",").map((s) => s.trim()).filter(Boolean)) {
+      const rf = JSON.parse(readFileSync(resolve(ROOT, rel), "utf8")) as ReportFile;
+      if (!rf.capture_run_id) continue;
+      for (const e of rf.capture_report ?? []) {
+        if (!e.verdict || !PASS.has(e.verdict) || !e.source_url_reelle) continue;
+        if (wantSlugs && !wantSlugs.has(e.slug)) continue;
+        if (!specs.has(e.slug)) specs.set(e.slug, { slug: e.slug, run: rf.capture_run_id, zoneField: zoneFieldFromUrl(e.source_url_reelle), match: { url: e.source_url_reelle } });
+      }
+    }
+  }
+  if (directArg) {
+    const rows = JSON.parse(readFileSync(resolve(ROOT, directArg), "utf8")) as Array<{ slug: string; capture_run_id: string; zone_field: string; url?: string; url_contains?: string }>;
+    for (const r of rows) {
+      if (wantSlugs && !wantSlugs.has(r.slug)) continue;
+      if (!specs.has(r.slug)) specs.set(r.slug, { slug: r.slug, run: r.capture_run_id, zoneField: r.zone_field, match: { url: r.url, contains: r.url_contains } });
     }
   }
 
+  const registry = loadRegistry();
   const s3 = s3Client();
   const cities: Record<string, unknown>[] = [];
   const errors: { slug: string; reason: string }[] = [];
-  for (const [slug, { entry, run }] of bySlug) {
+  for (const [slug, spec] of specs) {
     try {
-      const url = entry.source_url_reelle;
-      if (!url) throw new Error("source_url_reelle absente");
-      const zone_field = zoneFieldFromUrl(url);
-      const cas = await readCasBytes(s3, run, url);
-      const d = deriveFromGeojson(cas.bytes, zone_field);
-      // cohérence feature_count rapport vs octets
-      if (typeof entry.n_features === "number" && entry.n_features !== d.feature_count) {
-        errors.push({ slug, reason: `feature_count divergent rapport=${entry.n_features} octets=${d.feature_count}` });
-      }
+      const cas = await readCasLine(s3, spec.run, spec.match);
+      const zone_field = spec.zoneField ?? zoneFieldFromUrl(cas.url);
+      const d = deriveFromGeojson(cas.bytes, zone_field, registry);
       cities.push({
         slug,
-        source_url: url,
+        source_url: cas.url,
         retrieved_at: cas.retrieved_at,
         sha256: cas.sha256,
         http_status: cas.http_status,
         feature_count: d.feature_count,
         geometry_type: d.geometry_type,
         zone_field,
-        zone_distinct: entry.codes_distinct ?? null,
+        zone_distinct: d.zone_distinct,
         zone_maxlen: d.zone_maxlen,
         zone_nonnull_pct: d.zone_nonnull_pct,
-        bbox_diag: entry.bbox_diag_km ?? null,
-        registry_attribution_km: entry.nearest_km ?? null,
-        // Discriminant PRIMAIRE anti-homonyme G4 (ruling qa amende: nearest===slug ;
-        // le km n'est qu'un proxy qui faux-positive sur grande muni rurale).
-        nearest_registre_muni: entry.nearest_registre_muni ?? null,
-        capture_run_id: run,
+        bbox_diag: d.bbox_diag,
+        registry_attribution_km: d.registry_attribution_km,
+        // Discriminant PRIMAIRE anti-homonyme G4 (nearest===slug ; km informatif).
+        nearest_registre_muni: d.nearest_registre_muni,
+        capture_run_id: spec.run,
       });
     } catch (e) {
       errors.push({ slug, reason: (e as Error).message });
@@ -183,7 +232,7 @@ async function main(): Promise<void> {
   const manifest = {
     contract: "zones-vecteur-natif-capture-manifest/v1",
     spec: "docs/spec/SPEC_QA_GATE_VECTEUR_NATIF.md@1a0e86d7",
-    generated_from: reportsArg.split(",").map((s) => s.trim()),
+    generated_from: { reports: reportsArg ?? null, direct: directArg ?? null },
     total: cities.length,
     errors,
     cities,
