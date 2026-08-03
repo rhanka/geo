@@ -10,6 +10,9 @@
  *   --slugs=slug-a,slug-b  (1..8 slugs de l'univers choisi)
  *   --out=work/coverage/pv-decouverte-worklist-....json
  *   [--out-capture-worklist=work/coverage/pv-decouverte-...-lot-0001.json]
+ *   [--source=pv-index] (tag de chaque cible de la worklist de capture; défaut
+ *     `pv-index` car toute la chaîne de couverture PV clé sur `raw/pv-index/cas/`;
+ *     un tag `pv-discovery` déposerait des octets orphelins invisibles à la métrique)
  *   [--max-candidates-per-municipality=0] (0 = tous)
  *   [--seed-pages=slug=https://index-officiel,...]
  *   [--seed-json=slug=https://endpoint-cms-officiel,...]
@@ -32,7 +35,7 @@ import { createHash } from "node:crypto";
 import { lookup } from "node:dns/promises";
 import { readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { classifyPvObservableDocument } from "./lib/pv-observable-classification.js";
 
@@ -801,6 +804,37 @@ function seedUrls(raw: string | null, selectedSlugs: ReadonlySet<string>, option
   return result;
 }
 
+export const DEFAULT_CAPTURE_SOURCE = "pv-index";
+
+export interface CaptureTarget {
+  readonly slug: string;
+  readonly source: string;
+  readonly urls: readonly string[];
+}
+
+/**
+ * Regroupe les candidates par municipalité en cibles de capture cluster.
+ * `source` étiquette chaque cible : toute la chaîne de couverture PV clé sur
+ * `raw/pv-index/cas/`, donc le défaut opérationnel est `pv-index`. Un tag
+ * `pv-discovery` déposerait des octets orphelins invisibles à la métrique.
+ */
+export function buildCaptureTargets(
+  candidates: readonly { readonly slug: string; readonly candidate_url: string }[],
+  source: string,
+  maxCandidatesPerMunicipality: number,
+): CaptureTarget[] {
+  const bySlug = new Map<string, string[]>();
+  for (const candidate of candidates) {
+    const current = bySlug.get(candidate.slug) ?? [];
+    if (maxCandidatesPerMunicipality === 0 || current.length < maxCandidatesPerMunicipality) current.push(candidate.candidate_url);
+    bySlug.set(candidate.slug, current);
+  }
+  return [...bySlug.entries()]
+    .map(([slug, urls]) => ({ slug, source, urls }))
+    .filter((target) => target.urls.length > 0)
+    .sort((left, right) => left.slug.localeCompare(right.slug));
+}
+
 async function main(): Promise<void> {
   const outPath = insideRepo(required("out"), "out");
   const rawInputPath = arg("input");
@@ -812,6 +846,8 @@ async function main(): Promise<void> {
   const municipalitiesPath = rawMunicipalitiesPath === null ? null : insideRepo(rawMunicipalitiesPath, "municipalities");
   const outCaptureWorklist = arg("out-capture-worklist");
   const captureWorklistPath = outCaptureWorklist === null ? null : insideRepo(outCaptureWorklist, "out-capture-worklist");
+  const captureSource = arg("source") ?? DEFAULT_CAPTURE_SOURCE;
+  if (!captureSource.trim()) throw new Error("--source ne doit pas être vide");
   const maxCandidatesRaw = arg("max-candidates-per-municipality") ?? "0";
   const maxCandidatesPerMunicipality = Number(maxCandidatesRaw);
   if (!Number.isInteger(maxCandidatesPerMunicipality) || maxCandidatesPerMunicipality < 0) {
@@ -916,23 +952,17 @@ async function main(): Promise<void> {
   writeFileSync(outPath, `${JSON.stringify(worklist, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
   let captureTargets = 0;
   if (captureWorklistPath !== null) {
-    const bySlug = new Map<string, Candidate[]>();
-    for (const candidate of sortedCandidates) {
-      const current = bySlug.get(candidate.slug) ?? [];
-      if (maxCandidatesPerMunicipality === 0 || current.length < maxCandidatesPerMunicipality) current.push(candidate);
-      bySlug.set(candidate.slug, current);
-    }
-    const targets = [...bySlug.entries()]
-      .map(([slug, found]) => ({ slug, source: "pv-discovery", urls: found.map((candidate) => candidate.candidate_url) }))
-      .filter((target) => target.urls.length > 0)
-      .sort((left, right) => left.slug.localeCompare(right.slug));
+    const targets = buildCaptureTargets(sortedCandidates, captureSource, maxCandidatesPerMunicipality);
     writeFileSync(captureWorklistPath, `${JSON.stringify(targets, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
     captureTargets = targets.length;
   }
   process.stdout.write(`${JSON.stringify({ out: outPath.slice(ROOT.length + 1), candidates: sortedCandidates.length, municipalities: withCandidate.size, observed: sortedObservations.length, universe: universe.size, capture_worklist: captureWorklistPath?.slice(ROOT.length + 1) ?? null, capture_targets: captureTargets }, null, 2)}\n`);
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.stack ?? error.message : String(error));
-  process.exitCode = 1;
-});
+const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+    process.exitCode = 1;
+  });
+}
