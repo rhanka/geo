@@ -1,16 +1,16 @@
 {
   "contract": "palier-matrix/v1",
-  "generatedAt": "2026-08-07T14:19:56.114Z",
+  "generatedAt": "2026-08-07T15:42:27.479Z",
   "reportDate": "2026-08-03",
   "previousSnapshotDate": null,
   "owner_target": "CIBLE = 100%-RÉSOLU sur les 20 KPI (0 unknown : complete OU N-A prouvé) ; les 20 comptent, cols 10 (preuve-v2) & 20 (v3.4) INCLUSES ; %/ville sur 20 applicables.",
   "cohort": {
     "name": "set-167-bprime",
-    "source": "radar 800ee90:docs/spec/reports/set-167-bprime.tsv (i-cond, canonique priorityRank<=167 figé 2026-08-02) — slug/priorityRank VERBATIM, graph_matched dérivé de match!=UNMATCHED",
+    "source": "radar 43c873e0d2cf7acd50e330130fb809c7bf808953:docs/spec/reports/set-167-bprime.tsv (i-cond, canonique priorityRank<=167 figé 2026-08-02) — slug/priorityRank VERBATIM, graph_matched dérivé de match!=UNMATCHED",
     "path": "work/coverage/palier-matrix-cohort-167.json",
     "cities": 167,
-    "graph_matched": 162,
-    "pending_graph_node": 5
+    "graph_matched": 163,
+    "pending_graph_node": 4
   },
   "columns": [
     {
@@ -238,13 +238,13 @@
   "presence_gate": {
     "axis": "présence (donnée là) sur les 20 KPI — AUCUNE colonne exclue (cols 10 preuve-v2 & 20 v3.4 INCLUSES, décision owner révisée)",
     "gate_columns": 20,
-    "cities_scored": 162,
+    "cities_scored": 163,
     "cities_full_presence": 12,
     "cities_full_completion": 0,
-    "mean_presence_pct": 70
+    "mean_presence_pct": 71.7
   },
   "subset_palier1_rank_le_30": {
-    "cities_scored": 27,
+    "cities_scored": 28,
     "cities_full_presence": 7,
     "cities_full_completion": 0,
     "mean_presence_pct": 95.9
@@ -792,29 +792,29 @@
     {
       "priorityRank": 8,
       "slug": "brossard",
-      "graph_matched": false,
-      "flag": "PENDING-GRAPH-NODE",
+      "graph_matched": true,
+      "flag": null,
       "cells": {
-        "zones": "unknown",
-        "coherence_lot_zone": "unknown",
-        "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
-        "usage_dominant": "unknown",
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "complete",
+        "usage_dominant": "complete",
         "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
-        "prov_url_servie": "unknown",
-        "immo_lot_zone": "unknown",
-        "immo_normes_pliees": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "incomplete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
         "immo_lots_servis": "complete",
         "immo_surface": "complete",
         "immo_code_postal": "complete",
         "immo_adresse": "complete",
         "tod_applicabilite": "complete",
         "tod_completion": "incomplete",
-        "v34_qc_zoning_events": "unknown"
+        "v34_qc_zoning_events": "incomplete"
       },
       "deltas": {
         "zones": "—",
@@ -838,19 +838,32 @@
         "tod_completion": "—",
         "v34_qc_zoning_events": "—"
       },
+      "details": {
+        "reglement": {
+          "declared": "complete",
+          "proven": "complete"
+        },
+        "v34_qc_zoning_events": {
+          "statut": "measured-geo-empty",
+          "geo_events_count": 0,
+          "immo_gt_events": 23,
+          "matched": 0,
+          "recall_pct_si_mesurable": 0
+        }
+      },
       "counts": {
-        "complete": 5,
-        "incomplete": 1,
-        "unknown": 14,
+        "complete": 12,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 0
       },
-      "completion_complete_over_20": 5,
+      "completion_complete_over_20": 12,
       "presence": {
-        "present": 6,
-        "absent": 14,
+        "present": 19,
+        "absent": 1,
         "na_excluded": 0,
         "denom_applicable": 20,
-        "pct": 30
+        "pct": 95
       }
     },
     {
@@ -2607,9 +2620,9 @@
         "zones": "unknown",
         "coherence_lot_zone": "unknown",
         "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
-        "usage_dominant": "unknown",
+        "pv": "complete",
+        "reglement": "incomplete",
+        "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
         "prov_jointure": "unknown",
         "prov_qualite": "unknown",
@@ -2649,7 +2662,7 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
+          "declared": "complete",
           "proven": "unknown"
         },
         "v34_qc_zoning_events": {
@@ -2661,18 +2674,18 @@
         }
       },
       "counts": {
-        "complete": 0,
-        "incomplete": 1,
-        "unknown": 17,
+        "complete": 1,
+        "incomplete": 3,
+        "unknown": 14,
         "N-A": 2
       },
-      "completion_complete_over_20": 0,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 1,
-        "absent": 17,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 5.6
+        "pct": 22.2
       }
     },
     {
@@ -8135,19 +8148,19 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
-        "coherence_lot_zone": "unknown",
-        "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
-        "usage_dominant": "unknown",
+        "zones": "complete",
+        "coherence_lot_zone": "complete",
+        "normes": "incomplete",
+        "pv": "complete",
+        "reglement": "complete",
+        "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
-        "prov_url_servie": "unknown",
-        "immo_lot_zone": "unknown",
-        "immo_normes_pliees": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
         "immo_lots_servis": "complete",
         "immo_surface": "complete",
         "immo_code_postal": "complete",
@@ -8180,8 +8193,8 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
-          "proven": "unknown"
+          "declared": "complete",
+          "proven": "complete"
         },
         "v34_qc_zoning_events": {
           "statut": "measured-geo-empty",
@@ -8192,18 +8205,18 @@
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 1,
-        "unknown": 13,
+        "complete": 11,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 94.4
       }
     },
     {
@@ -9136,19 +9149,19 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
-        "coherence_lot_zone": "unknown",
-        "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
-        "usage_dominant": "unknown",
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "complete",
+        "usage_dominant": "incomplete",
         "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
-        "prov_url_servie": "unknown",
-        "immo_lot_zone": "unknown",
-        "immo_normes_pliees": "unknown",
+        "prov_jointure": "complete",
+        "prov_qualite": "complete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
         "immo_lots_servis": "complete",
         "immo_surface": "complete",
         "immo_code_postal": "complete",
@@ -9181,8 +9194,8 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
-          "proven": "unknown"
+          "declared": "complete",
+          "proven": "complete"
         },
         "v34_qc_zoning_events": {
           "statut": "measured-geo-empty",
@@ -9193,18 +9206,18 @@
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 1,
-        "unknown": 13,
+        "complete": 11,
+        "incomplete": 6,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 11,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 94.4
       }
     },
     {
@@ -9367,10 +9380,10 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
+        "zones": "incomplete",
         "coherence_lot_zone": "unknown",
         "normes": "unknown",
-        "pv": "unknown",
+        "pv": "complete",
         "reglement": "unknown",
         "usage_dominant": "unknown",
         "effet_densifiant": "unknown",
@@ -9412,7 +9425,7 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
+          "declared": "incomplete",
           "proven": "unknown"
         },
         "v34_qc_zoning_events": {
@@ -9424,18 +9437,18 @@
         }
       },
       "counts": {
-        "complete": 0,
-        "incomplete": 2,
-        "unknown": 16,
+        "complete": 1,
+        "incomplete": 3,
+        "unknown": 14,
         "N-A": 2
       },
-      "completion_complete_over_20": 0,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 2,
-        "absent": 16,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 11.1
+        "pct": 22.2
       }
     },
     {
@@ -10291,19 +10304,19 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
-        "coherence_lot_zone": "unknown",
+        "zones": "complete",
+        "coherence_lot_zone": "incomplete",
         "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
-        "usage_dominant": "unknown",
-        "effet_densifiant": "unknown",
-        "prov_jointure": "unknown",
-        "prov_qualite": "unknown",
-        "prov_v2": "unknown",
-        "prov_url_servie": "unknown",
-        "immo_lot_zone": "unknown",
-        "immo_normes_pliees": "unknown",
+        "pv": "complete",
+        "reglement": "complete",
+        "usage_dominant": "complete",
+        "effet_densifiant": "incomplete",
+        "prov_jointure": "complete",
+        "prov_qualite": "incomplete",
+        "prov_v2": "incomplete",
+        "prov_url_servie": "complete",
+        "immo_lot_zone": "incomplete",
+        "immo_normes_pliees": "incomplete",
         "immo_lots_servis": "complete",
         "immo_surface": "complete",
         "immo_code_postal": "complete",
@@ -10336,8 +10349,8 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
-          "proven": "unknown"
+          "declared": "complete",
+          "proven": "complete"
         },
         "v34_qc_zoning_events": {
           "statut": "measured-geo-empty",
@@ -10348,18 +10361,18 @@
         }
       },
       "counts": {
-        "complete": 4,
-        "incomplete": 1,
-        "unknown": 13,
+        "complete": 10,
+        "incomplete": 7,
+        "unknown": 1,
         "N-A": 2
       },
-      "completion_complete_over_20": 4,
+      "completion_complete_over_20": 10,
       "presence": {
-        "present": 5,
-        "absent": 13,
+        "present": 17,
+        "absent": 1,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 27.8
+        "pct": 94.4
       }
     },
     {
@@ -10599,11 +10612,11 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
+        "zones": "incomplete",
         "coherence_lot_zone": "unknown",
-        "normes": "unknown",
-        "pv": "unknown",
-        "reglement": "unknown",
+        "normes": "complete",
+        "pv": "complete",
+        "reglement": "incomplete",
         "usage_dominant": "unknown",
         "effet_densifiant": "unknown",
         "prov_jointure": "unknown",
@@ -10644,7 +10657,7 @@
       },
       "details": {
         "reglement": {
-          "declared": "unknown",
+          "declared": "complete",
           "proven": "unknown"
         },
         "v34_qc_zoning_events": {
@@ -10656,18 +10669,18 @@
         }
       },
       "counts": {
-        "complete": 0,
-        "incomplete": 2,
-        "unknown": 16,
+        "complete": 2,
+        "incomplete": 4,
+        "unknown": 12,
         "N-A": 2
       },
-      "completion_complete_over_20": 0,
+      "completion_complete_over_20": 2,
       "presence": {
-        "present": 2,
-        "absent": 16,
+        "present": 6,
+        "absent": 12,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 11.1
+        "pct": 33.3
       }
     },
     {
@@ -10907,10 +10920,10 @@
       "graph_matched": true,
       "flag": null,
       "cells": {
-        "zones": "unknown",
+        "zones": "incomplete",
         "coherence_lot_zone": "unknown",
-        "normes": "unknown",
-        "pv": "unknown",
+        "normes": "complete",
+        "pv": "incomplete",
         "reglement": "unknown",
         "usage_dominant": "unknown",
         "effet_densifiant": "unknown",
@@ -10964,18 +10977,18 @@
         }
       },
       "counts": {
-        "complete": 0,
-        "incomplete": 2,
-        "unknown": 16,
+        "complete": 1,
+        "incomplete": 4,
+        "unknown": 13,
         "N-A": 2
       },
-      "completion_complete_over_20": 0,
+      "completion_complete_over_20": 1,
       "presence": {
-        "present": 2,
-        "absent": 16,
+        "present": 4,
+        "absent": 14,
         "na_excluded": 2,
         "denom_applicable": 18,
-        "pct": 11.1
+        "pct": 22.2
       }
     },
     {
@@ -13053,20 +13066,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 57,
+      "acquirable_incomplete": 54,
       "counts": {
-        "complete": 105,
-        "incomplete": 10,
-        "unknown": 47,
+        "complete": 109,
+        "incomplete": 13,
+        "unknown": 41,
         "N-A": 0
       },
-      "complete_over_matched": "105/162",
-      "cities_100pct": 105,
-      "pct_complete": 64.8,
-      "present": 115,
-      "pct_present": 71
+      "complete_over_matched": "109/163",
+      "cities_100pct": 109,
+      "pct_complete": 66.9,
+      "present": 122,
+      "pct_present": 74.8
     },
     {
       "n": 2,
@@ -13075,20 +13088,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
       "acquirable_incomplete": 85,
       "counts": {
-        "complete": 77,
-        "incomplete": 28,
-        "unknown": 57,
+        "complete": 78,
+        "incomplete": 31,
+        "unknown": 54,
         "N-A": 0
       },
-      "complete_over_matched": "77/162",
-      "cities_100pct": 77,
-      "pct_complete": 47.5,
-      "present": 105,
-      "pct_present": 64.8
+      "complete_over_matched": "78/163",
+      "cities_100pct": 78,
+      "pct_complete": 47.9,
+      "present": 109,
+      "pct_present": 66.9
     },
     {
       "n": 3,
@@ -13097,20 +13110,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 59,
+      "acquirable_incomplete": 56,
       "counts": {
-        "complete": 103,
-        "incomplete": 9,
-        "unknown": 50,
+        "complete": 107,
+        "incomplete": 10,
+        "unknown": 46,
         "N-A": 0
       },
-      "complete_over_matched": "103/162",
-      "cities_100pct": 103,
-      "pct_complete": 63.6,
-      "present": 112,
-      "pct_present": 69.1
+      "complete_over_matched": "107/163",
+      "cities_100pct": 107,
+      "pct_complete": 65.6,
+      "present": 117,
+      "pct_present": 71.8
     },
     {
       "n": 4,
@@ -13119,20 +13132,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 52,
+      "acquirable_incomplete": 46,
       "counts": {
-        "complete": 110,
-        "incomplete": 43,
-        "unknown": 9,
+        "complete": 117,
+        "incomplete": 44,
+        "unknown": 2,
         "N-A": 0
       },
-      "complete_over_matched": "110/162",
-      "cities_100pct": 110,
-      "pct_complete": 67.9,
-      "present": 110,
-      "pct_present": 67.9
+      "complete_over_matched": "117/163",
+      "cities_100pct": 117,
+      "pct_complete": 71.8,
+      "present": 117,
+      "pct_present": 71.8
     },
     {
       "n": 5,
@@ -13141,20 +13154,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 83,
+      "acquirable_incomplete": 80,
       "counts": {
-        "complete": 79,
-        "incomplete": 60,
-        "unknown": 23,
+        "complete": 83,
+        "incomplete": 62,
+        "unknown": 18,
         "N-A": 0
       },
-      "complete_over_matched": "79/162",
-      "cities_100pct": 79,
-      "pct_complete": 48.8,
-      "present": 139,
-      "pct_present": 85.8
+      "complete_over_matched": "83/163",
+      "cities_100pct": 83,
+      "pct_complete": 50.9,
+      "present": 145,
+      "pct_present": 89
     },
     {
       "n": 6,
@@ -13163,20 +13176,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 71,
+      "acquirable_incomplete": 70,
       "counts": {
-        "complete": 91,
-        "incomplete": 53,
-        "unknown": 18,
+        "complete": 93,
+        "incomplete": 56,
+        "unknown": 14,
         "N-A": 0
       },
-      "complete_over_matched": "91/162",
-      "cities_100pct": 91,
-      "pct_complete": 56.2,
-      "present": 144,
-      "pct_present": 88.9
+      "complete_over_matched": "93/163",
+      "cities_100pct": 93,
+      "pct_complete": 57.1,
+      "present": 149,
+      "pct_present": 91.4
     },
     {
       "n": 7,
@@ -13185,20 +13198,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": "plafond DOCUMENTAIRE : l'effet densifiant n'est établi que si le document le porte (amendement ne recouvre pas l'original) — gisement rare ; l'incomplete/unknown est majoritairement NON acquérable à court terme.",
-      "acquirable_incomplete": 161,
+      "acquirable_incomplete": 162,
       "counts": {
         "complete": 1,
-        "incomplete": 18,
+        "incomplete": 19,
         "unknown": 143,
         "N-A": 0
       },
-      "complete_over_matched": "1/162",
+      "complete_over_matched": "1/163",
       "cities_100pct": 1,
       "pct_complete": 0.6,
-      "present": 19,
-      "pct_present": 11.7
+      "present": 20,
+      "pct_present": 12.3
     },
     {
       "n": 8,
@@ -13207,20 +13220,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 55,
+      "acquirable_incomplete": 52,
       "counts": {
-        "complete": 107,
+        "complete": 111,
         "incomplete": 0,
-        "unknown": 55,
+        "unknown": 52,
         "N-A": 0
       },
-      "complete_over_matched": "107/162",
-      "cities_100pct": 107,
-      "pct_complete": 66,
-      "present": 107,
-      "pct_present": 66
+      "complete_over_matched": "111/163",
+      "cities_100pct": 111,
+      "pct_complete": 68.1,
+      "present": 111,
+      "pct_present": 68.1
     },
     {
       "n": 9,
@@ -13229,20 +13242,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 80,
+      "acquirable_incomplete": 78,
       "counts": {
-        "complete": 82,
-        "incomplete": 24,
-        "unknown": 56,
+        "complete": 85,
+        "incomplete": 25,
+        "unknown": 53,
         "N-A": 0
       },
-      "complete_over_matched": "82/162",
-      "cities_100pct": 82,
-      "pct_complete": 50.6,
-      "present": 106,
-      "pct_present": 65.4
+      "complete_over_matched": "85/163",
+      "cities_100pct": 85,
+      "pct_complete": 52.1,
+      "present": 110,
+      "pct_present": 67.5
     },
     {
       "n": 10,
@@ -13251,20 +13264,20 @@
       "gap": null,
       "v2_track": true,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE (DANS la gate depuis la révision owner) ; le vecteur natif GOnet/ArcGIS débloque une partie de ce plafond.",
-      "acquirable_incomplete": 139,
+      "acquirable_incomplete": 140,
       "counts": {
         "complete": 23,
-        "incomplete": 83,
-        "unknown": 56,
+        "incomplete": 87,
+        "unknown": 53,
         "N-A": 0
       },
-      "complete_over_matched": "23/162",
+      "complete_over_matched": "23/163",
       "cities_100pct": 23,
-      "pct_complete": 14.2,
-      "present": 106,
-      "pct_present": 65.4
+      "pct_complete": 14.1,
+      "present": 110,
+      "pct_present": 67.5
     },
     {
       "n": 11,
@@ -13273,20 +13286,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 127,
+      "acquirable_incomplete": 125,
       "counts": {
-        "complete": 35,
-        "incomplete": 70,
-        "unknown": 57,
+        "complete": 38,
+        "incomplete": 71,
+        "unknown": 54,
         "N-A": 0
       },
-      "complete_over_matched": "35/162",
-      "cities_100pct": 35,
-      "pct_complete": 21.6,
-      "present": 105,
-      "pct_present": 64.8
+      "complete_over_matched": "38/163",
+      "cities_100pct": 38,
+      "pct_complete": 23.3,
+      "present": 109,
+      "pct_present": 66.9
     },
     {
       "n": 12,
@@ -13295,20 +13308,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 139,
+      "acquirable_incomplete": 140,
       "counts": {
         "complete": 23,
-        "incomplete": 88,
-        "unknown": 51,
+        "incomplete": 92,
+        "unknown": 48,
         "N-A": 0
       },
-      "complete_over_matched": "23/162",
+      "complete_over_matched": "23/163",
       "cities_100pct": 23,
-      "pct_complete": 14.2,
-      "present": 111,
-      "pct_present": 68.5
+      "pct_complete": 14.1,
+      "present": 115,
+      "pct_present": 70.6
     },
     {
       "n": 13,
@@ -13317,20 +13330,20 @@
       "gap": null,
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": null,
-      "acquirable_incomplete": 158,
+      "acquirable_incomplete": 159,
       "counts": {
         "complete": 4,
-        "incomplete": 105,
-        "unknown": 53,
+        "incomplete": 109,
+        "unknown": 50,
         "N-A": 0
       },
-      "complete_over_matched": "4/162",
+      "complete_over_matched": "4/163",
       "cities_100pct": 4,
       "pct_complete": 2.5,
-      "present": 109,
-      "pct_present": 67.3
+      "present": 113,
+      "pct_present": 69.3
     },
     {
       "n": 14,
@@ -13471,19 +13484,19 @@
       "gap": "PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)",
       "v2_track": false,
       "slug_measured": false,
-      "denom": 162,
+      "denom": 163,
       "ceiling": "plafond MATURITÉ : recall v3.4 (WP5) MESURABLE seulement là où la GT immo existe — quelques villes à ce jour ; 167 bloqué sur 2 handoffs immo (liste + export 161). DANS la gate ; per-ville dès handoff.",
-      "acquirable_incomplete": 146,
+      "acquirable_incomplete": 147,
       "counts": {
         "complete": 1,
-        "incomplete": 132,
+        "incomplete": 133,
         "unknown": 14,
         "N-A": 15
       },
-      "complete_over_matched": "1/162",
+      "complete_over_matched": "1/163",
       "cities_100pct": 1,
       "pct_complete": 0.6,
-      "present": 133,
+      "present": 134,
       "pct_present": 90.5
     }
   ],
