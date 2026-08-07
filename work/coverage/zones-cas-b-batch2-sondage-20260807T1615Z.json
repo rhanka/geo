@@ -1,0 +1,49 @@
+{
+  "batch": 2,
+  "contract": "heavy-unknown-49-triage-cas-b-v1",
+  "generatedAt": "2026-08-07T16:15:00.000Z",
+  "lane": "zones",
+  "items": [
+    {
+      "ville": "lile-dorval",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "none",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "aucun backend détecté en probe; seulement pistes geo.ca/sig.ca/carte.ca."
+    },
+    {
+      "ville": "kirkland",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "fetch-fail",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "URL du site injoignable durant le sondage."
+    },
+    {
+      "ville": "notre-dame-de-stanbridge",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "fetch-fail",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "URL du site injoignable durant le sondage."
+    },
+    {
+      "ville": "mcmasterville",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "none",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "aucun backend détecté; seulement pistes geo.ca/sig.ca/carte.ca."
+    },
+    {
+      "ville": "saint-edouard",
+      "source_trouvée": "goazimut/zonage-obscura portal",
+      "trigger_cluster_lance": false,
+      "statut": "portal-found/no-zone",
+      "source_ciblee_priorisee": ["gonet/obscura"],
+      "notes": "probe trouve goazimut (m=68045) mais capture AGOL MapServer sans couche 'Zonage municipal'; pas de source native exploitable.",
+      "details_source": "https://www.goazimut.com/GOnet6/index.html?m=68045&pl=1"
+    }
+  ]
+}
