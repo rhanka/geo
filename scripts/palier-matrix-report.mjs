@@ -92,13 +92,15 @@ const SRC = {
   immoLotZone: loadJson('immo-lot-zone', pickLatestByPrefix(COV, /^immo-lot-zone-assignment-matrix-\d{8}\.json$/)),
   immoFolded: loadJson('immo-folded-normes', pickLatestByPrefix(COV, /^immo-folded-normes-city-matrix-\d{8}\.json$/)),
   immoField: loadJson('immo-field-completion', path.join(ROOT, 'work', 'immo-field-completion-matrices', 'immo-field-completion-matrix.json')),
-  // col 20 = recall directionnel v3.4. Source PRIMAIRE : artefact bucket jointures
-  // commit 5cb5dd19 (col20-na-bucket-classification-20260806.json, format bucket/v1,
-  // 37 na_proven dont 30 nouveaux GT-S3-vide). Fallback : zoning-events-col20-* local.
-  // Les deux formats sont normalisés dans normalizeCol20 (r.statut ?? r.bucket).
+  // col 20 = recall directionnel v3.4. Source AUTORITAIRE : classif rigoureuse
+  // jointures b16d7947 (zoning-events-col20-167-fresh-geofix-20260807.json,
+  // na_proven=15 attestés recette, measured+recall_pct threshold). Miroir local
+  // committé dans work/coverage/ ; fallback jointures worktree.
   col20: (() => {
-    const joinPath = path.resolve(ROOT, '../jointures/work/coverage/col20-na-bucket-classification-20260806.json');
-    return loadJson('col20-recall-v34', fs.existsSync(joinPath) ? joinPath : pickLatestByField(COV, /^zoning-events-col20-.*-\d{8}\.json$/, 'generated_at'), { optional: true });
+    const localPath = path.join(COV, 'zoning-events-col20-167-fresh-geofix-20260807.json');
+    const joinPath = path.resolve(ROOT, '../jointures/work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json');
+    const p = fs.existsSync(localPath) ? localPath : fs.existsSync(joinPath) ? joinPath : null;
+    return loadJson('col20-recall-v34-b16d7947', p, { optional: true });
   })(),
 };
 
@@ -140,17 +142,30 @@ function bucketIndex(cityBuckets) {
 // densifiant, attestation OPTIONA_NA_FINAL) → RÉSOLU par preuve d'absence, PAS
 // unknown. gap_acquisition (GT immo absente) reste unknown (immo-gt-pending).
 const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending', na_proven: 'N-A', complete: 'measured', incomplete: 'measured-geo-empty', gap: 'immo-gt-pending' };
+// Seuil recall : measured & recall_pct >= 0.95 → 'measured' (complete) ; sinon
+// 'measured-geo-empty' (incomplete). Règle rigoureuse jointures b16d7947 : na_proven
+// = SEULEMENT 15 villes attestées recette (liste fermée), JAMAIS inféré d'un GT vide.
+const RECALL_THRESHOLD = 0.95;
 function normalizeCol20(src) {
   if (!src) return [];
   const list = Array.isArray(src.cities) ? src.cities : Array.isArray(src.rows) ? src.rows : [];
-  return list.map((r) => ({
-    slug: r.slug,
-    statut: COL20_STATUT[r.statut ?? r.bucket] ?? (r.statut ?? r.bucket),
-    geo_events_count: r.geo_events_count ?? r.geo_events ?? null,
-    immo_gt_events: r.immo_gt_events ?? r.immo_events ?? null,
-    matched: r.matched ?? null,
-    recall_pct_si_mesurable: r.recall_pct_si_mesurable ?? r.recall_pct ?? null,
-  }));
+  return list.map((r) => {
+    const rawStatut = r.statut ?? r.bucket;
+    let statut = COL20_STATUT[rawStatut] ?? rawStatut;
+    // Pour les villes 'measured' : appliquer le seuil recall pour distinguer complete vs incomplete.
+    if (rawStatut === 'measured') {
+      const recall = r.recall_pct_si_mesurable ?? r.recall_pct ?? null;
+      statut = (recall != null && recall >= RECALL_THRESHOLD) ? 'measured' : 'measured-geo-empty';
+    }
+    return {
+      slug: r.slug,
+      statut,
+      geo_events_count: r.geo_events_count ?? r.geo_events ?? null,
+      immo_gt_events: r.immo_gt_events ?? r.immo_events ?? null,
+      matched: r.matched ?? null,
+      recall_pct_si_mesurable: r.recall_pct_si_mesurable ?? r.recall_pct ?? null,
+    };
+  });
 }
 const IDX = {
   zones: indexBy(SRC.zones?.cities, 'slug'),
