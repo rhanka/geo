@@ -181,21 +181,32 @@ const IDX = {
   immoField: indexBy(SRC.immoField?.cities, 'slug'),
   col20: indexBy(normalizeCol20(SRC.col20), 'slug'),
 };
-// Les artefacts immo autoritaires disambiguent les homonymes par un suffixe MRC
-// avec DOUBLE tiret (`hemmingford--les-jardins-de-napierville`) là où la cohorte
+// Les artefacts autoritaires disambiguent les homonymes par un suffixe MRC avec
+// DOUBLE tiret (`hemmingford--les-jardins-de-napierville`) là où la cohorte
 // set-167-bprime porte le tiret SIMPLE. Ce n'est pas deux villes : c'est la même
-// entité, orthographe de slug divergente. On construit un index secondaire par
-// slug NORMALISÉ (tirets multiples → un seul) pour joindre ces 7 cas SANS deviner
-// (fallback strict après échec exact ; jamais de rapprochement flou). L'anti-
-// invention tient : on ne fabrique aucun état, on retrouve l'état DÉJÀ mesuré par
-// l'artefact immo sous une orthographe que la jointure naïve manquait.
+// entité, orthographe de slug divergente. makeNormMap → index secondaire par slug
+// NORMALISÉ (tirets multiples → un seul) ; lu() = fallback STRICT après échec
+// exact, jamais de rapprochement flou. Anti-invention : aucun état fabriqué,
+// on retrouve l'état DÉJÀ mesuré sous l'orthographe que la jointure naïve manquait.
 const normSlug = (s) => String(s).replace(/-+/g, '-');
-const immoFieldNorm = new Map();
-for (const [slug, row] of IDX.immoField) { const n = normSlug(slug); if (!immoFieldNorm.has(n)) immoFieldNorm.set(n, row); }
-// Même divergence d'orthographe possible dans l'export col-20 (jointures) : index
-// normalisé secondaire, fallback STRICT après échec exact (jamais de flou).
-const col20Norm = new Map();
-for (const [slug, row] of IDX.col20) { const n = normSlug(slug); if (!col20Norm.has(n)) col20Norm.set(n, row); }
+function makeNormMap(map) {
+  const m = new Map();
+  for (const [k, v] of map) { const n = normSlug(k); if (!m.has(n)) m.set(n, v); }
+  return m;
+}
+const lu = (exact, norm, s) => exact.get(s) ?? norm.get(normSlug(s));
+const immoFieldNorm = makeNormMap(IDX.immoField);
+const zonesNorm = makeNormMap(IDX.zones);
+const normesNorm = makeNormMap(IDX.normes);
+const coherenceNorm = makeNormMap(IDX.coherence);
+const pvNorm = makeNormMap(IDX.pv);
+const regdensNorm = makeNormMap(IDX.regdensPerCity);
+const qualityNorm = makeNormMap(IDX.quality);
+const readbackNorm = makeNormMap(IDX.readback);
+const immoLotZoneNorm = makeNormMap(IDX.immoLotZone);
+const immoFoldedNorm = makeNormMap(IDX.immoFolded);
+const pvCapturedNorm = new Set([...IDX.pvCaptured].map(normSlug));
+const col20Norm = makeNormMap(IDX.col20);
 const col20Row = (s) => IDX.col20.get(s) ?? col20Norm.get(normSlug(s));
 
 // ---- extracteurs par KPI (état pour UN slug) -------------------------------
@@ -206,7 +217,7 @@ function immoFieldStatus(slug, field) {
   if (!row || !row[field]) return U;
   return normState(row[field].status) ?? U;
 }
-const qualityRow = (s) => IDX.quality.get(s) || null;
+const qualityRow = (s) => lu(IDX.quality, qualityNorm, s) ?? null;
 const GAP_V34 = 'PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)';
 
 // PLAFONDS EXTERNES (contexte d'arbitrage owner) : l'incomplete/unknown de ces
@@ -221,29 +232,29 @@ const CEILINGS = {
 };
 
 const COLUMNS = [
-  { n: 1, key: 'zones', label: 'Zones — complétion', extract: (s) => stateFrom(IDX.zones.get(s), 'state') },
+  { n: 1, key: 'zones', label: 'Zones — complétion', extract: (s) => stateFrom(lu(IDX.zones, zonesNorm, s), 'state') },
   { n: 2, key: 'coherence_lot_zone', label: 'Zones — cohérence lot-zone', extract: (s) => {
-      const r = IDX.coherence.get(s);
+      const r = lu(IDX.coherence, coherenceNorm, s);
       if (!r || r.status !== 'measured' || typeof r.mismatch_pct !== 'number') return U;
       return r.mismatch_pct < 5 ? 'complete' : 'incomplete';
     } },
-  { n: 3, key: 'normes', label: 'Normes — complétion', extract: (s) => stateFrom(IDX.normes.get(s), 'state') },
+  { n: 3, key: 'normes', label: 'Normes — complétion', extract: (s) => stateFrom(lu(IDX.normes, normesNorm, s), 'state') },
   // col 4 = PV CAPTÉ (présence honnête, pas déclaratif). Principe fondateur :
   // « vert par omission = rouge » — une ville à ZÉRO octet PV indexé n'est PAS
   // complete même si le coverage-status déclaratif dit "done". complete ssi ≥1 PV
   // INDEXED owner-confirmé (pv-couverture-municipale) ; le déclaratif ne sert plus
   // qu'à distinguer N-A (hors périmètre prouvé) et incomplete (attendu, non capté).
   { n: 4, key: 'pv', label: 'PV — capté (indexé)', presence_strict: true, extract: (s) => {
-      const decl = normState(IDX.pv.get(s)?.state) ?? U;
+      const decl = normState(lu(IDX.pv, pvNorm, s)?.state) ?? U;
       if (decl === 'N-A') return 'N-A';
-      if (IDX.pvCaptured.has(s)) return 'complete';
+      if (IDX.pvCaptured.has(s) || pvCapturedNorm.has(normSlug(s))) return 'complete';
       return decl === 'complete' || decl === 'incomplete' ? 'incomplete' : U;
     } },
   // col 5 = règlement sur les DEUX axes (conducteur) : preuve-capture live =
   // complete ; déclaré (reglement_numero connu) mais non prouvé live = incomplete ;
   // ni déclaré ni prouvé = unknown. Détail declared/proven exposé en JSON.
   { n: 5, key: 'reglement', label: 'Règlement — déclarée+preuve', extract: (s) => {
-      const r = IDX.regdensPerCity.get(s);
+      const r = lu(IDX.regdensPerCity, regdensNorm, s);
       if (!r) return U;
       const declared = normState(r.reglement_declared) ?? U;
       const proven = normState(r.reglement_proven) ?? U;
@@ -251,11 +262,11 @@ const COLUMNS = [
       if (declared === 'complete' || proven === 'incomplete') return 'incomplete';
       return U;
     }, detail: (s) => {
-      const r = IDX.regdensPerCity.get(s);
+      const r = lu(IDX.regdensPerCity, regdensNorm, s);
       return { declared: r ? (normState(r.reglement_declared) ?? U) : U, proven: r ? (normState(r.reglement_proven) ?? U) : U };
     } },
-  { n: 6, key: 'usage_dominant', label: 'Usage dominant — complétion', extract: (s) => stateFrom(IDX.regdensPerCity.get(s), 'usage_dominant') },
-  { n: 7, key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: (s) => stateFrom(IDX.regdensPerCity.get(s), 'effet_densifiant') },
+  { n: 6, key: 'usage_dominant', label: 'Usage dominant — complétion', extract: (s) => stateFrom(lu(IDX.regdensPerCity, regdensNorm, s), 'usage_dominant') },
+  { n: 7, key: 'effet_densifiant', label: 'Effet densifiant — complétion', extract: (s) => stateFrom(lu(IDX.regdensPerCity, regdensNorm, s), 'effet_densifiant') },
   { n: 8, key: 'prov_jointure', label: 'Provenance — jointure exacte', extract: (s) => {
       const r = qualityRow(s); return r && r.collection_key ? 'complete' : U;
     } },
@@ -274,14 +285,14 @@ const COLUMNS = [
       return U;
     } },
   { n: 11, key: 'prov_url_servie', label: 'Provenance — URL source servie', extract: (s) => {
-      const r = IDX.readback.get(s);
+      const r = lu(IDX.readback, readbackNorm, s);
       if (!r || r.read_error) return U;
       if (r.status === 'STAMPED') return 'complete';
       if (r.status === 'STAMPED_NULL' || r.status === 'UNSTAMPED') return 'incomplete';
       return U;
     } },
-  { n: 12, key: 'immo_lot_zone', label: 'Immo — assignation lot-zone', extract: (s) => IDX.immoLotZone.get(s) || U },
-  { n: 13, key: 'immo_normes_pliees', label: 'Immo — normes pliées', extract: (s) => IDX.immoFolded.get(s) || U },
+  { n: 12, key: 'immo_lot_zone', label: 'Immo — assignation lot-zone', extract: (s) => lu(IDX.immoLotZone, immoLotZoneNorm, s) || U },
+  { n: 13, key: 'immo_normes_pliees', label: 'Immo — normes pliées', extract: (s) => lu(IDX.immoFolded, immoFoldedNorm, s) || U },
   // Cols 14-19 = champs immo, mesurés PAR SLUG depuis l'artefact immo autoritaire
   // (immo-field-completion, qui défère lui-même aux verdicts immo par-ville :
   // adresse-completion, etc.). Cette mesure est INDÉPENDANTE du match zonage-
