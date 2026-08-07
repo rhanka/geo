@@ -1,0 +1,48 @@
+{
+  "batch": 3,
+  "contract": "heavy-unknown-49-triage-cas-b-v1",
+  "generatedAt": "2026-08-07T16:18:00.000Z",
+  "lane": "zones",
+  "items": [
+    {
+      "ville": "lile-cadieux",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "fetch-fail",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "site indisponible pendant sondage."
+    },
+    {
+      "ville": "pointe-des-cascades",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "none",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "aucun backend détecté; hôtes externes non municipaux."
+    },
+    {
+      "ville": "vaudreuil-sur-le-lac",
+      "source_trouvée": null,
+      "trigger_cluster_lance": false,
+      "statut": "none",
+      "source_ciblee_priorisee": ["arcgis/agol", "gonet/obscura", "jmap", "ckan", "mrc-shp"],
+      "notes": "pas de backend exploitable détecté; seulement sig.ca/carte.ca/geo.ca en sous-domaines."
+    },
+    {
+      "ville": "saint-blaise-sur-richelieu",
+      "source_trouvée": "arcgis",
+      "trigger_cluster_lance": false,
+      "statut": "portal-found/no-layer",
+      "source_ciblee_priorisee": ["arcgis/agol"],
+      "notes": "probe détecte ArcGIS (appsSpecData) mais capture obscura en no-viewer sans lead backend utile."
+    },
+    {
+      "ville": "mont-saint-gregoire",
+      "source_trouvée": "arcgis",
+      "trigger_cluster_lance": false,
+      "statut": "portal-found/no-layer",
+      "source_ciblee_priorisee": ["arcgis/agol"],
+      "notes": "probe détecte redirection ArcGIS webappviewer id=4cad... mais capture obscura en no-viewer sans couche zonage confirmée."
+    }
+  ]
+}
