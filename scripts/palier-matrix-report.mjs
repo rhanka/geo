@@ -92,11 +92,14 @@ const SRC = {
   immoLotZone: loadJson('immo-lot-zone', pickLatestByPrefix(COV, /^immo-lot-zone-assignment-matrix-\d{8}\.json$/)),
   immoFolded: loadJson('immo-folded-normes', pickLatestByPrefix(COV, /^immo-folded-normes-city-matrix-\d{8}\.json$/)),
   immoField: loadJson('immo-field-completion', path.join(ROOT, 'work', 'immo-field-completion-matrices', 'immo-field-completion-matrix.json')),
-  // col 20 = recall directionnel v3.4 immo→geo, artefact par-ville produit par la
-  // lane jointures (geo-jointures-167). Capitalisé octet-pour-octet dans lane/qa
-  // (ref lane/jointures@a5c0cf41) pour rejouabilité sur checkout propre. Partition
-  // fermée : measured | measured-geo-empty | immo-gt-pending. Plus récent par ts interne.
-  col20: loadJson('col20-recall-v34', pickLatestByField(COV, /^zoning-events-col20-.*-\d{8}\.json$/, 'generated_at'), { optional: true }),
+  // col 20 = recall directionnel v3.4. Source PRIMAIRE : artefact bucket jointures
+  // commit 5cb5dd19 (col20-na-bucket-classification-20260806.json, format bucket/v1,
+  // 37 na_proven dont 30 nouveaux GT-S3-vide). Fallback : zoning-events-col20-* local.
+  // Les deux formats sont normalisés dans normalizeCol20 (r.statut ?? r.bucket).
+  col20: (() => {
+    const joinPath = path.resolve(ROOT, '../jointures/work/coverage/col20-na-bucket-classification-20260806.json');
+    return loadJson('col20-recall-v34', fs.existsSync(joinPath) ? joinPath : pickLatestByField(COV, /^zoning-events-col20-.*-\d{8}\.json$/, 'generated_at'), { optional: true });
+  })(),
 };
 
 // ---- index par-ville -------------------------------------------------------
@@ -136,13 +139,13 @@ function bucketIndex(cityBuckets) {
 // na_proven = N-A PROUVÉ par la lane jointures (PV parsés, 0 DesignationEvent
 // densifiant, attestation OPTIONA_NA_FINAL) → RÉSOLU par preuve d'absence, PAS
 // unknown. gap_acquisition (GT immo absente) reste unknown (immo-gt-pending).
-const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending', na_proven: 'N-A' };
+const COL20_STATUT = { no_geo_events: 'measured-geo-empty', gap_acquisition: 'immo-gt-pending', na_proven: 'N-A', complete: 'measured', incomplete: 'measured-geo-empty', gap: 'immo-gt-pending' };
 function normalizeCol20(src) {
   if (!src) return [];
   const list = Array.isArray(src.cities) ? src.cities : Array.isArray(src.rows) ? src.rows : [];
   return list.map((r) => ({
     slug: r.slug,
-    statut: COL20_STATUT[r.statut] ?? r.statut,
+    statut: COL20_STATUT[r.statut ?? r.bucket] ?? (r.statut ?? r.bucket),
     geo_events_count: r.geo_events_count ?? r.geo_events ?? null,
     immo_gt_events: r.immo_gt_events ?? r.immo_events ?? null,
     matched: r.matched ?? null,
