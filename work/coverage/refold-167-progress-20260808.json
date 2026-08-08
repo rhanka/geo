@@ -11,7 +11,14 @@
     "delson",
     "deux-montagnes"
   ],
-  "palier": 1,
+  "palier": 2,
+  "last_checkpoint": {
+    "slug": "dollard-des-ormeaux",
+    "status": "stopped-after-rollback",
+    "reason": "time-box 1800s dépassé pendant join/enrich; aucun dépôt partiel conservé",
+    "rollback": "OK",
+    "backup_stamp": "2026-08-08T115318591ZZ"
+  },
   "s3_head_control": {
     "checked": true,
     "geometry_rule": "qc-zonage servie uniquement; absence = coverage-gap",
@@ -195,6 +202,17 @@
       "col13": { "avant": 5, "apres": 5, "gain": 0 },
       "coverage_gap_restant": { "col12_unassigned": 1050, "col13_normes_non_servies": 18760, "misassigned": 359, "outside_all": 116 },
       "backup": { "stamp": "2026-08-03T222022603ZZ", "mirror": "flat-only" }
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "palier": 2,
+      "deposited": false,
+      "status": "skip",
+      "skipped_reason": "ABORT: time-box 1800s dépassé; rollback vérifié OK",
+      "col12": { "avant": 12562, "apres": 12562, "gain": 0 },
+      "col13": { "avant": 1901, "apres": 1901, "gain": 0, "verified_pct": 15.13 },
+      "coverage_gap_restant": { "col12_unassigned": 1, "col13_normes_non_servies": 10662, "misassigned": 480, "outside_all": 73 },
+      "backup": { "stamp": "2026-08-08T115318591ZZ", "mirror": "not-reached; rollback-OK", "restored": true }
     }
   ]
 }
