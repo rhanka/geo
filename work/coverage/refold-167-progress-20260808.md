@@ -27,3 +27,7 @@ Palier 1 : 10 candidats lus dans `work/coverage/_refold-167-candidates.txt`, apr
 ## Travail récupéré avant ce palier
 
 `candiac`, `carignan`, `chambly`, `chateauguay` sont au-plafond (dépôt antérieur, gain nul). `charlemagne` reste skip `geometry-suspect` (21 lots hors de toute zone servie), sans backup ni dépôt. Ces entrées sont dans le JSON pour rendre la reprise idempotente, sans les fabriquer ni les rejouer.
+
+## Palier 2 — arrêt contrôlé
+
+`dollard-des-ormeaux` a été arrêté après dépassement du time-box de 1800 s pendant join/enrich. Le backup `2026-08-08T115318591ZZ` était complet ; les quatre objets cœur ont été restaurés avec tailles identiques (`rollback=OK`). Aucun miroir ni dépôt partiel n’est conservé. Les vérifications post-rollback donnent col-12 `12562→12562` et col-13 `1901→1901` (15,13 %), donc gain nul. Aucun autre muni n’a été lancé.
