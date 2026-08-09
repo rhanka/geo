@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "R": "residentiel",
+    "M": null,
+    "V": null,
+    "RU": null,
+    "P": null
+  },
+  "source": "https://www.lacdesaigles.ca/images/stories/Urbanisme/13060_ZONAGE_TOUT.pdf (plan de zonage, Règlement de zonage n° 123-14, Municipalité de Lac-des-Aigles)",
+  "note": "Municipalité de Lac-des-Aigles (MRC Témiscouata), Règlement de zonage n° 123-14. Le corps (Règlement_123-14_Zonage.pdf) est un scan sans couche texte, mais la LÉGENDE du plan de zonage officiel (carte 13060_ZONAGE_TOUT, titrée « Lac-des-Aigles ») est lisible VERBATIM: « Agricole I (EAA) », « Agricole II (EAB) », « Agroforestier (EAF) », « Mixte (M) », « Résidentiel (R) », « Réserve urbaine (RU) », « Villégiature (V) ». => EAA/EAB/EAF = agricole; R « Résidentiel » = residentiel. NULL: M « Mixte » (dualité); V « Villégiature » (seule); RU « Réserve urbaine » (réserve/développement futur, déclaré pour bloquer le fall-through « RU »->« R »); P « Publique » (gabarit MRC, produit null de toute façon). OMIS: B(2) et C(1) non sourçables verbatim (absents de la légende, corps scanné) -> le fold sert null. Consulté le 2026-07-18."
+}

@@ -80,12 +80,13 @@ spec:
           resources:
             requests:
               cpu: 75m
-              memory: 512Mi
+              memory: 128Mi
             limits:
-              # Lazy StoreProvider keeps startup light; per-request lot shards
-              # still need room when large city collections are queried.
               cpu: 500m
-              memory: 2Gi
+              # cgroup peak on the 955,964,128-byte qc-lots-montreal object:
+              # 72.43 MiB after three full OGC scans, with zero OOM events.
+              # 256 Mi keeps 183.57 Mi (253%) headroom for the served API.
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false

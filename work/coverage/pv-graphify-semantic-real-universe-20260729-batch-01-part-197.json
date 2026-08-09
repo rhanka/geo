@@ -1,0 +1,210 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:33:18.033Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 196,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 4,
+    "Regulation": 1,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 10,
+    "edges": 4,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "albanel",
+      "storage_key": "raw/pv-index/cas/8a3122a6231a3b41acf473cea7f13f8ee78ceccce71f069f9cdba7452d2af8e3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6541415",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:817",
+      "quote": "         servitude située sur le lot 6 541 415."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 107,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1531,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z",
+  "documents": [
+    {
+      "slug": "albanel",
+      "municipality_name": "Albanel",
+      "url": "https://albanel.ca/images/uploads/25-2024-10-07-pvbl.pdf",
+      "storage_key": "raw/pv-index/cas/8a3122a6231a3b41acf473cea7f13f8ee78ceccce71f069f9cdba7452d2af8e3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albanel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MRC DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MRC DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 OCTOBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal d'Albanel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 OCTOBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "              PROCÈS-VERBAL DU 7 OCTOBRE 2024"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "18-156",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:410",
+              "quote": "         et ce, conformément à la résolution numéro 18-156;"
+            }
+          },
+          {
+            "label": "24-242",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:995",
+              "quote": "         Chutes dans sa résolution no 24-242, adoptée à la séance du conseil"
+            }
+          },
+          {
+            "label": "2024-73",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1141",
+              "quote": "         de Maria-Chapdelaine, et autorisée par les résolutions 2024-73, 24-773,"
+            }
+          },
+          {
+            "label": "24-240",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1177",
+              "quote": "          de la résolution no 24-240 titrée « Report du Plan"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "24-298",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "    7.2    Avis de motion – Adoption du Règlement no 24-298 pour"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6541415",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:817",
+              "quote": "         servitude située sur le lot 6 541 415."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z/albanel/a7452d2af8e3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z/albanel/a7452d2af8e3.pdf/.graphify/.graphify_extract.json — 10 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albanel",
+          "normandin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

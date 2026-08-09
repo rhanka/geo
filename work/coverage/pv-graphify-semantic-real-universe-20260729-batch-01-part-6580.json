@@ -1,0 +1,1837 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T20:09:26.076Z",
+  "mode": "unverdict-cas-batch",
+  "unverdict_list": "work/coverage/pv-graphify-semantic-real-universe-20260729-unverdict-list-01.json",
+  "unverdict_selection": {
+    "offset": 180,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 337,
+  "eligible_documents": 337,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 14,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 17,
+    "failed_pvs": 3,
+    "outcomes": {
+      "INDEXED": 17,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 3,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 17,
+    "Document": 17,
+    "Resolution": 67,
+    "Regulation": 19,
+    "CouncilSession": 2,
+    "MeetingDate": 2,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 126,
+    "edges": 33,
+    "failures": 3
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/825e88844c29cd8ab41e1a2af835c55919b06651039f6654422a433b5d1eadb6.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3293488",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:74",
+      "quote": "DÉROGATION MINEURE – LOT 3 293 488 DU CADASTRE DU QUÉBEC – FUTURS 2775 ET"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/825e88844c29cd8ab41e1a2af835c55919b06651039f6654422a433b5d1eadb6.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3294488",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:107",
+      "quote": "Le conseil municipal refuse la demande de dérogation mineure faite en regard du lot 3 294 488 du"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 5,
+      "zone_code_count": 396,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 5,
+      "served_municipalities": 5,
+      "total_lot_numbers": 9718,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z",
+  "documents": [
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2024-10-07.pdf",
+      "storage_key": "raw/pv-index/cas/78647d0be99a3338cfe7984f1c691618604633b7075141400de70e334a152887.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-08-174",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "2024-10-217       Considérant que par la résolution 2023-08-174, ce conseil donnait"
+            }
+          },
+          {
+            "label": "2024-09-211",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:469",
+              "quote": "2024-10-224         Considérant que part la résolution 2024-09-211, ce conseil"
+            }
+          },
+          {
+            "label": "2024-09-221",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:482",
+              "quote": "                    assuré par le budget octroyé par la résolution 2024-09-221."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/0e334a152887.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/0e334a152887.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20200601.pdf",
+      "storage_key": "raw/pv-index/cas/7a02ddfccdfab1a96e5b361a8c3804c225e823768b082570e2836f523ce507fe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/6f523ce507fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/6f523ce507fe.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/7aa0f5223caee6aa9ce1768a2149bb1cca86d54ee7cc056eeafb5fb7452d58ed.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2025-02-10.pdf",
+      "storage_key": "raw/pv-index/cas/7ab1c6186277176f82fef65bc8f4d6bb223f4240a519af2b18be7f8ebe8c5e34.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-10-220",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:118",
+              "quote": "                  Considérant que la résolution 2024-10-220 doit être abrogée;"
+            }
+          },
+          {
+            "label": "2025-01-021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "                  modifiée les résolutions 2025-01-021 et 2025-01-022 par l'ajout de:"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/7f8ebe8c5e34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/7f8ebe8c5e34.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn",
+          "lorrainville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230414142410-proces-verbal-de-la-seance-extraordinaire-du-18-janvier-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/7bb2429c99df24b1ce9f028bf1f54b55229a6295711fa0e31b9e728fbea2e82e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-12-7734",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:749",
+              "quote": "                ATTENDU QUE la résolution No 22-12-7734 abrogeant la résolution"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "254-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "                 2.       Adoption du règlement 254-2023 fixant le taux de taxation 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/beaulac-garthby/728fbea2e82e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/beaulac-garthby/728fbea2e82e.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/7c96fe781ec580a5f5e514cd5d6bb0a4b12231948e683c355b2c5ee32fad7ab9.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2025-03-10.pdf",
+      "storage_key": "raw/pv-index/cas/7c993e161dce60c196609c6544b0c1ce6c02f5f9e361b00c805667fb26815516.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-12-266",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "                         Considérant la résolution no 2024-12-266 relative à"
+            }
+          },
+          {
+            "label": "2025-01-017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:273",
+              "quote": "                          de 5 840.00$ ET de remplacer la résolution 2025-01-017."
+            }
+          },
+          {
+            "label": "2024-12-257",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:450",
+              "quote": "                          Considérant que ce conseil, par la résolution 2024-12-257"
+            }
+          },
+          {
+            "label": "2025-02-036",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:467",
+              "quote": "                          Considérant la résolution 2025-02-036 prise par le conseil"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "515",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:291",
+              "quote": "                          Considérant que par le règlement no 515 établissant la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/67fb26815516.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/67fb26815516.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2026/01/oj20260302-1.pdf",
+      "storage_key": "raw/pv-index/cas/7cb25357ee354612b826e637d81fd00ac2a035de5c65bda62412acac2e616a8c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "005-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "   10.1 - Avis de motion et dépôt du règlement 005-2026 établissant la tarification pour"
+            }
+          },
+          {
+            "label": "017-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "             résolution adoptée en vertu du règlement numéro 017-2023 relatif au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/acac2e616a8c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/acac2e616a8c.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20240710145109-proces-verbal-seance-extraordinaire-du-10-juin-2024pdf.pdf",
+      "storage_key": "raw/pv-index/cas/7dfbd83f0e722e5213c8783843879b6714186f66248535a30e1147eacf68c97c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-09-7658",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:165",
+              "quote": "             contenue dans la résolution 22-09-7658 prévoyait l’embauche d’une ressource pour"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/beaulac-garthby/47eacf68c97c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/beaulac-garthby/47eacf68c97c.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bedford--brome-missisquoi",
+      "municipality_name": "Bedford",
+      "url": "https://ville.bedford.qc.ca/wp-content/uploads/2026/03/ODJ-et-PV-03-2026.pdf",
+      "storage_key": "raw/pv-index/cas/7e3677ea7c4ac0120847d818115d8d9880742f7814f442239c1312c036b59c3f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bedford",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "La prochaine séance ordinaire du conseil municipal de la Ville de Bedford se tiendra en présence des élus au"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "La prochaine séance ordinaire du conseil municipal de la Ville de Bedford se tiendra en présence des élus au"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-03-94",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:674",
+              "quote": "           Considérant la résolution numéro 25-03-94 acceptant l’offre de services d’Espace"
+            }
+          },
+          {
+            "label": "24-07-237",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:905",
+              "quote": "           autres services, de la rue Cyr à Bedford, et ce, en vertu de la résolution 24-07-237 et"
+            }
+          },
+          {
+            "label": "25-07-233",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1126",
+              "quote": "           de la résolution 25-07-233 et pour un montant de 3 293 951,57$ (incluant les taxes) ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "736-26-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "                          5.1 Avis de motion et dépôt du projet de règlement numéro 736-26-1 modifiant le"
+            }
+          },
+          {
+            "label": "736",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "                              règlement numéro 736 sur les ententes relatives à des travaux municipaux afin"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bedford--brome-missisquoi/12c036b59c3f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bedford--brome-missisquoi/12c036b59c3f.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bedford--brome-missisquoi",
+          "bedford--brome-missisquoi--2",
+          "pike-river"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2026/01/oj20260202.pdf",
+      "storage_key": "raw/pv-index/cas/7eb77dbd0ea399045b161b76bbf2f5e4ae3325004d17d05f6aa183008eb88caa.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "004-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "      10.2 - Adoption du règlement 004-2026 relatif au code d'éthique et de déontologie"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/83008eb88caa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/83008eb88caa.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/02/oj20240617.pdf",
+      "storage_key": "raw/pv-index/cas/7f1ef14f4ceebee8e354a62dcb3ede97b6a703224e864aa0adf6b10389f6e4d2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "010-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "   10.1 - Avis de motion et dépôt du règlement 010-2024 concernant le traitement des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/b10389f6e4d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/b10389f6e4d2.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2025/01/oj20250602.pdf",
+      "storage_key": "raw/pv-index/cas/7f8161003b17125f4402930a38e535e8e1ff5d3b104593c6b626f1c974db67be.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "009-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "   10.1 - Avis de motion et dépôt du règlement 009-2025 concernant"
+            }
+          },
+          {
+            "label": "007-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "   10.2 - Adoption du règlement 007-2025 modifiant le règlement de"
+            }
+          },
+          {
+            "label": "006-2025",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "   10.3 - Adoption du second projet du règlement 006-2025 modifiant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/f1c974db67be.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/f1c974db67be.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/806ec09a0f5e0f2f0ebd2f3c6b35b2d9465f07862d692c2da9f81b3f6911217f.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2024/05/PV-2024-03-11.pdf",
+      "storage_key": "raw/pv-index/cas/80d9b05e4dfd9ed9bade07d738c39505bab04e02f27591a3c88abbf6ea52c89d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/bbf6ea52c89d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/bearn/bbf6ea52c89d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2023/11/oj20231120.pdf",
+      "storage_key": "raw/pv-index/cas/8197a221339cdc82fda2f2cf5ea81de2afe0234627dfd906e730edeb1fc750e3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "016-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    10.1 - Avis de motion et présentation du règlement 016-2023 constituant le Comité"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/edeb1fc750e3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/edeb1fc750e3.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale",
+          "perce"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/02/oj20240506-2.pdf",
+      "storage_key": "raw/pv-index/cas/81b904a7c4d15bd045de1169b3260358a5f24341ca93c7720343ac8fa6fa4891.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/ac8fa6fa4891.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/ac8fa6fa4891.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "becancour",
+      "municipality_name": "Bécancour",
+      "url": "https://becancour.net/app/uploads/2026/03/2026-01-12-resolutions-seance-ordinaire-livre-des-minutes.pdf",
+      "storage_key": "raw/pv-index/cas/825e88844c29cd8ab41e1a2af835c55919b06651039f6654422a433b5d1eadb6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 53,
+        "Regulation": 5,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bécancour",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE BÉCANCOUR, le lundi douze janvier deux mille vingt-six (12 janvier 2026)."
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE BÉCANCOUR, le lundi douze janvier deux mille vingt-six (12 janvier 2026)."
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "CONSIDÉRANT que les membres du conseil ont reçu les procès-verbaux de la séance ordinaire du"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "1er décembre 2025 et des séances extraordinaires du 17 décembre 2025, au moins 24 heures avant la"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "26-001",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "RÉSOLUTION 26-001"
+            }
+          },
+          {
+            "label": "26-002",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "RÉSOLUTION 26-002"
+            }
+          },
+          {
+            "label": "26-003",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "\fRÉSOLUTION 26-003"
+            }
+          },
+          {
+            "label": "2025-2417",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "consultatif d’urbanisme, aux termes de sa résolution numéro 2025-2417 adoptée le 2 décembre 2025;"
+            }
+          },
+          {
+            "label": "26-004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "RÉSOLUTION 26-004"
+            }
+          },
+          {
+            "label": "2025-2418",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:139",
+              "quote": "consultatif d’urbanisme, aux termes de sa résolution numéro 2025-2418 adoptée le 2 décembre 2025;"
+            }
+          },
+          {
+            "label": "26-005",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "RÉSOLUTION 26-005"
+            }
+          },
+          {
+            "label": "2025-2419",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:183",
+              "quote": "consultatif d’urbanisme, aux termes de sa résolution numéro 2025-2419 adoptée le 2 décembre 2025;"
+            }
+          },
+          {
+            "label": "26-006",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:227",
+              "quote": "RÉSOLUTION 26-006"
+            }
+          },
+          {
+            "label": "26-007",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:248",
+              "quote": "RÉSOLUTION 26-007"
+            }
+          },
+          {
+            "label": "26-008",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:270",
+              "quote": "RÉSOLUTION 26-008"
+            }
+          },
+          {
+            "label": "26-009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:284",
+              "quote": "\fRÉSOLUTION 26-009"
+            }
+          },
+          {
+            "label": "26-010",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "RÉSOLUTION 26-010"
+            }
+          },
+          {
+            "label": "26-011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:335",
+              "quote": "RÉSOLUTION 26-011"
+            }
+          },
+          {
+            "label": "26-012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:396",
+              "quote": "RÉSOLUTION 26-012"
+            }
+          },
+          {
+            "label": "26-013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "RÉSOLUTION 26-013"
+            }
+          },
+          {
+            "label": "26-014",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:461",
+              "quote": "RÉSOLUTION 26-014"
+            }
+          },
+          {
+            "label": "26-015",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:561",
+              "quote": "\fRÉSOLUTION 26-015"
+            }
+          },
+          {
+            "label": "26-016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:607",
+              "quote": "RÉSOLUTION 26-016"
+            }
+          },
+          {
+            "label": "26-017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:642",
+              "quote": "RÉSOLUTION 26-017"
+            }
+          },
+          {
+            "label": "26-018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:669",
+              "quote": "RÉSOLUTION 26-018"
+            }
+          },
+          {
+            "label": "26-019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:698",
+              "quote": "\fRÉSOLUTION 26-019"
+            }
+          },
+          {
+            "label": "22-570",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:702",
+              "quote": "CONSIDÉRANT qu’aux termes de la résolution numéro 22-570 adoptée à la séance du 5 décembre"
+            }
+          },
+          {
+            "label": "26-020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:722",
+              "quote": "RÉSOLUTION 26-020"
+            }
+          },
+          {
+            "label": "26-021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:743",
+              "quote": "RÉSOLUTION 26-021"
+            }
+          },
+          {
+            "label": "26-022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:761",
+              "quote": "\fRÉSOLUTION 26-022"
+            }
+          },
+          {
+            "label": "25-367",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:763",
+              "quote": "MODIFICATION DE LA RÉSOLUTION NUMÉRO 25-367 AFIN DE MODIFIER LE MODE DE"
+            }
+          },
+          {
+            "label": "26-023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:790",
+              "quote": "RÉSOLUTION 26-023"
+            }
+          },
+          {
+            "label": "26-024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:820",
+              "quote": "RÉSOLUTION 26-024"
+            }
+          },
+          {
+            "label": "26-025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:859",
+              "quote": "RÉSOLUTION 26-025"
+            }
+          },
+          {
+            "label": "22-455",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:868",
+              "quote": "dans le cadre des contrats accordés aux termes des résolutions numéros 22-455, 22-456, 22-457,"
+            }
+          },
+          {
+            "label": "25-373",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:870",
+              "quote": "termes de la résolution numéro 25-373 adoptée à la séance du 7 juillet 2025, pour l’entretien d’hiver"
+            }
+          },
+          {
+            "label": "26-026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:900",
+              "quote": "\fRÉSOLUTION 26-026"
+            }
+          },
+          {
+            "label": "25-256",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:911",
+              "quote": "résolution numéro 25-256 adoptée à la séance du 5 mai 2025, pour l’entretien et la réparation du"
+            }
+          },
+          {
+            "label": "26-027",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:918",
+              "quote": "RÉSOLUTION 26-027"
+            }
+          },
+          {
+            "label": "25-276",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:938",
+              "quote": "      applicables, dans le cadre du contrat accordé aux termes de la résolution numéro 25-276 adoptée"
+            }
+          },
+          {
+            "label": "26-028",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:946",
+              "quote": "RÉSOLUTION 26-028"
+            }
+          },
+          {
+            "label": "25-310",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:950",
+              "quote": "CONSIDÉRANT qu’aux termes de la résolution numéro 25-310 adoptée à la séance du 2 juin 2025, la"
+            }
+          },
+          {
+            "label": "26-029",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:991",
+              "quote": "RÉSOLUTION 26-029"
+            }
+          },
+          {
+            "label": "26-030",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1028",
+              "quote": "RÉSOLUTION 26-030"
+            }
+          },
+          {
+            "label": "25-432",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1032",
+              "quote": "CONSIDÉRANT qu’aux termes de la résolution numéro 25-432 adoptée à la séance du 18 août 2025,"
+            }
+          },
+          {
+            "label": "26-031",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1081",
+              "quote": "RÉSOLUTION 26-031"
+            }
+          },
+          {
+            "label": "26-032",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1124",
+              "quote": "RÉSOLUTION 26-032"
+            }
+          },
+          {
+            "label": "26-033",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1154",
+              "quote": "RÉSOLUTION 26-033"
+            }
+          },
+          {
+            "label": "26-034",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1194",
+              "quote": "RÉSOLUTION 26-034"
+            }
+          },
+          {
+            "label": "26-035",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1254",
+              "quote": "\fRÉSOLUTION 26-035"
+            }
+          },
+          {
+            "label": "26-036",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1274",
+              "quote": "RÉSOLUTION 26-036"
+            }
+          },
+          {
+            "label": "26-037",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1316",
+              "quote": "\fRÉSOLUTION 26-037"
+            }
+          },
+          {
+            "label": "26-038",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1347",
+              "quote": "RÉSOLUTION 26-038"
+            }
+          },
+          {
+            "label": "26-039",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1396",
+              "quote": "RÉSOLUTION 26-039"
+            }
+          },
+          {
+            "label": "26-040",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1466",
+              "quote": "RÉSOLUTION 26-040"
+            }
+          },
+          {
+            "label": "26-041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1524",
+              "quote": "\fRÉSOLUTION 26-041"
+            }
+          },
+          {
+            "label": "26-042",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1590",
+              "quote": "\fRÉSOLUTION 26-042"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1835",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:229",
+              "quote": "ADOPTION DU RÈGLEMENT NUMÉRO 1835"
+            }
+          },
+          {
+            "label": "1836",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "ADOPTION DU RÈGLEMENT NUMÉRO 1836"
+            }
+          },
+          {
+            "label": "1840",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:425",
+              "quote": "\fAVIS DE MOTION ET DÉPÔT DU PROJET DE RÈGLEMENT NUMÉRO 1840"
+            }
+          },
+          {
+            "label": "1837",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:442",
+              "quote": "ADOPTION DU RÈGLEMENT NUMÉRO 1837"
+            }
+          },
+          {
+            "label": "1611",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:454",
+              "quote": "modifiant le règlement numéro 1611 concernant la signalisation pour y réduire la limite de vitesse sur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3293488",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "DÉROGATION MINEURE – LOT 3 293 488 DU CADASTRE DU QUÉBEC – FUTURS 2775 ET"
+            }
+          },
+          {
+            "label": "3294488",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "Le conseil municipal refuse la demande de dérogation mineure faite en regard du lot 3 294 488 du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/becancour/433b5d1eadb6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/becancour/433b5d1eadb6.pdf/.graphify/.graphify_extract.json — 64 nodes, 15 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 64,
+        "edges": 15
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20190415-1.pdf",
+      "storage_key": "raw/pv-index/cas/82b74dcd1a7aa1d94de4de99615e68e6099e2e2cc75b1742a3bd50cbf8e252c0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/50cbf8e252c0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/50cbf8e252c0.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/pv2019-12-18-SS-adoption-taxation.pdf",
+      "storage_key": "raw/pv-index/cas/83859b4e03ced3285e22a65806031284a6e47b8827e079a73c0c3df7e706ad1c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2019-12-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "S.E.                    Procès-verbal d’une séance extraordinaire du conseil de la Ville d’Acton"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2019-12-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "2019-12-18       Vale tenue à l’Hôtel de Ville d’Acton Vale, mercredi le dix-huitième jour du mois"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "012-2019",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "Rs.2019-12-454   ADOPTION DU RÈGLEMENT 012-2019."
+            }
+          },
+          {
+            "label": "009-2019",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "Rs.2019-12-455   ADOPTION DU RÈGLEMENT 009-2019."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/3df7e706ad1c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200811Z/acton-vale/3df7e706ad1c.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-30T00:01:45.679Z",
+  "mode": "targeted-storage-keys",
+  "dedupe": {
+    "snapshot": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+    "indexed_cas_keys_in_union": 5345,
+    "skipped_duplicate_cas_keys": []
+  },
+  "classification_reports": [
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0001.json",
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json",
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json",
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0004.json",
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0005.json",
+    "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json"
+  ],
+  "eligible_records": 217,
+  "eligible_documents": 217,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 217,
+  "supersedes_storage_keys": [
+    "raw/pv-index/cas/8c76ef6edfa114f2e25237c7eac13d61d6ece02e7952313a3b502153178a6379.bin"
+  ],
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 0,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 1
+  },
+  "graphify": {
+    "nodes": 5,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 16,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 877,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260730T000141Z",
+  "documents": [
+    {
+      "slug": "hope-town",
+      "municipality_name": "Hope Town",
+      "url": "https://municipalitehopetown.ca/download/349/reunions-extraordinaires/2557/proces-verbal-24-janvier-2022.docx",
+      "storage_key": "raw/pv-index/cas/8c76ef6edfa114f2e25237c7eac13d61d6ece02e7952313a3b502153178a6379.bin",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Hope Town",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "﻿Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "﻿Province de Québec"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "\t\tCONSIDÉRANT qu’il est dans l’intérêt public et pour protéger la santé de \t\tla population, des membres du conseil et des officiers municipaux que la \t\tprésente séance soit tenue ouverte à huis clos et que les membres du \t\t\tconseil et les officiers municipaux soient autorisés à y être présents et à \t\tprendre part, délibérer et voter à la séance;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "\t\tCONSIDÉRANT l’arrêté ministériel numéro 2022-004 du 15 janvier 2022, \t\tdu ministre de la Santé et des Services sociaux, qui précise que toute \t\t\tséance peut se tenir à l’aide d’un moyen permettant à tous les membres \t\tde communiquer immédiatement entre eux;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2011.09.100",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "\t\t\tConsidérant que, selon le règlement 2011.09.100F de la Municipalité de \t\t\tHope Town, le comité consultatif d’urbanisme doit être composé d’un \t\t\t\tmembre du conseil et de deux résidents de la société civile;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260730T000141Z/hope-town/2153178a6379.bin/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260730T000141Z/hope-town/2153178a6379.bin/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "hope",
+          "hope-town"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

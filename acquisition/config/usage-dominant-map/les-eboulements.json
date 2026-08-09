@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "Ad": "agricole",
+    "Am": "agricole",
+    "Av": "agricole",
+    "F": "agricole",
+    "H": "residentiel",
+    "V": "residentiel",
+    "C": "environnemental",
+    "Ri": "environnemental",
+    "Re": "environnemental",
+    "Cm": null,
+    "M": null,
+    "P": null
+  },
+  "source": "https://leseboulements.com/wp-content/uploads/2025/09/08-Reglement-de-zonage-275-24_final_compressed.pdf",
+  "note": "Règlement de zonage 275-24, chapitre 1, section 3 « Dispositions interprétatives relatives à la division du territoire municipal en zones », art. 1.15 « Codification des zones »: « Chaque zone est identifiée par un suffixe indiquant le ou les groupe(s) dominant(s) tel qu'il appert au tableau reproduit ci-après. » Tableau 3.1 « LETTRES / Affectations » reproduit VERBATIM: Ad « Agricole dynamique », Am « Agricole marginal », Av « Agricole viable », C « Conservation », Cm « Commercial-Industriel », F « Forestier », H « Habitation », M « Multifonctionnel », P « Public », Ri « Récréatif intensif », Re « Récréatif extensif », V « Villégiature ». Mapping: Ad/Am/Av -> agricole; F « Forestier » -> agricole (famille agricole/forestière); H « Habitation » -> residentiel; V « Villégiature » -> residentiel (convention établie du dépôt: mont-tremblant.json mappe V « Villegiature » -> residentiel); C « Conservation » -> environnemental; Ri « Récréatif intensif » et Re « Récréatif extensif » -> environnemental (famille récréative; mont-tremblant.json mappe RE « Recreative » -> environnemental). Null explicite: Cm « Commercial-Industriel » est DUALE (deux catégories nommées, aucune dominante unique); M « Multifonctionnel » est mixte par définition; P « Public » est public. Le code SIG CMA-03 (1 polygone) n'apparaît PAS au tableau 3.1: il tombe par longest-prefix sur « Cm » -> null, ce qui est le choix conservateur (sans le null explicite de Cm il serait tombé sur « C » -> environnemental à tort). La matrice des usages permis des grilles n'est pas utilisée. Préfixes SIG réellement présents (93 polygones, lus sur S3): Ad(17), V(13), Am(12), H(11), F(10), Av(9), M(8), C(4), Ri(3), P(2), CM(2), CMA(1), Re(1)."
+}

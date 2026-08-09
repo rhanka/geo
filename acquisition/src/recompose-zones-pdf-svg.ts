@@ -22,6 +22,7 @@ import type { Feature, FeatureCollection, Polygon } from "geojson";
 import proj4 from "proj4";
 
 import { BUCKET, putBytes, s3Client } from "./lib/s3.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
@@ -43,6 +44,12 @@ interface GdalInfo {
   pixelSize: [number, number] | null;
   projDef: string | null;
   creator: string | null;
+}
+
+interface ResolvedGdalInfo {
+  geoTransform: number[];
+  pixelSize: [number, number];
+  projDef: string;
 }
 
 interface PdfLabel {
@@ -376,7 +383,7 @@ function assignAndBuildGeoJSON(
   pdfSource: string,
   candidates: SvgPathCandidate[],
   labels: PdfLabel[],
-  gdal: { [K in "geoTransform" | "pixelSize" | "projDef"]: NonNullable<GdalInfo[K]> },
+  gdal: ResolvedGdalInfo,
 ): FeatureCollection {
   const features: Feature<Polygon>[] = [];
 
@@ -398,9 +405,10 @@ function assignAndBuildGeoJSON(
     if (matches.size !== 1) continue;
 
     const zoneCode = [...matches][0]!;
-    const wgsRing = cand.pageRing.map((p) =>
-      pageToWgs84(p, gdal.pixelSize, gdal.geoTransform, gdal.projDef),
-    );
+    const wgsRing = cand.pageRing
+      .map((p) => pageToWgs84(p, gdal.pixelSize, gdal.geoTransform, gdal.projDef))
+      .filter((p): p is [number, number] => p !== null);
+    if (wgsRing.length !== cand.pageRing.length) continue;
     features.push({
       type: "Feature",
       geometry: {
@@ -457,7 +465,7 @@ async function main(): Promise<void> {
   }
   console.error(`[svg] creator=${gdal.creator ?? "?"} pix=${gdal.pixelSize.join("x")}`);
 
-  const tmpDir = `/tmp/geo-svg-${slug}-${Date.now()}`;
+  const tmpDir = workspaceTmp(`geo-svg-${slug}-${Date.now()}`);
   const svgPath = ensureSvg(pdfPath, tmpDir);
   const candidates = extractSvgCandidates(svgPath);
   const labels = readPdfLabels(pdfPath);

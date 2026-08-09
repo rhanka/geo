@@ -1,0 +1,185 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:32:01.362Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 167,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 1,
+    "Regulation": 1,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 7,
+    "edges": 4,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 0,
+    "documents_with_zone": 1,
+    "documents_with_lot": 0
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chute-saint-philippe",
+      "storage_key": "raw/pv-index/cas/1d4b2510e3017a1e1a26c9051ebf6837d5870363352aac3cf919ee8b78063fdc.pdf",
+      "entity_type": "Zone",
+      "value": "REC-02",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:230",
+      "quote": "    - Attendu que la propriété est située dans la zone REC-02;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 36,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1022,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043129Z",
+  "documents": [
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250516143447-seance-05-2025.pdf",
+      "storage_key": "raw/pv-index/cas/1d4b2510e3017a1e1a26c9051ebf6837d5870363352aac3cf919ee8b78063fdc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:247",
+              "quote": "Pour ces motifs, le CCU est unanime et recommande aux membres du conseil municipal de Chute-Saint-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:247",
+              "quote": "Pour ces motifs, le CCU est unanime et recommande aux membres du conseil municipal de Chute-Saint-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 13 mai 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 13 mai 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12853-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:446",
+              "quote": "                        résolution 12853-2025;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:455",
+              "quote": "                        d’adopter le règlement 325-2025 abrogeant et remplaçant les règlements 121, 154, 155,"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "REC-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "    - Attendu que la propriété est située dans la zone REC-02;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043129Z/chute-saint-philippe/ee8b78063fdc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043129Z/chute-saint-philippe/ee8b78063fdc.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "lac-des-ecorces",
+          "lac-saint-paul"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

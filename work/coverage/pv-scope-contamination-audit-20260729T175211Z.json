@@ -1,0 +1,1691 @@
+{
+  "contract": "pv-scope-contamination-audit/v2",
+  "generated_at": "2026-07-29T17:52:31.417Z",
+  "phase": "sample",
+  "mode": "read-only-s3-pdf-owner-audit",
+  "rules": {
+    "owner": "Resolved only from an explicit municipal-owner phrase printed by pdftotext in the CAS PDF; a municipality named as a resolution beneficiary or counterparty is unknown, never owner evidence. Filenames, scope slugs, URLs, and fuzzy matches are never used.",
+    "homonyms": "An owner name matching more than one municipality is unknown.",
+    "maximum_read_bytes": 5000000,
+    "s3_environment": {
+      "NODE_OPTIONS": "--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS": "10"
+    }
+  },
+  "inputs": {
+    "bucket": "sentropic-geo",
+    "registry_prefix": "registry/qc-pv/",
+    "capture_runs_prefix": "capture/_runs/pv-",
+    "cas_prefix": "raw/pv-index/cas/",
+    "capture_manifests": {
+      "terminal": 517,
+      "non_terminal_or_unreadable": 12,
+      "skipped_oversize": [],
+      "read_errors": [
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-0/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-0/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-1/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-1/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-2/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-2/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-3/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-3/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-429f5c3e-5235-403b-a5db-1c33d36e9517/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-429f5c3e-5235-403b-a5db-1c33d36e9517/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-5b4737c4-29dc-405e-a43d-001d9cdc3b6b/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-5b4737c4-29dc-405e-a43d-001d9cdc3b6b/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-d64a05b8-2878-41c4-942f-4fc4d24a6cc5/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-d64a05b8-2878-41c4-942f-4fc4d24a6cc5/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-c7887bf3-6b36-4ee2-ab79-b05d22a19cc4/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-c7887bf3-6b36-4ee2-ab79-b05d22a19cc4/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-900b3bbd-7fc9-4a43-8129-af65f82be351/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-900b3bbd-7fc9-4a43-8129-af65f82be351/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-c145976e-78a1-40ab-838c-645a670b496a/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-c145976e-78a1-40ab-838c-645a670b496a/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-8befc677-0bdd-4c18-9264-9f9888294fd6/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-8befc677-0bdd-4c18-9264-9f9888294fd6/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-ec34afea-ba87-4e28-9dfb-6044c580a475/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-ec34afea-ba87-4e28-9dfb-6044c580a475/run.json: objet absent ou taille inconnue"
+        }
+      ]
+    }
+  },
+  "sample": {
+    "selection": {
+      "seed": "pv-scope-contamination-audit/v1",
+      "eligible_scopes_with_at_least_five_attached_cas": 159,
+      "sampled_scopes": 20,
+      "documents_per_scope": 5,
+      "selection": "sha256(seed + NUL + scope slug), then sha256(seed + NUL + scope slug + NUL + CAS key); never alphabetic order"
+    },
+    "documents_examined": 100,
+    "documents_per_scope": 5,
+    "scope_contamination_rate": {
+      "numerator": 1,
+      "denominator": 20,
+      "percent": 5
+    },
+    "scopes": [
+      {
+        "slug": "bethanie",
+        "municipality": "Béthanie",
+        "population": 335,
+        "mrc": "Acton",
+        "attached_cas": 29,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 5,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/e8cc2d4467d78710afd07882a9a068007ba4033f0101238985dc773cd6e66e98.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitedebethanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0d68b745bb95bf2fa2c678316cfcb5b3482cc6c595a4ea64c29aea0ec36d83f4.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitedebethanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/39cc247e651323c081390b458fedf95254f950795e78b4545702d1c39ae89301.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitedebethanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/f58187fe121cb11174d48bae56c3b993aa0bd1eb4621196b8ab9891ecb05367a.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitedebethanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/c41413c4c5bd2440851a956e0abf7d0c00aae13aa3720f72e170aad6199f7939.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitedebethanie.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "armagh",
+        "municipality": "Armagh",
+        "population": 1434,
+        "mrc": "Bellechasse",
+        "attached_cas": 25,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/9dba815745866e1e982112a03acbb2a05c7ed45fb055c0b6b55d76032240aa9a.pdf",
+            "printed_owner": "Armagh",
+            "printed_owner_slug": "armagh",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d armagh",
+            "printed_owner_context": "armagh le 13 aout 2019 province de quebec la municipalite d armagh comte de bellechasse a une seance reguliere du conseil municipal d armagh comte de bellechasse tenue le treizieme jour d aout deux mille dix neuf a dix neuf heures trente a l endr",
+            "mismatch": false,
+            "source_hosts": [
+              "armagh.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/f60f95fd661e6f1a2fb640a05408bbccb938e4efcc64aa39ef63b4078247fd75.pdf",
+            "printed_owner": "Armagh",
+            "printed_owner_slug": "armagh",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d armagh",
+            "printed_owner_context": "province de quebec la municipalite d armagh comte de bellechasse a une seance ordinaire du conseil municipal d armagh comte de bellechasse tenue le 13 aout 2025 a dix neuf heures trente a l endroit ordinaire des seances de ",
+            "mismatch": false,
+            "source_hosts": [
+              "armagh.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/90addbb7d0ccce68512282a1540ccc2567afa0af56827179d39acb535d6aa880.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "armagh.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/13edefaae898b8dbeb32bd734ea33e5246b8cb2c9ab228c0abeb0b6829dc46cd.pdf",
+            "printed_owner": "Armagh",
+            "printed_owner_slug": "armagh",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d armagh",
+            "printed_owner_context": "province de quebec municipalite d armagh comte de bellechasse a une seance ordinaire du conseil municipal d armagh tenue le 2 juin 2026 a 19 h 30 a la salle municipale situee au 7 rue de la salle a armagh conformement au",
+            "mismatch": false,
+            "source_hosts": [
+              "armagh.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/eeffa15d125c59be784025f85aeb94288893d610b4593d35fdc9641e6ce57f55.pdf",
+            "printed_owner": "Armagh",
+            "printed_owner_slug": "armagh",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d armagh",
+            "printed_owner_context": "province de quebec municipalite d armagh comte de bellechasse a une seance extraordinaire du conseil municipal d armagh tenue le 9 juin 2026 a 19h30 a la salle municipale situee au 7 rue de la salle a armagh conformement",
+            "mismatch": false,
+            "source_hosts": [
+              "armagh.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "arundel",
+        "municipality": "Arundel",
+        "population": 601,
+        "mrc": "Les Laurentides",
+        "attached_cas": 139,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/087bc6161d58d3853f71d5f996aa96c64de45dc7746acd8483816af0c69f1979.pdf",
+            "printed_owner": "Arundel",
+            "printed_owner_slug": "arundel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "canton d arundel",
+            "printed_owner_context": "ordre du jour pour seance ordinaire du conseil de la municipalite du canton d arundel agenda for regular council meeting of the municipality of the township of arundel 20 mail 2025 a 19 h may 20 2025 at 7 00 p m salle communautaire 60 route morrison arundel communi",
+            "mismatch": false,
+            "source_hosts": [
+              "arundel.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/000f0c6b6d40f93067c22b652d4908d69886c087442f7bdebfbdae8e469084a3.pdf",
+            "printed_owner": "Arundel",
+            "printed_owner_slug": "arundel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "canton d arundel",
+            "printed_owner_context": "ordre du jour agenda seance ordinaire du conseil de la municipalite du canton d arundel regular council meeting of the municipality of the township of arundel 18 fevrier 2025 a 19 h february 18 2025 at 7 00 p m salle communautaire 60 route morrison arundel 1 constata",
+            "mismatch": false,
+            "source_hosts": [
+              "arundel.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/fb45dfb834c844c14f18a627b2120c285f366174b760a874a11c0ac7134510fa.pdf",
+            "printed_owner": "Arundel",
+            "printed_owner_slug": "arundel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipality of arundel",
+            "printed_owner_context": "re is considerable interest in recreational activities such as soccer and other summer sports among young people in the municipality of arundel and neighbouring municipalities whereas it is important to support activities that respond to a real need and that promote health physical fitness and bring people and communities",
+            "mismatch": false,
+            "source_hosts": [
+              "arundel.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/e4a1863708fc52cba0f4b49ec287a82e99b0f961a43351a8423a5e9543be929b.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "arundel.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/2c4f82168965c7e6cf8cf06ac3105777699fc9733fe6f69616d2c76311311e2a.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "arundel.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "bowman",
+        "municipality": "Bowman",
+        "population": 746,
+        "mrc": "Papineau",
+        "attached_cas": 82,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/8f6c4681d25fffd6c432ab6e3dffe90a579e5ec703f46e8479629bda2993e4cb.pdf",
+            "printed_owner": "Bowman",
+            "printed_owner_slug": "bowman",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bowman",
+            "printed_owner_context": "canada province de quebec municipalite de bowman a une seance ordinaire du conseil de la municipalite de bowman tenue ce 5 octobre 2021 a 19 h sont presents es les conseillers eres suivants es absent denise dubois gaston donovan",
+            "mismatch": false,
+            "source_hosts": [
+              "vplus-documents.s3.ca-central-1.amazonaws.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/08ae2ec913cde8f54c7d9326734ab7b72c123416f38c5134e97881dc51372c73.pdf",
+            "printed_owner": "Bowman",
+            "printed_owner_slug": "bowman",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bowman",
+            "printed_owner_context": "province de quebec mrc de papineau municipalite de bowman proces verbal de la seance ordinaire du conseil de la municipalite de bowman tenue le 10 fevrier 2026 a 19 h au bureau municipal sis au 214 route 307 a bowman sont presents es les",
+            "mismatch": false,
+            "source_hosts": [
+              "vplus-documents.s3.ca-central-1.amazonaws.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/f46bfa069333ca38334a0406c5dbdbda3b9f0ad44f3343b04da4bd6e62e5d707.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "vplus-documents.s3.ca-central-1.amazonaws.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/4ec1e72508ec296cc0807c6ac815ba52019102a7d57a67b497c293d929b78a58.pdf",
+            "printed_owner": "Bowman",
+            "printed_owner_slug": "bowman",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bowman",
+            "printed_owner_context": "canada province de quebec municipalite de bowman a une seance extraordinaire du conseil de la municipalite de bowman tenue ce 8 juin 2021 a 18 h via teleconference sont presents es les conseillers eres suivants es et la directri",
+            "mismatch": false,
+            "source_hosts": [
+              "vplus-documents.s3.ca-central-1.amazonaws.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0540afdfa5924cc00ec5b00df4546b94012c2c23787fc3fe414ac49a840e9d0e.pdf",
+            "printed_owner": "Bowman",
+            "printed_owner_slug": "bowman",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bowman",
+            "printed_owner_context": "canada province de quebec municipalite de bowman a une seance ordinaire du conseil de la municipalite de bowman tenue ce 16 novembre 2021 a 19 h sont presents es les conseillers eres suivants es catherine pellerin louise peck de",
+            "mismatch": false,
+            "source_hosts": [
+              "vplus-documents.s3.ca-central-1.amazonaws.com"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "larouche",
+        "municipality": "Larouche",
+        "population": 1737,
+        "mrc": "Le Fjord-du-Saguenay",
+        "attached_cas": 12,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/a6665080a17feced9adf7fa2e00c25d28a7be2d816c5e60ea3c37dbfcb8ca6cd.pdf",
+            "printed_owner": "Larouche",
+            "printed_owner_slug": "larouche",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de larouche",
+            "printed_owner_context": "iations de villegiature pour l entretien des chemins prives 12 resolution d appui a l offre de maternelle 4 ans dans la municipalite de larouche urbanisme 13 adoption du reglement 2025 451 modification au reglement de zonage afin de modifier la terminologie de modifier les grilles de specifications de modifier les superfic",
+            "mismatch": false,
+            "source_hosts": [
+              "cdn.prod.website-files.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/5c63ec86283f6af5e0cafb7e10477da68cbff2bd89e2850e98266998180e8eb3.pdf",
+            "printed_owner": "Larouche",
+            "printed_owner_slug": "larouche",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de larouche",
+            "printed_owner_context": "convocation et ordre du jour larouche le lundi 2 fevrier 2026 a mesdames et messieurs les membres du conseil municipal de larouche avis vous par la presente donnee par m frederic perron directeur general greffiertresorier de la municipalite de larouche qu une seance ordinaire du conseil municipal de cette mun",
+            "mismatch": false,
+            "source_hosts": [
+              "cdn.prod.website-files.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0b00c5e7b4144b4d2aa78e16842d907794975b2a1a8087fddc4c87f39e331e0d.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "cdn.prod.website-files.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/387f7a6544e980851bd9433a04d14c07a436228bc8fd27cda4b97dbcf5ea0f79.pdf",
+            "printed_owner": "Larouche",
+            "printed_owner_slug": "larouche",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de larouche",
+            "printed_owner_context": "ivites de la municipalite 9 avis de motion reglement 2025 455 concernant les limites de vitesse sur le territoire de la municipalite de larouche abrogeant le reglement 2025 445 10 depot du projet de reglement 2025 455 concernant les limites de vitesse sur le territoire de la municipalite de larouche abrogeant le reglement ",
+            "mismatch": false,
+            "source_hosts": [
+              "cdn.prod.website-files.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/dc61b020702955541b083b303599f2f4bddc8ddf5dbf5cf9abbf4d60e812c7a6.pdf",
+            "printed_owner": "Larouche",
+            "printed_owner_slug": "larouche",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de larouche",
+            "printed_owner_context": "convocation et ordre du jour larouche le lundi 2 mars 2026 a mesdames et messieurs les membres du conseil municipal de larouche avis vous par la presente donnee par m frederic perron directeur general greffiertresorier de la municipalite de larouche qu une seance ordinaire du conseil municipal de cette mun",
+            "mismatch": false,
+            "source_hosts": [
+              "cdn.prod.website-files.com"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "lepiphanie",
+        "municipality": "L'Épiphanie",
+        "population": 9222,
+        "mrc": "L'Assomption",
+        "attached_cas": 13,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 5,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/4a809ba74d13dd00bf15963d686e7955e1783aca5b2cbb025eded97177eee108.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lepiphanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/82f35cc2f59ecaa5bf2fc54a2567a7e0ac481b2f65bf2781ef07c0d105a6a267.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lepiphanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/1d89e5d82528aece0596f6b836b14f68a0de9e6c121bd51fb1be8198bbd4ffa5.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lepiphanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/7da36a327241a467106f39458bd53e9c054ce8c9e58b64eb62e87a4714f4427c.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lepiphanie.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/fdb6b794d6af126403227a6f90f5a9f1072cc2949c44262b97a8b3182a5c3644.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lepiphanie.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "charlemagne",
+        "municipality": "Charlemagne",
+        "population": 6658,
+        "mrc": "L'Assomption",
+        "attached_cas": 19,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 4,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/de35da6cba6f4be2c33c3423fe1ef61c6c482653c62bd4794d68f132a644781d.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.charlemagne.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/a6f457def2e72fdd3868e30b633b240dc4b1105bacccdcd3f0818f2dd4f1b4cf.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.charlemagne.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/79260b3a43dc5f3defffa9b10cb80a4701583577367743972d6a518530a0f10e.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.charlemagne.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/a544009df17be91d9d8bc50408ea2c2019d4af2918c74ff6afda1f2ec13d2d07.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "cas_exceeds_read_limit",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.charlemagne.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/efa3fc2e22d278289350573d670129e130da3fe73cbb7e57c9b312ced62a871a.pdf",
+            "printed_owner": "Charlemagne",
+            "printed_owner_slug": "charlemagne",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de charlemagne",
+            "printed_owner_context": "mai 2025 minutes de la seance ordinaire du conseil municipal de la ville de charlemagne tenue le mardi 13 mai 2025 a 19hoo sous la presidence de la mairesse suppleante madame josee paquette a laquelle sont presents mesdames et messieurs les conseillers serge desjardi",
+            "mismatch": false,
+            "source_hosts": [
+              "www.charlemagne.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "dollard-des-ormeaux",
+        "municipality": "Dollard-Des Ormeaux",
+        "population": 50216,
+        "mrc": null,
+        "attached_cas": 14,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 0,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/8f40bd7b11b9b0ceb059544b9585a948a2bafafc4bbc0a00f78693150ced7c4c.pdf",
+            "printed_owner": "Dollard-Des Ormeaux",
+            "printed_owner_slug": "dollard-des-ormeaux",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de dollard des ormeaux",
+            "printed_owner_context": "ville de dollard des ormeaux seance du conseil municipal 12001 boulevard de salaberry dollard des ormeaux seance ordinaire du 12 mai 2026 a 19 h 30 ordre du jour 10 sujets d ouverture 10 1 ouverture de la sea",
+            "mismatch": false,
+            "source_hosts": [
+              "ville.ddo.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/db29470be9ed1abf1aa18155ebdd0761270db4e93069e9f62392196ce5460e6a.pdf",
+            "printed_owner": "Dollard-Des Ormeaux",
+            "printed_owner_slug": "dollard-des-ormeaux",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de dollard des ormeaux",
+            "printed_owner_context": "seance ordinaire du 2 juin 2026 page 1 proces verbal de la seance ordinaire du conseil municipal de dollard des ormeaux tenue le mardi 2 juin 2026 convoquee pour 19 h 30 au 12001 boulevard de salaberry dollard desormeaux quebec et a laquelle etaient presents minutes of the regular meeting of the mu",
+            "mismatch": false,
+            "source_hosts": [
+              "ville.ddo.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/617c1296564e3703fec6e78c78107957319461c2b34380a5a554be682db3fa59.pdf",
+            "printed_owner": "Dollard-Des Ormeaux",
+            "printed_owner_slug": "dollard-des-ormeaux",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de dollard des ormeaux",
+            "printed_owner_context": "seance ordinaire du 13 janvier 2026 page 1 proces verbal de la seance ordinaire du conseil municipal de dollard des ormeaux tenue le mardi 13 janvier 2026 convoquee pour 19 h 30 au 12001 boulevard de salaberry dollard des ormeaux quebec et a laquelle etaient presents minutes of the regular meeting of t",
+            "mismatch": false,
+            "source_hosts": [
+              "ville.ddo.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/9feb060c427bae33c2f289a39184a78a6f215e8635315e503e6528c569578824.pdf",
+            "printed_owner": "Dollard-Des Ormeaux",
+            "printed_owner_slug": "dollard-des-ormeaux",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de dollard des ormeaux",
+            "printed_owner_context": "seance ordinaire du 10 mars 2026 page 1 proces verbal de la seance ordinaire du conseil municipal de dollard des ormeaux tenue le mardi 10 mars 2026 convoquee pour 19 h 30 au 12001 boulevard de salaberry dollard desormeaux quebec et a laquelle etaient presents minutes of the regular meeting of the m",
+            "mismatch": false,
+            "source_hosts": [
+              "ville.ddo.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/cedf5c6869374feea3db361951a8a0a093c7832f24b7303e8dca2d51ceba729b.pdf",
+            "printed_owner": "Dollard-Des Ormeaux",
+            "printed_owner_slug": "dollard-des-ormeaux",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de dollard des ormeaux",
+            "printed_owner_context": "ville de dollard des ormeaux seance du conseil municipal 12001 boulevard de salaberry dollard des ormeaux seance ordinaire du 14 avril 2026 a 19 h 30 ordre du jour 10 sujets d ouverture 10 1 ouverture de la s",
+            "mismatch": false,
+            "source_hosts": [
+              "ville.ddo.qc.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "hebertville-station",
+        "municipality": "Hébertville-Station",
+        "population": null,
+        "mrc": null,
+        "attached_cas": 10,
+        "contaminated": true,
+        "confirmed_mismatched_documents": 2,
+        "unknown_documents": 3,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/f346eea33216f6d69d14a709fae22b8a22c4da071104718e84132ec06a741fbc.pdf",
+            "printed_owner": "Hébertville",
+            "printed_owner_slug": "hebertville",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d hebertville",
+            "printed_owner_context": "municipalite d hebertville ordre du jour lundi 15 juin 2026 a 19 h 00 salle tremblay equipement hotel de ville secteur saint bruno 1 ouverture de la seance administration greffe 2 adoption de l ordre du jou",
+            "mismatch": true,
+            "source_hosts": [
+              "www.hebertville-station.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/bc223bdae5c84cfccdfe9747cf27c6ce4efc9dc0d2778d34a6a5a63d84a51eda.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.hebertville-station.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/9afc18e70788c8ab053f3ddfbb03d837004bc668677b589cd520a5327a223468.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.hebertville-station.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0f50568c6fb21a1831fee09218e5cf4ac4a82bec4a58f953157bde72155b65d8.pdf",
+            "printed_owner": "Hébertville",
+            "printed_owner_slug": "hebertville",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite d hebertville",
+            "printed_owner_context": "municipalite d hebertville lundi le19 janvier 2026 a 19 h 00 salle tremblay equipement hotel de ville secteur saint bruno ordre du jour but responsable 1 ouverture de la seance maire 2 acceptation de l ordr",
+            "mismatch": true,
+            "source_hosts": [
+              "www.hebertville-station.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/8eed43180aa4f6bbd0f230a92a1d1c154c69f87df342dfac6a051e46d2bef7de.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.hebertville-station.com"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "coteau-du-lac",
+        "municipality": "Coteau-du-Lac",
+        "population": 7846,
+        "mrc": "Vaudreuil-Soulanges",
+        "attached_cas": 21,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 0,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/5593a3f6f58a994b9262ac1838a30c61ef4093d3a89f06a1ececbbe0d828ce68.pdf",
+            "printed_owner": "Coteau-du-Lac",
+            "printed_owner_slug": "coteau-du-lac",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de coteau du lac",
+            "printed_owner_context": "ville de coteau du lac ordre du jour 1 validation et ouverture de la seance extraordinaire 2 adoption de l ordre du jour 3 1ere periode de la parole au public 4 octroi contrat rehabilitation de rues et ",
+            "mismatch": false,
+            "source_hosts": [
+              "coteau-du-lac.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/3be987dd3c943dfafb12a977ea9a141cf4898eebf0e7fc8858aa18527946069b.pdf",
+            "printed_owner": "Coteau-du-Lac",
+            "printed_owner_slug": "coteau-du-lac",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de coteau du lac",
+            "printed_owner_context": "ville de coteau du lac ordre du jour 1 validation et ouverture de la seance extraordinaire 2 adoption de l ordre du jour 3 1ere periode de la parole au public 4 adoption reglement no 325 3 modifiant l a",
+            "mismatch": false,
+            "source_hosts": [
+              "coteau-du-lac.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0daa75ceb62e0efd7d015b37a2dad41579f8674fac99c9f163dfc598924e8614.pdf",
+            "printed_owner": "Coteau-du-Lac",
+            "printed_owner_slug": "coteau-du-lac",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de coteau du lac",
+            "printed_owner_context": "ment no urb 406 sur les projets particuliers de construction de modification ou d occupation d un immeuble ppcmoi de la ville de coteau du lac la demande est ensuite presentee au comite consultatif d urbanisme ccu les membres formulent une recommandation favorable ou defavorable au conseil municipal avec ou sans proposit",
+            "mismatch": false,
+            "source_hosts": [
+              "coteau-du-lac.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/4283c3b1b2b2c72be7a80446031e5349a85ea035a1cb375393ce5a7558e41075.pdf",
+            "printed_owner": "Coteau-du-Lac",
+            "printed_owner_slug": "coteau-du-lac",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de coteau du lac",
+            "printed_owner_context": "ville de coteau du lac ordre du jour 1 validation et ouverture de la seance extraordinaire 2 adoption de l ordre du jour 3 1ere periode de la parole au public 4 modification de la resolution d imputatio",
+            "mismatch": false,
+            "source_hosts": [
+              "coteau-du-lac.com"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/33d75455c7752e00db609127af527cfa35d67a461cd05fc22dd9b81a60294782.pdf",
+            "printed_owner": "Coteau-du-Lac",
+            "printed_owner_slug": "coteau-du-lac",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de coteau du lac",
+            "printed_owner_context": "proces verbaux des deliberations du conseil de la ville de coteau du lac approuve a la seance ordinaire du 12 mai 2026 par sa resolution 192 05 2026 province de quebec mrc de vaudreuil soulanges seance extraordinaire du conseil de la ville de coteau du",
+            "mismatch": false,
+            "source_hosts": [
+              "coteau-du-lac.com"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "begin",
+        "municipality": "Bégin",
+        "population": 883,
+        "mrc": "Le Fjord-du-Saguenay",
+        "attached_cas": 12,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/fb07a07bbbc8d5ec2a389186ec421b93499f5082eae144489a51c267d778ce36.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.begin.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/ad4a89905337ff93e52e561d57fa36dcf218159ec8a24a3b4d3f75e458bc9aeb.pdf",
+            "printed_owner": "Bégin",
+            "printed_owner_slug": "begin",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de begin",
+            "printed_owner_context": "canada province de quebec mrc du fjord du saguenay municipalite de begin proces verbal de la seance ordinaire du conseil municipal de begin tenue le 3 juin 2024 a 19h30 a la salle du conseil de l edifice municipal sont presents les membres du conseil s",
+            "mismatch": false,
+            "source_hosts": [
+              "www.begin.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/67526f822102f8f8614c469925314b640bd20cad240cb11b6be4bf405d54b91b.pdf",
+            "printed_owner": "Bégin",
+            "printed_owner_slug": "begin",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de begin",
+            "printed_owner_context": "canada province de quebec mrc du fjord du saguenay municipalite de begin proces verbal de la seance ordinaire du conseil municipal de begin tenue le 4 novembre 2024 a 19h30 a la salle du conseil de l edifice municipal sont presents les membres du conse",
+            "mismatch": false,
+            "source_hosts": [
+              "www.begin.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/1e0f5be6284b1e6676554a5822df046a6c44972f75a22134cf0537c647452e1b.pdf",
+            "printed_owner": "Bégin",
+            "printed_owner_slug": "begin",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de begin",
+            "printed_owner_context": "canada province de quebec mrc du fjord du saguenay municipalite de begin proces verbal de la seance ordinaire du conseil municipal de begin tenue le 2 decembre 2024 a 19h30 a la salle du conseil de l edifice municipal sont presents les membres du conse",
+            "mismatch": false,
+            "source_hosts": [
+              "www.begin.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/f019dbf84078e23ee7a90a7aace31481d73c10c7f6a1ba72e9147d19a5c3fc47.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.begin.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "chazel",
+        "municipality": "Chazel",
+        "population": 268,
+        "mrc": "Abitibi-Ouest",
+        "attached_cas": 40,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/04d12e7c687944a8bd7ac5065ac80852fc285d3d1e46fc928a3078f9283d45f8.pdf",
+            "printed_owner": "Chazel",
+            "printed_owner_slug": "chazel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de chazel",
+            "printed_owner_context": "province de quebec municipalite de chazel seance reguliere des membres du conseil de cette municipalite tenue au lieu ordinaire des seances mardi le 7 mai 2019 a laquelle etaient presents es messieurs mesdames les conseil",
+            "mismatch": false,
+            "source_hosts": [
+              "chazel.ao.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/41e6ac7e3e167a17727d1b5f194d61c6d004034147739c61839f4a5fdd95c72c.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "chazel.ao.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/c019ccf755c9eddb70e6129b8ca1130147bbc313aa2bff78543611cf74572730.pdf",
+            "printed_owner": "Chazel",
+            "printed_owner_slug": "chazel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de chazel",
+            "printed_owner_context": "province de quebec municipalite de chazel seance reguliere des membres du conseil de cette municipalite tenue au lieu ordinaire des seances mardi le 3 septembre 2019 a laquelle etaient presents es messieurs mesdames les c",
+            "mismatch": false,
+            "source_hosts": [
+              "chazel.ao.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/30378b94150c747fcef3bcb692342f43a3ef2d6ef2a5936e65040c9271013976.pdf",
+            "printed_owner": "Chazel",
+            "printed_owner_slug": "chazel",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de chazel",
+            "printed_owner_context": "province de quebec municipalite de chazel seance reguliere des membres du conseil de cette municipalite tenue a la salle communautaire mardi le 8 juin 2021 a laquelle etaient presents es messieurs mesdames les conseillers",
+            "mismatch": false,
+            "source_hosts": [
+              "chazel.ao.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/a8347ea6179ccab0a51e445590c73cbe37efeecb10c5d96164da68b5232ea1a9.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "chazel.ao.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "lac-simon",
+        "municipality": "Lac-Simon",
+        "population": 1173,
+        "mrc": "Papineau",
+        "attached_cas": 12,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/c549382e9b0f1c396d10d07584e98e7a1e7f840c64a3f23fe85f440af066b36b.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lac-simon.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/e72af410f3acd4d83bad81c4aabf41012c10742a994f178229081874fec6a173.pdf",
+            "printed_owner": "Lac-Simon",
+            "printed_owner_slug": "lac-simon",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de lac simon",
+            "printed_owner_context": "province de quebec mrc de papineau seance ordinaire du conseil de la municipalite de lac simon tenue le vendredi 10 janvier 2025 19 h 30 a la salle communautaire sise au 544 chemin du tour du lac a lac simon sous la presidence du maire monsieur jean paul descoeurs l ordre d",
+            "mismatch": false,
+            "source_hosts": [
+              "lac-simon.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/22bf8820dbf46c3174c7218b8631a8e6b1ede98594fec7439208a464fcf003d4.pdf",
+            "printed_owner": "Lac-Simon",
+            "printed_owner_slug": "lac-simon",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de lac simon",
+            "printed_owner_context": "province de quebec mrc de papineau seance extraordinaire du conseil de la municipalite de lac simon tenue le lundi 19 janvier 2026 19 h a la salle communautaire sise au 544 chemin du tour du lac a lac simon sous la presidence de la mairesse madame sylvie potvin sont presents mad",
+            "mismatch": false,
+            "source_hosts": [
+              "lac-simon.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/d4a4cfe04304bde39a6d2f042ba9b469c22208fae37bb1e38fc79a36cae4b19b.pdf",
+            "printed_owner": "Lac-Simon",
+            "printed_owner_slug": "lac-simon",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de lac simon",
+            "printed_owner_context": "province de quebec mrc de papineau seance ordinaire du conseil de la municipalite de lac simon tenue le vendredi 4 juillet 2025 19 h 30 a la salle communautaire sise au 544 chemin du tour du lac a lac simon sous la presidence du maire monsieur jean paul descoeurs sont prese",
+            "mismatch": false,
+            "source_hosts": [
+              "lac-simon.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/2c5e7242f15d386999d0e284307ea49ff49b8544d2f46c6223cbd43b77640b43.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "document_text_empty",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "lac-simon.net"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "causapscal",
+        "municipality": "Causapscal",
+        "population": 2150,
+        "mrc": "La Matapédia",
+        "attached_cas": 43,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 4,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/ac7a4e3832f013409bcf0b49900387094bc427b601dfb8b30ab6342750993fb1.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.causapscal.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/5f18382a57361661b19121e814a26dee5abbd1fd3187003b866f2374fe2b6cc0.pdf",
+            "printed_owner": "Causapscal",
+            "printed_owner_slug": "causapscal",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de causapscal",
+            "printed_owner_context": "proces verbal de la seance reguliere du conseil de la ville de causapscal tenue le 5 mai 2025 a 20 h a l hotel de ville au 1 rue saint jacques nord sont presents messieurs les conseillers leo lepage st amand gaetan gagne rodrigue boulianne jean marie ka",
+            "mismatch": false,
+            "source_hosts": [
+              "www.causapscal.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/38f3f86efc49f12ebd6b5984e3e465c5ff47cb96f253d0d5eac6f9d681f8f5b8.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.causapscal.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/50a40d3d2ed7a904072827a13ebcc8a07ea16a646430c06720dc5f5e291b05b3.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.causapscal.net"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/bfd115b2206bc25d065592cb11fcc9d81300779942dbcbb4dc16dd31564aa70d.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.causapscal.net"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "clermont--charlevoix-est",
+        "municipality": "Clermont",
+        "population": 3147,
+        "mrc": "Charlevoix-Est",
+        "attached_cas": 11,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 5,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/7cb54e084fd1b9cd0a96d9aff9b4cdbb6083b3c38395aab65e6fe79f9963e7c1.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.ville.clermont.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/761164ba0f15cc4b401ee355437de016326d015c57f8a3b106ed92eb8431675c.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "owner_name_homonym",
+            "printed_phrase": "ville de clermont",
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.ville.clermont.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "owner_name_homonym",
+            "printed_phrase": "ville de clermont",
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.ville.clermont.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/0b180b5869741c7dce331ae939dc387a2b2eb1d6886caff96bd9bd4f2fbf1a61.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.ville.clermont.qc.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/327fd4a24730d494894eda036539ec57b8bd56dcf5a6781229eae1a00a925fc3.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "owner_name_homonym",
+            "printed_phrase": "ville de clermont",
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.ville.clermont.qc.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "brownsburg-chatham",
+        "municipality": "Brownsburg-Chatham",
+        "population": 8491,
+        "mrc": "Argenteuil",
+        "attached_cas": 98,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/647f7fa9be340af9eefaf3e3d90d20b26f987c05d468c54835c3c8f168ed8c9e.pdf",
+            "printed_owner": "Brownsburg-Chatham",
+            "printed_owner_slug": "brownsburg-chatham",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de brownsburg chatham",
+            "printed_owner_context": "proces verbal du conseil municipal de la ville de brownsburg chatham consultation publique le 2 decembre 2025 a 18 h 48 s est tenue une consultation publique a la salle du centre communautaire louis renaud tel que prevu aux dispositions de la loi s",
+            "mismatch": false,
+            "source_hosts": [
+              "brownsburgchatham.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/4638f561666f0cac030a42656cef779cdae59db549793211a774613509bfc41a.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "brownsburgchatham.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/d49935eae902841fc428142605312741e7d136c5632f7e464f7b007f25dd10b9.pdf",
+            "printed_owner": "Brownsburg-Chatham",
+            "printed_owner_slug": "brownsburg-chatham",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de brownsburg chatham",
+            "printed_owner_context": "proces verbal du conseil municipal de la ville de brownsburg chatham le 6 aout 2024 proces verbal d une seance ordinaire du conseil municipal de brownsburg chatham tenue le mardi 6 aout 2024 a 19 h a la salle du centre communautaire louis renaud si",
+            "mismatch": false,
+            "source_hosts": [
+              "brownsburgchatham.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/c4dbbe0bac2e92179124f74190cb67b373d49b611f190639c3b112acdb2d9b33.pdf",
+            "printed_owner": "Brownsburg-Chatham",
+            "printed_owner_slug": "brownsburg-chatham",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de brownsburg chatham",
+            "printed_owner_context": "proces verbal du conseil municipal de la ville de brownsburg chatham le 8 fevrier 2022 proces verbal d une seance extraordinaire du conseil municipal de brownsburg chatham tenue mardi le 8 fevrier 2022 a 17 h a la salle du centre communautaire loui",
+            "mismatch": false,
+            "source_hosts": [
+              "brownsburgchatham.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/281a75abd93a1b1172e10ea11557f2e153dd9037412e2dfebe0d146b75fea888.pdf",
+            "printed_owner": "Brownsburg-Chatham",
+            "printed_owner_slug": "brownsburg-chatham",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "ville de brownsburg chatham",
+            "printed_owner_context": "proces verbal du conseil municipal de la ville de brownsburg chatham consultation publique le 3 octobre 2023 a 18 h 30 s est tenue une consultation publique a la salle du centre communautaire louis renaud tel que prevu aux dispositions de la loi su",
+            "mismatch": false,
+            "source_hosts": [
+              "brownsburgchatham.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "cap-saint-ignace",
+        "municipality": "Cap-Saint-Ignace",
+        "population": 3072,
+        "mrc": "Montmagny",
+        "attached_cas": 15,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/25218a7b7ee0103fef337890b1c7208fac9c0414daa5275877e2ebcd4b2771df.pdf",
+            "printed_owner": "Cap-Saint-Ignace",
+            "printed_owner_slug": "cap-saint-ignace",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de cap saint ignace",
+            "printed_owner_context": "conseil municipal de cap saint ignace ordre du jour seance du 13 avril 2026 a 20 heures 1 ouverture 2 adoption de l ordre du jour 2026 04 01 3 adoption des proces verbaux des seances anterieures 2026 04 02 4 correspon",
+            "mismatch": false,
+            "source_hosts": [
+              "www.capsaintignace.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/5cae053afe7bfecb4b128357f9a7b08f46ab87d8ff72afa3fd1528be0998c454.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.capsaintignace.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/7fec7e7d1bfce4546cd717372eb3180f908b79ecd2079d8152558542cd9ce228.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "no_explicit_municipal_owner_phrase",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.capsaintignace.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/d5b5b1b1709d712e4937c800c195d4adef5a5a0274984e07501a57881730596b.pdf",
+            "printed_owner": "Cap-Saint-Ignace",
+            "printed_owner_slug": "cap-saint-ignace",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de cap saint ignace",
+            "printed_owner_context": "seance du conseil du 12 janvier 2026 seance ordinaire du conseil municipal de cap saint ignace tenue le lundi 12 janvier 2026 a 20 heures a laquelle sont presents mme chantal cote mairesse les conseillers mm pierre martineau jonathan daigle richard lord et les conseilleres ",
+            "mismatch": false,
+            "source_hosts": [
+              "www.capsaintignace.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/e5f2be2411b49f78260b795a453b5ade6eb8c5fb60b323bda6c0bfcddef72ecb.pdf",
+            "printed_owner": "Cap-Saint-Ignace",
+            "printed_owner_slug": "cap-saint-ignace",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de cap saint ignace",
+            "printed_owner_context": "conseil municipal de cap saint ignace ordre du jour seance du 2 fevrier 2026 a 20 heures 1 ouverture 2 adoption de l ordre du jour 3 adoption du proces verbal de la seance anterieure 4 correspondance 5 rapport des com",
+            "mismatch": false,
+            "source_hosts": [
+              "www.capsaintignace.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "dudswell",
+        "municipality": "Dudswell",
+        "population": 1852,
+        "mrc": "Le Haut-Saint-François",
+        "attached_cas": 6,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/7756f22e21ec06678127100189d5573e8e9b0f47416b42b8c5f3463be3a7c1bb.pdf",
+            "printed_owner": "Dudswell",
+            "printed_owner_slug": "dudswell",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de dudswell",
+            "printed_owner_context": "livre des proces verbaux de la municipalite de dudswell province de quebec municipalite regionale de comte du haut saint francois municipalite de dudswell proces verbal de la seance extraordinaire de la municipalite de dudswell tenue a",
+            "mismatch": false,
+            "source_hosts": [
+              "municipalitededudswell.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/ea2184ba76cee999f056ff1ee37a33428bc4945b7f5929a994a0674c9cf67a1a.pdf",
+            "printed_owner": "Dudswell",
+            "printed_owner_slug": "dudswell",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de dudswell",
+            "printed_owner_context": "livre des proces verbaux de la municipalite de dudswell province de quebec municipalite regionale de comte du haut saint francois municipalite de dudswell proces verbal de la seance ordinaire de la municipalite de dudswell tenue au cen",
+            "mismatch": false,
+            "source_hosts": [
+              "municipalitededudswell.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/000a44ae30900e66f6279bbd397b1b8bb21ad8b826404023f8c97e1278e1c73a.pdf",
+            "printed_owner": "Dudswell",
+            "printed_owner_slug": "dudswell",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de dudswell",
+            "printed_owner_context": "province de quebec municipalite regionale de comte du haut saint francois municipalite de dudswell ordre du jour de la seance ordinaire de la municipalite de dudswell tenue au centre bishop situe au 190 rue main le 15 juin 2026 a 19 h sous la presidence de mme chantal fortier m",
+            "mismatch": false,
+            "source_hosts": [
+              "municipalitededudswell.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/5d0303a1b48e638a799e3658d2c6775017f8a1e2d1e04e2c6edd36dd3bdefb2c.pdf",
+            "printed_owner": "Dudswell",
+            "printed_owner_slug": "dudswell",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de dudswell",
+            "printed_owner_context": "livre des proces verbaux de la municipalite de dudswell province de quebec municipalite regionale de comte du haut saint francois municipalite de dudswell proces verbal de la seance ordinaire de la municipalite de dudswell tenue au cen",
+            "mismatch": false,
+            "source_hosts": [
+              "municipalitededudswell.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/8e936952e762953c9f459f7e13899ba75760f21645c3ff228323fcdca7a00d3e.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "municipalitededudswell.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "bolton-est",
+        "municipality": "Bolton-Est",
+        "population": 1345,
+        "mrc": "Memphrémagog",
+        "attached_cas": 10,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 1,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/ec7e311df42feff135636828ee22bb7b262ab43ef6b462f628d62a522b18e826.pdf",
+            "printed_owner": "Bolton-Est",
+            "printed_owner_slug": "bolton-est",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal de bolton est",
+            "printed_owner_context": "une seance ordinaire du conseil municipal de bolton est a eu lieu le 12e jour du mois de janvier de l an deux mille vingt six a 19 h sont presents elaine thivierge stephanie bilodeau pierre piche richard guevin pierre lemay anita jobin",
+            "mismatch": false,
+            "source_hosts": [
+              "www.boltonest.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/09090f2fb68db1920ccb17bb5f058cdbae0ff8dba7e8c50f34d521a1bac2f8da.pdf",
+            "printed_owner": "Bolton-Est",
+            "printed_owner_slug": "bolton-est",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal bolton est",
+            "printed_owner_context": "conseil municipal bolton est ordre du jour 4 mai 2026 1 ouverture de la seance ordinaire 2 adoption de l ordre du jour 3 adoption du proces verbal seance ordinaire du 2 mars 2026 4 securite publique m pierre ",
+            "mismatch": false,
+            "source_hosts": [
+              "www.boltonest.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/23f15d6b5c4e36c9dcc09399ab0ba27e0321cec98ba3e480f1309942fd4c2bb1.pdf",
+            "printed_owner": "Bolton-Est",
+            "printed_owner_slug": "bolton-est",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal bolton est",
+            "printed_owner_context": "conseil municipal bolton est ordre du jour 12 janvier 2026 1 ouverture de la seance ordinaire 2 adoption de l ordre du jour 3 adoption du proces verbal seance ordinaire du 1er decembre 2025 3 1 adoption du pr",
+            "mismatch": false,
+            "source_hosts": [
+              "www.boltonest.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/8b3fd5196b74822900449151e2925428e5c7e1ac8028a5124b88854e88ec7385.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.boltonest.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/32f41a194c6a7a02819ee7d8a504f3e069d093d12b1ae0727d9af74cbdfc4cb8.pdf",
+            "printed_owner": "Bolton-Est",
+            "printed_owner_slug": "bolton-est",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "conseil municipal bolton est",
+            "printed_owner_context": "conseil municipal bolton est ordre du jour 2 fevrier 2026 1 ouverture de la seance ordinaire 2 adoption de l ordre du jour 3 adoption du proces verbal seance ordinaire du 12 janvier 2026 4 securite publique m",
+            "mismatch": false,
+            "source_hosts": [
+              "www.boltonest.ca"
+            ]
+          }
+        ]
+      },
+      {
+        "slug": "bearn",
+        "municipality": "Béarn",
+        "population": 737,
+        "mrc": "Témiscamingue",
+        "attached_cas": 68,
+        "contaminated": false,
+        "confirmed_mismatched_documents": 0,
+        "unknown_documents": 2,
+        "documents": [
+          {
+            "storage_key": "raw/pv-index/cas/03651359d1906c9e727f2513488f7e79efc46481f5436dd1ceb1dcc9c31e9ea2.pdf",
+            "printed_owner": "Béarn",
+            "printed_owner_slug": "bearn",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bearn",
+            "printed_owner_context": "proces verbal du conseil de la municipalite de bearn proces verbal de la seance ordinaire de juillet tenue le lundi 15 juillet 2024 a 19 h 00 a la salle fleur de lys au 28 2e rue nord a bearn presences m luc lalonde maire mme sonia ",
+            "mismatch": false,
+            "source_hosts": [
+              "www.bearn.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/38bb73ee192d6fb94fb0268b8e9d264e0d958d56eb6755dbca43f88916a1c20e.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.bearn.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/7ab1c6186277176f82fef65bc8f4d6bb223f4240a519af2b18be7f8ebe8c5e34.pdf",
+            "printed_owner": null,
+            "printed_owner_slug": null,
+            "owner_status": "unknown",
+            "owner_reason": "multiple_explicit_municipal_owner_phrases",
+            "printed_phrase": null,
+            "printed_owner_context": null,
+            "mismatch": null,
+            "source_hosts": [
+              "www.bearn.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/1322a6be3c2c4821d2d6dec348f26ef6de27f6839a494f23e667a839b68c4ab1.pdf",
+            "printed_owner": "Béarn",
+            "printed_owner_slug": "bearn",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bearn",
+            "printed_owner_context": "proces verbal du conseil de la municipalite de bearn proces verbal de la seance extraordinaire du 16 decembre 2024 tenue a 19 h 15 a la salle fleur de lys au 28 2e rue nord a bearn presences m luc lalonde maire mme sonia beauregard ",
+            "mismatch": false,
+            "source_hosts": [
+              "www.bearn.ca"
+            ]
+          },
+          {
+            "storage_key": "raw/pv-index/cas/78647d0be99a3338cfe7984f1c691618604633b7075141400de70e334a152887.pdf",
+            "printed_owner": "Béarn",
+            "printed_owner_slug": "bearn",
+            "owner_status": "resolved",
+            "owner_reason": null,
+            "printed_phrase": "municipalite de bearn",
+            "printed_owner_context": "proces verbal du conseil de la municipalite de bearn proces verbal de la seance ordinaire d octobre tenue le lundi 7 octobre 2024 a 19 h 00 a la salle fleur de lys au 28 2e rue nord a bearn presences m luc lalonde maire mme celine l",
+            "mismatch": false,
+            "source_hosts": [
+              "www.bearn.ca"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "hypothesis": {
+    "tested": "Confirmed contamination rate among the lower versus upper half of sampled scopes by gazetteer population. Same-MRC pairs are reported as regional correlation only; portal ownership is never inferred from a hostname.",
+    "population_crosscheck": {
+      "sample_population_median": 1737,
+      "missing_population_scopes": 1,
+      "contaminated_scopes_with_missing_population": 1,
+      "lower_population_half": {
+        "scopes": 10,
+        "contaminated_scopes": 0,
+        "rate_percent": 0
+      },
+      "upper_population_half": {
+        "scopes": 9,
+        "contaminated_scopes": 0,
+        "rate_percent": 0
+      }
+    },
+    "regional_crosscheck": {
+      "confirmed_mismatched_documents_with_known_scope_and_owner_mrc": 0,
+      "same_mrc_pairs": 0
+    },
+    "conclusion": "Hypothèse non tranchable: un scope contaminé confirmé n’a pas de population; les deux moitiés mesurables n’ont aucune contamination confirmée, et un hôte ne suffit jamais à attribuer l’opérateur du portail."
+  },
+  "impact": {
+    "scope": "confirmed matches in this 20-scope / 100-document sample only; no extrapolation",
+    "confirmed_mismatched_documents": 2,
+    "affected_scope_municipalities": [
+      "hebertville-station"
+    ],
+    "printed_owner_municipalities": [
+      "hebertville"
+    ],
+    "affected_municipalities_union": 2,
+    "unknown_documents": 44,
+    "confirmed_misattachments": [
+      {
+        "storage_key": "raw/pv-index/cas/f346eea33216f6d69d14a709fae22b8a22c4da071104718e84132ec06a741fbc.pdf",
+        "scope_slug": "hebertville-station",
+        "printed_owner_slug": "hebertville",
+        "printed_owner": "Hébertville",
+        "printed_phrase": "municipalite d hebertville",
+        "source_hosts": [
+          "www.hebertville-station.com"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/0f50568c6fb21a1831fee09218e5cf4ac4a82bec4a58f953157bde72155b65d8.pdf",
+        "scope_slug": "hebertville-station",
+        "printed_owner_slug": "hebertville",
+        "printed_owner": "Hébertville",
+        "printed_phrase": "municipalite d hebertville",
+        "source_hosts": [
+          "www.hebertville-station.com"
+        ]
+      }
+    ]
+  }
+}

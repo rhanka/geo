@@ -1,0 +1,1658 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:31:59.696Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2840,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "raw/pv-index/cas/322a86dc6447009f97c348430b5b227c04593453af9267de138992bf569eabbf.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "Regulation": 35,
+    "Resolution": 3,
+    "Zone": 5,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 96,
+    "edges": 37,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 5,
+    "lot_entities": 3,
+    "documents_with_zone": 2,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/57650125dbecad252b5877bc18e0c99c367d29082f9969de98949d6f6a9f3e90.pdf",
+      "entity_type": "Zone",
+      "value": "I-004",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:39",
+      "quote": "     zone industrielle I-004, situé au sud de la rue Jean-Baptiste-Many"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/57650125dbecad252b5877bc18e0c99c367d29082f9969de98949d6f6a9f3e90.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4748688",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:65",
+      "quote": "5.1. Modification de la résolution 2026-03-105 afin de confirmer le retrait du lot 4 748 688"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/57650125dbecad252b5877bc18e0c99c367d29082f9969de98949d6f6a9f3e90.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6401853",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:68",
+      "quote": "5.2. Vente, partie du parc Gilles-Villeneuve (lot 6 401 853) à Myriam Raymond et"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "entity_type": "Zone",
+      "value": "C-004",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "entity_type": "Zone",
+      "value": "C-019",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "entity_type": "Zone",
+      "value": "C-020",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "entity_type": "Zone",
+      "value": "C-021",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2041825",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:105",
+      "quote": "     1335 et 1339, rue Barré, lots 2 041 825 et 5 960 025, projets particuliers de construction,"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 246,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 13800,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z",
+  "documents": [
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250826091742-proces-verbal-23-06-2025extra.pdf",
+      "storage_key": "raw/pv-index/cas/85eeaa8854240496b653a58caa22ac29bac05b187812aaf8114ad44e95699c70.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 23 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Séance extraordinaire du conseil de la Municipalité de Cayamant tenue le 23 juin 2025"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "23 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Séance extraordinaire du conseil de la Municipalité de Cayamant tenue le 23 juin 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "299-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "sera adopté, à une séance subséquente, le règlement numéro 299-25 décrétant un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/d44e95699c70.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/d44e95699c70.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260203131104-proces-verbal-9-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/85f518d1d38d34cd94553b9a63d2e2ec7464d6b91f206ba402feacf2259980b3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                    Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                    Comté de Gatineau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "133-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:261",
+              "quote": "                  ATTENDU QUE la municipalité a le pouvoir en vertu du règlement 133-03, de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/acf2259980b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/acf2259980b3.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "gracefield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250416083738-proces-verbal-4-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8698681d96184af42af39ec70e07a642815a5f9f34841fe96d76fe28252c9ffb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 4 mars 2025 à 19h,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 4 mars 2025 à 19h,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/fe28252c9ffb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/fe28252c9ffb.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "montcerf-lytton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20251212110217-proces-verbal-12-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/8771dea1465de29ad61ecadd0dd3233646a5ce9ed585b47eca86e151c08e9873.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                         Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                         Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                         Séance ordinaire de conseil de la municipalité de Cayamant tenue le 12 novembre 2025 à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                         Séance ordinaire de conseil de la municipalité de Cayamant tenue le 12 novembre 2025 à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/e151c08e9873.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/e151c08e9873.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260317105423-proces-verbal-10-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/a1b119bd364d4d103177301b9a0215255202516081e325a713e3df0d0cb96fe6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 10 février 2026 à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 10 février 2026 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "300-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "2026-02-17   Adoption du Règlement numéro 300-26 étant le Règlement sur la Régie Interne"
+            }
+          },
+          {
+            "label": "232-14",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": "    ATTENDU QUE le règlement 232-14 est abrogé ;"
+            }
+          },
+          {
+            "label": "301-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:479",
+              "quote": "2026-02-18   Adoption du Règlement numéro 301-26 portant sur les Frais Exigibles pour"
+            }
+          },
+          {
+            "label": "290-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:512",
+              "quote": "CONSIDÉRANT QUE le présent règlement abolit le règlement 290-24 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/df0d0cb96fe6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/df0d0cb96fe6.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250416083854-proces-verbal-31-03-2025-extra.pdf",
+      "storage_key": "raw/pv-index/cas/a65be74fdc7db3ece10726775182b76038db401f37affd65c584c8736517ab0e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "292-25",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "2025-03-37   Dépôt et adoption du premier projet du Règlement 292-25 concernant le plan"
+            }
+          },
+          {
+            "label": "293-25",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": "2025-03-38   Dépôt et adoption du premier projet du Règlement 293-25 permis et certificats;"
+            }
+          },
+          {
+            "label": "294-25",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "2025-03-39   Dépôt et adoption du premier projet du Règlement 294-25 lotissement;"
+            }
+          },
+          {
+            "label": "295-25",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "2025-03-40   Dépôt et adoption du premier projet du Règlement 295-25 zonage;"
+            }
+          },
+          {
+            "label": "296-25",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "2025-03-41   Dépôt et adoption du premier projet du Règlement 296-25 construction;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/c8736517ab0e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/c8736517ab0e.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "gracefield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250826091703-proces-verbal-9-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b6d2ae51b647b3c9464523a61c947cde86eeaece096813ef976ae24e6769e82c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "297-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "2025-06-73   Adoption du RÈGLEMENT numéro 297-25 concernant la rémunération"
+            }
+          },
+          {
+            "label": "272-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "ATTENDU QUE le présent règlement abolit le règlement numéro 272-21 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/e24e6769e82c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/e24e6769e82c.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250212143805-proces-verbal-14-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/bbff4a03bed85c18e5e8355587e5e35068035bb28c4bffeac9013a0e3c170c78.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 14 janvier 2025 à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             Séance ordinaire de conseil de la municipalité de Cayamant tenue le 14 janvier 2025 à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/3a0e3c170c78.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/3a0e3c170c78.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20250313085810-proces-verbal-24-02-2025-extra-2.pdf",
+      "storage_key": "raw/pv-index/cas/bd33e5972149ff22624fec9ca9ff8760867daeb9491cdf74df85194a7b475a53.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              Comté de Gatineau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/194a7b475a53.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/194a7b475a53.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260224150506-proces-verbal-6-janvier-2026-extra-sansavis.pdf",
+      "storage_key": "raw/pv-index/cas/c90bd307508d157d05f7ecc5701658549b858899af50a0d9f78930d5cea2b2a8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/30d5cea2b2a8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/30d5cea2b2a8.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20251113085857-proces-verbal-extra-22-09-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ce8d03c5066673753f3b0533bd465269c0c70b007b980ab441bea86e96e82c63.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              Comté de Gatineau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/a86e96e82c63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/a86e96e82c63.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260224145821-proces-verbal-21-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/d7d3a1dd2def43411bc2fcfc4aa72d57f42871db290ac0754eee65754c00ae2f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                Séance ordinaire de conseil de la municipalité de Cayamant tenue le 21 janvier 2026 à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                Séance ordinaire de conseil de la municipalité de Cayamant tenue le 21 janvier 2026 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "275-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "Règlement numéro 275-22 édictant un Code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "232-14",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:931",
+              "quote": "           ATTENDU QUE le règlement 232-14 soit abrogé ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/65754c00ae2f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/65754c00ae2f.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260317083206-proces-verbal-extra-2-03-2026-2-mars.pdf",
+      "storage_key": "raw/pv-index/cas/dff9a2b76eaec1a098067fb8289fd666b37db346cf3f58f7de197d682bcdaa1c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 Comté de Gatineau"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/7d682bcdaa1c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/7d682bcdaa1c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260513132719-proces-verbal-14-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/efbf339fe9418f8590220719c6856a093a5029b7c10f0ff17b860eee2d9226b2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 Comté de Gatineau"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                 Séance ordinaire de conseil de la municipalité de Cayamant tenue le 14 avril 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                 Séance ordinaire de conseil de la municipalité de Cayamant tenue le 14 avril 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "133-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:263",
+              "quote": "                 ATTENDU QUE la municipalité a le pouvoir, en vertu du règlement 133-03, de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/0eee2d9226b2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/0eee2d9226b2.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "gracefield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cayamant",
+      "municipality_name": "Cayamant",
+      "url": "https://www.cayamant.ca/fichiersUpload/fichiers/20260417111936-proces-verbal-10-mars-2026-2.pdf",
+      "storage_key": "raw/pv-index/cas/f2765319c2cdbcd85365c0dfd4888f1f9cb9d2753415fa74b8ec15eb6d684ed4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cayamant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Comté de Gatineau"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "302-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "2026-03-29   Adoption du Règlement numéro 302-26 édictant le Code d’Éthique et"
+            }
+          },
+          {
+            "label": "275-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "             Règlement numéro 275-22 édictant un Code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "303-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:605",
+              "quote": "2026-03-30         Adoption du Règlement numéro 303-26 étant le Code d’Éthique et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/15eb6d684ed4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/cayamant/15eb6d684ed4.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "gracefield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chambly",
+      "municipality_name": "Chambly",
+      "url": "https://chambly.ca/storage/app/media/ville/vie-democratique/assemblees-du-conseil/ordres-du-jour/ordre-du-jour-de-la-seance-ordinaire-du-5-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/3afca157057d3f521b9bcb267c984bd07685ce4dd47552b97477b719a8d3203d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chambly",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-1506-06",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "3.1. Avis de motion et dépôt du projet de règlement 2026-1506-06 modifiant le règlement 2023-1506"
+            }
+          },
+          {
+            "label": "2023-1506",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "3.1. Avis de motion et dépôt du projet de règlement 2026-1506-06 modifiant le règlement 2023-1506"
+            }
+          },
+          {
+            "label": "2026-1542",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "3.2. Avis de motion et dépôt du projet de règlement 2026-1542 décrétant une dépense et un emprunt"
+            }
+          },
+          {
+            "label": "2011-1232",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "     abrogation du règlement 2011-1232 et ses amendements"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/b719a8d3203d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/b719a8d3203d.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chambly"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chambly",
+      "municipality_name": "Chambly",
+      "url": "https://chambly.ca/storage/app/media/ville/vie-democratique/assemblees-du-conseil/ordres-du-jour/ordre-du-jour-de-la-seance-ordinaire-du-2-juin-2026.pdf",
+      "storage_key": "raw/pv-index/cas/57650125dbecad252b5877bc18e0c99c367d29082f9969de98949d6f6a9f3e90.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 4,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chambly",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                    DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-05-169",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "     la résolution 2026-05-169, afin de remplacer la source du financement par le fonds de voirie"
+            }
+          },
+          {
+            "label": "2026-05-171",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "     et avec la modification de la résolution 2026-05-171 concernant le mandat à la firme APUR"
+            }
+          },
+          {
+            "label": "2026-03-105",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "5.1. Modification de la résolution 2026-03-105 afin de confirmer le retrait du lot 4 748 688"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-1431-38",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "3.1. Avis de motion et dépôt du projet de règlement 2026-1431-38A de modification de zonage"
+            }
+          },
+          {
+            "label": "2026-1431-39",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "3.2. Avis de motion et dépôt du premier projet de règlement 2026-1431-39A de modification de"
+            }
+          },
+          {
+            "label": "2026-1431-40",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "3.3. Avis de motion et dépôt du premier projet de règlement 2026-1431-40A de modification de"
+            }
+          },
+          {
+            "label": "2023-1506",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "4.1. Adoption du règlement final 2026-1506-06 modifiant le règlement 2023-1506 concernant la"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "I-004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "     zone industrielle I-004, situé au sud de la rue Jean-Baptiste-Many"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4748688",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "5.1. Modification de la résolution 2026-03-105 afin de confirmer le retrait du lot 4 748 688"
+            }
+          },
+          {
+            "label": "6401853",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "5.2. Vente, partie du parc Gilles-Villeneuve (lot 6 401 853) à Myriam Raymond et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/9d6f6a9f3e90.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/9d6f6a9f3e90.pdf/.graphify/.graphify_extract.json — 12 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chambly",
+          "richelieu"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chambly",
+      "municipality_name": "Chambly",
+      "url": "https://chambly.ca/storage/app/media/ville/vie-democratique/assemblees-du-conseil/ordres-du-jour/ordre-du-jour-de-la-seance-ordinaire-du-3-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/6359ce89e171f1e0f1fc970af2f1df0470c3e53d015ff1678b001cb0e0e4aa9c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 8,
+        "Zone": 4,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chambly",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                     DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-1446-03",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "3.1. Avis de motion et dépôt du projet de règlement 2026-1446-03 modifiant"
+            }
+          },
+          {
+            "label": "2020-1446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "     le règlement 2020-1446 concernant les animaux afin de spécifier certaines infractions"
+            }
+          },
+          {
+            "label": "2026-1484-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "3.2. Avis de motion et dépôt du projet de règlement 2026-1484-01 modifiant le"
+            }
+          },
+          {
+            "label": "2022-1484",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "     règlement 2022-1484 décrétant l’octroi d’une aide financière aux propriétaires d’immeubles"
+            }
+          },
+          {
+            "label": "2026-1537",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "3.3. Avis de motion et dépôt du projet de règlement 2026-1537 relatif à l’arrosage et l’utilisation"
+            }
+          },
+          {
+            "label": "2017-1359",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "4.1. Adoption du règlement final 2026-1359-11A modifiant le règlement 2017-1359 sur les plans"
+            }
+          },
+          {
+            "label": "2020-1432",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "4.2. Adoption du règlement final 2026-1432-01A modifiant le règlement 2020-1432 de"
+            }
+          },
+          {
+            "label": "88-489",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "     et abrogeant le règlement 88-489 à cet effet et ses amendements"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C-004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+            }
+          },
+          {
+            "label": "C-019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+            }
+          },
+          {
+            "label": "C-020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+            }
+          },
+          {
+            "label": "C-021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     lotissement de la Ville de Chambly, visant à ajouter les zones C-004, C-019, C-020, C-021"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2041825",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "     1335 et 1339, rue Barré, lots 2 041 825 et 5 960 025, projets particuliers de construction,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/1cb0e0e4aa9c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153020Z/chambly/1cb0e0e4aa9c.pdf/.graphify/.graphify_extract.json — 15 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chambly"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "AF": "agricole",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "CV": null
+  },
+  "source": "https://www.valcourt.ca/app/uploads/2019/10/05-08-2017_reg-560-zonage-inclut-571-575-586-589-560-4-560-5-560-6-et-602-08-mai-2017-3610.pdf",
+  "note": "Ville de Valcourt, Règlement 560 - Règlement de zonage (inclut 571-575-586-589-560-4, 560-5, 560-6 et 602), 235 p. Article 1.8 « SUBDIVISION DU TERRITOIRE EN ZONES » lu VERBATIM: « Aux fins d'application du présent règlement, le territoire de la Ville est divisé en zones. Chaque zone comporte une identification de base formée par une lettre ou une combinaison de lettres. L'identification de base correspond au caractère général de la zone. Les zones présentant un même caractère général se distinguent l'une de l'autre par un chiffre séparé de l'identification de base par un tiret. » L'article 1.8 pose la règle (lettre = caractère général) mais ne porte pas la table; la nomenclature lettre->caractère est donnée par les INTITULÉS des familles de zones du chapitre des grilles, lus VERBATIM avec les codes qu'ils énumèrent: « a) Zones agricoles » -> A-1, A-2, A-3, A-4, A-5; « b) Zones agro-forestières » -> AF-1, AF-2, AF-3; « c) Zones commerciales » -> C-1; « d) Zones de centre-ville » -> CV-1, CV-2, CV-3, CV-4; « e) Zones industrielles » -> I-1, I-2; « f) Zones publiques » -> P-1 à P-8; « g) Zones résidentielles » -> R-1 à R-10. Mappage: R « Zones résidentielles » -> résidentiel; A « Zones agricoles » et AF « Zones agro-forestières » -> agricole; C « Zones commerciales » -> commercial; I « Zones industrielles » -> industriel. Null explicite: CV « Zones de centre-ville » est mixte/duale par nature (règle centre-ville -> null); P « Zones publiques » est publique. Longest-prefix vérifié: CV bat C, AF est agricole comme A. Non mappés volontairement (fallthrough null honnête): « VALV-010 » et « VALV-010-Z01 » servis au SIG ne sont pas des zones mais le numéro du PLAN DE ZONAGE (art. 1.8 du règlement: « Le plan n° VALV-010-Z01 daté du 7 mai 2012 »), et « no.560 » est le numéro du règlement lui-même — 3 polygones de bruit dans le SIG. Seuls les intitulés de familles sont utilisés, PAS la matrice des usages permis des grilles. Source consultée le 2026-07-17."
+}

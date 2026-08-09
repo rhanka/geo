@@ -1,0 +1,2239 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:04:05.490Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4360,
+    "limit": 20,
+    "requested": 20,
+    "selected": 16,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/04f86d55ab2bfe6ddd1f1238ca16cc1ffce31645067c443edfb3c0c4ccd56a7d.pdf",
+      "raw/pv-index/cas/349403c1b0b8900bba3e819ecc0eada164ad67d1cac3bfd179d622dc642fe0a8.pdf",
+      "raw/pv-index/cas/06517fdd417b1343c18fef9d04855c68309162d4a8d1f2887e79dc8fe87b02c7.pdf",
+      "raw/pv-index/cas/3f7e629c43f33b3716a45c73f6419170e2ddf2e9f9918a9e2b22f726961a0b1b.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 16,
+  "indexing": {
+    "indexed_pvs": 14,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 14,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 1,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/be8879e89945204db4593bf1d93d334609c36a9b59b8bd0bc9dfd86d92d759de.pdf",
+        "manifest_scope_slug": "contrecoeur",
+        "printed_owner_slugs": [
+          "chambly",
+          "chateauguay",
+          "lile-perrot",
+          "sainte-julie"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 14,
+    "Document": 14,
+    "CouncilSession": 5,
+    "MeetingDate": 5,
+    "Regulation": 33,
+    "Resolution": 90,
+    "Zone": 4,
+    "LotCadastre": 7
+  },
+  "graphify": {
+    "nodes": 172,
+    "edges": 33,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 4,
+    "lot_entities": 7,
+    "documents_with_zone": 4,
+    "documents_with_lot": 5
+  },
+  "match_details": [
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/d3ac3fdde645588761afcf26be7aaa2297a593fb0456a006d5b3616d33a40a0f.pdf",
+      "entity_type": "Zone",
+      "value": "P-6",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:74",
+      "quote": "       architecturale (PIIA) - 17 chemin Cochrane - Zone P-6"
+    },
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/ea9acbda336e2d9e25d201961ffb9d7196aefd7ec9e39fffd04be2c6f992729c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "1803697",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:40",
+      "quote": "           lots 1 803 697, 1 802 256, 1 803 698 et 1 803 699"
+    },
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/fdcb6ba456c451958cff3f0c7ea02b8a4bdcba9ebea61e59c881bf1a7a79caea.pdf",
+      "entity_type": "Zone",
+      "value": "C-6",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:72",
+      "quote": "         architecturale (PIIA) - 6880 route Louis-S.-St-Laurent - Zone C-6"
+    },
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/fdcb6ba456c451958cff3f0c7ea02b8a4bdcba9ebea61e59c881bf1a7a79caea.pdf",
+      "entity_type": "LotCadastre",
+      "value": "1802808",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:771",
+      "quote": "       lots 1 802 808 et 1 802 610;"
+    },
+    {
+      "municipality_slug": "contrecoeur",
+      "storage_key": "raw/pv-index/cas/73924e21bf18f90ee13d7fe2ce23fae9aaf30db1d0f8be53798a182eb3959dd3.pdf",
+      "entity_type": "Zone",
+      "value": "P2-174",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:86",
+      "quote": "           6 607 642 - Zone P2-174"
+    },
+    {
+      "municipality_slug": "contrecoeur",
+      "storage_key": "raw/pv-index/cas/73924e21bf18f90ee13d7fe2ce23fae9aaf30db1d0f8be53798a182eb3959dd3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6360284",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:234",
+      "quote": "Antoine, lot 6 360 284."
+    },
+    {
+      "municipality_slug": "contrecoeur",
+      "storage_key": "raw/pv-index/cas/73924e21bf18f90ee13d7fe2ce23fae9aaf30db1d0f8be53798a182eb3959dd3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4814512",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:552",
+      "quote": "CONSIDÉRANT QUE le propriétaire du lot 4 814 512 souhaite que la servitude"
+    },
+    {
+      "municipality_slug": "contrecoeur",
+      "storage_key": "raw/pv-index/cas/dd915b35fc472bc2bdf2bd795c4fe3080d05492e976d85b796d3b8aa7351deff.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6227395",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:522",
+      "quote": "bâtiment unifamilial isolé, sur le lot 6 227 395, cadastre du Québec, circonscription foncière de"
+    },
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/4bdac0f5a6c7511e340a9cbb6fa0a50f3c2161f5a47ac7f6acdc3e3c3ea49302.pdf",
+      "entity_type": "Zone",
+      "value": "RU-006",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:461",
+      "quote": "CONSIDÉRANT QUE l’immeuble est situé dans la zone rurale RU-006;"
+    },
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/4bdac0f5a6c7511e340a9cbb6fa0a50f3c2161f5a47ac7f6acdc3e3c3ea49302.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4486644",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:59",
+      "quote": "      au 345, chemin Brochu (lot 4 486 644)."
+    },
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/4bdac0f5a6c7511e340a9cbb6fa0a50f3c2161f5a47ac7f6acdc3e3c3ea49302.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4488941",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:64",
+      "quote": "\f        au 680, chemin Lower (lots 4 488 941-Ptie, 4 487 766-Ptie et"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 283,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 8538,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z",
+  "documents": [
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-06-06-extra.pdf",
+      "storage_key": "raw/pv-index/cas/9c52a082b44fc775f39cdb13fe817a0b9d6fb2c2d553c37420996fe982d5d03a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance extraordinaire du Conseil de la Municipalité de Compton tenue le 6 juin 2023"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance extraordinaire du Conseil de la Municipalité de Compton tenue le 6 juin 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/6fe982d5d03a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/6fe982d5d03a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-02-07extra.pdf",
+      "storage_key": "raw/pv-index/cas/a9eb91c8919f31c4ef7c6bd46375b8dfcb632dfb70b561a2e225180e4c14950f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-158",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "15.2.1     Avis de motion - Projet de règlement modifiant le règlement no 2018-158 sur la"
+            }
+          },
+          {
+            "label": "2018-158-3.23",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "15.2.2     Dépôt du document intitulé Projet de Règlement no 2018-158-3.23 modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/180e4c14950f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/180e4c14950f.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2026/01/11-18-pv.pdf",
+      "storage_key": "raw/pv-index/cas/b5646582ac8dfc980353585aa17663304c9ce2d46a28e67d7db0f40d93ce6d56.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "142-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:529",
+              "quote": "       contrat intervenu entre la Municipalité et la firme par la résolution 142-2025-"
+            }
+          },
+          {
+            "label": "302-2024-09-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:571",
+              "quote": "       résolution 302-2024-09-10 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/f40d93ce6d56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/f40d93ce6d56.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-08-08.pdf",
+      "storage_key": "raw/pv-index/cas/d3ac3fdde645588761afcf26be7aaa2297a593fb0456a006d5b3616d33a40a0f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 7,
+        "Regulation": 4,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 8 août 2023 à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 8 août 2023 à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "481-2022-01-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "      de sécurité incendie de Compton, en vertu de la résolution 481-2022-01-18,"
+            }
+          },
+          {
+            "label": "284-2023-07-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:671",
+              "quote": "      la résolution 284-2023-07-11 ;"
+            }
+          },
+          {
+            "label": "256-2022-07-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:850",
+              "quote": "       12 juillet 2022 par la résolution 256-2022-07-12 ;"
+            }
+          },
+          {
+            "label": "094-2023-03-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:974",
+              "quote": "       résolution 094-2023-03-14 au montant de 2 625 $ plus taxes;"
+            }
+          },
+          {
+            "label": "295-2023-07-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:999",
+              "quote": "       Considérant la résolution 295-2023-07-11 par laquelle le Conseil approuvait"
+            }
+          },
+          {
+            "label": "316-2022-09-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1074",
+              "quote": "       Considérant la résolution 316-2022-09-13 confirmant l'achat d'un camion 10"
+            }
+          },
+          {
+            "label": "055-2023-02-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1160",
+              "quote": "       Municipalité par la résolution 055-2023-02-14;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-158-5.23",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1240",
+              "quote": "IL EST RÉSOLU d'adopter le Règlement no 2018-158-5.23 modifiant le"
+            }
+          },
+          {
+            "label": "2018-158",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "13.3   Adoption du Règlement no 2018-158-5.23 modifiant le Règlement no 2018-158"
+            }
+          },
+          {
+            "label": "2015-132",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:935",
+              "quote": "       Considérant qu'en vertu de l'article 11 du Règlement no 2015-132 concernant"
+            }
+          },
+          {
+            "label": "2018-158-5-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1278",
+              "quote": "Considérant que le Règlement no 2018-158-5-23 a été présenté à la séance"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "P-6",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "       architecturale (PIIA) - 17 chemin Cochrane - Zone P-6"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/616d33a40a0f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/616d33a40a0f.pdf/.graphify/.graphify_extract.json — 16 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-02-09extra.pdf",
+      "storage_key": "raw/pv-index/cas/dfb549c8ec5ab59755884c91f42cc6472672d82a4cad63521a532f3d355da9ba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-158-3.23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "15.2.1     Présentation du Règlement no 2018-158-3.23 modifiant le règlement no 2018-158"
+            }
+          },
+          {
+            "label": "2018-158",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "       règlement 2018-158 sur la politique de gestion contractuelle à la séance"
+            }
+          },
+          {
+            "label": "2018-153",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "15.2.2     Adoption du Règlement no 2018-158-3.23 modifiant le règlement no 2018-153"
+            }
+          },
+          {
+            "label": "2018-153-3.23",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "IL EST RÉSOLU d'adopter le Règlement no 2018-153-3.23 modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/2f3d355da9ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/2f3d355da9ba.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton",
+          "waterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2026/05/03-24-extra-pv.pdf",
+      "storage_key": "raw/pv-index/cas/ea9acbda336e2d9e25d201961ffb9d7196aefd7ec9e39fffd04be2c6f992729c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "080-2026-03-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "       Considérant que, par sa résolution numéro 080-2026-03-10, le conseil"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-206",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "           3.1(1) du règlement numéro 2024-206 sur la régie interne des séances du"
+            }
+          },
+          {
+            "label": "2023-197",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "       Considérant que, conformément au règlement numéro 2023-197 concernant"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "1803697",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "           lots 1 803 697, 1 802 256, 1 803 698 et 1 803 699"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/e2c6f992729c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/e2c6f992729c.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2026/04/12-02-extra-p-v.pdf",
+      "storage_key": "raw/pv-index/cas/f594c9ee5274d15fdaf9faaa47461fbb125ece5a801f08722fef0ca5a08caf2c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-212",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "13.2       Dépôt du document intitulé Règlement no 2025-212 décrétant l'imposition des"
+            }
+          },
+          {
+            "label": "2001-27",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "3.1      Réserve financière – règlement 2001-27 et ses amendements"
+            }
+          },
+          {
+            "label": "2015-133",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:272",
+              "quote": "3.2     Réserve financière – règlement 2015-133"
+            }
+          },
+          {
+            "label": "2015-134",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:289",
+              "quote": "3.3     Réserve financière – règlement 2015-134"
+            }
+          },
+          {
+            "label": "2024-205",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:310",
+              "quote": "usées » imposé en vertu du règlement numéro 2024-205 est fixé à 0,0179 $ du"
+            }
+          },
+          {
+            "label": "2025-210",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:322",
+              "quote": "usées » imposé en vertu du règlement numéro 2025-210 est fixé à 0,0396 $ du"
+            }
+          },
+          {
+            "label": "2015-137",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:491",
+              "quote": "Conformément au Règlement 2015-137, un tarif annuel est payable par les"
+            }
+          },
+          {
+            "label": "2021-180",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:715",
+              "quote": "Pour les fins de l’application de l’article 5 du règlement 2021-180 concernant le"
+            }
+          },
+          {
+            "label": "2010-100-1.14",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:819",
+              "quote": "8.2      Règlement numéro 2010-100-1.14"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/0ca5a08caf2c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/0ca5a08caf2c.pdf/.graphify/.graphify_extract.json — 11 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-02-14.pdf",
+      "storage_key": "raw/pv-index/cas/fdcb6ba456c451958cff3f0c7ea02b8a4bdcba9ebea61e59c881bf1a7a79caea.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 2,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                       MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                       MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 14 février 2023"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 14 février 2023"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "161-2022-04-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "15.3.2   Modification de la résolution 161-2022-04-12 - Demande d'inscription à une"
+            }
+          },
+          {
+            "label": "482-2022-01-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:444",
+              "quote": "      Considérant que la résolution 482-2022-01-18 avait autorisé l'inscription du"
+            }
+          },
+          {
+            "label": "002-2022-12-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:842",
+              "quote": "       Comité consultatif d'urbanisme (résolution 002-2022-12-19) à l'égard de la"
+            }
+          },
+          {
+            "label": "001-2023-01-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:854",
+              "quote": "       Comité consultatif d'urbanisme (résolution 001-2023-01-16) à l'égard de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-191",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "15.2.1   Avis de motion - Projet de Règlement modifiant le règlement no 2022-191 relatif"
+            }
+          },
+          {
+            "label": "2022-191-1.23",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "           o 15.2.2 Dépôt du Projet de règlement no 2022-191-1.23 modifiant le"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C-6",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "         architecturale (PIIA) - 6880 route Louis-S.-St-Laurent - Zone C-6"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "1802808",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:771",
+              "quote": "       lots 1 802 808 et 1 802 610;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/bf1a7a79caea.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/bf1a7a79caea.pdf/.graphify/.graphify_extract.json — 12 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coaticook",
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-07-04-extra.pdf",
+      "storage_key": "raw/pv-index/cas/fe193d9c1166c6f6906719f510c19b42e0675361da28a86db69dd669978d608a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "267-2023-07-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "résolution numéro 267-2023-07-04;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-197",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "13.1       Dépôt du document intitulé Projet de Règlement no 2023-197 concernant les"
+            }
+          },
+          {
+            "label": "2023-198",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "13.4       Dépôt du document intitulé Projet de Règlement no 2023-198 relatif au paiement"
+            }
+          },
+          {
+            "label": "2015",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1204",
+              "quote": "       dispositions du règlement 2015 132 continuent à avoir plein effet jusqu’à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/d669978d608a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/compton/d669978d608a.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "contrecoeur",
+      "municipality_name": "Contrecoeur",
+      "url": "https://www.ville.contrecoeur.qc.ca/storage/app/media/ville/democratie/proces-verbaux/2026/pv-2026-01-20.pdf",
+      "storage_key": "raw/pv-index/cas/73924e21bf18f90ee13d7fe2ce23fae9aaf30db1d0f8be53798a182eb3959dd3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Contrecoeur",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "présenté en vue de son adoption, le règlement numéro A-108 relatif au code"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "présenté en vue de son adoption, le règlement numéro A-108 relatif au code"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "095-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:498",
+              "quote": "CONSIDÉRANT QU'en vertu de sa résolution 095-25 adoptée lors du comité tenu"
+            }
+          },
+          {
+            "label": "2025-08-189",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:612",
+              "quote": "CONSIDÉRANT QUE, par la résolution numéro 2025-08-189, adoptée le 20 août"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "P2-174",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "           6 607 642 - Zone P2-174"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6360284",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "Antoine, lot 6 360 284."
+            }
+          },
+          {
+            "label": "4814512",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:552",
+              "quote": "CONSIDÉRANT QUE le propriétaire du lot 4 814 512 souhaite que la servitude"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/182eb3959dd3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/182eb3959dd3.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chambly",
+          "contrecoeur",
+          "saint-constant",
+          "saint-lazare",
+          "sainte-julie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "contrecoeur",
+      "municipality_name": "Contrecoeur",
+      "url": "https://www.ville.contrecoeur.qc.ca/storage/app/media/ville/democratie/proces-verbaux/2026/pv-2026-03-10-adopte.pdf",
+      "storage_key": "raw/pv-index/cas/a04e19e550e42a95642d426afc7a6a830d1b46c63a87c991abfde6256f05d907.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/e6256f05d907.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/e6256f05d907.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "contrecoeur",
+      "municipality_name": "Contrecoeur",
+      "url": "https://www.ville.contrecoeur.qc.ca/storage/app/media/ville/democratie/proces-verbaux/2021/pv-seance-extraordinaire-22-mars-2021.pdf",
+      "storage_key": "raw/pv-index/cas/b6cac38d2daa10f1229b775d54582b8153d4390178cfad4fb2b1494f568b6281.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Contrecoeur",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "Considérant l'analyse des soumissions faites par l'administration de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "Considérant l'analyse des soumissions faites par l'administration de la Ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/494f568b6281.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/494f568b6281.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "contrecoeur"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "contrecoeur",
+      "municipality_name": "Contrecoeur",
+      "url": "https://www.ville.contrecoeur.qc.ca/storage/app/media/ville/democratie/proces-verbaux/2022/pv-seance-ordinaire-11-janvier-2022.pdf",
+      "storage_key": "raw/pv-index/cas/be8879e89945204db4593bf1d93d334609c36a9b59b8bd0bc9dfd86d92d759de.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/d86d92d759de.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/d86d92d759de.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "chambly",
+          "chateauguay",
+          "lile-perrot",
+          "sainte-julie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "contrecoeur",
+      "municipality_name": "Contrecoeur",
+      "url": "https://www.ville.contrecoeur.qc.ca/storage/app/media/ville/democratie/proces-verbaux/2026/pv-2026-02-10.pdf",
+      "storage_key": "raw/pv-index/cas/dd915b35fc472bc2bdf2bd795c4fe3080d05492e976d85b796d3b8aa7351deff.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Contrecoeur",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "     5.1   Avis de motion – Règlement A-109-1 modifiant le Règlement A-109 concernant la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "     5.1   Avis de motion – Règlement A-109-1 modifiant le Règlement A-109 concernant la"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "004-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:485",
+              "quote": "CONSIDÉRANT QUE la résolution 004-26 du comité consultatif d’urbanisme, datée du 21 janvier"
+            }
+          },
+          {
+            "label": "003-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:513",
+              "quote": "CONSIDÉRANT QUE la résolution 003-26 du comité consultatif d’urbanisme datée du 21 janvier"
+            }
+          },
+          {
+            "label": "005-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:541",
+              "quote": "CONSIDÉRANT QUE la résolution 005-26 du comité consultatif d’urbanisme, datée du 21 janvier"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6227395",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "bâtiment unifamilial isolé, sur le lot 6 227 395, cadastre du Québec, circonscription foncière de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/b8aa7351deff.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/contrecoeur/b8aa7351deff.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "contrecoeur"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cookshire-eaton",
+      "municipality_name": "Cookshire-Eaton",
+      "url": "https://cookshire-eaton.qc.ca/wp-content/uploads/2026/03/2026-02-02-PV-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/4bdac0f5a6c7511e340a9cbb6fa0a50f3c2161f5a47ac7f6acdc3e3c3ea49302.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 37,
+        "Regulation": 7,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cookshire-Eaton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "Session ordinaire du conseil sous la présidence de madame la mairesse"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "Daphné Raymond tenue le 2 février 2026 à 19 h 30 au 220, rue Principale"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-02-0634",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:139",
+              "quote": "Résolution 2026-02-0634"
+            }
+          },
+          {
+            "label": "2026-02-0635",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "Résolution 2026-02-0635"
+            }
+          },
+          {
+            "label": "2026-02-0636",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "Résolution 2026-02-0636"
+            }
+          },
+          {
+            "label": "2026-02-0637",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "Résolution 2026-02-0637"
+            }
+          },
+          {
+            "label": "2026-02-0638",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:237",
+              "quote": "Résolution 2026-02-0638"
+            }
+          },
+          {
+            "label": "2026-02-0639",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:262",
+              "quote": "Résolution 2026-02-0639"
+            }
+          },
+          {
+            "label": "2026-02-0640",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:277",
+              "quote": "Résolution 2026-02-0640"
+            }
+          },
+          {
+            "label": "2026-02-0641",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:297",
+              "quote": "Résolution 2026-02-0641"
+            }
+          },
+          {
+            "label": "2026-02-0642",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:316",
+              "quote": "\fRésolution 2026-02-0642"
+            }
+          },
+          {
+            "label": "2026-02-0643",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:378",
+              "quote": "\fRésolution 2026-02-0643"
+            }
+          },
+          {
+            "label": "2026-02-0644",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:411",
+              "quote": "Résolution 2026-02-0644"
+            }
+          },
+          {
+            "label": "2026-02-0645",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:433",
+              "quote": "Résolution 2026-02-0645"
+            }
+          },
+          {
+            "label": "2026-02-0646",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:446",
+              "quote": "Résolution 2026-02-0646"
+            }
+          },
+          {
+            "label": "2026-02-0647",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:512",
+              "quote": "Résolution 2026-02-0647"
+            }
+          },
+          {
+            "label": "2026-02-0648",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:554",
+              "quote": "Résolution 2026-02-0648"
+            }
+          },
+          {
+            "label": "2026-02-0649",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:578",
+              "quote": "Résolution 2026-02-0649"
+            }
+          },
+          {
+            "label": "2026-02-0650",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:589",
+              "quote": "Résolution 2026-02-0650"
+            }
+          },
+          {
+            "label": "2026-02-0651",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:603",
+              "quote": "Résolution 2026-02-0651"
+            }
+          },
+          {
+            "label": "2026-02-0652",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:618",
+              "quote": "Résolution 2026-02-0652"
+            }
+          },
+          {
+            "label": "2026-02-0653",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:641",
+              "quote": "Résolution 2026-02-0653"
+            }
+          },
+          {
+            "label": "2026-02-0654",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:664",
+              "quote": "Résolution 2026-02-0654"
+            }
+          },
+          {
+            "label": "2024-05-9567",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:699",
+              "quote": "CONSIDÉRANT la résolution numéro 2024-05-9567 adoptée Iors de la"
+            }
+          },
+          {
+            "label": "2026-02-0655",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:733",
+              "quote": "Résolution 2026-02-0655"
+            }
+          },
+          {
+            "label": "2026-02-0656",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:747",
+              "quote": "Résolution 2026-02-0656"
+            }
+          },
+          {
+            "label": "2026-02-0657",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:759",
+              "quote": "Résolution 2026-02-0657"
+            }
+          },
+          {
+            "label": "2026-02-0658",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:790",
+              "quote": "Résolution 2026-02-0658"
+            }
+          },
+          {
+            "label": "2026-02-0659",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:806",
+              "quote": "Résolution 2026-02-0659"
+            }
+          },
+          {
+            "label": "2026-02-0660",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:821",
+              "quote": "Résolution 2026-02-0660"
+            }
+          },
+          {
+            "label": "2026-02-0661",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:853",
+              "quote": "Résolution 2026-02-0661"
+            }
+          },
+          {
+            "label": "2026-02-0662",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:868",
+              "quote": "Résolution 2026-02-0662"
+            }
+          },
+          {
+            "label": "2026-02-0663",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:888",
+              "quote": "Résolution 2026-02-0663"
+            }
+          },
+          {
+            "label": "2026-02-0664",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:902",
+              "quote": "Résolution 2026-02-0664"
+            }
+          },
+          {
+            "label": "2026-02-0665",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:916",
+              "quote": "Résolution 2026-02-0665"
+            }
+          },
+          {
+            "label": "2026-02-0667",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:938",
+              "quote": "Résolution 2026-02-0667"
+            }
+          },
+          {
+            "label": "2026-02-0668",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:972",
+              "quote": "Résolution 2026-02-0668"
+            }
+          },
+          {
+            "label": "2026-02-0669",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1059",
+              "quote": "Résolution 2026-02-0669"
+            }
+          },
+          {
+            "label": "2026-02-0670",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1079",
+              "quote": "Résolution 2026-02-0670"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "394-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "   1) Règlement numéro 394-2026 amendant le Plan d’urbanisme numéro"
+            }
+          },
+          {
+            "label": "395-2026",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:837",
+              "quote": "consultation sur le premier projet de règlement numéro 395-2026 amendant"
+            }
+          },
+          {
+            "label": "396-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "   3) Règlement numéro 396-2026 relatif à la délégation de certains"
+            }
+          },
+          {
+            "label": "372-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "   1) Règlement numéro 372-2025 relatif à la délégation de certains"
+            }
+          },
+          {
+            "label": "386-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:905",
+              "quote": "Annie Guillemette et résolu d’adopter le Règlement numéro 386-2025"
+            }
+          },
+          {
+            "label": "387-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "Marcel Charpentier et résolu d’adopter le Règlement numéro 387-2025"
+            }
+          },
+          {
+            "label": "379-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "   4) Règlement numéro 379-2025 amendant le Règlement de zonage"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RU-006",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:461",
+              "quote": "CONSIDÉRANT QUE l’immeuble est situé dans la zone rurale RU-006;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4486644",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "      au 345, chemin Brochu (lot 4 486 644)."
+            }
+          },
+          {
+            "label": "4488941",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "\f        au 680, chemin Lower (lots 4 488 941-Ptie, 4 487 766-Ptie et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/cookshire-eaton/3e3c3ea49302.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/cookshire-eaton/3e3c3ea49302.pdf/.graphify/.graphify_extract.json — 51 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 51,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cookshire-eaton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cookshire-eaton",
+      "municipality_name": "Cookshire-Eaton",
+      "url": "https://cookshire-eaton.qc.ca/wp-content/uploads/2026/04/2026-03-02-PV-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/5f05aae0d020a5ad48041e58c5c3d7ec813389135e65323e37466bfd77705079.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 33
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cookshire-Eaton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "Session ordinaire du conseil sous la présidence de madame la mairesse"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "Daphné Raymond tenue le 2 mars 2026 à 19 h 30 au 220, rue Principale Est"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-0671",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "Résolution 2026-03-0671"
+            }
+          },
+          {
+            "label": "2026-03-0672",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "Résolution 2026-03-0672"
+            }
+          },
+          {
+            "label": "2026-03-0673",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:197",
+              "quote": "Résolution 2026-03-0673"
+            }
+          },
+          {
+            "label": "2026-03-0674",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:223",
+              "quote": "Résolution 2026-03-0674"
+            }
+          },
+          {
+            "label": "2026-03-0675",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "Résolution 2026-03-0675"
+            }
+          },
+          {
+            "label": "2026-03-0676",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:245",
+              "quote": "Résolution 2026-03-0676"
+            }
+          },
+          {
+            "label": "2026-03-0677",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "Résolution 2026-03-0677"
+            }
+          },
+          {
+            "label": "2026-03-0678",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:271",
+              "quote": "Résolution 2026-03-0678"
+            }
+          },
+          {
+            "label": "2026-03-0679",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "Résolution 2026-03-0679 –"
+            }
+          },
+          {
+            "label": "2026-03-0680",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "Résolution 2026-03-0680"
+            }
+          },
+          {
+            "label": "2025-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "\f10) Séance extraordinaire du 18 août 2025 – Suivi de la résolution 2025-08-"
+            }
+          },
+          {
+            "label": "2026-03-0681",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:443",
+              "quote": "Résolution 2026-03-0681"
+            }
+          },
+          {
+            "label": "2025-08-0387",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "CONSIDÉRANT la résolution numéro 2025-08-0387 sanctionnant un"
+            }
+          },
+          {
+            "label": "2026-03-0682",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:473",
+              "quote": "Résolution 2026-03-0682"
+            }
+          },
+          {
+            "label": "2025-07-0342",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:475",
+              "quote": "CONSIDÉRANT la résolution numéro 2025-07-0342 autorisant le lotissement"
+            }
+          },
+          {
+            "label": "2026-03-0683",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:498",
+              "quote": "Résolution 2026-03-0683"
+            }
+          },
+          {
+            "label": "2026-03-0684",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:533",
+              "quote": "Résolution 2026-03-0684"
+            }
+          },
+          {
+            "label": "2026-03-0685",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:552",
+              "quote": "Résolution 2026-03-0685"
+            }
+          },
+          {
+            "label": "2026-03-0686",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:572",
+              "quote": "Résolution 2026-03-0686"
+            }
+          },
+          {
+            "label": "2026-03-0687",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:601",
+              "quote": "Résolution 2026-03-0687"
+            }
+          },
+          {
+            "label": "2026-03-0688",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:615",
+              "quote": "Résolution 2026-03-0688"
+            }
+          },
+          {
+            "label": "2026-03-0689",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:633",
+              "quote": "Résolution 2026-03-0689"
+            }
+          },
+          {
+            "label": "2026-03-0690",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:649",
+              "quote": "Résolution 2026-03-0690"
+            }
+          },
+          {
+            "label": "2026-03-0691",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:673",
+              "quote": "Résolution 2026-03-0691"
+            }
+          },
+          {
+            "label": "2026-03-0692",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "Résolution 2026-03-0692"
+            }
+          },
+          {
+            "label": "2026-03-0693",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:702",
+              "quote": "Résolution 2026-03-0693"
+            }
+          },
+          {
+            "label": "2026-03-0694",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:744",
+              "quote": "Résolution 2026-03-0694"
+            }
+          },
+          {
+            "label": "2026-03-0695",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:757",
+              "quote": "Résolution 2026-03-0695"
+            }
+          },
+          {
+            "label": "2026-03-0696",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:819",
+              "quote": "Résolution 2026-03-0696"
+            }
+          },
+          {
+            "label": "2026-03-0697",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:846",
+              "quote": "Résolution 2026-03-0697"
+            }
+          },
+          {
+            "label": "2026-03-0698",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:881",
+              "quote": "Résolution 2026-03-0698"
+            }
+          },
+          {
+            "label": "2026-03-0699",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:896",
+              "quote": "Résolution 2026-03-0699"
+            }
+          },
+          {
+            "label": "2026-03-0700",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:912",
+              "quote": "Résolution 2026-03-0700"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/cookshire-eaton/6bfd77705079.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T180141Z/cookshire-eaton/6bfd77705079.pdf/.graphify/.graphify_extract.json — 37 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 37,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cookshire-eaton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

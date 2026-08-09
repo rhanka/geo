@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "H": "residentiel",
+    "CH": null,
+    "CE": "environnemental",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "R": "environnemental",
+    "V": null
+  },
+  "source": "https://villegirardville.ca/app/uploads/2022/05/Reg416-Reglement-de-Zonage-Reg498-Novembre-2020.pdf",
+  "note": "Règlement de zonage numéro 416 de la Ville de Girardville (entrée en vigueur le 13 juillet 2011, mise à jour novembre 2020 par le règl. 498), art. 4.2 « CODIFICATION ET DOMINANCE DE LA ZONE », TABLEAU 1 « CODIFICATION DES ZONES », p. 126-127. Fondement verbatim: « La dominance définit la vocation principale de la zone auquel correspondent certaines dispositions de ce règlement. La dominance est indiquée aux plans de zonage immédiatement au-dessous ou à côté de l'identification numérique de la zone au moyen d'une lettre tel que défini dans le tableau suivant ». Colonne « Vocation dominante », verbatim: H « Habitation (ou résidentielle) »; CH « Commerciale, de service et habitation »; C « Commerciale et de service »; I « Industrielle »; P « Publique et institutionnelle »; R « Récréative »; CE « Conservation environnementale »; A « Agricole »; AF « Agro forestière »; V « Villégiature ». A/AF -> agricole (règle de lane: famille Agricole/Agroforestière/Forestière; « Agro forestière » ne nomme aucune autre des cinq). R « Récréative » -> environnemental (le contrat range Conservation/Récréative/Faunique) — ATTENTION, R n'est PAS résidentiel ici, c'est H qui porte l'Habitation. CE « Conservation environnementale » -> environnemental. Null explicite: CH « Commerciale, de service et habitation » nomme 2 des cinq (commercial + residentiel) = DUALE; P « Publique et institutionnelle » a pour sujet « Publique »; V « Villégiature » seule n'est aucune des cinq (le règlement n'écrit PAS « Habitation de villégiature », cf. précédent lac-beauport HV). Les nulls CH et V, et le CE environnemental, sont ANTI-FALL-THROUGH (le match est longest-prefix: sans eux CH et CE tomberaient sur C->commercial). La classification des USAGES de la grille utilise un alphabet DISTINCT des lettres de zone (« P: Pêcherie », « R: Récréation ») et n'est pas utilisée; seul le Tableau 1 fait foi. La matrice des usages permis des grilles n'est pas utilisée."
+}

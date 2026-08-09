@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "AFT": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "IL": null,
+    "M": null,
+    "P": null,
+    "RU": null,
+    "VILL": null
+  },
+  "source": "https://municipalites-du-quebec.com/nantes/docs/reglements/2/399-12%20R%C3%A8glement%20de%20zonage.pdf",
+  "note": "Municipalité de Nantes (MRC du Granit), règlement de zonage no 399-12 (en vigueur 8 novembre 2012). Owner-gate VERBATIM (via la grille des spécifications, Annexe partie intégrante du 399-12, présente au corpus local work/zonage-norms/nantes/grille.pdf): « GRILLE DES SPÉCIFICATIONS … Municipalité de Nantes (Milieu rural) », pied de feuillet « de zonage No. 399-12 », en-têtes sectoriels « (Périmètre d'urbanisation - Village) » / « (Périmètre d'urbanisation Laval-Nord) » — nomme Nantes dans le cadre LAU/MRC du Granit (homonyme France écarté). ⚠️ RÉSERVE: le CORPS art. 5.1 n'a PAS pu être lu (hôte municipalites-du-quebec.com = 208.69.79.54, injoignable depuis cette box; capture Wayback non-rejouable). La légende de vocation est le moule MRC du Granit — art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES », colonnes « ZONE | VOCATION DOMINANTE », « A Agricole | Af Agroforestière | Cons Conservation | I Industrielle | M Mixte | P Publique | R Résidentielle | Rec Récréative | Ru Rurale | Vill Villégiature » — cité VERBATIM par SEPT munis voisines déjà servies (stornoway, lac-drolet, sainte-cecile-de-whitton, saint-robert-bellarmin, saint-augustin-de-woburn, milan, val-racine) et CONFIRMÉ structurellement par les familles de la grille de Nantes (A1..A10, AFT1-*/AFT2-*, Cons 1..3, I-1, M-1..7, P-1/P-2, R-1..19, Rec 1..4, Ru 1..9, Vill 1..4, îlot). ⛔ IL = « ÎLOT » (géométrie), PAS « Industriel » — null anti-fall-through OBLIGATOIRE, PROUVÉ VERBATIM sur la grille de Nantes (feuillet 2): « zonage AFT1-14 AFT2-1 AFT2-2 îlot 46 îlot 49 îlot 50 îlot 51 îlot 52 îlot 53 îlot 54 îlot 112 » = EXACTEMENT les 8 polygones IL du SIG, en colonnes SÉPARÉES de « I-1 » (Industrielle, feuillet Village « M-1 … M-7 I-1 P-1 »). Sans cette clé, IL tomberaient sur « I » -> industriel EN SILENCE. R -> residentiel; A « Agricole » et AFT « Af Agroforestière » -> agricole; I « Industrielle » -> industriel; REC « Rec Récréative » et CONS « Cons Conservation » -> environnemental. Null explicites: M « Mixte » dual; P « Publique »; RU « Rurale »; VILL « Villégiature » seule (alinéa habitation-exclusive absent du moule chez lac-drolet ET whitton, présumé absent ici — art. 5.1 verbatim de Nantes non lu, à confirmer si le corps redevient accessible). Codes servis: AFT(16) R(16) M(12) RU(10) A(10) IL(8) VILL(4) REC(4) P(2) I(1) CONS(1); toutes les familles verbatim sur la grille de Nantes, vocations par moule prouvé 7x."
+}

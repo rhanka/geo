@@ -1,0 +1,560 @@
+/**
+ * t2-build.ts — T2 zoning end-to-end via MANUAL 3-GCP georeferencing.
+ *
+ *   T2 PDF (labels but NO embedded georef)  +  3+ human GCPs  +  province cadastre
+ *      → manual affine page→WGS84 transform   (t2-georef.buildGeoRefFromGcps)
+ *      → georeferenced zone-code labels        (t1-labels: pdftotext text, or
+ *                                                t2-labels-ocr: tesseract glyphs)
+ *      → cadastre line-of-sight nearest-label aggregation  (t1-zones, UNCHANGED)
+ *      → 1 MultiPolygon / distinct zone_code, WGS84  →  qc-zonage-<slug>.geojson
+ *
+ * This is the T2 sibling of `t1-build.ts`: it swaps ONLY the georef source
+ * (manual GCPs instead of the embedded /GPTS) and otherwise reuses the exact
+ * committed T1 pipeline + serving contract (lib/zone-serve). The whole point of
+ * the gcp3 tool is this single substitution — the human supplies WHERE the plan
+ * sits on Earth; everything downstream is the proven, anti-invention recipe.
+ *
+ * Anti-invention gates (a failing gate ABORTS, never fabricates):
+ *   - ≥3 GCPs, non-collinear, calibration residual below threshold,
+ *   - ≥ min-codes distinct lettered zone codes (anti-#74), no affectation/CMM,
+ *   - label centroid within spatial-km of the cadastre footprint,
+ *   - every output ring is a real cadastral lot; every zone_code verbatim PDF.
+ *
+ * Usage:
+ *   tsx src/t2-build.ts --slug saint-constant --gcp work/gcp/saint-constant.gcp.json \
+ *        [--pdf <url|path>] [--page 8] [--labels text|ocr|gpt55] [--dict <codes.json>]
+ *        [--ocr-reviewed] [--dry-run] [--out <dir>] [--allow-numeric-codes]
+ *        [--cutoff-m 1500] [--min-codes 10] [--max-residual-m 50] [--spatial-km 8]
+ *        [--cadastre <path>] [--ocr-dpi 200]
+ *
+ * --allow-numeric-codes (default OFF) SAFELY relaxes the anti-#74 lettered rule
+ * for pure-numeric-zoned munis; it REQUIRES --dict and admits a numeric code only
+ * when it is verbatim in the dict, the dict is not a trivial 1..N run, and the
+ * extracted set matches the dict SET (lib/numeric-codes.ts). Otherwise it ABORTS.
+ *
+ * The --gcp file is a `GcpFile` (see lib/t2-georef.ts); --pdf overrides its `pdf`.
+ */
+import { execSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+
+import type { S3Client } from "@aws-sdk/client-s3";
+import type { FeatureCollection } from "geojson";
+
+import { extractLabels, type ExtractLabelsResult } from "./lib/t1-labels.js";
+import { nonAdmissibleCodes, numericDictSet, validateNumericRelaxation } from "./lib/numeric-codes.js";
+import { buildZones } from "./lib/t1-zones.js";
+import { assertIndependentGcps, buildGeoRefFromGcpsCrs, type GcpFile } from "./lib/t2-georef.js";
+import { s3Client, getBytes, putBytes, BUCKET } from "./lib/s3.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
+import { haversineKm, bboxCenter, mergeByZoneCode } from "./lib/zone-serve.js";
+
+/** Deposit a freshly georeferenced T2 geometry only with the bytes of its real plan. */
+export async function depositT2ServedZoneGeojson(
+  s3: S3Client,
+  key: string,
+  served: ServedZoneGeoJson,
+  pdfUrl: string,
+  pdfBytes: Buffer,
+  retrievedAt = new Date().toISOString(),
+): Promise<void> {
+  const proof = proofFromFetched({
+    url: pdfUrl,
+    type: "pdf-zonage",
+    method: "georeference",
+    reliability: "georeferencee",
+    bytes: pdfBytes,
+    retrievedAt,
+  });
+  attachGeometryProof(served, proof, { url: pdfUrl, level: "documented" });
+  await putServedZoneGeojson(s3, key, served);
+}
+
+interface Args {
+  slug: string;
+  gcp: string;
+  pdf?: string;
+  page?: number;
+  labels: "text" | "ocr" | "gpt55" | "claude";
+  dict?: string;
+  /** Claude lane: JSON { labels:[{code,x,y}] } of the agent's positioned reads. */
+  reads?: string;
+  ocrReviewed: boolean;
+  dryRun: boolean;
+  out?: string;
+  cutoffM: number;
+  minCodes: number;
+  maxResidualM: number;
+  spatialKm: number;
+  cadastre?: string;
+  ocrDpi: number;
+  requireIndependentGcps: boolean;
+  source: string;
+  confidence: string;
+  labelRegion?: [number, number, number, number];
+  /** SAFE, dict-gated relaxation of the anti-#74 rule for numeric zone codes. */
+  allowNumericCodes: boolean;
+}
+
+function parseArgs(argv: string[]): Args {
+  const a: Record<string, string | boolean> = {};
+  for (let i = 0; i < argv.length; i++) {
+    const t = argv[i]!;
+    if (t.startsWith("--")) {
+      const key = t.slice(2);
+      const next = argv[i + 1];
+      if (next === undefined || next.startsWith("--")) a[key] = true;
+      else {
+        a[key] = next;
+        i++;
+      }
+    }
+  }
+  if (!a["slug"] || !a["gcp"]) throw new Error("required: --slug <slug> --gcp <file.gcp.json>");
+  const labels = String(a["labels"] ?? "text");
+  if (labels !== "text" && labels !== "ocr" && labels !== "gpt55" && labels !== "claude")
+    throw new Error("--labels must be text|ocr|gpt55|claude");
+  let labelRegion: [number, number, number, number] | undefined;
+  if (typeof a["label-region"] === "string") {
+    const r = a["label-region"].split(",").map(Number);
+    if (r.length === 4 && r.every((x) => Number.isFinite(x))) labelRegion = r as [number, number, number, number];
+  }
+  return {
+    slug: String(a["slug"]),
+    gcp: String(a["gcp"]),
+    pdf: a["pdf"] ? String(a["pdf"]) : undefined,
+    page: a["page"] ? Number(a["page"]) : undefined,
+    labels,
+    dict: a["dict"] ? String(a["dict"]) : undefined,
+    reads: a["reads"] ? String(a["reads"]) : undefined,
+    ocrReviewed: Boolean(a["ocr-reviewed"]),
+    dryRun: Boolean(a["dry-run"]),
+    out: a["out"] ? String(a["out"]) : undefined,
+    cutoffM: a["cutoff-m"] ? Number(a["cutoff-m"]) : 1500,
+    minCodes: a["min-codes"] ? Number(a["min-codes"]) : 10,
+    maxResidualM: a["max-residual-m"] ? Number(a["max-residual-m"]) : 50,
+    spatialKm: a["spatial-km"] ? Number(a["spatial-km"]) : 8,
+    cadastre: a["cadastre"] ? String(a["cadastre"]) : undefined,
+    ocrDpi: a["ocr-dpi"] ? Number(a["ocr-dpi"]) : 200,
+    requireIndependentGcps: Boolean(a["require-independent-gcps"]),
+    source: a["source"] ? String(a["source"]) : "t2-gcp3",
+    confidence: a["confidence"] ? String(a["confidence"]) : "contour-manual-gcp",
+    labelRegion,
+    allowNumericCodes: Boolean(a["allow-numeric-codes"]),
+  };
+}
+
+async function resolvePdf(pdf: string): Promise<string> {
+  if (!/^https?:/.test(pdf)) {
+    if (!existsSync(pdf)) throw new Error(`pdf not found: ${pdf}`);
+    return pdf;
+  }
+  const path = join(tmpdir(), `t2-${Date.now()}.pdf`);
+  execSync(`curl -sL -A "Mozilla/5.0" ${JSON.stringify(pdf)} -o ${JSON.stringify(path)}`);
+  return path;
+}
+
+/** Page size in PDF points via pdfinfo (MediaBox). */
+export function pdfPageSize(pdfPath: string, page = 1): { pageW: number; pageH: number } {
+  const info = execSync(`pdfinfo -f ${page} -l ${page} ${JSON.stringify(pdfPath)}`, { encoding: "utf8" });
+  const escaped = String(page).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pm =
+    info.match(new RegExp(`Page\\s+${escaped}\\s+size:\\s*([\\d.]+)\\s*x\\s*([\\d.]+)`)) ??
+    info.match(/Page size:\s*([\d.]+)\s*x\s*([\d.]+)/);
+  if (!pm) throw new Error("pdfinfo: could not read page size");
+  return { pageW: Number(pm[1]), pageH: Number(pm[2]) };
+}
+
+function fail(msg: string): never {
+  console.error(`\n[t2-build] ABORT (anti-invention): ${msg}`);
+  process.exit(2);
+}
+
+function loadDict(path: string): { codes: string[]; kindByPrefix?: Record<string, string> } {
+  const j = JSON.parse(readFileSync(path, "utf8")) as unknown;
+  const codes = Array.isArray(j) ? j : (j as { codes?: unknown }).codes;
+  if (!Array.isArray(codes)) throw new Error("--dict must be a JSON array of codes or { codes: [...] }");
+  const kindByPrefix =
+    !Array.isArray(j) && (j as { kindByPrefix?: Record<string, string> }).kindByPrefix
+      ? (j as { kindByPrefix: Record<string, string> }).kindByPrefix
+      : undefined;
+  return { codes: codes.map(String), kindByPrefix };
+}
+
+/**
+ * The NUMBER-DOMINANCE codes of an authoritative dict (`17-R`, `502-AV`, `1-H`).
+ * Empty when the muni does not code that way — the relaxation then stays OFF.
+ */
+function compositeDictSet(dictCodes: string[]): Set<string> {
+  return new Set(dictCodes.map((c) => c.trim().toUpperCase()).filter((c) => /^\d{1,3}-[A-Z]{1,3}$/.test(c)));
+}
+
+function filterTextLabelsByDict(
+  lab: ExtractLabelsResult,
+  dictCodes: string[],
+): { labels: ExtractLabelsResult; stats: Record<string, unknown> } {
+  const dict = new Set(dictCodes);
+  const kept = lab.codePoints.filter((c) => dict.has(c.code));
+  const rejected = lab.codePoints.filter((c) => !dict.has(c.code));
+  return {
+    labels: {
+      ...lab,
+      codePoints: kept,
+      nCodeLike: kept.length,
+      nInsideFrame: kept.length,
+      rejectedOutsideFrame: lab.rejectedOutsideFrame + rejected.length,
+    },
+    stats: {
+      dict_size: dict.size,
+      text_dict_filter_input: lab.codePoints.length,
+      text_dict_filter_kept: kept.length,
+      text_dict_filter_rejected: rejected.length,
+      text_dict_filter_reject_samples: [...new Set(rejected.map((c) => c.code))].slice(0, 12),
+    },
+  };
+}
+
+async function main(): Promise<void> {
+  const args = parseArgs(process.argv.slice(2));
+  const t0 = Date.now();
+
+  // 0. GCP calibration file ---------------------------------------------------
+  const gcpFile = JSON.parse(readFileSync(args.gcp, "utf8")) as GcpFile;
+  const pdfArg = args.pdf ?? gcpFile.pdf;
+  if (!pdfArg) fail("no PDF given (neither --pdf nor gcp file `pdf`)");
+  const page = args.page ?? gcpFile.page ?? 1;
+  console.error(`[t2-build] slug=${args.slug} gcp=${args.gcp} pdf=${pdfArg} page=${page} labels=${args.labels}`);
+
+  // 1. PDF + page size + manual georef ---------------------------------------
+  const pdfPath = await resolvePdf(pdfArg);
+  const pdfBytes = readFileSync(pdfPath);
+  const pdfRetrievedAt = new Date().toISOString();
+  const { pageW, pageH } = gcpFile.pageW && gcpFile.pageH
+    ? { pageW: gcpFile.pageW, pageH: gcpFile.pageH }
+    : pdfPageSize(pdfPath, page);
+  if (args.requireIndependentGcps) {
+    try {
+      const check = assertIndependentGcps(gcpFile.gcps, pageW, pageH);
+      console.error(
+        `[t2-build] independent-gcp gate: ${check.independentCount} independent, ` +
+          `${check.bboxDerivedCount} bbox/extent-derived`,
+      );
+    } catch (e) {
+      fail(`independent-GCP gate failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  let cal;
+  try {
+    cal = buildGeoRefFromGcpsCrs(gcpFile.gcps, pageW, pageH, gcpFile.crs, gcpFile.neatline);
+  } catch (e) {
+    fail(`GCP calibration failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  const geo = cal.geo;
+  console.error(
+    `[t2-build] georef: ${gcpFile.gcps.length} GCPs | calibration residual ` +
+      `max ${cal.maxResidualM.toFixed(2)} m, rms ${cal.rmsResidualM.toFixed(2)} m | ` +
+      `scale ${geo.scaleMPerPt.toFixed(3)} m/pt`,
+  );
+  cal.residualsM.forEach((r, i) =>
+    console.error(`           GCP#${i + 1}${gcpFile.gcps[i]!.note ? ` (${gcpFile.gcps[i]!.note})` : ""}: ${r.toFixed(2)} m`),
+  );
+  if (cal.maxResidualM > args.maxResidualM) {
+    fail(`GCP calibration residual ${cal.maxResidualM.toFixed(1)} m > ${args.maxResidualM} m — recheck the GCP picks`);
+  }
+
+  // 2. Labels (text via pdftotext, glyphs via OCR, or GPT-validated vision) --
+  // Dict + numeric relaxation (default OFF; requires --dict), hoisted so the text
+  // and gpt55 paths admit dict-backed pure-numeric codes when enabled.
+  let dictCodes: string[] | undefined;
+  if (args.dict) dictCodes = loadDict(args.dict).codes;
+  if (args.allowNumericCodes && !dictCodes) fail("--allow-numeric-codes requires --dict <authoritative-zone-codes.json>");
+  const numericDict = args.allowNumericCodes && dictCodes ? numericDictSet(dictCodes) : undefined;
+  if (numericDict) console.error(`[t2-build] numeric relaxation ON: ${numericDict.size} dict-backed numeric codes`);
+  let lab: ExtractLabelsResult;
+  let gpt55Stats: Record<string, unknown> = {};
+  if (args.labels === "ocr") {
+    const { extractLabelsOcr } = await import("./lib/t2-labels-ocr.js");
+    lab = await extractLabelsOcr(pdfPath, geo, { dpi: args.ocrDpi, page });
+    console.error(
+      "[t2-build] NOTE: OCR label path is EXPERIMENTAL (tesseract glyph reading). " +
+        "Codes MUST be human-reviewed before serving; pass --ocr-reviewed only after that check.",
+    );
+  } else if (args.labels === "gpt55") {
+    if (!dictCodes) fail("--labels gpt55 requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
+    console.error(`[t2-build] GPT-5.5 dictionary: ${dict.length} authoritative codes (${args.dict})`);
+    const { extractLabelsGpt55 } = await import("./lib/t2-labels-gpt55.js");
+    const neatlineRegion = gcpFile.neatline
+      ? [
+          gcpFile.neatline.fx0 * pageW,
+          gcpFile.neatline.fy0 * pageH,
+          gcpFile.neatline.fx1 * pageW,
+          gcpFile.neatline.fy1 * pageH,
+        ] as [number, number, number, number]
+      : undefined;
+    const gptLab = await extractLabelsGpt55(pdfPath, geo, dict, args.slug, {
+      dpi: args.ocrDpi,
+      page,
+      region: args.labelRegion ?? neatlineRegion,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
+    });
+    lab = gptLab;
+    gpt55Stats = {
+      dict_size: dict.length,
+      ocr_engine: gptLab.ocr_engine,
+      gpt55_reads: gptLab.n_model_labels,
+      gpt55_validated: gptLab.n_validated,
+      gpt55_exact: gptLab.n_exact,
+      gpt55_canonical: gptLab.n_canonical,
+      gpt55_rejected: gptLab.n_rejected,
+      gpt55_distinct: gptLab.n_distinct,
+      gpt55_crop: gptLab.image_path,
+      gpt55_snap_rate_pct: gptLab.snap_rate_pct,
+      gpt55_latency_ms: gptLab.latency_ms,
+      gpt55_tokens_input: gptLab.usage.inputTokens,
+      gpt55_tokens_output: gptLab.usage.outputTokens,
+      gpt55_tokens_reasoning: gptLab.usage.reasoningOutputTokens,
+      gpt55_reject_samples: gptLab.reject_samples,
+    };
+    console.error(
+      `[t2-build] GPT-5.5 labels: ${gptLab.n_model_labels} reads, ${gptLab.nCodeLike} code-like, ` +
+        `${gptLab.n_validated} validated ` +
+        `(${gptLab.n_exact} exact + ${gptLab.n_canonical} canonical), ` +
+        `${gptLab.n_rejected} rejected, ${gptLab.n_distinct} distinct codes`,
+    );
+    console.error(`[t2-build] GPT-5.5 rejects: ${gptLab.reject_samples.join(" | ")}`);
+  } else if (args.labels === "claude") {
+    // Claude-vision lane for GLYPH T2 plans (no embedded georef, GCP-calibrated):
+    // render the neatline crop, let the operating agent (Claude 4.8) read the
+    // positioned codes, ingest its reads and validate them verbatim against
+    // --dict (same guard as the gpt55 lane; the GCP georef then places them).
+    if (!dictCodes) fail("--labels claude requires --dict <authoritative-zone-codes.json>");
+    const dict = dictCodes;
+    const neatlineRegion: [number, number, number, number] | undefined = gcpFile.neatline
+      ? [
+          gcpFile.neatline.fx0 * pageW,
+          gcpFile.neatline.fy0 * pageH,
+          gcpFile.neatline.fx1 * pageW,
+          gcpFile.neatline.fy1 * pageH,
+        ]
+      : undefined;
+    const region = args.labelRegion ?? neatlineRegion;
+    const { renderClaudeCrop, loadClaudeReads, extractLabelsClaude } = await import("./lib/t1-labels-claude.js");
+    const crop = renderClaudeCrop(pdfPath, geo, args.slug, {
+      dpi: args.ocrDpi,
+      page,
+      ...(region ? { region } : {}),
+    });
+    if (!args.reads) {
+      // RENDER-ONLY: no reads yet → emit the crop for the agent and STOP (never
+      // fabricate, never upload). The agent reads the glyphs then re-runs --reads.
+      console.error(`[t2-build] claude render-only (no --reads): crop ready for agent vision.`);
+      console.error(`  crop=${crop.imagePath}`);
+      console.error(
+        `  region(pdf-pt,top-left)=[${(region ?? []).map((n) => n.toFixed(1)).join(", ")}] dpi=${args.ocrDpi} page=${page}`,
+      );
+      console.error(`  dict=${dict.length} codes (${args.dict})`);
+      console.error(
+        `  NEXT: read the glyph zone codes off the crop, write { "labels":[{"code","x","y"}] } ` +
+          `(x,y normalized 0..1 within THIS crop, x→right, y→down), then re-run with --reads <that.json>.`,
+      );
+      process.exit(0);
+    }
+    const reads = loadClaudeReads(args.reads);
+    const claudeLab = extractLabelsClaude(reads, geo, dict, {
+      ...(region ? { region } : {}),
+      imagePath: crop.imagePath,
+      ...(args.allowNumericCodes ? { allowNumeric: true } : {}),
+    });
+    lab = claudeLab;
+    gpt55Stats = {
+      dict_size: dict.length,
+      ocr_engine: claudeLab.ocr_engine,
+      vision_model: "claude-4.8",
+      claude_reads: reads.length,
+      claude_validated: claudeLab.n_validated,
+      claude_exact: claudeLab.n_exact,
+      claude_canonical: claudeLab.n_canonical,
+      claude_rejected: claudeLab.n_rejected,
+      claude_distinct: claudeLab.n_distinct,
+      claude_crop: crop.imagePath,
+      claude_snap_rate_pct: claudeLab.snap_rate_pct,
+      claude_reject_samples: claudeLab.reject_samples,
+    };
+    console.error(
+      `[t2-build] Claude-4.8 labels: ${reads.length} reads, ${claudeLab.nCodeLike} code-like, ` +
+        `${claudeLab.n_validated} validated (${claudeLab.n_exact} exact + ${claudeLab.n_canonical} canonical), ` +
+        `${claudeLab.n_rejected} rejected, ${claudeLab.n_distinct} distinct codes`,
+    );
+    console.error(`[t2-build] Claude-4.8 rejects: ${claudeLab.reject_samples.join(" | ")}`);
+  } else {
+    // Composite lane (dict-gated): munis coding a zone as NUMBER ⊕ DOMINANCE print
+    // the two parts as separate tokens (matane legend "17 R"). Recognising the join
+    // needs the authoritative dict, which also bounds it — see lib/t1-labels.ts.
+    const compositeDict = dictCodes ? compositeDictSet(dictCodes) : undefined;
+    if (compositeDict?.size) {
+      console.error(`[t2-build] composite relaxation ON: ${compositeDict.size} dict-backed NUMBER-DOMINANCE codes`);
+    }
+    lab = extractLabels(pdfPath, geo, {
+      page,
+      excludeRegions: gcpFile.excludeRegions,
+      ...(numericDict ? { numericDict } : {}),
+      ...(compositeDict?.size ? { compositeDict } : {}),
+    });
+    if (dictCodes) {
+      const filtered = filterTextLabelsByDict(lab, dictCodes);
+      lab = filtered.labels;
+      gpt55Stats = { ...gpt55Stats, ...filtered.stats };
+      console.error(
+        `[t2-build] text dict filter: kept ${filtered.stats.text_dict_filter_kept}/` +
+          `${filtered.stats.text_dict_filter_input} in-frame labels; ` +
+          `rejected ${filtered.stats.text_dict_filter_rejected}`,
+      );
+      const samples = filtered.stats.text_dict_filter_reject_samples as string[];
+      if (samples.length > 0) console.error(`[t2-build] text dict rejects: ${samples.join(" | ")}`);
+    }
+  }
+  const distinct = new Set(lab.codePoints.map((c) => c.code));
+  const minCodes = Math.max(3, args.minCodes);
+  console.error(
+    `[t2-build] labels: ${lab.nWords} words, ${lab.nCodeLike} code-like, ` +
+      `${lab.nInsideFrame} in-frame (${lab.rejectedOutsideFrame} rejected outside), ` +
+      `${distinct.size} distinct codes`,
+  );
+  if (distinct.size < minCodes) {
+    fail(
+      `only ${distinct.size} distinct zone codes (< ${minCodes}); ` +
+        (args.labels === "text" ? "labels may be glyphs → retry with --labels ocr" : "OCR yield too low"),
+    );
+  }
+  // anti-affectation always; anti-#74 lettered rule unless the SAFE numeric
+  // relaxation is on (dict-gated) — then dict-backed numeric codes are allowed.
+  const banned = /^(affectation|cmm|mrc|sad|pmad)/i;
+  const bannedHit = [...distinct].filter((c) => banned.test(c));
+  if (bannedHit.length > 0) fail(`affectation/CMM tokens present: ${bannedHit.join(", ")}`);
+  if (numericDict && dictCodes) {
+    const bad = nonAdmissibleCodes([...distinct], numericDict);
+    if (bad.length > 0) fail(`codes neither lettered nor dict-numeric present: ${bad.slice(0, 8).join(", ")}`);
+    const guard = validateNumericRelaxation({ distinctExtracted: [...distinct], dictCodes });
+    if (!guard.ok) fail(`numeric-code guard: ${guard.reason}`);
+    console.error(`[t2-build] numeric-code guard OK: ${guard.numericInDict} dict-validated numeric codes (dict has ${guard.dictNumeric})`);
+  } else {
+    const nonLettered = [...distinct].filter((c) => !/[A-Za-z]/.test(c) || !/\d/.test(c));
+    if (nonLettered.length > 0) fail(`non-lettered (sequential?) codes present: ${nonLettered.slice(0, 8).join(", ")}`);
+  }
+
+  // 3. Cadastre --------------------------------------------------------------
+  const s3 = s3Client();
+  const cadKey = args.cadastre ?? `normalized/qc-cadastre-lots/${args.slug}.geojson`;
+  let cadBuf: Buffer;
+  if (args.cadastre && existsSync(args.cadastre)) cadBuf = readFileSync(args.cadastre);
+  else cadBuf = await getBytes(s3, cadKey);
+  const cadastre = JSON.parse(cadBuf.toString("utf8")) as FeatureCollection;
+  const { center: cadCenter, bbox: cadBbox } = bboxCenter(cadastre);
+  const lat0 = (cadBbox[1] + cadBbox[3]) / 2;
+  console.error(
+    `[t2-build] cadastre: ${cadastre.features.length} lots, center ` +
+      `${cadCenter[0].toFixed(4)},${cadCenter[1].toFixed(4)}`,
+  );
+
+  // 3b. spatial gate: labels must sit inside the cadastre footprint.
+  const labCenter: [number, number] = lab.codePoints.reduce(
+    (acc, c) => [acc[0] + c.lon / lab.codePoints.length, acc[1] + c.lat / lab.codePoints.length],
+    [0, 0] as [number, number],
+  );
+  const spatialKm = haversineKm(labCenter, cadCenter);
+  console.error(`[t2-build] spatial: label-centroid vs cadastre-centroid = ${spatialKm.toFixed(2)} km`);
+  if (spatialKm > args.spatialKm) {
+    fail(`labels ${spatialKm.toFixed(1)} km from cadastre (> ${args.spatialKm} km) — GCP georef mismatch`);
+  }
+  const inBbox = lab.codePoints.filter(
+    (c) => c.lon >= cadBbox[0] && c.lon <= cadBbox[2] && c.lat >= cadBbox[1] && c.lat <= cadBbox[3],
+  ).length;
+  console.error(`[t2-build] ${inBbox}/${lab.codePoints.length} labels inside cadastre bbox`);
+
+  // 4. Cadastre aggregation (UNCHANGED T1 recipe) ----------------------------
+  const { featureCollection, stats } = buildZones(cadastre, lab.codePoints, {
+    lat0,
+    cutoffM: args.cutoffM,
+    source: args.source,
+    confidence: args.confidence,
+    dissolve: true,
+  });
+  const lotToZonePct = (100 * stats.n_lots_assigned) / stats.n_lots_total;
+  const served = mergeByZoneCode(featureCollection);
+  console.error(
+    `[t2-build] zones: ${stats.n_zone_features} code-point features -> ${served.features.length} ` +
+      `distinct-code features, ${stats.n_lots_assigned}/${stats.n_lots_total} ` +
+      `lots (${lotToZonePct.toFixed(1)}%), ${stats.n_empty_labels} empty labels`,
+  );
+
+  // 5. Output ----------------------------------------------------------------
+  const elapsedS = (Date.now() - t0) / 1000;
+  const report = {
+    slug: args.slug,
+    source: args.source,
+    confidence: args.confidence,
+    pdf: pdfArg,
+    page,
+    label_mode: args.labels,
+    ocr_reviewed: args.labels === "ocr" ? args.ocrReviewed : undefined,
+    allow_numeric_codes: args.allowNumericCodes,
+    crs: geo.crsName,
+    n_gcps: gcpFile.gcps.length,
+    gcp_residual_max_m: Number(cal.maxResidualM.toFixed(3)),
+    gcp_residual_rms_m: Number(cal.rmsResidualM.toFixed(3)),
+    scale_m_per_pt: Number(geo.scaleMPerPt.toFixed(3)),
+    n_label_codes: distinct.size,
+    n_labels_in_frame: lab.nInsideFrame,
+    n_served_features: served.features.length,
+    label_spatial_km_from_cadastre: Number(spatialKm.toFixed(3)),
+    lot_to_zone_pct: Number(lotToZonePct.toFixed(2)),
+    compute_seconds: Number(elapsedS.toFixed(1)),
+    ...gpt55Stats,
+    ...stats,
+  };
+
+  const outDir = args.out ?? join(tmpdir(), `t2-${args.slug}`);
+  mkdirSync(outDir, { recursive: true });
+  const geojsonPath = join(outDir, `qc-zonage-${args.slug}.geojson`);
+  const statsPath = join(outDir, `qc-zonage-${args.slug}.stats.json`);
+  writeFileSync(geojsonPath, JSON.stringify(served));
+  writeFileSync(statsPath, JSON.stringify(report, null, 2));
+  console.error(`[t2-build] wrote ${geojsonPath} + stats`);
+
+  if (args.dryRun) {
+    console.error("[t2-build] --dry-run: NOT uploading to S3.");
+  } else {
+    if (args.labels === "ocr" && !args.ocrReviewed) {
+      fail("OCR labels are not verbatim-selectable PDF text; rerun with --dry-run for preview or pass --ocr-reviewed after human code QA");
+    }
+    const s3Key = `normalized/ca-qc-zonage/qc-zonage-${args.slug}.geojson`;
+    await depositT2ServedZoneGeojson(
+      s3,
+      s3Key,
+      served as unknown as ServedZoneGeoJson,
+      pdfArg,
+      pdfBytes,
+      pdfRetrievedAt,
+    );
+    await putBytes(
+      s3,
+      `normalized/ca-qc-zonage/qc-zonage-${args.slug}.stats.json`,
+      JSON.stringify(report, null, 2),
+      "application/json",
+    );
+    console.error(`[t2-build] uploaded s3://${BUCKET}/${s3Key}`);
+  }
+
+  console.log(JSON.stringify(report, null, 2));
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

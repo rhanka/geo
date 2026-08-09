@@ -1,0 +1,2419 @@
+{
+  "contract": "pv-scope-contamination-audit/v2",
+  "generated_at": "2026-07-29T17:50:40.735Z",
+  "phase": "barkmere",
+  "mode": "read-only-s3-pdf-owner-audit",
+  "rules": {
+    "owner": "Resolved only from an explicit municipal-owner phrase printed by pdftotext in the CAS PDF; a municipality named as a resolution beneficiary or counterparty is unknown, never owner evidence. Filenames, scope slugs, URLs, and fuzzy matches are never used.",
+    "homonyms": "An owner name matching more than one municipality is unknown.",
+    "maximum_read_bytes": 5000000,
+    "s3_environment": {
+      "NODE_OPTIONS": "--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS": "10"
+    }
+  },
+  "inputs": {
+    "bucket": "sentropic-geo",
+    "registry_prefix": "registry/qc-pv/",
+    "capture_runs_prefix": "capture/_runs/pv-",
+    "cas_prefix": "raw/pv-index/cas/",
+    "capture_manifests": {
+      "terminal": 517,
+      "non_terminal_or_unreadable": 12,
+      "skipped_oversize": [],
+      "read_errors": [
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-0/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-0/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-1/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-1/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-2/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-2/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-3/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260728T152900Z-0-geo-capture-pv-control-200-3/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-429f5c3e-5235-403b-a5db-1c33d36e9517/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-429f5c3e-5235-403b-a5db-1c33d36e9517/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-5b4737c4-29dc-405e-a43d-001d9cdc3b6b/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-5b4737c4-29dc-405e-a43d-001d9cdc3b6b/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-20260729T023402Z-1-d64a05b8-2878-41c4-942f-4fc4d24a6cc5/manifest.jsonl",
+          "reason": "capture/_runs/pv-20260729T023402Z-1-d64a05b8-2878-41c4-942f-4fc4d24a6cc5/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-c7887bf3-6b36-4ee2-ab79-b05d22a19cc4/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-c7887bf3-6b36-4ee2-ab79-b05d22a19cc4/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-900b3bbd-7fc9-4a43-8129-af65f82be351/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-900b3bbd-7fc9-4a43-8129-af65f82be351/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-c145976e-78a1-40ab-838c-645a670b496a/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-c145976e-78a1-40ab-838c-645a670b496a/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-8befc677-0bdd-4c18-9264-9f9888294fd6/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-8befc677-0bdd-4c18-9264-9f9888294fd6/run.json: objet absent ou taille inconnue"
+        },
+        {
+          "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-ec34afea-ba87-4e28-9dfb-6044c580a475/manifest.jsonl",
+          "reason": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-ec34afea-ba87-4e28-9dfb-6044c580a475/run.json: objet absent ou taille inconnue"
+        }
+      ]
+    }
+  },
+  "barkmere": {
+    "registry": {
+      "key": "registry/qc-pv/barkmere/index.json",
+      "bytes": 42665,
+      "entries": 256,
+      "declared_count": 256,
+      "index_url": "https://barkmere.ca/?page_id=2594&lang=en",
+      "index_host": "barkmere.ca"
+    },
+    "cas": {
+      "attached_unique_cas": 116,
+      "owned_by_barkmere": 57,
+      "confirmed_outside_scope": 0,
+      "unknown_owner": 59,
+      "source_hosts": [
+        "barkmere.ca"
+      ],
+      "source_urls": [
+        "http://barkmere.ca/wp-content/uploads/2017/02/Minutes-JAN-2017-FR.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/03/Minutes-FEB-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/03/Minutes-JAN-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/05/Minutes-April-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/05/Minutes-MAR-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/06/Minutes-MAI-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/07/Minutes-JUNE-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/09/Minutes-AUG-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2016/09/Minutes-July-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-DEC-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-NOV-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-OCT-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-Special-DEC-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-FEB-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-MAR-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-SEP-2016-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/05/Minutes-APR-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/06/Minutes-MAY-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/07/Minutes-June-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/08/Minutes-July-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/12/Minutes-AUG-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2017/12/Minutes-SEPT-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/03/Minutes-DEC-2017-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/03/Minutes-JAN-2018-ENG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/04/Minutes-February-2018-adopted.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/04/Minutes-of-Council-March-10th-2018-adopted.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/06/Final-minutes-May-2nd-2018-Special-Session-1.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/06/Minutes-April-14th-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/06/Minutes-May-12-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/07/Minutes-June-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/09/Minutes-August-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/09/Minutes-July-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/11/Minutes-September-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/12/Minutes_November_2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2018/12/Minutes_October_2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/02/Minutes-December-2018.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/02/Minutes-January-2019.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/03/PV_02.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/05/PV_Minutes_03_2019_WP.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_04_2019_ws.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_05_2019_ws.pdf",
+        "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_06_2019_ws.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/01/PV_09_14_2019.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/01/PV_10_12_2019.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/01/PV_11_09_2019-003.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/03/PV_BUD_12_14_2019.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/03/PV_ORD_12_14_2019.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_avril_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_f%C3%A9vrier_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_Janvier_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_juillet_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_juin_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_mai_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/10/PV_mars_2020_WS.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/11/PV_Minutes_07_2019-REV-1.pdf",
+        "https://barkmere.ca/wp-content/uploads/2020/11/PV_Minutes_08_2019-REV.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/03/PV_EXTRA_24_02_2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/03/PV_ORD_13-02-2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_10-04-2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_13-03-2021_X.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_16_01_2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/06/PV_ORD_08-05-2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2021/07/PV_ORD_12-06-2021.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/02/PV_janvier_2022_FINAL.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/03/PV_f%C3%A9vrier_2022_DG_2.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/05/PV_MARCH_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/06/PV-DG-FINAL.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/07/PV_JUIN_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/08/PV_JUILLET_2022.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/09/PV_AOUT_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/09/PV_SEPTEMBRE_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/11/PV_OCTOBRE_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2022/12/PV_NOVEMBRE_2022_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2023/03/PV_JANVIER_2023_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/02/PV_JANVIER_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/04/PV_F%C3%89VRIER_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/06/PV_AVRIL_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/06/PV_MAI_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/06/PV_MARS_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/07/PV_JUIN_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/08/PV_JUILLET_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/09/PV_AOUT_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/11/PV_OCTOBRE_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/11/PV_SEPTEMBRE_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2024/12/PV_NOVEMBRE_2024_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/01/Agenda_2025_01_18.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/02/Agenda_2025_02_08.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/03/Agenda_2025_03_08.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/03/PV_F%C3%89VRIER_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/03/PV_JANVIER_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/04/Agenda_2025_04_12.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/05/Agenda_2025_10_05.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/05/PV_AVRIL_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/05/PV_MARS_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/06/Agenda_2025_06_14.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/06/PV_MAI_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/07/PV_JUIN_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/08/Agenda_2025_09_08.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/09/Agenda_2025_13_09.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/09/PV_JUILLET_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/10/PV_AOUT_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/11/Agenda_2025_08_11.pdf",
+        "https://barkmere.ca/wp-content/uploads/2025/12/Agenda_2025_13_12.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/01/Agenda_2026_01_17.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/01/PV_BUD_13_12_2025.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/01/PV_DECEMBRE_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/01/PV_NOVEMBRE_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/01/PV_SEPTEMBRE_2025_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/02/Agenda_2026_02_14.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/02/PV_JANVIER_2026_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/03/PV_FEVRIER_2026_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/04/Agenda_2026_04_11.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/04/PV_MARS_2026_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/05/Agenda_2026_09_05.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/05/PV_AVRIL_2026_DG.pdf",
+        "https://barkmere.ca/wp-content/uploads/2026/06/Agenda_2026_06_13.pdf"
+      ],
+      "documents": [
+        {
+          "storage_key": "raw/pv-index/cas/006f7066b1c072704f61367d826844de42dfdd00e787163ba87b5716ba53377c.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 9 aout 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of barkmere",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/10/PV_AOUT_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 42
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0141fcb8d50d2a2a44e3a14a4363d4ace2d45999cc894953328617a4c96b8c1d.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/03/Minutes-JAN-2018-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 23
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0180166f7bf3a765991aa5a56bfc61334460457236f5950e3e44d312fafffd90.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 11 juillet 2020 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_juillet_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 50
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/061fae470ccbfd4112bc85327b5e55bccd11e8b50e337a8ae5555d17cc3f69b0.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "municipal_name_mentioned_as_third_party",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/06/Agenda_2025_06_14.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 19
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0707e4d43837eabd57056363c692a6a083c29e5130411dc8c26957d24560e8bb.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/02/Agenda_2025_02_08.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 15
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0899fdff910aaaf0fcd36a8f76a4ed92f9552cc13385eb5dbb76adc8c281f6a0.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "municipal_name_mentioned_as_third_party",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/04/Agenda_2025_04_12.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 17
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0c5071b61f9a34827189c7e04d489b4a53dd8cfaac9845cbdbca91b6d6ea58e4.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 17 janvier 2026 a 10h00 a laquelle assistaient le maire the mayor les membres du conseil councillors minutes of the ordinary meeting of the municipal council of the town ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/02/PV_JANVIER_2026_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 47
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/0cb2814f18c1f1ed4c9659ae60a24b8e834a67ca57243b04879b24e07ca70273.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 8 mai 2021 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis clos a",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/06/PV_ORD_08-05-2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 11
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/10a4c5c85977ff1fa15a1c557f3b03794a692c368b709498f1c227d29cb5b822.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town barkmere held on february 2017 at 10 04 at the community centre town of barkmere quebec in attendance the mayor councilors general director and secretary treasurer luc trepanier marc frede",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-FEB-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 13
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/10b517be63390dbf30e41e327b45ee25a1f3edce7c946155c1267b661c3fe819.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 20 janvier 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/02/PV_JANVIER_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 24
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/10dc091f7c234ec8f5299cb26bbed533b4e888e3b617739eece2242e5275b617.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 12 mars 2022 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis clos",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/05/PV_MARCH_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 15
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/1138a443039f012e389e6391e39152a785bbff1dd90a864a0783fc2e78a2b823.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 9 novembre 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/12/PV_NOVEMBRE_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 34
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/13af6f5b2a96afe7f6ae6a3b29d80151f4ca6c1babaf5ca7ddd6e46c17d9e474.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "conseil pour l annee 2026 4 4 avis de motion reglement 296 etablissant les taux de taxes generales et speciales pour la ville de barkmere pour l annee 2026 4 5 avis de motion reglement 295 relatif au code de deontologie des conseillers 4 6 rapport du comite consultatif du chemin des jesuites depot 4 7 fermeture de l",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/12/Agenda_2025_13_12.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 23
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/1625b15624f96f8be0e5ef74b82ec12e96c6d60e3ec132fe115ebccb24bbb88f.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/06/Minutes-MAI-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 5
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/17abb89a948f81031c98ed09e3ec1919be219c27115e0b1a6ffcd7102f83a9f3.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "istration 4 1 resolution accounts payable 4 2 adoption of by law 290 establishing the regular and special taxes for the town of barkmere for the year 2025 4 3 indexation of permanent staff s salaries 5 environnement 5 environment 6 urbanisme 6 1 depot du rapport du directeur general 6 2 nomination d un membre du cc",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/01/Agenda_2025_01_18.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 14
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/18a77fe596a82c027ad820e0c83578ad7be2f61a8708d5ce408946a9f4697df4.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 9 mai 2020 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 004 du 15 mars 2020 la seance se deroule a huis clos s",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_mai_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 2
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/1a57d70e851123069d251b09190369f9f39c4ead8a0829599791f8f4531e3888.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 12 juin 2021 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis clos",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/07/PV_ORD_12-06-2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 12
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/1e2876405d83cc6854bb253089d79572f98c3488813dd5787c92d6c97c438639.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_04_2019_ws.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 39
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/20c84fa04b15ade20b1da6b92816e614487d5ebb07df95bfd7d7e11507e02a38.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "municipal_name_mentioned_as_third_party",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/02/Agenda_2026_02_14.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 25
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/20f340e7a9e4480d0dd1ffb37c840ee440d2cba6cc82cd9ab616bb71ec0459e2.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on august 12th 2017 at 10 02 at the community centre of barkmere quebec in attendance the mayor councilors general director and secretary treasurer absent luc trepanier marc ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/12/Minutes-AUG-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 20
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/260fb309b7d1222cf6060063f9ce7329a0458c2addbd687f920cb399f2af20c0.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/12/Minutes_October_2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 34
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/26d3cc92f03320ab4cd80af1f5d6b0edd53aab4fbde98c68e92a00f30ce08b69.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/11/PV_Minutes_07_2019-REV-1.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 4
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/281f5349c92fdcbf0c8675773dc287715e3c9035c37285ab0b8ae699782661f7.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 10 aout 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular meeting of th",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/11/PV_Minutes_08_2019-REV.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 5
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/2bcc7c9599d9d2e3504dd553427f96b969e73b59db48e8dafd63fbe289cbb611.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/02/PV_janvier_2022_FINAL.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 13
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/2bf7ad77b957703d00aa8f2504000c8de0174e89c2c94c56e13ade191d343598.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-NOV-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 10
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/3217d951dc1893228ed921b9a9559f0e4d0c579a40612e7527dfff4f76dfb87b.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/03/PV_ORD_13-02-2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 7
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/34f391def1bc3ca51380a627adb9669428fccb662d9526c7e274d2f35eb818c2.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-OCT-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 11
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/361864336abee570f82e4b0e7196c7852ffd48bfb0104f05c55884d6d65d27da.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/03/Minutes-JAN-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 2
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/368f7f55496b1f009b1769e0ecd0c451d250cca7d87d5516e9e2f6ef23e40bd2.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_juin_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 51
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/39885f9a0513b9c6b4bb45f87fd93edce6b6309d426f91c1dfcace10210bc132.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_13-03-2021_X.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 9
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/4139d26b28a7b2e5bc345dd411bdfb36a62a8472e1ad9ad87c4afbbb592d1ce3.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of a regular meeting of the town council of the town of barkmere held june 11th 2016 at 10 00 am at the barkmere community center barkmere quebec in attendance the mayor councillors luc trepanier jake chadwick tim kalil marc fredette chantal ra",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/07/Minutes-JUNE-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 6
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/4237ce167da483f056158e61c3a2cfb9c69713dcace185933d09ebdf844bad0b.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 14 septembre 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular meeting ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/01/PV_09_14_2019.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 42
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/42b06a68c58a33497073b5270f6dac9e10873a381c3c0987e1e37cd708e3e076.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 8 octobre 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum egalement present also in attendance ouvert",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/11/PV_OCTOBRE_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 21
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/475a60a8e91d11f2f901d4e2a5e81c13281d8319d2a1616d0a6d3bdf63e9f200.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on march 10th 2018 at 10 00 at the community centre of barkmere quebec in attendance absent the mayor luc trepanier councillors marc fredette chantal raymond andrea leber mar",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/04/Minutes-of-Council-March-10th-2018-adopted.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 25
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/496077b9104dbff2c05eb06705a9fdde915d2d37c272df11c6de5f629f2c01f1.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 9 juillet 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum minutes of the ordinary meeting of the muni",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/08/PV_JUILLET_2022.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 18
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/49b9282109492494fa5049693c12472b81d240b3fcbef775c56e452c1985a5ff.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 16 janvier 2021 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis c",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_16_01_2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 10
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/4cafe06c5adf44f3e3388cc762701eea58f5e26bf3b8728500eacff3b5e83663.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 14 septembre 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of ba",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/11/PV_SEPTEMBRE_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 33
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/512b88c315ec98170ac23347c716bf9eec59214599250335fad6356cfe043a3b.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "municipal_name_mentioned_as_third_party",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/05/Agenda_2026_09_05.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 27
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/5172e55346515f0f478d531cb818eaf0d2c135e40d14a07ec435e53774ea354d.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 12 avril 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of barkme",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/05/PV_AVRIL_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 37
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/51c2e96645e85221532f356bc34fd1275c50afe41b3cb7c925e55a2cbf60e0a4.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "hf 1 proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 16 mars 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular meeting of th",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/05/PV_Minutes_03_2019_WP.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 38
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/52ca25837e7e40c6b7d41d260d5d58e197891410fdbdc11a436c10ffe970b8f4.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/06/Final-minutes-May-2nd-2018-Special-Session-1.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 26
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/53614d360503d0ebf3fe2ade21064c220dcf5945a0930ca9877d8f70a8f56ef1.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/09/PV_AOUT_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 19
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/5d6d1f0c112e81f9353b062b2b6ae7efe4ab9840faf5a1a66ad383836294abbe.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 12 juillet 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/09/PV_JUILLET_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 41
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/5fd920c28fb89ff3b6b0f79606ef72ce46bd815ab9fb8f99178e700b635ab351.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/09/Minutes-July-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 31
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/634c5a562fef5daae4f2a09c94d7093db2c49c3a2109a8133408a735c5a6293b.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_Janvier_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 49
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/65d6498d0bd2b867a4cf10b758b4c202ecca0e94ef95029ef13c979a7a2de67c.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/12/Minutes-SEPT-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 21
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/68fe85793f122f7d0b5b70c7d890dab8228f662884fdc55815ba828a94690b6e.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/05/Agenda_2025_10_05.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 18
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/6ba380a481673437852e1c650a803b987f2f5b4006c5a3b86e688cfa2d8a9339.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 21 janvier 2023 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2023/03/PV_JANVIER_2023_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 23
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/6e704a58bf77ad8db81fe230dd0c869974394bf55e8614a0cf557ce9eae15950.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_05_2019_ws.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 40
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/6e9b9d3f1f2dae6e01abef0ec70862c6668ef2fd6e3c87c4e589e8f64171f12d.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/06/Minutes-MAY-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 17
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/6fbacf8c5e37a5d38269433e6905ea8c772be7fc5556a7fee619379a1c78cb6c.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/06/Minutes-April-14th-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 27
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/707456020f9f2d2e63826bca83d5b49096ce9db00442aefdedce17c99dde194d.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/09/PV_AOUT_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 31
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/723461ca82a744eeacefd63736200b951aabbb4a71feb729f2d0281a5dec638b.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/08/Minutes-July-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 19
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/72ef96dc96d5095ca5b0e2380ed4982d73972d8d687caf5faa3ceea797336ac0.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 12 novembre 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum minutes of the ordinary meeting of the mu",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/12/PV_NOVEMBRE_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 22
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/750e3990261eb3b6217d72e6c1770e9d5c7bbbeb47e48407ed8013067f617704.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "nal and authorization to pay the accounts 4 2 adoption of by law 296 establishing the regular and special taxes for the town of barkmere for the year 2026 4 3 adoption of by law 295 relating to the revised code of ethics and professional conduct of elected officials 4 4 appointment of an auditor for the 2025 fiscal",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/01/Agenda_2026_01_17.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 24
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/76a9038fdefbffe454fce60aa7d3aa0396e25f9595cb0860e271b6e372a9b87c.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 10 fevrier 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/04/PV_F%C3%89VRIER_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 25
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/78da6f8b5b7fc78580cd9d3753d75b207d03ba3bdada523330d2590d2013f5dc.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/09/Minutes-July-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 8
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/7ab2936b52a55f5a77a9d29c9f8b46e1fb098715e99ad11114fa190e055b8ff6.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-MAR-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 14
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/7b5065fc373d6b4c09b2ff4caed4c75565c080699342b8398d207e985bf526dd.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on august 11th 2018 at 14 00 at the community centre of barkmere quebec in attendance the mayor luc trepanier jake chadwick marc olivier duchesne stephen lloyd andrea leber g",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/09/Minutes-August-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 30
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/7f9567cf32c762622bf7c178e58f78aabde2cdf39adabffd325d76787f0fe913.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/11/PV_OCTOBRE_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 32
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/858144c1179e4b283e7edf74e76ae922c2ae3dafbf722c7af835dcdc60d8b3f5.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 9 novembre 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/01/PV_11_09_2019-003.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 44
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/85cc0f51108d4505a2641a35eae18bba5c7c52f92bf070a796049ab9cf6ec222.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de constat de defaut de quaorum de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 7 fevrier 2026 a 10h00 etaient absents absents le maire et les conseillers mayor and councillors minutes of the ordinary meeting of the municipal council of the town of b",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/03/PV_FEVRIER_2026_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 48
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/8735a0ba396d31c52154538b436deb8b940af8a449820cf52299f879f7608ebb.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/11/Agenda_2025_08_11.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 22
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/88c050bb808df6e99e90472a5fba9bb5d27938b1e8cb650f5c2454c5451ba552.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/05/Minutes-APR-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 16
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/89f60b79079bbd2c46027fc78aad2c8b9c9bea425e282454fb177cad61d81809.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 12 fevrier 2022 a 10h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis c",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/03/PV_f%C3%A9vrier_2022_DG_2.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 14
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/8b8eaa400271c52ad7e12e57bfe64e59c1be7ef7472a3f3675963ac8c64667d4.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance extraordinaire du conseil municipal de la ville de barkmere tenue le 13 decembre 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the special sitting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/01/PV_BUD_13_12_2025.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 43
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/8ea6f54fa2188a3d867d8fe8b043eda95b48cdd1468e1e630f9a510e63beb7f0.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance extraordinaire du conseil municipal de la ville de barkmere tenue 14 mai 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum etait absent absent minutes of the extraordinary ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/06/PV-DG-FINAL.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 16
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/8eb29410c652ab45cdec9a7f26774431bc84b556c2432cd593f9556b099ded53.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on february 10th 2018 at 10 01 at the community centre of barkmere quebec in attendance the mayor councillors general director and secretary treasurer absent luc trepanier ma",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/04/Minutes-February-2018-adopted.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 24
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/8ee80b6cb435653a1321c3e2baee5a1fd1ce32711e46246764ceadcc04c96e18.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/09/Minutes-AUG-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 7
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/92b35c9f3aa17657224a36e2b2ea42d7a86a315b49e20149075bbbad57d68815.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/03/Agenda_2025_03_08.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 16
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/932b31ab754b98956c552a59057cad7f96aeb8c07a53a364ae092d3591334f8a.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance extraordinaire du conseil municipal de la ville de barkmere tenue virtuellement le 24 fevrier 2021 a 19h00 compte tenu de la situation causee par la covid 19 et de l arrete ministeriel 2020 074 du 15 mars 2020 la seance se deroule a huis c",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/03/PV_EXTRA_24_02_2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 6
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/933f7e0da1ee53c88ec4b63b4295e82902c95d385a42f3da9ecd93622cc63779.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "hf 1 9 fevrier 2019 febuary 9 proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 9 fevrier 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular meeting of ",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/03/PV_02.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 37
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/9437c69d072fbfe16f99fd7b275f728aa12e0d32cb0b2296a931f47535f181d5.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "municipal_name_mentioned_as_third_party",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/09/Agenda_2025_13_09.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 21
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/95b47cb92799110994b5ffdb368eed65370e09b8cd636817125691935ae416f3.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/05/PV_AVRIL_2026_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 50
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/95d8b665084ad50cad3b6ea659008d663dc3f2b6b6fc4993b4de4f01b70523e9.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/06/PV_MARS_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 28
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/9ce296709594797aca9f719300a1d341a81eb2d5e2f95d707c82de7b6d86802a.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "city barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the city barkmere held on september 10 2016 at 10 00 to the community centre barkmere quebec in attendance the mayor councilors general director and secretary treasurer absent luc trepanier marc fr",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/04/Minutes-SEP-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 15
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/9db6d991bdcb17f86a45631b5c9e099b8011b313b3df99d299efc3c28cc1f2b2.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/04/Agenda_2026_04_11.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 26
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/a8b428653cac9507001feaa1b726ee6388c1d81675ac4929b9681d5b7272ac6f.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/08/Agenda_2025_09_08.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 20
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/adb809beefbea34ffe5efdca23c766c625a619174859c9aafd176009b3210351.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of a special session of the town council of the town of barkmere held on december 10th 2016 at 10 05 am at the barkmere community center barkmere quebec in attendance the mayor the councillors luc trepanier jake chadwick chantal raymond stephen",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-Special-DEC-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 12
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/adcc73acfcdcc0ad747bb7ecece7078ac21d7616673e1e6fb72d608bb288af04.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/06/PV_MAI_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 27
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/b29f3b013342b9d769c291160085a8437c3be5664eb024921fcd8241dc1ea635.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 14 juin 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of barkmer",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/07/PV_JUIN_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 40
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/b66873d875d9b29f83ec026c318cf6ecd44399e8cd1fa4941ccb5fd85eb97ece.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/01/PV_NOVEMBRE_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 45
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/b9e8aad7207764ce1b8f105da6f14b32a8248d58e78adc7bc41e20c4c95878b9.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_f%C3%A9vrier_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 48
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/bba467b6759ee3426f591d689adfd4f3dd1d356a238471a5b9bd2b17a55a24c8.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/07/PV_Minutes_06_2019_ws.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 41
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/be61185e5350a5e0f39dd0130b1344bc3e831de7046c5ce700e3987bbb6a64f5.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 13 decembre 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bar",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/01/PV_DECEMBRE_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 44
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/be9ffe8946349851ace58a1c11ddb1f748eeadca9d4dde206814b932cbd7d07d.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance extraordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 14 decembre 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the extraordinary sit",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/03/PV_BUD_12_14_2019.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 45
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/c4bebe572d7363f01f44ab42d75a6ecade9eae0d9b859123fe96893d98b62f09.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 14 mars 2026 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum etaientt absents absent les conseillers counc",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/04/PV_MARS_2026_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 49
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/cb6ef6bafbe2313b02b5cfc21554abe60e245232ca2bfc832f77203957f76976.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/07/Minutes-June-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 18
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/d27f5e22b927548a4e4f3722b33418585c86e88f800ed850e800443959672da5.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville tenue le 10 septembre 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular sit",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/09/PV_SEPTEMBRE_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 20
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/d6bbea73eb17d2cb8d64096e3a09fd450fe7b191089fb9cd492c79178c01f44d.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/03/Minutes-DEC-2017-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 22
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/d705272e92819d3b612c7c000c36efd22f58be938c630dbadedf1ed857a8ce07.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2021/05/PV_ORD_10-04-2021.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 8
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/d8c6a15e6c6efc174e75e62b538195bc83a8d99a0a2436c6abfae4886d33d958.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 13 septembre 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of ba",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/01/PV_SEPTEMBRE_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 46
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/db027828896ab52581f5a0a96e4acdb49175a104dff0b0f42d4b1710b4f2d68d.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 8 fevrier 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of barkm",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/03/PV_F%C3%89VRIER_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 35
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/db157ce1e893861d3d6e38a3d1ec657499ec13b6e4409dd6f8a0e26876a476de.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on november 10th 2018 at 10 00 at the community centre of barkmere quebec in attendance the mayor luc trepanier councillors marc olivier duchesne stephen lloyd chantal raymon",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/12/Minutes_November_2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 33
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/df02db8a520ebb43428f09ca39a9ba5a7578b6aa89643f28248e4ccd4aae0a5f.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/05/Minutes-MAR-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 4
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e0c0d8b1e2647fd980b5c9175b4e7f54fa9aac8990e9a5f4d07c694fd2ba0938.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on januarfy 12th 2019 at 10 00 at the community centre of barkmere quebec in case of discrepancy the french version prevails over the english translation in attendance the ma",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/02/Minutes-January-2019.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 36
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e0c22f7e149c80e18ab23c167a103fc881a29c60bd1a752f6757037d7c84cc6c.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/06/PV_AVRIL_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 26
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e25872711b71f96a41e544fb2e7ca353914ef298951a1185835fcd787288ea94.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/06/Minutes-May-12-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 28
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e36c2b5f0aee757de2fb586258d01ee700f4db6e51f7143296a0b48ea60a3ae8.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/01/PV_10_12_2019.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 43
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e49b09430f5985b03a813ab775b5530bca2c315aa6490c4f9df8f66b73634611.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 18 janvier 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/03/PV_JANVIER_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 36
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e832c7030dcd48c1ff6dbd4c3fc996a936040740bb5c4d1591a81debc2227158.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on september 8th 2018 at 14 00 at the community centre of barkmere quebec in attendance absents the mayor luc trepanier councillors marc olivier duchesne stephen lloyd chanta",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/11/Minutes-September-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 32
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/e86604eeabe35e0679eccdf5ecce5a274140a43cba09f09328907692bbaaddbe.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "no_explicit_municipal_owner_phrase",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2026/06/Agenda_2026_06_13.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6/manifest.jsonl",
+              "line": 28
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/eac1eab958b828797b76cc7a5a05b05b65b9dae0f20054ad4c576a3b7a6c9fe0.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "http://barkmere.ca/wp-content/uploads/2017/02/Minutes-JAN-2017-FR.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0024-0-a67d1c1a-3e82-49f8-88bb-ab1bf720d372/manifest.jsonl",
+              "line": 51
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/ed30a8776b45b1be4fb4e72b983754c9fd4b57243e282888dd1a22ebdf8dd8e1.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "town of barkmere",
+          "printed_owner_context": "minutes of the regular meeting of the council of the town of barkmere held on december 2016 at 11 05 at the community centre of barkmere quebec in attendance the mayor councilors general director and secretary treasurer luc trepanier marc fredette c",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2017/01/Minutes-DEC-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 9
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/ef34d0ca683ec2458d14e8c6211f28fe0318ff234548524b37a819ced3222d49.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/03/Minutes-FEB-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0024-0-a67d1c1a-3e82-49f8-88bb-ab1bf720d372/manifest.jsonl",
+              "line": 53
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/ef378172d7c908797332f1045041235e8fd5a5b43da256ac8155c62395749480.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_mars_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 3
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/efa6835c3b20f8a0cfea70f5475b3bcabf9f6672ab347d49525d9dd87e83a1e3.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 13 juillet 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of bark",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/08/PV_JUILLET_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 30
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f153d4a083830343f88353f3a416928cf84e8b0a30592b05545b4128cc234862.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue 11 juin 2022 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum minutes of the ordinary meeting of the municipal",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2022/07/PV_JUIN_2022_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 17
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f201c779bb85dc56900797035bce48c03f32dfa74dbf7b3021028b1ec2611606.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 10 mai 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the ordinary meeting of the municipal council of the town of barkmere",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/06/PV_MAI_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 39
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f42e3f7101f761bf29c74b0460dd36c7f9104b25dde64857aa57e481b5587718.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue a la salle du conseil de l hotel de ville le 14 decembre 2019 a 10 h00 a laquelle assistaient le maire the mayor les conseillers councillors minutes of the regular meeting o",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/03/PV_ORD_12_14_2019.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 46
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f438f5e833a5184c9d8b24449a8486f9f2004f670774812d7c810095d3c84059.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2016/05/Minutes-April-2016-ENG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 3
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f8dbfb054bcdd738a6478a115dd726ab2ac4a496a63bd9fa4e6277ca51db0354.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 8 juin 2024 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum etait absent absent le conseiller councillor m",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2024/07/PV_JUIN_2024_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 29
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/f9a82b6e03ec51d647ffb343228dd8c860c9026821d1f939aedd93f48944a322.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2019/02/Minutes-December-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 35
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/fa795bd71bbc46eb489fbceef23a77d50d71be72d85f41d0c9047e3ce96c303a.pdf",
+          "printed_owner": "Barkmere",
+          "printed_owner_slug": "barkmere",
+          "owner_status": "resolved",
+          "owner_reason": null,
+          "printed_phrase": "ville de barkmere",
+          "printed_owner_context": "proces verbal de la seance ordinaire du conseil municipal de la ville de barkmere tenue le 8 mars 2025 a 10h00 a laquelle assistaient le maire the mayor les conseillers councillors formant quorum forming the quorum etaient absents absents les conseillers counci",
+          "mismatch": false,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2025/05/PV_MARS_2025_DG.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0026-0-843cf15d-bc38-428f-8261-209deb658504/manifest.jsonl",
+              "line": 38
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/fc5c10610f4d877d8cce4c57ef086efa7cd469a58e36039c99e105c9c6af0511.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2018/07/Minutes-June-2018.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 29
+            }
+          ]
+        },
+        {
+          "storage_key": "raw/pv-index/cas/feab3ab93151d218cbff438e1f0dd9afd8273ad3fac7271390867b73da960866.pdf",
+          "printed_owner": null,
+          "printed_owner_slug": null,
+          "owner_status": "unknown",
+          "owner_reason": "multiple_explicit_municipal_owner_phrases",
+          "printed_phrase": null,
+          "printed_owner_context": null,
+          "mismatch": null,
+          "source_urls": [
+            "https://barkmere.ca/wp-content/uploads/2020/10/PV_avril_2020_WS.pdf"
+          ],
+          "manifest_evidence": [
+            {
+              "key": "capture/_runs/pv-geo-capture-pv-pv-probable-20260728-b32de19169bc-0025-0-e3e33574-bc97-4545-a9b6-91f02ac68023/manifest.jsonl",
+              "line": 47
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

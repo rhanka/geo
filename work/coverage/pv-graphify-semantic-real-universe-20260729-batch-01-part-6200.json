@@ -1,0 +1,287 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:29:54.155Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6200,
+    "limit": 20,
+    "requested": 20,
+    "selected": 4,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/f939d48b75d671d903c20b78c9d7dbc6e1f639482793c02d7e507f86fe9a8ba2.pdf",
+      "raw/pv-index/cas/f947b3ce560275a7adbe87f3a78ddf57f6730716b1fedf5914f54a736bf37414.pdf",
+      "raw/pv-index/cas/f94e7ca9f51a7294df463058292879c868af36a01b82e00e9265ed4aa4bb3bed.pdf",
+      "raw/pv-index/cas/f950aacbeb4e7eb182a50e6319bc1a49d839f9d636e37d693cb6808d2e02cc47.pdf",
+      "raw/pv-index/cas/f952cdc1bcba45437416bdb326ce22cfeee13ae330926cf00ba4e3f302e31946.pdf",
+      "raw/pv-index/cas/f96c6d3622371ff03604df69d27c552be225f50ebf1dbcb3542a29ab10a2b3f9.pdf",
+      "raw/pv-index/cas/f9704d141e10ef1bab63d3ade023c821ed69947746c73d22472b34c476ae0fe1.pdf",
+      "raw/pv-index/cas/f978392c8e6b9db9efe4a4dcc537fc78c8966ec29bc96f8548666739c77b537b.pdf",
+      "raw/pv-index/cas/f97ef58d4666f50287cab56be04eb2c5cca5015a3cbc805acd1c28f0d868e5fe.pdf",
+      "raw/pv-index/cas/f9807d2c017709c640c30f92f326af050fc542952a28a4821fc8d3eab09d3594.pdf",
+      "raw/pv-index/cas/f9a82b6e03ec51d647ffb343228dd8c860c9026821d1f939aedd93f48944a322.pdf",
+      "raw/pv-index/cas/f9b589fbe31ac2efe390149e72e1ce015f5d1623776da5f897f5467c51085a6b.pdf",
+      "raw/pv-index/cas/f9e56890fe323d3de697ecbb88799e90a54b975bc26e0b7e655b77b58465b078.pdf",
+      "raw/pv-index/cas/fa033ddd6e3aed2b2a6d5714c4b67ce061d297ad9982bbba522c941b75730d43.pdf",
+      "raw/pv-index/cas/fa190b3d156f5ca5efa0dd4e261d614d039c390b7574090f09e2aba943943f5f.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 4,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "Regulation": 6
+  },
+  "graphify": {
+    "nodes": 10,
+    "edges": 2,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 326,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 10289,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z",
+  "documents": [
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2023/07/2023-06-07.pdf",
+      "storage_key": "raw/pv-index/cas/f97f22e0f7de7791ae710131139910b8e81389c4475ae2eb85493e58f46f84d6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/carignan/3e58f46f84d6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/carignan/3e58f46f84d6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2024-05-27-2.pdf",
+      "storage_key": "raw/pv-index/cas/f9afc98adf43ca75b96105ead69bd72680809e84e551f4e573b4954375cd1934.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/bearn/954375cd1934.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/bearn/954375cd1934.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2026/05/pv-2026-03-09.pdf",
+      "storage_key": "raw/pv-index/cas/f9d2e8d5acde1f85cb1ba8f4e9b0944deb72a7efe4a082e6fa0363743b63502d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "   10.4. Règlement n°033-2026 - Décrétant la rénovation du bâtiment (lot"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "   10.4. Règlement n°033-2026 - Décrétant la rénovation du bâtiment (lot"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "522",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "   10.1. Avis de motion - Règlement 522 - Modifiant le règlement 383 -"
+            }
+          },
+          {
+            "label": "523",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:323",
+              "quote": "                   règlement numéro 523 Modifiant le règlement no 521 établissant les"
+            }
+          },
+          {
+            "label": "521",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:323",
+              "quote": "                   règlement numéro 523 Modifiant le règlement no 521 établissant les"
+            }
+          },
+          {
+            "label": "033-2026",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "                  CONSIDÉRANT QUE la RISIT a adopté le règlement n°033-2026"
+            }
+          },
+          {
+            "label": "463",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:252",
+              "quote": "                 et selon le règlement no 463 Établissant la politique de gestion"
+            }
+          },
+          {
+            "label": "383",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:315",
+              "quote": "                   règlement numéro 522 Modifiant le règlement 383 - décrétant les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/bearn/63743b63502d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/bearn/63743b63502d.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lanoraie",
+      "municipality_name": "Lanoraie",
+      "url": "https://www.lanoraie.ca/storage/app/media/municipalite/vie-democratique/seances-du-conseil/ODJ-2026/ordre%20du%20jour%20-%20juin.pdf",
+      "storage_key": "raw/pv-index/cas/f9db6d798a4dfcaa09fcc02fa56ade3fa2bf8ad4cc018a924fa6e6fb7ae43f90.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/lanoraie/e6fb7ae43f90.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192941Z/lanoraie/e6fb7ae43f90.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

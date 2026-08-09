@@ -1,0 +1,9 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "P": null
+  },
+  "source": "https://ville.ddo.qc.ca/wp-content/uploads/2025/05/Reglement-de-zonage-R-2025-199.pdf",
+  "note": "Règlement de zonage R-2025-199 (en vigueur le 16 mai 2025), Chapitre 2 « Zones et usages ». Art. 23: « Le territoire de la Ville est divisé en zones, tel qu'il apparaît sur le plan de zonage de l'Annexe A. Chaque zone est identifiée par une lettre indiquant un groupe d'usages dominant suivi d'un nombre (Ex : R-100, C-200). Malgré la lettre indiquant un groupe d'usages dominant, une zone peut autoriser d'autres usages de groupes différents. » — l'exemple « R-100, C-200 » est exactement la forme des codes servis au SIG, ce qui date le SIG sur ce règlement-ci et non sur l'ancien 82-704 (dont l'art. 3-1 énumère des zones « R-1a, R-1b, R-1c … R-3t, R-4, R-5 », forme absente du SIG). Art. 27: « Le groupe d'usages indique la vocation dominante des classes d'usages qu'il rassemble. » Art. 26, tableau « GROUPES | CLASSES (SOUS-CLASSES) »: « Résidence (R) », « Commerce et service (C) », « Public, institutionnel, communautaire et récréatif (P) », « Industrie (I) », « Excédentaire (E) ». -> R « Résidence » = residentiel; C « Commerce et service » = commercial. Null explicite: P est un groupe PUBLIC et composite — son libellé nomme « Public, institutionnel, communautaire et récréatif » et il rassemble des classes hétérogènes (« Institutionnel (P1) », « Communautaire de rassemblement (P2) », « Récréatif (P3) », « Conservation (P4) », « Infrastructure et transport (P5) ») -> aucune dominante unique parmi les cinq catégories. I « Industrie » et E « Excédentaire » ne sont PAS mappés: aucun code de ces préfixes n'existe au SIG servi (préfixes présents: R 41, P 36, C 9 codes). Les grilles de zonage (matrice des usages permis, art. 29) ne sont pas utilisées."
+}

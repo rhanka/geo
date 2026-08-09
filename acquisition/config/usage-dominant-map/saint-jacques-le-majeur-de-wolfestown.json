@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "AG": "agricole",
+    "AFA": "agricole",
+    "AFB": "agricole",
+    "AFC": "agricole",
+    "FOR": "agricole",
+    "IDA": null,
+    "IDAf": null,
+    "IDS": null,
+    "URB": null,
+    "VILL": null
+  },
+  "source": "http://www.st-jacques-le-majeur-de-wolfestown.ca/docs/fichiers_documents/142.pdf",
+  "note": "MUNICIPALITÉ DE SAINT-JACQUES-LE-MAJEUR-DE-WOLFESTOWN (MRC des Appalaches), « RÈGLEMENT NUMÉRO 257 — RÈGLEMENT DE CONCORDANCE AMENDANT LE RÈGLEMENT DE ZONAGE NUMÉRO 98 », adopté le 6 octobre 2014, certificat de conformité de la MRC le 8 octobre 2014 (pied de page de chaque page : « Municipalité de Saint-Jacques-le-Majeur-de-Wolfestown / Règlement # 257 / Amendant le règlement de zonage numéro 98 » — le document NOMME sa municipalité). Le règlement de zonage de base est le numéro 98, en vigueur depuis le 15 octobre 1990, non diffusé sur le site ; c'est le règlement de concordance 257 (concordance au règlement 150 de la MRC des Appalaches) qui RÉÉCRIT la nomenclature des zones, et c'est cette nomenclature-là que le SIG sert. ARTICLE 5 « Division du territoire en zones, modification de l'article 3.1 » (p. 4-5), VERBATIM : « L'article 3.1 est modifié en remplaçant les appellations de zones par les nouvelles appellations de zones suivantes : Zone agricole AG / Zone agroforestière de type 1 AFA / Zone agroforestière de type 2 AFB / Zone agroforestière de type 3 AFC / Zone îlot déstructuré avec morcellement IDA / Zone îlot déstructuré avec frontage IDAf / Zone îlot déstructuré sans morcellement IDS / Zone urbaine URB / Zone de villégiature VILL / Zone forestière FOR / Zone récréoforestière Récréfo ». Mapping : AG « agricole », AFA/AFB/AFC « agroforestière » et FOR « forestière » -> agricole. NULL EXPLICITES : IDA/IDAf/IDS « îlot déstructuré » — le suffixe (« avec morcellement », « avec frontage », « sans morcellement ») porte une modalité de LOTISSEMENT, pas une vocation, et aucune définition de ce règlement n'établit affirmativement ces zones par la résidence (convention de la lane : îlot déstructuré -> null) ; URB « Zone urbaine » n'énonce aucune des cinq catégories ; VILL « Zone de villégiature » seule -> null (aucun alinéa de ce règlement ne la définit exclusivement par l'habitation). OMIS VOLONTAIREMENT (pas null) : le préfixe alphabétique « R », qui conflate deux codes servis à accents que le fold ne sépare pas — « Récréfo 1 » (défini à la table : « Zone récréoforestière », dominance DUALE récréative+forestière = deux catégories différentes -> aucune dominante) et « Récréo-agri 1 » (NON DÉFINI par ce règlement). Le servi est null dans les deux cas, mais déclarer null AFFIRMERAIT que le règlement refuse une dominante à « Récréo-agri », ce qu'on ignore. La matrice des usages permis des grilles n'a PAS été utilisée. Consulté le 2026-07-19."
+}

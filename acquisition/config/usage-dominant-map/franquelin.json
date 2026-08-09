@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "V": "residentiel",
+    "C": "commercial",
+    "CO": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "F": "agricole",
+    "P": null,
+    "R": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&propertyName=etiquette_1,etiquette_2,etiquette_3,id_municipalite&CQL_FILTER=id_municipalite%3D%2796015%27",
+  "note": "Franquelin (Municipalité, MRC de Manicouagan), code MAMH 96015. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche geocentralis « evb:siadmin_pzon_99_s » porte la vocation écrite PAR ENTITÉ dans `etiquette_2` (`etiquette_1` = code complet, `etiquette_3` = préfixe), sous le descriptif `description=\"zonage 2024\"`. Gate propriétaire: `id_municipalite=96015` = « Franquelin (Municipalité) » au répertoire MAMH committé (packages/qc-sources/src/geo/qc-municipal-directory.json); recouvrement mesuré 36/36 = 100% des polygones servis (helper `_ud-geocentralis-etiquette-dump.ts --slugs franquelin`). Étiquettes VERBATIM relevées: A « Agricole »; C « Commerce et service »; CO « Commerce et service »; F « Foresterie »; H « Habitation »; I « Industriel »; P « Public et institutionnel »; R « Récréotouristique »; V « Villégiature ». Mapping: H « Habitation » et V « Villégiature » -> residentiel; C et CO « Commerce et service » -> commercial; I « Industriel » -> industriel; A « Agricole » et F « Foresterie » -> agricole. NULL EXPLICITES: P « Public et institutionnel » est public; R « Récréotouristique » est une étiquette DUALE — le volet récréatif relèverait de environnemental et le volet touristique de commercial, aucune dominante ne peut être tranchée sans invention (même traitement que « Villégiature et espace récréatif » sur saint-marcel). Les 36 codes SIG servis (A-22, C-8/16, CO-3/5/19/21/26/29/31/33/34, F-2/24/32, H-11..15, I-23, P-17/18, R-1/10/19/25/27/35/36, V-4/6/7/20/28/30) n'exposent aucun autre préfixe. Le fold retenant le PLUS LONG préfixe, « CO » est déclaré explicitement pour ne pas dépendre du fallthrough vers « C »."
+}

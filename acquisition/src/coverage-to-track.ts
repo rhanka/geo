@@ -355,11 +355,12 @@ interface RunOpts {
   atomicLayers: ReadonlySet<CoverageLayer>;
 }
 
-/** Couches atomiques par DÉFAUT = zones + normes (priorité du brief). Les couches
- *  cadastre/role-foncier/pv/pmtiles sont agrégées (compromis perf O(n²) du CLI ingest). */
+/** Couches atomiques par DÉFAUT = zones + normes + pv. Les couches
+ *  cadastre/role-foncier/pmtiles sont agrégées (compromis perf O(n²) du CLI ingest). */
 export const DEFAULT_ATOMIC_LAYERS: ReadonlySet<CoverageLayer> = new Set<CoverageLayer>([
   "zones",
   "normes",
+  "pv",
 ]);
 
 /** Orchestration complète : emit structure → ingest → tasks → ingest → (report). */
