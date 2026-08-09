@@ -1,0 +1,85 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:33:45.041Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 223,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 0,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 0,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {},
+  "graphify": {
+    "nodes": 0,
+    "edges": 0,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 45,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 637,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043343Z",
+  "documents": [
+    {
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2026-05_-_entree_en_vigueur_modalite_publication_avis_public.pdf",
+      "storage_key": "raw/pv-index/cas/4578f505ed9b22dd46302a7a280625d6d4be200dcc80eb1c3c074d1490ce247e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043343Z/albertville/4d1490ce247e.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043343Z/albertville/4d1490ce247e.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

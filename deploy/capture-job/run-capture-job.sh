@@ -14,6 +14,18 @@ required() {
   fi
 }
 
+# cgroup v2 keeps the exact high-water mark for this one-container pod. Record
+# it in the durable run log before uploading the log to S3: `kubectl top` is a
+# point-in-time sample and would understate a short download spike.
+record_memory_peak() {
+  if [ -r /sys/fs/cgroup/memory.peak ]; then
+    peak_bytes="$(cat /sys/fs/cgroup/memory.peak)"
+    printf '[%s] capacity memory_peak_bytes=%s\n' "$(clock)" "$peak_bytes"
+  else
+    printf '[%s] capacity memory_peak_bytes=unavailable\n' "$(clock)"
+  fi
+}
+
 required LANE
 required WORKLIST
 export NODE_OPTIONS="${NODE_OPTIONS:+${NODE_OPTIONS} }--dns-result-order=ipv4first"
@@ -46,6 +58,8 @@ set +e
 tsx src/capture-worklist-run.ts >>"$RUN_LOG_PATH" 2>&1
 RUNNER_STATUS=$?
 set -e
+
+record_memory_peak >>"$RUN_LOG_PATH"
 
 set +e
 tsx src/capture-run-log-upload.ts

@@ -119,6 +119,10 @@ export async function captureWorklist(opts: CaptureWorklistOptions): Promise<Cap
         ...(opts.fetchImpl !== undefined ? { fetchImpl: opts.fetchImpl } : {}),
         ...(opts.maxBytes !== undefined ? { maxBytes: opts.maxBytes } : {}),
         ...(opts.store !== undefined ? { store: opts.store } : {}),
+        // Une worklist ne parse jamais le document qu'elle vient de capturer :
+        // le corps va donc en flux au spool S3 puis au CAS, sans `Uint8Array`
+        // de la taille d'un règlement/PV dans le pod.
+        retainBody: false,
       });
       result.attempted++;
       if (captured.ok) result.succeeded++;

@@ -1,0 +1,1591 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:38:25.587Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2900,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "CouncilSession": 14,
+    "MeetingDate": 14,
+    "Resolution": 8,
+    "Regulation": 2,
+    "LotCadastre": 5
+  },
+  "graphify": {
+    "nodes": 83,
+    "edges": 48,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chandler",
+      "storage_key": "raw/pv-index/cas/6f11d05b4c033178ab17a529504393e6dbf7430c552b4d7372c065adeea59cd3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4293519",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "\f241210.397   VENTE DU LOT 4 293 519 – AVENUE CHRISTOPHE-CÔTÉ"
+    },
+    {
+      "municipality_slug": "chandler",
+      "storage_key": "raw/pv-index/cas/722ee2cecb5b0da1bcda13bc661a9e535a349045b03abfdcb509433cdab28f91.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4294829",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:52",
+      "quote": "     4.10 Signataires – Abandon de servitude par Hydro-Québec – Lot 4 294 829 ;"
+    },
+    {
+      "municipality_slug": "chandler",
+      "storage_key": "raw/pv-index/cas/965459588da0a61b08562284276834476620b8b0af22eaf0a383aa0947b8b56e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6408606",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:518",
+      "quote": "                                  Chandler, à Chandler (lot 6 408 606,"
+    },
+    {
+      "municipality_slug": "chandler",
+      "storage_key": "raw/pv-index/cas/965459588da0a61b08562284276834476620b8b0af22eaf0a383aa0947b8b56e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6408607",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:571",
+      "quote": "                                     Chandler, à Chandler (lot 6 408 607,"
+    },
+    {
+      "municipality_slug": "chandler",
+      "storage_key": "raw/pv-index/cas/b057ffb8f551b295efb816eaaba19c0d441d1130d3b4fa2a987bb218340229a2.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4294213",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:449",
+      "quote": "         l’immeuble situé sur le lot 4 294 213, quartier Chandler."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 296,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2286,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z",
+  "documents": [
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2026/01/seance-ordinaire-du-3-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/659f668189a03a781965cc761b896400518527ca9baaac7516f8f402dfc91cf9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/f402dfc91cf9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/f402dfc91cf9.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2024/11/PV-241007.pdf",
+      "storage_key": "raw/pv-index/cas/670c64a903475814d1963c7f808fe5d6dc204789678293e709e8939102880327.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 07 octobre 2024"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 07 octobre 2024"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 07 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "07 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 07 octobre 2024"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "240819.254",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "                        4.3      Modification de la résolution numéro 240819.254 ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2017",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "               4.13   Adoption – Second projet de règlement numéro 2017-Z-009"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/939102880327.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/939102880327.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2023/11/PV-231012.pdf",
+      "storage_key": "raw/pv-index/cas/683efa7d40e99a27ac0a95b28bba939f138d0247ab9db14441447781a3c5f503.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 12 octobre 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/7781a3c5f503.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/7781a3c5f503.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2024/01/PV-231211.pdf",
+      "storage_key": "raw/pv-index/cas/6896acdeccfebf58b3da9d812ee1fa3f7d2d7026d95cce6f06dafc35f1e904fe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 11 décembre 2023"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 11 décembre 2023"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 11 décembre 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/fc35f1e904fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/fc35f1e904fe.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2025/11/seance-ordinaire-du-2-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/6a2e54d3e4d5a50361c684b2f04e741403487aaa638c1daba4590bb975ed121e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "251110.305",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     4.7     Modification de la résolution 251110.305 – Toponymie – désignation d’un chemin privé;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/0bb975ed121e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/0bb975ed121e.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2025/01/PV-241210.pdf",
+      "storage_key": "raw/pv-index/cas/6f11d05b4c033178ab17a529504393e6dbf7430c552b4d7372c065adeea59cd3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 10 décembre 2024"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4293519",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "\f241210.397   VENTE DU LOT 4 293 519 – AVENUE CHRISTOPHE-CÔTÉ"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/65adeea59cd3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/65adeea59cd3.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2026/03/seance-ordinaire-du-10-mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/722ee2cecb5b0da1bcda13bc661a9e535a349045b03abfdcb509433cdab28f91.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "     4.1       Approbation des comptes à payer ;"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "     4.1       Approbation des comptes à payer ;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4294829",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "     4.10 Signataires – Abandon de servitude par Hydro-Québec – Lot 4 294 829 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/433cdab28f91.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/433cdab28f91.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2023/10/PV-230925.pdf",
+      "storage_key": "raw/pv-index/cas/724caa8854c17ee8add15f34392f0fd2ebe265dec28e93929d5c5e52bb83ed4f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 25 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "25 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Chandler tenue le 25 septembre 2023, à 12 h 00, en la salle du conseil de l’Hôtel"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/5e52bb83ed4f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/5e52bb83ed4f.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2023/11/PV-231002.pdf",
+      "storage_key": "raw/pv-index/cas/7d2781e10d67df537078d223eb39323b45585e233009adc39a4a6734bc7510f1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 2 octobre 2023"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 2 octobre 2023"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 2 octobre 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/6734bc7510f1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/6734bc7510f1.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2024/03/PV-240205.pdf",
+      "storage_key": "raw/pv-index/cas/81442dca05c0e3c426fda0846be3aba74b6fb8112e41478629f0a1575ba4128f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 5 février 2024"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 5 février 2024"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 février 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 février 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 5 février 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/a1575ba4128f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/a1575ba4128f.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2025/10/PV-250825.pdf",
+      "storage_key": "raw/pv-index/cas/82172f45a81a536e70820aab61c639aab410a088d066e623000a17738fc5bee9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 25 août 2025"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 25 août 2025"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 25 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "25 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 25 août 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "250203.054",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                         6 601 479 - Modification de la résolution numéro 250203.054 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/17738fc5bee9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/17738fc5bee9.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler",
+          "grande-riviere",
+          "perce",
+          "port-daniel-gascons",
+          "sainte-therese",
+          "sainte-therese-de-gaspe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2023/09/PV-230825.pdf",
+      "storage_key": "raw/pv-index/cas/864f3c9fbbf84f88ffdb883b9429a1d6b928075ecc518bdee512bf1296d6a7b5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 25 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil municipal de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "25 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 25 août 2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/bf1296d6a7b5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/bf1296d6a7b5.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2026/01/Ordre-du-jour-Seance-extraordinaire-20-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/940f8302f8b3a5a3e12dabe0981887dca28868a807f6c04bf3beb8e231e65b05.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    Ville de Chandler"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    Ville de Chandler"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/b8e231e65b05.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/b8e231e65b05.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2025/06/PV-250203.pdf",
+      "storage_key": "raw/pv-index/cas/965459588da0a61b08562284276834476620b8b0af22eaf0a383aa0947b8b56e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 3 février 2025"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 3 février 2025"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 3 février 2025"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6408606",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:518",
+              "quote": "                                  Chandler, à Chandler (lot 6 408 606,"
+            }
+          },
+          {
+            "label": "6408607",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:571",
+              "quote": "                                     Chandler, à Chandler (lot 6 408 607,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/aa0947b8b56e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/aa0947b8b56e.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2024/06/PV-240506.pdf",
+      "storage_key": "raw/pv-index/cas/9b106462ab022114ff25023bfc6d62a012073928357ce2dbe59f117dd598652c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 6 mai 2024"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 6 mai 2024"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 mai 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 mai 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 6 mai 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/117dd598652c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/117dd598652c.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler",
+          "saint-gervais"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2025/09/PV-250707.pdf",
+      "storage_key": "raw/pv-index/cas/a3b037b94b56a9e0200729d6767517892b23bd44f570ebf2f91c51d89b15514c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 7 juillet 2025"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 7 juillet 2025"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 7 juillet 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "250407.102",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:219",
+              "quote": "         prélevé au budget de la TECQ 2024-2028 (résolution 250407.102)."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "                   4.9   Règlement numéro 2017-Z-011 modifiant certaines dispositions"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/51d89b15514c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/51d89b15514c.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2024/05/PV-240408.pdf",
+      "storage_key": "raw/pv-index/cas/a8812dcad5a6b63d4a37649c1451e094eade41c0eb52273831f2abb609d72468.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 8 avril 2024"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 8 avril 2024"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 avril 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 avril 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 8 avril 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/abb609d72468.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/abb609d72468.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2026/02/Ordre-du-jour-Seance-extraordinaire-23-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/a96956da98e893dae1c0f3304779cd72cad3c9b34a01f67d61ae549ae25cfcb4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      Ville de Chandler"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      Ville de Chandler"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "150527.111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "RÉSOLUTION 150527.111 -COMMUNICATION - AVIS DE CONVOCATION – SÉANCE EXTRAORDINAIRE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/549ae25cfcb4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/549ae25cfcb4.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2026/03/Ordre-du-jour-Seance-extraordinaire-16-MARS-2026-1.pdf",
+      "storage_key": "raw/pv-index/cas/af46eb22160ad526f40e2536ba7367a2085f4723f4459df337af42ae0377ebf5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      Ville de Chandler"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      Ville de Chandler"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "150527.111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "RÉSOLUTION 150527.111 -COMMUNICATION - AVIS DE CONVOCATION – SÉANCE EXTRAORDINAIRE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/42ae0377ebf5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/42ae0377ebf5.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chandler",
+      "municipality_name": "Chandler",
+      "url": "https://www.villedechandler.com/wp-content/uploads/2023/12/PV-231106.pdf",
+      "storage_key": "raw/pv-index/cas/b057ffb8f551b295efb816eaaba19c0d441d1130d3b4fa2a987bb218340229a2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chandler",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 06 novembre 2023"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 06 novembre 2023"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 06 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal de la Ville de Chandler"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "06 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Le 06 novembre 2023"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "230814.233",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "                4.12 Modification de la résolution numéro 230814.233 ;"
+            }
+          },
+          {
+            "label": "221107.345",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:791",
+              "quote": "        CONSIDÉRANT           l’adoption des résolutions numéros 221107.345"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4294213",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:449",
+              "quote": "         l’immeuble situé sur le lot 4 294 213, quartier Chandler."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/b218340229a2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T153657Z/chandler/b218340229a2.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chandler"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -199,7 +199,26 @@ function writeProgress(path: string, rows: readonly Row[]): void {
     states[row.state] = (states[row.state] ?? 0) + 1;
     if (row.primary_cause) causes[row.primary_cause] = (causes[row.primary_cause] ?? 0) + 1;
   }
-  writeFileSync(path, `${JSON.stringify({ rows, states, causes }, null, 2)}\n`);
+  const acquisitionUniverse = rows
+    .filter((row) =>
+      row.key !== null &&
+      row.state !== "known" &&
+      row.norm_density_features === 0
+    )
+    .map((row) => ({
+      slug: row.slug,
+      key: row.key,
+      features: row.features,
+      effect_state: row.state,
+    }));
+  writeFileSync(path, `${JSON.stringify({
+    universe_rule: "B' served, no known effect, zero finite densite_value features",
+    acquisition_universe_count: acquisitionUniverse.length,
+    acquisition_universe: acquisitionUniverse,
+    rows,
+    states,
+    causes,
+  }, null, 2)}\n`);
 }
 
 async function main(): Promise<void> {
@@ -241,6 +260,9 @@ async function main(): Promise<void> {
     bySlug.set(slug, classify(slug, selected?.key ?? null, selected?.features ?? []));
     writeProgress(out, [...bySlug.values()].sort((a, b) => a.slug.localeCompare(b.slug)));
   }
+  // Re-emit a completed checkpoint as well, so a new report field can be
+  // materialised without forcing any S3 object to be read a second time.
+  writeProgress(out, [...bySlug.values()].sort((a, b) => a.slug.localeCompare(b.slug)));
   console.log(JSON.stringify({ out, read_this_batch: batch.length, rows_written: bySlug.size, remaining_in_scope: pending.length - batch.length }));
 }
 
