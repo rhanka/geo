@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "Af": "agricole",
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rv": "residentiel",
+    "I": "industriel",
+    "M": null,
+    "P": null,
+    "Fo": null
+  },
+  "source": "https://municipalites-du-quebec.ca/st-thuribe/custom/zonage.pdf",
+  "note": "Règlement de zonage de la Municipalité de Saint-Thuribe (MRC de Portneuf), n° 178 (mise à jour du 23 août 2017, modif. 179 et 196), article 3.2 « CODIFICATION DES ZONES » (p. 49-50): « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante. Les lettres font référence aux types de zones et aux vocations dominantes suivantes: […] Résidentielle — Ra: Résidentielle de faible densité (unifamiliale isolée); Rb: Résidentielle de moyenne densité (unifamiliale et bifamiliale); Rv: Résidentielle de villégiature. Mixte — M: Mixte (résidentielle et commerciale). Industrielle — I: Industrielle. Publique — P: Publique et institutionnelle. Agricole — A: Agricole dynamique; Af/a: Agroforestière (avec résidence sur propriété de 5 ha et plus); Af/c: Agroforestière (sans résidence permanente). » => Ra/Rb/Rv -> résidentiel; I -> industriel; A et Af (Af/a, Af/c) -> agricole, le règlement les range lui-même sous le type de zone « Agricole ». Null explicite: M est DUAL par le texte même (« Mixte (résidentielle et commerciale) »); P « Publique et institutionnelle » est public. « Fo » (code servi Fo/u-1, 1 polygone) est mappé à null EXPLICITE: aucune lettre « Fo » n'apparaît à l'article 3.2 ni ailleurs dans le corps — pas de verbatim, donc pas de tranche. ⛔ anti-fall-through: les clés sont écrites au sigle COMPLET et le fold prend le PLUS LONG préfixe, donc « Af/a-1 » est capté par « Af » (agricole) et non par « A », et « Ra/Rb/Rv » n'ont aucune clé « R » plus courte au-dessus d'eux. La matrice des usages permis des grilles (annexe I, feuillets A) n'est pas utilisée."
+}

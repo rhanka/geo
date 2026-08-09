@@ -1,0 +1,1830 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T12:12:13.026Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1960,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 14,
+    "MeetingDate": 14,
+    "Regulation": 46,
+    "LotCadastre": 4
+  },
+  "graphify": {
+    "nodes": 114,
+    "edges": 46,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 4,
+    "documents_with_zone": 0,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "bouchette",
+      "storage_key": "raw/pv-index/cas/5e984a6d48d05b7e1af60da0dc2f0abf881f48641025b10bfd8f3929bc901f56.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6667413",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:53",
+      "quote": "             pour numéro de lot 6 667 413 sur le chemin de la Carpe"
+    },
+    {
+      "municipality_slug": "bouchette",
+      "storage_key": "raw/pv-index/cas/7c5f5c58827dbddf119fd4cee12a43cd8e42809c828b8c5d4f02a2ccbce2796d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4741024",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:670",
+      "quote": "en bonne et due forme par le propriétaire du lot 4 741 024;"
+    },
+    {
+      "municipality_slug": "bouchette",
+      "storage_key": "raw/pv-index/cas/840bd3cd5d4e12b66b59ec13464b5b74a68629634bdda8b5c485d536544f2831.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4740201",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:384",
+      "quote": "bonne et due forme par le propriétaire du lot 4 740 201;"
+    },
+    {
+      "municipality_slug": "bouchette",
+      "storage_key": "raw/pv-index/cas/840bd3cd5d4e12b66b59ec13464b5b74a68629634bdda8b5c485d536544f2831.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4741250",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:419",
+      "quote": "due forme par le propriétaire du lot 4 741 250 ;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1726,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z",
+  "documents": [
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250718075541-seance-du-11-juin-2025-extra.pdf",
+      "storage_key": "raw/pv-index/cas/5c1b78c2280e84f10932607f6dbf5b5c95a1918e74e4494bd3953e344b812c44.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 11 juin 2025 à 18h25, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/3e344b812c44.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/3e344b812c44.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260402085026-2026-03-04-odj.pdf",
+      "storage_key": "raw/pv-index/cas/5c9eb95089fb2c064267717983803d9631f7d66d4445762bf5d20718b783a2ea.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-373",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "110-4    Adoption du règlement 2026-373 modifiant le règlement 2018-"
+            }
+          },
+          {
+            "label": "2026-378",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "110-6    Avis de motion et projet de règlement 2026-378 concernant le"
+            }
+          },
+          {
+            "label": "2026-376",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "110-7    Adoption du règlement 2026-376 modifiant le règlement 2025-"
+            }
+          },
+          {
+            "label": "2025-371",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "110-8    Adoption du règlement 2025-371 décrétant un emprunt de"
+            }
+          },
+          {
+            "label": "2026-374",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "110-9    Avis de motion et projet de règlement 2026-374 abrogeant et"
+            }
+          },
+          {
+            "label": "2026-380",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "110-10   Avis de motion et projet de règlement 2026-380 relatif à la"
+            }
+          },
+          {
+            "label": "2026-381",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "110-11   Avis de motion et projet de règlement 2026-381 relatif à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/0718b783a2ea.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/0718b783a2ea.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette",
+          "sainte-marie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250602151620-proces-verbal-7-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5e984a6d48d05b7e1af60da0dc2f0abf881f48641025b10bfd8f3929bc901f56.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 7 avril 2025 à 18h30, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6667413",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "             pour numéro de lot 6 667 413 sur le chemin de la Carpe"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/3929bc901f56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/3929bc901f56.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260604105103-pv-2026-05-19.pdf",
+      "storage_key": "raw/pv-index/cas/5f235227c22841941e1926201839a706f17a0af180dd8976bf5336c9eb8858b6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 19 mai 2026 à 18h30, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/36c9eb8858b6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/36c9eb8858b6.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260604104934-pv-2026-05-06.pdf",
+      "storage_key": "raw/pv-index/cas/62467a9e72a8e94555cfd9a76442e86cb71ca2cd09bd1a4a1b87f1677a534b20.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 6 mai 2026 à 19h00, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-383",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "   110-1      Avis de motion règlement 2026-383 abrogeant et remplaçant"
+            }
+          },
+          {
+            "label": "2026-377",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "   110-2      Adoption du règlement 2026-377 relatif à la cession et à"
+            }
+          },
+          {
+            "label": "2026-378",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "   110-3      Adoption du règlement 2026-378 relatif au chemin Deschênes"
+            }
+          },
+          {
+            "label": "2026-382",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "400-4     Adoption du règlement 2026-382 modifiant le règlement 2025-"
+            }
+          },
+          {
+            "label": "2025-364",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:797",
+              "quote": "400-4 Adoption du règlement 2026-382 modifiant le règlement 2025-364 relatif à la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/f1677a534b20.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/f1677a534b20.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260402085112-pv-2026-03-04.pdf",
+      "storage_key": "raw/pv-index/cas/66cfe80804460689fc91c67f4f20bcebb6b131c03e5a03f1bbedd7259a35341b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 4 mars 2026 à 19h00, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-373",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "   110-4      Adoption du règlement 2026-373 modifiant le règlement 2018-"
+            }
+          },
+          {
+            "label": "2026-378",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "   110-6      Avis de motion et projet de règlement 2026-378 concernant le"
+            }
+          },
+          {
+            "label": "2026-376",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "\f110-7    Adoption du règlement 2026-376 modifiant le règlement 2025-"
+            }
+          },
+          {
+            "label": "2025-371",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "110-8    Adoption du règlement 2025-371 décrétant un emprunt de"
+            }
+          },
+          {
+            "label": "2026-374",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "110-9    Avis de motion et projet de règlement 2026-374 abrogeant et"
+            }
+          },
+          {
+            "label": "2026-380",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "110-10   Avis de motion et projet de règlement 2026-380 relatif à la"
+            }
+          },
+          {
+            "label": "2026-381",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "110-11   Avis de motion et projet de règlement 2026-381 relatif à"
+            }
+          },
+          {
+            "label": "2018-310",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:291",
+              "quote": "ATTENDU QUE le conseil a adopté le règlement numéro 2018-310 relatif au traitement des élus"
+            }
+          },
+          {
+            "label": "2025-365",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "110-7 Adoption du règlement 2026-376 modifiant le règlement 2025-365 concernant"
+            }
+          },
+          {
+            "label": "2025-363",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "CONSIDÉRANT QUE le conseil municipal a adopté le règlement numéro 2025-363"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/d7259a35341b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/d7259a35341b.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette",
+          "sainte-marie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260323144715-pv-2026-01-28-extra.pdf",
+      "storage_key": "raw/pv-index/cas/6952c47ede54c9e2dba23d62496e4538d646fc34b09a7f3fd3c676f3b8fb4ee7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 28 janvier 2026 à 18h22, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-375",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "   110-1      Avis de motion et projet de règlement 2026-375 établissant la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/76f3b8fb4ee7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/76f3b8fb4ee7.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250602151712-proces-verbal-extraordinaire-5-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/729c451d269a27d7ba30e79c2bb977bab7578408b6690e400fc17b13449bbde0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 5 février 2025 à 19h00, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/7b13449bbde0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/7b13449bbde0.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260604141321-2026-06-03.pdf",
+      "storage_key": "raw/pv-index/cas/7af1d5d5e5986240d790277b9fc2a52f3c228eced076402f06f3bf12c7ea06e8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-383",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "110-1   Adoption du règlement 2026-383 abrogeant et remplaçant toute"
+            }
+          },
+          {
+            "label": "2026-384",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "600-2   Avis de motion – Règlement 2026-384 – Règlement concernant la garde de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/bf12c7ea06e8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/bf12c7ea06e8.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20251210083841-seance-du-12-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/7c5f5c58827dbddf119fd4cee12a43cd8e42809c828b8c5d4f02a2ccbce2796d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 12 novembre 2025 à 19h00, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4741024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:670",
+              "quote": "en bonne et due forme par le propriétaire du lot 4 741 024;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/a2ccbce2796d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/a2ccbce2796d.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260323144838-pv-2026-02-04.pdf",
+      "storage_key": "raw/pv-index/cas/840bd3cd5d4e12b66b59ec13464b5b74a68629634bdda8b5c485d536544f2831.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 6,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 4 février 2026 à 19h00, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-373",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "   110-1      Deuxième projet de règlement 2026-373 modifiant le règlement"
+            }
+          },
+          {
+            "label": "2025-370",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "   110-2      Abrogation de l’avis de motion – Règlement 2025-370"
+            }
+          },
+          {
+            "label": "2026-372",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "   110-3      Adoption du règlement 2026-372 concernant la rémunération du"
+            }
+          },
+          {
+            "label": "2026-376",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "   110-4      Avis de motion et projet de règlement 2026-376 modifiant le"
+            }
+          },
+          {
+            "label": "2025-365",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": " 376 modifiant le règlement 2025-365 concernant la délégation de pouvoirs."
+            }
+          },
+          {
+            "label": "2018-310",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "110-1 Deuxième projet de règlement 2026-373 modifiant le règlement 2018-310"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4740201",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:384",
+              "quote": "bonne et due forme par le propriétaire du lot 4 740 201;"
+            }
+          },
+          {
+            "label": "4741250",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:419",
+              "quote": "due forme par le propriétaire du lot 4 741 250 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/d536544f2831.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/d536544f2831.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250327103927-sance-du-10-fvrier-2025-extra-18h.pdf",
+      "storage_key": "raw/pv-index/cas/91295861c80dfe45fbd11c389902fbe0e4ade689e175adc1ce5b40554d08fa59.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/40554d08fa59.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/40554d08fa59.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260402084640-2026-04-01-odj.pdf",
+      "storage_key": "raw/pv-index/cas/9240004d0c45d0e00fba04df5ebcfb74c557f16c1731be975af0351a1e95003d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-374",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "110-1   Adoption du règlement 2026-374 abrogeant et remplaçant toute"
+            }
+          },
+          {
+            "label": "2026-377",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "110-2   Avis de motion et projet de règlement 2026-377 relatif à la"
+            }
+          },
+          {
+            "label": "2026-378",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "110-3   Dépôt du deuxième projet de règlement 2026-378 relatif au"
+            }
+          },
+          {
+            "label": "2026-382",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "400-4   Avis de motion et dépôt projet de règlement 2026-382 modifiant"
+            }
+          },
+          {
+            "label": "2025-364",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "        le règlement 2025-364 relatif à la gestion des matières"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/351a1e95003d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/351a1e95003d.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260123094154-seance-du-3-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a0855df710be5346df561ee4c7957ccaf47fb2091ffcd6e0e47d777d95f2cda6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 3 décembre 2025 à 19h00, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-370",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "   110-3       Avis de motion – Règlement 2025-370"
+            }
+          },
+          {
+            "label": "2025-371",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": " 3, qu’il sera adopté, à une séance subséquente, le règlement numéro 2025-371"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/777d95f2cda6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/777d95f2cda6.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250327103927-sance-du-29-janvier-2025-extra.pdf",
+      "storage_key": "raw/pv-index/cas/a31b3069d2c1f346f2169842e530990eff3e5f4a6d46bddd22effed8e3988a56.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 29 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "29 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 29 janvier 2025 à 18h00, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/fed8e3988a56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/fed8e3988a56.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260206095023-2026-01-14-odj.pdf",
+      "storage_key": "raw/pv-index/cas/a8d4149aef51c27e1cdb0347d92135caaaa612a39c952fb7492fee70193d62da.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ de BOUCHETTE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-372",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "110-1   Avis de motion et projet de règlement 2026-372 – Rémunération"
+            }
+          },
+          {
+            "label": "2026-373",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "110-3   Avis de motion et projet de règlement – Règlement 2026-373"
+            }
+          },
+          {
+            "label": "2018-310",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "        modifiant le règlement 2018-310"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/ee70193d62da.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/ee70193d62da.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette",
+          "maniwaki"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20260603113107-pv-2026-04-01.pdf",
+      "storage_key": "raw/pv-index/cas/a9f8de87ef2d9373ba508e0801c64e09bfbc44e8a70292eb1080c8da438bc71e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 1er avril 2026 à 19h00, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-374",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "   110-1      Adoption du règlement 2026-374 abrogeant et remplaçant toute"
+            }
+          },
+          {
+            "label": "2026-377",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "   110-2      Avis de motion et projet de règlement 2026-377 relatif à la"
+            }
+          },
+          {
+            "label": "2026-378",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "   110-3      Dépôt du deuxième projet de règlement 2026-378 relatif au"
+            }
+          },
+          {
+            "label": "2026-382",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "400-4   Avis de motion et dépôt projet de règlement 2026-382 modifiant"
+            }
+          },
+          {
+            "label": "2025-364",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "        le règlement 2025-364 relatif à la gestion des matières"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/c8da438bc71e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/c8da438bc71e.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250327103927-sance-du-10-fvrier-2025-extra-18h20.pdf",
+      "storage_key": "raw/pv-index/cas/aac3e4578b8baffb58c37737bf694f6df1161bc9b7d47f703de6ffc390d9a08b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/ffc390d9a08b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/ffc390d9a08b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250327103927-sance-du-4-fvrier-2025-extra.pdf",
+      "storage_key": "raw/pv-index/cas/b6e74f98981f67058328c6c666f9a231a03284b61ac3a0afc0b38780e7fcf8cb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance extraordinaire du conseil de la municipalité de Bouchette,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "tenue le 4 février 2025 à 19h00, à la salle du conseil située au 36, rue Principale, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/8780e7fcf8cb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/8780e7fcf8cb.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bouchette",
+      "municipality_name": "Bouchette",
+      "url": "https://www.bouchette.ca/fichiersUpload/fichiers/20250327103927-sance-du-15-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/bdc0827e76bb61ba0eaaf64efd6c706256a8426c5f7dec84a9321f3340447cf1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bouchette",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil de la municipalité de Bouchette, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "le 15 janvier 2025 à 19h00, à la salle du conseil située au 36, rue Principale, à Bouchette."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/1f3340447cf1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T121004Z/bouchette/1f3340447cf1.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bouchette"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

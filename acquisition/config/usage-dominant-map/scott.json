@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "A": "agricole",
+    "AR": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "M": null,
+    "PU": null,
+    "VIL": null
+  },
+  "source": "https://www.municipalitescott.com/wp-content/uploads/2025/11/Regl.-198-2007-Zonage-vers.-aout-2025.pdf",
+  "note": "Municipalité de Scott (MRC La Nouvelle-Beauce), règlement de zonage n° 198-2007 (version août 2025), art. 2.2 « Découpage du territoire en zones »: « Le territoire de la municipalité est divisé en zones délimitées au plan de zonage et chaque zone est identifiée par un numéro qui réfère à la classe d'usages prédominants dans cette zone. Au total, le présent règlement comprend 9 types de zones : RA : Résidentielle (Faible densité) / RB : Résidentielle (Moyenne densité) / M : Mixte : résidentielle et commerciale / services / PU : Publique / I : Industrielle / A : Agricole / AR : Agricole avec restrictions / VIL : Villégiature / REC : Récréative ». Propriétaire ATTESTÉ par le document lui-même (art. 1.1 verbatim: « Le présent règlement est intitulé « Règlement de zonage » de la municipalité de Scott et porte le no 198-2007 »; « Le mot municipalité désigne la municipalité de Scott »; 0 occurrence d'une autre muni). La table est CONFIRMÉE sans renversement par les en-têtes de chapitres 4.3 à 4.11 (« ZONES RÉSIDENTIELLES FAIBLE DENSITÉ (RA) », « ZONES MIXTES : RÉSIDENTIELLES ET COMMERCIALES (M) », « ZONES INSTITUTIONNELLES / PUBLIQUES (PU) », « ZONES RÉCRÉATIVES (REC) »...). RA et RB -> residentiel (la densité est un qualificatif, pas une vocation); A « Agricole » et AR « Agricole avec restrictions » -> agricole (AR déclaré séparément de A car le match est longest-prefix); I -> industriel; REC « Récréative » -> environnemental. Null explicite: M « Mixte : résidentielle et commerciale / services » nomme 2 des cinq catégories = dualité DÉCLARÉE; PU « Publique » (« Institutionnelles / Publiques » au ch. 4) est publique; VIL « Villégiature » n'est aucune des cinq et le règlement la DISTINGUE du résidentiel en propre — ch. 16.2 verbatim « ZONES RÉSIDENTIELLES (RA ET RB) ET DE VILLÉGIATURE (VIL) » — motif baie-comeau/lac-beauport (« Villégiature » seule -> null, à défaut d'un alinéa la définissant exclusivement comme résidentielle). ⛔ PZ NON MAPPÉ (1 polygone servi, « PZ-2 »): ce N'EST PAS un type de zone — l'art. 2.2 dit « 9 types » et PZ n'y figure pas; l'art. 2.1 établit verbatim « Le plan no PZ-1., à l'échelle 1 : 10 000 couvre l'ensemble du territoire de la municipalité » et « Le plan no PZ-2, à l'échelle 1 : 5 000 couvre le secteur urbain » ⇒ PZ = numéro du PLAN de zonage, le polygone est un artefact de vectorisation (l'emprise du plan urbain captée comme zone), défaut de données amont. Le laisser non déclaré est inoffensif: aucun préfixe déclaré ne préfixe « PZ-2 » (aucun « P » nu), il retombe donc sur null. La matrice des usages permis des grilles n'est pas utilisée."
+}

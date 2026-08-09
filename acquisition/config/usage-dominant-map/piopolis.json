@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "VILL": "residentiel",
+    "A": "agricole",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "I": "industriel",
+    "M": null,
+    "P": null,
+    "RU": null,
+    "IL": null,
+    "AFT": null
+  },
+  "source": "https://www.piopolis.quebec/fichiersUpload/fichiers/20211105103551-2020122113523420201221135214-pio-zon.pdf",
+  "note": "Règlement de zonage de la Municipalité de Piopolis (MRC du Granit), art. 5.1 « Répartition du territoire municipal en zones »: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres suffixes indiquant la vocation dominante », table ZONE / VOCATION DOMINANTE verbatim: A « Agricole » -> agricole; R « Résidentielle » -> residentiel; Vill « Villégiature » -> residentiel; Rec « Récréative » et Cons « Conservation » -> environnemental; I « Industrielle » -> industriel. Null explicite: M « Mixte » (duale), P « Publique », Ru « Rurale » (contexte de milieu sans dominante unique parmi les 5) -> null. Préfixes SIG servis ABSENTS de la table art.5.1 (codification SIG divergente du corps 2006) laissés null anti-invention: AFT (13 zones; le corps art.8.7 définit « zones agroforestières (AF) » mais « AFT » n'est pas nommé — le suffixe T non défini pourrait relever agroforestier ou récréotouristique, indéterminé); IL (7 zones; « îlot déstructuré » présumé, caractère dual, non défini dans la légende). Les null explicites AFT/IL bloquent aussi le fall-through longest-prefix vers A/I. La matrice des usages permis de la grille (Annexe 1) n'est pas utilisée. Source: règlement de zonage officiel, plans PIO-ZON-1/PIO-ZON-2."
+}

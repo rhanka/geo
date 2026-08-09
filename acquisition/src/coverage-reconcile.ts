@@ -100,6 +100,14 @@ const LAYERS: Layer[] = [
     pick: (k) => k.match(/role-foncier\/([^/]+)\.parquet$/)?.[1] ?? null,
     track: (s) => `role-foncier-${s}`,
   },
+  {
+    // Aires TOD (PMAD CMM / CMQ) — présentes seulement où le PMAD s'applique
+    // (Grand Montréal + région de Québec), N/A ailleurs. Dépôt: 1 geojson/muni.
+    field: "tod",
+    prefix: "normalized/qc-tod/",
+    pick: (k) => k.match(/qc-tod\/qc-tod-([^/]+)\.geojson$/)?.[1] ?? null,
+    track: (s) => `qc-tod-${s}`,
+  },
 ];
 
 async function main(): Promise<void> {
