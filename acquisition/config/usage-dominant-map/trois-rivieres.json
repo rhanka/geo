@@ -1,0 +1,31 @@
+{
+  "prefix_map": {
+    "RES": "residentiel",
+    "RSR": "residentiel",
+    "COL": "commercial",
+    "COR": "commercial",
+    "IND": "industriel",
+    "INR": "industriel",
+    "IRV": "industriel",
+    "IDF": "industriel",
+    "EXT": "industriel",
+    "EXA": "industriel",
+    "AGD": "agricole",
+    "AGF": "agricole",
+    "CNA": "environnemental",
+    "AER": "environnemental",
+    "REC": "environnemental",
+    "PEV": "environnemental",
+    "PIL": null,
+    "PIR": null,
+    "RUR": null,
+    "RSA": null,
+    "CLI": null,
+    "INA": null,
+    "NOV": null,
+    "ZTP": null,
+    "AEP": null
+  },
+  "source": "https://www.v3r.net/wp-content/uploads/2024/11/2021-chapitre-126-Normatif.pdf",
+  "note": "Règlement établissant le cadre normatif en matière d'urbanisme (2021, chapitre 126) de la Ville de Trois-Rivières — c'est le règlement de ZONAGE de la ville (compilation administrative à jour le 8 juillet 2026; numéro VERBATIM au pied de page: « Ville de Trois-Rivières / Règlement établissant le cadre normatif en matière d'urbanisme (2021, chapitre 126) »). CHAPITRE 1 « DISPOSITIONS INTRODUCTIVES ET INTERPRÉTATIVES », SECTION 3 « DÉCOUPAGE DU TERRITOIRE EN ZONES », ARTICLE 8 « Identification des zones », p. 8, VERBATIM: « Chaque zone apparaissant au plan de zonage est identifiée par une appellation dont le code est composé de 3 lettres indiquant la dominance d'usages de la zone et de 4 chiffres identifiant la zone. Les lettres identifiant la dominance d'usages de la zone sont les suivantes : » suivi de la liste numérotée 1° à 25°: « 1° AEP Aéroportuaire; 2° AER Aire écologique et récréative; 3° AGD Agricole dynamique; 4° AGF Agroforestière; 5° CLI Commerciale lourde et industrielle; 6° CNA Conservation naturelle; 7° COL Commerciale locale; 8° COR Commerciale régionale; 9° EXA Extraction en zone agricole; 10° EXT Extraction; 11° IDF Industrielle différée; 12° INA Industrielle agricole; 13° IND Industrielle; 14° INR Industrielle rurale; 15° IRV Industrie de revalorisation; 16° NOV Noyau villageois; 17° PEV Parcs et espaces verts; 18° PIL Publique et institutionnelle locale; 19° PIR Publique et institutionnelle régionale; 20° REC Récréative; 21° RES Résidentielle; 22° RSA Résidentielle agricole; 23° RSR Résidentielle rurale; 24° RUR Rurale; 25° ZTP Zone tampon ». Cette liste dit elle-même « la dominance d'usages de la zone »: elle fait foi. La matrice des usages permis des grilles (annexe 2) n'est PAS utilisée. Mapping: RES « Résidentielle » -> residentiel; RSR « Résidentielle rurale » -> residentiel (« rurale » est un qualificatif de localisation, aucune des cinq catégories); COL/COR « Commerciale locale/régionale » -> commercial; IND « Industrielle », INR « Industrielle rurale », IRV « Industrie de revalorisation », EXT « Extraction » -> industriel (le brief range Extraction avec Industrielle); AGD « Agricole dynamique » et AGF « Agroforestière » -> agricole; CNA « Conservation naturelle », AER « Aire écologique et récréative », REC « Récréative », PEV « Parcs et espaces verts » -> environnemental (famille Conservation/Récréative). CAS TRANCHÉS PAR LA GRAMMAIRE DU LIBELLÉ: EXA « Extraction en zone agricole » -> industriel car « en zone agricole » est un complément de LIEU introduit par la préposition « en » (= carrière située dans la zone agricole permanente), la dominance nommée étant l'Extraction; à l'inverse INA « Industrielle agricole » (deux adjectifs accolés, sans préposition) nomme DEUX des cinq catégories -> null. IDF « Industrielle différée » -> industriel: la dominance nommée est « Industrielle », « différée » ne qualifiant que le calendrier de développement. Null explicite (543 polygones non forcés): PIL (92) et PIR (22) « Publique et institutionnelle locale/régionale » sont publics + libellé dual public/institutionnel; RUR (76) « Rurale » ne nomme aucune des cinq catégories; RSA (21) « Résidentielle agricole » et CLI (26) « Commerciale lourde et industrielle » (le « et » est explicite) et INA (1) « Industrielle agricole » sont DUALES (2+ des cinq catégories); NOV (20) « Noyau villageois » est un centre-village mixte (le règlement le range d'ailleurs avec RES/PIL/PIR/COL/COR à l'art. 314); ZTP (26) « Zone tampon » et AEP (1) « Aéroportuaire » ne nomment aucune des cinq. Préfixes SIG réellement présents (1664 polygones, sansCode=0, lus sur la collection servie via `fold-usage-dominant.ts --list-prefixes`): RES(821), PEV(138), COL(119), PIL(92), AER(91), RUR(76), RSR(45), CNA(38), COR(38), ZTP(26), CLI(26), IND(25), PIR(22), RSA(21), NOV(20), AGF(18), AGD(15), REC(13), EXA(6), IDF(6), IRV(4), EXT(1), INA(1), INR(1), AEP(1) — les 25 préfixes du SIG sont TOUS couverts par la liste de l'art. 8, et aucun préfixe mappé n'est absent du SIG. Aucun conflit de longest-prefix: les 25 codes font tous exactement 3 lettres et sont deux à deux distincts, donc aucun n'est le préfixe d'un autre."
+}

@@ -1,0 +1,19 @@
+{
+  "prefix_map": {
+    "Ad": "agricole",
+    "Af": "agricole",
+    "Afv": "agricole",
+    "C": "commercial",
+    "CON": "environnemental",
+    "Cr": null,
+    "Ha": "residentiel",
+    "Hb": "residentiel",
+    "Mr": null,
+    "P": null,
+    "Re": "environnemental",
+    "V": "residentiel",
+    "Vr": null
+  },
+  "source": "https://web.archive.org/web/20211025134541id_/https://www.saintsimeon.ca/wp-content/uploads/2017/11/Re%CC%80g.-196-Zonage.pdf",
+  "note": "Municipalité de Saint-Siméon (MRC de Charlevoix-Est), « Règlement de zonage numéro 196 ». Gate propriétaire: l'en-tête de CHAQUE page porte VERBATIM « Municipalité de Saint-Siméon — Règlement de zonage numéro 196 ». Le site vivant a purgé tout son /wp-content/uploads (404) et désactivé wp-json; le corps n'existe plus qu'en archive. Légende VERBATIM, art. 3.2 « Codification des zones » (p. 42): « Chaque zone porte un code d'identification composé d'une lettre ou d'un groupe de lettres et d'un chiffre. La lettre ou le groupe de lettres indique le ou les usages dominants comme suit : Ad- Agriculture à dynamiser / Af- Agroforestier / Afv- Agroforestier villageois / C- Commerces et services / CON- Conservation / Cr- Commerces mixtes / Ha- Résidentiel faible densité / Hb – Résidentiel moyenne densité / Mr- Multi ressource / P- Institutionnel et public / Re- Récréatif / V- Villégiature / Vr- Villégiature récréotouristique » puis « Le chiffre indique le numéro de la zone lui conférant un caractère unique. » Mapping: Ad « Agriculture à dynamiser », Af « Agroforestier », Afv « Agroforestier villageois » -> agricole (la dominante nommée en tête reste agroforestière); Ha + Hb « Résidentiel … densité » -> residentiel; V « Villégiature » -> residentiel (cohérent avec les munis déjà servies par la lane); C « Commerces et services » -> commercial; CON « Conservation » et Re « Récréatif » -> environnemental. NULLS EXPLICITES: Cr « Commerces MIXTES » (le règlement écrit mixte); Mr « MULTI ressource » (plusieurs ressources = aucune dominante unique); P « Institutionnel et public » (hors des cinq catégories); Vr « Villégiature récréotouristique » est DUAL (villégiature=habitation ⊕ récréotouristique=récréatif, les deux nommés dans la même étiquette). NON ÉLUCIDÉ, laissé hors du map (null d'ignorance): le préfixe « IND » (1 pol., IND-17) N'EST PAS dans la table de l'art. 3.2 — malgré l'évidence apparente, rien n'autorise à le lire « industriel » (la lane a mesuré ailleurs un « M: vocation industrielle », la lettre ne prouve rien). Longest-prefix vérifié: CON gagne sur C, Cr gagne sur C, Afv gagne sur Af, Vr gagne sur V. ⭐ ACCÈS: ce corps pèse 4 461 606 octets et web.archive.org TRONQUE toute lecture simple à exactement 1 048 576 octets (mesuré 4 fois, curl ET fetch); il a été lu par requêtes Range successives via le helper committé `_fetch-wayback-range.ts`. Couverture: 60/61 polygones servis."
+}

@@ -1,0 +1,18 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "HA": "residentiel",
+    "HB": "residentiel",
+    "HC": "residentiel",
+    "AG": "agricole",
+    "AA": "agricole",
+    "AB": "agricole",
+    "C": "commercial",
+    "CI": "commercial",
+    "RI": "environnemental",
+    "Con": "environnemental",
+    "P": null
+  },
+  "source": "Règlement de zonage n° 272 (novembre 2022), Municipalité de Franklin, MRC du Haut-Saint-Laurent — https://municipalitedefranklin.ca/wp-content/uploads/2023/10/272-Zonage-novembre-2022.pdf, art. 10.1.3 « Identification des zones » + noms de vocation verbatim (art. 3.5.3.1).",
+  "note": "Art. 10.1.3 (verbatim): « Chaque zone est identifiée par sa vocation dominante indiquée par une ou des lettres majuscules ». La table lettre->vocation vit sur les feuillets EXTERNES du plan (non inclus au PDF-texte); mapping fondé sur les noms de vocation cités VERBATIM au corps: art. 3.5.3.1 « Habitation faible densité », « Habitation moyenne densité », « Récréation intensive ». -> H/HA « Habitation faible densité », HB « moyenne densité », HC (forte densité) -> residentiel; AG/AA/AB « Agricole » -> agricole; C et CI (grille CI-38 = commerce seul, aucune industrie) -> commercial; RI « Récréation intensive » -> environnemental; Con « Conservation » -> environnemental. Null explicite: P « Publique ». OMIS (non sourçables verbatim, laissés null): R (« Récréation » vs « Rurale » indéterminé faute du feuillet-légende) et ID (« îlot déstructuré »: la grille montre habitation-dominante mais la matrice d'usages ne fait pas foi -> ne pas servir residentiel sans le libellé). Longest-prefix: HA/HB/HC autonomes, CI bat C, AG/AA/AB autonomes. La matrice des usages permis n'est pas utilisée."
+}

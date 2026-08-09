@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rv": "residentiel",
+    "M": null,
+    "Ca": "commercial",
+    "Cb": "commercial",
+    "Cc": "commercial",
+    "Ib": "industriel",
+    "Ic": "industriel",
+    "Ie": "industriel",
+    "Pa": null,
+    "Pb": null,
+    "Pc": null,
+    "A": "agricole",
+    "Af": "agricole",
+    "Fo": "agricole"
+  },
+  "source": "https://saintbasile.qc.ca/app/uploads/Reglement-de-zonage-Saint-Basile-refondu-04-2026.pdf",
+  "note": "Règlement de zonage no 16-2012 de la Ville de Saint-Basile (MRC de Portneuf), refonte 04-2026, chapitre 3, art. 3.2 « Codification des zones », p.3-1/3-2: « Chaque zone comporte un numéro d'identification auquel est attachée une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante. Les lettres font référence aux types de zones et aux vocations dominantes suivantes ». Table « Types de zone / Vocations dominantes » relevée VERBATIM, par famille. Famille « Résidentielle »: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « […] en zone agricole permanente », Rb « Résidentielle de moyenne densité (unifamiliale et bifamiliale) », Rb/a, Rc « Résidentielle de haute densité », Rv « Résidentielle de villégiature » -> residentiel (Ra/Rb couvrent les codes servis Ra/a-*, Rb/a-* par longest-prefix, même dominante). Famille « Commerciale »: Ca « Commerciale légère », Cb « Commerciale intermédiaire », Cc « Commerciale lourde » -> commercial (couvrent Ca/a-*, Cb/a-* « en milieu agricole », même dominante). Famille « Industrielle »: Ib « Industrielle légère », Ic « Industrielle lourde », Ie « Industrielle-extraction » -> industriel. Famille « Agricole et/ou forestière »: A « Agricole dynamique », Af/a « Agroforestière (secteur de 5 ha et plus) », Af/b « (10 ha et plus) », Af/c « Agricole/forestière (sans résidence permanente) », Fo « Forestière », Fo/u « Forestière rurale » (Aj. 2019, règl. 02-2019, a. 4.1) -> agricole. Null explicite: M « Mixte (résidentielle et commerciale) » est rangé par le règlement sous la famille « Mixte » et nomme DEUX fonctions -> DUALE. Pa « Publique-institutionnelle » et Pb « Utilité publique » sont publics. JUGEMENT SIGNALÉ: Pc « Publique-récréative » -> null — la famille est titrée « Publique et/ou récréative » et le libellé nomme DEUX fonctions relevant de deux traitements distincts (« Publique » -> null, « récréative » -> environnemental), aucune ne domine dans le texte (même doctrine que Rec/f dans saint-alban.json); mappé explicitement car sans lui Pc-* n'hériterait d'aucun préfixe plus court. Les 17 préfixes mappés sont EXACTEMENT les 17 présents au SIG servi (191 polygones, 0 sans code). M/a « Mixte en milieu agricole », Ca/a, Cb/a, Af/a, Af/b, Af/c, Fo/u, Ra/a, Rb/a figurent à la légende comme codes complets mais ne sont pas des préfixes distincts au SIG (couverts par longest-prefix). La matrice des usages permis des grilles n'est pas utilisée. Source consultée le 2026-07-17."
+}
