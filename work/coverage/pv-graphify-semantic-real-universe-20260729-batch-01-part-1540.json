@@ -1,0 +1,2200 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T11:48:35.929Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1540,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 16,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 16,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 4
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 16,
+    "Document": 16,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "Regulation": 54,
+    "LotCadastre": 19,
+    "Zone": 5,
+    "Resolution": 14
+  },
+  "graphify": {
+    "nodes": 138,
+    "edges": 36,
+    "failures": 4
+  },
+  "matches": {
+    "zone_entities": 5,
+    "lot_entities": 19,
+    "documents_with_zone": 4,
+    "documents_with_lot": 6
+  },
+  "match_details": [
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e2ff1fc6b41d812478ef5a5795a1349b2c40469686af782bcf3829a49cfa4640.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5300131",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:398",
+      "quote": "                          propriétaire du lot 5 300 131, en date du B août 2022;"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e46a398c107bda1d4444f7a598d70916d734a34a0eda57beb426c7d4621c91ca.pdf",
+      "entity_type": "Zone",
+      "value": "RB.23",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:796",
+      "quote": "                                a      De permettre, dans la zone Rb.23, les usages suivants"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e46a398c107bda1d4444f7a598d70916d734a34a0eda57beb426c7d4621c91ca.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6553420",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:805",
+      "quote": "                                 a     D'inclure les lots 6 553 420 et 6 553 421 dans la zone Rd.5;"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e46a398c107bda1d4444f7a598d70916d734a34a0eda57beb426c7d4621c91ca.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3475139",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1370",
+      "quote": "32 JEÀN CASÂULT               2026t02t06 ACP                  -l 437 I9PI-A.N LOT 3475 139 CICCHETII            02-610-0041 I                 I 312.34 I 5"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e5fc7ad0135dbb259462f60b7be8d264efba57970456b46479b00a3216cf5596.pdf",
+      "entity_type": "Zone",
+      "value": "VA.18",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:381",
+      "quote": "                        nombre de bâtiments autorisés dans la zone Va.18, sur un terrain ayant une"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/e5fc7ad0135dbb259462f60b7be8d264efba57970456b46479b00a3216cf5596.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6472216",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:74",
+      "quote": "                  7.5 CONSTRUCTION - LOT 6 472216, RUE GÉRARD-TANGUAY"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "Zone",
+      "value": "AA.4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:5055",
+      "quote": "                    chevauchés par deux zones, soit Aa.4 (Agricole) et Va.3 (Villégiature)."
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "Zone",
+      "value": "VA.3",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:5055",
+      "quote": "                    chevauchés par deux zones, soit Aa.4 (Agricole) et Va.3 (Villégiature)."
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3477311",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:290",
+      "quote": "                              6.1 RÉSIDENCE UNIFAMILIALE, 186 BOUL. BLAIS EST, LOT 3 477 311 (D16-"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3477236",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:292",
+      "quote": "                              6.2 GARAGE DÉTACHÉ, 225 BOUL. BLAIS EST, LOT 3 477 236 (D17-008)"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5906484",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:293",
+      "quote": "                              6.3 RÉSIDENCE UNIFAMILIALE, 79 CHEMIN DU FLEUVE, LOT 5 906 484"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3477294",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:296",
+      "quote": "                              L'ANSE, LOT 3 477 294 (D16-220)"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3477044",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2620",
+      "quote": "                                9.4 PLAINTES DE CITOYENS AU SUJET DE L'ENTRETIEN DU LOT 3 477 044"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3476869",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2622",
+      "quote": "                                SUR LE LOT 3 476 869-P"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3688027",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:4073",
+      "quote": "                             QU'AGRICOLE, LOTS 3 688 027 ET 3 687 583"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3477220",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:4380",
+      "quote": "                              régulariser la question du droit de vue avec les propriétaires du lot 3 477 220;"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5901485",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:5052",
+      "quote": "                    agricole (CPTAQ) 360109 et 402754, le plan de zonage d'une partie des lots 5 901 485,"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3476756",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:5257",
+      "quote": "                            6.1 DÉROGATION MINEURE, 325, BOUL. BLAIS OUEST, LOT 3 476 756"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5794560",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:5258",
+      "quote": "                            6.2 DÉROGATION MINEURE, 59, RUE DU MUGUET, LOTS 5 794 560 ET"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3476041",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:6632",
+      "quote": "                          sur le lot 3 476 041 du Cadastre du Québec aux termes d'un acte reçu devant Me Vincent"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5681702",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:6637",
+      "quote": "                          d'accès et de virage sur une partie du lot 5 681 702 du Cadastre du Québec afin de"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/f29378e70f8969074ebb5abedf09ed35cf95bc2616e421ac48e6c4bedd2831c0.pdf",
+      "entity_type": "Zone",
+      "value": "VA.18",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:673",
+      "quote": "                          autorisés sur un terrain situé en zone Va.18, sur un terrain de moins de 1500 mètres"
+    },
+    {
+      "municipality_slug": "berthier-sur-mer",
+      "storage_key": "raw/pv-index/cas/f978392c8e6b9db9efe4a4dcc537fc78c8966ec29bc96f8548666739c77b537b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3476970",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:42",
+      "quote": "                                     LE LOT No 3 476 970"
+    },
+    {
+      "municipality_slug": "berthierville",
+      "storage_key": "raw/pv-index/cas/296731dae73ac5e609d22fa9c1b534705f821b0bae547a58fcb072cfd7e58b22.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3452341",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:49",
+      "quote": "                                                Immeuble situé sur le lot 3 452 341 / Renonciation du droit de préemption"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 288,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 3456,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z",
+  "documents": [
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/10/PV_2024-09-16_signe.pdf",
+      "storage_key": "raw/pv-index/cas/d9d7b59408288b41ac6f4ba5a6c9a15529535e099bf24de07f5749e75cc6cc31.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 septembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "\f                                K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 septembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "                                     Berthier-sur-Mer I Séance du 16 septembre 2024               Pagel I 6"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "357",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "                       3.1 AVIS DE MOTION ANNONCANT LE RÈGLEMENT NUMÉRO 357 DÉCRÉTANT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/49e75cc6cc31.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/49e75cc6cc31.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/10/Lundi-3-ao%C3%BBt-2020.pdf",
+      "storage_key": "raw/pv-index/cas/e0ac2aa7e27a2982184bb68325fffaf154bafcac2509c27706bf90115439912d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/90115439912d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/90115439912d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/08/PV_2024-08-05_signe.pdf",
+      "storage_key": "raw/pv-index/cas/e2ff1fc6b41d812478ef5a5795a1349b2c40469686af782bcf3829a49cfa4640.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 AOÛT 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "\f                             n              Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 AOÛT 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "                                Berthier-sur-Mer I Séance du 5 AOÛT 2024 | Extraits 2024-116 à2024-127"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "356",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:206",
+              "quote": "                       COtrtStOÉRRNT QUf l'adoption du règlement numéro 356 n'était pas requise"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5300131",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:398",
+              "quote": "                          propriétaire du lot 5 300 131, en date du B août 2022;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/29a49cfa4640.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/29a49cfa4640.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer",
+          "montmagny"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2026/04/PV_2026-03-09_signe.pdf",
+      "storage_key": "raw/pv-index/cas/e46a398c107bda1d4444f7a598d70916d734a34a0eda57beb426c7d4621c91ca.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 7,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                        \\Â/"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                        \\Â/"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "\f                                 K                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "                              Berthier-sur-Mer I Séance du 9 mars 2026                  Page   1 | 15"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "344",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:588",
+              "quote": "                             RÈGLEMENT NUMÉRo 344"
+            }
+          },
+          {
+            "label": "371",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:607",
+              "quote": "N'de résolution           adoption du règlement numéro 371 édictant le code d'éthique et de déontologie"
+            }
+          },
+          {
+            "label": "372",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "                           pour adoption du règlement numéro 372 intitulé règlement ayant pour objet"
+            }
+          },
+          {
+            "label": "360",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:660",
+              "quote": "                           de modifier le règlement numéro 360 relatif à la démolition d'immeubles."
+            }
+          },
+          {
+            "label": "354",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:668",
+              "quote": "                           décembre 2024\\e règlement no 360 modifiant le règlement no 354 relatif à la"
+            }
+          },
+          {
+            "label": "373",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:720",
+              "quote": "                          présenté pour adoption du règlement numéro 373 relatif à la salubrité, à"
+            }
+          },
+          {
+            "label": "369",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:861",
+              "quote": "                         projet du Règlement numéro 369, des dispositions normatives visant:"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RB.23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:796",
+              "quote": "                                a      De permettre, dans la zone Rb.23, les usages suivants"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6553420",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:805",
+              "quote": "                                 a     D'inclure les lots 6 553 420 et 6 553 421 dans la zone Rd.5;"
+            }
+          },
+          {
+            "label": "3475139",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1370",
+              "quote": "32 JEÀN CASÂULT               2026t02t06 ACP                  -l 437 I9PI-A.N LOT 3475 139 CICCHETII            02-610-0041 I                 I 312.34 I 5"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/c7d4621c91ca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/c7d4621c91ca.pdf/.graphify/.graphify_extract.json — 14 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer",
+          "montmagny"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/05/PV_2024-05-06_signe.pdf",
+      "storage_key": "raw/pv-index/cas/e5fc7ad0135dbb259462f60b7be8d264efba57970456b46479b00a3216cf5596.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                          \\Fr/"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                          \\Fr/"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "\f                        K             Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "                                 Berthier-sur-Mer I Séance du 6 MAI 2024 | Extraits 050 à 064"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "VA.18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:381",
+              "quote": "                        nombre de bâtiments autorisés dans la zone Va.18, sur un terrain ayant une"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6472216",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "                  7.5 CONSTRUCTION - LOT 6 472216, RUE GÉRARD-TANGUAY"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/0a3216cf5596.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/0a3216cf5596.pdf/.graphify/.graphify_extract.json — 6 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2025/01/PV_2024-12-02_signe.pdf",
+      "storage_key": "raw/pv-index/cas/e8ec013655fa4e74d38d472b3ae39a0bee0751dd15a1311dbc3e17fdbaa68da5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               H                  Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               H                  Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2010-193",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:544",
+              "quote": "                                 2010 (résolution 2010-193) et réputée, depuis le 1e' janvier 2018, un"
+            }
+          },
+          {
+            "label": "2021-025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:803",
+              "quote": "                                   suite à la résolution 2021-025 visant à entreprendre une étude de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "360",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                       6.2           ADOPTION DU RÈGLEMENT NO 360 MODIFIANT LE RÈGLEMENT NO 354"
+            }
+          },
+          {
+            "label": "354",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                       6.2           ADOPTION DU RÈGLEMENT NO 360 MODIFIANT LE RÈGLEMENT NO 354"
+            }
+          },
+          {
+            "label": "0361",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "                       6.3           ADOPTION DU RÈGLEMENT N0361 ABROGEANT 318 SUR LA GESTION"
+            }
+          },
+          {
+            "label": "318",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "                                     CONTRACTUELLE ET NO34O MODIFIANT LE RÈGLEMENT NO 318 SUR LA"
+            }
+          },
+          {
+            "label": "35",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                       6.4           ADOPTION DU RÈGLEMENT NO35B SUR LA RÉGIE INTERNE DES SÉANCES"
+            }
+          },
+          {
+            "label": "359",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "                       6.5            ADOPTION DU RÈGLEMENT NO 359 MODIFIANT LE RÈGLEMENT N0349"
+            }
+          },
+          {
+            "label": "0349",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "                       6.5            ADOPTION DU RÈGLEMENT NO 359 MODIFIANT LE RÈGLEMENT N0349"
+            }
+          },
+          {
+            "label": "0354",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:471",
+              "quote": "                    6.2 ADOPTION DU RÈGLEMENT NO360 MODIFIANT LE RÈGLEMENT N0354"
+            }
+          },
+          {
+            "label": "0",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:477",
+              "quote": "                                CONSIDÉRANT que le règlement N0 354 relatif à la démolition"
+            }
+          },
+          {
+            "label": "0318",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:489",
+              "quote": "                                RÈGLEMENT N0318 SUR LA GESTION CONTRACTUELLE"
+            }
+          },
+          {
+            "label": "0358",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:549",
+              "quote": "                6.4          ADOPTION DU RÈGLEMENT N0358 SUR LA RÉGIE INTERNE DES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/17fdbaa68da5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/17fdbaa68da5.pdf/.graphify/.graphify_extract.json — 15 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer",
+          "montmagny"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/01/Proces-verbaux-de-2017-complet-OCR.pdf",
+      "storage_key": "raw/pv-index/cas/ef3b013e15ad7d7227fd59ad1f958cc2f0a0f7ed6ef6b37c3c0d2efa8c6a462b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 8,
+        "Regulation": 12,
+        "Zone": 2,
+        "LotCadastre": 13
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                                          Procès-verbal des Délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                                          Procès-verbal des Délibérations du Conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2013-136",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3792",
+              "quote": "                    du terrain des étangs d'épuration (résolution 2013-136) a été retirée du règlement"
+            }
+          },
+          {
+            "label": "2015-207",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3793",
+              "quote": "                    numéro 304 imposant les taxes pour l'année 2016 (résolution 2015-207);"
+            }
+          },
+          {
+            "label": "7.1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3914",
+              "quote": " N° de résolution           7.1 INSCRIPTION AU COLLOQUE DE ZONE DE L'ADMQ"
+            }
+          },
+          {
+            "label": "9.3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3995",
+              "quote": "      N de résolution   9.3 SUBVENTION DU PROGRAMME D'AIDE À L'AMÉLIORATION DU"
+            }
+          },
+          {
+            "label": "2017-153",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5176",
+              "quote": "                     PROPOSITION DE MODIFICATION DU ZONAGE, RÉSOLUTION 2017-153"
+            }
+          },
+          {
+            "label": "2017-151",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5528",
+              "quote": "                      #3, #4 et #5 (résolution 2017-151 et projet E17-002). Nous avons demandé une"
+            }
+          },
+          {
+            "label": "2006-197",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5674",
+              "quote": "                              entérinée par la résolution 2006-197 prévoit aussi le paiement des frais mensuels de"
+            }
+          },
+          {
+            "label": "2017-169",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5687",
+              "quote": "                              La résolution 2017-169 accordait une contribution de 2 600 $ à l'organisme «Transport"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "306",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:281",
+              "quote": "                               5.1 ADOPTION DU RÈGLEMENT NUMÉRO 306 IMPOSANT LES TAXES"
+            }
+          },
+          {
+            "label": "170",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1118",
+              "quote": "                   au règlement numéro 170 de la Municipalité, le conseil doit nommer par résolution, les"
+            }
+          },
+          {
+            "label": "304",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2787",
+              "quote": "                       a été retirée du règlement numéro 304 imposant les taxes pour l'année 2016 (résolution"
+            }
+          },
+          {
+            "label": "291",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6216",
+              "quote": "                        INTÉRÊTS À ÉCHÉANCE 2018 DU PRÊT DU RÈGLEMENT 291"
+            }
+          },
+          {
+            "label": "309",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6218",
+              "quote": "                        5.1 AVIS DE MOTION, RÈGLEMENT 309 IMPOSANT LES TAXES POUR"
+            }
+          },
+          {
+            "label": "310",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6220",
+              "quote": "                        5.2 AVIS DE MOTION, RÈGLEMENT 310 DÉCRÉTANT LA"
+            }
+          },
+          {
+            "label": "307",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6442",
+              "quote": "                             équipements abritant la piscine sera retirée du règlement numéro 307 imposant les"
+            }
+          },
+          {
+            "label": "239",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7185",
+              "quote": "                      Règlement 239                                                     58 789$           58 789 $"
+            }
+          },
+          {
+            "label": "234",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7193",
+              "quote": "                      Règlement 234                                                      8 493 $              8 493 $"
+            }
+          },
+          {
+            "label": "261",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7197",
+              "quote": "                      Règlement 261                                                   129 059 $         129 059 $"
+            }
+          },
+          {
+            "label": "288",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7207",
+              "quote": "                      Règlement 288                                                     75 074 $          75 074 $"
+            }
+          },
+          {
+            "label": "298",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7213",
+              "quote": "                      Règlement 298          Tarif à 1 677,54 $                   176 985 $"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "AA.4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5055",
+              "quote": "                    chevauchés par deux zones, soit Aa.4 (Agricole) et Va.3 (Villégiature)."
+            }
+          },
+          {
+            "label": "VA.3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5055",
+              "quote": "                    chevauchés par deux zones, soit Aa.4 (Agricole) et Va.3 (Villégiature)."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3477311",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "                              6.1 RÉSIDENCE UNIFAMILIALE, 186 BOUL. BLAIS EST, LOT 3 477 311 (D16-"
+            }
+          },
+          {
+            "label": "3477236",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "                              6.2 GARAGE DÉTACHÉ, 225 BOUL. BLAIS EST, LOT 3 477 236 (D17-008)"
+            }
+          },
+          {
+            "label": "5906484",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:293",
+              "quote": "                              6.3 RÉSIDENCE UNIFAMILIALE, 79 CHEMIN DU FLEUVE, LOT 5 906 484"
+            }
+          },
+          {
+            "label": "3477294",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:296",
+              "quote": "                              L'ANSE, LOT 3 477 294 (D16-220)"
+            }
+          },
+          {
+            "label": "3477044",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2620",
+              "quote": "                                9.4 PLAINTES DE CITOYENS AU SUJET DE L'ENTRETIEN DU LOT 3 477 044"
+            }
+          },
+          {
+            "label": "3476869",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2622",
+              "quote": "                                SUR LE LOT 3 476 869-P"
+            }
+          },
+          {
+            "label": "3688027",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4073",
+              "quote": "                             QU'AGRICOLE, LOTS 3 688 027 ET 3 687 583"
+            }
+          },
+          {
+            "label": "3477220",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4380",
+              "quote": "                              régulariser la question du droit de vue avec les propriétaires du lot 3 477 220;"
+            }
+          },
+          {
+            "label": "5901485",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5052",
+              "quote": "                    agricole (CPTAQ) 360109 et 402754, le plan de zonage d'une partie des lots 5 901 485,"
+            }
+          },
+          {
+            "label": "3476756",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5257",
+              "quote": "                            6.1 DÉROGATION MINEURE, 325, BOUL. BLAIS OUEST, LOT 3 476 756"
+            }
+          },
+          {
+            "label": "5794560",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5258",
+              "quote": "                            6.2 DÉROGATION MINEURE, 59, RUE DU MUGUET, LOTS 5 794 560 ET"
+            }
+          },
+          {
+            "label": "3476041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6632",
+              "quote": "                          sur le lot 3 476 041 du Cadastre du Québec aux termes d'un acte reçu devant Me Vincent"
+            }
+          },
+          {
+            "label": "5681702",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6637",
+              "quote": "                          d'accès et de virage sur une partie du lot 5 681 702 du Cadastre du Québec afin de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/2efa8c6a462b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/2efa8c6a462b.pdf/.graphify/.graphify_extract.json — 37 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 37,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer",
+          "montmagny",
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/01/PV_2023-12-04-signe.pdf",
+      "storage_key": "raw/pv-index/cas/f29378e70f8969074ebb5abedf09ed35cf95bc2616e421ac48e6c4bedd2831c0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         x-                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         x-                Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "VA.18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:673",
+              "quote": "                          autorisés sur un terrain situé en zone Va.18, sur un terrain de moins de 1500 mètres"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/c4bedd2831c0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/c4bedd2831c0.pdf/.graphify/.graphify_extract.json — 3 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/01/PV_2023-12-13-signe.pdf",
+      "storage_key": "raw/pv-index/cas/f5628d7250cb801d05f124980d6a6332f8cdfa94e9b9f076156490abe15905e5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 n            Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 n            Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 DÉCEMBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "                         PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 DÉCEMBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "                         MUNICIPALITÉ DE BERTHIER-SUR-MER, SIÉGEANT LE 13 DÉCEMBRE 2023,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "                         de cette immobilisation lors de l'acceptation de la résolution 2022-2Os"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/90abe15905e5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/90abe15905e5.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2021/12/Proces-verbal-extraordinaire-21-septembre-2021.pdf",
+      "storage_key": "raw/pv-index/cas/f895b18f3f357c1c6ae7d7dd915a3c76a61348d0cd9884b5570e960ed58869ad.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/960ed58869ad.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/960ed58869ad.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2024/10/PV_2024-10-17_signe.pdf",
+      "storage_key": "raw/pv-index/cas/f978392c8e6b9db9efe4a4dcc537fc78c8966ec29bc96f8548666739c77b537b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthier-sur-Mer",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              x                  Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              x                  Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 Octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "\f                          K                  Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 Octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "                                      Berthier-sur-Mer I Séance du 17 Octobre 2024                       Pagel | 3"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-108",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:121",
+              "quote": "                        (résolution 2023-108) dans la mise à jour de sa politique Municipalitéamie"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3476970",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "                                     LE LOT No 3 476 970"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/6739c77b537b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthier-sur-mer/6739c77b537b.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthier-sur-mer"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260216_seance_extraordinaire_fevrier.pdf",
+      "storage_key": "raw/pv-index/cas/0a68441cb9e88af81cb6381d466d6d5811cca380d87274bcc5a2c52078d6f274.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/c52078d6f274.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/c52078d6f274.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260112_seance_ordinaire_janvier.pdf",
+      "storage_key": "raw/pv-index/cas/0a9763b27e3bf3c079e42db81f6aeddc84d4e568681fdbe01ef6bd00216d89e4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/bd00216d89e4.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/bd00216d89e4.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260302_ordre_du_jour_seance_mars.pdf",
+      "storage_key": "raw/pv-index/cas/159a3323eeb2bb4197487df274c7cf67e85fb00e318a8f7aaf943b286f9b5eb0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "992",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "    11.1 Règlement numéro 992 relatif à l’occupation et l’entretien des bâtiments"
+            }
+          },
+          {
+            "label": "989",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "    12.1 Règlement numéro 989 sur le comité consultatif d’urbanisme"
+            }
+          },
+          {
+            "label": "990",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "    12.2 Règlement numéro 990 concernant la tarification des activités de loisirs"
+            }
+          },
+          {
+            "label": "991",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "    12.3 Règlement numéro 991 décrétant des travaux de réfection des infrastructures d’égouts dans la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/3b286f9b5eb0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/3b286f9b5eb0.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260316_seance_extraordinaire_mars.pdf",
+      "storage_key": "raw/pv-index/cas/296731dae73ac5e609d22fa9c1b534705f821b0bae547a58fcb072cfd7e58b22.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                              Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                              Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-081",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:302",
+              "quote": "                          CONSIDÉRANT que le conseil municipal a adopté, par la résolution numéro 2026-03-081, le"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "991",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "                                                Règlement numéro 991 / Annulation de la résolution d'adoption"
+            }
+          },
+          {
+            "label": "993",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "                                        4.1. Règlement numéro 993 décrétant des travaux de réfection des infrastructures"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3452341",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "                                                Immeuble situé sur le lot 3 452 341 / Renonciation du droit de préemption"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/72cfd7e58b22.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/72cfd7e58b22.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ordre-du-jour-seance-1er-juin-2026.pdf",
+      "storage_key": "raw/pv-index/cas/2f5f5d72cce80771dc93c03ebf886a8c5aab5ec06442356cb78c388cb4b63194.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "996",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "   8.1 Règlement 996 décrétant les règles de contrôle et de suivi budgétaire et de délégation de pouvoir"
+            }
+          },
+          {
+            "label": "748-230",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       Deuxième projet de règlement numéro 748-230 modifiant le règlement de zonage 748 et ses amendements"
+            }
+          },
+          {
+            "label": "995",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "   9.2 Règlement numéro 995 concernant la tarification des activités de loisirs"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/388cb4b63194.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/388cb4b63194.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260202_ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/3985f4bde026deaa85e2afc7b0c9dc32497be708d3700a7d57578ce397e5d903.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "989",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "   8.1 Règlement numéro 989 sur le comité consultatif d’urbanisme"
+            }
+          },
+          {
+            "label": "990",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "   8.2 Règlement numéro 990 concernant la tarification des activités de loisirs"
+            }
+          },
+          {
+            "label": "991",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "   8.3 Règlement numéro 991 décrétant des travaux de réfection des infrastructures d’égouts dans la"
+            }
+          },
+          {
+            "label": "992",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "   8.4 Règlement numéro 992 relatif à l’occupation et l’entretien des bâtiments"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/8ce397e5d903.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/8ce397e5d903.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville",
+          "sainte-genevieve-de-berthier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260302_seance_ordinaire_mars.pdf",
+      "storage_key": "raw/pv-index/cas/7383b53634c2c5b87b1d88071010439cea4b7f2be31309412a12a34aac6c342c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbal du Conseil de ia"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbal du Conseil de ia"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                   PROCES-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 2 mars 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                   PROCES-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 2 mars 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-12-316",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:528",
+              "quote": "                             par la résolution numéro 2024-12-316, ainsi que les modifications              subséquemment"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "992",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "                                     11.1    Règlement numéro 992 relatif à l'occupation et l'entretien des bâtiments"
+            }
+          },
+          {
+            "label": "989",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1455",
+              "quote": "                    D'adopter le règlement numéro 989 sur le comité consultatif d'urbanisme."
+            }
+          },
+          {
+            "label": "990",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1498",
+              "quote": "                         D'adopter le règlement numéro 990 concernant la tarification des activités de loisirs."
+            }
+          },
+          {
+            "label": "991",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1543",
+              "quote": "                         D'adopter le règlement numéro 991 décrétant des travaux de réfection des infrastructures"
+            }
+          },
+          {
+            "label": "976",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:263",
+              "quote": "                    CONSIDÉRANT        le   règlement    numéro 976   sur   la   gestion contractuelle adopté    le"
+            }
+          },
+          {
+            "label": "986",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1468",
+              "quote": "                    ATTENDU QUE ce règlement abroge le règlement numéro 986;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/a34aac6c342c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/a34aac6c342c.pdf/.graphify/.graphify_extract.json — 11 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville",
+          "lanoraie",
+          "sainte-elisabeth"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260525_oj_seance_extra_mai.pdf",
+      "storage_key": "raw/pv-index/cas/8168d3c461ee7d46cb9ad3277b5272b3112a0823c2971c6bb37b9dba521e92bd.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "995",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "   6.1 Règlement numéro 995 concernant la tarification des activités de loisirs"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/9dba521e92bd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/9dba521e92bd.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260112_seance_ordre_du_jour_modif.pdf",
+      "storage_key": "raw/pv-index/cas/8576c4833ebc09e0899469856b912e267220c4ffc069f2561d51bcdfa60ce5e2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "805-35",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "   7.1 Règlement numéro 805-35 imposant le taux des diverses taxes pour l’année 2026"
+            }
+          },
+          {
+            "label": "988",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "   7.2 Règlement numéro 988 établissant un programme d’aide financière visant à promouvoir l’achat et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/bcdfa60ce5e2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114348Z/berthierville/bcdfa60ce5e2.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

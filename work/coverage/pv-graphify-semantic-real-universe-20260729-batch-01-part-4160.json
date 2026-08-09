@@ -1,0 +1,2145 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:42:08.087Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4160,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/003eca3fb9feee8ebdf41ae1ca12989694e8979330cf6283c58d709ac8d2cb1c.pdf",
+      "raw/pv-index/cas/0281f88c23f134f26600b0c19e905c2ebc86a6c1ce4afe5d704246ab1e3da0df.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "Regulation": 19,
+    "LotCadastre": 4,
+    "CouncilSession": 5,
+    "MeetingDate": 5,
+    "Resolution": 91,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 161,
+    "edges": 31,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 4,
+    "documents_with_zone": 1,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "clerval",
+      "storage_key": "raw/pv-index/cas/dd915b1e2d73d87ec079ff08f7a749c6a9796bc0cbaa826b310fcadd69e22433.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4050014",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:286",
+      "quote": "                        le lot 4 050 014."
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/058f65ee7863c0105697c3e3e9779b28c6da580e759415ee556203c0a5eb7738.pdf",
+      "entity_type": "Zone",
+      "value": "AF17",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:665",
+      "quote": "       CONSIDÉRANT QUE        le règlement de zonage, à la zone AF17,"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/058f65ee7863c0105697c3e3e9779b28c6da580e759415ee556203c0a5eb7738.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5535776",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:119",
+      "quote": "                                  lot 5 535 776, situé sur le chemin Armstrong –"
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/07c29deafc6458a8de201aafc6aa9653283797a63e0566125b8ecae1a76080e4.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6293785",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:597",
+      "quote": "                    Couture (lot 6 293 785)."
+    },
+    {
+      "municipality_slug": "cleveland",
+      "storage_key": "raw/pv-index/cas/09bd7353e0b00a67a4f6d084f06064215af551e10ffee0feec0fea5bf43b786d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5535708",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:640",
+      "quote": "       ATTENDU QUE           cette demande affecte le lot 5 535 708 ;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 121,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 1785,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z",
+  "documents": [
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/pv-extra-19-aout-2024.pdf",
+      "storage_key": "raw/pv-index/cas/cb7bdd2bdbe1596568d0c528593a5e3f14b184a0eff3d51c73a30ea7bd2f8731.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                            District d'Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                            District d'Abitibi-Ouest"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "189",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "                            unanimement d'adopter le règlement numéro 189, intitulé Règlement 189"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/0ea7bd2f8731.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/0ea7bd2f8731.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal-04-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/d102c6f67a5e85102c99effc622c416ccdfcf0df8d2b5d41b2a7e1a0990eb9b6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e1a0990eb9b6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e1a0990eb9b6.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/pv-juillet.pdf",
+      "storage_key": "raw/pv-index/cas/d44e1c165d9f9b7e6ffbddbef42184ca22a0f082b9857fe35bf9674b9e75ec88.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                District d'Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                District d'Abitibi-Ouest"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/674b9e75ec88.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/674b9e75ec88.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal-ass-extra-17-juin-2025-etats-financi.pdf",
+      "storage_key": "raw/pv-index/cas/d76452c322dbce4f2dd15c6111a13747b01bf6763ad5f6182a506428adf1cc71.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              District d’Abitibi-Ouest"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/6428adf1cc71.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/6428adf1cc71.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/pv-ass.-1-mai-2024.pdf",
+      "storage_key": "raw/pv-index/cas/dd915b1e2d73d87ec079ff08f7a749c6a9796bc0cbaa826b310fcadd69e22433.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             résolution"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             résolution"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4050014",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:286",
+              "quote": "                        le lot 4 050 014."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cadd69e22433.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cadd69e22433.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/deab2312c2b6cd5607eb6a868897c6cdd2ba2174714feb7af0cbe91fd9ae1196.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                     District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                     District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-193",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                                             règlement 26-193 qui est relié au déficit 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e91fd9ae1196.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e91fd9ae1196.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal--022-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/e6eeb3fec36ed13fde23f3ed2b3a3a23b9eb061dede2d2ed19537b9bcad0ba96.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                      PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                      MUNICIPALE, LE 2 AVRIL 2026, À 19H00, SOUS LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "26-04-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "                 RÉSOLUTION 26-04-07 : RACHAT ARMES À FEU"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-197",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "                         4. Adoption du règlement 26-197-entretien des immeubles;"
+            }
+          },
+          {
+            "label": "26-199",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "                   le Règlement numéro 26-199 édictant un Code d’éthique et de"
+            }
+          },
+          {
+            "label": "144",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:413",
+              "quote": "                     Le présent règlement remplace le règlement no 144."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/7b9bcad0ba96.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/7b9bcad0ba96.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal--025-mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/eb45054dcee90fb370d0495303d3580bc217970e144f971685a5e5b0ad380624.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 MARS 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                      PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 MARS 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                      MUNICIPALE, LE 5 MARS 2026, À 19H00, SOUS LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e5b0ad380624.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/e5b0ad380624.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal-assemblee-2-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f06c68ed8b767ee6a879cc91401d97ae5c2df531e95798526a94cdf0bfaf21cb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cdf0bfaf21cb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cdf0bfaf21cb.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal--0216-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f8e70b149ea7ff12c98c05d0f549c0f2d1000e85c016f30a3af9cfcfe6fc704b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "      ATTENDU QUE la séance du conseil tenue le 2 avril 2026 avait été prévue au"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "      ATTENDU QUE la séance du conseil tenue le 2 avril 2026 avait été prévue au"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-199",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "ATTENDU QUE le projet de règlement no 26-199 a été présenté aux membres du conseil;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cfcfe6fc704b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/cfcfe6fc704b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clerval",
+      "municipality_name": "Clerval",
+      "url": "https://clerval.ao.ca/documents/pages/proces-verbal-2025-03-12-assemblee.pdf",
+      "storage_key": "raw/pv-index/cas/fc63e577902582c49e467622bfc2b54d08972412ce98abaadb62ba0e243c5e87.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clerval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             District d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-02-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "             -    Modification à la résolution 2025-02-08 dépôt projet"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/ba0e243c5e87.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/clerval/ba0e243c5e87.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clerval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-4-JUILLET-2022.pdf",
+      "storage_key": "raw/pv-index/cas/058f65ee7863c0105697c3e3e9779b28c6da580e759415ee556203c0a5eb7738.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 23,
+        "Regulation": 6,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-01"
+            }
+          },
+          {
+            "label": "2022-07-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:139",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-02"
+            }
+          },
+          {
+            "label": "2022-07-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-03"
+            }
+          },
+          {
+            "label": "2022-07-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-04"
+            }
+          },
+          {
+            "label": "2022-07-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-05"
+            }
+          },
+          {
+            "label": "2022-07-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:206",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-06"
+            }
+          },
+          {
+            "label": "2022-07-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-08"
+            }
+          },
+          {
+            "label": "2022-07-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-09"
+            }
+          },
+          {
+            "label": "2022-07-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:349",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-10"
+            }
+          },
+          {
+            "label": "2022-07-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:393",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-11"
+            }
+          },
+          {
+            "label": "2022-07-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:419",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-12"
+            }
+          },
+          {
+            "label": "2022-07-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:479",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-14"
+            }
+          },
+          {
+            "label": "2022-07-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:520",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-15"
+            }
+          },
+          {
+            "label": "2022-07-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:552",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-16"
+            }
+          },
+          {
+            "label": "2022-07-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:574",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-17"
+            }
+          },
+          {
+            "label": "2022-07-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:624",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-19"
+            }
+          },
+          {
+            "label": "2021-12-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:628",
+              "quote": "       CONSIDÉRANT            la résolution numéro 2021-12-09 adoptant le"
+            }
+          },
+          {
+            "label": "2022-07-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:654",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-20"
+            }
+          },
+          {
+            "label": "2022-07-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:708",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-21"
+            }
+          },
+          {
+            "label": "2022-07-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:727",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-22"
+            }
+          },
+          {
+            "label": "2022-07-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:761",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-23"
+            }
+          },
+          {
+            "label": "2022-07-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:794",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-24"
+            }
+          },
+          {
+            "label": "2022-07-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:844",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-07-25"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "588",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "                            8.6   Adoption du règlement No 588 : Règlement"
+            }
+          },
+          {
+            "label": "451",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "                                  modifiant le règlement numéro 451 intitulé"
+            }
+          },
+          {
+            "label": "590",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "                                  règlement : Règlement numéro 590"
+            }
+          },
+          {
+            "label": "555",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:710",
+              "quote": "       numéro 590 modifiant le règlement 555, concernant les limites de"
+            }
+          },
+          {
+            "label": "589",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:480",
+              "quote": "       Adoption du second projet de règlement No 589 : Règlement"
+            }
+          },
+          {
+            "label": "446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:481",
+              "quote": "       modifiant le règlement numéro 446 intitulé Règlement de zonage,"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "AF17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:665",
+              "quote": "       CONSIDÉRANT QUE        le règlement de zonage, à la zone AF17,"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5535776",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "                                  lot 5 535 776, situé sur le chemin Armstrong –"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/03c0a5eb7738.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/03c0a5eb7738.pdf/.graphify/.graphify_extract.json — 33 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 33,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/P.V-6-avril-2021.pdf",
+      "storage_key": "raw/pv-index/cas/07c29deafc6458a8de201aafc6aa9653283797a63e0566125b8ecae1a76080e4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Procès-verbal des délibérations du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 avril 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "      Procès-verbal de la séance ordinaire du conseil municipal, tenue le 6 avril 2021 à 19h35, à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 avril 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "      Procès-verbal de la séance ordinaire du conseil municipal, tenue le 6 avril 2021 à 19h35, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-01-021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      En vertu de la résolution numéro 2021-01-021 adoptée le 11 janvier 2021, la séance du conseil"
+            }
+          },
+          {
+            "label": "2021-03-064",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "                         8.27 Modification de la résolution 2021-03-064 – Contrat des prises de vues avec Imacom"
+            }
+          },
+          {
+            "label": "2019-090",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:741",
+              "quote": "                    CONSIDÉRANT l’adoption de la résolution 2019-090;"
+            }
+          },
+          {
+            "label": "2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1031",
+              "quote": "                    Que l’offre no. S-14962, tel que spécifiée dans la résolution numéro 2021-03-"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "578",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:277",
+              "quote": "                                    règlement numéro 578 - Différents travaux d’entretien, de"
+            }
+          },
+          {
+            "label": "553",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1164",
+              "quote": "      La Municipalité du Canton de Cleveland a adopté un règlement no 553 sur le contrôle et le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6293785",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:597",
+              "quote": "                    Couture (lot 6 293 785)."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/cae1a76080e4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/cae1a76080e4.pdf/.graphify/.graphify_extract.json — 11 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "danville",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-4-AVRIL-2022-1.pdf",
+      "storage_key": "raw/pv-index/cas/09bd7353e0b00a67a4f6d084f06064215af551e10ffee0feec0fea5bf43b786d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 21,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-04-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-01"
+            }
+          },
+          {
+            "label": "2022-04-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-02"
+            }
+          },
+          {
+            "label": "2022-04-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-03"
+            }
+          },
+          {
+            "label": "2022-04-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-04"
+            }
+          },
+          {
+            "label": "2022-04-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-05"
+            }
+          },
+          {
+            "label": "2022-04-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:181",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-06"
+            }
+          },
+          {
+            "label": "2022-04-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-07"
+            }
+          },
+          {
+            "label": "2022-04-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:270",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-08"
+            }
+          },
+          {
+            "label": "2022-04-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-09"
+            }
+          },
+          {
+            "label": "2022-04-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:317",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-10"
+            }
+          },
+          {
+            "label": "2022-04-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:379",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-11"
+            }
+          },
+          {
+            "label": "2022-04-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:400",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-12"
+            }
+          },
+          {
+            "label": "2022-04-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:527",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-13"
+            }
+          },
+          {
+            "label": "2022-04-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:592",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-14"
+            }
+          },
+          {
+            "label": "2022-04-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:627",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-15"
+            }
+          },
+          {
+            "label": "2022-04-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:665",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-16"
+            }
+          },
+          {
+            "label": "2022-04-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:712",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-17"
+            }
+          },
+          {
+            "label": "2022-04-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:734",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-18"
+            }
+          },
+          {
+            "label": "2022-04-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:762",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-19"
+            }
+          },
+          {
+            "label": "2022-04-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:789",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-20"
+            }
+          },
+          {
+            "label": "2022-04-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:900",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-04-21"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5535708",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:640",
+              "quote": "       ATTENDU QUE           cette demande affecte le lot 5 535 708 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/ea5bf43b786d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/ea5bf43b786d.pdf/.graphify/.graphify_extract.json — 24 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-12-JUIN-2024.pdf",
+      "storage_key": "raw/pv-index/cas/1214c6e435e8f95f3d0dbca6ccb6e5b9be1a40c8bc574f905cc21f629a96d055.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-06-28",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-28"
+            }
+          },
+          {
+            "label": "2024-06-29",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-29"
+            }
+          },
+          {
+            "label": "2024-06-30",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-30"
+            }
+          },
+          {
+            "label": "2024-06-31",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:264",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-31"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "609",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "                             cléricales dans le Règlement numéro 609 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/1f629a96d055.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/1f629a96d055.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-5-JUIN-2024.pdf",
+      "storage_key": "raw/pv-index/cas/12c50e23ee34e848250985cd17063b0af7caf578a8b93c87978ee3c3fdadb44a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-06-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-25"
+            }
+          },
+          {
+            "label": "2024-06-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-26"
+            }
+          },
+          {
+            "label": "2024-06-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "       RÉSOLUTION NUMÉRO 2024-06-27"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "609",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "                            avis de motion du Règlement numéro 609 a"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/e3c3fdadb44a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/e3c3fdadb44a.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2020/07/PV-10-JANVIER-2022-1.pdf",
+      "storage_key": "raw/pv-index/cas/12f6b753229d751276e5d729cc2a69f68064933610a6592de99612d485a2e4f8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 18
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       2022, la séance du conseil est tenue à huis clos."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       En vertu de la résolution numéro 2022-01-02 adoptée le 10 janvier"
+            }
+          },
+          {
+            "label": "2022-01-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-01"
+            }
+          },
+          {
+            "label": "2022-01-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:183",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-03"
+            }
+          },
+          {
+            "label": "2022-01-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:196",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-04"
+            }
+          },
+          {
+            "label": "2022-01-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-05"
+            }
+          },
+          {
+            "label": "2022-01-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-06"
+            }
+          },
+          {
+            "label": "2022-01-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:247",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-07"
+            }
+          },
+          {
+            "label": "2022-01-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:264",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-08"
+            }
+          },
+          {
+            "label": "2022-01-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:278",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-09"
+            }
+          },
+          {
+            "label": "2022-01-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:365",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-10"
+            }
+          },
+          {
+            "label": "2022-01-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "            RÉSOLUTION NUMÉRO 2022-01-11"
+            }
+          },
+          {
+            "label": "2022-01-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:483",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-12"
+            }
+          },
+          {
+            "label": "2022-01-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:498",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-13"
+            }
+          },
+          {
+            "label": "2022-01-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:546",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-14"
+            }
+          },
+          {
+            "label": "2022-01-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:563",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-15"
+            }
+          },
+          {
+            "label": "2022-01-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:587",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-16"
+            }
+          },
+          {
+            "label": "2022-01-17",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:670",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-17"
+            }
+          },
+          {
+            "label": "2022-01-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:749",
+              "quote": "       RÉSOLUTION NUMÉRO 2022-01-18"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/12d485a2e4f8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/12d485a2e4f8.pdf/.graphify/.graphify_extract.json — 22 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 22,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cleveland",
+      "municipality_name": "Cleveland",
+      "url": "https://cleveland.ca/wp-content/uploads/2026/03/PV-2-FEVRIER-2026.pdf",
+      "storage_key": "raw/pv-index/cas/15fda718b16744cbcbc6c53cb4b856f35d6cce507c5f0e003f8351aa554c767a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 16,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cleveland",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "       MRC DU VAL-SAINT-FRANÇOIS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-02-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-01"
+            }
+          },
+          {
+            "label": "2025-12-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "                            8.3   Correction de la résolution 2025-12-16 : «"
+            }
+          },
+          {
+            "label": "2026-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-02"
+            }
+          },
+          {
+            "label": "2026-02-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:127",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-03"
+            }
+          },
+          {
+            "label": "2026-02-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-04"
+            }
+          },
+          {
+            "label": "2026-02-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:171",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-05"
+            }
+          },
+          {
+            "label": "2026-02-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-07"
+            }
+          },
+          {
+            "label": "2025-03-27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "       CONSIDÉRANT QUE la Résolution numéro 2025-03-27, adoptée le"
+            }
+          },
+          {
+            "label": "2026-02-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:279",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-08"
+            }
+          },
+          {
+            "label": "2026-02-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-09"
+            }
+          },
+          {
+            "label": "2026-02-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:359",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-10"
+            }
+          },
+          {
+            "label": "2026-02-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:392",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-11"
+            }
+          },
+          {
+            "label": "2026-02-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:425",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-12"
+            }
+          },
+          {
+            "label": "2026-02-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:477",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-13"
+            }
+          },
+          {
+            "label": "2026-02-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:603",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-14"
+            }
+          },
+          {
+            "label": "2026-02-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:654",
+              "quote": "       RÉSOLUTION NUMÉRO 2026-02-15"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "620",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "                                  : Règlement No 620 – Règlement relatif à"
+            }
+          },
+          {
+            "label": "580",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:681",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:681",
+              "quote": "       Règlement no 580 modifiant l’article 7.1 du Règlement no 562."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/51aa554c767a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T174039Z/cleveland/51aa554c767a.pdf/.graphify/.graphify_extract.json — 21 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 21,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cleveland",
+          "melbourne",
+          "richmond"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
