@@ -1,0 +1,1676 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:45:37.282Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5100,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "Regulation": 46,
+    "Resolution": 5,
+    "CouncilSession": 2,
+    "MeetingDate": 2,
+    "LotCadastre": 3,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 97,
+    "edges": 24,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 3,
+    "documents_with_zone": 1,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "lac-des-seize-iles",
+      "storage_key": "raw/pv-index/cas/c25312d38251681ebe439d6b92c6a1e058632ed903d250011a88f6942f686902.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5708090",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:42",
+      "quote": "    (PPCMOI) pour le lot 5 708 090 – chemin de la Montagne"
+    },
+    {
+      "municipality_slug": "lac-des-seize-iles",
+      "storage_key": "raw/pv-index/cas/f01adddd592b58b4383871bea4cb828ad20fec30308eae7c0fc16e984a14052f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5708090",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:55",
+      "quote": "5.5 Report de la décision concernant le projet particulier (PPCMOI) – lot 5 708 090,"
+    },
+    {
+      "municipality_slug": "lac-du-cerf",
+      "storage_key": "raw/pv-index/cas/ed1fcb3d564bae01821d546b55588e422ee4c5f3d6f70bfeacd4ca288613467e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5562724",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:43",
+      "quote": "   8.5 Octroi du mandat pour l’arpentage des lots 5 562 724, 5 562 806 et 5 563 778 à Boréal Arpenteur -"
+    },
+    {
+      "municipality_slug": "lac-etchemin",
+      "storage_key": "raw/pv-index/cas/998e11bb98fcb121204167c389b9ac096f595e25621fbe71d945fd1676b37bee.pdf",
+      "entity_type": "Zone",
+      "value": "74-REC",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:43",
+      "quote": "        lot numéro 4 341 623, zone 74-REC, à Lac-Etchemin"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 178,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 3,
+      "total_lot_numbers": 5322,
+      "missing": [
+        "lac-edouard"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z",
+  "documents": [
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526105616-projet-ordre-du-jour-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ba872d102d7163bd88369516759e6f08da2bf49300723202671c92dc0c6d0661.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-103-04",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "5.7 Avis de motion – Règlement 2025-103-04 modifiant le règlement de zonage"
+            }
+          },
+          {
+            "label": "2025-103-05",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "5.9 Avis de motion – Règlement 2025-103-05 modifiant le règlement de zonage"
+            }
+          },
+          {
+            "label": "2024-03-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "7.1 Adoption du règlement 2024-03-01 concernant le brûlage"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "8.1 Avis de motion – Règlement no 2025-07 concernant l’accès aux débarcadères"
+            }
+          },
+          {
+            "label": "2025-08",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "8.3 Avis de motion – Règlement no 2025-08 sur le contrôle de l’éclairage extérieur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/92dc0c6d0661.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/92dc0c6d0661.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526155406-projet-ordre-du-jour-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/bccce840b6fee95589246842d0db45f9baabdc944df1b95390bcff4c6af5de50.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-03-45",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "8.3 Annulation de la résolution 2025-03-45 portant sur la nomination du lot"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-09",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "3.3 Avis de motion – projet de règlement 2025-09 édictant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "2025-06",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "5.2 Adoption du règlement 2025-06 relatif à l’entretien et à l’occupation des"
+            }
+          },
+          {
+            "label": "2025-103-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "5.3 Adoption du règlement 2025-103-04 abrogeant le règlement 2025-103-02 et"
+            }
+          },
+          {
+            "label": "2025-103-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "5.3 Adoption du règlement 2025-103-04 abrogeant le règlement 2025-103-02 et"
+            }
+          },
+          {
+            "label": "2025-103-05",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "5.4 Adoption du règlement 2025-103-05 modifiant le règlement de zonage 2019-"
+            }
+          },
+          {
+            "label": "2025-10",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "5.5 Avis de motion – projet de règlement 2025-10 abrogeant le règlement 2019-"
+            }
+          },
+          {
+            "label": "2019-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "5.6 Dépôt du projet de règlement 2025-10 abrogeant le règlement 2019-03 relatif"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "8.1 Adoption du règlement 2025-07 abrogeant le règlement 2022-05 et"
+            }
+          },
+          {
+            "label": "2022-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "8.1 Adoption du règlement 2025-07 abrogeant le règlement 2022-05 et"
+            }
+          },
+          {
+            "label": "2025-08",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "\f8.2 Adoption du règlement 2025-08 sur le contrôle de l’éclairage extérieur et la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/ff4c6af5de50.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/ff4c6af5de50.pdf/.graphify/.graphify_extract.json — 13 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles",
+          "morin-heights"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526160524-odj-novembre-2025-vf.pdf",
+      "storage_key": "raw/pv-index/cas/c234bf5763dad77906d97a8f853f173efb5c2f551c9f3df444b3e665c550e67c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/e665c550e67c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/e665c550e67c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526155812-odj-aout-2025-vf.pdf",
+      "storage_key": "raw/pv-index/cas/c25312d38251681ebe439d6b92c6a1e058632ed903d250011a88f6942f686902.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 aout 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 aout 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "1.Adoption de l’ordre du jour de la séance ordinaire du 9 aout 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-12",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "3.3 Adoption du règlement 2025-12 abrogeant le règlement 2023-02 portant sur la"
+            }
+          },
+          {
+            "label": "2023-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "3.3 Adoption du règlement 2025-12 abrogeant le règlement 2023-02 portant sur la"
+            }
+          },
+          {
+            "label": "2025-101-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "5.3 Avis de motion – Projet de règlement 2025-101-01 modifiant le règlement sur"
+            }
+          },
+          {
+            "label": "2025-11",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "8.1 Adoption du règlement 2025-11 abrogeant le règlement 2023-03 et portant sur"
+            }
+          },
+          {
+            "label": "2023-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "8.1 Adoption du règlement 2025-11 abrogeant le règlement 2023-03 et portant sur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5708090",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "    (PPCMOI) pour le lot 5 708 090 – chemin de la Montagne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/f6942f686902.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/f6942f686902.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526155617-odj-vf-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f01adddd592b58b4383871bea4cb828ad20fec30308eae7c0fc16e984a14052f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-09",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "3.3 Adoption du règlement 2025-09 – Code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "2025-12",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "3.8 Avis de motion – projet de règlement 2025-12 abrogeant le règlement 2023-02"
+            }
+          },
+          {
+            "label": "2023-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "3.8 Avis de motion – projet de règlement 2025-12 abrogeant le règlement 2023-02"
+            }
+          },
+          {
+            "label": "2025-10",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "5.2 Adoption du règlement 2025-10 abrogeant le règlement 2019-103 relatif aux"
+            }
+          },
+          {
+            "label": "2019-103",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "5.2 Adoption du règlement 2025-10 abrogeant le règlement 2019-103 relatif aux"
+            }
+          },
+          {
+            "label": "2025-103-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "5.3 Adoption du règlement 2025-103-04 abrogeant le règlement 2025-103-02 et"
+            }
+          },
+          {
+            "label": "2025-103-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "5.3 Adoption du règlement 2025-103-04 abrogeant le règlement 2025-103-02 et"
+            }
+          },
+          {
+            "label": "2025-103-05",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "5.4 Adoption du règlement 2025-103-05 modifiant le règlement de zonage 2019-"
+            }
+          },
+          {
+            "label": "2025-11",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "8.2 Avis de motion – Projet de règlement 2025-11 abrogeant le règlement 2023-03"
+            }
+          },
+          {
+            "label": "2023-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "8.2 Avis de motion – Projet de règlement 2025-11 abrogeant le règlement 2023-03"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5708090",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "5.5 Report de la décision concernant le projet particulier (PPCMOI) – lot 5 708 090,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/6e984a14052f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/6e984a14052f.pdf/.graphify/.graphify_extract.json — 13 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "municipality_name": "Lac-des-Seize-Îles",
+      "url": "https://www.lac-des-seize-iles.com/fichiersUpload/fichiers/20260526102936-odj-mai-2026-vf.pdf",
+      "storage_key": "raw/pv-index/cas/fed1ae4698dd0487516c25808e4e3b6ded2fa4a88f125034adee8bab7fd813b3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-des-Seize-Îles",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "    Séance ordinaire du conseil de la Municipalité de Lac-des-Seize-Îles"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-06",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "3.5 Avis de motion – Projet de règlement numéro 2026-06 sur la gestion"
+            }
+          },
+          {
+            "label": "SQ-2023-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "7.3 Avis de motion – Projet de règlement SQ-2023-02 modifiant le règlement SQ-"
+            }
+          },
+          {
+            "label": "SQ-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "7.4 Dépôt du projet de règlement SQ-2023-02 modifiant le règlement SQ-2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/8bab7fd813b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-des-seize-iles/8bab7fd813b3.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-seize-iles",
+          "morin-heights"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_01-10-2025-1.pdf",
+      "storage_key": "raw/pv-index/cas/050659b65061a2745fc8cc55710add3cedf24587f5bbeb5cae1f5b4f320ea2de.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                        MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                        MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "157-09-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "    9.1 Abrogation de la résolution 157-09-2025- Prévision budgétaire 2026 de la Régie de sécurité incendie et civile"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "199-2000",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "   6.1. Adoption du règlement #419-2025 modifiant le règlement numéro 199-2000 relatif au lotissement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/5b4f320ea2de.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/5b4f320ea2de.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_11-05-2026.pdf",
+      "storage_key": "raw/pv-index/cas/2a0c655ebbfb829edf78b4ed48d73789d2d769a3aa7213b554c764f7c78630ef.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/64f7c78630ef.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/64f7c78630ef.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_12-01-2026-2.pdf",
+      "storage_key": "raw/pv-index/cas/2a56dca07af97294464e93587dcff9ee5d28ec55a13180ff0d548a4c55c71005.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/8a4c55c71005.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/8a4c55c71005.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_08_06_2026.pdf",
+      "storage_key": "raw/pv-index/cas/6a7c0a34675e991f86bb7765990a468394e47cb6ebf14b8526eea0c07e5a90b6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/a0c07e5a90b6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/a0c07e5a90b6.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_09-02-2026.pdf",
+      "storage_key": "raw/pv-index/cas/7d3b8c0de8d54bb99e22df652239587cc623d91acbc4cfc363eb68b5ec972caa.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                          MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                          MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/68b5ec972caa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/68b5ec972caa.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_09-03-2026.pdf",
+      "storage_key": "raw/pv-index/cas/825c7b365bcaec3e5ec9288ae8646e85c4f684ba054910f616f5ec3a55555e75.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "379-2022",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "   8.1 Dépôt du projet de règlement #423-2026 révisé et abrogeant le règlement 379-2022 relatif au code d’éthique et de"
+            }
+          },
+          {
+            "label": "199-2000",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   8.3 Dépôt du projet de règlement # 425 -2026 modifiant le règlement 199-2000 relatif au lotissement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/ec3a55555e75.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/ec3a55555e75.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-du-cerf",
+      "municipality_name": "Lac-du-Cerf",
+      "url": "https://www.lacducerf.ca/wp-content/uploads/ODJ_conseil_ordinaire_13-04-2026.pdf",
+      "storage_key": "raw/pv-index/cas/ed1fcb3d564bae01821d546b55588e422ee4c5f3d6f70bfeacd4ca288613467e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-du-Cerf",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE LAC-DU-CERF"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "27-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "   abrogation de la résolution 27-02-2026;"
+            }
+          },
+          {
+            "label": "28-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "   archive et délégation de compétence et abrogation de la résolution 28-02-2026;"
+            }
+          },
+          {
+            "label": "29-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "   gouvernance municipale, travaux publics et abrogation de la résolution 29-02-2026;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "379-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "   4.7 Adoption du règlement # 423-2026 révisé et abrogeant le règlement 379-2022 relatif au code d’éthique et"
+            }
+          },
+          {
+            "label": "199-2000",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "   8.3 Adoption du règlement #425-2026 - modifiant le règlement 199-2000 relatif au lotissement"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5562724",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "   8.5 Octroi du mandat pour l’arpentage des lots 5 562 724, 5 562 806 et 5 563 778 à Boréal Arpenteur -"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/ca288613467e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-du-cerf/ca288613467e.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-du-cerf"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-edouard",
+      "municipality_name": "Lac-Édouard",
+      "url": "https://www.lacedouard.ca/upload/seances-du-conseil/ordre_du_jour/2026/odjpubmars.pdf",
+      "storage_key": "raw/pv-index/cas/3483b5f6127f866f9bc3b3480660d7e9bdec681e44e4450aeb45dc816fa1e529.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Édouard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                       Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                       Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "203-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "6.    Résolution adoptant le règlement 203-2026 régissant l'occupation et l'entretien"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/dc816fa1e529.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/dc816fa1e529.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-edouard"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-edouard",
+      "municipality_name": "Lac-Édouard",
+      "url": "https://www.lacedouard.ca/upload/seances-du-conseil/ordre_du_jour/2026/odjpubavril2026.pdf",
+      "storage_key": "raw/pv-index/cas/79158366e29ec0053c47c340f5d1bcb1e86674b8598458eba3bfb9c122e99671.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Édouard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "204-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": " 6.   Avis de motion / Règlement 204-2026 régissant les travaux d’excavation du roc effectués au"
+            }
+          },
+          {
+            "label": "205-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": " 8.   Avis de motion / Règlement 205-2026 sur les usages conditionnels"
+            }
+          },
+          {
+            "label": "177-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "      modifiant le règlement 177-2021"
+            }
+          },
+          {
+            "label": "206-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "10.   Avis de motion/Règlement 206-2026 sur les usages conditionnels modifiant le règlement # 66"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/b9c122e99671.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/b9c122e99671.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-edouard"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-edouard",
+      "municipality_name": "Lac-Édouard",
+      "url": "https://www.lacedouard.ca/upload/seances-du-conseil/ordre_du_jour/2026/2-_odjpubjuin_2.pdf",
+      "storage_key": "raw/pv-index/cas/ad14645649afed2ff90925b956595c575ddb1363f21d7dbff087b0c4deb5bc65.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Édouard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "207-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": " 6.   Avis de motion concernant le règlement 207-2026 régissant les projets"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/b0c4deb5bc65.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/b0c4deb5bc65.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-edouard"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-edouard",
+      "municipality_name": "Lac-Édouard",
+      "url": "https://www.lacedouard.ca/upload/seances-du-conseil/ordre_du_jour/2026/odjpubjanvier2026.pdf",
+      "storage_key": "raw/pv-index/cas/bf521adc05a641176e04ac3af87f6ac1b59cbf1aa5ac591d69e96d9962a84798.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/6d9962a84798.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/6d9962a84798.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-edouard",
+      "municipality_name": "Lac-Édouard",
+      "url": "https://www.lacedouard.ca/upload/seances-du-conseil/ordre_du_jour/2026/02-_odjpubfevrier.pdf",
+      "storage_key": "raw/pv-index/cas/f5ed508feea149f284dcce52dec2d7f1ebc2b970d3319f9b86882ab6f6077905.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Édouard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            Municipalité de Lac-Édouard"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "203-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "6.    Avis de motion concernant le projet de règlement 203-2026 régissant l’occupation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/2ab6f6077905.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-edouard/2ab6f6077905.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-edouard"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-etchemin",
+      "municipality_name": "Lac-Etchemin",
+      "url": "https://lac-etchemin.ca/wp-content/uploads/2026/06/oj-so-2026-06-02.pdf",
+      "storage_key": "raw/pv-index/cas/998e11bb98fcb121204167c389b9ac096f595e25621fbe71d945fd1676b37bee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Etchemin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          SÉANCE ORDINAIRE MENSUELLE - CONSEIL MUNICIPAL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          SÉANCE ORDINAIRE MENSUELLE - CONSEIL MUNICIPAL DE LA"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "252-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "\f 6.3       Avis de motion - Règlement numéro 252-2026 ayant pour objet d’amender le règlement de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "74-REC",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "        lot numéro 4 341 623, zone 74-REC, à Lac-Etchemin"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-etchemin/fd1676b37bee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-etchemin/fd1676b37bee.pdf/.graphify/.graphify_extract.json — 4 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-etchemin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-etchemin",
+      "municipality_name": "Lac-Etchemin",
+      "url": "https://lac-etchemin.ca/wp-content/uploads/2026/06/ordrejour-22-juin-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f7ec6b86df0b75feb2135681e2e5a88c832e89f20673da2d87f05f0a32a4a4db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Etchemin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          SÉANCE EXTRAORDINAIRE MENSUELLE - CONSEIL MUNICIPAL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          SÉANCE EXTRAORDINAIRE MENSUELLE - CONSEIL MUNICIPAL DE LA"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 22 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          SÉANCE EXTRAORDINAIRE MENSUELLE - CONSEIL MUNICIPAL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "22 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "      LE LUNDI LE 22 JUIN 2026, À 19 H, À LA SALLE DES DÉLIBÉRATIONS DU CONSEIL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-etchemin/5f0a32a4a4db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184521Z/lac-etchemin/5f0a32a4a4db.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-etchemin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

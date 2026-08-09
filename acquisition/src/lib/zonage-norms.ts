@@ -57,12 +57,15 @@ export function gridKey(slug: string): string {
 }
 
 // ───────────────────────────────────────────────────────────────────────────
-//  1. Flatten ZoneNorms → the EXACT deployed Sherbrooke parquet schema.
-//     40 columns: zone_code, zone_page, usages, then for each of
+//  1. Flatten ZoneNorms → the deployed Sherbrooke parquet schema.
+//     Base columns: zone_code, zone_page, usages, then for each of
 //     {densite, hauteur_min, hauteur_max, frontage_min, superficie_min,
 //      marge_avant_min, marge_laterale_min, marge_arriere_min}:
 //     <field>_value (DOUBLE), <field>_raw / _unit (UTF8), <field>_confidence
-//     (DOUBLE); then _source_url, _reglement, _methode, _snapshot.
+//     (DOUBLE); then _source_url, _reglement, _methode, _snapshot. Four optional
+//     density-specific provenance columns preserve the exact NEW source when a
+//     density-only document enriches a pre-existing row without falsely
+//     re-attributing that row's other norms.
 // ───────────────────────────────────────────────────────────────────────────
 
 export const NORM_FIELDS = [
@@ -74,6 +77,18 @@ export const NORM_FIELDS = [
   "marge_avant_min",
   "marge_laterale_min",
   "marge_arriere_min",
+] as const;
+
+export const DENSITY_PROVENANCE_COLUMNS = [
+  "densite_source_url",
+  "densite_source_sha256",
+  "densite_source_storage_key",
+  "densite_methode",
+  "densite_snapshot",
+  "densite_page_source",
+  "densite_proof",
+  "densite_legal_date",
+  "densite_legal_date_evidence",
 ] as const;
 
 /** Build the parquet schema (matches the deployed Sherbrooke product exactly). */
@@ -93,6 +108,9 @@ export function buildNormsSchema(): { schema: ParquetSchema; columns: string[] }
   fields["_reglement"] = { type: "UTF8", optional: true, compression: "SNAPPY" };
   fields["_methode"] = { type: "UTF8", optional: true, compression: "SNAPPY" };
   fields["_snapshot"] = { type: "UTF8", optional: true, compression: "SNAPPY" };
+  for (const column of DENSITY_PROVENANCE_COLUMNS) {
+    fields[column] = { type: "UTF8", optional: true, compression: "SNAPPY" };
+  }
   const columns = Object.keys(fields);
   return { schema: new ParquetSchema(fields as never), columns };
 }

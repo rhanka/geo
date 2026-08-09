@@ -1,0 +1,333 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:20:51.507Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6000,
+    "limit": 20,
+    "requested": 20,
+    "selected": 5,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/f0a4b72cdfba2d26cad2c7bac65e453f601fded48774c50ec8c748154454757c.pdf",
+      "raw/pv-index/cas/f0a720579198854d235c12807379379e63deb7b41c45cc5284af64613c203508.pdf",
+      "raw/pv-index/cas/f0b19fae06c20472011e04cca0ff4f4f1f4a95d0a4e39e2f270765ee86bdb77a.pdf",
+      "raw/pv-index/cas/f0cccc8ff7c4794c140408acea1c53bfdd8d9c968fb8df32b55a866be76edf7d.pdf",
+      "raw/pv-index/cas/f0f2dd8c4b06553958ec8724bc0117a3d3d07928c2c7bcacc42c2b49a4d7ff91.pdf",
+      "raw/pv-index/cas/f0fea29da031e83b3ea2485f5bc55b50e9aaa9ab5a3d3e89f856a1887c2d4cd4.pdf",
+      "raw/pv-index/cas/f0ff8c6e6f95162749f6fc44fe172fc35c5a8d318f0fdc4f1e91449a36e8c5a3.pdf",
+      "raw/pv-index/cas/f11443b08cf97dc746bced0fd57d7c09c25a051cc793f52e0f9c25fd0415338d.pdf",
+      "raw/pv-index/cas/f12d77837850890d986fb67c7eb643c3b8f9a9502580a3604a3b2d8ff0c21e42.pdf",
+      "raw/pv-index/cas/f1336a96645927fc14caf1618149dcf255412cd06c2debad9b571dd2ce3e4aaa.pdf",
+      "raw/pv-index/cas/f153d4a083830343f88353f3a416928cf84e8b0a30592b05545b4128cc234862.pdf",
+      "raw/pv-index/cas/f157c6dd40115358b10d70bb68f3b611b6200be1ce3482f4d16f0c34bee3b8d6.pdf",
+      "raw/pv-index/cas/f1597eb9ae7dbc7976cd0a2635f2deaddd0b14f42363cf1717f0f4185d4bd7cf.pdf",
+      "raw/pv-index/cas/f1687f6fca5d7e4664001a090891ecb1e207b07c76ec578cf5eb872acd33a12c.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 5,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 3,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 3
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "Resolution": 2,
+    "Regulation": 6
+  },
+  "graphify": {
+    "nodes": 12,
+    "edges": 2,
+    "failures": 3
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 261,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 4,
+      "total_lot_numbers": 7018,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z",
+  "documents": [
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2023-09-13%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f0e2b51730909aba2630d3ad30fafa201e7f6a221137d5fc436fa4f50b127e48.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/duhamel-ouest/a4f50b127e48.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/duhamel-ouest/a4f50b127e48.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2023/11/oj20231204.pdf",
+      "storage_key": "raw/pv-index/cas/f0e5d0011a893dd560266bfe43fc610835fd8168cdd6b1633675fe07063ff69e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-12-509",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "    5.3 - Résolution pour modifier la résolution 2022-12-509 - Offre de services"
+            }
+          },
+          {
+            "label": "2022-12-511",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "    5.4 - Résolution pour modifier la résolution 2022-12-511 - Offre de services"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "016-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "    10.3 - Adoption du règlement 016-2023 constituant le Comité Consultatif"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/acton-vale/fe07063ff69e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/acton-vale/fe07063ff69e.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bury",
+      "municipality_name": "Bury",
+      "url": "https://municipalitedebury.qc.ca/wp-content/uploads/2026/06/2026-05-25_SE_FR.pdf",
+      "storage_key": "raw/pv-index/cas/f1017cc335e1464dca57cff11ff4404de5f00338b411f967a2d3fe2839aa5167.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/bury/fe2839aa5167.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/bury/fe2839aa5167.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2025/01/oj20250804.pdf",
+      "storage_key": "raw/pv-index/cas/f10b4de0fb4bd449fe6208172e9374b433f1218993e7bfc97b07a263aed08b8d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "013-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "   10.1 - Adoption du règlement 013-2025 concernant l'enlèvement des matières"
+            }
+          },
+          {
+            "label": "015-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "   10.2 - Adoption du règlement 015-2025 établissant la tarification pour Musiqu'Art."
+            }
+          },
+          {
+            "label": "014-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "   10.3 - Adoption du règlement 014-2025 établissant les coûts d'inscription aux cours"
+            }
+          },
+          {
+            "label": "010-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "   10.4 - Adoption du règlement 010-2025 modifiant le règlement de zonage 069-2003"
+            }
+          },
+          {
+            "label": "006-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "              personnes habiles à voter, relatif au règlement 006-2025 (Zones 137-138-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/acton-vale/a263aed08b8d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/acton-vale/a263aed08b8d.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823145431-2019-12-16-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/f1619d994de90c4421ad17f3d0df8475de03d39c2d7999bc4e52a2d2ed5bbd03.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/chute-aux-outardes/a2d2ed5bbd03.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192046Z/chute-aux-outardes/a2d2ed5bbd03.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -13,9 +13,11 @@ import {
   CapturedFetchError,
   type CaptureFetchLike,
   type CaptureHttpResponse,
+  type CaptureRequestInit,
 } from "./capturedFetch.js";
 import {
   assertCasKeyMatchesBytes,
+  assertCasKeyMatchesSha256,
   assertCaptureWritableKey,
   buildCaptureRunId,
   captureProofFields,
@@ -37,14 +39,20 @@ function fakeStore(): CaptureObjectStore & {
   objects: Map<string, { body: Uint8Array | string; contentType?: string }>;
   puts: string[];
   heads: string[];
+  copies: Array<{ source: string; destination: string }>;
+  deletes: string[];
 } {
   const objects = new Map<string, { body: Uint8Array | string; contentType?: string }>();
   const puts: string[] = [];
   const heads: string[] = [];
+  const copies: Array<{ source: string; destination: string }> = [];
+  const deletes: string[] = [];
   return {
     objects,
     puts,
     heads,
+    copies,
+    deletes,
     head: async (key) => {
       heads.push(key);
       return objects.has(key);
@@ -52,6 +60,28 @@ function fakeStore(): CaptureObjectStore & {
     put: async (key, body, contentType) => {
       puts.push(key);
       objects.set(key, { body, ...(contentType !== undefined ? { contentType } : {}) });
+    },
+    putStream: async (key, body, contentType) => {
+      puts.push(key);
+      const chunks: Uint8Array[] = [];
+      for await (const chunk of body) chunks.push(chunk);
+      const bytes = new Uint8Array(chunks.reduce((size, chunk) => size + chunk.byteLength, 0));
+      let offset = 0;
+      for (const chunk of chunks) {
+        bytes.set(chunk, offset);
+        offset += chunk.byteLength;
+      }
+      objects.set(key, { body: bytes, ...(contentType !== undefined ? { contentType } : {}) });
+    },
+    copy: async (source, destination) => {
+      copies.push({ source, destination });
+      const object = objects.get(source);
+      if (!object) throw new Error(`source de copie absente: ${source}`);
+      objects.set(destination, { ...object });
+    },
+    delete: async (key) => {
+      deletes.push(key);
+      objects.delete(key);
     },
   };
 }
@@ -80,18 +110,40 @@ function httpResponse(opts: {
   };
 }
 
+function streamingHttpResponse(opts: {
+  body: readonly Uint8Array[];
+  headers?: Record<string, string>;
+}): CaptureHttpResponse {
+  return {
+    status: 200,
+    ok: true,
+    headers: headersOf(opts.headers ?? {}),
+    body: new ReadableStream<Uint8Array>({
+      start(controller) {
+        for (const chunk of opts.body) controller.enqueue(chunk);
+        controller.close();
+      },
+    }),
+    arrayBuffer: async () => {
+      throw new Error("arrayBuffer must not be called by the streaming capture path");
+    },
+  };
+}
+
 /** Répond selon une table URL → réponse ; enregistre les URL réellement appelées. */
 function fakeFetch(
   table: Record<string, CaptureHttpResponse | (() => Promise<CaptureHttpResponse>)>,
-): CaptureFetchLike & { calls: string[] } {
+): CaptureFetchLike & { calls: string[]; inits: Array<CaptureRequestInit | undefined> } {
   const calls: string[] = [];
-  const impl = async (url: string): Promise<CaptureHttpResponse> => {
+  const inits: Array<CaptureRequestInit | undefined> = [];
+  const impl = async (url: string, init?: CaptureRequestInit): Promise<CaptureHttpResponse> => {
     calls.push(url);
+    inits.push(init);
     const hit = table[url];
     if (!hit) throw new Error(`fakeFetch: URL non prévue ${url}`);
     return typeof hit === "function" ? hit() : hit;
   };
-  return Object.assign(impl, { calls });
+  return Object.assign(impl, { calls, inits });
 }
 
 function newRun(store: CaptureObjectStore, runId = "zones-20260725T120000Z-0"): CaptureRun {
@@ -143,6 +195,8 @@ describe("identité du run", () => {
     expect(() => assertCasKeyMatchesBytes(`raw/zones-arcgis/cas/${"0".repeat(64)}.json`, body)).toThrow(
       /clé CAS mensongère/,
     );
+    expect(() => assertCasKeyMatchesSha256(good, sha256Hex(body))).not.toThrow();
+    expect(() => assertCasKeyMatchesSha256(good, "0".repeat(64))).toThrow(/clé CAS mensongère/);
   });
 });
 
@@ -151,6 +205,25 @@ describe("identité du run", () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe("capturedFetch — succès", () => {
+  it("injecte l'UA du run, sans écraser un header User-Agent explicite", async () => {
+    const store = fakeStore();
+    const run = newRun(store);
+    const url = "https://exemple.qc.ca/zones.geojson";
+    const fetchImpl = fakeFetch({
+      [url]: httpResponse({ body: GEOJSON, headers: { "content-type": "application/json" } }),
+    });
+
+    await capturedFetch(url, undefined, { run, source: "zones-arcgis", fetchImpl });
+    await capturedFetch(url, { headers: { "User-Agent": "caller-configured/1.0" } }, {
+      run,
+      source: "zones-arcgis",
+      fetchImpl,
+    });
+
+    expect(fetchImpl.inits[0]?.headers?.["user-agent"]).toBe(run.userAgent);
+    expect(fetchImpl.inits[1]?.headers?.["User-Agent"]).toBe("caller-configured/1.0");
+  });
+
   it("dépose les octets en CAS, écrit le .meta.json et journalise une ligne bien formée", async () => {
     const store = fakeStore();
     const run = newRun(store);
@@ -246,6 +319,53 @@ describe("capturedFetch — succès", () => {
     expect(JSON.parse(String(store.objects.get(run.keys.header)!.body))).toMatchObject({
       run_id: run.runId,
     });
+  });
+
+  it("pompe un gros corps en flux vers un spool de run puis promeut le CAS sans arrayBuffer", async () => {
+    const store = fakeStore();
+    const run = newRun(store, "reglement-20260726T120000Z-0");
+    const url = "https://ville.example/reglements/urbanisme.pdf";
+    const chunks = [
+      new TextEncoder().encode("%PDF-1.7 "),
+      new Uint8Array(32 * 1024).fill(0x61),
+      new TextEncoder().encode(" fin"),
+    ];
+    const response = streamingHttpResponse({
+      body: chunks,
+      headers: { "content-type": "application/pdf" },
+    });
+
+    const res = await capturedFetch(url, undefined, {
+      run,
+      source: "reglement-mrc",
+      lane: "reglement",
+      retainBody: false,
+      fetchImpl: fakeFetch({ [url]: response }),
+    });
+
+    const expected = new Uint8Array(chunks.reduce((size, chunk) => size + chunk.byteLength, 0));
+    let offset = 0;
+    for (const chunk of chunks) {
+      expected.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    const casKey = `raw/reglement-mrc/cas/${sha256Hex(expected)}.pdf`;
+    expect(res).toMatchObject({ ok: true, bytes: null });
+    expect(res.line).toMatchObject({
+      bytes: expected.byteLength,
+      sha256: `sha256:${sha256Hex(expected)}`,
+      storage_key: casKey,
+      dedup: false,
+      error: null,
+    });
+    expect(store.copies).toHaveLength(1);
+    expect(store.copies[0]).toMatchObject({ destination: casKey });
+    expect(store.copies[0]!.source).toMatch(
+      /^capture\/_runs\/reglement-20260726T120000Z-0\/spool\/[0-9a-f-]+\.body$/,
+    );
+    expect(store.deletes).toEqual([store.copies[0]!.source]);
+    expect(store.objects.has(store.copies[0]!.source)).toBe(false);
+    expect(Array.from(store.objects.get(casKey)!.body as Uint8Array)).toEqual(Array.from(expected));
   });
 });
 

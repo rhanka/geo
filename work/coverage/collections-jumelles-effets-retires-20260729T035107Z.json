@@ -1,0 +1,512 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-29T03:51:07.640Z",
+  "measurement": {
+    "complete": true,
+    "object_read_max_bytes": 5242880,
+    "s3_prefix": "normalized/",
+    "catalog_rule": "StoreProvider: .geojson recursively indexed by datasetId or stem; lexicographically later same id wins",
+    "twin_rule": "served id with an existing canonical id after stripping additive-prebackup, ISO timestamp, __subdir, or an unambiguous backup/copy/debug/--number suffix",
+    "effect_rule": "feature property effet_densifiant present, non-empty, and not exactly inconnu; every zonage twin is scanned as 1 Mio S3 ranges, while the two named cases are confirmed through bounded OGC pages after restart"
+  },
+  "rollout_restart": {
+    "deployment": "geo-api",
+    "namespace": "geo",
+    "kubeconfig": "/tmp/ovh.kubeconfig",
+    "observed_generation": 20,
+    "command": "kubectl --kubeconfig=/tmp/ovh.kubeconfig -n geo rollout restart deployment/geo-api"
+  },
+  "s3_object_count_under_normalized": 11119,
+  "served_collection_count": 4248,
+  "twin_collection_count": 391,
+  "twin_counts_by_suffix_form": {
+    "additive-prebackup": 226,
+    "other": 100,
+    "other+timestamp": 42,
+    "subdir+timestamp": 23
+  },
+  "twins_with_non_unknown_effect": 15,
+  "non_unknown_effect_feature_count": 179,
+  "api_evidence": {
+    "capture_run_id": "zones-20260729T035127Z-25-d10223d8-0c81-4d14-ba12-34fdf1d6aaeb",
+    "reads": [
+      {
+        "collection": "qc-zonage-sutton.additive-prebackup",
+        "effect": {
+          "feature_count": 95,
+          "effect_value_counts": {
+            "stable": 48,
+            "inconnu": 10,
+            "densifie": 27,
+            "reduit": 10
+          },
+          "non_unknown_effect_feature_count": 85
+        },
+        "page_count": 1,
+        "captures": [
+          {
+            "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-sutton.additive-prebackup/items?limit=100&offset=0",
+            "http_status": 200,
+            "retrieved_at": "2026-07-29T03:51:28.157Z",
+            "bytes": 2927239,
+            "sha256": "sha256:0196ba2e1298af04de38f26a354b94fc841af77d81da76c05994deb637febddb",
+            "storage_key": "raw/geo-api-readback/cas/0196ba2e1298af04de38f26a354b94fc841af77d81da76c05994deb637febddb.bin"
+          }
+        ],
+        "matching_zones": []
+      },
+      {
+        "collection": "qc-zonage-coaticook__subdir.2026-07-26T0643Z",
+        "effect": {
+          "feature_count": 178,
+          "effect_value_counts": {
+            "inconnu": 177,
+            "densifie": 1
+          },
+          "non_unknown_effect_feature_count": 1
+        },
+        "page_count": 2,
+        "captures": [
+          {
+            "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-coaticook__subdir.2026-07-26T0643Z/items?limit=100&offset=0",
+            "http_status": 200,
+            "retrieved_at": "2026-07-29T03:51:29.673Z",
+            "bytes": 404539,
+            "sha256": "sha256:a29cf757e582d0776e6015e40198e666f6071fbe6eda3753cb42cf717eab1f5a",
+            "storage_key": "raw/geo-api-readback/cas/a29cf757e582d0776e6015e40198e666f6071fbe6eda3753cb42cf717eab1f5a.bin"
+          },
+          {
+            "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-coaticook__subdir.2026-07-26T0643Z/items?limit=100&offset=100",
+            "http_status": 200,
+            "retrieved_at": "2026-07-29T03:51:30.384Z",
+            "bytes": 463126,
+            "sha256": "sha256:9ddc2c1af9eafd3c32a7a7a8aa54110acd9a1c93d1769287f4844a7afa4ef063",
+            "storage_key": "raw/geo-api-readback/cas/9ddc2c1af9eafd3c32a7a7a8aa54110acd9a1c93d1769287f4844a7afa4ef063.bin"
+          }
+        ],
+        "matching_zones": [
+          {
+            "zone_code": "RD-104",
+            "effect": "densifie"
+          }
+        ]
+      }
+    ],
+    "sutton": {
+      "collection": "qc-zonage-sutton.additive-prebackup",
+      "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-sutton.additive-prebackup/items?limit=100&offset=0",
+      "http_status": 200,
+      "retrieved_at": "2026-07-29T03:51:28.157Z",
+      "bytes": 2927239,
+      "sha256": "sha256:0196ba2e1298af04de38f26a354b94fc841af77d81da76c05994deb637febddb",
+      "storage_key": "raw/geo-api-readback/cas/0196ba2e1298af04de38f26a354b94fc841af77d81da76c05994deb637febddb.bin",
+      "number_matched": 95,
+      "number_returned": 95,
+      "effect_value_counts": {
+        "stable": 48,
+        "inconnu": 10,
+        "densifie": 27,
+        "reduit": 10
+      },
+      "non_unknown_effect_feature_count": 85,
+      "verdict": "CONFIRME",
+      "reason": "95 features, dont 48 stable + 27 densifie + 10 reduit (85 effets non-inconnu)",
+      "matching_zone_codes": []
+    },
+    "coaticook": {
+      "collection": "qc-zonage-coaticook__subdir.2026-07-26T0643Z",
+      "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-coaticook__subdir.2026-07-26T0643Z/items?limit=100&offset=0",
+      "http_status": 200,
+      "retrieved_at": "2026-07-29T03:51:29.673Z",
+      "bytes": 867665,
+      "sha256": "sha256:a29cf757e582d0776e6015e40198e666f6071fbe6eda3753cb42cf717eab1f5a",
+      "storage_key": "raw/geo-api-readback/cas/a29cf757e582d0776e6015e40198e666f6071fbe6eda3753cb42cf717eab1f5a.bin",
+      "number_matched": 178,
+      "number_returned": 178,
+      "effect_value_counts": {
+        "inconnu": 177,
+        "densifie": 1
+      },
+      "non_unknown_effect_feature_count": 1,
+      "verdict": "CONFIRME",
+      "reason": "RD-104 est servi une fois avec effet_densifiant=densifie",
+      "matching_zone_codes": [
+        "RD-104"
+      ]
+    }
+  },
+  "effect_bearing_twins": [
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-alma.additive-prebackup.geojson",
+      "etag": "\"5439a2f6501ec572eb596a2559c3ff3e\"",
+      "last_modified": "2026-07-28T21:57:11.000Z",
+      "size": 12642784,
+      "id": "qc-zonage-alma.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-alma",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 4,
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_zone-source-fold-backups/2026-07-24T123413426Z/qc-zonage-coaticook__qc-zonage-coaticook.geojson",
+      "etag": "\"29af59659054e6688340ef201a238e6d\"",
+      "last_modified": "2026-07-28T22:03:58.000Z",
+      "size": 882945,
+      "id": "qc-zonage-coaticook__qc-zonage-coaticook",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-coaticook",
+      "suffix": "__qc-zonage-coaticook",
+      "suffix_parts": [
+        "other"
+      ],
+      "suffix_form": "other",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 177,
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-24T1639Z.geojson",
+      "etag": "\"3470917961c288ffc7ea359492ff9bd1\"",
+      "last_modified": "2026-07-28T22:02:40.000Z",
+      "size": 912315,
+      "id": "qc-zonage-coaticook__subdir.2026-07-24T1639Z",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-coaticook",
+      "suffix": "__subdir.2026-07-24T1639Z",
+      "suffix_parts": [
+        "subdir",
+        "timestamp"
+      ],
+      "suffix_form": "subdir+timestamp",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 177,
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-26T0641Z.geojson",
+      "etag": "\"3470917961c288ffc7ea359492ff9bd1\"",
+      "last_modified": "2026-07-28T22:02:41.000Z",
+      "size": 912315,
+      "id": "qc-zonage-coaticook__subdir.2026-07-26T0641Z",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-coaticook",
+      "suffix": "__subdir.2026-07-26T0641Z",
+      "suffix_parts": [
+        "subdir",
+        "timestamp"
+      ],
+      "suffix_form": "subdir+timestamp",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 177,
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-26T0643Z.geojson",
+      "etag": "\"3f2d0fc2ccc1f4519c106a8faa67279c\"",
+      "last_modified": "2026-07-28T22:02:43.000Z",
+      "size": 867059,
+      "id": "qc-zonage-coaticook__subdir.2026-07-26T0643Z",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-coaticook",
+      "suffix": "__subdir.2026-07-26T0643Z",
+      "suffix_parts": [
+        "subdir",
+        "timestamp"
+      ],
+      "suffix_form": "subdir+timestamp",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 177,
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-cowansville.additive-prebackup.geojson",
+      "etag": "\"452d78314d1b86f94fc88feb60eab52f\"",
+      "last_modified": "2026-07-28T21:57:14.000Z",
+      "size": 4258110,
+      "id": "qc-zonage-cowansville.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-cowansville",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "stable": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-lac-etchemin.additive-prebackup.geojson",
+      "etag": "\"720387e6348309522bef3af478ce0894\"",
+      "last_modified": "2026-07-28T21:57:20.000Z",
+      "size": 2427856,
+      "id": "qc-zonage-lac-etchemin.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-lac-etchemin",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_zone-source-fold-backups/2026-07-24T123413426Z/qc-zonage-rimouski__qc-zonage-rimouski.geojson",
+      "etag": "\"9b8e0b1c560d12bf58175bc2cf12d337\"",
+      "last_modified": "2026-07-28T22:06:55.000Z",
+      "size": 6903301,
+      "id": "qc-zonage-rimouski__qc-zonage-rimouski",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-rimouski",
+      "suffix": "__qc-zonage-rimouski",
+      "suffix_parts": [
+        "other"
+      ],
+      "suffix_form": "other",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-rimouski/qc-zonage-rimouski.additive-prebackup.geojson",
+      "etag": "\"2198dd97097ee8f45cba3503b6d883c1\"",
+      "last_modified": "2026-07-28T22:02:55.000Z",
+      "size": 7125237,
+      "id": "qc-zonage-rimouski.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-rimouski",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "densifie": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-charles-borromee.additive-prebackup.geojson",
+      "etag": "\"7ab93d819d8a214d789d1e473196f2e4\"",
+      "last_modified": "2026-07-28T21:57:30.000Z",
+      "size": 306647,
+      "id": "qc-zonage-saint-charles-borromee.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-saint-charles-borromee",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "stable": 1
+        },
+        "non_unknown_effect_feature_count": 1
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_zone-source-fold-backups/2026-07-24T123413426Z/qc-zonage-saint-raphael__qc-zonage-saint-raphael.geojson",
+      "etag": "\"0733982d6948cb10d87eb4f11ad843cd\"",
+      "last_modified": "2026-07-28T22:08:27.000Z",
+      "size": 460051,
+      "id": "qc-zonage-saint-raphael__qc-zonage-saint-raphael",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-saint-raphael",
+      "suffix": "__qc-zonage-saint-raphael",
+      "suffix_parts": [
+        "other"
+      ],
+      "suffix_form": "other",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 43,
+          "stable": 21
+        },
+        "non_unknown_effect_feature_count": 21
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-raphael__subdir.2026-07-24T1641Z.geojson",
+      "etag": "\"179180920444cf9c2be7bb89c2e5b066\"",
+      "last_modified": "2026-07-28T22:03:48.000Z",
+      "size": 471123,
+      "id": "qc-zonage-saint-raphael__subdir.2026-07-24T1641Z",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-saint-raphael",
+      "suffix": "__subdir.2026-07-24T1641Z",
+      "suffix_parts": [
+        "subdir",
+        "timestamp"
+      ],
+      "suffix_form": "subdir+timestamp",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "inconnu": 43,
+          "stable": 21
+        },
+        "non_unknown_effect_feature_count": 21
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-stanislas-de-kostka.additive-prebackup.geojson",
+      "etag": "\"dd97d79c9689f63f157ebdf5f28d7454\"",
+      "last_modified": "2026-07-28T21:57:37.000Z",
+      "size": 759810,
+      "id": "qc-zonage-saint-stanislas-de-kostka.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-saint-stanislas-de-kostka",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "stable": 29,
+          "inconnu": 12,
+          "densifie": 7
+        },
+        "non_unknown_effect_feature_count": 36
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-stratford.additive-prebackup.geojson",
+      "etag": "\"f626ab929cc90232adb9f88d56941737\"",
+      "last_modified": "2026-07-28T21:57:40.000Z",
+      "size": 1825374,
+      "id": "qc-zonage-stratford.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-stratford",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "reduit": 6
+        },
+        "non_unknown_effect_feature_count": 6
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    },
+    {
+      "key": "normalized/ca-qc-zonage/qc-zonage-sutton.additive-prebackup.geojson",
+      "etag": "\"68a5d90d020b04b464a236c2af53e199\"",
+      "last_modified": "2026-07-28T21:57:41.000Z",
+      "size": 2926817,
+      "id": "qc-zonage-sutton.additive-prebackup",
+      "metadata_key": null,
+      "canonical_collection": "qc-zonage-sutton",
+      "suffix": ".additive-prebackup",
+      "suffix_parts": [
+        "additive-prebackup"
+      ],
+      "suffix_form": "additive-prebackup",
+      "effect": {
+        "feature_count": null,
+        "effect_value_counts": {
+          "stable": 48,
+          "inconnu": 10,
+          "densifie": 27,
+          "reduit": 10
+        },
+        "non_unknown_effect_feature_count": 85
+      },
+      "effect_measurement": "post-restart-ogc-pages",
+      "ogc_page_count": null
+    }
+  ],
+  "recommendation": {
+    "status": "PROPOSEE_NON_APPLIQUEE",
+    "choose": "retirer-les-collections-jumelles",
+    "canonicality_contract": "publier un registre immuable collection-id -> canonical_collection_id, version, retired_at/reason; les consommateurs refusent les ids hors registre",
+    "consequences": [
+      "casse les consommateurs qui résolvent par préfixe, suffixe ou horodatage",
+      "casse les clients qui appellent explicitement une collection jumelle",
+      "supprime le chemin de ré-ingestion silencieuse des effets retirés",
+      "exige une migration coordonnée et une période d'avertissement avant suppression"
+    ]
+  }
+}

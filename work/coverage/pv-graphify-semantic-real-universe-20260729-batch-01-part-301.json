@@ -1,0 +1,789 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:33:29.879Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 300,
+    "limit": 10,
+    "requested": 10,
+    "selected": 10,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 10,
+  "indexing": {
+    "indexed_pvs": 10,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 10,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 10,
+    "Document": 10,
+    "Zone": 3,
+    "LotCadastre": 4,
+    "Regulation": 9
+  },
+  "graphify": {
+    "nodes": 36,
+    "edges": 13,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 4,
+    "documents_with_zone": 2,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/c579c606f67ddbc8d6b8047aa5cbf85380d892943f815eb005d170895cf2e9db.pdf",
+      "entity_type": "Zone",
+      "value": "PA-10",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:47",
+      "quote": "                                                                            284.1 ‘ PAE - Crystal Fall ’ creating Zone PA-10.1 and establishing"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/c579c606f67ddbc8d6b8047aa5cbf85380d892943f815eb005d170895cf2e9db.pdf",
+      "entity_type": "Zone",
+      "value": "PA-14",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:55",
+      "quote": "                                                                            284.2 ‘PAE - Crystal Fall’ creating Zone Pa-14.1 and establishing"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/c579c606f67ddbc8d6b8047aa5cbf85380d892943f815eb005d170895cf2e9db.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6653210",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:37",
+      "quote": "                                                                            6.1 SPAIP 285 : New construction lot 6653210 ch de la Rouge"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/cc3265c6211d70534cfd86d92b727cf1336d2d975666359e08c5f82e3ef0fb05.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6215006",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:48",
+      "quote": "    10.2 PIIA Lot 6215006 – 48 ch de la Montagne                        10.2 SPAIP Lot 6215006 – 48 ch de la Montagne"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/d14324675c2c7669c20be85239a77f1d0c8f91497869df9ada60dff407256560.pdf",
+      "entity_type": "Zone",
+      "value": "PA-10",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:18",
+      "quote": "        4.1   Adoption - Règlement 284.1 PAE Crystal Fall créant la Zone Pa-10.1 et"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/f077b22c2f11b5886a9e32c5356504410f567b925ebca5b55c81fc7a17aab78e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6214720",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:50",
+      "quote": "    10.1 PIIA 168 : lot 6 214 720                                    10.1 SPAIP 168 : lot 6 214 720"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/f077b22c2f11b5886a9e32c5356504410f567b925ebca5b55c81fc7a17aab78e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6214766",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:51",
+      "quote": "    10.2 PIIA 285 : lot 6 214 766                                    10.2 SPAIP 285 : lot 6 214 766"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 37,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 848,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z",
+  "documents": [
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/06/01.01-ODJ-ordinaire-bilingue-2025-06-17.pdf",
+      "storage_key": "raw/pv-index/cas/c579c606f67ddbc8d6b8047aa5cbf85380d892943f815eb005d170895cf2e9db.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                              REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                              REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "PA-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                                                                            284.1 ‘ PAE - Crystal Fall ’ creating Zone PA-10.1 and establishing"
+            }
+          },
+          {
+            "label": "PA-14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "                                                                            284.2 ‘PAE - Crystal Fall’ creating Zone Pa-14.1 and establishing"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6653210",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "                                                                            6.1 SPAIP 285 : New construction lot 6653210 ch de la Rouge"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/70895cf2e9db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/70895cf2e9db.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/03/01.01-ODJ-ordinaire-bilingue-2025-03-18-1.pdf",
+      "storage_key": "raw/pv-index/cas/cc3265c6211d70534cfd86d92b727cf1336d2d975666359e08c5f82e3ef0fb05.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                         REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                         REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6215006",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "    10.2 PIIA Lot 6215006 – 48 ch de la Montagne                        10.2 SPAIP Lot 6215006 – 48 ch de la Montagne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/f82e3ef0fb05.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/f82e3ef0fb05.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/08/2025-08-12-Seance-extra.pdf",
+      "storage_key": "raw/pv-index/cas/d14324675c2c7669c20be85239a77f1d0c8f91497869df9ada60dff407256560.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "284.1",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "        4.1   Adoption - Règlement 284.1 PAE Crystal Fall créant la Zone Pa-10.1 et"
+            }
+          },
+          {
+            "label": "284.2",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "        4.2   Adoption – Règlement 284.2 PAE Crystal Fall créant la ZonePa-14.1 et"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "PA-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "        4.1   Adoption - Règlement 284.1 PAE Crystal Fall créant la Zone Pa-10.1 et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/dff407256560.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/dff407256560.pdf/.graphify/.graphify_extract.json — 5 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/05/20205-05-27-Seance-extra.pdf",
+      "storage_key": "raw/pv-index/cas/db076558ba06657c4df24e760bf0d267e94a7a9314e46eda54a2660edeb5b2f0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/660edeb5b2f0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/660edeb5b2f0.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/07/01.01-ODJ-ordinaire-bilingue-2025-07-15.pdf",
+      "storage_key": "raw/pv-index/cas/f077b22c2f11b5886a9e32c5356504410f567b925ebca5b55c81fc7a17aab78e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "               SÉANCE ORDINAIRE DU CONSEIL                                     REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "               SÉANCE ORDINAIRE DU CONSEIL                                     REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "284.1",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    6.1 Adoption 2e Projet de Règlement 284.1 (Zonage P10.1)"
+            }
+          },
+          {
+            "label": "284.2",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "    6.2 Adoption 2e Projet de Règlement 284.2 (Zonage P14.1)"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6214720",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "    10.1 PIIA 168 : lot 6 214 720                                    10.1 SPAIP 168 : lot 6 214 720"
+            }
+          },
+          {
+            "label": "6214766",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "    10.2 PIIA 285 : lot 6 214 766                                    10.2 SPAIP 285 : lot 6 214 766"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/fc7a17aab78e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/fc7a17aab78e.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2026/04/2026-04-23-Avis-Seance-speciale.pdf",
+      "storage_key": "raw/pv-index/cas/f719d984fb97d5a11760f5d3d4be3df94e6f031fc69d3911cc07ec0df05e3fc8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "110.1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "L’objet de ce règlement est la 1ère adoption du Projet de Règlement 110.1 Modifiant les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/ec0df05e3fc8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/ec0df05e3fc8.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/05/15-mai-2025-Projet-dordre-du-jour-Seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/fbc6fcf79ac2ffaa0015f38683f99dba2f01cb3318a44fd4f879a9eb284a2a57.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/a9eb284a2a57.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/a9eb284a2a57.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/01/01.01-ODJ-ordinaire-bilingue-2025-01-21.pdf",
+      "storage_key": "raw/pv-index/cas/fbd5d56ea5254fc2dd2b95a8f733ea0608a9ce584c4f78870dd01f5411c2f78a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                             REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              SÉANCE ORDINAIRE DU CONSEIL                                             REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "304-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "    6.1 Avis de motion et dépôt – Projet de Règlement 304-2025"
+            }
+          },
+          {
+            "label": "305-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "    6.2 Avis de motion et dépôt – Projet de Règlement 305-2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/1f5411c2f78a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/1f5411c2f78a.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2025/09/01.01-ODJ-ordinaire-bilingue-2025-09-16.pdf",
+      "storage_key": "raw/pv-index/cas/fdede8801e1b0e36a2d670cf20f39bee4cf505c282062d8b375192ee201f1e63.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "               SÉANCE ORDINAIRE DU CONSEIL                                      REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "               SÉANCE ORDINAIRE DU CONSEIL                                      REGULAR COUNCIL MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "293.1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    6.1 Avis de motion et dépôt de projet de règlement 293.1"
+            }
+          },
+          {
+            "label": "293",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "         modifiant le règlement 293 établissant la rémunération du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/92ee201f1e63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/92ee201f1e63.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2026/04/2026-04-21-Avis-Seance-speciale-2.pdf",
+      "storage_key": "raw/pv-index/cas/feaa18c7d7e1b664035545ca17a8e3ff4a42377b47013d7afe9e494fb981025e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Je vous avise que vous êtes convoqué à la prochaine séance extraordinaire du conseil municipal"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/494fb981025e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043309Z/arundel/494fb981025e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

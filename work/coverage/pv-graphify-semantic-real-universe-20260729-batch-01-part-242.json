@@ -1,0 +1,193 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:34:23.413Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 241,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Resolution": 1,
+    "Regulation": 7
+  },
+  "graphify": {
+    "nodes": 10,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 45,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 637,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043408Z",
+  "documents": [
+    {
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2023-11-06.pdf",
+      "storage_key": "raw/pv-index/cas/8d9ac0f9fde7d22d962d7d60624faf357f73de94c4b60e08ae95dff9c6938738.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albertville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "196-08-2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:725",
+              "quote": "Cette résolution abroge la résolution 196-08-2023"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-08",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "9.      Adoption du règlement 2023-08 modifiant le règlement 03-2004 des permis et certificats"
+            }
+          },
+          {
+            "label": "03-2004",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "9.      Adoption du règlement 2023-08 modifiant le règlement 03-2004 des permis et certificats"
+            }
+          },
+          {
+            "label": "2023-09",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "10.     Adoption du règlement 2023-09 modifiant le règlement 06-2004 de construction"
+            }
+          },
+          {
+            "label": "06-2004",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "10.     Adoption du règlement 2023-09 modifiant le règlement 06-2004 de construction"
+            }
+          },
+          {
+            "label": "2023-10",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "11.     Adoption du règlement 2023-10 modifiant le règlement 05-2004 de lotissement"
+            }
+          },
+          {
+            "label": "05-2004",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "11.     Adoption du règlement 2023-10 modifiant le règlement 05-2004 de lotissement"
+            }
+          },
+          {
+            "label": "2023-12",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "15.     Avis de motion et dépôt du projet de règlement 2023-12 concernant la rémunération des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043408Z/albertville/dff9c6938738.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043408Z/albertville/dff9c6938738.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albertville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -10,13 +10,15 @@
  *   Add --dry-run to inspect matching without writing.
  */
 import { existsSync, readFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { exists, getBytes, s3Client } from "./lib/s3.js";
 import { putServedZoneAdditive } from "./lib/zonage-proof.js";
 
 const DEFAULT_SLUG = "saint-stanislas-de-kostka";
 const PREFIX = "normalized/ca-qc-zonage/";
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 type Effet = "densifie" | "reduit" | "stable" | "inconnu";
 type Methode = "explicit" | "deduit";
@@ -59,14 +61,26 @@ const EFFECT_FIELDS = [
   "densite_avant", "densite_avant_millesime", "densite_avant_reglement",
   "densite_apres", "densite_apres_millesime", "densite_apres_reglement",
   "effet_densifiant", "effet_densifiant_delta",
+  // L'artefact porte depuis toujours la méthode (`explicit` vs `deduit`) et la
+  // citation à la page de chaque densité ; le fold les jetait. 36 % des deltas
+  // sont DÉDUITS des classes d'habitation autorisées, pas lus dans une colonne —
+  // un consommateur ne pouvait pas les distinguer, ni citer sa source.
+  "effet_densifiant_methode", "densite_avant_source", "densite_apres_source",
 ] as const;
+
+/**
+ * Marqueurs qui disqualifient une citation : un instrument qui se déclare
+ * PROJET n'est pas en vigueur, et un numéro laissé en gabarit (`xxxx`) ne
+ * désigne aucun règlement. Comparé en minuscules sur la citation entière.
+ */
+const PROJET_MARKERS = ["projet de règlement", "projet de reglement", "numéro xxxx", "numero xxxx"] as const;
 
 function arg(argv: string[], key: string): string | undefined {
   const i = argv.indexOf(`--${key}`);
   return i >= 0 ? argv[i + 1] : undefined;
 }
 
-function configFromArgs(argv: string[]): FoldConfig {
+export function configFromArgs(argv: string[]): FoldConfig {
   const slug = arg(argv, "slug") ?? DEFAULT_SLUG;
   const saintDefaults = slug === DEFAULT_SLUG;
   const oldReglement = arg(argv, "old-reglement") ?? (saintDefaults ? "330-2018" : undefined);
@@ -87,7 +101,10 @@ function configFromArgs(argv: string[]): FoldConfig {
     newReglement,
     oldMillesime,
     newMillesime,
-    artifact: `../work/effet-densifiant/${slug}.json`,
+    // S3 runners are invoked from the repository root. Resolving from this
+    // committed runner (rather than process.cwd()) also preserves that contract
+    // for CI and direct invocations from another working directory.
+    artifact: resolve(ROOT, "work", "effet-densifiant", `${slug}.json`),
   };
 }
 
@@ -124,6 +141,29 @@ export function readEntries(artifact: string): Map<string, Entry> {
     if (!(["explicit", "deduit"] as string[]).includes(entry.methode ?? "")) {
       throw new Error(`artifact: methode invalide pour ${entry.zone_code}`);
     }
+    // A known effect is only usable alongside the document locations that
+    // substantiate both readings. JSON artifacts cross an untyped boundary,
+    // so the Entry interface alone cannot enforce this production invariant.
+    if (entry.effet_densifiant !== "inconnu") {
+      for (const key of ["source_avant", "source_apres"] as const) {
+        if (typeof entry[key] !== "string" || !entry[key].trim()) {
+          throw new Error(`artifact: ${key} manquante pour effet connu ${entry.zone_code}`);
+        }
+        // Un règlement en PROJET n'a pas force légale : il ne décrit aucun état.
+        // 85 effets de `sutton` sont partis en production sur un document qui
+        // déclarait « Projet de Règlement de zonage numéro xxxx » — un projet, au
+        // numéro même pas rempli. La citation était PRÉSENTE et le garde-fou
+        // précédent la trouvait suffisante ; il ne lisait pas ce qu'elle disait.
+        for (const forbidden of PROJET_MARKERS) {
+          if (entry[key].toLowerCase().includes(forbidden)) {
+            throw new Error(
+              `artifact: ${key} de ${entry.zone_code} cite un PROJET de règlement ("${forbidden}") — ` +
+              `sans force légale, l'effet doit rester 'inconnu'`,
+            );
+          }
+        }
+      }
+    }
     if (!(["match", "flag"] as string[]).includes(entry.steve_coherence ?? "")) {
       throw new Error(`artifact: steve_coherence invalide pour ${entry.zone_code}`);
     }
@@ -152,6 +192,11 @@ export function readEntries(artifact: string): Map<string, Entry> {
     entries.set(entry.zone_code, entry as Entry);
   }
   return entries;
+}
+
+/** Cardinality of served feature properties, used to make additive folds observable. */
+export function countFeatureProperties(features: readonly FeatureLike[]): number {
+  return features.reduce((total, feature) => total + Object.keys(feature.properties ?? {}).length, 0);
 }
 
 /**
@@ -185,11 +230,21 @@ function applyEntry(
   props["densite_apres_reglement"] = config.newReglement;
   props["effet_densifiant"] = entry.effet_densifiant;
   props["effet_densifiant_delta"] = entry.effet_densifiant_delta;
+  props["effet_densifiant_methode"] = entry.methode;
+  props["densite_avant_source"] = entry.source_avant;
+  props["densite_apres_source"] = entry.source_apres;
 }
 
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dryRun = argv.includes("--dry-run");
+  // RETRAIT d'un effet déposé. Un effet est une AFFIRMATION sur deux états
+  // datés ; quand la citation ne tient pas — source « avant » qui ne porte pas
+  // le règlement qu'on lui attribue, par exemple — il faut pouvoir la retirer de
+  // la production, pas seulement cesser de la republier. Un effet faux est pire
+  // qu'un effet absent : il ferait qualifier un signal immobilier réel sur une
+  // base fausse, chez un tiers.
+  const withdraw = argv.includes("--withdraw");
   const config = configFromArgs(argv);
   const entries = readEntries(config.artifact);
   const s3 = s3Client();
@@ -201,6 +256,7 @@ async function main(): Promise<void> {
     const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as GeoJsonLike;
     if (fc.type !== "FeatureCollection") throw new Error(`not a FeatureCollection: ${key}`);
     if (!Array.isArray(fc.features)) throw new Error(`features array missing: ${key}`);
+    const propertyCountBefore = countFeatureProperties(fc.features);
 
     const seen = new Set<string>();
     let matched = 0;
@@ -210,7 +266,8 @@ async function main(): Promise<void> {
       if (typeof zone !== "string") continue;
       const entry = entries.get(zone);
       if (!entry) continue;
-      applyEntry(feature.properties, entry, config);
+      if (withdraw) for (const field of EFFECT_FIELDS) delete feature.properties[field];
+      else applyEntry(feature.properties, entry, config);
       seen.add(zone);
       matched++;
     }
@@ -219,9 +276,15 @@ async function main(): Promise<void> {
     if (missing.length > 0) {
       throw new Error(`artifact zones absentes de ${key}: ${missing.join(", ")}`);
     }
+    const propertyCountAfter = countFeatureProperties(fc.features);
+    // Le retrait FAIT BAISSER le compte, et c'est son objet : le garde-fou
+    // anti-appauvrissement ne s'applique qu'au dépôt.
+    if (!withdraw && propertyCountAfter < propertyCountBefore) {
+      throw new Error(`properties servies en baisse ${propertyCountBefore}->${propertyCountAfter} pour ${key}`);
+    }
 
     console.log(
-      `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched} crs=${fc.crs === undefined ? "absent" : "preserved"}`,
+      `${dryRun ? "DRY" : "OK"} slug=${config.slug} key=${key} features=${fc.features.length} matched=${matched} properties=${propertyCountBefore}->${propertyCountAfter} crs=${fc.crs === undefined ? "absent" : "preserved"}`,
     );
 
     if (!dryRun) {

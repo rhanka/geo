@@ -1,0 +1,148 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:29:53.027Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 109,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 1
+  },
+  "graphify": {
+    "nodes": 5,
+    "edges": 4,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 290,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 7359,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z",
+  "documents": [
+    {
+      "slug": "bromont",
+      "municipality_name": "Bromont",
+      "url": "https://www.bromont.net/wp-content/uploads/2023/11/Proces-verbal_2023-11-22_extra_non-ratifie.pdf",
+      "storage_key": "raw/pv-index/cas/03542509f50ee2b0721efc76ec1e69c7126bfa3b39e1b0df7aa36543ca579199.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bromont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           PROCÈS-VERBAL DE LA VILLE DE BROMONT"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           PROCÈS-VERBAL DE LA VILLE DE BROMONT"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 22 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE LA VILLE DE BROMONT,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "22 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "tenue le 22 novembre 2023, à 10h30, en la salle du conseil de l’hôtel de ville sis au 88, boulevard de Bromont,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2014-09-573",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:180",
+              "quote": "approuvée par la résolution 2014-09-573, adoptée le 2 septembre 2014."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/bromont/6543ca579199.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/bromont/6543ca579199.pdf/.graphify/.graphify_extract.json — 5 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bromont"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

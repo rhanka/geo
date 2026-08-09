@@ -205,6 +205,9 @@ const KEY = "normalized/ca-qc-zonage/qc-zonage-alpha.geojson";
 // file (the guard test above forbids it outside lib/s3.ts and lib/zonage-proof.ts).
 const PUT = ["PutObject", "Command"].join("");
 const COPY = ["CopyObject", "Command"].join("");
+const LEGACY_ARTIFACT_URI = "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-alpha.geojson";
+const PUBLIC_ARTIFACT_URL = "https://data.example.org/zoning/alpha.geojson";
+const PROOF_SHA256 = `sha256:${"a".repeat(64)}` as const;
 const twoFeatures = () => ({
   type: "FeatureCollection" as const,
   features: [
@@ -213,6 +216,51 @@ const twoFeatures = () => ({
   ],
 });
 const clone = <T>(o: T): T => JSON.parse(JSON.stringify(o));
+
+/** A v1 envelope that records the exact captured bytes it describes. */
+const legacyProof = (sha256 = PROOF_SHA256) => ({
+  schema_version: "1.0",
+  status: "complete",
+  sources: {
+    geometry: {
+      status: "available",
+      artifact_uri: LEGACY_ARTIFACT_URI,
+      upstream_uri: null,
+      sha256,
+    },
+    regulation: { status: "unavailable", artifact_uri: null, upstream_uri: null },
+  },
+  zone: null,
+  gaps: [],
+});
+
+/** A v1 envelope whose SHA-256 member is truly absent, not null or empty. */
+const legacyProofWithoutSha256 = () => ({
+  schema_version: "1.0",
+  status: "complete",
+  sources: {
+    geometry: {
+      status: "available",
+      artifact_uri: LEGACY_ARTIFACT_URI,
+      upstream_uri: null,
+    },
+    regulation: { status: "unavailable", artifact_uri: null, upstream_uri: null },
+  },
+  zone: null,
+  gaps: [],
+});
+
+const proofArtifactUriSubstitution = (sha256 = PROOF_SHA256, replacementUrl = PUBLIC_ARTIFACT_URL) => ([{
+  artifactUri: LEGACY_ARTIFACT_URI,
+  replacementUrl,
+  sha256,
+}] as const);
+
+const proofArtifactUriAndSha256Stamp = (sha256 = PROOF_SHA256, replacementUrl = PUBLIC_ARTIFACT_URL) => ([{
+  artifactUri: LEGACY_ARTIFACT_URI,
+  replacementUrl,
+  sha256,
+}] as const);
 
 describe("additive served-zone provenance write", () => {
   it("stamps whitelisted props, preserves geometry, and backs up before writing", async () => {
@@ -296,6 +344,203 @@ describe("additive served-zone provenance write", () => {
     expect(sent.some((c) => c.name === COPY)).toBe(false);
   });
 
+  it("accepts only an attested v1 artifact_uri substitution, preserving proof, geometry, and feature count", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+    }
+
+    const result = await putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(),
+    });
+
+    expect(result.features).toBe(served.features.length);
+    const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+    expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
+    expect(body.features).toHaveLength(served.features.length);
+    expect(body.features.map((feature: any) => feature.properties.proof.sources.geometry)).toEqual(
+      served.features.map((feature: any) => ({ ...feature.properties.proof.sources.geometry, artifact_uri: PUBLIC_ARTIFACT_URL })),
+    );
+  });
+
+  it("keeps the legacy proof immutable when the explicit substitution option is absent", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming)).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses an artifact_uri substitution whose envelope SHA-256 is not the manifest attestation", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof(`sha256:${"b".repeat(64)}`);
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses an artifact_uri substitution that changes the attested envelope SHA-256", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.sources.geometry.sha256 = `sha256:${"b".repeat(64)}`;
+    }
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(),
+    })).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("restores a missing v1 SHA-256 only together with its attested public artifact URL", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProofWithoutSha256();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+    }
+
+    const result = await putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
+    });
+
+    expect(result.features).toBe(served.features.length);
+    const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+    expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
+    expect(body.features.map((feature: any) => feature.properties.proof.sources.geometry)).toEqual(
+      served.features.map((feature: any) => ({
+        ...feature.properties.proof.sources.geometry,
+        artifact_uri: PUBLIC_ARTIFACT_URL,
+        sha256: PROOF_SHA256,
+      })),
+    );
+  });
+
+  it("refuses a missing-SHA stamp unless it also replaces the artifact URI", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProofWithoutSha256();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
+    })).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses a missing-SHA restoration when the served envelope already has a SHA-256", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.sources.geometry.sha256 = PROOF_SHA256;
+    }
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriAndSha256Stamp: proofArtifactUriAndSha256Stamp(),
+    })).rejects.toThrow(/non-provenance property "proof"/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses an artifact_uri substitution to a non-HTTPS URL", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = "http://data.example.org/zoning/alpha.geojson";
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, "http://data.example.org/zoning/alpha.geojson"),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  // Une query string etait refusee. La regle etait une prudence de FORME, et
+  // elle rendait la classe de sources la plus nombreuse inattestable : un
+  // endpoint ArcGIS nu sert une PAGE HTML, la geometrie n'est atteignable que
+  // par `/query?...f=geojson`. Le garde n'admettait donc que l'URL qui NE sert
+  // PAS les octets attestes. Ce qui est protege est la propriete, pas la forme.
+  it("accepts an attested substitution to the ArcGIS query URL that actually served the bytes", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    const queryUrl = "https://services2.arcgis.com/org/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson";
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = queryUrl;
+
+    await putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, queryUrl),
+    });
+    expect(sent.some((command) => command.name === PUT)).toBe(true);
+  });
+
+  // Le fragment n'est JAMAIS transmis au serveur : il ne peut pas faire partie
+  // de ce qui a produit les octets, donc le laisser suggererait qu'il compte.
+  it("refuses an artifact_uri substitution to a URL carrying a fragment", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    const fragmentUrl = "https://data.example.org/zoning/alpha.geojson?f=geojson#layer-3";
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = fragmentUrl;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, fragmentUrl),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  // Un secret publie dans une preuve fuite, et l'URL n'est alors pas rejouable
+  // par le tiers a qui on la donne.
+  it("refuses an artifact_uri substitution to a URL carrying credentials", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    const credentialUrl = "https://user:secret@data.example.org/zoning/alpha.geojson?f=geojson";
+    for (const feature of incoming.features) feature.properties.proof.sources.geometry.artifact_uri = credentialUrl;
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(PROOF_SHA256, credentialUrl),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
+  it("refuses every proof modification other than the attested artifact_uri substitution", async () => {
+    const served: any = clone(twoFeatures());
+    for (const feature of served.features) feature.properties.proof = legacyProof();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const feature of incoming.features) {
+      feature.properties.proof.sources.geometry.artifact_uri = PUBLIC_ARTIFACT_URL;
+      feature.properties.proof.status = "partial";
+    }
+
+    await expect(putServedZoneAdditive(s3, KEY, incoming, {
+      allowProofArtifactUriSubstitution: proofArtifactUriSubstitution(),
+    })).rejects.toThrow();
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
   it("refuses any other top-level member difference (added, removed or changed)", async () => {
     const served: any = clone(twoFeatures());
     served.name = "qc-zonage-alpha";
@@ -321,6 +566,95 @@ describe("additive served-zone provenance write", () => {
     const body = JSON.parse(sent.find((c) => c.name === PUT)!.input.Body);
     expect(body.features[0].properties.zone_source_level).toBe("documented");
     expect(body.proof.geometry_source.url).toBe("https://sig.officiel.example/zones.geojson");
+  });
+
+  // Promotion v1 -> v2 : la preuve est deja ouvrable et hachable, il lui manque
+  // seulement l'instant mesure par une capture. 124 collections servies sont
+  // dans cet etat, et c'est le seul chemin pour faire monter le KPI strict.
+  describe("capture attestation (v1 -> v2)", () => {
+    const HTTPS = "https://data.example.org/zoning/alpha.geojson";
+    const AT = "2026-07-28T12:00:00.000Z";
+    const v1Proof = () => ({
+      schema_version: "1.0",
+      sources: { geometry: { status: "available", artifact_uri: HTTPS, sha256: PROOF_SHA256 } },
+    });
+
+    it("adds only retrieved_at when the refetched SHA-256 confirms the served one", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = AT;
+
+      await putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      });
+      expect(sent.some((command) => command.name === PUT)).toBe(true);
+    });
+
+    // Un SHA qui change signifie que le document EN LIGNE a bouge depuis la
+    // preuve. L'absorber en ecrivant le nouveau effacerait ce fait.
+    it("refuses when the attestation carries a different SHA-256 than the served one", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      const other = `sha256:${"c".repeat(64)}` as const;
+      for (const feature of incoming.features) {
+        feature.properties.proof.sources.geometry.retrieved_at = AT;
+        feature.properties.proof.sources.geometry.sha256 = other;
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: other, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses to replace a retrieved_at that is already present", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) {
+        feature.properties.proof = v1Proof();
+        feature.properties.proof.sources.geometry.retrieved_at = "2026-01-01T00:00:00.000Z";
+      }
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = AT;
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses an attestation whose retrieved_at is not an ISO timestamp", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) feature.properties.proof.sources.geometry.retrieved_at = "2026-07-28";
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: "2026-07-28" }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+
+    it("refuses to change the artifact_uri under cover of a capture attestation", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = v1Proof();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      for (const feature of incoming.features) {
+        feature.properties.proof.sources.geometry.retrieved_at = AT;
+        feature.properties.proof.sources.geometry.artifact_uri = "https://data.example.org/zoning/other.geojson";
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
+      })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
   });
 
   it("can skip the backup when explicitly disabled", async () => {

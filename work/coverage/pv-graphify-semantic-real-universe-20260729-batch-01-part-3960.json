@@ -1,0 +1,1551 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:24:42.879Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3960,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 16,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 16,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 4
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 16,
+    "Document": 16,
+    "CouncilSession": 11,
+    "MeetingDate": 11,
+    "Regulation": 21,
+    "Resolution": 2,
+    "LotCadastre": 5
+  },
+  "graphify": {
+    "nodes": 82,
+    "edges": 38,
+    "failures": 4
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chute-aux-outardes",
+      "storage_key": "raw/pv-index/cas/64d7d23597c8e7c81e3626bf4d6e933ec56ca8cb54fea15d130825dffa81c4bd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5148003",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:274",
+      "quote": "                         demande            constitué du lot 5 148 003 du cadastre du"
+    },
+    {
+      "municipality_slug": "chute-aux-outardes",
+      "storage_key": "raw/pv-index/cas/64d7d23597c8e7c81e3626bf4d6e933ec56ca8cb54fea15d130825dffa81c4bd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5149596",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:330",
+      "quote": "                                 demande est constitué de la partie 004 du lot 5 149 596 du"
+    },
+    {
+      "municipality_slug": "chute-aux-outardes",
+      "storage_key": "raw/pv-index/cas/744bc25e730f9698ef7c4e737e4503729ae6878ac70dd0404031ae9f964661e8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5148452",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:400",
+      "quote": "2020-117                lot 5 148 452 du cadastre du Québec - Centrale Outarde-"
+    },
+    {
+      "municipality_slug": "chute-aux-outardes",
+      "storage_key": "raw/pv-index/cas/773542a99662b7e00a2ddae9abe4c85b4b5a568d1bb6ecd297ec9260314cfa7d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5148401",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:248",
+      "quote": "                 est constitué du lot 5 148 401 du cadastre du Québec, et est"
+    },
+    {
+      "municipality_slug": "chute-aux-outardes",
+      "storage_key": "raw/pv-index/cas/773542a99662b7e00a2ddae9abe4c85b4b5a568d1bb6ecd297ec9260314cfa7d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5148487",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:717",
+      "quote": "\f Rés. no   9.6   Offre d'achat - lot 5 148 487 du cadastre du Québec"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 79,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 766,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z",
+  "documents": [
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823145423-2019-12-19-seance-extraordinaire-2.pdf",
+      "storage_key": "raw/pv-index/cas/5ac104783a39723ae7047eb2a534704cc5df44781f014041d653826783396009.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/826783396009.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/826783396009.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154931-2017-11-20-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/5c6421c094cb6f052ffe4d2324d82fb00006e4b8e34373a7da745767b36890ec.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                   Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                   Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 novembre 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                               Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 novembre 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "                               municipal de Chute-aux-Outardes, tenue le 20 novembre 2017, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "329-2007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:284",
+              "quote": "                         422-2017 Modifiant le règlement n° 329-2007"
+            }
+          },
+          {
+            "label": "422-2017",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "                         règlement n° 422-2017 Modifiant le règlement n° 329-2007"
+            }
+          },
+          {
+            "label": "424-2017",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "                                              Présentation du projet de règlement n° 424-2017"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/5767b36890ec.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/5767b36890ec.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20240619095453-proces-verbal-07e-seance-ordinaire-1.pdf",
+      "storage_key": "raw/pv-index/cas/5d1d0c8ffdfca467df4ef72ea154b461450f19fb01e9baa79cec5ed4c1cc4ba0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "municipal de Chute-aux-Outardes, tenue le 17 juillet 2023, à 20h"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:184",
+              "quote": "        assujetti au «Règlement numéro 26 sur la gestion"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/5ed4c1cc4ba0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/5ed4c1cc4ba0.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20241120090100-proces-verbal-11e-seance-ordinaire%20(1).pdf",
+      "storage_key": "raw/pv-index/cas/5d8857e384022f88badf2e85e9142810ab7f2c8cddddf43b0a3f166cfa4cd86e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "           municipal de Chute-aux-Outardes, tenue le 18 novembre 2024, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "464-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:164",
+              "quote": "                 de règlement n° 464-2024 intitulé Règlement modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/166cfa4cd86e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/166cfa4cd86e.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823144421-2020-07-06-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/5dd0cf7f44781b6a51447f4449afc4ecd504fa894653346da96e0aaf01a30e33.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "329-2007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:226",
+              "quote": "                               CONSIDÉRANT les dispositions du règlement no 329-2007"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/0aaf01a30e33.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/0aaf01a30e33.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20240619100836-proces-verbal-12e-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/5e4a0374fcb828d962332d351f97ee0b1c922522ee8f382be52e2445163d3b20.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "municipal de Chute-aux-Outardes, tenue le 18 décembre 2023, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "438-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "                 CONSIDÉRANT les dispositions du règlement 438-2019"
+            }
+          },
+          {
+            "label": "460-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:140",
+              "quote": " Rés. no   7.1   Adoption du règlement n° 460-2023 Règlement relatif aux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/2445163d3b20.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/2445163d3b20.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154028-2018-11-12-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/5f0f0e88c7f9a911d61196919ffcea6968a3a0194970cf3aa76c630c644ca86d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "                          Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "                          Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 novembre 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "                          Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 novembre 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                          municipal de Chute-aux-Outardes, tenue le 12 novembre 2018, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2018-172",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:262",
+              "quote": "                          i.    D'entériner la résolution no 2018-172 passée par voie"
+            }
+          },
+          {
+            "label": "2017-023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:465",
+              "quote": "                                 CONSIDÉRANT que, par sa résolution numéro 2017-023,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "434-2018",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:328",
+              "quote": "                                i. D'adopter le règlement numéro 434-2018 - Modifiant le"
+            }
+          },
+          {
+            "label": "435-2018",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:349",
+              "quote": "         Rés. no          7.2   Adoption du règlement no 435-2018 - Modifiant le Code"
+            }
+          },
+          {
+            "label": "329-2007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:501",
+              "quote": "                                 CONSIDÉRANT les dispositions du règlement no 329-2007"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/630c644ca86d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/630c644ca86d.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20220502102006-2021-08-26-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/619cb29fa96c47c92ad1d789c59b59b7ee18ff0fcfb075df9590bf83d1396093.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/bf83d1396093.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/bf83d1396093.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154031-2018-06-12-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/62f71f2e23b784489e203281e9178a97989cc37761cd6c8b5bb1fe9f13542a52.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                          Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                          Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12juin 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                        Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12juin 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                        municipal de Chute-aux-Outardes, tenue le 12juin 2018, à 20h à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "429-2019",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:283",
+              "quote": " Rés. no           7.2   Adoption du règlement no 429-2019 amendant le"
+            }
+          },
+          {
+            "label": "351-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:284",
+              "quote": "2018-097                 règlement no 351-2010 constituant le fonds de"
+            }
+          },
+          {
+            "label": "429-2018",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:317",
+              "quote": "                               i. D'adopter le règlement numéro 429-2018 amendant le"
+            }
+          },
+          {
+            "label": "329-2007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:525",
+              "quote": "                                 CONSIDÉRANT les dispositions du règlement no 329-2007"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/fe9f13542a52.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/fe9f13542a52.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes",
+          "pointe-lebel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20230301155712-2022-03-21-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/6393dbf6680f3144821fa501568fe5843bf31d0d2a41e887db80ff4f5d09cfb3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 mars 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                               Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 mars 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                               municipal de Chute-aux-Outardes, tenue le 21 mars 2022, à 20h"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ff4f5d09cfb3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ff4f5d09cfb3.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20230301160827-2022-10-17-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/64d7d23597c8e7c81e3626bf4d6e933ec56ca8cb54fea15d130825dffa81c4bd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                    Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                                Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                                municipal de Ghute-aux-Outardes, tenue Le 17 octobre 2022 à"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5148003",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:274",
+              "quote": "                         demande            constitué du lot 5 148 003 du cadastre du"
+            }
+          },
+          {
+            "label": "5149596",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:330",
+              "quote": "                                 demande est constitué de la partie 004 du lot 5 149 596 du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/25dffa81c4bd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/25dffa81c4bd.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "chute-aux-outardes",
+          "tadoussac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823161353-2016-12-06-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/670360ee20a4654a4ad072a048baee8d635e65b93444d540b4696fdc1d0cfeda.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/6fdc1d0cfeda.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/6fdc1d0cfeda.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154040-2018-01-15-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/67ce375f906bb7f80b891d51aab1fbb28f93ed91d342b047a568ba03dc5bc385.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                 Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                 Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 janvier 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                             Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 janvier 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "                             municipal de Chute-aux-Outardes, tenue le 15 janvier 2018, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "425-2017",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:260",
+              "quote": " Rés.no            7.1   Adoption du règlement n° 425-2017 - Règlement"
+            }
+          },
+          {
+            "label": "329-2007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:305",
+              "quote": "                                                CONSIDÉRANT les dispositions du règlement n° 329-2007"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ba03dc5bc385.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ba03dc5bc385.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823144421-2020-05-28-seance-extraordinaire(1).pdf",
+      "storage_key": "raw/pv-index/cas/6909e981def8d6feaeb91db753a524542a0761b863f0add1361b8fce29ddabc0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/8fce29ddabc0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/8fce29ddabc0.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823144424-2020-03-09-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/6e7e56106293f69ca298bc3ed74640d2aca10d86da3bb20dc1b5082b1323a442.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                               Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                               Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/082b1323a442.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/082b1323a442.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823154901-2017-09-28-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/71e39a595c8319d79a0973f31f1aa7bdeacb4ee44b662c5578d43cc659ed6096.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "424-2017",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "2017-213                  Adoption du règlement n° 424-2017 Règlement sur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/3cc659ed6096.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/3cc659ed6096.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20220502095227-2021-02-22-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/724dcda95dcbbfed22fe6eebadf233e3832ca189ea5f7bbe1a1dd73a637679eb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/d73a637679eb.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/d73a637679eb.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823144417-2020-08-20-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/744bc25e730f9698ef7c4e737e4503729ae6878ac70dd0404031ae9f964661e8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 31 aout 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                       Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "31 aout 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "                       municipal de Ghute-aux-Outardes, tenue le 31 aout 2020, à l9h à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "329-2",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:369",
+              "quote": "                        CONSIDÉRANT les dispositions du règlement no 329-2OOT"
+            }
+          },
+          {
+            "label": "441-2020",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:389",
+              "quote": "                        projet de règlement no 441-2020 concernant I'obligation"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5148452",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:400",
+              "quote": "2020-117                lot 5 148 452 du cadastre du Québec - Centrale Outarde-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ae9f964661e8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/ae9f964661e8.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823161351-2016-06-13-seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/773542a99662b7e00a2ddae9abe4c85b4b5a568d1bb6ecd297ec9260314cfa7d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 juin 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Procès-verbal de la séance ordinaire des membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 juin 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "           municipal de Chute-aux-Outardes, tenue le 13 juin 2016 à 20h à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "360-2011",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:650",
+              "quote": "                   comme prévu à l’article 35 du règlement 360-2011 de la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5148401",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:248",
+              "quote": "                 est constitué du lot 5 148 401 du cadastre du Québec, et est"
+            }
+          },
+          {
+            "label": "5148487",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "\f Rés. no   9.6   Offre d'achat - lot 5 148 487 du cadastre du Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/9260314cfa7d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/9260314cfa7d.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "municipality_name": "Chute-aux-Outardes",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20210823144423-2020-12-17-seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/7858a588d6ecc0decf756f3f20855449577a5ed165801119ebd5dbf647512f4b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-aux-Outardes",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                            Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                            Procès-verbaux de la Municipalité du Village"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/dbf647512f4b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T172305Z/chute-aux-outardes/dbf647512f4b.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-aux-outardes"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

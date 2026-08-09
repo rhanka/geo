@@ -1,0 +1,84 @@
+{
+  "contract": "density-document-no-norms-control-outcomes/v1",
+  "generatedAt": "2026-07-28T10:18:56Z",
+  "scope": {
+    "worklist": "acquisition/config/density-document-no-norms-20260728-control-01.json",
+    "discoveryReport": "work/coverage/density-document-no-norms-control-report-20260728.json",
+    "slugs": [
+      "amos",
+      "esprit-saint",
+      "la-minerve"
+    ],
+    "completed": 3
+  },
+  "outcomes": [
+    {
+      "slug": "amos",
+      "outcome": "folded",
+      "source": {
+        "url": "https://amos.quebec/storage/app/media/decouvrir-amos/administration-et-finances/reglementation/urbanisme/annexe-2-grilles.pdf",
+        "sha256": "sha256:9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa",
+        "storageKey": "raw/normes-density-sibling-document/cas/9cc4aa5104cf81397e7aaa12be1e8d312835a852ab7a497f6ace5ac6bf536efa.pdf",
+        "owner": "Ville d’Amos",
+        "reglement": "Règlement de zonage VA-964 — annexe 2, grille P-1",
+        "legalDate": "2024-09-17",
+        "legalDateEvidence": "VA-1290 — 17 sept. 2024"
+      },
+      "norm": {
+        "zoneCode": "P-1",
+        "value": 50,
+        "unit": "cos-max",
+        "raw": "50(1) 50(1)",
+        "proof": "Coefficient d’occupation du sol maximum (%) 50(1) 50(1)",
+        "page": 204
+      },
+      "servedReadback": {
+        "key": "normalized/ca-qc-zonage/qc-zonage-amos/qc-zonage-amos.geojson",
+        "polygons": 42,
+        "exactZonePolygons": 1,
+        "finiteDensityPolygons": 1,
+        "densityPolygonsBefore": 0,
+        "densityPolygonsAfter": 1,
+        "densityPolygonsChanged": 1
+      }
+    },
+    {
+      "slug": "esprit-saint",
+      "outcome": "not-folded",
+      "reason": "La découverte officielle n’a capturé aucun nouveau document. Le seul feuillet historique trouvé localement n’est pas une preuve de production et imprime 001-F alors que le SIG servi imprime F-001; aucun réordonnancement de code n’est autorisé.",
+      "servedReadback": {
+        "key": "normalized/ca-qc-zonage/qc-zonage-esprit-saint.geojson",
+        "polygons": 24,
+        "finiteDensityPolygons": 0
+      }
+    },
+    {
+      "slug": "la-minerve",
+      "outcome": "not-folded",
+      "reason": "Le règlement final daté 2026-765 remplace des superficies minimales de lot, sans imprimer une superficie par logement ni une autre densité verbatim. Le maximum de 4 logements du règlement 2024-732 ne porte aucun code de zone exact: il vise conditionnellement tout usage mixte autorisé par une grille. Aucun rattachement de zone n’est déduit.",
+      "reviewedSources": [
+        {
+          "url": "https://municipalite.laminerve.qc.ca/wp-content/uploads/2026/06/Reglement_2026-765_zonage_cc.pdf",
+          "sha256": "sha256:f4b29f15ff8484c95b9a13e03d75cbfe698beaaffe141bd7ec211744faddf4f3",
+          "storageKey": "raw/normes-density-sibling-document/cas/f4b29f15ff8484c95b9a13e03d75cbfe698beaaffe141bd7ec211744faddf4f3.pdf",
+          "owner": "Municipalité de La Minerve",
+          "legalDateEvidence": "Adopté à la séance ordinaire du 1er juin 2026.",
+          "nativeTextLayer": false,
+          "visionPagesReviewed": "1-15"
+        },
+        {
+          "url": "https://municipalite.laminerve.qc.ca/wp-content/uploads/2023/06/Regl_2024-732_f-Codifie-2025-06-16.pdf",
+          "sha256": "sha256:3f0483180087bf7cf44de84386217788fc07f9beca63e23a64bf4f36f6f4e80c",
+          "storageKey": "raw/normes-density-sibling-document/cas/3f0483180087bf7cf44de84386217788fc07f9beca63e23a64bf4f36f6f4e80c.pdf",
+          "densityPassage": "Le nombre maximal de logements autorisés par bâtiment est fixé à 4",
+          "zoneApplicability": "usage mixte autorisé à la grille de la zone concernée; aucun code de zone imprimé dans le passage"
+        }
+      ],
+      "servedReadback": {
+        "key": "normalized/ca-qc-zonage/qc-zonage-la-minerve.geojson",
+        "polygons": 29,
+        "finiteDensityPolygons": 0
+      }
+    }
+  ]
+}

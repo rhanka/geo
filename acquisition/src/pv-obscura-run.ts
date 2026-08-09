@@ -436,6 +436,8 @@ interface SlugResult {
   pvIndexUrl: string | null;
   status: Status;
   finalIndexUrl?: string;
+  /** First quality-gated PV URL rendered from the DOM; makes a probe auditable. */
+  pvUrl?: string;
   count: number;
   deposited: boolean;
   domLen?: number;
@@ -512,6 +514,7 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
   base.followed = followed;
   base.pathProbed = pathProbed;
   base.count = entries.length;
+  base.pvUrl = entries[0]?.url;
 
   // 4) Anti-invention : 0 PV réel rendu → SKIP justifié, aucun dépôt.
   if (entries.length === 0) {

@@ -1,0 +1,1088 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:51:42.101Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5220,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 10,
+    "failed_pvs": 10,
+    "outcomes": {
+      "INDEXED": 10,
+      "OWNER_NOT_CONFIRMED": 10,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 10,
+    "Document": 10,
+    "Regulation": 12,
+    "LotCadastre": 1,
+    "CouncilSession": 6,
+    "MeetingDate": 6
+  },
+  "graphify": {
+    "nodes": 45,
+    "edges": 22,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "lislet",
+      "storage_key": "raw/pv-index/cas/3da672be99b26407258b4d8646888d27e51cfcb63f2d39de2154dd495e0620d2.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3179658",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:40",
+      "quote": "      lotissement du lot 3 179 658"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 5,
+      "zone_code_count": 189,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 5,
+      "served_municipalities": 3,
+      "total_lot_numbers": 7146,
+      "missing": [
+        "lile-perrot",
+        "lorraine"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z",
+  "documents": [
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/la-ville/democratie/seances-du-conseil/ordres-du-jour-2026/ODJ_20250116VF.pdf",
+      "storage_key": "raw/pv-index/cas/11558ee159c3e42a08ed54d6a8fc2cbb166dcd00c6c30634f394080351d856c5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/080351d856c5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/080351d856c5.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/la-ville/administration-et-finances/affaires-juridiques/ODJ/ODJ_20260317_.pdf",
+      "storage_key": "raw/pv-index/cas/1932c9def41ed15e9561e34f4cf628e29a5b525a910f7aac1d23f021ffaa50f7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/f021ffaa50f7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/f021ffaa50f7.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/ODJ_20260414_Original.pdf",
+      "storage_key": "raw/pv-index/cas/5c3b8e7194445afe1720e548fd97ea1d8c555654d5b166825c0d1ce6a1cd5547.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/1ce6a1cd5547.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/1ce6a1cd5547.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/la-ville/administration-et-finances/affaires-juridiques/ODJ/ODJ_20260206.pdf",
+      "storage_key": "raw/pv-index/cas/affd522e42015713cbaca464241b4dc50058496e3aee819e89df39f8d3249982.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/39f8d3249982.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/39f8d3249982.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/ODJ_20260609.pdf",
+      "storage_key": "raw/pv-index/cas/b4bfd1e76a3a3a76c1c78f017fd430c399e588cc5b4c89e323eb7c74060e03fd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/7c74060e03fd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/7c74060e03fd.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lile-perrot",
+      "municipality_name": "L'Île-Perrot",
+      "url": "https://www.ile-perrot.qc.ca/storage/app/media/ODJ_20260512.pdf",
+      "storage_key": "raw/pv-index/cas/d091b7e83ed2a5c23e177c0d0cdd86cc6583a607393c1b2a9cb7e1775aa7b65d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/e1775aa7b65d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lile-perrot/e1775aa7b65d.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lisle-aux-coudres",
+      "municipality_name": "L'Isle-aux-Coudres",
+      "url": "https://www.municipaliteiac.ca/fichiersUpload/fichiers/20260610154835-ordre-du-jour-2026-06-08.pdf",
+      "storage_key": "raw/pv-index/cas/c97867ac16cd3a5db460197598a5bad925c843134630533c3cf562c8f0389f2b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lisle-aux-coudres/62c8f0389f2b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lisle-aux-coudres/62c8f0389f2b.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/4-avril/2026-04-07-Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/177ea7729a02b2fc59cf7ec64ece9f8bcce507a6e770f7499530d27ea66ff525.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "L'Islet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "    protection contre les inondations (RMUN)"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "    protection contre les inondations (RMUN)"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "339-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "21. Adoption du règlement 339-2026 modifiant le règlement 326-2025 de tarification 2026 du"
+            }
+          },
+          {
+            "label": "326-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "21. Adoption du règlement 339-2026 modifiant le règlement 326-2025 de tarification 2026 du"
+            }
+          },
+          {
+            "label": "340-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "22. Adoption du règlement 340-2026 de tarification 2027 du camping Rocher Panet"
+            }
+          },
+          {
+            "label": "341-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "23. Adoption du règlement 341-2026 pour les campeurs journaliers de camping Rocher Panet"
+            }
+          },
+          {
+            "label": "342-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "24. Avis de motion pour l’adoption ultérieure du règlement 342-2026 relatif aux droits de mutations"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/d27ea66ff525.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/d27ea66ff525.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lislet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/1-janvier/2026-01-13-Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/26f7682edaa12a8f104b318fbbcbc02fc9c75c902bf90b434462b4f877192210.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "L'Islet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "18. Avis de motion pour l’adoption ultérieure du règlement 338-2026 édictant le code d’éthique et de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "18. Avis de motion pour l’adoption ultérieure du règlement 338-2026 édictant le code d’éthique et de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "335-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "16. Adoption du règlement 335-2026 de taxation 2026"
+            }
+          },
+          {
+            "label": "336-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "17. Adoption du règlement 336-2026 de tarification 2026"
+            }
+          },
+          {
+            "label": "338-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "18. Avis de motion pour l’adoption ultérieure du règlement 338-2026 édictant le code d’éthique et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/b4f877192210.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/b4f877192210.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lislet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/2-fevrier/2026-02-02-Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/3da672be99b26407258b4d8646888d27e51cfcb63f2d39de2154dd495e0620d2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "L'Islet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "10. Adoption du règlement 338-2026 édictant le code d’éthique et de déontologie des élus de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "10. Adoption du règlement 338-2026 édictant le code d’éthique et de déontologie des élus de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "337-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " 9. Adoption du règlement 337-2026 traitant de la rémunération des élus municipaux et des jetons de"
+            }
+          },
+          {
+            "label": "338-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "10. Adoption du règlement 338-2026 édictant le code d’éthique et de déontologie des élus de la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3179658",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "      lotissement du lot 3 179 658"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/dd495e0620d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/dd495e0620d2.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lislet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/5-mai/2026-05-04-Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/4e6724ce66b56aefad66432788762f5c84a93870252cb181d561269379e68a45.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/269379e68a45.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/269379e68a45.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/6-juin/2026-06-01Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/b12a9d4c9ee2b5c08b4e3fd0d3d9dd5ababc71b1b3513627ec40a39af7b7d423.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/a39af7b7d423.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/a39af7b7d423.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lislet",
+      "municipality_name": "L'Islet",
+      "url": "https://www.lislet.com/storage/app/media/evenements/seances-conseil/2026_conseil/3-mars/2026-03-02-Projet-ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/b209cb98b149b58b390d750f00dfd3b4f2d68fcbcb6c35bd35407f02ebf0709a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/7f02ebf0709a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lislet/7f02ebf0709a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lorraine",
+      "municipality_name": "Lorraine",
+      "url": "https://lorraine.ca/storage/app/media/decouvrir/bienvenue-a-lorraine/conseil-municipal/ordres-du-jour/2026/OJ_SE_2026-06-19_8h30.pdf",
+      "storage_key": "raw/pv-index/cas/3854e37ecf1c0732971577a738a34eb930634bf1320f044fd541f89f7af5a56a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lorraine",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                               Ville de Lorraine"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                               Ville de Lorraine"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lorraine/f89f7af5a56a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/lorraine/f89f7af5a56a.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lorraine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20251114143232-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/0888d221734bce803cd26b8fbfefd7c3d053a1f964047e8f1d0f5379e2abfa82.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                   LE 17 NOVEMBRE 2025, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/5379e2abfa82.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/5379e2abfa82.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "gatineau",
+          "grand-remous",
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260603145541-001-ordre-du-jour-le-8-juin-2026-version-a-publier-web-b.pdf",
+      "storage_key": "raw/pv-index/cas/109014b91e4148aa7d5303fa356082c79b62348e31d6f91e61a53e4ae36fad77.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       Municipalité du Canton de Low     Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       Municipalité du Canton de Low     Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "       ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                          LE 8 JUIN 2026, À 18 H 30"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/3e4ae36fad77.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/3e4ae36fad77.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260414142618-odredujour-web-b.pdf",
+      "storage_key": "raw/pv-index/cas/2d035f597faa4318df941293370b8a28514f312882a815d2a25035f5d227777a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "       ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                         LE 7 AVRIL 2026, À 20 H 23"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/35f5d227777a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/35f5d227777a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260130144139-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/3eb123606de8f28e852e6bae10553056f830bb5e57bc2872e04930106881fd27.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "3.    Pour accepter le procès-verbal de la séance ordinaire du Conseil municipal tenue le"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      municipal tenues le 28 janvier 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-001",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       4.2   RÈGLEMENT NUMÉRO 2026-001 – Règlement édictant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "2026-002",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "       4.3   RÈGLEMENT NUMÉRO 2026-002 – Règlement pour fixer les taux de taxe"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/30106881fd27.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/30106881fd27.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low",
+          "maniwaki"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20251128145733-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/40d5567e71ba9307516062f17b591f344419b8fb08f1b2b3f86f2920b1e2b7ad.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1ER DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1ER DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                   LE 1ER DÉCEMBRE 2025, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/2920b1e2b7ad.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/2920b1e2b7ad.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260616152309-001-ordre-du-jour-le-18-juin-2026-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/435bb77cb192a7841319ca7d30749f22920fa2d642b713f9d41701f4993c3a2f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "   ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      LE 18 JUIN 2026, À 18 H 05"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/01f4993c3a2f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185119Z/low/01f4993c3a2f.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

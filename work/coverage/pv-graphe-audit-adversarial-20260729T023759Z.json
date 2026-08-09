@@ -1,0 +1,2228 @@
+{
+  "contract": "pv-graphe-audit-adversarial/v1",
+  "generated_at": "2026-07-29T02:37:59.445Z",
+  "mode": "read-only",
+  "input": {
+    "summary": "work/coverage/pv-graphify-semantic-all-20260728-summary.json",
+    "source_reports": [
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-01.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-02.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-03.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-04.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-05.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-06.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-07.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-08.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-09.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-10.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-11.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-12.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-13.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-14.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-15.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-16.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-17.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-18.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-19.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-20.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-24.json"
+    ],
+    "maximum_read_bytes": 5000000,
+    "deterministic_sampling": "sha256(pv-graphe-audit-adversarial/v1 + stable entity key)"
+  },
+  "population": {
+    "documents": 815,
+    "entity_counts": {
+      "CouncilSession": 554,
+      "Document": 800,
+      "LotCadastre": 693,
+      "MeetingDate": 554,
+      "Municipality": 800,
+      "Regulation": 2045,
+      "Resolution": 2755,
+      "Zone": 519
+    },
+    "zero_node_documents": 15
+  },
+  "ownership_audit": {
+    "zones": {
+      "population": 519,
+      "sample_size": 30,
+      "passed": 30,
+      "sample": [
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/f85b8080d420644192be863a64afd250470faa1d711249e3977fc0f53ce018c5.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "            PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 10",
+          "value": "I-1158-1",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c0f53ce018c5.pdf/input/document.txt",
+            "source_bytes": 164050,
+            "source_location": "document.txt:line:1755",
+            "line_number": 1755,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/f85b8080d420644192be863a64afd250470faa1d711249e3977fc0f53ce018c5.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "            PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 10",
+          "value": "I-370",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c0f53ce018c5.pdf/input/document.txt",
+            "source_bytes": 164050,
+            "source_location": "document.txt:line:2606",
+            "line_number": 2606,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/7fdfd6597990adbe4d6649ea02b56847f8a53859c4178f2ddda0245ce165fd52.pdf",
+          "municipality_slug": "donnacona",
+          "printed_municipality": "Donnacona",
+          "printed_municipality_quote": "VILLE DE DONNACONA",
+          "value": "A-13",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/donnacona/245ce165fd52.pdf/input/document.txt",
+            "source_bytes": 23205,
+            "source_location": "document.txt:line:93",
+            "line_number": 93,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/2219a7e18d024715ec9a014fdcb937f4a0fe3067a45647956c342a463124d665.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "                 VILLE D'ACTON VALE",
+          "value": "204-CV",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/2a463124d665.pdf/input/document.txt",
+            "source_bytes": 25097,
+            "source_location": "document.txt:line:181",
+            "line_number": 181,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/355aedf84aaa1cc9e1d3116fa5f0ae0c5f7d7c96d36980ed7cc00fbd864c3f4b.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "P-796-2",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/0fbd864c3f4b.pdf/input/document.txt",
+            "source_bytes": 85508,
+            "source_location": "document.txt:line:1410",
+            "line_number": 1410,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/048e570d52be9ceef792bf282aa4d58301528e798b632844af77dc5e08399d90.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 5",
+          "value": "H-1145",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/dc5e08399d90.pdf/input/document.txt",
+            "source_bytes": 105219,
+            "source_location": "document.txt:line:1663",
+            "line_number": 1663,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/2612711f18f5e0fb5560b714b02aad94e0bef047a595408c3a92de274f0826b3.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "P-796-4",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+            "source_bytes": 99105,
+            "source_location": "document.txt:line:1573",
+            "line_number": 1573,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/9c63df7c242479c68d0ed93a8b63f0cd20f27469508192b1b3c1e621e4933c3f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 9",
+          "value": "I-0061",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/e621e4933c3f.pdf/input/document.txt",
+            "source_bytes": 147147,
+            "source_location": "document.txt:line:2243",
+            "line_number": 2243,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/75fe3bdc246bff127257935aba5ddd32eef7a4fd64a3f7efada9812d82727963.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "C-1243",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/812d82727963.pdf/input/document.txt",
+            "source_bytes": 134887,
+            "source_location": "document.txt:line:1567",
+            "line_number": 1567,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/18ba88c5147e052edeb4fe37496817179ca7e701ac37c0fcb2be288fbd63c573.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 11",
+          "value": "H-730-1",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+            "source_bytes": 153897,
+            "source_location": "document.txt:line:2586",
+            "line_number": 2586,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/18ba88c5147e052edeb4fe37496817179ca7e701ac37c0fcb2be288fbd63c573.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 11",
+          "value": "I-370",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+            "source_bytes": 153897,
+            "source_location": "document.txt:line:2112",
+            "line_number": 2112,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/9706031c3294814660c4ffaed015f6712eaf1302ad7f511bd7a4db0b60f1dc5f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 28",
+          "value": "H-1167",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/db0b60f1dc5f.pdf/input/document.txt",
+            "source_bytes": 373284,
+            "source_location": "document.txt:line:4734",
+            "line_number": 4734,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/0ac44983aa9ae1c1ecf6fb6df766163195d9276fa980a71ce60b3c6706bbff83.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "                 VILLE D'ACTON VALE",
+          "value": "147",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/3c6706bbff83.pdf/input/document.txt",
+            "source_bytes": 27676,
+            "source_location": "document.txt:line:230",
+            "line_number": 230,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/048e570d52be9ceef792bf282aa4d58301528e798b632844af77dc5e08399d90.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 5",
+          "value": "C-0064",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/dc5e08399d90.pdf/input/document.txt",
+            "source_bytes": 105219,
+            "source_location": "document.txt:line:1817",
+            "line_number": 1817,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/18ba88c5147e052edeb4fe37496817179ca7e701ac37c0fcb2be288fbd63c573.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 11",
+          "value": "I-349",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+            "source_bytes": 153897,
+            "source_location": "document.txt:line:1746",
+            "line_number": 1746,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/a727563d5cc6bfc1bca92308c40227cd19e325875173c8a075c67509998367f8.pdf",
+          "municipality_slug": "deschaillons-sur-saint-laurent",
+          "printed_municipality": "Deschaillons-sur-Saint-Laurent",
+          "printed_municipality_quote": "              Considérant que la municipalité de Deschaillons-sur-Saint-Laurent souhaite",
+          "value": "M-02",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/7509998367f8.pdf/input/document.txt",
+            "source_bytes": 59854,
+            "source_location": "document.txt:line:776",
+            "line_number": 776,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/2612711f18f5e0fb5560b714b02aad94e0bef047a595408c3a92de274f0826b3.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "H-796-1",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+            "source_bytes": 99105,
+            "source_location": "document.txt:line:1571",
+            "line_number": 1571,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/9c63df7c242479c68d0ed93a8b63f0cd20f27469508192b1b3c1e621e4933c3f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 9",
+          "value": "H-773",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/e621e4933c3f.pdf/input/document.txt",
+            "source_bytes": 147147,
+            "source_location": "document.txt:line:2212",
+            "line_number": 2212,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/2612711f18f5e0fb5560b714b02aad94e0bef047a595408c3a92de274f0826b3.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "A-5307",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+            "source_bytes": 99105,
+            "source_location": "document.txt:line:1497",
+            "line_number": 1497,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/5e8f6e407ef43036bc56124b22725421ef71da59b82ace2b33ced0518132782f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "RES-1183",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/d0518132782f.pdf/input/document.txt",
+            "source_bytes": 120868,
+            "source_location": "document.txt:line:1627",
+            "line_number": 1627,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/8a616479c7ec24bd9b9ced3eee71c0f057890ef01612a15ac7345b7154c52797.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "              VILLE D'ACTON VALE",
+          "value": "115",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/5b7154c52797.pdf/input/document.txt",
+            "source_bytes": 33640,
+            "source_location": "document.txt:line:628",
+            "line_number": 628,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/6922cd6eb2a92ea158324708d24a26b263a70cd3e7cfd8c179dc153b75cc3eeb.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "                 VILLE D'ACTON VALE",
+          "value": "113",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/153b75cc3eeb.pdf/input/document.txt",
+            "source_bytes": 34548,
+            "source_location": "document.txt:line:478",
+            "line_number": 478,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/ce17b2920f1805336f5a2249d8b9414614a6b21b221dc1c4e4c6d53488c79f76.pdf",
+          "municipality_slug": "cowansville",
+          "printed_municipality": "Cowansville",
+          "printed_municipality_quote": "              Procès-verbal de la séance ordinaire du conseil de la Ville de Cowansville du",
+          "value": "RB-6",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/d53488c79f76.pdf/input/document.txt",
+            "source_bytes": 87042,
+            "source_location": "document.txt:line:732",
+            "line_number": 732,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/9706031c3294814660c4ffaed015f6712eaf1302ad7f511bd7a4db0b60f1dc5f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 28",
+          "value": "H-1186",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/db0b60f1dc5f.pdf/input/document.txt",
+            "source_bytes": 373284,
+            "source_location": "document.txt:line:4779",
+            "line_number": 4779,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/811fc56aab5f91429929b7935ef26464c5312e16736d6686ecf68fe04c822106.pdf",
+          "municipality_slug": "donnacona",
+          "printed_municipality": "Donnacona",
+          "printed_municipality_quote": "VILLE DE DONNACONA",
+          "value": "M-4",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/donnacona/8fe04c822106.pdf/input/document.txt",
+            "source_bytes": 46071,
+            "source_location": "document.txt:line:559",
+            "line_number": 559,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/4cee8080de8537d295087a513ede53cc6165b846c2e7cc3d0c00c774689ffa4b.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "H-421-1",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c774689ffa4b.pdf/input/document.txt",
+            "source_bytes": 111702,
+            "source_location": "document.txt:line:1603",
+            "line_number": 1603,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/f85b8080d420644192be863a64afd250470faa1d711249e3977fc0f53ce018c5.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "            PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 10",
+          "value": "C-0016",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c0f53ce018c5.pdf/input/document.txt",
+            "source_bytes": 164050,
+            "source_location": "document.txt:line:2639",
+            "line_number": 2639,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/1a443289e97b0dad87cab6e2d43d544c88db81e53c91307ee157a4dbbd426806.pdf",
+          "municipality_slug": "donnacona",
+          "printed_municipality": "Donnacona",
+          "printed_municipality_quote": "VILLE DE DONNACONA",
+          "value": "CV-4",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/donnacona/a4dbbd426806.pdf/input/document.txt",
+            "source_bytes": 38144,
+            "source_location": "document.txt:line:333",
+            "line_number": 333,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/5e59b2409ba32f6631e58508dde455a81fba6ac3a28bfdaa5bfd7128b820414b.pdf",
+          "municipality_slug": "cowansville",
+          "printed_municipality": "Cowansville",
+          "printed_municipality_quote": "              Procès-verbal de la séance ordinaire du conseil de la Ville de Cowansville du",
+          "value": "I-5",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/7128b820414b.pdf/input/document.txt",
+            "source_bytes": 180300,
+            "source_location": "document.txt:line:103",
+            "line_number": 103,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "Zone",
+          "storage_key": "raw/pv-index/cas/f69e54785f648c53e977313bc85b4e9de06503d7f361b971467f0c0f41aea7cc.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "P-343-1",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/0c0f41aea7cc.pdf/input/document.txt",
+            "source_bytes": 121561,
+            "source_location": "document.txt:line:1990",
+            "line_number": 1990,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        }
+      ]
+    },
+    "lots": {
+      "population": 693,
+      "sample_size": 20,
+      "passed": 20,
+      "sample": [
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/81409992daac51f4800c6450a73c0a0473d044b11c457dc84b2d54ee2235dcd3.pdf",
+          "municipality_slug": "cowansville",
+          "printed_municipality": "Cowansville",
+          "printed_municipality_quote": "              Procès-verbal de la séance ordinaire du conseil de la Ville de Cowansville du",
+          "value": "6411611",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/54ee2235dcd3.pdf/input/document.txt",
+            "source_bytes": 64200,
+            "source_location": "document.txt:line:99",
+            "line_number": 99,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/f9b589fbe31ac2efe390149e72e1ce015f5d1623776da5f897f5467c51085a6b.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "                 VILLE D'ACTON VALE",
+          "value": "2329597",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/467c51085a6b.pdf/input/document.txt",
+            "source_bytes": 12693,
+            "source_location": "document.txt:line:205",
+            "line_number": 205,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/ecf93ecf1dd83190132c4ad9ac2cf946077f1097e9102dfb9b1fe35f101afe54.pdf",
+          "municipality_slug": "deux-montagnes",
+          "printed_municipality": "Deux-Montagnes",
+          "printed_municipality_quote": "                   l’hôtel de ville de Deux-Montagnes, le 12 février 2026 à 19 h, sous la",
+          "value": "1973984",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deux-montagnes/e35f101afe54.pdf/input/document.txt",
+            "source_bytes": 70445,
+            "source_location": "document.txt:line:1007",
+            "line_number": 1007,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/248a84291acdda0c2c2c2d4608d8005317b90c7ff1c235fd096d6e9d119e25b9.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 22",
+          "value": "3534157",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/6e9d119e25b9.pdf/input/document.txt",
+            "source_bytes": 180103,
+            "source_location": "document.txt:line:1710",
+            "line_number": 1710,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/3b18929e9921077cb3fa1a82aa6f43c534a55516d6660a0ec891e3fe48707e1d.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "             VILLE D'ACTON VALE",
+          "value": "6194636",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/e3fe48707e1d.pdf/input/document.txt",
+            "source_bytes": 58845,
+            "source_location": "document.txt:line:408",
+            "line_number": 408,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/8c9df817e1b45cdcd449709093cd9bbc10da0e4ccf6553b70daefe95d2e1a1e4.pdf",
+          "municipality_slug": "delson",
+          "printed_municipality": "Delson",
+          "printed_municipality_quote": "                                   Procès-verbal de la Ville de Delson (Québec)",
+          "value": "6662071",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/delson/fe95d2e1a1e4.pdf/input/document.txt",
+            "source_bytes": 93584,
+            "source_location": "document.txt:line:1780",
+            "line_number": 1780,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/f0333b2fb6c56ec49d9b473e531cef49f6788a4caf4843a2d5d4ece571dbdb53.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "6328752",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/ece571dbdb53.pdf/input/document.txt",
+            "source_bytes": 105659,
+            "source_location": "document.txt:line:1107",
+            "line_number": 1107,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/b58ed0e2972ed63f56e5000fcd8adce9c431a026b8bbdbf6ee666880985c4e32.pdf",
+          "municipality_slug": "cowansville",
+          "printed_municipality": "Cowansville",
+          "printed_municipality_quote": "              Procès-verbal de la séance ordinaire du conseil de la Ville de Cowansville du",
+          "value": "3798795",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/6880985c4e32.pdf/input/document.txt",
+            "source_bytes": 96375,
+            "source_location": "document.txt:line:822",
+            "line_number": 822,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/4cee8080de8537d295087a513ede53cc6165b846c2e7cc3d0c00c774689ffa4b.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "3533334",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c774689ffa4b.pdf/input/document.txt",
+            "source_bytes": 111702,
+            "source_location": "document.txt:line:973",
+            "line_number": 973,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/dd2039ac424ba42b47ffa1b47c1fc1a94218850c1b5edb7038ddcf191bb975dd.pdf",
+          "municipality_slug": "delson",
+          "printed_municipality": "Delson",
+          "printed_municipality_quote": "                                  Procès-verbal de la Ville de Delson (Québec)",
+          "value": "6556799",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/delson/cf191bb975dd.pdf/input/document.txt",
+            "source_bytes": 90535,
+            "source_location": "document.txt:line:1689",
+            "line_number": 1689,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/0046957e795a2d62228c2c6dcc93b89fc02dbf3a31e11aed1901dbfb8c2c184d.pdf",
+          "municipality_slug": "cowansville",
+          "printed_municipality": "Cowansville",
+          "printed_municipality_quote": "              Procès-verbal de la séance ordinaire du conseil de la Ville de Cowansville du",
+          "value": "3356557",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/dbfb8c2c184d.pdf/input/document.txt",
+            "source_bytes": 147474,
+            "source_location": "document.txt:line:1495",
+            "line_number": 1495,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/6fd56c6f4b87c3332909d8151f37515211536670abdd3e3a864119f9ccb5a55a.pdf",
+          "municipality_slug": "acton-vale",
+          "printed_municipality": "Acton Vale",
+          "printed_municipality_quote": "                 VILLE D'ACTON VALE",
+          "value": "2328611",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/19f9ccb5a55a.pdf/input/document.txt",
+            "source_bytes": 63071,
+            "source_location": "document.txt:line:313",
+            "line_number": 313,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/9706031c3294814660c4ffaed015f6712eaf1302ad7f511bd7a4db0b60f1dc5f.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le 28",
+          "value": "3427073",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/db0b60f1dc5f.pdf/input/document.txt",
+            "source_bytes": 373284,
+            "source_location": "document.txt:line:2334",
+            "line_number": 2334,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/1fa0777d722e82e32e4776ce76d74669ad1e7d1d30ecb1fcd07f8d2575c9df24.pdf",
+          "municipality_slug": "donnacona",
+          "printed_municipality": "Donnacona",
+          "printed_municipality_quote": "VILLE DE DONNACONA",
+          "value": "6320650",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/donnacona/8d2575c9df24.pdf/input/document.txt",
+            "source_bytes": 24404,
+            "source_location": "document.txt:line:315",
+            "line_number": 315,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/ceac78e104ea39a4d0f39e506c73a5c04c9838673a52a53ca5441ed2e6f7613e.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "3884576",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/1ed2e6f7613e.pdf/input/document.txt",
+            "source_bytes": 81622,
+            "source_location": "document.txt:line:1045",
+            "line_number": 1045,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/ef05b54e9ec0509bc2d26f370a91b1c8f68798c1d8a566dde4cfc19725b9b2af.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "6383405",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c19725b9b2af.pdf/input/document.txt",
+            "source_bytes": 90594,
+            "source_location": "document.txt:line:355",
+            "line_number": 355,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/ef05b54e9ec0509bc2d26f370a91b1c8f68798c1d8a566dde4cfc19725b9b2af.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "4101325",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c19725b9b2af.pdf/input/document.txt",
+            "source_bytes": 90594,
+            "source_location": "document.txt:line:768",
+            "line_number": 768,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/200fd1af0b3bd93a6fdb9cbb306c4d19111dcedf89b67e2ba4cf98a985e603cc.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "          PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "3426164",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/98a985e603cc.pdf/input/document.txt",
+            "source_bytes": 435551,
+            "source_location": "document.txt:line:1191",
+            "line_number": 1191,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/475e06e372c270163a3be4424e08665711615c3a0189f287f6493a3b83ae98fb.pdf",
+          "municipality_slug": "disraeli--les-appalaches",
+          "printed_municipality": "Disraeli",
+          "printed_municipality_quote": "              VILLE DE DISRAELI",
+          "value": "5513417",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/3a3b83ae98fb.pdf/input/document.txt",
+            "source_bytes": 27621,
+            "source_location": "document.txt:line:520",
+            "line_number": 520,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        },
+        {
+          "entity_type": "LotCadastre",
+          "storage_key": "raw/pv-index/cas/4cee8080de8537d295087a513ede53cc6165b846c2e7cc3d0c00c774689ffa4b.pdf",
+          "municipality_slug": "drummondville",
+          "printed_municipality": "Drummondville",
+          "printed_municipality_quote": "           PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Drummondville, tenue le",
+          "value": "6327423",
+          "own_gazetteer_membership": true,
+          "citation": {
+            "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/c774689ffa4b.pdf/input/document.txt",
+            "source_bytes": 111702,
+            "source_location": "document.txt:line:1494",
+            "line_number": 1494,
+            "citation_complete": true,
+            "quote_matches_source_line": true,
+            "reason": null
+          }
+        }
+      ]
+    },
+    "outside_municipality": []
+  },
+  "citation_relocalization": {
+    "population": 8720,
+    "sample_size": 30,
+    "passed": 30,
+    "failures": [],
+    "structural_count_gap": [],
+    "missing_citation_metadata": 0,
+    "sample": [
+      {
+        "entity_type": "LotCadastre",
+        "storage_key": "raw/pv-index/cas/52e5ec4bc1ccfd8e05a35b9f2f80d2070866037c7559a9aaf435f0838b060757.pdf",
+        "municipality_slug": "cowansville",
+        "label": "3357714",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/f0838b060757.pdf/input/document.txt",
+          "source_bytes": 36531,
+          "source_location": "document.txt:line:354",
+          "line_number": 354,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/ddc51910b03ca6df6796e1fca42179b05952113a493f5cfa5eab9b410955d66c.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "24-10-393",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/9b410955d66c.pdf/input/document.txt",
+          "source_bytes": 40871,
+          "source_location": "document.txt:line:616",
+          "line_number": 616,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Zone",
+        "storage_key": "raw/pv-index/cas/5944494384a82b2a86fd3f363f6d03d0f53fed685c5037948aade8dcfa1a1f15.pdf",
+        "municipality_slug": "drummondville",
+        "label": "H-1196-2",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt",
+          "source_bytes": 465557,
+          "source_location": "document.txt:line:2277",
+          "line_number": 2277,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/3e13c422023b9c4a321dc46c366f8bd3531c33b10bc46c3a483de0951a4cac3a.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "24-08-351",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/e0951a4cac3a.pdf/input/document.txt",
+          "source_bytes": 34956,
+          "source_location": "document.txt:line:809",
+          "line_number": 809,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/6319b53c1a203e4f989eb0ed359da30958509b76a61ce33c3a7971d68943349c.pdf",
+        "municipality_slug": "dudswell",
+        "label": "2026-049",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dudswell/71d68943349c.pdf/input/document.txt",
+          "source_bytes": 34019,
+          "source_location": "document.txt:line:277",
+          "line_number": 277,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/3b18929e9921077cb3fa1a82aa6f43c534a55516d6660a0ec891e3fe48707e1d.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "008-2022",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/e3fe48707e1d.pdf/input/document.txt",
+          "source_bytes": 58845,
+          "source_location": "document.txt:line:560",
+          "line_number": 560,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/5e59b2409ba32f6631e58508dde455a81fba6ac3a28bfdaa5bfd7128b820414b.pdf",
+        "municipality_slug": "cowansville",
+        "label": "1919",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/7128b820414b.pdf/input/document.txt",
+          "source_bytes": 180300,
+          "source_location": "document.txt:line:492",
+          "line_number": 492,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Municipality",
+        "storage_key": "raw/pv-index/cas/9c9aa2941cbae1e645bf7d6a01d86bd7d9d18bcd019bfa62aa1b5b6c4f96ee7d.pdf",
+        "municipality_slug": "danville",
+        "label": "Danville",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/danville/5b6c4f96ee7d.pdf/input/document.txt",
+          "source_bytes": 82989,
+          "source_location": "document.txt:line:3",
+          "line_number": 3,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Municipality",
+        "storage_key": "raw/pv-index/cas/44661717586ae65ad97173722901a759eb1be392da54775ecc685627b1163cae.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "Acton Vale",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/5627b1163cae.pdf/input/document.txt",
+          "source_bytes": 22181,
+          "source_location": "document.txt:line:8",
+          "line_number": 8,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Document",
+        "storage_key": "raw/pv-index/cas/538b7eebac1b423ad5dca873ae9fa5552b569316456a2e2c8e7361e7dad463ab.pdf",
+        "municipality_slug": "denholm",
+        "label": "document.txt",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/denholm/61e7dad463ab.pdf/input/document.txt",
+          "source_bytes": 6789,
+          "source_location": "document.txt:line:9",
+          "line_number": 9,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/185ae80a3dff3ac31e25dde543b67630740dbc6777a2d36d1a6f0c7e412c0bb7.pdf",
+        "municipality_slug": "amherst",
+        "label": "014.02.2026",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T181541Z/amherst/0c7e412c0bb7.pdf/input/document.txt",
+          "source_bytes": 49836,
+          "source_location": "document.txt:line:34",
+          "line_number": 34,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/355aedf84aaa1cc9e1d3116fa5f0ae0c5f7d7c96d36980ed7cc00fbd864c3f4b.pdf",
+        "municipality_slug": "drummondville",
+        "label": "4705",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/0fbd864c3f4b.pdf/input/document.txt",
+          "source_bytes": 85508,
+          "source_location": "document.txt:line:1258",
+          "line_number": 1258,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/18ba88c5147e052edeb4fe37496817179ca7e701ac37c0fcb2be288fbd63c573.pdf",
+        "municipality_slug": "drummondville",
+        "label": "0011/1/17",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+          "source_bytes": 153897,
+          "source_location": "document.txt:line:353",
+          "line_number": 353,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "CouncilSession",
+        "storage_key": "raw/pv-index/cas/2db638177c70a98b04117735b0efecce22067fec811f2346c50093b22f026f85.pdf",
+        "municipality_slug": "drummondville",
+        "label": "Séance du conseil — 4 juin 2020",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/93b22f026f85.pdf/input/document.txt",
+          "source_bytes": 4860,
+          "source_location": "document.txt:line:5",
+          "line_number": 5,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/c363b8524dca05372c649a2364cc4696354fbe08bc3507bb44223458feee8d4e.pdf",
+        "municipality_slug": "deschaillons-sur-saint-laurent",
+        "label": "6 décembre 2022",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/3458feee8d4e.pdf/input/document.txt",
+          "source_bytes": 53915,
+          "source_location": "document.txt:line:2",
+          "line_number": 2,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Zone",
+        "storage_key": "raw/pv-index/cas/b25c662fd4d673004051d0cefb632f6313bb06cbd416e87de497fcaac5bd67fd.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "144",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/fcaac5bd67fd.pdf/input/document.txt",
+          "source_bytes": 33302,
+          "source_location": "document.txt:line:579",
+          "line_number": 579,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/342bb0125420d0fb05e17ed17e1a0eb5e93bc25ddd0404f7e40851488e21691d.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "24-12-510",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/51488e21691d.pdf/input/document.txt",
+          "source_bytes": 46449,
+          "source_location": "document.txt:line:547",
+          "line_number": 547,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/4e71e76fcc92f4512c9e5f606d51c5cf765e5a0bad4f62718204121a68b0edca.pdf",
+        "municipality_slug": "albertville",
+        "label": "2023-07",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T181500Z/albertville/121a68b0edca.pdf/input/document.txt",
+          "source_bytes": 50162,
+          "source_location": "document.txt:line:45",
+          "line_number": 45,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "LotCadastre",
+        "storage_key": "raw/pv-index/cas/0046957e795a2d62228c2c6dcc93b89fc02dbf3a31e11aed1901dbfb8c2c184d.pdf",
+        "municipality_slug": "cowansville",
+        "label": "6691576",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/dbfb8c2c184d.pdf/input/document.txt",
+          "source_bytes": 147474,
+          "source_location": "document.txt:line:1544",
+          "line_number": 1544,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Document",
+        "storage_key": "raw/pv-index/cas/56e25b6ed7a43ab088ae54426b57b770add51c6c194c10d559a404227de050dc.pdf",
+        "municipality_slug": "daveluyville",
+        "label": "document.txt",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/daveluyville/04227de050dc.pdf/input/document.txt",
+          "source_bytes": 19500,
+          "source_location": "document.txt:line:2",
+          "line_number": 2,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Zone",
+        "storage_key": "raw/pv-index/cas/9706031c3294814660c4ffaed015f6712eaf1302ad7f511bd7a4db0b60f1dc5f.pdf",
+        "municipality_slug": "drummondville",
+        "label": "H-1186",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/db0b60f1dc5f.pdf/input/document.txt",
+          "source_bytes": 373284,
+          "source_location": "document.txt:line:4779",
+          "line_number": 4779,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "CouncilSession",
+        "storage_key": "raw/pv-index/cas/89e8917f4b4903b6c1045fee19468bfb63e4fdc49e3a04209364f099f1eec438.pdf",
+        "municipality_slug": "albertville",
+        "label": "Séance du conseil — 7 juillet 2025",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T181621Z/albertville/f099f1eec438.pdf/input/document.txt",
+          "source_bytes": 36049,
+          "source_location": "document.txt:line:4",
+          "line_number": 4,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/5e8f6e407ef43036bc56124b22725421ef71da59b82ace2b33ced0518132782f.pdf",
+        "municipality_slug": "drummondville",
+        "label": "RV21-5286",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/d0518132782f.pdf/input/document.txt",
+          "source_bytes": 120868,
+          "source_location": "document.txt:line:1341",
+          "line_number": 1341,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "CouncilSession",
+        "storage_key": "raw/pv-index/cas/4eedd38f773c7fb9d6a4a766f3805c9604744732fd2f3b564157e2e153364fcf.pdf",
+        "municipality_slug": "adstock",
+        "label": "Séance du conseil — 9 FÉVRIER 2026",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/adstock/e2e153364fcf.pdf/input/document.txt",
+          "source_bytes": 36585,
+          "source_location": "document.txt:line:3",
+          "line_number": 3,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Regulation",
+        "storage_key": "raw/pv-index/cas/1260dbdee0b8180a2bbcbca82e90d983602155072c130cac6f3a87049417192c.pdf",
+        "municipality_slug": "denholm",
+        "label": "2025-01",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/denholm/87049417192c.pdf/input/document.txt",
+          "source_bytes": 43654,
+          "source_location": "document.txt:line:52",
+          "line_number": 52,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "CouncilSession",
+        "storage_key": "raw/pv-index/cas/fb06a571070c8fcc0af99a1d1e213dd0463401da60f3ee404033070da6890f55.pdf",
+        "municipality_slug": "dunham",
+        "label": "Séance du conseil — 2024/12/16",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220636Z/dunham/070da6890f55.pdf/input/document.txt",
+          "source_bytes": 27019,
+          "source_location": "document.txt:line:6",
+          "line_number": 6,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Zone",
+        "storage_key": "raw/pv-index/cas/e42502fb1e676827dc193717e92192b67892fd55ef06aae810a992789197f040.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "204-CV",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/92789197f040.pdf/input/document.txt",
+          "source_bytes": 61608,
+          "source_location": "document.txt:line:1052",
+          "line_number": 1052,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/f86d7baa421e4b097004bcec852ee43021ae080bf6504d7c0f27e204751a541f.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "24-09-370",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/e204751a541f.pdf/input/document.txt",
+          "source_bytes": 21806,
+          "source_location": "document.txt:line:494",
+          "line_number": 494,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/b74f66e2b94997acf28fceef5a159f90344ecfed41374454606d4b36af8d0ad3.pdf",
+        "municipality_slug": "denholm",
+        "label": "21 janvier 2026",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/denholm/4b36af8d0ad3.pdf/input/document.txt",
+          "source_bytes": 20145,
+          "source_location": "document.txt:line:12",
+          "line_number": 12,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "Resolution",
+        "storage_key": "raw/pv-index/cas/4a005c52750c7daebef5c49f3452a0de8030a50f92e02f2a6e4c45c46624c060.pdf",
+        "municipality_slug": "audet",
+        "label": "2022-02-26",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T182109Z/audet/45c46624c060.pdf/input/document.txt",
+          "source_bytes": 61532,
+          "source_location": "document.txt:line:357",
+          "line_number": 357,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      }
+    ]
+  },
+  "meeting_date_verbatim": {
+    "population": 554,
+    "sample_size": 20,
+    "passed": 20,
+    "failures": [],
+    "sample": [
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/d64442f1d4f58f07433000dc738e6eab01067e8e6f3f3897bd39e21346ac0187.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "15 juin 2026",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/e21346ac0187.pdf/input/document.txt",
+          "source_bytes": 53267,
+          "source_location": "document.txt:line:10",
+          "line_number": 10,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/28f4a9c91a214f831b9e6335f1d0883216b96c47f60c4d5fb2ab6ea43302107f.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "11 MAI 2026",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dolbeau-mistassini/6ea43302107f.pdf/input/document.txt",
+          "source_bytes": 76678,
+          "source_location": "document.txt:line:2",
+          "line_number": 2,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/7da15a93201ccb3fbbb63e13ce0724dc7efe097c949315ff514c8ab3020282c8.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "2021-05-25",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/8ab3020282c8.pdf/input/document.txt",
+          "source_bytes": 7396,
+          "source_location": "document.txt:line:13",
+          "line_number": 13,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/db265b90e01ad61f8b58e0dde72e9416ab034bb9771807dcfad438c31ca4f5df.pdf",
+        "municipality_slug": "audet",
+        "label": "11 MARS 2019",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T182329Z/audet/38c31ca4f5df.pdf/input/document.txt",
+          "source_bytes": 34527,
+          "source_location": "document.txt:line:7",
+          "line_number": 7,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/8e8eb4cf0de4cd332785daaf665184316fb3b360f6ce5078586907322316c479.pdf",
+        "municipality_slug": "audet",
+        "label": "6 AVRIL 2009",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T182218Z/audet/07322316c479.pdf/input/document.txt",
+          "source_bytes": 40402,
+          "source_location": "document.txt:line:7",
+          "line_number": 7,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/a58d13c3c36098a17ad8950b6ce5b644ba13fa6d756446d1c09a61f1f1a4c231.pdf",
+        "municipality_slug": "drummondville",
+        "label": "0305/04/19",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/61f1f1a4c231.pdf/input/document.txt",
+          "source_bytes": 90890,
+          "source_location": "document.txt:line:64",
+          "line_number": 64,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/a4c8ccc8b901a5462bd19be21c5d417f96db6bdd0604936147209481ef6c4e0e.pdf",
+        "municipality_slug": "drummondville",
+        "label": "0426/05/26",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/9481ef6c4e0e.pdf/input/document.txt",
+          "source_bytes": 320439,
+          "source_location": "document.txt:line:66",
+          "line_number": 66,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/c7e49f9d31683da965ab47cc9147a4d1710cb8d07d89ca3958c54a56c6def3bd.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "2019-12-16",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/4a56c6def3bd.pdf/input/document.txt",
+          "source_bytes": 38407,
+          "source_location": "document.txt:line:12",
+          "line_number": 12,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/897411fc876d59a078e888d58bfb384901b38b2de8ef99c7818bb60982c1f538.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "16 DÉCEMBRE 2024",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/b60982c1f538.pdf/input/document.txt",
+          "source_bytes": 7117,
+          "source_location": "document.txt:line:2",
+          "line_number": 2,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/d6a70cf09a43663ffe23f81fcb9b59570d7119275ec0518958b7c37c38d2dd86.pdf",
+        "municipality_slug": "cowansville",
+        "label": "21 janvier 2026",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/c37c38d2dd86.pdf/input/document.txt",
+          "source_bytes": 6625,
+          "source_location": "document.txt:line:11",
+          "line_number": 11,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/944c0bfafd066647eab85d5a3e5db814bb1eab1a6835ab9cb3f7cf945f0d802e.pdf",
+        "municipality_slug": "dunham",
+        "label": "2023/10/03",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dunham/cf945f0d802e.pdf/input/document.txt",
+          "source_bytes": 45177,
+          "source_location": "document.txt:line:6",
+          "line_number": 6,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/342bb0125420d0fb05e17ed17e1a0eb5e93bc25ddd0404f7e40851488e21691d.pdf",
+        "municipality_slug": "dolbeau-mistassini",
+        "label": "9 DÉCEMBRE 2024",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/51488e21691d.pdf/input/document.txt",
+          "source_bytes": 46449,
+          "source_location": "document.txt:line:2",
+          "line_number": 2,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/d5f94539d0fc5fc49558cbd20db40c77b383d886d7ced1969a302593c8d69f79.pdf",
+        "municipality_slug": "donnacona",
+        "label": "23 février 2026",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/donnacona/2593c8d69f79.pdf/input/document.txt",
+          "source_bytes": 31325,
+          "source_location": "document.txt:line:10",
+          "line_number": 10,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/b0536506e43ee6b31b5b4339bf7fbebaed65ef98af7ccfba2aad5e828c2bdb16.pdf",
+        "municipality_slug": "auclair",
+        "label": "5 JUIN 2023",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T181958Z/auclair/5e828c2bdb16.pdf/input/document.txt",
+          "source_bytes": 23867,
+          "source_location": "document.txt:line:6",
+          "line_number": 6,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/8d6c1d17d718a4c3bf0655d5f12f1fda62d0928e80a27504b9a1b11e4d798b06.pdf",
+        "municipality_slug": "audet",
+        "label": "3 MARS 2014",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T182218Z/audet/b11e4d798b06.pdf/input/document.txt",
+          "source_bytes": 41582,
+          "source_location": "document.txt:line:7",
+          "line_number": 7,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/1c06ababafe1903569328248fab439646f1abb5defb2bc2d03fdfd6615d51da2.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "2021-09-07",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/fd6615d51da2.pdf/input/document.txt",
+          "source_bytes": 51481,
+          "source_location": "document.txt:line:13",
+          "line_number": 13,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/048e570d52be9ceef792bf282aa4d58301528e798b632844af77dc5e08399d90.pdf",
+        "municipality_slug": "drummondville",
+        "label": "21 août 2017",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/drummondville/dc5e08399d90.pdf/input/document.txt",
+          "source_bytes": 105219,
+          "source_location": "document.txt:line:65",
+          "line_number": 65,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/af0ca5c5563dd851ac947719a1fe6cbb72b8c28ac0e7956459d6b7492a823791.pdf",
+        "municipality_slug": "disraeli--les-appalaches",
+        "label": "14 avril 2025",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/b7492a823791.pdf/input/document.txt",
+          "source_bytes": 45308,
+          "source_location": "document.txt:line:5",
+          "line_number": 5,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/f025330490c73fe87c662d282ac9352897011359eba88274e1d9f8f913a8404c.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "9 décembre 2024",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215129Z/acton-vale/f8f913a8404c.pdf/input/document.txt",
+          "source_bytes": 4500,
+          "source_location": "document.txt:line:9",
+          "line_number": 9,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "entity_type": "MeetingDate",
+        "storage_key": "raw/pv-index/cas/8418e6f2f98e51fe8244443fefbb4e23df779c467da1d2ffc431ea41a345cc39.pdf",
+        "municipality_slug": "acton-vale",
+        "label": "2019-10-07",
+        "label_is_verbatim_in_quote": true,
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215541Z/acton-vale/ea41a345cc39.pdf/input/document.txt",
+          "source_bytes": 46248,
+          "source_location": "document.txt:line:14",
+          "line_number": 14,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      }
+    ]
+  },
+  "regulation_legal_quality": {
+    "total": 2045,
+    "with_legal_quality": 2045,
+    "silent": 0,
+    "invalid_quality_values": [],
+    "quality_distribution": {
+      "PROJET": 125,
+      "ADOPTE": 421,
+      "INCONNUE": 1401,
+      "PREMIER_PROJET": 16,
+      "SECOND_PROJET": 82
+    },
+    "unsafe_non_adopted_as_adopted": [
+      {
+        "storage_key": "raw/pv-index/cas/4cc23a307bf2c7759cd1f2dfd79b2e7f37558ae0c65ef976e6f2c59659ae045f.pdf",
+        "municipality_slug": "armagh",
+        "label": "199-2022",
+        "legal_quality": "ADOPTE",
+        "quote": "             CONSIDÉRANT le projet de Règlement no 199-2022 adopté par le conseil",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T181541Z/armagh/c59659ae045f.pdf/input/document.txt",
+          "source_bytes": 41411,
+          "source_location": "document.txt:line:608",
+          "line_number": 608,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      },
+      {
+        "storage_key": "raw/pv-index/cas/43b0c80738ade43f7bfbbce03a24193a3241bd1c194ccc2d8b79e17a89e99a0d.pdf",
+        "municipality_slug": "dunham",
+        "label": "489-24",
+        "legal_quality": "ADOPTE",
+        "quote": "                                 projet de Règlement no 489-24 adoptée lors de la",
+        "citation": {
+          "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220636Z/dunham/e17a89e99a0d.pdf/input/document.txt",
+          "source_bytes": 40922,
+          "source_location": "document.txt:line:517",
+          "line_number": 517,
+          "citation_complete": true,
+          "quote_matches_source_line": true,
+          "reason": null
+        }
+      }
+    ]
+  },
+  "zero_node_documents": {
+    "total": 15,
+    "findings": [
+      {
+        "municipality_slug": "courcelles-saint-evariste",
+        "municipality_name": "Courcelles-Saint-Évariste",
+        "storage_key": "raw/pv-index/cas/233fa9ef46cba0b6ebf1d7b23c9b15f33e6a7ed2b3dd4d23cdbbb6e93bb0c8ed.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/courcelles-saint-evariste/b6e93bb0c8ed.pdf/input/document.txt",
+        "source_bytes": 32171,
+        "source_lines": 687,
+        "nonempty_source_lines": 437,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 6,
+            "text": "                    Procès-verbal de la séance ordinaire du conseil de la municipalité de"
+          },
+          {
+            "line": 44,
+            "text": "                                6.1.3 - Réduction du nombre de conseillers"
+          },
+          {
+            "line": 54,
+            "text": "                          6.7 - Suivi des dossiers de la MRC Beauce-Sartigan"
+          },
+          {
+            "line": 55,
+            "text": "                          6.8 - Revenus et dépenses de la municipalité"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "courcelles-saint-evariste",
+        "municipality_name": "Courcelles-Saint-Évariste",
+        "storage_key": "raw/pv-index/cas/7f053591f72025d86bb8e54d79bb9e14f150079d3dab19de37f77a5e8d30f052.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/courcelles-saint-evariste/7a5e8d30f052.pdf/input/document.txt",
+        "source_bytes": 72870,
+        "source_lines": 1494,
+        "nonempty_source_lines": 970,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 6,
+            "text": "                   Procès-verbal de la séance ordinaire du conseil de la municipalité de"
+          },
+          {
+            "line": 8,
+            "text": "                   municipal de à l’hôtel de ville de Saint-Évariste-de-Forsyth, situé au 495, rue"
+          },
+          {
+            "line": 43,
+            "text": "                               6.1.2 - Résolution d'appui à la MRC de Beauce -Sartigan projet loi 106"
+          },
+          {
+            "line": 54,
+            "text": "                         6.4 - Suivi des dossiers de la MRC Beauce-Sartigan"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "cowansville",
+        "municipality_name": "Cowansville",
+        "storage_key": "raw/pv-index/cas/20b5e3a5fa3e5116ad2e5871b829ded8c2c89f314b1872b5774ba15e3cc08775.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/cowansville/a15e3cc08775.pdf/input/document.txt",
+        "source_bytes": 6300,
+        "source_lines": 182,
+        "nonempty_source_lines": 113,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 4,
+            "text": "              COWANSVILLE"
+          },
+          {
+            "line": 6,
+            "text": "              Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+          },
+          {
+            "line": 7,
+            "text": "              Cowansville du 21 décembre 2022, tenue dans la salle de l’hôtel de ville"
+          },
+          {
+            "line": 12,
+            "text": "              Madame la conseillère Mélanie Gobeille District 1"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "deschaillons-sur-saint-laurent",
+        "municipality_name": "Deschaillons-sur-Saint-Laurent",
+        "storage_key": "raw/pv-index/cas/19932cc2ffc9c35884c68e02374b1d0955ef9b40c9f0e073722a955ea26ba589.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/955ea26ba589.pdf/input/document.txt",
+        "source_bytes": 51748,
+        "source_lines": 1056,
+        "nonempty_source_lines": 703,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "              Procès-verbal de la séance ordinaire du conseil municipal de Deschaillons-sur-"
+          },
+          {
+            "line": 37,
+            "text": "                    5.1 - Suivi des dossiers - MRC de Bécancour"
+          },
+          {
+            "line": 62,
+            "text": "   9.3 - Engagement de la municipalité à élaborer un PGA-Eau"
+          },
+          {
+            "line": 98,
+            "text": "ET RÉSOLU À L'UNANIMITÉ DES CONSEILLERS PRÉSENTS"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "deschaillons-sur-saint-laurent",
+        "municipality_name": "Deschaillons-sur-Saint-Laurent",
+        "storage_key": "raw/pv-index/cas/1c916e9ee87d0c8bbe80ca3a0315d70e68b6c6c0a8e39902e1406ca822647806.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/6ca822647806.pdf/input/document.txt",
+        "source_bytes": 55084,
+        "source_lines": 1153,
+        "nonempty_source_lines": 756,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "              Procès-verbal de la séance ordinaire du conseil municipal de Deschaillons-sur-"
+          },
+          {
+            "line": 38,
+            "text": "                    5.1 - Suivi des dossiers - MRC de Bécancour"
+          },
+          {
+            "line": 39,
+            "text": "                    5.2 - Suivi des dossiers - MRC de Lotbinière"
+          },
+          {
+            "line": 61,
+            "text": "   8.3 - Suivi - Travaux à Parisville et chemin de détour"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "deschaillons-sur-saint-laurent",
+        "municipality_name": "Deschaillons-sur-Saint-Laurent",
+        "storage_key": "raw/pv-index/cas/788cbea92d5669fd141218ec90e0c85c78192a3af88398fc05d1f3a303c736f2.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/f3a303c736f2.pdf/input/document.txt",
+        "source_bytes": 34744,
+        "source_lines": 750,
+        "nonempty_source_lines": 493,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "              Procès-verbal de la séance ordinaire du conseil municipal de Deschaillons-sur-"
+          },
+          {
+            "line": 38,
+            "text": "                    5.1 - Suivi des dossiers - MRC de Bécancour"
+          },
+          {
+            "line": 58,
+            "text": "                     9.2 - Réseau d'aqueduc de Parisville"
+          },
+          {
+            "line": 61,
+            "text": "                     9.4 - Entente intermunicipale d'aqueduc avec Parisville - Achat de"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "deschaillons-sur-saint-laurent",
+        "municipality_name": "Deschaillons-sur-Saint-Laurent",
+        "storage_key": "raw/pv-index/cas/b5abe6d8462864a304e98236d27c4474b9f85ba188e098f49236c7be3ec0181b.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T215830Z/deschaillons-sur-saint-laurent/c7be3ec0181b.pdf/input/document.txt",
+        "source_bytes": 36467,
+        "source_lines": 779,
+        "nonempty_source_lines": 525,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "              Procès-verbal de la séance ordinaire du conseil municipal de Deschaillons-sur-"
+          },
+          {
+            "line": 38,
+            "text": "                    5.1 -   Suivi des dossiers - MRC de Bécancour"
+          },
+          {
+            "line": 41,
+            "text": "                    5.4 -   Calendrier des séances du conseil pour l'année civile 2025"
+          },
+          {
+            "line": 42,
+            "text": "                    5.5 -   Conseil et comités"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dolbeau-mistassini",
+        "municipality_name": "Dolbeau-Mistassini",
+        "storage_key": "raw/pv-index/cas/cedaf4d9617da722a4cf6c4da4dc2215e8fa80fa5d76ceb72664dbbba768fa5e.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/dbbba768fa5e.pdf/input/document.txt",
+        "source_bytes": 4816,
+        "source_lines": 165,
+        "nonempty_source_lines": 81,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+          },
+          {
+            "line": 3,
+            "text": "QUARANTE-CINQ (11 H 45) À LA SALLE DU CONSEIL"
+          },
+          {
+            "line": 6,
+            "text": " SONT PRÉSENTS :        MADAME LA CONSEILLÈRE CAROLINE LABBÉ"
+          },
+          {
+            "line": 7,
+            "text": "                        MONSIEUR LE CONSEILLER STÉPHANE HOUDE"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dolbeau-mistassini",
+        "municipality_name": "Dolbeau-Mistassini",
+        "storage_key": "raw/pv-index/cas/92a8b348ecb6fdc3a288a2832f0c548d94a5752d7f8ffa1cfdb1f469f5849f20.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dolbeau-mistassini/f469f5849f20.pdf/input/document.txt",
+        "source_bytes": 5154,
+        "source_lines": 152,
+        "nonempty_source_lines": 86,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+          },
+          {
+            "line": 3,
+            "text": "(17 H 03) À LA SALLE DU CONSEIL"
+          },
+          {
+            "line": 6,
+            "text": " SONT PRÉSENTS :        MADAME LA CONSEILLÈRE CAROLINE LABBÉ"
+          },
+          {
+            "line": 7,
+            "text": "                        MONSIEUR LE CONSEILLER ALEXANDRE TREMBLAY"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dolbeau-mistassini",
+        "municipality_name": "Dolbeau-Mistassini",
+        "storage_key": "raw/pv-index/cas/a36b0ff9a9dd8cf6dc1ec5094838b613b1bb4aa7cfbcbea6bf8ff9f4f28ffe55.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dolbeau-mistassini/f9f4f28ffe55.pdf/input/document.txt",
+        "source_bytes": 5570,
+        "source_lines": 173,
+        "nonempty_source_lines": 89,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+          },
+          {
+            "line": 3,
+            "text": "QUARANTE-TROIS (17 H 43) À LA SALLE DU CONSEIL"
+          },
+          {
+            "line": 6,
+            "text": " SONT PRÉSENTS :        MONSIEUR LE CONSEILLER ALEXANDRE TREMBLAY"
+          },
+          {
+            "line": 7,
+            "text": "                        MONSIEUR LE CONSEILLER STÉPHANE HOUDE"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dolbeau-mistassini",
+        "municipality_name": "Dolbeau-Mistassini",
+        "storage_key": "raw/pv-index/cas/ead64d469f795ec473f12f655583129001849074d4c342eb8d3d30981f6c02d4.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dolbeau-mistassini/30981f6c02d4.pdf/input/document.txt",
+        "source_bytes": 4199,
+        "source_lines": 122,
+        "nonempty_source_lines": 68,
+        "reason": "OWNER_CONTEXT_SPLIT_ACROSS_LINES",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+          },
+          {
+            "line": 6,
+            "text": " SONT PRÉSENTS :        MONSIEUR LE CONSEILLER ALEXANDRE TREMBLAY"
+          },
+          {
+            "line": 7,
+            "text": "                        MONSIEUR LE CONSEILLER STÉPHANE HOUDE"
+          },
+          {
+            "line": 8,
+            "text": "                        MONSIEUR LE CONSEILLER STÉPHANE GAGNON"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dorval",
+        "municipality_name": "Dorval",
+        "storage_key": "raw/pv-index/cas/0a12e835b9728a1e566bc83035863346ead7c0037955bad71796310a3d1beb51.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dorval/310a3d1beb51.pdf/input/document.txt",
+        "source_bytes": 73336,
+        "source_lines": 1815,
+        "nonempty_source_lines": 1191,
+        "reason": "UNSUPPORTED_CITE_PREFIX",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "                                 CITÉ DE DORVAL"
+          },
+          {
+            "line": 3,
+            "text": "Procès-verbal d’une séance ordinaire du conseil municipal de la Cité de Dorval tenue à"
+          },
+          {
+            "line": 10,
+            "text": "Monsieur Joe Bou-Faisal, conseiller"
+          },
+          {
+            "line": 11,
+            "text": "Madame Nicole Duchastel, conseillère"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dorval",
+        "municipality_name": "Dorval",
+        "storage_key": "raw/pv-index/cas/8abe5d4e17471b03780d076d5ae06c6b64c8efe2529a528be536e246470e1d51.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dorval/e246470e1d51.pdf/input/document.txt",
+        "source_bytes": 58345,
+        "source_lines": 1529,
+        "nonempty_source_lines": 981,
+        "reason": "UNSUPPORTED_CITE_PREFIX",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "                                   CITÉ DE DORVAL"
+          },
+          {
+            "line": 3,
+            "text": "Procès-verbal d’une séance ordinaire du conseil municipal de la Cité de Dorval tenue à"
+          },
+          {
+            "line": 10,
+            "text": "Monsieur Pascal Brault, conseiller"
+          },
+          {
+            "line": 11,
+            "text": "Monsieur Joe Bou-Faisal, conseiller"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dorval",
+        "municipality_name": "Dorval",
+        "storage_key": "raw/pv-index/cas/923de6cb26fe6d9fea989c0eff467bb90e0db0c28288185448d1a0565a6ddf8c.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dorval/a0565a6ddf8c.pdf/input/document.txt",
+        "source_bytes": 55181,
+        "source_lines": 1447,
+        "nonempty_source_lines": 922,
+        "reason": "UNSUPPORTED_CITE_PREFIX",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "                                     CITÉ DE DORVAL"
+          },
+          {
+            "line": 3,
+            "text": "Procès-verbal d’une séance ordinaire du conseil municipal de la Cité de Dorval tenue à"
+          },
+          {
+            "line": 10,
+            "text": "Monsieur Joe Bou-Faisal, conseiller"
+          },
+          {
+            "line": 11,
+            "text": "Madame Nicole Duchastel, conseillère"
+          }
+        ]
+      },
+      {
+        "municipality_slug": "dorval",
+        "municipality_name": "Dorval",
+        "storage_key": "raw/pv-index/cas/f4cb74f008b5cf2aab5383ea082e85199b94e80667d9c65d07554f8892666fbb.pdf",
+        "source_path": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260728T220314Z/dorval/4f8892666fbb.pdf/input/document.txt",
+        "source_bytes": 2211,
+        "source_lines": 109,
+        "nonempty_source_lines": 55,
+        "reason": "UNSUPPORTED_CITE_PREFIX",
+        "header_evidence": [
+          {
+            "line": 1,
+            "text": "                                 CITÉ DE DORVAL"
+          },
+          {
+            "line": 4,
+            "text": "Procès-verbal d’une séance extraordinaire du conseil municipal de la Cité de Dorval"
+          },
+          {
+            "line": 11,
+            "text": "Monsieur Joe Bou-Faisal, conseiller"
+          },
+          {
+            "line": 12,
+            "text": "Madame Nicole Duchastel, conseillère"
+          }
+        ]
+      }
+    ]
+  },
+  "stopped_after_critical_ownership_failure": false
+}

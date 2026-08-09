@@ -1,0 +1,116 @@
+{
+  "contract": "pv-capture-ordre-du-jour-campaign-report/v1",
+  "generated_at": "2026-07-29T03:57:19.857Z",
+  "scope": {
+    "lane": "pv",
+    "source": "pv-index",
+    "lots": 6,
+    "attempts": 300
+  },
+  "lots": [
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035100Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035100Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_403": 1,
+        "HTTP_404": 1,
+        "PAGE_HTML": 2,
+        "PDF_SANS_COUCHE_TEXTE": 16,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 27,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035102Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035102Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 5,
+        "HTTP_404": 1,
+        "PAGE_HTML": 6,
+        "PDF_SANS_COUCHE_TEXTE": 3,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 27,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 8
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035103Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035103Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 6,
+        "PDF_SANS_COUCHE_TEXTE": 1,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 43
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035104Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035104Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 5,
+        "HTTP_404": 1,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 39,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 5
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035107Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035107Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 6,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 40,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 4
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260729-035106Z.json",
+      "run_prefix": "capture/_runs/pv-20260729T035106Z-",
+      "attempts": 50,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 4,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 44,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+      }
+    }
+  ],
+  "aggregate": {
+    "counts": {
+      "DOCUMENT_LISIBLE_NON_PV": 27,
+      "HTTP_403": 1,
+      "HTTP_404": 3,
+      "PAGE_HTML": 8,
+      "PDF_SANS_COUCHE_TEXTE": 20,
+      "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 220,
+      "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 21
+    },
+    "confirmed": 220,
+    "http_404": 3,
+    "http_403": 1,
+    "denominator": 296,
+    "stop_rate_percent": 74.32,
+    "expected_confirmation_percent": 76.7,
+    "unique_cas_keys": 296,
+    "new_cas_keys": 7
+  },
+  "dead_hosts": [
+    {
+      "host": "les-coteaux.qc.ca",
+      "http_404": 1,
+      "status": "hote_mort"
+    },
+    {
+      "host": "mascouche.ca",
+      "http_404": 1,
+      "status": "hote_mort"
+    },
+    {
+      "host": "mont-blanc.quebec",
+      "http_404": 1,
+      "status": "hote_mort"
+    }
+  ]
+}

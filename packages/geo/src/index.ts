@@ -46,3 +46,16 @@ export {
   type PolygonalFeature,
   type PolygonalGeometry,
 } from "./zonage/lotZoneJoin.js";
+export {
+  parseChamplainDensityDocument,
+  parseChestervilleDensityDocument,
+  parseClermontDensityDocument,
+  parseDrummondvilleDensityDocument,
+  parseHuberdeauDensityDocument,
+  parseLacDesEcorcesDensityDocument,
+  parseMontLaurierZonesHDensityDocument,
+  parseVarennesDensityDocument,
+  type DensityDocumentParseResult,
+  type DensityNormRefusal,
+  type VerbatimDensityNorm,
+} from "./zonage/densityDocument.js";

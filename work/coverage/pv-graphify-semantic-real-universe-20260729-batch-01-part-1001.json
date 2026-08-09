@@ -1,0 +1,1402 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T05:37:19.888Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1000,
+    "limit": 50,
+    "requested": 50,
+    "selected": 50,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 50,
+  "indexing": {
+    "indexed_pvs": 3,
+    "failed_pvs": 47,
+    "outcomes": {
+      "INDEXED": 3,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 47
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 3,
+    "Document": 3,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 2,
+    "Resolution": 2,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 14,
+    "edges": 5,
+    "failures": 47
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "baie-trinite",
+      "storage_key": "raw/pv-index/cas/6e618958e3f046375fa5e67aba5dd64b1e6aa6cccad94092e5c00906080871ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6636374",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:359",
+      "quote": "                            partie de la route 138 en lui vendant le lot 6 636 374;"
+    },
+    {
+      "municipality_slug": "baie-trinite",
+      "storage_key": "raw/pv-index/cas/6e618958e3f046375fa5e67aba5dd64b1e6aa6cccad94092e5c00906080871ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6636375",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:361",
+      "quote": "                            ENTENDU QUE de la résolution 2024-05-08 pour la vente du lot 6 636 375 à"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 54,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 411,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z",
+  "documents": [
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-9-septembre-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9726d8c2ddfd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9726d8c2ddfd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-11-novembre-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/0e5b85866b573e4945b46e8453a3e043c1ad656a7d5493f1de5ce03771e64880.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/e03771e64880.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/e03771e64880.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-SEANCE-CONSEIL-2021-09-09-SIGNER.pdf",
+      "storage_key": "raw/pv-index/cas/10a0d5254ce8dfac2ce9098fe540f7ccbd31f82f00020af94da8b7c6642da53f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b7c6642da53f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b7c6642da53f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-12-janvier-signe.pdf",
+      "storage_key": "raw/pv-index/cas/17f8afbd9014d25a5aa71f69d05653c5f38df47bf856af171b496e8d3b7a11d1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/6e8d3b7a11d1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/6e8d3b7a11d1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-signer-10-sept-2025.pdf",
+      "storage_key": "raw/pv-index/cas/19057f3ac44f4a4f2430d43271b26fde4a534a38b79bfa0c0b037bef8e68a855.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/7bef8e68a855.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/7bef8e68a855.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-conseil-2021-04-14-signer.pdf",
+      "storage_key": "raw/pv-index/cas/1bcaa08ae67814e61e7bcecd4cdd5e653252588eccadf3b1dfa78754134ff03f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/8754134ff03f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/8754134ff03f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-29-aout-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/1f787dbaf0408067f7f53c3485aa104b3e83ea701faca1b2c89b2f9b363c3438.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/2f9b363c3438.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/2f9b363c3438.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-signer-8-nov-2023.pdf",
+      "storage_key": "raw/pv-index/cas/22ea1238f9b79dc1831c1fe1b733b2b6bfd4ad5498bddeba19f67ac292682ee4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/7ac292682ee4.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/7ac292682ee4.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-23-aout-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/2476bd66574597bd0b765f864f14dd4c0160ae7892479d680ef59a1d3d569822.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a1d3d569822.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a1d3d569822.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-15-juin-2022-signer.pdf",
+      "storage_key": "raw/pv-index/cas/257061d4dba1c1c6e807a93091a232375dbe4a7b81bcc439eee547a3e7d862c3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/47a3e7d862c3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/47a3e7d862c3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-2-decembre-2020-seance-extraordinaire-signe.pdf",
+      "storage_key": "raw/pv-index/cas/264d7e745e9a8f2a9e3453d06a915269b89a42a86d1bec0d205dfebc8b2d23d9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/febc8b2d23d9.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/febc8b2d23d9.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-mars-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/27de081a6cd7b5230a9ea920368e7c487a4480d77f877be9827d798ba59483f6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/798ba59483f6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/798ba59483f6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-10-mars-2021-signe.pdf",
+      "storage_key": "raw/pv-index/cas/2962effbfb58b4357e7a9c53d501d3dacb39bdabd15c8b9f51af41e9ef982eb8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/41e9ef982eb8.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/41e9ef982eb8.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-signer-1-oct-2025.pdf",
+      "storage_key": "raw/pv-index/cas/2b237a67d51a2a01f7eca2a39546f340ab52de187c4d8abb37364e59e4751a00.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/4e59e4751a00.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/4e59e4751a00.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-10-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/32abf22b756ac4a10a9c1b2d61746086b5cb24b2f020df02e049d136b2202a58.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d136b2202a58.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d136b2202a58.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-10-avril-2024-signer.pdf",
+      "storage_key": "raw/pv-index/cas/39d2eac1ac5ff813a57151ca578f62113f26e413f9994b4270e43138221059d5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/3138221059d5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/3138221059d5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-extraordinaire-15-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/3a05111a979fa52aa47441af967f428a7ca285164905ce1d2abbc6dd59d32d4e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/c6dd59d32d4e.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/c6dd59d32d4e.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/2-pv-7-fevrier-2024-signer.pdf",
+      "storage_key": "raw/pv-index/cas/3d510b6b5078f18617067077663d89d7395e45f3b55dc3c1dd4b8c20748f7894.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/8c20748f7894.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/8c20748f7894.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-11-mai-2022-signe.pdf",
+      "storage_key": "raw/pv-index/cas/443b37b00736441afc9ff1089d7ad22d8aae921c412d9b8a56ab131011785215.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/131011785215.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/131011785215.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-9-fevrier-2022-signer.pdf",
+      "storage_key": "raw/pv-index/cas/45a9831b06e46695e7f1e707e4aad6849e98887b677d330ef2cc9a5be72086f3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a5be72086f3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a5be72086f3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-23-mars-2022-signe.pdf",
+      "storage_key": "raw/pv-index/cas/46e74ad0a35dab014d3d52e77477f955242bd18bacf4a78804eea461bfa425b0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/a461bfa425b0.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/a461bfa425b0.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-du-16-decembre-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/4894967308b63fb499c785a27ad43a9340bcd3568eb29320a525d050108dbc3b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d050108dbc3b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d050108dbc3b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-ordinaire-11-mars-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/49781a5c82a3a9cecc70535745710f805dceb1649d13b84c9b2c9a893f837abe.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a893f837abe.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9a893f837abe.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-extraordinaire-2020-11-19-signe.pdf",
+      "storage_key": "raw/pv-index/cas/4e33f9f07b7a67f6d4bed1c7d6cf0f0f5b524251daa739146ae3ca3951dca7fc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ca3951dca7fc.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ca3951dca7fc.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-ordinaire-conseil-10-fev-2021-signe.pdf",
+      "storage_key": "raw/pv-index/cas/4e4c9125c0653b7bcf2c7a0f4efe5eff0af333e68ed51d32c441de3f8b286fba.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/de3f8b286fba.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/de3f8b286fba.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-17-janvier-2024.pdf",
+      "storage_key": "raw/pv-index/cas/5154828c54c083b15636c03055c7927e4d471faf7fcae5515099ad4276808f59.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ad4276808f59.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ad4276808f59.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-3-fevrier-2025-seance-extraordinaire-taxationwebpdf.pdf",
+      "storage_key": "raw/pv-index/cas/5273a307e902d2d5b00051b5220e9ba8b41c114664f5b36e851b9b60f4faa988.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Trinité",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "         séance ordinaire du Conseil tenue le 11 décembre 2024 par madame Thérèse"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "         séance ordinaire du Conseil tenue le 11 décembre 2024 par madame Thérèse"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "              2. Adoption du règlement numéro 2024-01 portant sur la taxation et la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9b60f4faa988.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9b60f4faa988.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-trinite"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-14-juin-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/55d8ff39f7a7fc9a5b32e5c61f896d356dec1eb4f73d84d74ed798ce987ec6dc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/98ce987ec6dc.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/98ce987ec6dc.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-signe-du-15-juillet.pdf",
+      "storage_key": "raw/pv-index/cas/574a5df750d9d45be610a4c199e3c6a74f6de27bec7cff3c4486afb15362d437.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/afb15362d437.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/afb15362d437.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-21-sept-signer.pdf",
+      "storage_key": "raw/pv-index/cas/586c98487a354568858904be3e7152be92d7005867e93679d8e5116cb4f967b4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/116cb4f967b4.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/116cb4f967b4.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-8-fevrier-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/6075a8acdebf86412b566e2c6b3c17f5b11136b6bdc3c823014f9e5628c92478.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9e5628c92478.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/9e5628c92478.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-du-8-decembre-signe-2021.pdf",
+      "storage_key": "raw/pv-index/cas/62419977f43068b3429c1a8b26b5814b3423e6635e833e33013d382d9c0857c6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/382d9c0857c6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/382d9c0857c6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-4-oct2021-signer.pdf",
+      "storage_key": "raw/pv-index/cas/63a5ccae4f0183664ccc35f3001eb9319ca63a6469f5ab1dba96f63abe7902ce.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f63abe7902ce.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f63abe7902ce.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-14-mai-2025-signer.pdf",
+      "storage_key": "raw/pv-index/cas/65fe2314a38d50310e61d8734c740259f859d4a8695c2263ac73d9166791c785.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d9166791c785.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/d9166791c785.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/2-PV-10-juillet-2024-signedocx.pdf",
+      "storage_key": "raw/pv-index/cas/68df849e3604b5153e31dbacf0e5fab46dbbbb4f35976e61e914f70900ec181d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f70900ec181d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f70900ec181d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-extraordinaire-26-mars-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/6adc5b57ac0666827721ef855b1fb7c0ad29683fecd940fb0c99bebe77e1d168.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bebe77e1d168.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bebe77e1d168.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-13-sept-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/6b11b28d15ac64093863e8a01e3d0fc510b4eba0f3a6ffb81cbaa1c9d1004a99.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/a1c9d1004a99.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/a1c9d1004a99.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-ordinaire-11-janvier-2023-signer.pdf",
+      "storage_key": "raw/pv-index/cas/6d9dea567f9457ae965fe539e5dbc154dc843fe9362d67066b6cbec776fd4635.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bec776fd4635.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bec776fd4635.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-seance-13-nov-2024-signer.pdf",
+      "storage_key": "raw/pv-index/cas/6dfdffcff5f65bb7f3deb7d5578de63ed71a54ac2d9d9ec735ecef5d87f822be.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ef5d87f822be.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/ef5d87f822be.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-15-Janvier-2025web.pdf",
+      "storage_key": "raw/pv-index/cas/6e618958e3f046375fa5e67aba5dd64b1e6aa6cccad94092e5c00906080871ba.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Trinité",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-09-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:357",
+              "quote": "                            ENTENDU QUE la résolution 2024-09-05 indique que la Municipalité"
+            }
+          },
+          {
+            "label": "2024-05-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:361",
+              "quote": "                            ENTENDU QUE de la résolution 2024-05-08 pour la vente du lot 6 636 375 à"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6636374",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:359",
+              "quote": "                            partie de la route 138 en lui vendant le lot 6 636 374;"
+            }
+          },
+          {
+            "label": "6636375",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:361",
+              "quote": "                            ENTENDU QUE de la résolution 2024-05-08 pour la vente du lot 6 636 375 à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/0906080871ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/0906080871ba.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-trinite"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-2022-11-09-signer.pdf",
+      "storage_key": "raw/pv-index/cas/6f8bd9e77ed0979686d69b7573260910e02babaa400c0f4fe41ef75a13d12768.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f75a13d12768.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/f75a13d12768.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-signer.pdf",
+      "storage_key": "raw/pv-index/cas/7125181ca9e141653e1789b7004468318d7ed740bd5ae81d4775b91006ccbbfc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b91006ccbbfc.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b91006ccbbfc.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/P-V-seance-ordinaire-12-aout-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/774aa1996b0da861171fc0547a59523b32e5747db2f02909c13abafee56dc5f0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bafee56dc5f0.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/bafee56dc5f0.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/Pv-seance-ordinaire-9-juin-signe.pdf",
+      "storage_key": "raw/pv-index/cas/8035839f384b49983ba791b1ec035c9a4da67d77d0407a8eb75e03c0141d1a79.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/03c0141d1a79.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/03c0141d1a79.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-9-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/81b2ebe113aa24c8c8b0f10de334195580af00cb93d0b5cfd2bf041342ad6639.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Trinité",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "                 11.1. Adoption du second projet de règlement 2025-01 modifiant le règlement de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/041342ad6639.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/041342ad6639.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "baie-trinite"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/Proces-verbal-25-07-09.pdf",
+      "storage_key": "raw/pv-index/cas/828a1e8f9ec866c9583f18e6db550f4d18ba8ba85d316978a4c5b6736fe638f0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b6736fe638f0.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b6736fe638f0.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/pv-signer-2025-08-06.pdf",
+      "storage_key": "raw/pv-index/cas/84bc6df581dda51f36dd6cbd3fce599ca45edc63dd7abcaa2351578d286aa6e4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/578d286aa6e4.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/578d286aa6e4.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-12-octobre-2022-signer.pdf",
+      "storage_key": "raw/pv-index/cas/85b2a1d5e52045a34577ccc34b536de3987c631e110ff1ec70fa0c060a302167.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/0c060a302167.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/0c060a302167.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-ordinaire-conseil-13-janvier-2021-signe.pdf",
+      "storage_key": "raw/pv-index/cas/8855e2530bfb9424d561a113393f2e58e1b9ad133fcb07e73f22b2e2e97747b7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b2e2e97747b7.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/b2e2e97747b7.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-extraordinaire-29-mars-2023.pdf",
+      "storage_key": "raw/pv-index/cas/90885f681f06aef642f8efc6a120c0f9f68ef34c01941d19bf00df0e9dd961df.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/df0e9dd961df.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053657Z/baie-trinite/df0e9dd961df.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

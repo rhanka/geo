@@ -29,9 +29,9 @@
  *   npx tsx acquisition/src/normes-grille-window-probe.ts --pdf <path> [--json]
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
@@ -79,13 +79,15 @@ function pageCount(pdf: string): number {
   return m ? Number(m[1]) : 0;
 }
 
-function pageText(pdf: string, page: number): string {
+function pageTexts(pdf: string, lastPage: number): string[] {
   const r = spawnSync(
     "pdftotext",
-    ["-q", "-layout", "-f", String(page), "-l", String(page), "-enc", "UTF-8", pdf, "-"],
-    { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+    ["-q", "-layout", "-f", "1", "-l", String(lastPage), "-enc", "UTF-8", pdf, "-"],
+    { encoding: "utf8", maxBuffer: 512 * 1024 * 1024 },
   );
-  return r.stdout ?? "";
+  const pages = (r.stdout ?? "").split("\f");
+  if (pages.at(-1) === "") pages.pop();
+  return pages;
 }
 
 /**
@@ -122,6 +124,17 @@ interface Probe {
   verdict: "MISTRAL-WINDOW" | "SCAN-NO-TEXT" | "NO-GRILLE-MARKER" | "PROSE-ONLY-SIBLING-ANNEX";
 }
 
+interface UniverseFile {
+  acquisition_universe?: Array<{ slug?: unknown }>;
+}
+
+interface ProgressFile {
+  universe_path: string;
+  scope_count: number;
+  processed_slugs: string[];
+  results: Probe[];
+}
+
 function probe(slug: string, pdf: string, maxPages: number): Probe {
   const pages = pageCount(pdf);
   const grillePages: number[] = [];
@@ -131,8 +144,9 @@ function probe(slug: string, pdf: string, maxPages: number): Probe {
   let titleHint = "";
 
   const scanTo = Math.min(pages, maxPages);
+  const texts = scanTo > 0 ? pageTexts(pdf, scanTo) : [];
   for (let p = 1; p <= scanTo; p++) {
-    const txt = pageText(pdf, p);
+    const txt = texts[p - 1] ?? "";
     textChars += txt.length;
     if (p === 1) {
       titleHint = txt
@@ -185,30 +199,70 @@ function slugPdfs(slug: string): string[] {
     .map((f) => join(dir, f));
 }
 
+function writeProgress(path: string, universePath: string, scope: readonly string[], results: readonly Probe[]): void {
+  const processedSlugs = [...new Set(results.map((result) => result.slug))].sort();
+  const progress: ProgressFile = {
+    universe_path: universePath,
+    scope_count: scope.length,
+    processed_slugs: processedSlugs,
+    results: [...results].sort((a, b) => a.slug.localeCompare(b.slug) || a.pdf.localeCompare(b.pdf)),
+  };
+  writeFileSync(path, `${JSON.stringify(progress, null, 2)}\n`);
+}
+
 function main(): void {
   const maxPages = Number(get("max-pages") ?? "400");
   const asJson = has("json");
   const single = get("pdf");
-  const results: Probe[] = [];
+  const universeArg = get("universe");
+  const out = get("out");
+  let results: Probe[] = [];
 
   if (single) {
     results.push(probe(get("slug") ?? "?", resolve(single), maxPages));
   } else {
-    const slugs = (get("slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-    if (!slugs.length) throw new Error("required: --slugs a,b,c  (or --pdf <path>)");
-    for (const slug of slugs) {
+    const universePath = universeArg ? resolve(universeArg) : "";
+    const universe = universePath
+      ? JSON.parse(readFileSync(universePath, "utf8")) as UniverseFile
+      : null;
+    const slugs = universe
+      ? (universe.acquisition_universe ?? [])
+          .map((entry) => entry.slug)
+          .filter((slug): slug is string => typeof slug === "string" && slug.length > 0)
+      : (get("slugs") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+    if (!slugs.length) throw new Error("required: --slugs a,b,c or --universe <json> (or --pdf <path>)");
+    if (out && !universePath) throw new Error("--out requiert --universe afin de fermer le périmètre");
+
+    if (out && existsSync(out)) {
+      const existing = JSON.parse(readFileSync(out, "utf8")) as ProgressFile;
+      if (existing.universe_path !== universePath) {
+        throw new Error(`${out}: univers différent (${existing.universe_path})`);
+      }
+      results = existing.results ?? [];
+    }
+    const done = new Set(results.map((result) => result.slug));
+    const pending = slugs.filter((slug) => !done.has(slug));
+    const maxRaw = get("max");
+    const max = maxRaw === undefined ? pending.length : Number(maxRaw);
+    if (!Number.isInteger(max) || max < 1) throw new Error(`--max invalide: ${maxRaw}`);
+    const batch = pending.slice(0, max);
+    for (const slug of batch) {
       const pdfs = slugPdfs(slug);
       if (!pdfs.length) {
         results.push({
           slug, pdf: "-", pages: 0, textChars: 0, grillePages: [], normPages: [],
           gridLinePages: [], window: null, titleHint: "", verdict: "NO-GRILLE-MARKER",
         });
-        continue;
+      } else {
+        for (const p of pdfs) results.push(probe(slug, p, maxPages));
       }
-      for (const p of pdfs) results.push(probe(slug, p, maxPages));
+      if (out) writeProgress(out, universePath, slugs, results);
     }
+    if (out) writeProgress(out, universePath, slugs, results);
+    console.error(`# progress: batch=${batch.length} processed=${new Set(results.map((result) => result.slug)).size}/${slugs.length}`);
   }
 
+  if (has("quiet")) return;
   if (asJson) {
     console.log(JSON.stringify({ results }, null, 2));
     return;
@@ -228,4 +282,5 @@ function main(): void {
   );
 }
 
-main();
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) main();

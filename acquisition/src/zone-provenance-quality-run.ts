@@ -572,9 +572,14 @@ async function main(): Promise<void> {
   // Un run dont des lectures ont échoué n'a pas mesuré : il sort sous un nom
   // NON reconnu par le résolveur, pour qu'une mesure partielle ne puisse jamais
   // devenir la référence en se contentant d'être la plus récente.
+  // Horodatage à la SECONDE, pas seulement la date : le suffixe est un sha de
+  // CONTENU, pas une horloge. Avec une simple date, deux runs du même jour se
+  // départageaient par ordre lexicographique de leur hash — le rapport a ainsi
+  // lu 23 v2 alors que la mesure la plus récente en comptait 36.
+  const stamp = `${asOf}T${new Date().toISOString().slice(11, 19).replace(/:/g, "")}Z`;
   const stem = unreadableRows === 0
-    ? `zone-provenance-quality-matrix-${asOf}-${sha256(serialized).slice(0, 16)}`
-    : `zone-provenance-quality-PARTIAL-${asOf}-${sha256(serialized).slice(0, 16)}`;
+    ? `zone-provenance-quality-matrix-${stamp}-${sha256(serialized).slice(0, 16)}`
+    : `zone-provenance-quality-PARTIAL-${stamp}-${sha256(serialized).slice(0, 16)}`;
   const output = resolve(COVERAGE, `${stem}.json`);
   if (existsSync(output)) throw new Error(`matrice déjà présente, refus d'écraser: ${output}`);
   writeAtomic(output, matrix);

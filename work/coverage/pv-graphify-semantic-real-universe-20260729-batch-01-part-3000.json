@@ -1,0 +1,1344 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:47:31.977Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3000,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "Resolution": 10,
+    "Regulation": 9,
+    "CouncilSession": 4,
+    "MeetingDate": 4
+  },
+  "graphify": {
+    "nodes": 65,
+    "edges": 27,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 661,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z",
+  "documents": [
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-03-03.pdf",
+      "storage_key": "raw/pv-index/cas/6b4933fb89e13b54e8ebae22f11c6dfa643a28a6ef089be08a2e227f2ea21cb0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2437",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "    14-2437          La séance est levée à 20h15 par Louis Désy sous la résolution 14-2437."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/227f2ea21cb0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/227f2ea21cb0.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2018-05-07.pdf",
+      "storage_key": "raw/pv-index/cas/6baeb4618b04be32a64cba62edb1b1b200f62d0a2ff31a8ee64a0f07dbe117ba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2010-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:396",
+              "quote": "          cernant le financement du règlement numéro 2010-01;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0f07dbe117ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0f07dbe117ba.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-10-06.pdf",
+      "storage_key": "raw/pv-index/cas/6d2c4982565fdd485b508f4b3bbd6cbd381bc3239c04b941817857a2439f92aa.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2491",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:203",
+              "quote": "    14-2491          La séance est levée à 20h05 par Louis Désy sous la résolution 14-2491."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/57a2439f92aa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/57a2439f92aa.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2016-02-08.pdf",
+      "storage_key": "raw/pv-index/cas/6e3bbd2e92ae0e53bc12f67a4e2511e13fe3b740b3cbe8e891ca65d092d4e605.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/65d092d4e605.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/65d092d4e605.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2013-06-03.pdf",
+      "storage_key": "raw/pv-index/cas/6e5bfd160cc5efa21228f7cd705996b700e3ab542ea0547eb8d04cfc92c0ffbf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4cfc92c0ffbf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4cfc92c0ffbf.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-04-08.pdf",
+      "storage_key": "raw/pv-index/cas/70b70d18ab66ba50ef04ff0b54f5c8224b8fbf1990f170ec79e1c4100f1883b3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2448",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "                     résolution 14-2448."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/c4100f1883b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/c4100f1883b3.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2009-02-02.pdf",
+      "storage_key": "raw/pv-index/cas/715d3a9e99123cae09b9ffdb4e98e094ef0a87b2e5e29b1cd89870a004955b0f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "                          dernier il est proposé par Roland Lescault, appuyé par Ronald"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "                          dernier il est proposé par Roland Lescault, appuyé par Ronald"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 février 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "          Séance régulière du Conseil municipal, tenue au Centre communautaire à 19h30."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 février 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Le 2 février 2009"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/70a004955b0f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/70a004955b0f.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville",
+          "la-patrie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2010-07-05.pdf",
+      "storage_key": "raw/pv-index/cas/738eb3c5d0979e797ed5d3092bbf086d96ae186dbfcaea35233746d1b16e983e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/46d1b16e983e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/46d1b16e983e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2016-04-04.pdf",
+      "storage_key": "raw/pv-index/cas/762a7936ca2575250af7462f785be7f0280f012cbddf4d5407f80649b02ae552.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0649b02ae552.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0649b02ae552.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2018/12/PV-2018-11-05.pdf",
+      "storage_key": "raw/pv-index/cas/7881e78187badfed8455451b75554601c63d542acebf4d3db0204d25f9f9a153.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4d25f9f9a153.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4d25f9f9a153.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2012-12-10.pdf",
+      "storage_key": "raw/pv-index/cas/791cb234de451f2839e7cc7bce16824c25ffc202498b83f22855b9a2501b962e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Province de Québec"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 29 novembre 2012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                     Séance spéciale du conseil municipal, tenue au centre"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "29 novembre 2012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "                     avis public a été affiché le 29 novembre 2012 pour prendre en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12-2253",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:212",
+              "quote": "                     résolution 12-2253."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2012-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " Règlement numéro 2012-05 afin de fixer les taux de taxes et les tarifs pour l’exercice"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/b9a2501b962e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/b9a2501b962e.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2011-11-07.pdf",
+      "storage_key": "raw/pv-index/cas/7bd69e957b947238bd5e4ff94325c658ffa2aa8f3b21556c503c0fda85af7443.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2011-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "                       Avis de motion pour adoption du règlement 2011-03 (code d’éthique et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0fda85af7443.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/0fda85af7443.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2026/03/PV-2026-02-02.pdf",
+      "storage_key": "raw/pv-index/cas/7c2ddcc78a24f75c206df9a1eef0456c0995ba6c099a65ff308314e0d70ef45a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/14e0d70ef45a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/14e0d70ef45a.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville",
+          "east-angus"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2012-12-03.pdf",
+      "storage_key": "raw/pv-index/cas/7dada2e80af7d5ecf14820ed77565329fb2faeb990f6fa51f091dd26598d9e2c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "11-2078",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "12-2244        Suite à la résolution numéro 11-2078 adoptée le 13 juin 2011 dans le"
+            }
+          },
+          {
+            "label": "12-2250",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "12-2250          La séance est levée à 20h00 par Denis Dion sous la résolution 12-2250."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2012-05",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "                  Avis de motion pour adoption du règlement 2012-05 (Budget 2013 &"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/dd26598d9e2c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/dd26598d9e2c.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2009-01-05.pdf",
+      "storage_key": "raw/pv-index/cas/7deab7540af8f6f743721a66eb89d9ba3d9a31f2f1f561d61e8b4ab42266293c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:288",
+              "quote": "              À CES CAUSES, il est proposé par Roland Lescault, appuyé par Yvon"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:288",
+              "quote": "              À CES CAUSES, il est proposé par Roland Lescault, appuyé par Yvon"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 janvier 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "          Séance régulière du Conseil municipal, tenue au Centre communautaire à 19h30."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 janvier 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Le 5 janvier 2009"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "09-1760",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:368",
+              "quote": "09-1760          L’assemblée est levée à 20h25 par Lise Bellehumeur sous la résolution 09-1760."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2009-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "                        Adoption du règlement 2009-01 (carrières et sablières)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4ab42266293c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/4ab42266293c.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2017-09-05.pdf",
+      "storage_key": "raw/pv-index/cas/805bc55c1e0babf200dbee1abeeab95377a93fd8f74f635761ab5effb1df1d54.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "17-2827",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:240",
+              "quote": "17-2827       La séance est levée à 20 h 15 par M. Louis Désy sous la résolution 17-2827."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/5effb1df1d54.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/5effb1df1d54.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-09-15.pdf",
+      "storage_key": "raw/pv-index/cas/820d93db58b7514c4a76f5d60278d9c5ce0d2201e56c03c35b7b59d33f46502e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2484",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "    14-2484   La séance est levée à 19h10 par Claude Sévigny sous la résolution 14-2484."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/59d33f46502e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/59d33f46502e.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2014-12-01.pdf",
+      "storage_key": "raw/pv-index/cas/833cb238e4c7d7c9267d1a803faa3d967711ae87beed84861b8e258612435b61.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          Province de Québec"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "14-2510",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:260",
+              "quote": "    14-2510          La séance est levée à 19h40 par Denis Dion sous la résolution 14-2510."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2014-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "                       ➢   Avis de motion – Adoption du règlement 2014-02 (budget 2015)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/258612435b61.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/258612435b61.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville",
+          "lingwick",
+          "scotstown"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/proces-verbaux/PV2009-05-04.pdf",
+      "storage_key": "raw/pv-index/cas/85f3e710ddb2d9ace63f01da8f8ad05f6c22ed4694c07e390a78a1793566807b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "                 Concernant la dévitalisation des municipalités, sur le recensement qui"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "                 Concernant la dévitalisation des municipalités, sur le recensement qui"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mai 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "          Séance régulière du Conseil municipal, tenue au Centre communautaire à 19h30."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mai 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          Le 4 mai 2009"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/a1793566807b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/a1793566807b.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chartierville",
+      "municipality_name": "Chartierville",
+      "url": "https://chartierville.ca/wp-content/uploads/2015/03/PV-2018-03-05.pdf",
+      "storage_key": "raw/pv-index/cas/8658e73763870ad953b9c433fd18c7ec2a3697ced417a765e7aebf44bcc89e8e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chartierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            Province de Québec"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "                        Avis de motion règlement 2018-01 Code d’éthique et de dé-"
+            }
+          },
+          {
+            "label": "2018-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "                        Avis de motion règlement 2018-02 Amendement au règle-"
+            }
+          },
+          {
+            "label": "2017-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "                        Dépôt règlement 2017-01 modifié selon l’article 202.1 Code"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/bf44bcc89e8e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T154625Z/chartierville/bf44bcc89e8e.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chartierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
