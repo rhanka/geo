@@ -14,7 +14,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
-import type { PutOptions, Store } from "./store.js";
+import type { ByteStream, PutOptions, Store } from "./store.js";
 
 /** Connection + addressing settings for an {@link S3Store}. */
 export interface S3StoreConfig {
@@ -73,6 +73,23 @@ export class S3Store implements Store {
       );
       if (out.Body === undefined) return undefined;
       return await bodyToBytes(out.Body);
+    } catch (err) {
+      if (isNotFound(err)) return undefined;
+      throw err;
+    }
+  }
+
+  /**
+   * Open an object as an SDK byte stream. Unlike {@link get}, this never
+   * concatenates the body, which is required by geo-api for large GeoJSON.
+   */
+  async getStream(key: string): Promise<ByteStream | undefined> {
+    try {
+      const out = await this.client.send(
+        new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
+      );
+      if (out.Body === undefined) return undefined;
+      return bodyToStream(out.Body);
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -172,22 +189,35 @@ function isNotFound(err: unknown): boolean {
  * `SdkStream` mixin) — into a `Uint8Array`.
  */
 async function bodyToBytes(body: unknown): Promise<Uint8Array> {
-  if (body instanceof Uint8Array) return body;
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of bodyToStream(body)) chunks.push(chunk);
+  return concat(chunks);
+}
 
-  if (hasTransformToByteArray(body)) {
-    return await body.transformToByteArray();
-  }
-
-  // Async-iterable (Node Readable) → concatenate chunks.
-  if (isAsyncIterable(body)) {
-    const chunks: Uint8Array[] = [];
-    for await (const chunk of body) {
-      chunks.push(chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk as ArrayBufferLike));
-    }
-    return concat(chunks);
-  }
-
+/**
+ * Coerce the Node SDK body to a stream without retaining its chunks. The
+ * `transformToByteArray` fallback is for small test doubles; the production
+ * Node SDK body is an async-iterable Readable.
+ */
+function bodyToStream(body: unknown): ByteStream {
+  if (body instanceof Uint8Array) return oneChunk(body);
+  if (isAsyncIterable(body)) return asByteStream(body);
+  if (hasTransformToByteArray(body)) return transformedBody(body);
   throw new Error("unsupported S3 GetObject Body type");
+}
+
+async function* oneChunk(bytes: Uint8Array): ByteStream {
+  yield bytes;
+}
+
+async function* transformedBody(body: ByteArrayTransformable): ByteStream {
+  yield await body.transformToByteArray();
+}
+
+async function* asByteStream(body: AsyncIterable<Uint8Array>): ByteStream {
+  for await (const chunk of body) {
+    yield chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk as ArrayBufferLike);
+  }
 }
 
 interface ByteArrayTransformable {

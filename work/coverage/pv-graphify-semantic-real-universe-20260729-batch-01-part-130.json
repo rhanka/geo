@@ -1,0 +1,282 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:30:32.564Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 129,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 8,
+    "Regulation": 2,
+    "Zone": 3
+  },
+  "graphify": {
+    "nodes": 17,
+    "edges": 11,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 0,
+    "documents_with_zone": 1,
+    "documents_with_lot": 0
+  },
+  "match_details": [
+    {
+      "municipality_slug": "caplan",
+      "storage_key": "raw/pv-index/cas/025159fa08eba298753985ef176e721134534af2f7616ede9af57f4a932fb46b.pdf",
+      "entity_type": "Zone",
+      "value": "81-REC",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:50",
+      "quote": "           Récréation 81-REC à même une partie de la zone à dominance Villégiature 19-V et l’ajout de nombreux"
+    },
+    {
+      "municipality_slug": "caplan",
+      "storage_key": "raw/pv-index/cas/025159fa08eba298753985ef176e721134534af2f7616ede9af57f4a932fb46b.pdf",
+      "entity_type": "Zone",
+      "value": "19-V",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:50",
+      "quote": "           Récréation 81-REC à même une partie de la zone à dominance Villégiature 19-V et l’ajout de nombreux"
+    },
+    {
+      "municipality_slug": "caplan",
+      "storage_key": "raw/pv-index/cas/025159fa08eba298753985ef176e721134534af2f7616ede9af57f4a932fb46b.pdf",
+      "entity_type": "Zone",
+      "value": "18-RE",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:51",
+      "quote": "           usages à l’intérieur de celle-ci. Les limites des zones à dominance Résidentielle 18-RE et de Villégiature"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 81,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1753,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z",
+  "documents": [
+    {
+      "slug": "caplan",
+      "municipality_name": "Caplan",
+      "url": "https://municipalitecaplan.com/download/210/2024/9981/proces-verbal-de-la-seance-dajournement-18-mars-2024.pdf",
+      "storage_key": "raw/pv-index/cas/025159fa08eba298753985ef176e721134534af2f7616ede9af57f4a932fb46b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 8,
+        "Regulation": 2,
+        "Zone": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Caplan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC                                                                               LE 18 MARS 2024"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC                                                                               LE 18 MARS 2024"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 MARS 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance d’ajournement du conseil de la Municipalité de Caplan, tenue le lundi dix-huit mars deux"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 MARS 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC                                                                               LE 18 MARS 2024"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "024-03-077",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "               RÉSOLUTION 024-03-077"
+            }
+          },
+          {
+            "label": "024-03-078",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "           RÉSOLUTION 024-03-078"
+            }
+          },
+          {
+            "label": "024-03-079",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:200",
+              "quote": "\f       RÉSOLUTION 024-03-079"
+            }
+          },
+          {
+            "label": "024-03-080",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": "       RÉSOLUTION 024-03-080"
+            }
+          },
+          {
+            "label": "024-03-081",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:233",
+              "quote": "       RÉSOLUTION 024-03-081"
+            }
+          },
+          {
+            "label": "023-12-698",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:236",
+              "quote": "  CONSIDÉRANT la résolution 023-12-698 octroyant le mandat à Construction Axeco pour la rénovation"
+            }
+          },
+          {
+            "label": "024-03-082",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:253",
+              "quote": "                  RÉSOLUTION 024-03-082"
+            }
+          },
+          {
+            "label": "024-03-083",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:279",
+              "quote": "       RÉSOLUTION 024-03-083"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "330-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "            25.2      Assemblée publique de consultations concernant le projet de règlement numéro 330-2024"
+            }
+          },
+          {
+            "label": "213-2013",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "                      modifiant le Règlement numéro 213-2013 (Règlement de zonage) de la municipalité de Caplan;"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "81-REC",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "           Récréation 81-REC à même une partie de la zone à dominance Villégiature 19-V et l’ajout de nombreux"
+            }
+          },
+          {
+            "label": "19-V",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "           Récréation 81-REC à même une partie de la zone à dominance Villégiature 19-V et l’ajout de nombreux"
+            }
+          },
+          {
+            "label": "18-RE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "           usages à l’intérieur de celle-ci. Les limites des zones à dominance Résidentielle 18-RE et de Villégiature"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/caplan/7f4a932fb46b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/caplan/7f4a932fb46b.pdf/.graphify/.graphify_extract.json — 17 nodes, 11 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 11
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "caplan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

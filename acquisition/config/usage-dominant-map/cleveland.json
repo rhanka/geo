@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "AFDc": null,
+    "AFD": "agricole",
+    "AF": "agricole",
+    "A": "agricole",
+    "ID": "residentiel",
+    "CI": null,
+    "C": "commercial",
+    "Rec": "environnemental",
+    "Rd": null,
+    "Ru": null,
+    "Ra": null,
+    "R": "residentiel",
+    "Ext": "industriel",
+    "P": null
+  },
+  "source": "https://cleveland.ca/wp-content/uploads/2020/07/Cleveland_regl_zonage-maj-2024-07-REG-446.pdf",
+  "note": "Règlement de zonage n° 446 de la Municipalité de Cleveland (version administrative maj 2024-07). Fondement, art. 1.8 « Répartition du territoire municipal en zones »: « Pour des fins d'identification et de référence, les zones sont désignées dans ce règlement et sur le plan de zonage par des lettres et des chiffres. Les lettres réfèrent à la fonction prédominante de la zone. Le chiffre désigne la situation géographique de la zone. » La légende lettre->vocation vit dans le PLAN DE ZONAGE (annexe du règl. 446, https://cleveland.ca/wp-content/uploads/2020/07/Plan-de-zonage.pdf), bloc « LÉGENDE / ZONES », verbatim: A « AGRICOLES »; AF « AGRO-FORESTIÈRES »; AFD « AGRO-FORESTIÈRES DYNAMIQUE »; AFDc « AGRO-FORESTIÈRES DYNAMIQUES COMMERCIALES »; C « COMMERCIALES »; CI « COMMERCIALES-INDUSTRIELLES »; Ext « EXTRACTION »; P « PUBLIQUES »; Ra « INSTITUTIONNELLES EN MILIEU AGRICOLE »; R « RÉSIDENTIELLES »; Rd « DIFFÉRÉES »; Ru « RURALES »; Rec « RÉCRÉATION »; ID « ÎLOT DESTRUCTURÉ ». Corroboré par l'art. 4.75: « Les normes suivantes s'appliquent dans les zones agricole A, agro-forestière AF, agro-forestière dynamique AFD et îlots déstructurés ID. » A/AF/AFD -> agricole (règle de lane: famille Agricole/Agroforestière/Forestière; « dynamique » = qualificatif). Ext « EXTRACTION » -> industriel (le sujet nommé est l'Extraction). Rec « RÉCRÉATION » -> environnemental (le contrat range Conservation/Récréative/Faunique). ID -> residentiel par l'ARTICLE DÉFINISSEUR art. 1.10 « Îlot déstructuré »: « Zone bénéficiant d'une autorisation pour la construction de résidence accordée par la Commission de protection du territoire agricole du Québec en vertu de la demande à portée collective de la MRC du Val-Saint-François (numéro de dossier 360623). » — caractérisation POSITIVE et NON disjonctive; le dossier 360623 est le même que racine et saint-francois-xavier-de-brompton (effet-MRC Val-Saint-François), où le même verdict est servi. Null explicite: AFDc « AGRO-FORESTIÈRES DYNAMIQUES COMMERCIALES » nomme 2 des cinq (agro + commerciales) = DUALE; CI « COMMERCIALES-INDUSTRIELLES » = DUALE; Ra « INSTITUTIONNELLES EN MILIEU AGRICOLE » a pour sujet « Institutionnelles », hors des cinq, « en milieu agricole » étant un complément de LIEU qui ne transfère pas la dominance; Rd « DIFFÉRÉES » = réserve/développement différé; Ru « RURALES » n'est aucune des cinq et aucune colonne « usages dominants » ne lui assigne l'Habitation; P « PUBLIQUES » est public. Les nulls Ra/Rd/Ru et AFDc/CI sont ANTI-FALL-THROUGH (le match est longest-prefix: sans eux Ra/Rd/Ru tomberaient sur R->residentiel, CI sur C->commercial, AFDc sur AFD->agricole). La matrice des usages permis des grilles n'est pas utilisée."
+}

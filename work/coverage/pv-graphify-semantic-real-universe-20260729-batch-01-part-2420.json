@@ -1,0 +1,4040 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:01:42.152Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2420,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "Regulation": 205,
+    "LotCadastre": 43,
+    "CouncilSession": 12,
+    "MeetingDate": 12,
+    "Resolution": 1,
+    "Zone": 2
+  },
+  "graphify": {
+    "nodes": 313,
+    "edges": 46,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 43,
+    "documents_with_zone": 2,
+    "documents_with_lot": 13
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/c245db827ce5932169860ea778a4bae639906805e1420967cc9a7440050cf31d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4074556",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:27",
+      "quote": "      activités exercées sur les lots 4 074 556 et 4 075 730 situés sur le chemin du Lac-"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/c245db827ce5932169860ea778a4bae639906805e1420967cc9a7440050cf31d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4832617",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:98",
+      "quote": "       Piscine creusée - 19, impasse de la Sauge - Lot 4 832 617 - Dossier 2023-20001"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/c469f8477fc02723313bb42b94a1ef4c20362df63c4dd1ee44539af5acee4f66.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6616937",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "                        projet domiciliaire Sabourin - Lot 6 616 937"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/cdabf7c8808af3913086bb5936f96f65eab18fd5d63750e9691237e6625e4c85.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2618625",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:157",
+      "quote": "        supplémentaire - 36, chemin Holmes - Lot 2 618 625 - Dossier 2022-20003"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/cdabf7c8808af3913086bb5936f96f65eab18fd5d63750e9691237e6625e4c85.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6411676",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:169",
+      "quote": "11.6    Attribution d'odonymes - Lots 6 411 676 et 6 411 678 - Projet de lotissement Piché-"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/cdabf7c8808af3913086bb5936f96f65eab18fd5d63750e9691237e6625e4c85.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2621601",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:176",
+      "quote": "11.8    Attribution d'odonymes - Lots 2 621 601 et 6 453 660 - Projet de lotissement"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6220336",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:176",
+      "quote": "       complémentaire - Projet Marché Cantley - Lot 6 220 336 - Dossier"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2618011",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:187",
+      "quote": "        détaché - 84, rue de Saint-Moritz - Lot 2 618 011 - Dossier"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2931428",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:192",
+      "quote": "        87, chemin Goulet - Lots 2 931 428 et 4 074 041 - Dossier 2020-20040"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3782125",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:200",
+      "quote": "         Lot 3 782 125 - Dossier 2020-20043"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4472832",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:214",
+      "quote": "11.10   Acquisition du lot 4 472 832 à des fins de connexion routière future"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6323921",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:217",
+      "quote": "11.11   Acquisition du lot 6 323 921 - Surlargeur de la montée Saint-Amour"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5207372",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:230",
+      "quote": "        l'agriculture - Lot 5 207 372 - 1294, montée de la Source (dossier"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2620958",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1937",
+      "quote": "                                REMISE - 20, RUE DE RIMOUSKI - LOT 2 620 958 - DOSSIER"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5444605",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2127",
+      "quote": "             et le lot 5 444 605 et l’absence de bordure de béton à l’emplacement de ladite"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6276514",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2711",
+      "quote": "                    soit les lots 6 276 514, 6 276 518, 6 276 517, 6 276 519, 6 276 523 et"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2619358",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:218",
+      "quote": "       Dorion - Lot 2 619 358 - Dossier 2021-20027"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5754060",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:222",
+      "quote": "       résidentiel et perron projetés - 60, chemin Sabourin - Lot 5 754 060 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5444605",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:227",
+      "quote": "       Source - Lot 5 444 605 - Dossier 2021-20030"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6220336",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:308",
+      "quote": "                           Marché Cantley – Lot 6 220 336 – Dossier 2021-20031"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6276514",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:4654",
+      "quote": "             I et II (lots 6 276 514, 6 276 518, 6 276 517 et 6 276 519 du Cadastre du Québec)"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6276523",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:4662",
+      "quote": "phase II (lots 6 276 523 et 6 276 524 du Cadastre du Québec) du projet Boisé"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/dedb21691eee21208d584640421efc3e3e22f945559076eb93a0fc9f1f28e05f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6131635",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:90",
+      "quote": "       architecturale (PIIA) – 595, montée de la Source – Lot 6 131 635 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/e52ebd3ba617cb6ee7361f7d462c35cb04b86de869767e87101c3661fecabe08.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5447929",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:59",
+      "quote": "              communications située sur le lot 5 447 929"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/e52ebd3ba617cb6ee7361f7d462c35cb04b86de869767e87101c3661fecabe08.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6260507",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:63",
+      "quote": "           procédure en expropriation pour des parties du lot 6 260 507, dans"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/e94f82c5c35e5198c66f55fe56df97b1c548195fb11816f225fe7de335513775.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2618513",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:94",
+      "quote": "                       d'un événement - Lot 2 618 513 - 60, chemin Holmes"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "Zone",
+      "value": "RU-16",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1117",
+      "quote": "                    spécifications de la zone RU-16 autorise une marge latérale minimale de 8"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2619883",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:112",
+      "quote": "            existante en véranda trois saisons - Lot 2 619 883 - 15, rue Hélie"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2618530",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:116",
+      "quote": "            - 39, chemin Townline - Lot 2 618 530 - Dossier 2026-20003"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6537797",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:119",
+      "quote": "            détaché avec un abri d'auto attenant - Lot 6 537 797 - 389,"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5521906",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:123",
+      "quote": "            attenant - 16, impasse Joly - Lot 5 521 906 - Dossier 2026-20007"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4520679",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:216",
+      "quote": "                             4, rue de la Terre-Rouge – Lot 4 520 679 – Dossier 2026-20010."
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2619833",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:885",
+      "quote": "15, rue Hélie, lot 2 619 833, visant des dispositions du Règlement de zonage"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ea7f2095d6f194b2c8d5b553020460921c1a6d56cda98474beefeab224602800.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3541255",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:88",
+      "quote": "       d’intégration architecturale (PIIA) – 393, montée de la Source – Lot 3 541 255 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2783795",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:94",
+      "quote": "       géotechnique sur le lot 2 783 795 de la rue Dorion - Contrat no"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4920307",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:129",
+      "quote": "       Refuge-des-Cascades - Lot 4 920 307 - Dossier 2021-20004"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3291026",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "       Piscine creusée en cour avant - 39, rue Noémie - Lot 3 291 026 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2621601",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:146",
+      "quote": "       Domaine du Refuge - 50, chemin River - Lots 2 621 601 et 4 866 122 –"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6220336",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:150",
+      "quote": "       architecturale (PIIA) – 435, montée de la Source – Lot 6 220 336 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3552371",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1309",
+      "quote": "                                 REMISE - 165, CHEMIN HOGAN - LOT 3 552 371 - DOSSIER"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "entity_type": "Zone",
+      "value": "AV-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2064",
+      "quote": "             661-25 permettent l’usage « industrie extractive » dans la zone AV-4;"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2620352",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:63",
+      "quote": "              Lot 2 620 352"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5207372",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:144",
+      "quote": "            l'agriculture - 1294, montée de la Source - Lot 5 207 372"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2618619",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:2254",
+      "quote": "             CONSIDÉRANT QUE la Municipalité est propriétaire des lots 2 618 619 et 2 692 597"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/f950aacbeb4e7eb182a50e6319bc1a49d839f9d636e37d693cb6808d2e02cc47.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2619450",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:101",
+      "quote": "       lot 2 619 450 pour l'établissement d'un sentier à l'usage des cyclistes et des"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 67,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 5768,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z",
+  "documents": [
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2020/04/PV-S%C3%A9ance-extraordinaire-2020-04-23-2.pdf",
+      "storage_key": "raw/pv-index/cas/c1245ef99d5f0dd0b16450d8985bc7c9c76eb08a6642e8188a8b694bde731a8d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Session extraordinaire du conseil de la Municipalité de Cantley tenue le 23"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Session extraordinaire du conseil de la Municipalité de Cantley tenue le 23"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "610-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "           3.1      Adoption du Règlement numéro 610-20 décrétant une dépense et un"
+            }
+          },
+          {
+            "label": "611-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           3.3      Adoption du Règlement numéro 611-20 modifiant le Règlement 600-"
+            }
+          },
+          {
+            "label": "600-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:218",
+              "quote": "                                RÈGLEMENT 600-19 ÉTABLISSANT LES TAUX DE TAXES ET"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/694bde731a8d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/694bde731a8d.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2023/04/OJ-Conseil-11-04-2023-version-11-avril-2023.pdf",
+      "storage_key": "raw/pv-index/cas/c245db827ce5932169860ea778a4bae639906805e1420967cc9a7440050cf31d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "708-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "\f8.3    Avis de motion et dépôt du projet de règlement - Règlement numéro 708-23"
+            }
+          },
+          {
+            "label": "660-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "11.3   Adoption du Règlement numéro 660-22 sur le plan d'urbanisme"
+            }
+          },
+          {
+            "label": "709-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "11.4   Avis de motion - Règlement numéro 709-23 modifiant le Règlement de zonage"
+            }
+          },
+          {
+            "label": "710-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": "11.6   Avis de motion et dépôt du projet de règlement - Règlement numéro 710-23"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4074556",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "      activités exercées sur les lots 4 074 556 et 4 075 730 situés sur le chemin du Lac-"
+            }
+          },
+          {
+            "label": "4832617",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "       Piscine creusée - 19, impasse de la Sauge - Lot 4 832 617 - Dossier 2023-20001"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/7440050cf31d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/7440050cf31d.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2025/03/PV-Conseil-2025-03-11-1.pdf",
+      "storage_key": "raw/pv-index/cas/c469f8477fc02723313bb42b94a1ef4c20362df63c4dd1ee44539af5acee4f66.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 9,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "   1.         OUVERTURE DE LA SÉANCE              ORDINAIRE     DU    CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "              MUNICIPAL DU 11 MARS 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "735-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "   8.3        Adoption du Règlement numéro 735-25 décrétant une dépense"
+            }
+          },
+          {
+            "label": "661-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": " 11.1      Avis de motion - Règlement numéro 661-25 relatif au zonage"
+            }
+          },
+          {
+            "label": "269-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1337",
+              "quote": "             Ce règlement abroge le Règlement numéro 269-05 relatif au zonage en vigueur et"
+            }
+          },
+          {
+            "label": "662-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "            11.3        Avis de motion - Règlement numéro 662-25 relatif au"
+            }
+          },
+          {
+            "label": "666-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "            11.5        Avis de motion - Règlement numéro 666-25 remplaçant le"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1543",
+              "quote": "             L’objectif est d’abroger et de remplacer le règlement numéro 274-05 sur les plans"
+            }
+          },
+          {
+            "label": "273-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1207",
+              "quote": "             CONSIDÉRANT QUE le Règlement numéro 273-19 édictant le Schéma"
+            }
+          },
+          {
+            "label": "661-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1232",
+              "quote": "2025, l’ensemble du conseil a décidé de retirer le Règlement numéro 661-24"
+            }
+          },
+          {
+            "label": "270-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1513",
+              "quote": "             Ce règlement abroge le Règlement numéro 270-05 relatif au lotissement en"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6616937",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "                        projet domiciliaire Sabourin - Lot 6 616 937"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/9af5acee4f66.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/9af5acee4f66.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "val-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2025/02/PR-Conseil-du-18-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/c51b2ad6ff13e358eb677ab0db6057654cbf5b199fe1aee148d399d33762109c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 14
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "       la mobilité durable (MTMD) pour le déploiement de cinémomètres (photos-radars)"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "       la mobilité durable (MTMD) pour le déploiement de cinémomètres (photos-radars)"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "661-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:365",
+              "quote": "conseil adoptait un avis de motion pour le Règlement numéro 661-24 relatif au zonage;"
+            }
+          },
+          {
+            "label": "735-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "8.4   Adoption du Règlement numéro 735-25 décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "666-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "11.1   Avis de motion - Règlement numéro 666-25 remplaçant le règlement sur les plans"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3350",
+              "quote": "L’objectif est d’abroger et de remplacer le règlement numéro 274-05 sur les plans"
+            }
+          },
+          {
+            "label": "662-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:419",
+              "quote": "conseil autorisait l’adoption du Règlement numéro 662-24 relatif au lotissement remplaçant"
+            }
+          },
+          {
+            "label": "270-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:420",
+              "quote": "et abrogeant le règlement numéro 270-05;"
+            }
+          },
+          {
+            "label": "273-19",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:430",
+              "quote": "règlement numéro 273-19 édictant le Schéma d’aménagement et de développement révisé"
+            }
+          },
+          {
+            "label": "270",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "CONSIDÉRANT QU’il y a lieu d’abroger et de remplacer le règlement numéro 270 05 relatif au"
+            }
+          },
+          {
+            "label": "662",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:464",
+              "quote": "CONSIDÉRANT QUE l’avis de motion 2024-MC-269 du règlement numéro 662 24 a été donné"
+            }
+          },
+          {
+            "label": "562-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1760",
+              "quote": "QUE chacun des registres, mis en place en vertu de l’article 11 du Règlement numéro 562-18"
+            }
+          },
+          {
+            "label": "562",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1912",
+              "quote": "le ministre en conformité avec les articles 11 et 12 de son Règlement numéro 562 18 sur la"
+            }
+          },
+          {
+            "label": "274",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3430",
+              "quote": "d’implantation et d’intégration architecturale (PIIA) remplaçant le règlement numéro 274 05;"
+            }
+          },
+          {
+            "label": "672-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3452",
+              "quote": "CONSIDÉRANT QUE l'article 3.2 du Règlement numéro 672-21 constituant le comité CCEDDC"
+            }
+          },
+          {
+            "label": "672",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3495",
+              "quote": "CONSIDÉRANT QUE l'article 3.2 du Règlement numéro 672 21 constituant le comité CCEDDC"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/99d33762109c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/99d33762109c.pdf/.graphify/.graphify_extract.json — 16 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2026/02/PV-2026-01-27-Seance-ordinaire-VF.pdf",
+      "storage_key": "raw/pv-index/cas/c7f09e882c9aec64845666efd649dac8d35aec67632e0fbf70d0b4e62efd93e9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 66
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 27 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "   1.         OUVERTURE DE LA SÉANCE ORDINAIRE                    DU   CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "27 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "              MUNICIPAL DU 27 JANVIER 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "745-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "   6.2        Adoption du Règlement numéro 745-26 édictant le code de"
+            }
+          },
+          {
+            "label": "672-21",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "              numéro 760-26 modifiant le règlement numéro 672-21"
+            }
+          },
+          {
+            "label": "751-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": " 8.7       Adoption du Règlement numéro 751-26 constituant le comité"
+            }
+          },
+          {
+            "label": "754-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": " 8.8       Adoption du Règlement numéro 754-26 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "704-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "            numéro 758-26 modifiant le règlement 704-23 décrétant une"
+            }
+          },
+          {
+            "label": "731-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "            numéro 759-26 modifiant le Règlement numéro 731-24 relatif"
+            }
+          },
+          {
+            "label": "556-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "                       numéro 752-26 modifiant le Règlement numéro 556-18"
+            }
+          },
+          {
+            "label": "678-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:825",
+              "quote": "Le présent règlement abroge et remplace le règlement numéro 678-22 concernant"
+            }
+          },
+          {
+            "label": "760-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:948",
+              "quote": "                                    RÈGLEMENT NUMÉRO 760-26 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "747-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1059",
+              "quote": "               1. Règlement numéro 747-25 décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "749-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1064",
+              "quote": "               2. Règlement numéro 749-25 décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "750-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1068",
+              "quote": "               3. Règlement numéro 750-25 décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "616-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1124",
+              "quote": "            2020, le conseil adoptait le Règlement numéro 616-20 concernant le soutien"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1519",
+              "quote": "                                 RÈGLEMENT NUMÉRO 501-16 CONSTITUANT LE COMITÉ"
+            }
+          },
+          {
+            "label": "757-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1572",
+              "quote": "                                   RÈGLEMENT NUMÉRO 757-26 ÉTABLISSANT LES TAUX DE"
+            }
+          },
+          {
+            "label": "226-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1982",
+              "quote": "sanitaire concerné par le périmètre désigné du règlement numéro 226-03, un montant"
+            }
+          },
+          {
+            "label": "365-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2009",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 365-10, un tarif de 168,56 $"
+            }
+          },
+          {
+            "label": "368-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2021",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 368-10, un tarif de 157,75 $"
+            }
+          },
+          {
+            "label": "369-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2033",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 369-10, un tarif de 145,13 $"
+            }
+          },
+          {
+            "label": "395-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2044",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 395-11, un tarif de 188,94 $"
+            }
+          },
+          {
+            "label": "396-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2054",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 396-11, un tarif de 152,15 $"
+            }
+          },
+          {
+            "label": "397-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2065",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 397-11, un tarif de 176,87 $"
+            }
+          },
+          {
+            "label": "398-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2076",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 398-11, un tarif de 160,46 $"
+            }
+          },
+          {
+            "label": "399-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2087",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 399-11, un tarif de 138,90 $"
+            }
+          },
+          {
+            "label": "406-12",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2101",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 406-12, un tarif de 192,41 $"
+            }
+          },
+          {
+            "label": "407-12",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2111",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 407-12, un tarif de 165,19 $"
+            }
+          },
+          {
+            "label": "424-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2122",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 424-13, un tarif de 105,33 $"
+            }
+          },
+          {
+            "label": "425-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2133",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 425-13, un tarif de 167,47 $"
+            }
+          },
+          {
+            "label": "426-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2143",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 426-13, un tarif de 163,17 $"
+            }
+          },
+          {
+            "label": "427-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2154",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 427-13, un tarif de 188,64 $"
+            }
+          },
+          {
+            "label": "428-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2167",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 428-13, un tarif de 163,06 $"
+            }
+          },
+          {
+            "label": "477-15",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2179",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 477-15, un tarif de 224,28 $"
+            }
+          },
+          {
+            "label": "495-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2189",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 495-16, un tarif de 154,00 $"
+            }
+          },
+          {
+            "label": "522-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2199",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 522-17, un tarif de 143,55 $"
+            }
+          },
+          {
+            "label": "523-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2210",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 523-17, un tarif de 158,25 $"
+            }
+          },
+          {
+            "label": "524-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2223",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 524-17, un tarif de 249,79 $"
+            }
+          },
+          {
+            "label": "525-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2233",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 525-17, un tarif de 123,33 $"
+            }
+          },
+          {
+            "label": "526-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2244",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 526-17, un tarif de 170,69 $"
+            }
+          },
+          {
+            "label": "527-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2254",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 527-17, un tarif de 182,75 $"
+            }
+          },
+          {
+            "label": "528-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2265",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 528-17, un tarif de 200,40 $"
+            }
+          },
+          {
+            "label": "531-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2276",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 531-17, un tarif de 231,00 $"
+            }
+          },
+          {
+            "label": "532-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2289",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 532-17, un tarif de 339,06 $"
+            }
+          },
+          {
+            "label": "533-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2300",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 533-17, un tarif de 180,51 $"
+            }
+          },
+          {
+            "label": "535-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2310",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 535-17, un tarif de 187,00 $"
+            }
+          },
+          {
+            "label": "538-17",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2321",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 538-17, un tarif de 135,88 $"
+            }
+          },
+          {
+            "label": "543-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2331",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 543-18, un tarif de 218,44 $"
+            }
+          },
+          {
+            "label": "544-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2341",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 544-18, un tarif de 202,75 $"
+            }
+          },
+          {
+            "label": "545-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2352",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 545-18, un tarif de 180,43 $"
+            }
+          },
+          {
+            "label": "547-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2361",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 547-18, un tarif de 291,73 $"
+            }
+          },
+          {
+            "label": "549-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2370",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 549-18, un tarif de 160,38 $"
+            }
+          },
+          {
+            "label": "551-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2380",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 551-18, un tarif de 341,72 $"
+            }
+          },
+          {
+            "label": "576-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2389",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 576-19, un tarif de 189,71 $ est"
+            }
+          },
+          {
+            "label": "577-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2398",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 577-19, un tarif de 528,00 $ est"
+            }
+          },
+          {
+            "label": "635-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2407",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 635-20, un tarif de 424,44 $ est"
+            }
+          },
+          {
+            "label": "636-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2418",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 636-20, un tarif de 416,16 $ est"
+            }
+          },
+          {
+            "label": "644-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2427",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 644-21, un tarif de 664,47 $ est"
+            }
+          },
+          {
+            "label": "645-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2436",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 645-21, un tarif de 241,77 $ est"
+            }
+          },
+          {
+            "label": "708-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2446",
+              "quote": "intérêts de l’emprunt décrété par le règlement numéro 708-23, un tarif de 611,57 $"
+            }
+          },
+          {
+            "label": "498-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2636",
+              "quote": "d’équipement assujetti au Règlement numéro 498-16 concernant les normes relatives"
+            }
+          },
+          {
+            "label": "49616",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3065",
+              "quote": "Une requête de développement visée par le Règlement numéro 49616 concernant les"
+            }
+          },
+          {
+            "label": "758-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3451",
+              "quote": "                                   RÈGLEMENT NUMÉRO 758-26 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "759-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3520",
+              "quote": "                                    RÈGLEMENT NUMÉRO 759-26 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "682-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3802",
+              "quote": "             2022, le conseil adoptait le Règlement numéro 682-22 constituant le comité"
+            }
+          },
+          {
+            "label": "717-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3871",
+              "quote": "             règlement numéro 717-23 constituant le comité consultatif en environnement et"
+            }
+          },
+          {
+            "label": "715-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3916",
+              "quote": "             novembre 2023, le conseil adoptait le Règlement numéro 715-23 constituant le"
+            }
+          },
+          {
+            "label": "752-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3966",
+              "quote": "                                   RÈGLEMENT NUMÉRO 752-26 MODIFIANT LE RÈGLEMENT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/b4e62efd93e9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/b4e62efd93e9.pdf/.graphify/.graphify_extract.json — 70 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 70,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "mont-saint-hilaire"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2022/03/OJ-Conseil-du-8-mars-2022.pdf",
+      "storage_key": "raw/pv-index/cas/cdabf7c8808af3913086bb5936f96f65eab18fd5d63750e9691237e6625e4c85.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 12,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      portant le numéro 12-RM-03 concernant la circulation et le stationnement dans les"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      portant le numéro 12-RM-03 concernant la circulation et le stationnement dans les"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 MARS 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "1.    OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DU 8 MARS 2022"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 MARS 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "1.    OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DU 8 MARS 2022"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "6.1   Adoption du Règlement numéro 22-RM-03 pour abroger et remplacer le règlement"
+            }
+          },
+          {
+            "label": "19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "      remplaçant le règlement numéro 19-RM-04 (565-19)"
+            }
+          },
+          {
+            "label": "672-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "6.3   Adoption du Règlement numéro 672-21 constituant le comité consultatif en"
+            }
+          },
+          {
+            "label": "680-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "6.4   Avis de motion et dépôt du projet de règlement - Règlement numéro 680-22"
+            }
+          },
+          {
+            "label": "603-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "      abrogeant le Règlement numéro 603-20 constituant le comité consultatif de"
+            }
+          },
+          {
+            "label": "681-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "6.5   Avis de motion et dépôt du projet de règlement - Règlement numéro 681-22"
+            }
+          },
+          {
+            "label": "509-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "      abrogeant le Règlement numéro 509-16 constituant le comité-conseil sur le"
+            }
+          },
+          {
+            "label": "682-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "6.6   Avis de motion et dépôt du projet de règlement - Règlement numéro 682-22"
+            }
+          },
+          {
+            "label": "675-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "8.6   Avis de motion et dépôt du projet de règlement - Règlement numéro 675-22"
+            }
+          },
+          {
+            "label": "677-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "8.7   Adoption du Règlement numéro 677-22 décrétant les règles de contrôle et de suivi"
+            }
+          },
+          {
+            "label": "673-22",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:179",
+              "quote": "11.9    Adoption du second projet de règlement numéro 673-22 modifiant le Règlement de"
+            }
+          },
+          {
+            "label": "676-22",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": "11.10   Adoption du second projet de règlement numéro 676-22 modifiant le Règlement de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2618625",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "        supplémentaire - 36, chemin Holmes - Lot 2 618 625 - Dossier 2022-20003"
+            }
+          },
+          {
+            "label": "6411676",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "11.6    Attribution d'odonymes - Lots 6 411 676 et 6 411 678 - Projet de lotissement Piché-"
+            }
+          },
+          {
+            "label": "2621601",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "11.8    Attribution d'odonymes - Lots 2 621 601 et 6 453 660 - Projet de lotissement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/37e6625e4c85.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/37e6625e4c85.pdf/.graphify/.graphify_extract.json — 19 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 19,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2020/11/PV-Conseil-du-13-octobre-2020.pdf",
+      "storage_key": "raw/pv-index/cas/d7088d6dca964123a2791ca3f4cda65b6c57f473773c0c6710201d23b5a7031e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 12,
+        "LotCadastre": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "11.2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1942",
+              "quote": "             pour les résolutions 11.2 et 11.3 de l’ordre du jour."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "622-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "8.5    Modifications au Règlement numéro 622-20 décrétant une dépense et"
+            }
+          },
+          {
+            "label": "623-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "8.6    Modifications au Règlement numéro 623-20 décrétant une dépense et"
+            }
+          },
+          {
+            "label": "625-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "8.7    Modifications au règlement numéro 625-20 décrétant une dépense et"
+            }
+          },
+          {
+            "label": "629-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "       635-20 modifiant le Règlement numéro 629-20 décrétant une"
+            }
+          },
+          {
+            "label": "630-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:89",
+              "quote": "       636-20 modifiant le Règlement numéro 630-20 décrétant une"
+            }
+          },
+          {
+            "label": "634-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "9.1    Adoption du Règlement numéro 634-20 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "628-20",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:207",
+              "quote": "11.8    Adoption du second projet de règlement numéro 628-20 modifiant le"
+            }
+          },
+          {
+            "label": "635-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:800",
+              "quote": "                               RÈGLEMENT NUMÉRO 635-20 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "636-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:860",
+              "quote": "                               RÈGLEMENT NUMÉRO 636-20 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "432-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:963",
+              "quote": "                                  RÈGLEMENT NUMÉRO 432-13 RÉGISSANT LA CIRCULATION,"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2200",
+              "quote": "             CONSIDÉRANT QUE la demande est assujettie au Règlement numéro 274-05 sur"
+            }
+          },
+          {
+            "label": "608-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2223",
+              "quote": "                                 RÈGLEMENT NUMÉRO 608-20 MODIFIANT LE RÈGLEMENT"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6220336",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:176",
+              "quote": "       complémentaire - Projet Marché Cantley - Lot 6 220 336 - Dossier"
+            }
+          },
+          {
+            "label": "2618011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "        détaché - 84, rue de Saint-Moritz - Lot 2 618 011 - Dossier"
+            }
+          },
+          {
+            "label": "2931428",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "        87, chemin Goulet - Lots 2 931 428 et 4 074 041 - Dossier 2020-20040"
+            }
+          },
+          {
+            "label": "3782125",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:200",
+              "quote": "         Lot 3 782 125 - Dossier 2020-20043"
+            }
+          },
+          {
+            "label": "4472832",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "11.10   Acquisition du lot 4 472 832 à des fins de connexion routière future"
+            }
+          },
+          {
+            "label": "6323921",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": "11.11   Acquisition du lot 6 323 921 - Surlargeur de la montée Saint-Amour"
+            }
+          },
+          {
+            "label": "5207372",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "        l'agriculture - Lot 5 207 372 - 1294, montée de la Source (dossier"
+            }
+          },
+          {
+            "label": "2620958",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1937",
+              "quote": "                                REMISE - 20, RUE DE RIMOUSKI - LOT 2 620 958 - DOSSIER"
+            }
+          },
+          {
+            "label": "5444605",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2127",
+              "quote": "             et le lot 5 444 605 et l’absence de bordure de béton à l’emplacement de ladite"
+            }
+          },
+          {
+            "label": "6276514",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2711",
+              "quote": "                    soit les lots 6 276 514, 6 276 518, 6 276 517, 6 276 519, 6 276 523 et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/1d23b5a7031e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/1d23b5a7031e.pdf/.graphify/.graphify_extract.json — 25 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 25,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "val-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2021/06/PV-Conseil-8-juin-2021-1.pdf",
+      "storage_key": "raw/pv-index/cas/de7b9c14b15aa872bbd0ada907b88f43edc93ab95725f69e398c2db5d45785ce.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 13,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le 8"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le 8"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 JUIN 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "1.      OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 JUIN 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "        DU 8 JUIN 2021"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "6.5   Adoption du Règlement numéro 21-RM-02 pour abroger et remplacer"
+            }
+          },
+          {
+            "label": "652-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "6.7   Adoption du Règlement numéro 652-21 abrogeant le Règlement"
+            }
+          },
+          {
+            "label": "650-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "8.5   Adoption du Règlement numéro 650-21 décrétant une dépense et un"
+            }
+          },
+          {
+            "label": "651-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "8.6   Adoption du Règlement numéro 651-21 décrétant une dépense et un"
+            }
+          },
+          {
+            "label": "432-13",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "       654-21 modifiant le Règlement numéro 432-13 régissant la"
+            }
+          },
+          {
+            "label": "643-21",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:244",
+              "quote": "           11.8     Adoption du second projet de règlement numéro 643-21 modifiant le"
+            }
+          },
+          {
+            "label": "648-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "           11.9     Adoption du Règlement numéro 648-21 modifiant le Règlement sur"
+            }
+          },
+          {
+            "label": "649-21",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:253",
+              "quote": "           11.10    Adoption du second projet de règlement numéro 649-21 modifiant le"
+            }
+          },
+          {
+            "label": "604-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3299",
+              "quote": "                                 LE RÈGLEMENT NUMÉRO 604-20 CONSTITUANT LE COMITÉ"
+            }
+          },
+          {
+            "label": "654-21",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4741",
+              "quote": "                                   RÈGLEMENT NUMÉRO 654-21 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "616-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4820",
+              "quote": "             2020, le conseil adoptait le Règlement numéro 616-20 concernant le soutien"
+            }
+          },
+          {
+            "label": "496-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5212",
+              "quote": "                 nouveaux équipements municipaux du Règlement numéro 496-16"
+            }
+          },
+          {
+            "label": "637-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5215",
+              "quote": "              3) article 5.4.3, Permis de lotissement du Règlement numéro 637-20"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2619358",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:218",
+              "quote": "       Dorion - Lot 2 619 358 - Dossier 2021-20027"
+            }
+          },
+          {
+            "label": "5754060",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:222",
+              "quote": "       résidentiel et perron projetés - 60, chemin Sabourin - Lot 5 754 060 -"
+            }
+          },
+          {
+            "label": "5444605",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:227",
+              "quote": "       Source - Lot 5 444 605 - Dossier 2021-20030"
+            }
+          },
+          {
+            "label": "6220336",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:308",
+              "quote": "                           Marché Cantley – Lot 6 220 336 – Dossier 2021-20031"
+            }
+          },
+          {
+            "label": "6276514",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4654",
+              "quote": "             I et II (lots 6 276 514, 6 276 518, 6 276 517 et 6 276 519 du Cadastre du Québec)"
+            }
+          },
+          {
+            "label": "6276523",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4662",
+              "quote": "phase II (lots 6 276 523 et 6 276 524 du Cadastre du Québec) du projet Boisé"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/2db5d45785ce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/2db5d45785ce.pdf/.graphify/.graphify_extract.json — 23 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 23,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "val-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2021/02/Proces-verbal-2021-02-09-Conseil-1.pdf",
+      "storage_key": "raw/pv-index/cas/dedb21691eee21208d584640421efc3e3e22f945559076eb93a0fc9f1f28e05f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 7,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 FÉVRIER 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "1.      OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 FÉVRIER 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "        DU 9 FÉVRIER 2021"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "642-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "8.4     Adoption du Règlement numéro 642-21 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "641-21",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": "11.2   Avis de motion - Règlement numéro 641-21 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "637-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:329",
+              "quote": "                                RÈGLEMENT NUMÉRO 637-20 ÉTABLISSANT LES TAUX DE"
+            }
+          },
+          {
+            "label": "496-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "         Une requête de développement visée par le règlement numéro 496-16"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1044",
+              "quote": "             CONSIDÉRANT QUE la demande est assujettie au Règlement numéro 274-05 sur"
+            }
+          },
+          {
+            "label": "639-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1285",
+              "quote": "             12 janvier 2021, le conseil autorisait l’adoption du Règlement numéro 639-20"
+            }
+          },
+          {
+            "label": "509-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1286",
+              "quote": "             modifiant le Règlement numéro 509-16 constituant le comité-conseil sur le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6131635",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "       architecturale (PIIA) – 595, montée de la Source – Lot 6 131 635 -"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/fc9f1f28e05f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/fc9f1f28e05f.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "gatineau",
+          "sainte-elisabeth"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2024/07/OJ-PR-Conseil-du-2024-07-09-version-finale.pdf",
+      "storage_key": "raw/pv-index/cas/e47210fb1d1a5f54a5daea9a68dfcaa41d2a6e88f4df5c3e7022fca736ca9923.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/fca736ca9923.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/fca736ca9923.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2024/02/PV-Conseil-2024-02-13-1.pdf",
+      "storage_key": "raw/pv-index/cas/e4ef68c5adf8f8fdd4c4790b25a2024aa756f9bd597038c82b2c1e78f4252f6b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le mardi"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le mardi"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 FÉVRIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": " 1.           OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 FÉVRIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "              DU 13 FÉVRIER 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "677-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "              numéro 728-24 modifiant le Règlement numéro 677-22 décrétant"
+            }
+          },
+          {
+            "label": "607-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "            2020, le conseil adoptait le Règlement numéro 607-20 concernant la division de"
+            }
+          },
+          {
+            "label": "728-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:307",
+              "quote": "                                   RÈGLEMENT NUMÉRO 728-24 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:885",
+              "quote": "             CONSIDÉRANT QUE l’article 3.4 du du Règlement numéro 501-16 constituant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/1e78f4252f6b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/1e78f4252f6b.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2024/03/PV-Conseil-du-2024-03-12-version-finale.pdf",
+      "storage_key": "raw/pv-index/cas/e52ebd3ba617cb6ee7361f7d462c35cb04b86de869767e87101c3661fecabe08.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 6,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 MARS 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": " 1.           OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 MARS 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "              DU 12 MARS 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "515-16",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "           numéro 730-24 modifiant le Règlement numéro 515-16 concernant"
+            }
+          },
+          {
+            "label": "728-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "8.3        Adoption du Règlement numéro 728-24 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "730-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:443",
+              "quote": "                                  RÈGLEMENT NUMÉRO 730-24 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "677-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:675",
+              "quote": "                                 RÈGLEMENT NUMÉRO 677-22 DÉCRÉTANT LES RÈGLES DE"
+            }
+          },
+          {
+            "label": "562-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:896",
+              "quote": "            12 de son Règlement numéro 562-18 sur la gestion contractuelle;"
+            }
+          },
+          {
+            "label": "729-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1267",
+              "quote": "                                   RÈGLEMENT NUMÉRO 729-24 RÉGISSANT L'UTILISATION DES"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5447929",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "              communications située sur le lot 5 447 929"
+            }
+          },
+          {
+            "label": "6260507",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "           procédure en expropriation pour des parties du lot 6 260 507, dans"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/3661fecabe08.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/3661fecabe08.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "saint-come"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2024/09/PV-Conseil-2024-09-17-1.pdf",
+      "storage_key": "raw/pv-index/cas/e94f82c5c35e5198c66f55fe56df97b1c548195fb11816f225fe7de335513775.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 SEPTEMBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "   1.         OUVERTURE DE LA SÉANCE ORDINAIRE                  DU       CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 SEPTEMBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "              MUNICIPAL DU 17 SEPTEMBRE 2024"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2618513",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "                       d'un événement - Lot 2 618 513 - 60, chemin Holmes"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/7de335513775.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/7de335513775.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2026/06/2026-06-09-PV-Conseil.pdf",
+      "storage_key": "raw/pv-index/cas/ea5bb920e1c0857eeda46e32d2919e047464012f2bcd0e3108509045af8dd6cc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 6,
+        "Zone": 1,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "   1.        OUVERTURE DE LA SÉANCE               ORDINAIRE       DU   CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "             MUNICIPAL DU 9 JUIN 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "768-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "             11.8       Adoption du Règlement numéro 768-26 sur la gestion des"
+            }
+          },
+          {
+            "label": "616-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:428",
+              "quote": "            2020, le conseil adoptait le Règlement numéro 616-20 concernant le soutien"
+            }
+          },
+          {
+            "label": "682",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:785",
+              "quote": "             CONSIDÉRANT QUE l'article 3.1 du règlement numéro 682 22 constituant le comité"
+            }
+          },
+          {
+            "label": "581-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1444",
+              "quote": "Le présent règlement abroge le Règlement numéro 581-19, intitulé « Règlement"
+            }
+          },
+          {
+            "label": "595-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1446",
+              "quote": "territoire de la municipalité de Cantley », le règlement numéro 595-19 intitulé"
+            }
+          },
+          {
+            "label": "739-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1449",
+              "quote": "municipalité de Cantley » ainsi que le règlement numéro 739-25 intitulé « Règlement"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RU-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1117",
+              "quote": "                    spécifications de la zone RU-16 autorise une marge latérale minimale de 8"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2619883",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "            existante en véranda trois saisons - Lot 2 619 883 - 15, rue Hélie"
+            }
+          },
+          {
+            "label": "2618530",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "            - 39, chemin Townline - Lot 2 618 530 - Dossier 2026-20003"
+            }
+          },
+          {
+            "label": "6537797",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "            détaché avec un abri d'auto attenant - Lot 6 537 797 - 389,"
+            }
+          },
+          {
+            "label": "5521906",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "            attenant - 16, impasse Joly - Lot 5 521 906 - Dossier 2026-20007"
+            }
+          },
+          {
+            "label": "4520679",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:216",
+              "quote": "                             4, rue de la Terre-Rouge – Lot 4 520 679 – Dossier 2026-20010."
+            }
+          },
+          {
+            "label": "2619833",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:885",
+              "quote": "15, rue Hélie, lot 2 619 833, visant des dispositions du Règlement de zonage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/9045af8dd6cc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/9045af8dd6cc.pdf/.graphify/.graphify_extract.json — 17 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2023/02/OJ-Conseil-du-14-fevrier-2023-14-02-2023.pdf",
+      "storage_key": "raw/pv-index/cas/ea7f2095d6f194b2c8d5b553020460921c1a6d56cda98474beefeab224602800.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "10.1   Octroi de soutien financier aux organismes reconnus de la Municipalité de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "10.1   Octroi de soutien financier aux organismes reconnus de la Municipalité de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "702-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "8.3   Adoption du Règlement numéro 702-23 décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "704-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "8.4   Avis de motion et dépôt du projet de règlement - Règlement numéro 704-23"
+            }
+          },
+          {
+            "label": "703-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "11.2   Avis de motion et dépôt du projet de règlement - Règlement numéro 703-23"
+            }
+          },
+          {
+            "label": "556-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "       modifiant le Règlement numéro 556-18 relativement à la gestion des matières"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3541255",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "       d’intégration architecturale (PIIA) – 393, montée de la Source – Lot 3 541 255 -"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/eab224602800.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/eab224602800.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "la-presentation"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2025/11/PV-Conseil-2025-11-18.pdf",
+      "storage_key": "raw/pv-index/cas/ea96a7e399b80ac5e7d68c38c3d9aecf9113d887d6027bc5257932783d7d4a1a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "   1.        OUVERTURE DE LA SÉANCE ORDINAIRE                     DU   CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "             MUNICIPAL DU 18 NOVEMBRE 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "744-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:550",
+              "quote": "                                  RÈGLEMENT    NUMÉRO     744-25   CONSTITUANT     LA"
+            }
+          },
+          {
+            "label": "682-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1372",
+              "quote": "             règlement numéro 682-22 constituant le comité consultatif des loisirs, de la"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1449",
+              "quote": "             Règlement numéro 501-16 constituant le comité consultatif d’urbanisme (CCU)"
+            }
+          },
+          {
+            "label": "672-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1510",
+              "quote": "             Règlement numéro 672-21 constituant le comité consultatif en environnement et"
+            }
+          },
+          {
+            "label": "683-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1563",
+              "quote": "             du Règlement numéro 683-22 constituant le comité sur les demandes de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/32783d7d4a1a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/32783d7d4a1a.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2025/01/PV-Conseil-2025-01-21.pdf",
+      "storage_key": "raw/pv-index/cas/ead963d2cc59cc8a6d4014da7c6fc26bcb29230e90681a162255d874cd49426c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 16
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 JANVIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "   1.         OUVERTURE DE LA SÉANCE ORDINAIRE                  DU    CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 JANVIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "              MUNICIPAL DU 21 JANVIER 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "661-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": " 11.2       Adoption du Règlement numéro 661-24 relatif au zonage"
+            }
+          },
+          {
+            "label": "269-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1374",
+              "quote": "Ce règlement abroge le Règlement numéro 269-05 relatif au zonage en vigueur et"
+            }
+          },
+          {
+            "label": "662-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": " 11.3       Adoption du Règlement numéro 662-24 relatif au lotissement"
+            }
+          },
+          {
+            "label": "270-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1540",
+              "quote": "             Ce règlement abroge le Règlement numéro 270-05 relatif au lotissement en"
+            }
+          },
+          {
+            "label": "663-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": " 11.4       Adoption du Règlement numéro 663-24 relatif aux permis et"
+            }
+          },
+          {
+            "label": "735-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:637",
+              "quote": "                                    RÈGLEMENT NUMÉRO 735-25 DÉCRÉTANT UNE DÉPENSE ET"
+            }
+          },
+          {
+            "label": "562-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "             CONSIDÉRANT QUE le règlement numéro 562-18 relativement à la gestion"
+            }
+          },
+          {
+            "label": "273-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1022",
+              "quote": "             CONSIDÉRANT QUE le Règlement numéro 273-19 édictant le Schéma"
+            }
+          },
+          {
+            "label": "660-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1042",
+              "quote": "relativement au plan d’urbanisme portant le numéro de règlement 660-22 de la"
+            }
+          },
+          {
+            "label": "321-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1073",
+              "quote": "CONSIDÉRANT QUE le Règlement numéro 321-23 visant le remplacement du"
+            }
+          },
+          {
+            "label": "285-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1074",
+              "quote": "règlement numéro 285-20 modifiant le règlement numéro 273-19 édictant le"
+            }
+          },
+          {
+            "label": "660-1-23",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1080",
+              "quote": "CONSIDÉRANT QU’il y a donc lieu de remplacer le Règlement numéro 660-1-23"
+            }
+          },
+          {
+            "label": "660-2-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1086",
+              "quote": "CONSIDÉRANT QUE l’avis de motion 2024-MC-267 du règlement numéro 660-2-24"
+            }
+          },
+          {
+            "label": "660-02-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1228",
+              "quote": "              •   Cliquer ici pour consulter le règlement numéro 660-02-24"
+            }
+          },
+          {
+            "label": "268-05",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1679",
+              "quote": "Ce règlement abroge le Règlement numéro 268-05 relatif aux permis et certificats"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1712",
+              "quote": "             CONSIDÉANT QUE l'article 3.4 du Règlement numéro 501-16 constituant le CCU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/d874cd49426c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/d874cd49426c.pdf/.graphify/.graphify_extract.json — 20 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 20,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2021/03/PV-Conseil-du-9-mars-2021.pdf",
+      "storage_key": "raw/pv-index/cas/ee406f96402bab70ad4e18c34d9ff79f9382275fff3e8f85ca0a2fe5b9ee453c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "641-21",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "11.8   Adoption du Règlement numéro 641-21 modifiant le Règlement de"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "11.9   Désignation en vertu du Règlement numéro 501-16 constituant le"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1592",
+              "quote": "             chemin River est assujetti au Règlement numéro 274-05 sur les plans"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2783795",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "       géotechnique sur le lot 2 783 795 de la rue Dorion - Contrat no"
+            }
+          },
+          {
+            "label": "4920307",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "       Refuge-des-Cascades - Lot 4 920 307 - Dossier 2021-20004"
+            }
+          },
+          {
+            "label": "3291026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "       Piscine creusée en cour avant - 39, rue Noémie - Lot 3 291 026 -"
+            }
+          },
+          {
+            "label": "2621601",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "       Domaine du Refuge - 50, chemin River - Lots 2 621 601 et 4 866 122 –"
+            }
+          },
+          {
+            "label": "6220336",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "       architecturale (PIIA) – 435, montée de la Source – Lot 6 220 336 -"
+            }
+          },
+          {
+            "label": "3552371",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1309",
+              "quote": "                                 REMISE - 165, CHEMIN HOGAN - LOT 3 552 371 - DOSSIER"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/2fe5b9ee453c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/2fe5b9ee453c.pdf/.graphify/.graphify_extract.json — 11 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2026/04/2026-04-14-PV-Conseil.pdf",
+      "storage_key": "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 14,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "   1.        OUVERTURE DE LA SÉANCE                ORDINAIRE   DU    CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "             MUNICIPAL DU 14 AVRIL 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "762-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "   6.1        Adoption du Règlement numéro 762-26 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "745-26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "              le règlement numéro 745-26"
+            }
+          },
+          {
+            "label": "763-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "  8.3       Adoption du Règlement numéro 763-26 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "764-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "  8.4       Adoption du Règlement numéro 764-26 décrétant des dépenses"
+            }
+          },
+          {
+            "label": "663-1-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "  11.1      Avis de motion - Règlement numéro 663-1-26 sur les permis et"
+            }
+          },
+          {
+            "label": "562-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:270",
+              "quote": "                                RÈGLEMENT NUMÉRO 562-18 RELATIVEMENT À LA GESTION"
+            }
+          },
+          {
+            "label": "766-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:324",
+              "quote": "                                   RÈGLEMENT NUMÉRO 766-26 CONCERNANT LE CODE"
+            }
+          },
+          {
+            "label": "557-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:601",
+              "quote": "            Le présent règlement abroge et remplace le règlement numéro 557-18 « Code"
+            }
+          },
+          {
+            "label": "767-26",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:615",
+              "quote": "                                 RÈGLEMENT NUMÉRO 767-26 CONCERNANT LE CODE"
+            }
+          },
+          {
+            "label": "678-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1128",
+              "quote": "Le présent règlement abroge et remplace le règlement numéro 678-22 concernant le"
+            }
+          },
+          {
+            "label": "757-26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1463",
+              "quote": "                                RÈGLEMENT NUMÉRO 757-26 ÉTABLISSANT LES TAUX DE"
+            }
+          },
+          {
+            "label": "682",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1891",
+              "quote": "             Règlement numéro 682 22 constituant le comité consultatif des loisirs, de la"
+            }
+          },
+          {
+            "label": "663-24",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2004",
+              "quote": "             CONSIDÉRANT QUE le Règlement numéro 663-24 sur les permis et certificats"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2022",
+              "quote": "             conformité avec le Règlement numéro 501-16 constituant le comité consultatif"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "AV-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2064",
+              "quote": "             661-25 permettent l’usage « industrie extractive » dans la zone AV-4;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2620352",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "              Lot 2 620 352"
+            }
+          },
+          {
+            "label": "5207372",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:144",
+              "quote": "            l'agriculture - 1294, montée de la Source - Lot 5 207 372"
+            }
+          },
+          {
+            "label": "2618619",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2254",
+              "quote": "             CONSIDÉRANT QUE la Municipalité est propriétaire des lots 2 618 619 et 2 692 597"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/11c3a9bb0e43.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/11c3a9bb0e43.pdf/.graphify/.graphify_extract.json — 22 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 22,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley",
+          "lange-gardien--la-cote-de-beaupre",
+          "lange-gardien--les-collines-de-loutaouais"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2022/08/OJ-PR-Conseil-du-30-aout-2022-version-finale.pdf",
+      "storage_key": "raw/pv-index/cas/f950aacbeb4e7eb182a50e6319bc1a49d839f9d636e37d693cb6808d2e02cc47.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      modifiant le Règlement numéro 562-18 relativement à la gestion contractuelle de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      modifiant le Règlement numéro 562-18 relativement à la gestion contractuelle de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "690-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "6.1   Avis de motion et dépôt du projet de règlement - Règlement numéro 690-22"
+            }
+          },
+          {
+            "label": "692-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "6.2   Avis de motion et dépôt du projet de règlement - Règlement numéro 692-22"
+            }
+          },
+          {
+            "label": "562-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      modifiant le Règlement numéro 562-18 relativement à la gestion contractuelle de"
+            }
+          },
+          {
+            "label": "691-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "8.3   Avis de motion et dépôt du projet de règlement - Règlement numéro 691-22"
+            }
+          },
+          {
+            "label": "677-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "      modifiant le Règlement numéro 677-22 décrétant les règles de contrôle et de"
+            }
+          },
+          {
+            "label": "693-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "8.4   Avis de motion et dépôt du projet de règlement - Règlement numéro 693-22"
+            }
+          },
+          {
+            "label": "694-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "\f8.5    Avis de motion et dépôt du projet de règlement - Règlement numéro 694-22"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2619450",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "       lot 2 619 450 pour l'établissement d'un sentier à l'usage des cyclistes et des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/808d2e02cc47.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T145506Z/cantley/808d2e02cc47.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:22:59.074Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6080,
+    "limit": 20,
+    "requested": 20,
+    "selected": 4,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/f438f5e833a5184c9d8b24449a8486f9f2004f670774812d7c810095d3c84059.pdf",
+      "raw/pv-index/cas/f43aef4e878ee43de4e1e578c5c81e54c96ed23bacd330dbaa4d54e76572b3b3.pdf",
+      "raw/pv-index/cas/f4493c865cf872c3e2e5a578eaa68a220ebf87f88ee79e5fc58c9e3e8c71fe77.pdf",
+      "raw/pv-index/cas/f45cc06c8fbd5d0716e45c70c35ed51242448b4a12db899024d977b5ecbd2899.pdf",
+      "raw/pv-index/cas/f45d490018ba2d42eea568246548c884c64256193f43fec039477e5e6ca569a5.pdf",
+      "raw/pv-index/cas/f4665087b758de7a4032f2806971165dd9bf569f72ffdf04cd735431b88117c8.pdf",
+      "raw/pv-index/cas/f46bfa069333ca38334a0406c5dbdbda3b9f0ad44f3343b04da4bd6e62e5d707.pdf",
+      "raw/pv-index/cas/f4731f440508c94567c8949adbe787f2fd3ac2db20d47328f2c711c3a9bb0e43.pdf",
+      "raw/pv-index/cas/f49f2f1742b7e979e348aa715b7434f97378d440fe1f49b20a3f6b7cb8ef47e5.pdf",
+      "raw/pv-index/cas/f4a3a7e5bb3be3125940fb5c0f627be1c59ccf5db5dcff927c341c22316d1677.pdf",
+      "raw/pv-index/cas/f4b2cb7cd5c29c98e3bdf0686a68e50293df5e0497a35d329fca8b43e48696f9.pdf",
+      "raw/pv-index/cas/f4b6093751fadf811461a671aca5fb377f92e57e9d63e888352700bc88db2e51.pdf",
+      "raw/pv-index/cas/f4b875c0d2b3d3b13772ab2de17bf6e15e18fb3488234fa7c9f11a28990f85f7.pdf",
+      "raw/pv-index/cas/f4cb74f008b5cf2aab5383ea082e85199b94e80667d9c65d07554f8892666fbb.pdf",
+      "raw/pv-index/cas/f4db7fd4147c4c9f18ad759927c726e40da1d125b89d9050366465509af32134.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 4,
+  "indexing": {
+    "indexed_pvs": 0,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 0,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 3
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {},
+  "graphify": {
+    "nodes": 0,
+    "edges": 0,
+    "failures": 3
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 67,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 8236,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z",
+  "documents": [
+    {
+      "slug": "boileau",
+      "municipality_name": "Boileau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/boileau/_publication/fichiers/pv-mai-2018.pdf",
+      "storage_key": "raw/pv-index/cas/f4548e4f109f0992d8021a34aea23cc095ee3312152ffff5aea9b1820a63081b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/boileau/b1820a63081b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/boileau/b1820a63081b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/Proces-verbal-11-novembre-2025-signe.pdf",
+      "storage_key": "raw/pv-index/cas/f487e482d79e9d2ef77f1097ec8391fd91f0faa87e7c145f129d20671ceb973b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/beauharnois/20671ceb973b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/beauharnois/20671ceb973b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "inverness",
+      "municipality_name": "Inverness",
+      "url": "https://www.invernessquebec.ca/fichiersUpload/fichiers/20250305155939-projet-ordre-du-jour-11-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f488de8164fb4dbd4afecbd266a7950c2c03f309e68a80b97e3cb6adaae4b36a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/inverness/b6adaae4b36a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/inverness/b6adaae4b36a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/PV_14042026.pdf",
+      "storage_key": "raw/pv-index/cas/f492e7a25a2949904b37eeb0122af42dfb6805aa51e8554a78f0fec4156ac156.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/beauharnois/fec4156ac156.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192256Z/beauharnois/fec4156ac156.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

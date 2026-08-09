@@ -1,0 +1,2930 @@
+{
+  "contract": "proof-candidates-32-verification/v1",
+  "generated_at": "2026-07-22",
+  "scope": {
+    "input_classification": "candidate-needs-human-confirmation",
+    "input_collections": 32,
+    "input_features": 1857,
+    "local_only": true,
+    "network_refetch": false,
+    "s3_reads": false,
+    "s3_writes": false,
+    "deployment": false,
+    "input_report": "work/coverage/proof-orphan-356-reconciliation-20260722.json"
+  },
+  "verification_policy": {
+    "historical-verified": "Requires retained local deposit/readback record naming exact source identity and audited collection.",
+    "legacy-traceable": "Requires retained source-specific successful serving/gate context but lacks complete deposited/readback link.",
+    "remains-candidate": "Retains concrete locally evidenced PDF, GCP/T2 artifact, or endpoint but lacks admissible deposited/readback or legacy source-to-collection binding.",
+    "orphan": "Sole candidate identity explicitly rejected locally and no alternate admissible identity survived.",
+    "source_identity_constraint": "Generic regulation/homepage URLs, S3 locators, bare pipeline labels, and rejected candidates are not asserted as source identities.",
+    "hash_constraint": "Only SHA-256 values recomputed from local files are reported."
+  },
+  "rollup": {
+    "collections": {
+      "remains-candidate": 24,
+      "historical-verified": 4,
+      "orphan": 3,
+      "legacy-traceable": 1
+    },
+    "features": {
+      "remains-candidate": 979,
+      "historical-verified": 251,
+      "orphan": 125,
+      "legacy-traceable": 502
+    }
+  },
+  "collections": [
+    {
+      "slug": "amherst",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-amherst.geojson",
+      "layout": "flat",
+      "features": 43,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/amherst-602-25.pdf",
+        "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/amherst-602-25.pdf",
+            "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/amherst-602-25-chamfer.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/amherst-602-25.pdf",
+            "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/amherst-602-25-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/amherst-602-25-t3.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 38,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/amherst-602-25.pdf",
+            "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-20260712T215933Z-shard0of2.json",
+          "json_pointer": "/results/1",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zones-recalage/shard0of2/amherst-zonage-revise-official.pdf",
+              "sha256": "05b517ab77ea868dbfa2620d99ba44ca977bfded7a317a81eb1c56636084265f"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-20260718T202537Z-shard0of1-lot2.json",
+          "json_pointer": "/items/6",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-pdf/amherst-zonage-352-02-20260717.pdf",
+              "sha256": "05b517ab77ea868dbfa2620d99ba44ca977bfded7a317a81eb1c56636084265f"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/amherst-602-25.pdf",
+          "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c",
+          "expected_sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-amherst.geojson?"
+    },
+    {
+      "slug": "armagh",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-armagh.geojson",
+      "layout": "flat",
+      "features": 61,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19037_Armagh:037y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19037_Armagh:037y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 61,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19037_Armagh:037y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 61,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19037_Armagh:037y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-armagh.geojson?"
+    },
+    {
+      "slug": "beaumont",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-beaumont.geojson",
+      "layout": "flat",
+      "features": 67,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19105_Beaumont:105y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19105_Beaumont:105y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/1",
+          "reported_feature_count": 67,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19105_Beaumont:105y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/1",
+          "reported_feature_count": 67,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19105_Beaumont:105y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-beaumont.geojson?"
+    },
+    {
+      "slug": "bethanie",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-bethanie.geojson",
+      "layout": "flat",
+      "features": 21,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-pdf/bethanie-zonage-20260717.pdf",
+        "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/bethanie-zonage-20260717.pdf",
+            "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T-bethanie-t3-seed.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/bethanie-20260717-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/bethanie-zonage-20260717.pdf",
+            "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/bethanie-chamfer-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/bethanie-reglement-zonage.pdf",
+            "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-pdf/bethanie-zonage-20260717.pdf",
+          "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0",
+          "expected_sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-bethanie.geojson?"
+    },
+    {
+      "slug": "bowman",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-bowman.geojson",
+      "layout": "flat",
+      "features": 9,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/pdf/bowman-zonage-2022.pdf",
+        "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf/bowman-zonage-2022.pdf",
+            "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T-bowman-t3-seed.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/bowman-20260717-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf/bowman-zonage-2022.pdf",
+            "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/bowman-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T224039Z.json",
+          "json_pointer": "/processed/10",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-norms/bowman/grille.pdf",
+              "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/pdf/bowman-zonage-2022.pdf",
+          "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011",
+          "expected_sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-bowman.geojson?"
+    },
+    {
+      "slug": "charette",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-charette.geojson",
+      "layout": "flat",
+      "features": 57,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/charette-zonage-pu.pdf",
+        "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/charette-zonage-pu.pdf",
+            "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/charette-pu-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/charette-pu-rasterreg.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-raster-corner-image-registration",
+          "gcp_count": 14,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/charette-pu-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/charette-zonage-pu.pdf",
+            "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/gcp/charette-pu.gcp.json",
+          "json_pointer": "/",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-plans/charette-zonage-pu.pdf",
+              "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/charette-zonage-pu.pdf",
+          "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf",
+          "expected_sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-charette.geojson?"
+    },
+    {
+      "slug": "duhamel",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-duhamel.geojson",
+      "layout": "flat",
+      "features": 16,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/duhamel-f1.pdf",
+        "sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/duhamel-f1.pdf",
+            "sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/duhamel-f1-embedded.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 20,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/duhamel-f1.pdf",
+            "sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/duhamel-f3-embedded.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 20,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/duhamel-f3.pdf",
+            "sha256": "6d753faa043877ea1688528c6125ddaeb8b31dc6bca127f42d9bb0f0d4b011ed"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/zones-recalage/shard0of2/duhamel-f3-t1-spatial12/qc-zonage-duhamel.stats.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": null,
+          "reported_feature_count": 1,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zones-recalage/shard0of2/duhamel-f3-official.pdf",
+            "sha256": "6d753faa043877ea1688528c6125ddaeb8b31dc6bca127f42d9bb0f0d4b011ed"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z.gdal-candidates.json",
+          "json_pointer": "/candidates/0",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "source-pdf-url",
+              "url": "https://www.municipalite.duhamel.qc.ca/public_upload/files/URBANISME/Plan%20de%20zonage%20-%20feuillet%203-%202023.pdf"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-shard2-20260710-batch1.gdal-candidates.json",
+          "json_pointer": "/candidates/0",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "source-pdf-url",
+              "url": "https://www.municipalite.duhamel.qc.ca/public_upload/files/URBANISME/Plan%20de%20zonage%20-%20feuillet%203-%202023.pdf"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/duhamel-f1.pdf",
+          "sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989",
+          "expected_sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-duhamel.geojson?"
+    },
+    {
+      "slug": "grandes-piles",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-grandes-piles.geojson",
+      "layout": "flat",
+      "features": 13,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/grandes-piles-p1.pdf",
+        "sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/grandes-piles-p1.pdf",
+            "sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/grandes-piles-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/grandes-piles-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/grandes-piles-p1.pdf",
+            "sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-17T213140Z-shard0of1.json",
+          "json_pointer": "/results/3",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/pdf-cache/grandes-piles.pdf",
+              "sha256": "bdb4d4b234570b59936b19a3ae617bb58df250c5b2db198f7de3928defdbd3e1"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-20260712T213804Z-shard0of2.json",
+          "json_pointer": "/attempts/3",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/pdf-cache/grandes-piles.pdf",
+              "sha256": "bdb4d4b234570b59936b19a3ae617bb58df250c5b2db198f7de3928defdbd3e1"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/grandes-piles-p1.pdf",
+          "sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232",
+          "expected_sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-grandes-piles.geojson?"
+    },
+    {
+      "slug": "lac-sainte-marie",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-lac-sainte-marie.geojson",
+      "layout": "flat",
+      "features": 86,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "historical-verified",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+        "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab"
+      },
+      "source_identity_status": "historical-linked",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+            "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab"
+          },
+          "support_status": "historical-linked",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T165905Z-shard0of2-continuation.json",
+          "json_pointer": "/deposits/1",
+          "pass": null,
+          "method": "t1-geopdf",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+            "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+          "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab",
+          "expected_sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab",
+          "matches_expected_sha256": true
+        },
+        {
+          "kind": "deposit-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T165905Z-shard0of2-continuation.json",
+          "json_pointer": "/deposits/1",
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+            "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab"
+          },
+          "collection": "qc-zonage-lac-sainte-marie",
+          "reported_feature_count": 86,
+          "feature_count_matches_registry": true,
+          "result": "Exact local PDF, collection, successful downstream summary, and deposit=Y co-occur."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:daa05b00dbd68e315e6d6dce0aee44e42d69a7f8",
+          "subject": "Serve Bergeronnes and Lac-Sainte-Marie zoning"
+        }
+      ],
+      "classification_basis": "A retained local deposit/readback record names both exact source identity and audited collection; no remote reread was performed.",
+      "human_question": null
+    },
+    {
+      "slug": "les-bergeronnes",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-les-bergeronnes.geojson",
+      "layout": "flat",
+      "features": 23,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "historical-verified",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+        "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4"
+      },
+      "source_identity_status": "historical-linked",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+            "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4"
+          },
+          "support_status": "historical-linked",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T165905Z-shard0of2-continuation.json",
+          "json_pointer": "/deposits/0",
+          "pass": null,
+          "method": "t1-geopdf",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+            "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+          "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4",
+          "expected_sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4",
+          "matches_expected_sha256": true
+        },
+        {
+          "kind": "deposit-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T165905Z-shard0of2-continuation.json",
+          "json_pointer": "/deposits/0",
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+            "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4"
+          },
+          "collection": "qc-zonage-les-bergeronnes",
+          "reported_feature_count": 23,
+          "feature_count_matches_registry": true,
+          "result": "Exact local PDF, collection, successful downstream summary, and deposit=Y co-occur."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:daa05b00dbd68e315e6d6dce0aee44e42d69a7f8",
+          "subject": "Serve Bergeronnes and Lac-Sainte-Marie zoning"
+        }
+      ],
+      "classification_basis": "A retained local deposit/readback record names both exact source identity and audited collection; no remote reread was performed.",
+      "human_question": null
+    },
+    {
+      "slug": "montebello",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-montebello.geojson",
+      "layout": "flat",
+      "features": 12,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/montebello-rural.pdf",
+        "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/montebello-rural.pdf",
+            "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montebello-rural-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montebello-rural-reg.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 48,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/montebello-rural.pdf",
+            "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montebello-rural-reg.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-raster-corner-image-registration",
+          "gcp_count": 48,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/gcp/montebello-rural-seed.gcp.json",
+          "json_pointer": "/",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-plans/montebello-rural.pdf",
+              "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/montebello-rural.pdf",
+          "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41",
+          "expected_sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-montebello.geojson?"
+    },
+    {
+      "slug": "montpellier",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-montpellier.geojson",
+      "layout": "flat",
+      "features": 2,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/montpellier-rural.pdf",
+        "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/montpellier-rural.pdf",
+            "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montpellier-rural-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montpellier-rural-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/montpellier-rural.pdf",
+            "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/montpellier-rural-t3.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/montpellier-rural.pdf",
+            "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/montpellier-rural.pdf",
+          "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4",
+          "expected_sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-montpellier.geojson?"
+    },
+    {
+      "slug": "murdochville",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-murdochville.geojson",
+      "layout": "flat",
+      "features": 17,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "orphan",
+      "source_identity": null,
+      "source_identity_status": null,
+      "rejected_source_identity": {
+        "kind": "arcgis-layer",
+        "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+      },
+      "supported_source_identities": [],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-030.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 29,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-relaunch-1-20260709T030635Z.sigale-mrc030.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 29,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "rejection-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-030.json",
+          "json_pointer": "/results/0",
+          "rejected_source_identity": {
+            "kind": "arcgis-layer",
+            "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+          },
+          "reported_feature_count": 29,
+          "feature_count_matches_registry": false,
+          "result": "deposited=false, zone-invalid, No_zone numeric affectation/decoy values."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:cefa596fbaa25380cc80b63e55bf8bc3ee3d241a",
+          "subject": "Add zones platform probe reports"
+        }
+      ],
+      "classification_basis": "Sole candidate endpoint is explicitly deposited=false, zone-invalid, and count-mismatched; it is excluded and no alternate admissible identity was found.",
+      "human_question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "ogden",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-ogden.geojson",
+      "layout": "flat",
+      "features": 47,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/pdf-cache/ogden-plan.pdf",
+        "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/ogden-plan.pdf",
+            "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/zones-recalage/shard1of2/ogden-t1-claude-diagnose/qc-zonage-ogden.stats.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": null,
+          "reported_feature_count": 0,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/ogden-plan.pdf",
+            "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/zones-recalage/shard1of2/ogden-t1-claude-flip-diagnose/qc-zonage-ogden.stats.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": null,
+          "reported_feature_count": 1,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf-cache/ogden-plan.pdf",
+            "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z.gdal-candidates-extra2.json",
+          "json_pointer": "/candidates/0",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "source-pdf-url",
+              "url": "https://www.munogden.ca/uploads/1/3/4/8/134872540/zonage_annexe_i_-_plan_zonage.pdf"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-10T180146Z-shard1of2-codex.json",
+          "json_pointer": "/cachedPdfCandidatesNotYetBuiltDueToBlock/0",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-plans/ogden.pdf",
+              "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/pdf-cache/ogden-plan.pdf",
+          "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8",
+          "expected_sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-ogden.geojson?"
+    },
+    {
+      "slug": "oka",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-oka.geojson",
+      "layout": "flat",
+      "features": 103,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "historical-verified",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-pdf/oka-1.pdf",
+        "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a"
+      },
+      "source_identity_status": "historical-linked",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/oka-1.pdf",
+            "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a"
+          },
+          "support_status": "historical-linked",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T072852Z-shard0.json",
+          "json_pointer": "/deposits/0",
+          "pass": null,
+          "method": "t1-geopdf-text",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/oka-1.pdf",
+            "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-pdf/oka-1.pdf",
+          "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a",
+          "expected_sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a",
+          "matches_expected_sha256": true
+        },
+        {
+          "kind": "deposit-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T072852Z-shard0.json",
+          "json_pointer": "/deposits/0",
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/oka-1.pdf",
+            "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a"
+          },
+          "collection": "qc-zonage-oka",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "result": "Exact local PDF, collection, T1 method, and successful downstream lot joins co-occur; the record does not state a zone-feature count."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:9575540c0ab5467010e814ecc7c12cc417c525d5",
+          "subject": "report(zonage): recalage PDF shard 0"
+        }
+      ],
+      "classification_basis": "A retained local deposit/readback record names both exact source identity and audited collection; no remote reread was performed.",
+      "human_question": null
+    },
+    {
+      "slug": "rougemont",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-rougemont.geojson",
+      "layout": "flat",
+      "features": 46,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/gcp/rougemont-urbain.pdf",
+        "sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/gcp/rougemont-urbain.pdf",
+            "sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/rougemont-urbain.aniso.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "auto-seed-cadastre-bbox-rotations",
+          "gcp_count": 30,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/rougemont-urbain.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 30,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/gcp/rougemont-urbain.pdf",
+            "sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/gcp/rougemont-urbain.pdf",
+          "sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab",
+          "expected_sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-rougemont.geojson?"
+    },
+    {
+      "slug": "saint-andre-avellin",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-andre-avellin.geojson",
+      "layout": "flat",
+      "features": 28,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+        "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+            "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-andre-avellin-f1-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-andre-avellin-f1-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+            "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-andre-avellin-f1-t3.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 42,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+            "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+          "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758",
+          "expected_sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-andre-avellin.geojson?"
+    },
+    {
+      "slug": "saint-anselme",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-anselme.geojson",
+      "layout": "flat",
+      "features": 111,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19062_Saint_Anselme:062y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19062_Saint_Anselme:062y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/5",
+          "reported_feature_count": 111,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19062_Saint_Anselme:062y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/5",
+          "reported_feature_count": 111,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19062_Saint_Anselme:062y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-anselme.geojson?"
+    },
+    {
+      "slug": "saint-felix-dotis",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-felix-dotis.geojson",
+      "layout": "flat",
+      "features": 57,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/saint-felix-dotis-carto-20260720.pdf",
+        "sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-felix-dotis-carto-20260720.pdf",
+            "sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-felix-dotis.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 40,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-felix-dotis-carto-20260720.pdf",
+            "sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-felix-dotis.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "auto-seed-cadastre-bbox-rotations",
+          "gcp_count": 40,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-18T08-21-36Z-shard0of1.json",
+          "json_pointer": "/rejected/6",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zones-recalage/shard1of2/saint-felix-dotis-zonage.pdf",
+              "sha256": "3daec76ea7d8e395096f911c4700ddae35886a1ded24e02558406060740329a2"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/saint-felix-dotis-carto-20260720.pdf",
+          "sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2",
+          "expected_sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-felix-dotis.geojson?"
+    },
+    {
+      "slug": "saint-francois-de-lile-dorleans",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-francois-de-lile-dorleans.geojson",
+      "layout": "flat",
+      "features": 44,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "orphan",
+      "source_identity": null,
+      "source_identity_status": null,
+      "rejected_source_identity": {
+        "kind": "arcgis-layer",
+        "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+      },
+      "supported_source_identities": [],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-200.json",
+          "json_pointer": "/results/5",
+          "reported_feature_count": 48,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-relaunch-1-20260709T030635Z.sigale-mrc200.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 48,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "rejection-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-200.json",
+          "json_pointer": "/results/5",
+          "rejected_source_identity": {
+            "kind": "arcgis-layer",
+            "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+          },
+          "reported_feature_count": 48,
+          "feature_count_matches_registry": false,
+          "result": "deposited=false, zone-invalid, NUM_ZONE affectation/decoy values."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:cefa596fbaa25380cc80b63e55bf8bc3ee3d241a",
+          "subject": "Add zones platform probe reports"
+        }
+      ],
+      "classification_basis": "Sole candidate endpoint is explicitly deposited=false, zone-invalid, and count-mismatched; it is excluded and no alternate admissible identity was found.",
+      "human_question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "saint-henri",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-henri.geojson",
+      "layout": "flat",
+      "features": 86,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19068_Saint-Henri:068y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19068_Saint-Henri:068y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/9",
+          "reported_feature_count": 86,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19068_Saint-Henri:068y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/9",
+          "reported_feature_count": 86,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19068_Saint-Henri:068y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-henri.geojson?"
+    },
+    {
+      "slug": "saint-jerome",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-jerome.geojson",
+      "layout": "flat",
+      "features": 502,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "legacy-traceable",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/pdf/saint-jerome/plan.pdf",
+        "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf/saint-jerome/plan.pdf",
+            "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f"
+          },
+          "support_status": "candidate-only-with-legacy-context",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-jerome-disambig.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 15,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf/saint-jerome/plan.pdf",
+            "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-jerome-disambig.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "auto-seed-cadastre-bbox-rotations",
+          "gcp_count": 15,
+          "reported_feature_count": null,
+          "source_identity": null
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/pdf/saint-jerome/plan.pdf",
+          "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f",
+          "expected_sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f",
+          "matches_expected_sha256": true
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-jerome-disambig.gcp.json",
+          "json_pointer": "/",
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/pdf/saint-jerome/plan.pdf",
+            "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f"
+          },
+          "result": "Retained GCP record names exact local PDF."
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-jerome-disambig.report.json",
+          "json_pointer": "/rotation_disambiguation/ranking/0",
+          "pass": true,
+          "reported_feature_count": 493,
+          "feature_count_matches_registry": false,
+          "result": "Decisive local serving-gate context survives, but 493 is not the audited 502."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:187c93760529203f212eeb44946a516c0692bbc9",
+          "subject": "feat(zones): saint-jerome — rotation-disambig DECISIF (rot0), gate franchi",
+          "result": "No retained deposit/readback binds PDF to 502-feature audited object."
+        }
+      ],
+      "classification_basis": "A retained source-specific successful serving/gate record and commit survive, but 493 features do not equal audited 502 and no deposit/readback binds them.",
+      "human_question": "Can an owner supply retained deposit/readback or approved reconciliation explaining why 493-feature gate output corresponds to audited 502-feature collection?"
+    },
+    {
+      "slug": "saint-leon-de-standon",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-leon-de-standon.geojson",
+      "layout": "flat",
+      "features": 53,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19020_Saint_Leon:020y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19020_Saint_Leon:020y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/11",
+          "reported_feature_count": 53,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19020_Saint_Leon:020y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/11",
+          "reported_feature_count": 53,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19020_Saint_Leon:020y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-leon-de-standon.geojson?"
+    },
+    {
+      "slug": "saint-maxime-du-mont-louis",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-maxime-du-mont-louis.geojson",
+      "layout": "flat",
+      "features": 28,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+        "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+            "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-maxime-du-mont-louis-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-maxime-du-mont-louis-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+            "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-maxime-du-mont-louis-t3.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 37,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+            "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+          "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e",
+          "expected_sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-maxime-du-mont-louis.geojson?"
+    },
+    {
+      "slug": "saint-nazaire-de-dorchester",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-nazaire-de-dorchester.geojson",
+      "layout": "flat",
+      "features": 20,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "wfs-layer",
+        "service_root": "https://gs201.geocentriq.com/geoserver",
+        "type_name": "M19015_St_Nazaire:015y_zonage"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "wfs-layer",
+            "service_root": "https://gs201.geocentriq.com/geoserver",
+            "type_name": "M19015_St_Nazaire:015y_zonage"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse-20260707.json",
+          "json_pointer": "/results/14",
+          "reported_feature_count": 20,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19015_St_Nazaire:015y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-geocentriq-bellechasse.json",
+          "json_pointer": "/results/14",
+          "reported_feature_count": 20,
+          "feature_count_matches_registry": true,
+          "source_identities": [
+            {
+              "kind": "wfs-layer",
+              "service_root": "https://gs201.geocentriq.com/geoserver",
+              "type_name": "M19015_St_Nazaire:015y_zonage"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-nazaire-de-dorchester.geojson?"
+    },
+    {
+      "slug": "saint-pierre-baptiste",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-baptiste.geojson",
+      "layout": "flat",
+      "features": 57,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+        "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+            "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-pierre-baptiste-f1-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-pierre-baptiste-f1-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+            "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/saint-pierre-baptiste-f1-t3.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 48,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+            "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320"
+          }
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+          "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320",
+          "expected_sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-pierre-baptiste.geojson?"
+    },
+    {
+      "slug": "saint-pierre-de-lile-dorleans",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lile-dorleans.geojson",
+      "layout": "flat",
+      "features": 64,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "orphan",
+      "source_identity": null,
+      "source_identity_status": null,
+      "rejected_source_identity": {
+        "kind": "arcgis-layer",
+        "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+      },
+      "supported_source_identities": [],
+      "evidence": [
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-200.json",
+          "json_pointer": "/results/1",
+          "reported_feature_count": 67,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-relaunch-4-20260709T030635Z.sigale-200.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 67,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "rejection-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-200.json",
+          "json_pointer": "/results/1",
+          "rejected_source_identity": {
+            "kind": "arcgis-layer",
+            "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+          },
+          "reported_feature_count": 67,
+          "feature_count_matches_registry": false,
+          "result": "deposited=false, zone-invalid, NUM_ZONE affectation/decoy values."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:cefa596fbaa25380cc80b63e55bf8bc3ee3d241a",
+          "subject": "Add zones platform probe reports"
+        }
+      ],
+      "classification_basis": "Sole candidate endpoint is explicitly deposited=false, zone-invalid, and count-mismatched; it is excluded and no alternate admissible identity was found.",
+      "human_question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "sainte-emelie-de-lenergie",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-emelie-de-lenergie.geojson",
+      "layout": "flat",
+      "features": 52,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+        "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+            "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-emelie-de-lenergie-chamfer2.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-emelie-de-lenergie-lotC-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-emelie-de-lenergie-lotC-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+            "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/gcp/sainte-emelie-de-lenergie-seed2.gcp.json",
+          "json_pointer": "/",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+              "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+          "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2",
+          "expected_sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2",
+          "matches_expected_sha256": true
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:f59b1af67a4e531536fd1a5106ab98cec6d1a007",
+          "subject": "data(zones): sainte-emelie-de-lenergie -- recalage T3 raster-register, 52 codes reels, 100% lots (1650/1650)",
+          "result": "Retains GCP/dictionary artifacts but no collection output or deposit record."
+        },
+        {
+          "kind": "rejection-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T09-lotC.md",
+          "section": "Resultat de synthese > sainte-emelie-de-lenergie",
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+            "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2"
+          },
+          "result": "Later retained report rejects the same PDF chamfer as non-decisive; conflict blocks promotion."
+        }
+      ],
+      "classification_basis": "Local PDF/GCP artifacts remain concrete candidates, but later rejection conflicts with earlier commit message; neither binds collection.",
+      "human_question": "Which retained record is authoritative: the success-labeled GCP/dictionary commit or later rejection of the same PDF? Neither binds 52-feature collection."
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-justine-de-newton.geojson",
+      "layout": "flat",
+      "features": 14,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-pdf/sainte-justine-de-newton.pdf",
+        "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/sainte-justine-de-newton.pdf",
+            "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/delegation-mass/zones-recalage-20260717T-sainte-justine-de-newton-t3-seed.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-justine-de-newton-20260717-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-pdf/sainte-justine-de-newton.pdf",
+            "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-20260718T202338Z-shard0of1-lot1.json",
+          "json_pointer": "/items/5",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-pdf/sainte-justine-de-newton-zone-lot.pdf",
+              "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-20260718T202441Z-shard0of1-lot1.json",
+          "json_pointer": "/items/5",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-pdf/sainte-justine-de-newton-zone-lot.pdf",
+              "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-pdf/sainte-justine-de-newton.pdf",
+          "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158",
+          "expected_sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-justine-de-newton.geojson?"
+    },
+    {
+      "slug": "sainte-monique--lac-saint-jean-est",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-monique--lac-saint-jean-est.geojson",
+      "layout": "flat",
+      "features": 21,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+        "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+            "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-monique--lac-saint-jean-est-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-monique--lac-saint-jean-est-refined.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 16,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+            "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4"
+          }
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-monique--lac-saint-jean-est-refined.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-raster-corner-image-registration",
+          "gcp_count": 16,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/gcp/sainte-monique--lac-saint-jean-est-seed.gcp.json",
+          "json_pointer": "/",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+              "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+          "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4",
+          "expected_sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-monique--lac-saint-jean-est.geojson?"
+    },
+    {
+      "slug": "sainte-petronille",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-petronille.geojson",
+      "layout": "flat",
+      "features": 39,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "historical-verified",
+      "source_identity": {
+        "kind": "source-pdf-url",
+        "url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+      },
+      "source_identity_status": "historical-linked",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "source-pdf-url",
+            "url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+          },
+          "support_status": "historical-linked",
+          "local_pdf_sha256_rechecked": null
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "local-output",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z/sainte-petronille-t1-dry/qc-zonage-sainte-petronille.geojson",
+          "features": 39,
+          "sha256": "dfdd96cafdb6075cbeb3846cad14a09509a4f5a42fb35543510e2cba4e0ddc2c",
+          "feature_count_matches_registry": true
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z.gdal-candidates.json",
+          "json_pointer": "/candidates/1",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "source-pdf-url",
+              "url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-platform-probe-sigale-200.json",
+          "json_pointer": "/results/0",
+          "reported_feature_count": 38,
+          "feature_count_matches_registry": false,
+          "source_identities": [
+            {
+              "kind": "arcgis-layer",
+              "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20030_Publique/MapServer/17"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "deposit-record",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z.json",
+          "json_pointer": "/deposits/0",
+          "source_identity": {
+            "kind": "source-pdf-url",
+            "url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+          },
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-petronille.geojson",
+          "reported_feature_count": 39,
+          "feature_count_matches_registry": true,
+          "result": "Exact PDF URL, audited collection key, 39 served features, local output, and successful local readback co-occur."
+        },
+        {
+          "kind": "local-output",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z/sainte-petronille-t1-publish/qc-zonage-sainte-petronille.stats.json",
+          "json_pointer": "/",
+          "source_identity": {
+            "kind": "source-pdf-url",
+            "url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+          },
+          "reported_feature_count": 39,
+          "feature_count_matches_registry": true
+        },
+        {
+          "kind": "operator-log",
+          "path": "work/delegation-mass/zones-cadence-Z3-20260709T1825Z.md",
+          "section": "Deposit > sainte-petronille",
+          "result": "Retained log records source PDF, collection key, 39 served features, readback, and deposit verification."
+        },
+        {
+          "kind": "git-commit",
+          "path": "git:701f98b917504c49790ce9f14fd8315cb1ddc316",
+          "subject": "feat(acquisition): map Sainte-Pétronille zone usage",
+          "result": "Corroborates exact PDF URL; it is not the deposit proof."
+        }
+      ],
+      "classification_basis": "A retained local deposit/readback record names both exact source identity and audited collection; no remote reread was performed.",
+      "human_question": null
+    },
+    {
+      "slug": "sainte-therese-de-la-gatineau",
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-therese-de-la-gatineau.geojson",
+      "layout": "flat",
+      "features": 58,
+      "prior_classification": "candidate-needs-human-confirmation",
+      "classification": "remains-candidate",
+      "source_identity": {
+        "kind": "local-source-pdf",
+        "path": "work/zonage-plans/sainte-therese-de-la-gatineau-plan-20260720.pdf",
+        "sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611"
+      },
+      "source_identity_status": "candidate-only",
+      "rejected_source_identity": null,
+      "supported_source_identities": [
+        {
+          "identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-therese-de-la-gatineau-plan-20260720.pdf",
+            "sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611"
+          },
+          "support_status": "candidate-only",
+          "local_pdf_sha256_rechecked": true
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-therese-de-la-gatineau-chamfer.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-chamfer-seed",
+          "gcp_count": null,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-therese-de-la-gatineau-raster.report.json",
+          "json_pointer": "/",
+          "pass": true,
+          "method": "cadastre-raster-corner-image-registration",
+          "gcp_count": 48,
+          "reported_feature_count": null,
+          "source_identity": null
+        },
+        {
+          "kind": "transformation-record",
+          "path": "work/gcp/sainte-therese-de-la-gatineau-seed.gcp.json",
+          "json_pointer": "/",
+          "pass": null,
+          "method": null,
+          "gcp_count": 12,
+          "reported_feature_count": null,
+          "source_identity": {
+            "kind": "local-source-pdf",
+            "path": "work/zonage-plans/sainte-therese-de-la-gatineau-plan-20260720.pdf",
+            "sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611"
+          }
+        },
+        {
+          "kind": "source-candidate-record",
+          "path": "work/delegation-mass/zones-recalage-2026-07-18T08-21-36Z-shard0of1.json",
+          "json_pointer": "/rejected/11",
+          "reported_feature_count": null,
+          "feature_count_matches_registry": null,
+          "source_identities": [
+            {
+              "kind": "local-source-pdf",
+              "path": "work/pdf/sainte-therese-de-la-gatineau-plan.pdf",
+              "sha256": "b1a6e376aef4bff94533316d4b79f53f65de8b24a16d16b744f004a726cec688"
+            }
+          ],
+          "gate_pass": false,
+          "rejection_recorded": false
+        }
+      ],
+      "verification_evidence": [
+        {
+          "kind": "local-pdf-sha256-recheck",
+          "path": "work/zonage-plans/sainte-therese-de-la-gatineau-plan-20260720.pdf",
+          "sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611",
+          "expected_sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611",
+          "matches_expected_sha256": true
+        }
+      ],
+      "classification_basis": "Specific local PDF/GCP artifact or exact endpoint remains, but no retained successful deposit/readback or eligible legacy source-to-collection binding was found.",
+      "human_question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-therese-de-la-gatineau.geojson?"
+    }
+  ],
+  "human_questions": [
+    {
+      "slug": "amherst",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-amherst.geojson?"
+    },
+    {
+      "slug": "armagh",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-armagh.geojson?"
+    },
+    {
+      "slug": "beaumont",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-beaumont.geojson?"
+    },
+    {
+      "slug": "bethanie",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-bethanie.geojson?"
+    },
+    {
+      "slug": "bowman",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-bowman.geojson?"
+    },
+    {
+      "slug": "charette",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-charette.geojson?"
+    },
+    {
+      "slug": "duhamel",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-duhamel.geojson?"
+    },
+    {
+      "slug": "grandes-piles",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-grandes-piles.geojson?"
+    },
+    {
+      "slug": "montebello",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-montebello.geojson?"
+    },
+    {
+      "slug": "montpellier",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-montpellier.geojson?"
+    },
+    {
+      "slug": "murdochville",
+      "classification": "orphan",
+      "question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "ogden",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-ogden.geojson?"
+    },
+    {
+      "slug": "rougemont",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-rougemont.geojson?"
+    },
+    {
+      "slug": "saint-andre-avellin",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-andre-avellin.geojson?"
+    },
+    {
+      "slug": "saint-anselme",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-anselme.geojson?"
+    },
+    {
+      "slug": "saint-felix-dotis",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-felix-dotis.geojson?"
+    },
+    {
+      "slug": "saint-francois-de-lile-dorleans",
+      "classification": "orphan",
+      "question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "saint-henri",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-henri.geojson?"
+    },
+    {
+      "slug": "saint-jerome",
+      "classification": "legacy-traceable",
+      "question": "Can an owner supply retained deposit/readback or approved reconciliation explaining why 493-feature gate output corresponds to audited 502-feature collection?"
+    },
+    {
+      "slug": "saint-leon-de-standon",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-leon-de-standon.geojson?"
+    },
+    {
+      "slug": "saint-maxime-du-mont-louis",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-maxime-du-mont-louis.geojson?"
+    },
+    {
+      "slug": "saint-nazaire-de-dorchester",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-nazaire-de-dorchester.geojson?"
+    },
+    {
+      "slug": "saint-pierre-baptiste",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-saint-pierre-baptiste.geojson?"
+    },
+    {
+      "slug": "saint-pierre-de-lile-dorleans",
+      "classification": "orphan",
+      "question": "Is there a different retained original source? Only local ArcGIS candidate is rejected."
+    },
+    {
+      "slug": "sainte-emelie-de-lenergie",
+      "classification": "remains-candidate",
+      "question": "Which retained record is authoritative: the success-labeled GCP/dictionary commit or later rejection of the same PDF? Neither binds 52-feature collection."
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-justine-de-newton.geojson?"
+    },
+    {
+      "slug": "sainte-monique--lac-saint-jean-est",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-monique--lac-saint-jean-est.geojson?"
+    },
+    {
+      "slug": "sainte-therese-de-la-gatineau",
+      "classification": "remains-candidate",
+      "question": "Can an owner provide retained deposit/readback or signed source-to-collection record binding listed candidate identity to normalized/ca-qc-zonage/qc-zonage-sainte-therese-de-la-gatineau.geojson?"
+    }
+  ],
+  "validation": {
+    "input_candidate_count_matches": true,
+    "input_feature_total_matches": true,
+    "classifications_cover_each_input_once": true,
+    "local_pdf_sha256_checks": [
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/amherst-602-25.pdf",
+        "sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c",
+        "expected_sha256": "3e96c5a7dcba7455e08e6d3b77717727c30953222d08eeaf4d71a34d7db91e9c",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-pdf/bethanie-zonage-20260717.pdf",
+        "sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0",
+        "expected_sha256": "11e42347da8eef3e39ff9c5c0ed2c5f88260cf066dde98aaf58c2a484c8e8fc0",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/pdf/bowman-zonage-2022.pdf",
+        "sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011",
+        "expected_sha256": "18f655ed13bd84fa22e0e0bd2942adbefa24eab9c8cb5911118e01ea00c29011",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/charette-zonage-pu.pdf",
+        "sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf",
+        "expected_sha256": "8ed4572a31e53476668c17095fb0ce3c9d608a87aa2bd6fcdf88c9eb863cddcf",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/duhamel-f1.pdf",
+        "sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989",
+        "expected_sha256": "b71341f15f9a263de260df34269a3bec82ea47ada7bb353f94e4cf827656f989",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/grandes-piles-p1.pdf",
+        "sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232",
+        "expected_sha256": "0f6b8e9594e6defd8c5df9fd7b28ad654fe04de776bfb64c156ada754d816232",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/pdf-cache/lac-sainte-marie-annexes-2024-08-002.pdf",
+        "sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab",
+        "expected_sha256": "6f514df640a59428f7e2ba118876899b79b043b0c51fa60d2db57b2265ae80ab",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/pdf-cache/les-bergeronnes-plan1.pdf",
+        "sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4",
+        "expected_sha256": "6c6faefff6957b484467dc4d399ab7fc876ff0b7159802ee24b72ae59dc3aae4",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/montebello-rural.pdf",
+        "sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41",
+        "expected_sha256": "0e673deddca2dbf0a6db075a7a5475d1bc6b9fd9c861f341961b5aa0b8b6bf41",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/montpellier-rural.pdf",
+        "sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4",
+        "expected_sha256": "1df7b4fe7e23afbed107c49f72b3e2d1b27fbbb382e7f19b0401d37a2ae8d1b4",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/pdf-cache/ogden-plan.pdf",
+        "sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8",
+        "expected_sha256": "d8244f43de1d10412a06f17189bcb6a704dcc47712e122eee89cef45455eafd8",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-pdf/oka-1.pdf",
+        "sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a",
+        "expected_sha256": "8e4c732831ca8d47104b49dcb20f8f636d4a21258c5507cfb8b4e39b2436db5a",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/gcp/rougemont-urbain.pdf",
+        "sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab",
+        "expected_sha256": "3b6b59f6ea9ad52a89d09b3e82d4ccc7a5c009a648ee822644bebacf7ebfc8ab",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/saint-andre-avellin-plan-f1.pdf",
+        "sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758",
+        "expected_sha256": "2dc65d63d64852e043d69ac9983f95c1e54066ba466e68038ce99d8ef930b758",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/saint-felix-dotis-carto-20260720.pdf",
+        "sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2",
+        "expected_sha256": "565645f1c9138dfbd2400b743fc0b3de2d531db6f617fa3805d18e7490bf19c2",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/pdf/saint-jerome/plan.pdf",
+        "sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f",
+        "expected_sha256": "832a1faa125ddfebd776db54b2d6f01b66c03e7ef46f766620c76f33ab33f43f",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/saint-maxime-du-mont-louis-plan.pdf",
+        "sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e",
+        "expected_sha256": "0ac352f1e5de98215ccb30b0de2e49ba2390dab6200102d8d6bf12678ebb413e",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/saint-pierre-baptiste-f1.pdf",
+        "sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320",
+        "expected_sha256": "07d43088c1064d7cf791e61bf8fea55b50710971eac4389005c0c5a9faa2c320",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/sainte-emelie-de-lenergie.pdf",
+        "sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2",
+        "expected_sha256": "ddadbbdce449a90da952e8a2b01e2447faa15da7e21082edea01aa4cbfe4c9e2",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-pdf/sainte-justine-de-newton.pdf",
+        "sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158",
+        "expected_sha256": "2257e399c5b590abcce3d2d126198147b7ff6d3dba3494bc06387217b5fd5158",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/sainte-monique--lac-saint-jean-est-map-20260720.pdf",
+        "sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4",
+        "expected_sha256": "667ce364787d0efd27bb028c8cbd9d7f818fc6e5c7a1351fae3d5230192319d4",
+        "matches_expected_sha256": true
+      },
+      {
+        "kind": "local-pdf-sha256-recheck",
+        "path": "work/zonage-plans/sainte-therese-de-la-gatineau-plan-20260720.pdf",
+        "sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611",
+        "expected_sha256": "4b95d913eb8e01e461b22d1bfeb28946dc02ed9aec3e307de4128c6e1c3b7611",
+        "matches_expected_sha256": true
+      }
+    ],
+    "all_rechecked_local_pdf_hashes_match": true,
+    "remote_operations_performed": false,
+    "s3_operations_performed": false,
+    "deployment_performed": false,
+    "reviewed_git_commits": [
+      "daa05b00dbd68e315e6d6dce0aee44e42d69a7f8",
+      "9575540c0ab5467010e814ecc7c12cc417c525d5",
+      "701f98b917504c49790ce9f14fd8315cb1ddc316",
+      "187c93760529203f212eeb44946a516c0692bbc9",
+      "f59b1af67a4e531536fd1a5106ab98cec6d1a007",
+      "cefa596fbaa25380cc80b63e55bf8bc3ee3d241a"
+    ]
+  }
+}

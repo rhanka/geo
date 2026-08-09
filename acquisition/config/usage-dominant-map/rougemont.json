@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "1": "residentiel",
+    "2": "commercial",
+    "3": "industriel",
+    "4": null,
+    "5": null,
+    "6": "agricole"
+  },
+  "source": "https://rougemont.ca/wp-content/uploads/2025/12/Regl-ZONAGE-2018-242-1-DEC-2025.pdf",
+  "note": "Municipalité de Rougemont (MRC de Rouville), « RÈGLEMENT DE ZONAGE NO 2018-242 » (version administrative, décembre 2025), ARTICLE 17 « Interprétation du plan de zonage », section « Dispositions interprétatives ». Gate propriétaire VERBATIM (ARTICLE 1 TITRE): « Le présent règlement est intitulé « Règlement de zonage de la municipalité de Rougemont ». »; en-tête de chaque page: « RÈGLEMENT DE ZONAGE / NO 2018-242 / VERSION ADMINISTRATIVE ». ⭐ ICI LA VOCATION EST DANS LA CENTAINE, et le règlement l'écrit — table VERBATIM, en-tête de colonnes inclus: « Numéro de la zone | Usage dominant » puis « 100 à 199 | Habitation », « 200 à 299 | Commerce », « 300 à 399 | Industrie », « 400 à 499 | Mixte », « 500 à 599 | Public », « 600 à 699 | Agricole ». Mapping: 1xx « Habitation » -> residentiel; 2xx « Commerce » -> commercial; 3xx « Industrie » -> industriel; 6xx « Agricole » -> agricole. NULLS EXPLICITES: 4xx « Mixte » (le règlement écrit mixte) et 5xx « Public » (hors des cinq catégories). FORME DES CLÉS: le match du fold étant longest-prefix, la clé de chaque plage est son CHIFFRE DES CENTAINES. C'est sûr ici parce que les 46 codes servis ont TOUS exactement trois chiffres (relevé exhaustif par `_dump-sig-codes --slug rougemont`: 107 à 633) — aucun code d'un ou deux chiffres qu'une clé « 1 » capterait à tort, aucun code de quatre chiffres. ⚠️ Cette forme de clé n'est PAS transposable à une autre muni sans re-vérifier la longueur des codes servis. Couverture: 46/46 polygones servis (11 en 1xx, 6 en 2xx, 3 en 3xx, 6 en 4xx, 6 en 5xx, 14 en 6xx — mesuré au fold: 11 residentiel, 6 commercial, 3 industriel, 14 agricole, 12 null)."
+}

@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "RE": "residentiel",
+    "V": "residentiel",
+    "F": "agricole",
+    "A": "agricole",
+    "L": "environnemental",
+    "M": null,
+    "RU": null
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05025_Publique/MapServer/23/query?where=1%3D1&outFields=Usage,Type_Zone,Num_Zone,Dominance&f=json&returnGeometry=false",
+  "note": "Municipalité du Canton de Hope (MRC de Bonaventure), code MAMH 05025. LA LÉGENDE EST DANS LE SIG, PAS DANS LE RÈGLEMENT: la couche ArcGIS SIGALE « Zonage » (MapServer/23) qui SERT ces polygones — provenance exacte du geojson servi: « https://gis.altusquebec.com/arcgis/rest/services/MRC050/05025_Publique/MapServer/23 », confidence « sigale-zone-vector » — porte la vocation écrite PAR ENTITÉ dans l'attribut `Dominance` (avec `Usage` = le code complet « 17-RU », `Type_Zone` = le préfixe et `Num_Zone` = le numéro). Gate propriétaire: le service est `05025_Publique` et 05025 = « Hope » (Canton) au répertoire MAMH committé (packages/qc-sources/src/geo/qc-municipal-directory.json) — à NE PAS confondre avec l'homonyme voisin « Hope Town » (05020), qui a son propre service `05020_Publique`. Dump vérifié (21 features = les 21 polygones servis), valeurs de `Dominance` VERBATIM: « Résidentielle » pour RE (14-RE, 15-RE); « Villégiature » pour V (7-V); « Forestière » pour F (2-F, 4-F, 6-F, 10-F, 11-F, 13-F, 16-F); « Agricole » pour A (18-A); « Loisir extensif » pour L (1-L, 20-L); « Mixte » pour M (19-M, 21-M); « Rurale » pour RU (3-RU, 5-RU, 8-RU, 9-RU, 12-RU, 17-RU). Mapping: RE « Résidentielle » et V « Villégiature » -> residentiel; F « Forestière » et A « Agricole » -> agricole; L « Loisir extensif » -> environnemental (affectation récréative). NULL EXPLICITES: M « Mixte » n'énonce aucune dominante unique; RU « Rurale » désigne un milieu rural polyvalent (habitation, agriculture, foresterie confondues) et n'énonce pas une dominante parmi les cinq catégories — contrairement au « RU / Résidentielle en milieu rural » de Champlain, l'étiquette d'ici est « Rurale » tout court, il n'y a rien à trancher sans invention. Aucun règlement de zonage de Hope n'est diffusé en ligne (site municipalitedehope.ca: bibliothèque WP File Download énumérée, 292 entrées, aucun corps de règlement d'urbanisme); c'est donc le SIG qui fait foi ici."
+}

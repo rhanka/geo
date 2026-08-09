@@ -1,0 +1,340 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:35:15.072Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6360,
+    "limit": 20,
+    "requested": 20,
+    "selected": 8,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/ff2a0cd978dfad74ed035c909a0ff00d8126d62fd14e4384363880707cc51e95.pdf",
+      "raw/pv-index/cas/ff45ce1ee559d2bce3486ea4414a419ecc760089b380ff2d775b78bf17c74593.pdf",
+      "raw/pv-index/cas/ff51a327c8f0976829cac509de1e427f32e3f43520134d6ddfce56fb3ed774e3.pdf",
+      "raw/pv-index/cas/ff6699258225e3b8397d1cfc8cff8e539315fea4346933483e681f43cb4bc700.pdf",
+      "raw/pv-index/cas/ff7657c3a93962898923e00856be3e950304834988226858a7ca2cbda422a986.pdf",
+      "raw/pv-index/cas/ff8d0d6b3e6fc3f823ca972907fd93ee2cb4436ada26140030b3ee5b19b85919.pdf",
+      "raw/pv-index/cas/ff8fbcfae3a081215e90ac001bd22f63eb4bf2aec14201e03ac8d8ac0ae6fca2.pdf",
+      "raw/pv-index/cas/ff947d31874550d4d3ce86be50f57fdb0e6b02b07946a1e34447ebcd82b18d54.pdf",
+      "raw/pv-index/cas/ffa5e88ec0eeabc0af572a09973fe367c9c66526365c0e6509a620017c61d2a9.pdf",
+      "raw/pv-index/cas/ffb584bf6550359603b8c571417cda1b163ba08b9501e1698fc2535566088f1b.pdf",
+      "raw/pv-index/cas/ffc0b0711a9d06ce555212892f092bd7f84fd49bad326d676697fb6f69f673e2.pdf",
+      "raw/pv-index/cas/ffceed8233db3d33c72d424478dc30416303cfbded9caad7b4b5e7473a1d5910.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 8,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 7,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 3,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 4
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 2,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 5,
+    "edges": 1,
+    "failures": 4
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/ff7dcf2144a6616811e3317a073ad3994a4924d80e0285a085b459e2fcfc258b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6471306",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:32",
+      "quote": "   5.4    Résolution pour autoriser la vente du lot 6 471 306 du cadastre du"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 8,
+      "zone_code_count": 570,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 8,
+      "served_municipalities": 8,
+      "total_lot_numbers": 15421,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z",
+  "documents": [
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-seance-14-juillet-signe.pdf",
+      "storage_key": "raw/pv-index/cas/ff2b10c64786a8b17492bc03137fc08d77a5a7e614039823dac354b6643bfef2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/baie-trinite/54b6643bfef2.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/baie-trinite/54b6643bfef2.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3465/08_pv_23-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ff42fd2cf20955a77d6b841b75c490bf3056cb21d11b0c2236a5b31840b884dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/cloridorme/b31840b884dd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/cloridorme/b31840b884dd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "url": "https://municipalite.amherst.qc.ca/wp-content/uploads/2026/05/1.1-Projet-dordre-du-jour-Seance-11-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/ff5d3d0dec99e8e715cf11338f3ab51c7c1061003503fb93160b502b0e776c93.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/amherst/502b0e776c93.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/amherst/502b0e776c93.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2023/03/oj20230306-1.pdf",
+      "storage_key": "raw/pv-index/cas/ff7dcf2144a6616811e3317a073ad3994a4924d80e0285a085b459e2fcfc258b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "004-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "   10.2   Adoption du règlement 004-2023 établissant la tarification pour le camp"
+            }
+          },
+          {
+            "label": "001-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "   10.3   Adoption du règlement 001-2023 modifiant le règlement de zonage 069-"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6471306",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "   5.4    Résolution pour autoriser la vente du lot 6 471 306 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/acton-vale/59e2fcfc258b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/acton-vale/59e2fcfc258b.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-01-12.pdf",
+      "storage_key": "raw/pv-index/cas/ff967ae0eecffe701af531cc85e37cbb3298d3422cefd009d9a21f9def14d1dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/donnacona/1f9def14d1dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/donnacona/1f9def14d1dd.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bonaventure",
+      "municipality_name": "Bonaventure",
+      "url": "https://villebonaventure.ca/wp-content/uploads/2025/11/01-12-2025-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/ffae31467ac57fcf5a35bd3a0c897fc3efdd04fe6066d8d0ef34771e8b439a3e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/bonaventure/771e8b439a3e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/bonaventure/771e8b439a3e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "url": "https://municipalites-du-quebec.ca/duhamel-ouest/pdf_procesverbaux/2021-05-25%20S%C3%A9ance%20extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/ffba7e169624f9609dd8efcd717dcc4acbc1d209a830a17e7b4b8cbf6c911078.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/duhamel-ouest/8cbf6c911078.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/duhamel-ouest/8cbf6c911078.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/Modification_du_calendriers_des_seances.pdf",
+      "storage_key": "raw/pv-index/cas/ffc02505b9e21b6012e1ea5274b12cf0ce5c7984c911eff703382da2931a3b50.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/albertville/2da2931a3b50.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193508Z/albertville/2da2931a3b50.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

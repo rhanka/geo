@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "F": "agricole",
+    "RT": "environnemental",
+    "M": null,
+    "P": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chute-aux-outardes/_publication/fichiers/20220221104800-reglement-n-401-2015-zonage-rev1.pdf",
+  "note": "Municipalité de Chute-aux-Outardes, règlement numéro 401-2015 « ZONAGE » (refonte de juin 2017), art. 4.2 « CODIFICATION ET DOMINANCE DE LA ZONE »: « La dominance définit la vocation principale de la zone auxquelles correspondent certaines dispositions de ce règlement. La dominance est indiquée aux plans de zonage immédiatement au-dessous ou à côté de l'identification numérique de la zone au moyen d'une lettre tel que défini dans le tableau ci-dessous ». TABLEAU 1 « CODIFICATION DES ZONES » verbatim (colonnes « Codification » / « Vocation dominante »): « H | Habitation (ou résidentielle) » -> residentiel ; « C | Commerciale et de service » -> commercial (« et de service » n'est aucune des cinq: qualificatif) ; « I | Industrielle » -> industriel ; « A | Agricole » et « F | Forestière » -> agricole ; « RT | Récréotouristique » -> environnemental (« Récréative » est la seule des cinq nommée, « touristique » n'en est aucune). Null explicite: « P | Publique et institutionnelle » -> publique ; « M | Maritime » -> aucune des cinq — le règlement DÉCLARE bien une dominance, mais elle n'appartient à aucune des cinq catégories du contrat, et les 14 occurrences disent toutes « zones à vocation dominante Maritime (M) » sans jamais la requalifier en industrielle ou commerciale ⇒ null (refus de dominante) et non omission (on connaît le libellé). L'alinéa qui SUIT la table (art. 4.3 « INTERPRÉTATION DES LIMITES DE ZONES ») ne la renverse pas. Recouvrement FALSIFIÉ, bijection parfaite 8/8: le plan de zonage est embarqué en fin de PDF avec sa couche texte et les codes réellement servis y apparaissent LITTÉRALEMENT (H30, H47, P6, C9, M72, I58, A68, F62, F63, RT69) — millésime non disjoint. Longest-prefix: aucune clé n'est préfixe d'une autre ; « R » nu n'est PAS déclaré, donc RT69/RT70/RT71 matchent RT sans ambiguïté. Provenance VÉRIFIÉE byte-exact: Content-Length 14 545 747 = taille exacte du corpus local work/zonage-norms/chute-aux-outardes/grille.pdf (14 545 747 o, 416 p.) ⇒ le corpus local EST ce PDF officiel. Le slug n'était pas au manifest: URL récupérée via l'API VPlus (portail municipalitecao.ca = SPA VPlus ; `structure/tree` puis `structure/detail/5E577BFD-486F-4415-9A57-77556548A119`), conforme à la voie vplus-modellium-portal-lane. Propriété attestée: page titre « Municipalité de CHUTE-AUX-OUTARDES », pied de page « Municipalité de Chute-aux-Outardes » sur chaque page. La matrice des usages permis n'est pas utilisée."
+}

@@ -34,7 +34,7 @@ import {
   renderCollection,
   type Link,
 } from "./ogc.js";
-import type { FeatureProvider, ItemsQuery, ServedFeature } from "./provider.js";
+import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature } from "./provider.js";
 
 /** Default page size and the hard cap enforced on `?limit=`. */
 const DEFAULT_LIMIT = 100;
@@ -210,6 +210,15 @@ export function createApp(
     }
     const limit = parseLimit(c.req.query("limit"));
     const offset = parseOffset(c.req.query("offset"));
+    const selfUrl = new URL(c.req.url);
+
+    const stream = provider.streamItems
+      ? await provider.streamItems(id, bbox ? { bbox } : {})
+      : undefined;
+    if (stream) {
+      c.header("Content-Type", MEDIA_GEOJSON);
+      return c.body(streamItemsResponse(stream, { id, base, selfUrl, limit, offset }));
+    }
 
     const query: ItemsQuery = { limit, offset, ...(bbox ? { bbox } : {}) };
     const result = await provider.getItems(id, query);
@@ -217,7 +226,6 @@ export function createApp(
       return c.json({ code: "NotFound", description: `Unknown collection: ${id}` }, 404);
     }
 
-    const selfUrl = new URL(c.req.url);
     const links: Link[] = [
       { href: selfUrl.toString(), rel: "self", type: MEDIA_GEOJSON, title: "This result" },
       {
@@ -284,4 +292,87 @@ export function createApp(
   });
 
   return app;
+}
+
+interface StreamResponseContext {
+  id: string;
+  base: string;
+  selfUrl: URL;
+  limit: number;
+  offset: number;
+}
+
+/**
+ * Serialize a sequential feature source with pull-based backpressure. Counts
+ * and `next` stay exact because the source is drained, but neither the source
+ * collection nor a `limit=5000` response is assembled in an array/string.
+ */
+function streamItemsResponse(
+  stream: ItemsStream,
+  context: StreamResponseContext,
+): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  const iterator = stream.features[Symbol.asyncIterator]();
+  let headerWritten = false;
+  let firstFeature = true;
+  let numberMatched = 0;
+  let numberReturned = 0;
+  let exhausted = false;
+
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        if (!headerWritten) {
+          headerWritten = true;
+          controller.enqueue(encoder.encode('{"type":"FeatureCollection","features":['));
+          return;
+        }
+
+        while (!exhausted) {
+          const next = await iterator.next();
+          if (next.done) {
+            exhausted = true;
+            break;
+          }
+          numberMatched++;
+          if (numberMatched <= context.offset || numberReturned >= context.limit) continue;
+
+          const comma = firstFeature ? "" : ",";
+          firstFeature = false;
+          numberReturned++;
+          controller.enqueue(encoder.encode(`${comma}${JSON.stringify(next.value)}`));
+          return;
+        }
+
+        const links: Link[] = [
+          {
+            href: context.selfUrl.toString(),
+            rel: "self",
+            type: MEDIA_GEOJSON,
+            title: "This result",
+          },
+          {
+            href: `${context.base}/collections/${encodeURIComponent(context.id)}`,
+            rel: "collection",
+            type: MEDIA_JSON,
+            title: "The collection",
+          },
+        ];
+        if (context.offset + numberReturned < numberMatched) {
+          const next = new URL(context.selfUrl.toString());
+          next.searchParams.set("offset", String(context.offset + numberReturned));
+          next.searchParams.set("limit", String(context.limit));
+          links.push({ href: next.toString(), rel: "next", type: MEDIA_GEOJSON, title: "Next page" });
+        }
+        const tail = `],"numberMatched":${numberMatched},"numberReturned":${numberReturned},"timeStamp":${JSON.stringify(new Date().toISOString())},"links":${JSON.stringify(links)}}`;
+        controller.enqueue(encoder.encode(tail));
+        controller.close();
+      } catch (error) {
+        controller.error(error);
+      }
+    },
+    async cancel() {
+      await iterator.return?.();
+    },
+  });
 }

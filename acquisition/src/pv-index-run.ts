@@ -18,9 +18,10 @@
  * never aborts the run.
  *
  * IDEMPOTENT / RESUMABLE: before scraping a city the runner HEAD-probes its
- * target manifest key in S3; if present the city is skipped (unless --force).
- * Each city's manifest is deposited immediately, so an interrupted run resumes
- * from where it stopped on the next invocation.
+ * target manifest key in S3; if present the city is skipped. A bounded
+ * `--refresh-before` run revalidates only scheduled generic manifests and only
+ * writes a semantic change. Every existing manifest is provenance-checked, even
+ * with `--force`, so a specialised adapter is never silently replaced.
  *
  * S3 layout (mirrors the `registry/qc-<kind>/<slug>...` convention used by
  * zonage-norms): one manifest per city at
@@ -46,7 +47,10 @@
  *   --window-days N  PV look-back window in days (default 183 ≈ 6 months)
  *   --timeout-ms N   per-fetch timeout (default 15000)
  *   --dry-run        scrape + report, but write nothing to S3
- *   --force          re-scrape + overwrite cities whose manifest already exists
+ *   --force          re-scrape a compatible generic manifest even if unchanged
+ *   --refresh-before ISO  bounded (≤10) scheduled revalidation by S3 write time
+ *   --allow-legacy-generic  opt in to the exact historic pv-index-run note
+ *   --out FILE       deterministic structured per-city outcome report
  *   --no-robots      DISABLE robots.txt enforcement (default: ON — robots honoured)
  *
  * ROBOTS: by default each index URL is checked against the origin's robots.txt
@@ -64,8 +68,15 @@ import {
 } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import { RobotsCache } from "../../packages/qc-sources/src/sources/robots-txt.js";
 import type { RawDocumentRef } from "../../packages/qc-sources/src/SourceAdapter.js";
+import { writeFileSync } from "node:fs";
 
-import { s3Client, exists, putBytes } from "./lib/s3.js";
+import { s3Client, exists, getJson, objectHead, putBytes } from "./lib/s3.js";
+import {
+  MAX_PV_REFRESH_BATCH,
+  isCompatibleGenericPvManifest,
+  pvManifestFingerprint,
+  type PvRefreshSource,
+} from "./pv-refresh-plan-lib.js";
 
 // ── args ─────────────────────────────────────────────────────────────────────
 
@@ -78,6 +89,9 @@ interface Args {
   dryRun: boolean;
   force: boolean;
   robots: boolean;
+  refreshBefore?: Date;
+  allowLegacyGeneric: boolean;
+  outFile?: string;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -88,6 +102,11 @@ function parseArgs(argv: string[]): Args {
   const has = (k: string): boolean => argv.includes(`--${k}`);
   const limitRaw = get("limit");
   const slugsRaw = get("slugs");
+  const refreshBeforeRaw = get("refresh-before");
+  const refreshBefore = refreshBeforeRaw ? new Date(refreshBeforeRaw) : undefined;
+  if (refreshBefore && !Number.isFinite(refreshBefore.getTime())) {
+    throw new Error("--refresh-before must be an ISO-8601 timestamp");
+  }
   return {
     ...(limitRaw ? { limit: Number(limitRaw) } : {}),
     ...(slugsRaw
@@ -99,6 +118,9 @@ function parseArgs(argv: string[]): Args {
     dryRun: has("dry-run"),
     force: has("force"),
     robots: !has("no-robots"),
+    ...(refreshBefore ? { refreshBefore } : {}),
+    allowLegacyGeneric: has("allow-legacy-generic"),
+    ...(get("out") ? { outFile: get("out") } : {}),
   };
 }
 
@@ -129,6 +151,7 @@ interface PvIndexEntry {
 
 interface PvIndexManifest {
   _note: string;
+  _refreshAdapter: "pv-index-run/v1";
   _generatedAt: string;
   slug: string;
   sourceId: string;
@@ -137,6 +160,13 @@ interface PvIndexManifest {
   userAgent: string;
   count: number;
   entries: PvIndexEntry[];
+}
+
+interface PvRunOutcome {
+  slug: string;
+  status: "deposited" | "dry-run" | "empty" | "failed" | "robots-skip" | "skip-existing" | "skip-fresh" | "skip-unchanged" | "skip-incompatible";
+  count?: number;
+  detail?: string;
 }
 
 function manifestKey(slug: string): string {
@@ -156,9 +186,23 @@ function toEntry(ref: RawDocumentRef): PvIndexEntry {
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  if (!Number.isInteger(args.delayMs) || args.delayMs < 1_000) {
+    throw new Error("--delay-ms must be an integer >= 1000 (municipal source safety floor)");
+  }
+  if (!Number.isInteger(args.windowDays) || args.windowDays < 1) {
+    throw new Error("--window-days must be a positive integer");
+  }
+  if (args.allowLegacyGeneric && !args.refreshBefore) {
+    throw new Error("--allow-legacy-generic requires bounded --refresh-before");
+  }
   const fetchImpl = globalThis.fetch as unknown as PvFetchLike;
   const cities = selectCities(args);
-  const s3 = args.dryRun ? null : s3Client();
+  if ((args.refreshBefore || args.allowLegacyGeneric) && cities.length > MAX_PV_REFRESH_BATCH) {
+    throw new Error(`--refresh-before is bounded to ${MAX_PV_REFRESH_BATCH} cities; generate a smaller pv-refresh-plan batch`);
+  }
+  // A refresh dry run must HEAD S3 in order to simulate the exact same target
+  // selection. Plain dry-runs remain S3-write-free and do not need credentials.
+  const s3 = args.dryRun && !args.refreshBefore ? null : s3Client();
   const robots = args.robots
     ? new RobotsCache({ fetchImpl, userAgent: PV_USER_AGENT, timeoutMs: args.timeoutMs })
     : undefined;
@@ -169,31 +213,68 @@ async function main(): Promise<void> {
       ` delay=${args.delayMs}ms` +
       ` robots=${args.robots ? "on" : "OFF"}` +
       (args.dryRun ? " (dry-run, no S3 writes)" : "") +
-      (args.force ? " (force overwrite)" : ""),
+      (args.force ? " (force overwrite)" : "") +
+      (args.allowLegacyGeneric ? " (legacy generic opt-in)" : "") +
+      (args.refreshBefore ? ` revalidate-before=${args.refreshBefore.toISOString()}` : ""),
   );
 
   let scraped = 0; // cities actually fetched (not skipped)
   let withPv = 0; // cities whose index yielded ≥1 PV
   let deposited = 0; // manifests written to S3
   let skippedExisting = 0; // idempotent skip (manifest already in S3)
+  let skippedFresh = 0; // index was written after the explicit scheduling threshold
+  let skippedUnchanged = 0; // revalidated generic manifest is semantically identical
+  let skippedIncompatible = 0; // different source must never be overwritten
   let robotsSkipped = 0; // index URL Disallowed by robots
   let totalPv = 0; // grand total of PV refs discovered
   const failures: { slug: string; reason: string }[] = [];
+  const outcomes: PvRunOutcome[] = [];
 
   for (const cfg of cities) {
     const slug = cfg.citySlug;
     const key = manifestKey(slug);
 
     // Idempotent skip — manifest already deposited (resume support).
-    if (s3 && !args.force && (await exists(s3, key))) {
-      skippedExisting++;
-      console.error(`--- ${slug}: skip (manifest exists)`);
-      continue;
+    if (s3 && !args.force) {
+      if (args.refreshBefore) {
+        let head: Awaited<ReturnType<typeof objectHead>>;
+        try {
+          head = await objectHead(s3, key);
+        } catch (error) {
+          const detail = error instanceof Error ? error.message : String(error);
+          failures.push({ slug, reason: `s3-head: ${detail}` });
+          outcomes.push({ slug, status: "failed", detail: `s3-head: ${detail}` });
+          console.error(`[fail] ${slug}: cannot safely read S3 metadata`);
+          continue;
+        }
+        if (head.exists && (!head.lastModified || head.lastModified.getTime() > args.refreshBefore.getTime())) {
+          skippedFresh++;
+          outcomes.push({ slug, status: "skip-fresh", detail: "S3 manifest is newer than revalidation threshold" });
+          console.error(`--- ${slug}: skip (manifest newer than threshold)`);
+          continue;
+        }
+      } else {
+        try {
+          if (await exists(s3, key)) {
+            skippedExisting++;
+            outcomes.push({ slug, status: "skip-existing", detail: "manifest exists" });
+            console.error(`--- ${slug}: skip (manifest exists)`);
+            continue;
+          }
+        } catch (error) {
+          const detail = error instanceof Error ? error.message : String(error);
+          failures.push({ slug, reason: `s3-head: ${detail}` });
+          outcomes.push({ slug, status: "failed", detail: `s3-head: ${detail}` });
+          console.error(`[fail] ${slug}: cannot safely read S3 metadata`);
+          continue;
+        }
+      }
     }
 
     // Robots gate on the index URL itself.
     if (robots && !(await robots.isAllowed(cfg.pvIndexUrl))) {
       robotsSkipped++;
+      outcomes.push({ slug, status: "robots-skip", detail: cfg.pvIndexUrl });
       console.error(`[robots] skip ${slug} → ${cfg.pvIndexUrl}`);
       continue;
     }
@@ -223,6 +304,7 @@ async function main(): Promise<void> {
             ? e.message
             : String(e);
       failures.push({ slug, reason });
+      outcomes.push({ slug, status: "failed", detail: reason });
       console.error(`[fail] ${slug}: ${reason}`);
       continue;
     }
@@ -236,6 +318,7 @@ async function main(): Promise<void> {
       // Empty index: record as a no-PV outcome. Do NOT write a manifest with
       // fabricated entries — anti-invention. (A future run may find some once
       // the city publishes; the absence is intentionally not persisted.)
+      outcomes.push({ slug, status: "empty", count: 0, detail: "no PV in configured window" });
       continue;
     }
 
@@ -244,6 +327,7 @@ async function main(): Promise<void> {
         "PV index discovered by pv-index-run.ts (generic PV adapter). Each entry " +
         "is a real ref returned by adapter.list() from the live pvIndexUrl — no " +
         "fabrication. Document bytes are fetched separately to raw/<sourceId>/cas/.",
+      _refreshAdapter: "pv-index-run/v1",
       _generatedAt: new Date().toISOString(),
       slug,
       sourceId: cfg.sourceId,
@@ -256,6 +340,45 @@ async function main(): Promise<void> {
 
     if (s3) {
       try {
+        // Even --force may not replace another adapter's result. Re-read S3
+        // immediately before writing and fail closed on every read problem.
+        let existing: unknown;
+        let existingPresent = false;
+        try {
+          const current = await objectHead(s3, key);
+          existingPresent = current.exists;
+          if (existingPresent) existing = await getJson(s3, key);
+        } catch (error) {
+          const detail = error instanceof Error ? error.message : String(error);
+          failures.push({ slug, reason: `s3-read: ${detail}` });
+          outcomes.push({ slug, status: "failed", count: entries.length, detail: `s3-read: ${detail}` });
+          console.error(`[fail] ${slug}: cannot safely read existing manifest`);
+          continue;
+        }
+        if (existingPresent) {
+          const source: PvRefreshSource = {
+            slug: cfg.citySlug,
+            sourceId: cfg.sourceId,
+            pvIndexUrl: cfg.pvIndexUrl,
+          };
+          if (!isCompatibleGenericPvManifest(existing, source, args.allowLegacyGeneric)) {
+            skippedIncompatible++;
+            outcomes.push({ slug, status: "skip-incompatible", count: entries.length, detail: "existing manifest is not an allowed pv-index-run source" });
+            console.error(`--- ${slug}: skip (existing manifest uses another source)`);
+            continue;
+          }
+          if (!args.force && pvManifestFingerprint(existing) === pvManifestFingerprint(manifest)) {
+            skippedUnchanged++;
+            outcomes.push({ slug, status: "skip-unchanged", count: entries.length, detail: "semantic manifest unchanged" });
+            console.error(`--- ${slug}: skip (semantic manifest unchanged)`);
+            continue;
+          }
+        }
+        if (args.dryRun) {
+          outcomes.push({ slug, status: "dry-run", count: entries.length });
+          console.error(`  (dry-run) would write ${key} (${entries.length})`);
+          continue;
+        }
         await putBytes(
           s3,
           key,
@@ -263,13 +386,16 @@ async function main(): Promise<void> {
           "application/json",
         );
         deposited++;
+        outcomes.push({ slug, status: "deposited", count: entries.length });
         console.error(`  → s3://registry/qc-pv/${slug}/index.json (${entries.length})`);
       } catch (e) {
         const reason = e instanceof Error ? e.message : String(e);
         failures.push({ slug, reason: `s3-put: ${reason}` });
+        outcomes.push({ slug, status: "failed", count: entries.length, detail: `s3-put: ${reason}` });
         console.error(`[fail] ${slug}: s3-put ${reason}`);
       }
     } else {
+      outcomes.push({ slug, status: "dry-run", count: entries.length });
       console.error(`  (dry-run) would write ${key} (${entries.length})`);
     }
   }
@@ -281,6 +407,9 @@ async function main(): Promise<void> {
       ` withPv=${withPv}` +
       ` deposited=${deposited}` +
       ` skippedExisting=${skippedExisting}` +
+      ` skippedFresh=${skippedFresh}` +
+      ` skippedUnchanged=${skippedUnchanged}` +
+      ` skippedIncompatible=${skippedIncompatible}` +
       ` robotsSkipped=${robotsSkipped}` +
       ` failures=${failures.length}` +
       ` totalPv=${totalPv} ===`,
@@ -294,6 +423,22 @@ async function main(): Promise<void> {
     console.error(
       `failures by kind: ${[...byReason.entries()].map(([k, n]) => `${k}=${n}`).join(" ")}`,
     );
+  }
+  if (args.outFile) {
+    writeFileSync(
+      args.outFile,
+      JSON.stringify(
+        {
+          runner: "pv-index-run",
+          refreshBefore: args.refreshBefore?.toISOString(),
+          dryRun: args.dryRun,
+          outcomes,
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    console.error(`report -> ${args.outFile}`);
   }
 }
 

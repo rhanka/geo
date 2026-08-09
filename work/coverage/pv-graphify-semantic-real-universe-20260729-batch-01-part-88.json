@@ -1,0 +1,235 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:28:56.635Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 87,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 8,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 13,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/0b5c3428a8b1294196a3798e6171777a867510f84f8a4f423ae93781311448d9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6657827",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:311",
+      "quote": "D'ÉGOUT SANITAIRE ET D'UNE CONDUITE D'AQUEDUC - PARTIE DU LOT 6 657 827 -"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 302,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 9969,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z",
+  "documents": [
+    {
+      "slug": "boisbriand",
+      "municipality_name": "Boisbriand",
+      "url": "https://www.ville.boisbriand.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/PV/2026/2026-02-03_Seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/0b5c3428a8b1294196a3798e6171777a867510f84f8a4f423ae93781311448d9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 8,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boisbriand",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:299",
+              "quote": "risques en sécurité incendie de la Municipalité régionale de comté de Thérèse-De Blainville"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:299",
+              "quote": "risques en sécurité incendie de la Municipalité régionale de comté de Thérèse-De Blainville"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal du 3 février 2026 tenue à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal du 3 février 2026 tenue à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "RV-1779-1",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "D'adopter le Règlement RV-1779-1 modifiant l’article 77 du Règlement RV-1779 sur les"
+            }
+          },
+          {
+            "label": "RV-1779",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "D'adopter le Règlement RV-1779-1 modifiant l’article 77 du Règlement RV-1779 sur les"
+            }
+          },
+          {
+            "label": "RV-1795",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "D'adopter le Règlement RV-1795 décrétant l’acquisition et la modernisation de véhicules et"
+            }
+          },
+          {
+            "label": "RV-1798",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "RÈGLEMENT RV-1798 - AVIS DE MOTION ET DÉPÔT"
+            }
+          },
+          {
+            "label": "RV-1072",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "séance subséquente du Règlement RV-1798 abrogeant le Règlement RV-1072."
+            }
+          },
+          {
+            "label": "RV-1791",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "PROCÉDURE D'ENREGISTREMENT - RÈGLEMENT RV-1791"
+            }
+          },
+          {
+            "label": "RV-1732",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "Règlement RV-1732."
+            }
+          },
+          {
+            "label": "RV-1497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "Règlement RV-1497 pour la période du 19 décembre 2025 au 8 janvier 2026."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6657827",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "D'ÉGOUT SANITAIRE ET D'UNE CONDUITE D'AQUEDUC - PARTIE DU LOT 6 657 827 -"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/boisbriand/3781311448d9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/boisbriand/3781311448d9.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "blainville",
+          "boisbriand"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

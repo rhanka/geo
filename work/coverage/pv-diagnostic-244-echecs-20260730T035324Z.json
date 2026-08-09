@@ -1,0 +1,1360 @@
+{
+  "contract": "pv-diagnostic-244-echecs/v1",
+  "generated_at": "2026-07-30T03:53:29.842Z",
+  "read_only": {
+    "external_http_fetch": false,
+    "capture": false,
+    "s3_writes": false,
+    "local_input_max_bytes": 5242880,
+    "s3_read_max_bytes": 5242880,
+    "note": "Les objets S3 lus sont les manifestes et octets déjà capturés; aucune URL municipale n'est recontactée.",
+    "s3_read_mode": "indisponible: aucun manifeste ni corps réouvert"
+  },
+  "trace_list": {
+    "path": "work/coverage/pv-diagnostic-244-echecs-20260730T034638Z.json",
+    "trace_counts": {
+      "candidates": 244,
+      "candidates_with_trace": 239,
+      "candidates_without_trace": 5,
+      "candidates_with_one_trace": 239,
+      "candidates_with_multiple_traces": 0,
+      "matched_attempts": 239
+    }
+  },
+  "full_trace_census": {
+    "source_verdict_counts": {
+      "AUTRE": 8,
+      "CAPTURE_SANS_OCTETS": 1,
+      "DOCUMENT_LISIBLE_NON_PV": 13,
+      "HTTP_403": 9,
+      "HTTP_404": 12,
+      "HTTP_AUTRE": 33,
+      "PAGE_HTML": 23,
+      "PDF_SANS_COUCHE_TEXTE": 13,
+      "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 103,
+      "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 24
+    },
+    "confirmed_pv_not_indexed": 103,
+    "pdf_without_text_layer": 13,
+    "immediate_queue": 116,
+    "note": "Les PV confirmés sont une récupération sans nouvelle capture; les PDF sans texte exigent une lecture visuelle avant indexation."
+  },
+  "sample": {
+    "population": 244,
+    "size": 40,
+    "sampling": {
+      "method": "Fisher-Yates pseudo-aléatoire déterministe",
+      "seed": "pv-diagnostic-244-echecs/20260730",
+      "ordered_after_sampling_by": "slug"
+    },
+    "cause_counts": {
+      "AUTRE": 3,
+      "ÉCHEC_TRANSPORT_OPAQUE": 10,
+      "HTTP_403_UA_NON_RÉVÉRIFIÉ": 4,
+      "HTTP_404": 1,
+      "OCTETS_NON_PV": 7,
+      "PDF_SANS_COUCHE_TEXTE": 2,
+      "PV_CONFIRMÉ_NON_INDEXÉ": 8,
+      "PV_PROPRIÉTAIRE_NON_CONFIRMÉ": 3,
+      "TRACE_ABSENTE": 2
+    },
+    "recovery_counts": {
+      "immédiat": 10,
+      "inconnu": 13,
+      "investigation": 6,
+      "non_direct": 11
+    },
+    "partition_total": 40,
+    "partition_matches_sample": true,
+    "plausible_recoverable": 16,
+    "extrapolated_recoverable": 98,
+    "extrapolation": {
+      "statement": "Projection descriptive de 16/40 vers 244: 98 récupérables plausibles.",
+      "includes": [
+        "PV confirmé mais non indexé",
+        "PDF sans couche texte",
+        "PV propriétaire non confirmé",
+        "trace absente"
+      ],
+      "excludes": [
+        "HTTP 403 malgré UA navigateur",
+        "octets démontrés non-PV"
+      ],
+      "can_be_false_if": [
+        "les 40 tirés ne représentent pas les 244, particulièrement les 5 traces absentes",
+        "la revue de propriétaire échoue ou les PDF scannés restent illisibles visuellement",
+        "un PV confirmé ne peut finalement pas être indexé pour une garde de provenance hors de cette mesure"
+      ]
+    },
+    "limitations": [
+      "S3 a refusé la relecture des manifestes et CAS (UnknownError), y compris hors sandbox.",
+      "Les 403 restent le verdict historique « malgré User-Agent navigateur », non ré-vérifié par cette exécution.",
+      "Les octets PAGE_HTML et DOCUMENT_LISIBLE_NON_PV ne sont pas réouverts dans ce rapport; le verdict provient de leur rapport de classification déjà committé."
+    ],
+    "rows": [
+      {
+        "slug": "boucherville",
+        "municipality_name": null,
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.boucherville.ca/medias-publications/publications/proces-verbal-de-la-seance-extraordinaire-du-conseil-municipal-du-30-mars-2026/",
+          "host": "www.boucherville.ca"
+        },
+        "cause": "TRACE_ABSENTE",
+        "recovery_class": "investigation",
+        "attempt": null,
+        "body_inspection": null
+      },
+      {
+        "slug": "champneuf",
+        "municipality_name": null,
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.champneuf.ca/docs/fichiers_documents/100.pdf",
+          "host": "www.champneuf.ca"
+        },
+        "cause": "TRACE_ABSENTE",
+        "recovery_class": "investigation",
+        "attempt": null,
+        "body_inspection": null
+      },
+      {
+        "slug": "deschambault-grondines",
+        "municipality_name": "Deschambault-Grondines",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.deschambault-grondines.com/upload/seances-du-conseil/proces_verbaux/2026/01-301_pv_2026-03-09.pdf",
+          "host": "www.deschambault-grondines.com"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://www.deschambault-grondines.com/upload/seances-du-conseil/proces_verbaux/2026/01-301_pv_2026-03-09.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www.deschambault-grondines.com",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0001.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0001-0-d6ddba6b-2cc7-46cb-95c0-692f20a770d4/manifest.jsonl",
+          "line_index": 1,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0001-0-d6ddba6b-2cc7-46cb-95c0-692f20a770d4",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "east-broughton",
+        "municipality_name": "East Broughton",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.municipaliteeastbroughton.com/fichiersUpload/fichiers/20200818102937-proces-verbal-de-la-seance-speciale-du-22-juin-2020.pdf",
+          "host": "www.municipaliteeastbroughton.com"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://www.municipaliteeastbroughton.com/fichiersUpload/fichiers/20200818102937-proces-verbal-de-la-seance-speciale-du-22-juin-2020.pdf",
+          "verdict": "DOCUMENT_LISIBLE_NON_PV",
+          "http_status": 200,
+          "host": "www.municipaliteeastbroughton.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0001.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0001-0-d6ddba6b-2cc7-46cb-95c0-692f20a770d4/manifest.jsonl",
+          "line_index": 5,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0001-0-d6ddba6b-2cc7-46cb-95c0-692f20a770d4",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/7a86361c40ac7e63f631d040dacc02ff3c1f3ab17ed53bc2959523bb54917321.pdf",
+          "owner_verbatim": "ATTENDU QUE la Municipalité d’East Broughton désire se prévaloir",
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "kipawa",
+        "municipality_name": "Kipawa",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.kipawa.ca/docs/fichiers_documents/100.pdf",
+          "host": "www.kipawa.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://www.kipawa.ca/docs/fichiers_documents/100.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www.kipawa.ca",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7/manifest.jsonl",
+          "line_index": 13,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "la-durantaye",
+        "municipality_name": "La Durantaye",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0134da86-4098-48bb-86fd-3b81b97dc8dc",
+          "host": "apps.gestionweblex.ca"
+        },
+        "cause": "AUTRE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0134da86-4098-48bb-86fd-3b81b97dc8dc",
+          "verdict": "AUTRE",
+          "http_status": 200,
+          "host": "apps.gestionweblex.ca",
+          "detail": "xls-native-convert:libreoffice-exit-1:(process:60): dconf-CRITICAL **: 18:45:24.918: unable to create file '/run/user/1000/dconf/user': Read-only file system.  dconf will not work properly.\n\n(process:65): dconf-CRITICAL **: 18:45:25.016: unable to create file '/run/user/1000/dc",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7/manifest.jsonl",
+          "line_index": 17,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/8c4d9ef7c58874b96c78a464457e8d54739ed4b93d259027276f2abcb86e291f.bin",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "lange-gardien--la-cote-de-beaupre",
+        "municipality_name": "L'Ange-Gardien",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://municipalitedelangegardien.com/documents/seance-ordinaire-1-juin-2026/",
+          "host": "municipalitedelangegardien.com"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://municipalitedelangegardien.com/documents/seance-ordinaire-1-juin-2026/",
+          "verdict": "PAGE_HTML",
+          "http_status": 200,
+          "host": "municipalitedelangegardien.com",
+          "detail": "octets HTML lus",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7/manifest.jsonl",
+          "line_index": 78,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0002-0-6eef07e0-5227-4d10-852e-3c8cc4959dd7",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/4236328199c7e25fb51cccec1e5d15997eae27309143939e1e8414fab5ae17f2.html",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "laurier-station",
+        "municipality_name": "Laurier-Station",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://laurierstation.ca/storage/app/media/municipalite/vie-democratique/seances-du-conseil/proces-verbaux/2026/2026-01-12-pv-lst.pdf",
+          "host": "laurierstation.ca"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://laurierstation.ca/storage/app/media/municipalite/vie-democratique/seances-du-conseil/proces-verbaux/2026/2026-01-12-pv-lst.pdf",
+          "verdict": "DOCUMENT_LISIBLE_NON_PV",
+          "http_status": 200,
+          "host": "laurierstation.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146/manifest.jsonl",
+          "line_index": 1,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/0da1bab645600efba99579abb6eb0c4f5925c668d951f0678fc58f5d0cd35136.pdf",
+          "owner_verbatim": "Municipalité de Laurier-Station",
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "longueuil",
+        "municipality_name": "Longueuil",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www3.longueuil.quebec/sites/longueuil/files/proces-verbaux/carpl-260114-pv_adopte_et_signe_0.pdf",
+          "host": "www3.longueuil.quebec"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://www3.longueuil.quebec/sites/longueuil/files/proces-verbaux/carpl-260114-pv_adopte_et_signe_0.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www3.longueuil.quebec",
+          "detail": "robots-disallowed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146/manifest.jsonl",
+          "line_index": 53,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "matapedia",
+        "municipality_name": "Matapédia",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://matapedialesplateaux.com/download/100/proces-verbaux/9615/proces-verbaux-du-8-fevrier-2021",
+          "host": "matapedialesplateaux.com"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://matapedialesplateaux.com/download/100/proces-verbaux/9615/proces-verbaux-du-8-fevrier-2021",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "matapedialesplateaux.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146/manifest.jsonl",
+          "line_index": 82,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0003-0-357366c4-eca4-4768-b11e-3868f80f5146",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/8b65ef66ba2b856e3d869da6925551e1ddf15c35479edc36630cd0b8c7f0ca7c.pdf",
+          "owner_verbatim": "MATAPÉDIA – LES PLATEAUX (CDEMLP)",
+          "pv_verbatim": "procès-verbal sera publié sur internet."
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "orford",
+        "municipality_name": "Orford",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://canton.orford.qc.ca/download/133/proces-verbaux-2024/148658/seance-ordinaire-du-5-fevrier-2024.pdf",
+          "host": "canton.orford.qc.ca"
+        },
+        "cause": "HTTP_403_UA_NON_RÉVÉRIFIÉ",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://canton.orford.qc.ca/download/133/proces-verbaux-2024/148658/seance-ordinaire-du-5-fevrier-2024.pdf",
+          "verdict": "HTTP_403",
+          "http_status": 403,
+          "host": "canton.orford.qc.ca",
+          "detail": "HTTP 403 malgré User-Agent navigateur",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0004.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0004-0-7fc04ae7-d1ea-4a16-aa8a-1b98c08bc044/manifest.jsonl",
+          "line_index": 70,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0004-0-7fc04ae7-d1ea-4a16-aa8a-1b98c08bc044",
+          "user_agent": null,
+          "browser_user_agent_verified": false,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "potton",
+        "municipality_name": "Potton",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://potton.ca/download/252/2018/5690/proces-verbal-2018-03-06-extraordinaire-adopte.pdf",
+          "host": "potton.ca"
+        },
+        "cause": "HTTP_403_UA_NON_RÉVÉRIFIÉ",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://potton.ca/download/252/2018/5690/proces-verbal-2018-03-06-extraordinaire-adopte.pdf",
+          "verdict": "HTTP_403",
+          "http_status": 403,
+          "host": "potton.ca",
+          "detail": "HTTP 403 malgré User-Agent navigateur",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0005.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0005-0-b0e1479e-80b5-424f-95ea-d280b5005637/manifest.jsonl",
+          "line_index": 39,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0005-0-b0e1479e-80b5-424f-95ea-d280b5005637",
+          "user_agent": null,
+          "browser_user_agent_verified": false,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "sacre-coeur-de-jesus",
+        "municipality_name": "Sacré-Coeur-de-Jésus",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://municipalites-du-quebec.com/sacre-coeur-de-jesus/docs/pv/2026/2026-01%20-%20S%C3%A9ance%20ordinaire.pdf",
+          "host": "municipalites-du-quebec.com"
+        },
+        "cause": "PV_PROPRIÉTAIRE_NON_CONFIRMÉ",
+        "recovery_class": "investigation",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://municipalites-du-quebec.com/sacre-coeur-de-jesus/docs/pv/2026/2026-01%20-%20S%C3%A9ance%20ordinaire.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME",
+          "http_status": 200,
+          "host": "municipalites-du-quebec.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b/manifest.jsonl",
+          "line_index": 5,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/b5ba6fe45751c60d9ec6f88418d99005cb79f8f819603f7718307e24321e6958.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": "Procès-verbal de la séance ordinaire du Conseil municipal tenue le"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-adolphe-dhoward",
+        "municipality_name": "Saint-Adolphe-d'Howard",
+        "candidate": {
+          "source": "pv-index",
+          "url": "http://stadolphedhoward.qc.ca/evenement/436/seance-ordinaire-du-conseil-municipal-16-avril-2026",
+          "host": "stadolphedhoward.qc.ca"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "http://stadolphedhoward.qc.ca/evenement/436/seance-ordinaire-du-conseil-municipal-16-avril-2026",
+          "verdict": "PAGE_HTML",
+          "http_status": 200,
+          "host": "stadolphedhoward.qc.ca",
+          "detail": "octets HTML lus",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b/manifest.jsonl",
+          "line_index": 10,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/057f73913fe336549f6965e27e31e032f3c3b7da60d2e3734c8f88f1d445e4ac.html",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "saint-basile-le-grand",
+        "municipality_name": "Saint-Basile-le-Grand",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.villesblg.ca/wp-content/uploads/2023/12/2023-11-06-extra-PTI-PV-signe.pdf",
+          "host": "www.villesblg.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://www.villesblg.ca/wp-content/uploads/2023/12/2023-11-06-extra-PTI-PV-signe.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www.villesblg.ca",
+          "detail": "robots-disallowed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b/manifest.jsonl",
+          "line_index": 72,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-blaise-sur-richelieu",
+        "municipality_name": "Saint-Blaise-sur-Richelieu",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://dea71335-7e34-42c1-bc28-dd2f860e3081.usrfiles.com/ugd/dea713_07d72a9722c54f8cba61e4709212baa1.pdf",
+          "host": "dea71335-7e34-42c1-bc28-dd2f860e3081.usrfiles.com"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t222149z",
+          "url": "https://dea71335-7e34-42c1-bc28-dd2f860e3081.usrfiles.com/ugd/dea713_07d72a9722c54f8cba61e4709212baa1.pdf",
+          "verdict": "DOCUMENT_LISIBLE_NON_PV",
+          "http_status": 200,
+          "host": "dea71335-7e34-42c1-bc28-dd2f860e3081.usrfiles.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b/manifest.jsonl",
+          "line_index": 82,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t222149z-0006-0-f73a3f34-4e8c-4a45-9413-340f5cf60e2b",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/6790ac699f3d4e2f1588583031358cdc3a07efd980c4921a1fc8a53c6286cc86.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "saint-denis-de-la-bouteillerie",
+        "municipality_name": "Saint-Denis-De La Bouteillerie",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://munstdenis.com/wp-content/uploads/2022/10/Proc%C3%A8s-verbal-26-septembre-2022-SDsite-web.pdf",
+          "host": "munstdenis.com"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://munstdenis.com/wp-content/uploads/2022/10/Proc%C3%A8s-verbal-26-septembre-2022-SDsite-web.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "munstdenis.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0001.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0001-0-da280201-6b75-47c9-83a9-f6c8cf887de1/manifest.jsonl",
+          "line_index": 54,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0001-0-da280201-6b75-47c9-83a9-f6c8cf887de1",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/ebb814ad0fcba75fc689d14c7414455cd291a70f7da7e87f9b79aebaba4491b4.pdf",
+          "owner_verbatim": "municipal, au 5, Route 287, Saint-Denis-De La Bouteillerie, sous la",
+          "pv_verbatim": "Procès-verbal de la séance extraordinaire du Conseil municipal tenue devant"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-eugene-de-guigues",
+        "municipality_name": "Saint-Eugène-de-Guigues",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.st-eugene-de-guigues.qc.ca/docs/fichiers_documents/250.pdf",
+          "host": "www.st-eugene-de-guigues.qc.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://www.st-eugene-de-guigues.qc.ca/docs/fichiers_documents/250.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www.st-eugene-de-guigues.qc.ca",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0001.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0001-0-da280201-6b75-47c9-83a9-f6c8cf887de1/manifest.jsonl",
+          "line_index": 88,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0001-0-da280201-6b75-47c9-83a9-f6c8cf887de1",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-francois-xavier-de-brompton",
+        "municipality_name": "Saint-François-Xavier-de-Brompton",
+        "candidate": {
+          "source": "pv-index",
+          "url": "http://sfxb.wpweb.fr/wp-content/uploads/sites/6904/2019/08/1proces-verbal-17-juillet-2019-s%C3%A9ance-extraordinaire-1.pdf",
+          "host": "sfxb.wpweb.fr"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "http://sfxb.wpweb.fr/wp-content/uploads/sites/6904/2019/08/1proces-verbal-17-juillet-2019-s%C3%A9ance-extraordinaire-1.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "sfxb.wpweb.fr",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9/manifest.jsonl",
+          "line_index": 19,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-frederic",
+        "municipality_name": "Saint-Frédéric",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.st-frederic.com/wp-content/uploads/Proc%C3%A8s-verbal-01-06-2015.pdf",
+          "host": "www.st-frederic.com"
+        },
+        "cause": "HTTP_404",
+        "recovery_class": "investigation",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://www.st-frederic.com/wp-content/uploads/Proc%C3%A8s-verbal-01-06-2015.pdf",
+          "verdict": "HTTP_404",
+          "http_status": 404,
+          "host": "www.st-frederic.com",
+          "detail": "HTTP 404",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9/manifest.jsonl",
+          "line_index": 23,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-gabriel-de-brandon",
+        "municipality_name": "Saint-Gabriel-de-Brandon",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.saintgabrieldebrandon.com/storage/app/media/municipalite/seances-du-conseil/pv-seance-16-fevrier-2026.pdf",
+          "host": "www.saintgabrieldebrandon.com"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://www.saintgabrieldebrandon.com/storage/app/media/municipalite/seances-du-conseil/pv-seance-16-fevrier-2026.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "www.saintgabrieldebrandon.com",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9/manifest.jsonl",
+          "line_index": 27,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-irenee",
+        "municipality_name": "Saint-Irénée",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://saintirenee.ca/wp-content/uploads/2026/01/proces-verbal-2026-01-12.pdf",
+          "host": "saintirenee.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://saintirenee.ca/wp-content/uploads/2026/01/proces-verbal-2026-01-12.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "saintirenee.ca",
+          "detail": "robots-disallowed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9/manifest.jsonl",
+          "line_index": 70,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-jean-de-brebeuf",
+        "municipality_name": "Saint-Jean-de-Brébeuf",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://st-jean-de-brebeuf.ca/docs/fichiers_documents/100.pdf",
+          "host": "st-jean-de-brebeuf.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://st-jean-de-brebeuf.ca/docs/fichiers_documents/100.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "st-jean-de-brebeuf.ca",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9/manifest.jsonl",
+          "line_index": 85,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0002-0-cd7a63f0-559a-4670-9a2c-7c853ff208a9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-joachim-de-shefford",
+        "municipality_name": "Saint-Joachim-de-Shefford",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://st-joachim.ca/wp-content/uploads/2026/01/1-pv-13-janvier-2026_web.pdf",
+          "host": "st-joachim.ca"
+        },
+        "cause": "HTTP_403_UA_NON_RÉVÉRIFIÉ",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://st-joachim.ca/wp-content/uploads/2026/01/1-pv-13-janvier-2026_web.pdf",
+          "verdict": "HTTP_403",
+          "http_status": 403,
+          "host": "st-joachim.ca",
+          "detail": "HTTP 403 malgré User-Agent navigateur",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c/manifest.jsonl",
+          "line_index": 5,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c",
+          "user_agent": null,
+          "browser_user_agent_verified": false,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-leon-de-standon",
+        "municipality_name": "Saint-Léon-de-Standon",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://cdn.gestionweblex.ca/files/2MwgfjPREM",
+          "host": "cdn.gestionweblex.ca"
+        },
+        "cause": "AUTRE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://cdn.gestionweblex.ca/files/2MwgfjPREM",
+          "verdict": "AUTRE",
+          "http_status": 200,
+          "host": "cdn.gestionweblex.ca",
+          "detail": "unknown-document-container",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c/manifest.jsonl",
+          "line_index": 36,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/631f2494ccfadf37a8e77fa6544e7c9bb45311ef765fd844f90ad789adf84aea.bin",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-mathieu-dharricana",
+        "municipality_name": "Saint-Mathieu-d'Harricana",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://stmathieudharricana.com/documents/fichiers/proces/01-Proc%C3%A8s-verbal-12-janvier-2022.pdf",
+          "host": "stmathieudharricana.com"
+        },
+        "cause": "PV_PROPRIÉTAIRE_NON_CONFIRMÉ",
+        "recovery_class": "investigation",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://stmathieudharricana.com/documents/fichiers/proces/01-Proc%C3%A8s-verbal-12-janvier-2022.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME",
+          "http_status": 200,
+          "host": "stmathieudharricana.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c/manifest.jsonl",
+          "line_index": 85,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0003-0-2bc51d79-48a2-465a-9c8c-41a388a22b4c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/1843d6ac6627d3193a2b4745806d2b4815c77858316c1396f1706bc73d355765.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": "PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-paul-dabbotsford",
+        "municipality_name": "Saint-Paul-d'Abbotsford",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.saintpauldabbotsford.qc.ca/wp-content/uploads/2026/02/PV-2026-01-13-Janvier-Reg.pdf",
+          "host": "www.saintpauldabbotsford.qc.ca"
+        },
+        "cause": "HTTP_403_UA_NON_RÉVÉRIFIÉ",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://www.saintpauldabbotsford.qc.ca/wp-content/uploads/2026/02/PV-2026-01-13-Janvier-Reg.pdf",
+          "verdict": "HTTP_403",
+          "http_status": 403,
+          "host": "www.saintpauldabbotsford.qc.ca",
+          "detail": "HTTP 403 malgré User-Agent navigateur",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0004.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0004-0-52d577e0-6947-4cd9-9df0-d2dbdd895aac/manifest.jsonl",
+          "line_index": 45,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0004-0-52d577e0-6947-4cd9-9df0-d2dbdd895aac",
+          "user_agent": null,
+          "browser_user_agent_verified": false,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-pierre",
+        "municipality_name": "Saint-Pierre",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-pierre-de-lile-dorleans/_publication/fichiers/10-octobre-2014.pdf",
+          "host": "vplus-documents.s3.ca-central-1.amazonaws.com"
+        },
+        "cause": "PDF_SANS_COUCHE_TEXTE",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-pierre-de-lile-dorleans/_publication/fichiers/10-octobre-2014.pdf",
+          "verdict": "PDF_SANS_COUCHE_TEXTE",
+          "http_status": 200,
+          "host": "vplus-documents.s3.ca-central-1.amazonaws.com",
+          "detail": "pdf-without-native-text-layer",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0004.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0004-0-52d577e0-6947-4cd9-9df0-d2dbdd895aac/manifest.jsonl",
+          "line_index": 63,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0004-0-52d577e0-6947-4cd9-9df0-d2dbdd895aac",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/6e02331ed6e36e60732781225f4da5fbc9fa74b0e98d4df7cab989dea6dc8ac1.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-ulric",
+        "municipality_name": "Saint-Ulric",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://st-ulric.ca/wp-content/uploads/2021/03/24-mars-2021.pdf",
+          "host": "st-ulric.ca"
+        },
+        "cause": "ÉCHEC_TRANSPORT_OPAQUE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://st-ulric.ca/wp-content/uploads/2021/03/24-mars-2021.pdf",
+          "verdict": "HTTP_AUTRE",
+          "http_status": null,
+          "host": "st-ulric.ca",
+          "detail": "TypeError: fetch failed",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0005.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0005-0-6ef80ee9-de97-420a-9033-49da4f3392f1/manifest.jsonl",
+          "line_index": 56,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0005-0-6ef80ee9-de97-420a-9033-49da4f3392f1",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": null,
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "saint-zephirin-de-courval",
+        "municipality_name": "Saint-Zéphirin-de-Courval",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.saint-zephirin.ca/fr/evenements/2026/6/1/137577/seance-ordinaire-du-conseil",
+          "host": "www.saint-zephirin.ca"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://www.saint-zephirin.ca/fr/evenements/2026/6/1/137577/seance-ordinaire-du-conseil",
+          "verdict": "PAGE_HTML",
+          "http_status": 200,
+          "host": "www.saint-zephirin.ca",
+          "detail": "octets HTML lus",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0005.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0005-0-6ef80ee9-de97-420a-9033-49da4f3392f1/manifest.jsonl",
+          "line_index": 79,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0005-0-6ef80ee9-de97-420a-9033-49da4f3392f1",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/222017e78add0c723fa415ae5b635ac751c79bde4257af5845d134877f79cf08.html",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "sainte-clotilde-de-beauce",
+        "municipality_name": "Sainte-Clotilde-de-Beauce",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0064365f-3b54-4d5f-9376-4aedc05235b5",
+          "host": "apps.gestionweblex.ca"
+        },
+        "cause": "PV_PROPRIÉTAIRE_NON_CONFIRMÉ",
+        "recovery_class": "investigation",
+        "attempt": {
+          "campaign": "pv-territorial-20260729t231834z",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0064365f-3b54-4d5f-9376-4aedc05235b5",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME",
+          "http_status": 200,
+          "host": "apps.gestionweblex.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260729t231834z-lot-0006.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260729t231834z-0006-0-559e2dcb-9ba0-445d-8558-f646095f35fb/manifest.jsonl",
+          "line_index": 45,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260729t231834z-0006-0-559e2dcb-9ba0-445d-8558-f646095f35fb",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/8e4d46f97908d81fc0506dd9fc3172fb85f27e28a98d832a3685287c3c19da95.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": "À    une    séance     ordinaire     du     conseil   municipal  tenue     le"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "sainte-marguerite",
+        "municipality_name": "Sainte-Marguerite",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://sainte-marguerite.ca/images/PDF/PV_0820.pdf",
+          "host": "sainte-marguerite.ca"
+        },
+        "cause": "PDF_SANS_COUCHE_TEXTE",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://sainte-marguerite.ca/images/PDF/PV_0820.pdf",
+          "verdict": "PDF_SANS_COUCHE_TEXTE",
+          "http_status": 200,
+          "host": "sainte-marguerite.ca",
+          "detail": "pdf-without-native-text-layer",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0001.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0001-0-70eddde2-77b4-42cb-8230-c384e8d9b171/manifest.jsonl",
+          "line_index": 11,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0001-0-70eddde2-77b4-42cb-8230-c384e8d9b171",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/26b970677e474db2e80c529409fa68ddb0134a8f25f45c2a5412c9eac15f01ed.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "sainte-thecle",
+        "municipality_name": "Sainte-Thècle",
+        "candidate": {
+          "source": "pv-index",
+          "url": "http://ste-thecle.qc.ca/wp-content/uploads/proces-verbaux-annee2012.pdf",
+          "host": "ste-thecle.qc.ca"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "http://ste-thecle.qc.ca/wp-content/uploads/proces-verbaux-annee2012.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "ste-thecle.qc.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c/manifest.jsonl",
+          "line_index": 1,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/8bfb0c432cb6646bd1fed4bcc949ccec8fad9d0503e8bd1d525e29e12867d634.pdf",
+          "owner_verbatim": "MUNICIPALITÉ DE SAINTE-THÈCLE",
+          "pv_verbatim": "Procès-verbal de la séance ordinaire du conseil de la Municipalité de Sainte-Thècle"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "sainte-therese",
+        "municipality_name": "Sainte-Thérèse",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.sainte-therese.ca/storage/app/media/ville/democratie/seances-du-conseil/proces-verbaux/2026/26-01-12_ordinaire.pdf",
+          "host": "www.sainte-therese.ca"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://www.sainte-therese.ca/storage/app/media/ville/democratie/seances-du-conseil/proces-verbaux/2026/26-01-12_ordinaire.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "www.sainte-therese.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c/manifest.jsonl",
+          "line_index": 3,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/d49c4fd4425c41262c92008e3383135f6c76e6cb6c669941e84f07033f188f1a.pdf",
+          "owner_verbatim": "6, rue de l'Église, Sainte-Thérèse",
+          "pv_verbatim": "Assistent également à la séance ordinaire du conseil :"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "salaberry-de-valleyfield",
+        "municipality_name": "Salaberry-de-Valleyfield",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://dua3m7xvptjbw.cloudfront.net/documents/seances/GRE-SD-Proces-verbal-de-la-seance-extraordinaire-du-6-decembre-2024.pdf",
+          "host": "dua3m7xvptjbw.cloudfront.net"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://dua3m7xvptjbw.cloudfront.net/documents/seances/GRE-SD-Proces-verbal-de-la-seance-extraordinaire-du-6-decembre-2024.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "dua3m7xvptjbw.cloudfront.net",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c/manifest.jsonl",
+          "line_index": 17,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/c0df5772f4fd170e8d2d4839733a7df0ac21ad8db0c5ff928d7ec858b348900b.pdf",
+          "owner_verbatim": "Salaberry-de-Valleyfield.",
+          "pv_verbatim": "Procès-verbal de la séance extraordinaire du conseil de la Ville de Salaberry-de-"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "shefford",
+        "municipality_name": "Shefford",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://cantonshefford.qc.ca/evenements/seance-du-conseil/seance-du-conseil-2026-07-14",
+          "host": "cantonshefford.qc.ca"
+        },
+        "cause": "OCTETS_NON_PV",
+        "recovery_class": "non_direct",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://cantonshefford.qc.ca/evenements/seance-du-conseil/seance-du-conseil-2026-07-14",
+          "verdict": "PAGE_HTML",
+          "http_status": 200,
+          "host": "cantonshefford.qc.ca",
+          "detail": "octets HTML lus",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0002.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c/manifest.jsonl",
+          "line_index": 37,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-0-ea54c45b-3a6d-4f45-a663-a6396e33e85c",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/e8b69b1ad6510778776c5c11c6072d8fc6a62de0fdf32e72f8b1ae76359e3a92.html",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": {
+          "opened": false,
+          "reason": "lecture S3 indisponible; verdict du rapport de classification conservé sans réouverture"
+        }
+      },
+      {
+        "slug": "stukely-sud",
+        "municipality_name": "Stukely-Sud",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/stukely-sud/_publication/fichiers/2024-10-15%20pv.pdf",
+          "host": "vplus-documents.s3.ca-central-1.amazonaws.com"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/stukely-sud/_publication/fichiers/2024-10-15%20pv.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "vplus-documents.s3.ca-central-1.amazonaws.com",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0003-0-96b99474-220b-4a88-b618-51b6145019d0/manifest.jsonl",
+          "line_index": 11,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0003-0-96b99474-220b-4a88-b618-51b6145019d0",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/d7d24707284db297d1039e9a0936a4cf984016994edc135b59ea65c58aa800c6.pdf",
+          "owner_verbatim": "MUNICIPALITÉ DU VILLAGE DE STUKELY-SUD",
+          "pv_verbatim": "Séance ordinaire du conseil"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "tourville",
+        "municipality_name": "Tourville",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=01992ac4-ba55-4628-85c2-0c7e155c5864",
+          "host": "apps.gestionweblex.ca"
+        },
+        "cause": "AUTRE",
+        "recovery_class": "inconnu",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=01992ac4-ba55-4628-85c2-0c7e155c5864",
+          "verdict": "AUTRE",
+          "http_status": 200,
+          "host": "apps.gestionweblex.ca",
+          "detail": "unknown-document-container",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0003.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0003-0-96b99474-220b-4a88-b618-51b6145019d0/manifest.jsonl",
+          "line_index": 30,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0003-0-96b99474-220b-4a88-b618-51b6145019d0",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.pdf",
+          "owner_verbatim": null,
+          "pv_verbatim": null
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "waterville",
+        "municipality_name": "Waterville",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://www.waterville.ca/upload/proces-verbaux/2026-01-12%20PV.pdf",
+          "host": "www.waterville.ca"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://www.waterville.ca/upload/proces-verbaux/2026-01-12%20PV.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "www.waterville.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0004.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0004-0-7649509b-1225-49a6-98ab-fed512b78db9/manifest.jsonl",
+          "line_index": 41,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0004-0-7649509b-1225-49a6-98ab-fed512b78db9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/7deff05b71ad4cda2a12473b6f4cb1f96d7202d5fc4a5d3e977de65bf3c136b0.pdf",
+          "owner_verbatim": "VILLE DE WATERVILLE",
+          "pv_verbatim": "2.0   Adoption du procès-verbal de la séance du 1er décembre 2025"
+        },
+        "body_inspection": null
+      },
+      {
+        "slug": "weedon",
+        "municipality_name": "Weedon",
+        "candidate": {
+          "source": "pv-index",
+          "url": "https://weedon.ca/wp-content/uploads/2017/05/01-PV-2012-janvier.pdf",
+          "host": "weedon.ca"
+        },
+        "cause": "PV_CONFIRMÉ_NON_INDEXÉ",
+        "recovery_class": "immédiat",
+        "attempt": {
+          "campaign": "pv-territorial-20260730t001459z",
+          "url": "https://weedon.ca/wp-content/uploads/2017/05/01-PV-2012-janvier.pdf",
+          "verdict": "PV_LISIBLE_PROPRIETAIRE_CONFIRME",
+          "http_status": 200,
+          "host": "weedon.ca",
+          "detail": "pdftotext-layout",
+          "source_report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0004.json",
+          "manifest_key": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0004-0-7649509b-1225-49a6-98ab-fed512b78db9/manifest.jsonl",
+          "line_index": 43,
+          "line_index_match": null,
+          "run_id": "pv-geo-capture-pv-pv-territorial-20260730t001459z-0004-0-7649509b-1225-49a6-98ab-fed512b78db9",
+          "user_agent": null,
+          "browser_user_agent_verified": null,
+          "transport_error": null,
+          "final_url": null,
+          "storage_key": "raw/pv-index/cas/bff1bd29e4ae680a9954c5f3440c3aa3e4d90d9409187c54fb88f0e3cd6f6cff.pdf",
+          "owner_verbatim": "MUNICIPALITÉ DE WEEDON",
+          "pv_verbatim": "Procès-verbal de la séance ordinaire du conseil municipal de Weedon, tenue au"
+        },
+        "body_inspection": null
+      }
+    ]
+  }
+}

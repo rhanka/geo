@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Mb": "residentiel",
+    "Ag": "agricole",
+    "Age": null,
+    "Cr": "commercial",
+    "Cm": null,
+    "In": "industriel",
+    "Rec": "environnemental",
+    "Pu": null,
+    "St": null
+  },
+  "source": "https://riviere-beaudette.com/wp-content/uploads/2022/01/91-18-Zonage-2022.pdf",
+  "note": "Règlement de zonage 91-18 (Municipalité de Rivière-Beaudette, codification 2022), art. 1.2 « RÉPARTITION EN ZONES », tableau « Zone / Vocation » (verbatim): Cm « Commercial mixte »; Cr « Commerciale régionale »; Ra « Résidentielle faible densité »; In « Industrielle »; Ag « Agricole »; Réc « Récréative »; St « Services touristiques »; Pu « Publique »; Mb « Résidentielle et maisons mobiles »; Age « Agricole et d'extraction ». ATTENTION millésime: le polygone SIG porte reglement_numero=26-02 mais ses zone_code utilisent le schéma d'appellation du 91-18 (Ra/Cm/Cr/Age...); le projet 2026-02 recode en P/A/AD (schéma NON servi), donc on source la légende 91-18 qui correspond réellement aux codes servis. Mapping: Ra + Mb -> residentiel; Ag -> agricole; Cr « Commerciale régionale » -> commercial; In -> industriel; Rec « Récréative » -> environnemental (le SIG écrit « Rec » sans accent). Null explicite: Cm « Commercial mixte » est dual; Age « Agricole ET d'extraction » joint agricole et extraction (dual, bloque aussi le repli longest-prefix vers Ag); Pu « Publique »; St « Services touristiques » est une vocation propre distincte de « Commerciale » dans la légende, hors des cinq catégories. La grille des usages permis n'est pas utilisée."
+}

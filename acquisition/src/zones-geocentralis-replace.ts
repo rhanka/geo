@@ -1,0 +1,374 @@
+/**
+ * zones-geocentralis-replace.ts — REMPLACEMENT sûr d'une collection qc-zonage
+ * SERVIE par la couche WFS geocentralis EN VIGUEUR (siadmin_pzon_99_s ou autre),
+ * avec BACKUP non-destructif, DOUBLE-LAYOUT (plate + sous-dossier si présent),
+ * preuve géométrique v2 (putServedZoneGeojson) et GATE DE RECOUPEMENT des codes
+ * ACTUELLEMENT SERVIS.
+ *
+ * POURQUOI un runner dédié (et pas `zones-wfs-run.ts --deposit`) :
+ *   `zones-wfs-run.ts` dépose la SEULE clé plate, SANS sauvegarde, et ne vérifie
+ *   pas que la nouvelle couche RECOUPE les codes déjà servis. Un REMPLACEMENT de
+ *   collection déjà servie exige (a) un backup non-destructif AVANT tout écrasement,
+ *   (b) l'écriture des DEUX layouts si geo-api sert le sous-dossier
+ *   (mémoire fold-double-key-s3-serving), (c) une preuve que la géométrie de
+ *   remplacement contient bien les zones qu'on remplaçait (anti-régression).
+ *
+ * Compose UNIQUEMENT des helpers committés :
+ *   - gate anti-invention + spatial : zones-wfs-run.ts
+ *   - preuve v2 : lib/zonage-proof.ts (proofFromFetched/attach/putServedZoneGeojson)
+ *   - S3 : lib/s3.ts (exists, copyObject, getBytes)
+ * Ne recalcule AUCUN fold lot↔zone (rôle de lot-zone-join-run / _lot-zone-refold-batch).
+ *
+ * GARDE-FOUS DURS (sinon ABORT, aucune écriture) :
+ *   - validateWfsZoneCodes ok (≥3 codes distincts, champ réglementaire, non séquentiel)
+ *   - porte spatiale : centre bbox ≤ max(--spatial-km,35) du centroïde registre
+ *   - RECOUPEMENT : chaque code ACTUELLEMENT SERVI (canonicalisé, séparateur-insensible)
+ *     doit être présent dans les nouveaux codes ; sinon ABORT.
+ *
+ * --inspect (défaut) : n'écrit RIEN — valide + imprime layout servi et recoupement.
+ * --deposit : backup (chaque layout existant) → putServedZoneGeojson plate
+ *             (+ sous-dossier SI il existait déjà) → readback des octets déposés.
+ *
+ * Usage :
+ *   npx tsx acquisition/src/zones-geocentralis-replace.ts --pair saint-frederic=27065 \
+ *     --wfs-layer evb:siadmin_pzon_99_s --zone-field etiquette_1 --inspect
+ *   npx tsx acquisition/src/zones-geocentralis-replace.ts --pair saint-frederic=27065 \
+ *     --wfs-layer evb:siadmin_pzon_99_s --zone-field etiquette_1 --deposit
+ */
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import type { S3Client } from "@aws-sdk/client-s3";
+import {
+  capturedFetch,
+  capturedText,
+  CapturedFetchError,
+  type CaptureManifestLine,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
+import { s3Client, exists, copyObject, getBytes } from "./lib/s3.js";
+import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
+import { attachGeometryProof, carryForwardServedZoneProperties, proofFromCaptureEntry, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson } from "./lib/zonage-proof.js";
+import {
+  buildGetFeatureUrl,
+  featuresBboxCenter,
+  haversineKm,
+  normalizeWfsFeatures,
+  validateWfsZoneCodes,
+  type GeoFeature,
+  type MuniEntry,
+  type WfsConfig,
+} from "./zones-wfs-run.js";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const MUNIS_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
+const S3_PREFIX = "normalized/ca-qc-zonage/";
+const HTTP_UA = CAPTURE_USER_AGENT;
+const HTTP_TIMEOUT_MS = 30_000;
+const MAX_FEATURES = 20_000;
+const PAGE = 1000;
+/** `<source>` de la clé CAS : identifiant de lane-source, JAMAIS un slug (SPEC §2.1). */
+const CAPTURE_SOURCE = "zones-wfs";
+
+const DEFAULT_WFS_BASE = "https://geoserver.geocentralis.com/geoserver/ows";
+const DEFAULT_MUNI_FIELD = "id_municipalite";
+
+interface GeoFC { type?: string; features?: GeoFeature[]; proof?: { schema_version?: unknown; geometry_source?: { sha256?: unknown } } }
+
+interface Args {
+  slug: string;
+  code: string;
+  cfg: WfsConfig;
+  spatialKm: number;
+  deposit: boolean;
+}
+
+function parseArgs(argv: string[]): Args {
+  const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
+  const has = (k: string): boolean => argv.includes(`--${k}`);
+  const pair = (get("pair") ?? "").trim();
+  const [slug, code] = pair.split("=").map((s) => (s ?? "").trim());
+  if (!slug || !/^\d{4,5}$/.test(code ?? "")) {
+    console.error("usage: --pair slug=code (code = id_municipalite MAMH 4-5 chiffres) --wfs-layer <t> --zone-field <f> [--inspect|--deposit]");
+    process.exit(2);
+  }
+  const layer = get("wfs-layer");
+  const zoneField = get("zone-field");
+  if (!layer || !zoneField) { console.error("--wfs-layer et --zone-field sont requis (pas de défaut : la couche/champ doivent être explicites)"); process.exit(2); }
+  return {
+    slug: slug!,
+    code: code!,
+    cfg: { base: get("wfs-base") ?? DEFAULT_WFS_BASE, layer, zoneField, muniField: get("muni-field") ?? DEFAULT_MUNI_FIELD },
+    spatialKm: Number(get("spatial-km") ?? 25),
+    deposit: has("deposit") && !has("inspect"),
+  };
+}
+
+function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
+
+/** Rejoue une opération sur erreur réseau transitoire (ETIMEDOUT & co). */
+async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 4): Promise<T> {
+  let last: unknown;
+  for (let a = 1; a <= tries; a++) {
+    try { return await fn(); }
+    catch (e) {
+      last = e;
+      const msg = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      const transient = /ETIMEDOUT|ECONNRESET|EAI_AGAIN|EPIPE|socket hang up|timeout|TimeoutError|NetworkingError|aborted/i.test(msg);
+      if (!transient || a === tries) throw e;
+      console.error(`  RETRY(${a}/${tries}) ${label}: ${msg}`);
+      await sleep(1500 * a);
+    }
+  }
+  throw last;
+}
+
+/**
+ * CHOKEPOINT DE CAPTURE (SPEC_CAPTURE_ON_CLUSTER.md §5.1, règle C-0) : plus aucun
+ * `fetch()` nu ici. Chaque tentative — succès, 404, timeout — produit une ligne de
+ * `capture/_runs/<run-id>/manifest.jsonl`, et les octets reçus partent en
+ * content-addressed sous `raw/zones-wfs/cas/<sha256>.json`.
+ */
+async function fetchJson<T = unknown>(
+  run: CaptureRun,
+  url: string,
+  slug: string,
+  attempt: number,
+): Promise<{ data: T; line: CaptureManifestLine }> {
+  const res = await capturedFetch(url, { headers: { "user-agent": HTTP_UA, accept: "application/json" } }, {
+    run,
+    source: CAPTURE_SOURCE,
+    slugs: [slug],
+    attempt,
+    timeoutMs: HTTP_TIMEOUT_MS,
+    version: "zones-geocentralis-replace/1",
+  });
+  if (!res.ok) throw new CapturedFetchError(res.line);
+  return { data: JSON.parse(capturedText(res)) as T, line: res.line };
+}
+
+/** Page through every feature of one muni via WFS startIndex/count (with retry). */
+async function fetchAll(
+  run: CaptureRun,
+  slug: string,
+  cfg: WfsConfig,
+  code: string,
+): Promise<{ feats: GeoFeature[]; entries: CaptureManifestLine[] }> {
+  const out: GeoFeature[] = [];
+  const entries: CaptureManifestLine[] = [];
+  let start = 0;
+  while (out.length < MAX_FEATURES) {
+    const url = buildGetFeatureUrl(cfg, code, start, PAGE);
+    let attempt = 0;
+    const r = await withRetry(`GetFeature start=${start}`, () => { attempt += 1; return fetchJson<GeoFC>(run, url, slug, attempt); });
+    entries.push(r.line);
+    const fc = r.data;
+    if (!Array.isArray(fc.features) || fc.features.length === 0) break;
+    out.push(...fc.features);
+    if (fc.features.length < PAGE) break;
+    start += fc.features.length;
+    await sleep(120);
+  }
+  return { feats: out, entries };
+}
+
+/** Canonicalisation séparateur-insensible pour comparer des codes de zone. */
+function canon(v: unknown): string {
+  return String(v ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function distinctZoneCodes(features: GeoFeature[]): { raw: Set<string>; canon: Set<string> } {
+  const raw = new Set<string>();
+  const c = new Set<string>();
+  for (const f of features) {
+    const p = f.properties ?? {};
+    const v = p["zone_code"] ?? p["code_zone"] ?? p["ZONE_CODE"] ?? p["CODE_ZONE"];
+    if (v !== null && v !== undefined && String(v).trim()) { raw.add(String(v).trim()); c.add(canon(v)); }
+  }
+  return { raw, canon: c };
+}
+
+function stamp(): string {
+  return new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+}
+
+/** Preserve the current served contract per zone_code before the central deposit
+ * gate verifies that no property key disappears. */
+function freshFeaturesWithServedProperties(norm: GeoFeature[], current: GeoFeature[]): { features: GeoFeature[]; matched: number; unmatched: number } {
+  const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
+  const carried = carryForwardServedZoneProperties(features, current, canon);
+  return { features, ...carried };
+}
+
+async function readServed(s3: S3Client, key: string): Promise<GeoFeature[] | null> {
+  if (!(await withRetry(`exists ${key}`, () => exists(s3, key)))) return null;
+  const buf = await withRetry(`get ${key}`, () => getBytes(s3, key));
+  const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
+  return Array.isArray(fc.features) ? fc.features : [];
+}
+
+/** Le run de capture courant (clôturé par `main`, y compris en ABORT). */
+let CAPTURE: CaptureRun | null = null;
+
+async function main(): Promise<void> {
+  const args = parseArgs(process.argv.slice(2));
+  const { slug, code, cfg, spatialKm } = args;
+  const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
+  const muni = munis.find((m) => m.slug === slug);
+  const s3 = s3Client();
+
+  // ── 0. Ouverture du run de capture (journalise MÊME en --inspect) ───────────
+  const run = openCaptureRun({ lane: "zones", s3 });
+  CAPTURE = run;
+  console.error(`[replace] slug=${slug} id_municipalite=${code} layer=${cfg.layer} field=${cfg.zoneField} mode=${args.deposit ? "DEPOSIT" : "INSPECT"}`);
+  console.error(`[replace] capture run=${run.runId} manifest=s3://${run.keys.manifest}`);
+  run.log(`[replace] slug=${slug} id_municipalite=${code} layer=${cfg.layer} mode=${args.deposit ? "DEPOSIT" : "INSPECT"}`);
+
+  // ── 1. Fetch (via le chokepoint) + gate anti-invention ──────────────────────
+  const { feats: raw, entries: captureEntries } = await fetchAll(run, slug, cfg, code);
+  if (raw.length === 0) { console.error(`ABORT: 0 feature pour ${cfg.muniField}=${code}`); process.exit(1); }
+  const verdict = validateWfsZoneCodes(raw, cfg.zoneField);
+  if (!verdict.ok) {
+    console.error(`ABORT (anti-invention): ${verdict.reason} — distinct=${verdict.stats.distinct} sample=${JSON.stringify(verdict.stats.sample.slice(0, 6))}`);
+    process.exit(1);
+  }
+  const layerUrl = `${cfg.base}#${cfg.layer}[${cfg.muniField}=${code}]`;
+  const norm = normalizeWfsFeatures(raw, cfg.zoneField, layerUrl);
+  const newCodes = distinctZoneCodes(norm);
+  console.error(`[replace] fetched=${raw.length} features, zone_code distinct=${newCodes.raw.size} codeLike=${(verdict.stats.codeLikeRatio * 100).toFixed(0)}%`);
+  console.error(`[replace] codes: ${[...newCodes.raw].sort().join(", ")}`);
+
+  // ── 2. Porte spatiale ───────────────────────────────────────────────────────
+  if (muni) {
+    const c = featuresBboxCenter(norm);
+    if (c.n > 0) {
+      const d = haversineKm(muni.lat, muni.lon, c.lat, c.lon);
+      if (d > Math.max(spatialKm, 35)) { console.error(`ABORT (spatial): features à ${d.toFixed(0)}km du centroïde registre ${slug}`); process.exit(1); }
+      console.error(`[replace] spatial OK: ${d.toFixed(1)}km du centroïde registre`);
+    }
+  } else {
+    console.error(`[replace] WARN: slug ${slug} absent du registre municipalities.qc.json — porte spatiale non appliquée`);
+  }
+
+  // ── 3. Layout servi + gate de recoupement ───────────────────────────────────
+  const flatKey = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
+  const subKey = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+  const flatServed = await readServed(s3, flatKey);
+  const subServed = await readServed(s3, subKey);
+  const servedSource = flatServed ?? subServed;
+  console.error(`[replace] layout servi: plate=${flatServed ? `${flatServed.length} feat` : "ABSENT"} sous-dossier=${subServed ? `${subServed.length} feat` : "ABSENT"}`);
+  if (!servedSource) { console.error(`ABORT: aucune géométrie qc-zonage-${slug} servie (ni plate ni sous-dossier) — ce runner REMPLACE, il ne crée pas`); process.exit(1); }
+
+  const served = distinctZoneCodes(servedSource);
+  const covered = [...served.canon].filter((c) => newCodes.canon.has(c));
+  const uncovered = [...served.raw].filter((r) => !newCodes.canon.has(canon(r)));
+  console.error(`[replace] codes servis (${served.raw.size}): ${[...served.raw].sort().join(", ")}`);
+  console.error(`[replace] RECOUPEMENT: ${covered.length}/${served.canon.size} codes servis présents dans la nouvelle couche`);
+  if (uncovered.length > 0) {
+    console.error(`ABORT (recoupement): ${uncovered.length} code(s) servi(s) ABSENT(s) de la nouvelle couche: ${uncovered.sort().join(", ")}`);
+    console.error(`  → la couche geocentralis ne recoupe pas les codes servis ; AUCUN dépôt (garde-fou dur).`);
+    process.exit(1);
+  }
+
+  if (!args.deposit) {
+    console.error(`\n=== INSPECT OK (aucune écriture servie) ===`);
+    console.error(`  nouvelle couche: ${norm.length} features, ${newCodes.raw.size} codes distincts, recoupement ${covered.length}/${served.canon.size} des servis`);
+    console.error(`  dépôt écrirait: plate=OUI${subServed ? " + sous-dossier=OUI" : " (sous-dossier ABSENT → non écrit)"}`);
+    console.error(`  CAPTURE: ${captureEntries.length} ligne(s) -> s3://${run.keys.manifest}`);
+    for (const e of captureEntries) console.error(`    ${e.http_status} ${e.bytes}B ${e.sha256} -> s3://${e.storage_key}`);
+    return;
+  }
+
+  // ── 4. Backup non-destructif de chaque layout existant ───────────────────────
+  const ts = stamp();
+  const backups: string[] = [];
+  for (const [layout, key, present] of [["flat", flatKey, !!flatServed] as const, ["subdir", subKey, !!subServed] as const]) {
+    if (!present) continue;
+    const dest = `${S3_PREFIX}_replaced/qc-zonage-${slug}__${layout}.${ts}.geojson`;
+    await withRetry(`backup ${key}`, () => copyObject(s3, key, dest));
+    backups.push(dest);
+    console.error(`[replace] BACKUP ${key} -> s3://${dest}`);
+  }
+
+  // ── 5. Dépôt v2 (plate toujours ; sous-dossier si présent) ───────────────────
+  // PREUVE ADOSSÉE À LA CAPTURE (règle C-1) : quand la couche tient en UNE page,
+  // l'entrée de manifeste EST la preuve — url appelée, instant mesuré et sha256 des
+  // octets REÇUS, tous trois relus de `manifest.jsonl`, aucun reconstruit.
+  // Multi-pages : les octets servis sont un AGRÉGAT qu'aucune URL unique ne rend ;
+  // on retombe alors sur l'agrégat historique et on le DIT (pas de fausse preuve).
+  const soleEntry = captureEntries.length === 1 ? captureEntries[0]! : null;
+  const proof = soleEntry && soleEntry.sha256 !== null
+    ? proofFromCaptureEntry(soleEntry, { type: "wfs", method: "natif", reliability: "directe" })
+    : proofFromFetched({ url: buildGetFeatureUrl(cfg, code, 0, PAGE), type: "wfs", method: "natif", reliability: "directe", bytes: JSON.stringify(raw) });
+  console.error(
+    soleEntry
+      ? `[replace] PREUVE = entrée de capture (run=${run.runId}, cas=s3://${soleEntry.storage_key})`
+      : `[replace] PREUVE = agrégat ${captureEntries.length} pages (aucune URL unique ne rend ces octets ; les ${captureEntries.length} pages restent journalisées)`,
+  );
+  const targets: Array<{ key: string; current: GeoFeature[] }> = [{ key: flatKey, current: flatServed ?? servedSource }];
+  if (subServed) targets.push({ key: subKey, current: subServed });
+  for (const target of targets) {
+    const carried = freshFeaturesWithServedProperties(norm, target.current);
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features: carried.features }, proof);
+    console.error(`[replace] PROPRIÉTÉS reportées ${target.key}: zones appariées=${carried.matched}/${norm.length} non-appariées=${carried.unmatched}`);
+    await withRetry(`put ${target.key}`, () => putServedZoneGeojson(s3, target.key, fc));
+    console.error(`[replace] DÉPÔT v2 -> s3://${target.key}`);
+  }
+
+  // ── 6. Readback des octets déposés ──────────────────────────────────────────
+  for (const { key } of targets) {
+    const buf = await withRetry(`readback ${key}`, () => getBytes(s3, key));
+    const fc = JSON.parse(buf.toString("utf8")) as GeoFC;
+    const rb = distinctZoneCodes(fc.features ?? []);
+    const okProof = fc.proof?.schema_version === "2.0" && typeof fc.proof?.geometry_source?.sha256 === "string";
+    console.error(`[replace] READBACK ${key}: features=${(fc.features ?? []).length} distinct=${rb.raw.size} proof_v2=${okProof ? "OUI" : "NON"} sha=${String(fc.proof?.geometry_source?.sha256 ?? "?").slice(0, 23)}…`);
+  }
+
+  // ── 7. Re-fold additif — MÊME PASSE (atomicité) ─────────────────────────────
+  await reapplyServedZonageEnrichment(slug);
+
+  // ── 8. STAMP provenance additif — source exacte de la nouvelle géométrie ────
+  // Un re-dépôt géométrie v2 (putServedZoneGeojson) EFFACE zone_source_url /
+  // zone_source_level : il ne reporte pas le stamp additif. On les ré-écrit ICI,
+  // dans la même passe, sur CHAQUE clé servie, via le chemin additif sûr — la
+  // géométrie fraîchement déposée est prouvée octet-pour-octet inchangée par
+  // putServedZoneAdditive (seules les 2 clés whitelistées peuvent différer).
+  // Idempotent, et ne régresse pas la géométrie qui vient d'être posée.
+  const zoneSourceUrl = proof.url;      // URL source v2 exacte (== proof.geometry_source.url)
+  const zoneSourceLevel = "documented"; // source SIG officielle re-téléchargeable qui recoupe les codes servis
+  for (const { key } of targets) {
+    const buf = await withRetry(`get-for-stamp ${key}`, () => getBytes(s3, key));
+    const fc = JSON.parse(buf.toString("utf8")) as { type?: unknown; features?: Array<{ geometry?: unknown; properties?: Record<string, unknown> | null }> };
+    for (const f of fc.features ?? []) {
+      f.properties = { ...(f.properties ?? {}), zone_source_url: zoneSourceUrl, zone_source_level: zoneSourceLevel };
+    }
+    const res = await withRetry(`stamp ${key}`, () => putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] }));
+    console.error(`[replace] STAMP provenance url=${zoneSourceUrl} level=${zoneSourceLevel} key=${key} (features=${res.features})`);
+  }
+
+  console.error(`\n=== DÉPÔT TERMINÉ ===`);
+  console.error(`  backups: ${backups.map((b) => `s3://${b}`).join("  ")}`);
+  console.error(`  déposé:  ${targets.map(({ key }) => `s3://${key}`).join("  ")}`);
+  console.error(`  provenance: url=${zoneSourceUrl} level=${zoneSourceLevel} (re-stampée sur ${targets.length} clé(s))`);
+  console.error(`  proof:   url=${proof.url}`);
+  console.error(`  sha256:  ${proof.sha256}`);
+  console.error(`  retrieved_at=${proof.retrieved_at}`);
+  console.error(`  capture: run=${run.runId} manifest=s3://${run.keys.manifest} (${captureEntries.length} ligne(s))`);
+}
+
+/** Clôture le run de capture (`run.json`) quel que soit le sort du runner. */
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[replace] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.stack : String(e));
+    await closeCapture(1);
+    process.exit(1);
+  });

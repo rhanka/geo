@@ -1,0 +1,1625 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:26:51.980Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4580,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "Regulation": 43,
+    "Resolution": 4,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 94,
+    "edges": 26,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "coteau-du-lac",
+      "storage_key": "raw/pv-index/cas/90c8eaffc5cf731f9b1b4f7a5bcca0920242b71389f1286fd6b0bc29d767577d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "1687150",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1167",
+      "quote": "                                       particulier de construction, de modification ou d’occupation d’un immeuble (PPCMOI) du lot 1 687 150"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 262,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 8854,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z",
+  "documents": [
+    {
+      "slug": "cote-saint-luc",
+      "municipality_name": "Côte-Saint-Luc",
+      "url": "https://cotesaintluc.org/wp-content/uploads/2025/09/ConseilODJ_2025-09-29.pdf",
+      "storage_key": "raw/pv-index/cas/ffceed8233db3d33c72d424478dc30416303cfbded9caad7b4b5e7473a1d5910.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Côte-Saint-Luc",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Côte Saint-Luc"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Côte Saint-Luc"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2628",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "     c. Règlement 2628 intitulé : « Règlement concernant les règles de régie"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/cote-saint-luc/e7473a1d5910.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/cote-saint-luc/e7473a1d5910.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cote-saint-luc",
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/assemblee-publique-de-consultation/presentation-PPCMOI-25-rue-des-chutes.pdf",
+      "storage_key": "raw/pv-index/cas/0daa75ceb62e0efd7d015b37a2dad41579f8674fac99c9f163dfc598924e8614.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "    que son contenu respecte les exigences du Règlement no URB-406 sur les projets particuliers de construction,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "    que son contenu respecte les exigences du Règlement no URB-406 sur les projets particuliers de construction,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "62-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "résolution no 62-02-2026 ."
+            }
+          },
+          {
+            "label": "62-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "Suivant les recommandations de CCU, le Conseil Municipal a adopté le 10 février 2026 la résolution no 62-02-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c598924e8614.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c598924e8614.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO10fevrier2026-pdf.pdf",
+      "storage_key": "raw/pv-index/cas/0dac4552278ec509ca78336dc865f3b4896fc2645b95b4370d31b7b7f9471537.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "           a) Avis de motion. Règlement modifiant les annexes « A », et « C » du règlement"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "           a) Avis de motion. Règlement modifiant les annexes « A », et « C » du règlement"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-4",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           b) Dépôt. Projet de règlement no 325-4 remplaçant les annexes « A » et « C » du"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "              règlement no 325 relatif à la tarification des biens, services et activité de la Ville"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/b7b7f9471537.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/b7b7f9471537.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac",
+          "les-coteaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO14avril2026.pdf",
+      "storage_key": "raw/pv-index/cas/278ea1c4c55d25c24e55727f91d6e6fac55540282333d06a0a75c338c264e27f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c338c264e27f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c338c264e27f.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beauharnois",
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSO13janvier2026.pdf",
+      "storage_key": "raw/pv-index/cas/2a789cc3240451828c88cde28469530c71641dc71cc4de5e4ded9d4185feeb33.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 PROCÈS-VERBAUX DES DÉLIBÉRATIONS DU CONSEIL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 PROCÈS-VERBAUX DES DÉLIBÉRATIONS DU CONSEIL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "        Lors de la séance extraordinaire du 17 décembre 2025 (budget), le conseil municipal a adopté les"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "        Lors de la séance extraordinaire du 17 décembre 2025 (budget), le conseil municipal a adopté les"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "362",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "         − Adoption. Règlement no 362 visant à abroger certains règlements municipaux désuets;"
+            }
+          },
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "         à l’article 16 du Règlement no 357 « Règlement sur la régie interne des séances du conseil de la Ville"
+            }
+          },
+          {
+            "label": "325-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "f)   Dépôt. Projet de règlement no 325-3 remplaçant l’annexe F du règlement no 325 relatif à la"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "f)   Dépôt. Projet de règlement no 325-3 remplaçant l’annexe F du règlement no 325 relatif à la"
+            }
+          },
+          {
+            "label": "360",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:719",
+              "quote": "     Ie Conseil adopte Ie règlement n° 360 intitulé:« Règlement sur le traitement des élus municipaux », tel"
+            }
+          },
+          {
+            "label": "361",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:760",
+              "quote": "     Ie Conseil adopte Ie règlement n° 361 intitulé:« Règlement sur le code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "159",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:777",
+              "quote": "      par le règlement no 159"
+            }
+          },
+          {
+            "label": "159-8",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:792",
+              "quote": "     Ie Conseil adopte Ie règlement n° 159-8 intitulé:« Règlement augmentant à 2 350 000 $ le capital du"
+            }
+          },
+          {
+            "label": "312",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:900",
+              "quote": "      l’article 23 du Règlement no 312 et dont le sommaire apparaît ci-après :"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/9d4185feeb33.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/9d4185feeb33.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO13janvier2026-pdf.pdf",
+      "storage_key": "raw/pv-index/cas/33c400e90bd8ea1af71f5d44563a17976b056b7bda14c8b7a41612ca76d67d7d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "          e) Avis de motion. Règlement modifiant l’annexe F du règlement relatif à la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "          e) Avis de motion. Règlement modifiant l’annexe F du règlement relatif à la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "          f) Dépôt. Projet de règlement no 325-3 remplaçant l’annexe F du règlement no 325"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "          f) Dépôt. Projet de règlement no 325-3 remplaçant l’annexe F du règlement no 325"
+            }
+          },
+          {
+            "label": "159",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "             roulement constitué par le règlement no 159"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/12ca76d67d7d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/12ca76d67d7d.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSE28avril2026-version-approuve.pdf",
+      "storage_key": "raw/pv-index/cas/33d75455c7752e00db609127af527cfa35d67a461cd05fc22dd9b81a60294782.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAUX DES DÉLIBÉRATIONS DU CONSEIL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAUX DES DÉLIBÉRATIONS DU CONSEIL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "villes (RLRQ, c. C-19) ainsi qu’à l’article 15 du règlement no 357 « Règlement sur la régie interne des séances"
+            }
+          },
+          {
+            "label": "359",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "CONSIDÉRANT QU’en vertu de l’article 6.2 du règlement no 359 sur la gestion contractuelle, le chef de"
+            }
+          },
+          {
+            "label": "312",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "CONSIDÉRANT QU’en vertu de I'article 12 du règlement n° 312 relatif à la délégation, au suivi et au contrôle"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:190",
+              "quote": "ATTENDU QUE selon le Règlement no 325 relatif à la tarification des biens, services et activités de la Ville"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/b81a60294782.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/b81a60294782.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE19janvier2026-pdf.pdf",
+      "storage_key": "raw/pv-index/cas/3be987dd3c943dfafb12a977ea9a141cf4898eebf0e7fc8858aa18527946069b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-3",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                4.   Adoption. Règlement no 325-3 modifiant l’Annexe «F » du Règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/18527946069b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/18527946069b.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE3mars2026.pdf",
+      "storage_key": "raw/pv-index/cas/4283c3b1b2b2c72be7a80446031e5349a85ea035a1cb375393ce5a7558e41075.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "168-32-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "                8.   Dépôt. Projet de règlement no 168-32-1 Modifiant l’article 2"
+            }
+          },
+          {
+            "label": "168-32",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "                     eaux) du Règlement no 168-32 relatif à l’imposition des taxes"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/5a7558e41075.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/5a7558e41075.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSE3mars2026.pdf",
+      "storage_key": "raw/pv-index/cas/43a419777e727ea98947383a8e4a99d7265f7672d33f69f4b6d76766162a7ef8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "168-32",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "                                           service des eaux) du Règlement no 168-32 relatif à l’imposition des taxes foncières, générales et"
+            }
+          },
+          {
+            "label": "168-32-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                                     8.    Dépôt. Projet de règlement no 168-32-1 Modifiant l’article 2 (terminologie) et l’article 5 (tarifs pour"
+            }
+          },
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "                                  villes (RLRQ, c. C-19) ainsi qu’à l’article 15 du règlement no 357 « Règlement sur la régie interne des séances"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/6766162a7ef8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/6766162a7ef8.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE10fevrier2026PTI-pdf.pdf",
+      "storage_key": "raw/pv-index/cas/47cb5bafbb40f3e934045c35ed8fa7fe42427ef9eadca1b1b395c61e7df23940.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c61e7df23940.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c61e7df23940.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE17juin2026.pdf",
+      "storage_key": "raw/pv-index/cas/5593a3f6f58a994b9262ac1838a30c61ef4093d3a89f06a1ececbbe0d828ce68.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/bbe0d828ce68.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/bbe0d828ce68.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO9juin2026.pdf",
+      "storage_key": "raw/pv-index/cas/6fee1eb79a0416d2fb965e884288c8bd57416f735490fdfd4b735e725cad18a5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/5e725cad18a5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/5e725cad18a5.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE24mars2026.pdf",
+      "storage_key": "raw/pv-index/cas/79461441a45543017cb15e04b5dff541d85bd7ec843f87d98af9c348a25f4e00.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c348a25f4e00.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/c348a25f4e00.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSO10fevrier2026.pdf",
+      "storage_key": "raw/pv-index/cas/90c8eaffc5cf731f9b1b4f7a5bcca0920242b71389f1286fd6b0bc29d767577d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                                       Approuvé à la séance ordinaire du conseil le 10 mars 2026 par sa résolution #78-03-2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                                       Approuvé à la séance ordinaire du conseil le 10 mars 2026 par sa résolution #78-03-2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "193-05-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:643",
+              "quote": "                                 par sa résolution n° 193-05-2025 pour la préparation des plans et devis pour des travaux de réfection :"
+            }
+          },
+          {
+            "label": "CCU 006-01-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1090",
+              "quote": "                                 résolution CCU 006-01-2026;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "325-3",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                                                  − Adoption. Règlement no 325-3 modifiant l’Annexe «F » du Règlement 325 relatif à la"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                                                  − Adoption. Règlement no 325-3 modifiant l’Annexe «F » du Règlement 325 relatif à la"
+            }
+          },
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "                                           à l’article 16 du Règlement no 357 « Règlement sur la régie interne des séances du conseil de la Ville"
+            }
+          },
+          {
+            "label": "312",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:286",
+              "quote": "                                 ATTENDU QU’en vertu de I'article 12 du règlement n° 312 relatif à la délégation, au suivi et au contrôle"
+            }
+          },
+          {
+            "label": "325-4",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:749",
+              "quote": "                            b)     Dépôt. Projet de règlement no 325-4 remplaçant les annexes « A » et « C » du règlement no 325"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "1687150",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1167",
+              "quote": "                                       particulier de construction, de modification ou d’occupation d’un immeuble (PPCMOI) du lot 1 687 150"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/bc29d767577d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/bc29d767577d.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac",
+          "les-coteaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSE24mars2026-version-approuve.pdf",
+      "storage_key": "raw/pv-index/cas/a386881671ecd56b25f3949c5496523bc100f96f7335b94ef6572ef880c4fce2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                                  Approuvé à la séance ordinaire du conseil le 14 avril 2026 par sa résolution #138-04-2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                                  Approuvé à la séance ordinaire du conseil le 14 avril 2026 par sa résolution #138-04-2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "                                  villes (RLRQ, c. C-19) ainsi qu’à l’article 15 du règlement no 357 « Règlement sur la régie interne des séances"
+            }
+          },
+          {
+            "label": "359",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "                                  CONSIDÉRANT QU’en vertu de l’article 6.2 du règlement no 359 sur la gestion contractuelle, la directrice"
+            }
+          },
+          {
+            "label": "312",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "                                  CONSIDÉRANT QU’en vertu de I'article 12 du règlement n° 312 relatif à la délégation, au suivi et au contrôle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/2ef880c4fce2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/2ef880c4fce2.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/proces-verbaux/2026/FINAL_PVSE10fevrier2026.pdf",
+      "storage_key": "raw/pv-index/cas/cc8375329e9b265027fcc969869de3a38c72b84eaad684f460daea17ec0059ce.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "357",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "                                  villes (RLRQ, c. C-19) ainsi qu’à l’article 15 du règlement no 357 « Règlement sur la régie interne des séances"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/ea17ec0059ce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/ea17ec0059ce.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SE28avril2026.pdf",
+      "storage_key": "raw/pv-index/cas/df17a2d6fdb7fef5f59ac249d7136005e4cb12afd12d9df4d3a50d2a8e72357a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Ville de Coteau-du-Lac"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/0d2a8e72357a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/0d2a8e72357a.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO12mai2026.pdf",
+      "storage_key": "raw/pv-index/cas/e044805162ff51cdeb34a0bb0ac23ebdc024cae512b32d2ae167228589273d93.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "364",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "          b) Adoption. Règlement no 364 sur le traitement des élus municipaux"
+            }
+          },
+          {
+            "label": "354",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "          d) Dépôt. Projet de Règlement no 354 relatif à l’exercice du droit de préemption sur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/228589273d93.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/228589273d93.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "municipality_name": "Coteau-du-Lac",
+      "url": "https://coteau-du-lac.com/storage/app/media/vie-municipale/vie-democratique/seances-ordres-du-jour-et-proces-verbaux/ordre-du-jour/2026/ODJ_SO10mars2026.pdf",
+      "storage_key": "raw/pv-index/cas/e32bc65da05aacef7dce53db90b6f4aaec19e43163a3d19d2760774d628c7f54.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Coteau-du-Lac",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "        Industriels CAT Inc."
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "        Industriels CAT Inc."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "359",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "           a) Dépôt. Rapport annuel 2025 sur l’application du Règlement no 359 sur la gestion"
+            }
+          },
+          {
+            "label": "349",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "     b) Avis de motion. Règlement remplaçant le règlement no 349 relatif au traitement"
+            }
+          },
+          {
+            "label": "364",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "           c) Dépôt. Projet de règlement no 364 remplaçant le règlement no 349 relatif au"
+            }
+          },
+          {
+            "label": "325-4",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "           d) Adoption. Règlement no 325-4 remplaçant les annexes « A » et « C » du"
+            }
+          },
+          {
+            "label": "325",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "              règlement no 325 relatif à la tarification des biens, services et activités de la Ville"
+            }
+          },
+          {
+            "label": "168-32-1",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "           e) Adoption. Règlement no 168-32-1 remplaçant l’acticle 2 (terminologie) et l’article"
+            }
+          },
+          {
+            "label": "168-32",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "              5 (tarifs pour les opérations du service des eaux) du règlement no 168-32 relatif"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/774d628c7f54.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182556Z/coteau-du-lac/774d628c7f54.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coteau-du-lac"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

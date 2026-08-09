@@ -1,0 +1,3893 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T05:33:30.752Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 900,
+    "limit": 50,
+    "requested": 50,
+    "selected": 48,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/010d0c60bfd88a2103b6f1ffffc08a8dbe47fdea54129262d1748ba1301ff2de.pdf",
+      "raw/pv-index/cas/063e3d2dd785148a7f34b38f7aac231a71ff6042f932f00e66dbb904b0ac0abf.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 48,
+  "indexing": {
+    "indexed_pvs": 39,
+    "failed_pvs": 9,
+    "outcomes": {
+      "INDEXED": 39,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 9
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 39,
+    "Document": 39,
+    "Regulation": 41,
+    "Resolution": 93,
+    "CouncilSession": 18,
+    "MeetingDate": 18,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 250,
+    "edges": 77,
+    "failures": 9
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "baie-johan-beetz",
+      "storage_key": "raw/pv-index/cas/4e4d8c3324563f85d1c38292ccfc0357c6bb586c8d1f2afd0cbea5d75e9c8ee7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6562240",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:320",
+      "quote": "      par le lot 6 562 240 et dont le numéro de dossier est MERN 002105 21 999 ;"
+    },
+    {
+      "municipality_slug": "baie-johan-beetz",
+      "storage_key": "raw/pv-index/cas/5cb70b6edbb85a7eca3cbeb894d20b364a1cfea37ba60ea97ee8b2c417af6d32.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5356398",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:38",
+      "quote": "           les bornes de recharge de véhicule électrique sur le lot 5 356 398"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 1863,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z",
+  "documents": [
+    {
+      "slug": "baie-durfe",
+      "municipality_name": "Baie-D'Urfé",
+      "url": "https://www.baie-durfe.qc.ca/medias/fr/documents/2026-05-08_ODJ_r%C3%A9vis%C3%A9.pdf",
+      "storage_key": "raw/pv-index/cas/a62cbf7eb5bd78656f31d233ebc1db0abca7a833af18e28beaa088e0c0a221b3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-D'Urfé",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE ORDINAIRE DU CONSEIL           REGULAR MEETING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE ORDINAIRE DU CONSEIL           REGULAR MEETING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1106",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "   règlement numéro 1106"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/88e0c0a221b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/88e0c0a221b3.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-durfe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-durfe",
+      "municipality_name": "Baie-D'Urfé",
+      "url": "https://www.baie-durfe.qc.ca/medias/fr/documents/2026-01-07_ODJ_se%CC%81ance_extraordinaire_Budget_et_PTI.pdf",
+      "storage_key": "raw/pv-index/cas/ca712b397e4b0465115c4511b49b3ace558e6209a8c0e385a92711f5dac97f54.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-D'Urfé",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE       EXTRAORDINAIRE     DU   SPECIAL MEETING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "SÉANCE       EXTRAORDINAIRE     DU   SPECIAL MEETING OF THE MUNICIPAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/11f5dac97f54.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/11f5dac97f54.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-durfe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-durfe",
+      "municipality_name": "Baie-D'Urfé",
+      "url": "https://www.baie-durfe.qc.ca/medias/fr/documents/2026-06-17_PV_Mai_approuv%C3%A9_internet.pdf",
+      "storage_key": "raw/pv-index/cas/d1dd15f9f01e40401a82cefce3b8b3826c540771550980710761a783b1451ccf.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-D'Urfé",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-11-179",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:528",
+              "quote": "ATTENDU la résolution numéro 2024-11-179 par              WHEREAS resolution number 2024-11-179, by"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1106",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:479",
+              "quote": "   pour l’application du règlement numéro 1106                 enforcement of By-law No. 1106"
+            }
+          },
+          {
+            "label": "1051",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:620",
+              "quote": "(Règlement 1051 - bâtiments) au poste budgétaire        051 (By-law 1051 - Buildings) to budgetary code"
+            }
+          },
+          {
+            "label": "1113",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1108",
+              "quote": "Règlement numéro 1113;                                   By-law no. 1113;"
+            }
+          },
+          {
+            "label": "1113.                                   1113",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1305",
+              "quote": "   Règlement numéro 1113.                                   1113."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/a783b1451ccf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/a783b1451ccf.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-durfe",
+          "montreal",
+          "montreal-ouest"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-durfe",
+      "municipality_name": "Baie-D'Urfé",
+      "url": "https://www.baie-durfe.qc.ca/medias/fr/documents/2026-02-10_PV_janvier_ordinaire_approuv%C3%A9_Internet.pdf",
+      "storage_key": "raw/pv-index/cas/e455a3bc2e9370abaa78ad3377bf5f504641323ba4ee1425b59bb7e75d707af0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-D'Urfé",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "interventions afin de défendre les intérêts et les     defend the interests and rights of the Town of Baie-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "interventions afin de défendre les intérêts et les     defend the interests and rights of the Town of Baie-"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-65",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:492",
+              "quote": "ATTENDU la résolution numéro 2025-04-65                  WHEREAS Resolution No. 2025-04-65 confirmed"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:267",
+              "quote": "2. Avis de motion et dépôt du projet de Règlement       2. Notice of motion and filing of draft By-law"
+            }
+          },
+          {
+            "label": "3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:281",
+              "quote": "3. Avis de motion et dépôt du projet de Règlement       3. Notice of motion and filing of draft By-law"
+            }
+          },
+          {
+            "label": "1106",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:309",
+              "quote": "1. Adoption du Règlement numéro 1106                       1. Adoption of By-law No. 1106 replacing By-law"
+            }
+          },
+          {
+            "label": "958",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:310",
+              "quote": "   remplaçant le Règlement numéro 958 sur les                 No. 958 on pesticides"
+            }
+          },
+          {
+            "label": "1117",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "ATTENDU QUE le Règlement numéro 1117                        WHEREAS By-law number 1117 constituting the"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/b7e75d707af0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/b7e75d707af0.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-durfe",
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-durfe",
+      "municipality_name": "Baie-D'Urfé",
+      "url": "https://www.baie-durfe.qc.ca/medias/fr/documents/2026-05-13_PV_avril_approuv%C3%A9_Internet.pdf",
+      "storage_key": "raw/pv-index/cas/ffb584bf6550359603b8c571417cda1b163ba08b9501e1698fc2535566088f1b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-D'Urfé",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:204",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:204",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-02-033",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:327",
+              "quote": "ATTENDU la résolution numéro 2026-02-033                 WHEREAS resolution number 2026-02-033"
+            }
+          },
+          {
+            "label": "2023-04-337",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:455",
+              "quote": "ATTENDU la résolution 2023-04-337 par laquelle la        WHEREAS Resolution 2023-04-337 authorized"
+            }
+          },
+          {
+            "label": "2025-06-114",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:831",
+              "quote": "ATTENDU la résolution numéro 2025-06-114 par               WHEREAS         Resolution     No.     2025-06-114"
+            }
+          },
+          {
+            "label": "2025-09-169",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:883",
+              "quote": "ATTENDU la résolution numéro 2025-09-169 par            WHEREAS resolution number 2025-09-169 by"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1123",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "1. Adoption du règlement numéro 1123                     1. Adoption of By-law number 1123 establishing"
+            }
+          },
+          {
+            "label": "1121-1",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:291",
+              "quote": "2. Adoption du règlement numéro 1121-1                   2. Adoption of By-law number 1121-1 amending"
+            }
+          },
+          {
+            "label": "1121",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "   modifiant le règlement numéro 1121 de                    By-law number 1121 concerning tariffs for the"
+            }
+          },
+          {
+            "label": "1052",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:902",
+              "quote": "poste budgétaire 59-140-01-052 (règlement 1052          budgetary item 59-140-01-052 (bylaw 1052"
+            }
+          },
+          {
+            "label": "1113",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:996",
+              "quote": "requérant en vertu du Règlement No 1113 de la Ville     applicant under By-law No. 1113 of the Town of"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/535566088f1b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-durfe/535566088f1b.pdf/.graphify/.graphify_extract.json — 11 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-durfe",
+          "cote-saint-luc"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2022/02/Proces-verbal-25-octobre-2021.pdf",
+      "storage_key": "raw/pv-index/cas/06689f5c3903d02e18956d07c6047b32e58b34f566c13c1df775f79046c48957.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-10-25-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "     5. Résolution 2021-10-25-01 concernant une modification au calendrier des séances"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/f79046c48957.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/f79046c48957.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-06-02.pdf",
+      "storage_key": "raw/pv-index/cas/0d694949d4a64aea6b316dd0e3efe1906afde3984376048852fa1763f3f4757b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "       municipal du 5 mai 2025 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-06-02-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "           5.1. Résolution 2025-06-02-01 concernant le service de pinces de désincarcération"
+            }
+          },
+          {
+            "label": "2025-06-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           5.2. Résolution 2025-06-02-02 concernant les services de soins de santé"
+            }
+          },
+          {
+            "label": "2025-06-02-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           6.1. Résolution 2025-06-02-03 concernant la nomination d’un maire suppléant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/1763f3f4757b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/1763f3f4757b.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz",
+          "havre-saint-pierre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-5-decembre-2022.pdf",
+      "storage_key": "raw/pv-index/cas/0f0de358f11d56193d7fa3c43bf2ef2c9ea7d8498c37d2c221aa87053fc1ef3e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE LA MUNICIPALITÉ"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE LA MUNICIPALITÉ"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-12-05-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "            05.        Résolution 2022-12-05-01 pour l’adoption des prévisions budgétaires"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/87053fc1ef3e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/87053fc1ef3e.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/06/Proces-verbal-5-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/0fbf17867f967f440e39ff41833e21b03d458c347f97c5d910cc0d83db9fac99.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0d83db9fac99.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0d83db9fac99.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/12/Proces-verbal-5-decembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/142cc53353b6bb8ecbc246e65246928261b38aae2646d525f60a7c645c1e7161.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 30 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "30 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       municipal du 30 novembre 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-05-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       4. Résolution 2023-12-05-01 concernant l’adoption du budget 2024 ainsi que le programme"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/7c645c1e7161.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/7c645c1e7161.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/11/Proces-verbal-23-octobre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/179fb223125132d4cba933fa562f4f4cac83145441988f7b310e189439270d1d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "       municipal du 2 octobre 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-10-23-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "       4. Résolution 2023-10-23-01 concernant un contrat d’architecture pour la nouvelle usine"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-06-23-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "     Que cette dépense soit assumée à même le règlement 2023-06-23-01;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/189439270d1d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/189439270d1d.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-04-07.pdf",
+      "storage_key": "raw/pv-index/cas/17ab917ebc310a3927abb6a01adb75834f0134ed063b6e1556ca4c3a09871713.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "       municipal du 10 mars 2025 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "           5.1. Résolution 2025-04-07-01 concernant le PGA – eau (Plan de gestion des actifs)"
+            }
+          },
+          {
+            "label": "2025-04-07-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           5.2. Résolution 2025-04-07-02 concernant le programme PRIMEAU 2023"
+            }
+          },
+          {
+            "label": "2025-04-07-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "           5.3. Résolution 2025-04-07-03 concernant l’embauche d’une directrice générale,"
+            }
+          },
+          {
+            "label": "2025-04-07-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "           5.4. Résolution 2025-04-07-04 concernant l’embauche d’une adjointe à la direction"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4c3a09871713.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4c3a09871713.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/03/2026-02-03-PV.pdf",
+      "storage_key": "raw/pv-index/cas/1b6e2fd261811de29c0bb6f6ccdfe5cc472cd1427e24b90af8de53372959d529.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/53372959d529.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/53372959d529.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2022/02/Proces-verbal-1-decembre-2021.pdf",
+      "storage_key": "raw/pv-index/cas/1ddf9b04335029e2a08b1c1760039d5957b4841d009b56599c78514429302f0c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er novembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "      conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er novembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "      municipal du 1er novembre 2021 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-12-01-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "             05.    Résolution 2021-12-01-01 pour l’adoption des prévisions budgétaires"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/514429302f0c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/514429302f0c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/12/Xerox-Scan_12102025152152.pdf",
+      "storage_key": "raw/pv-index/cas/26bf95a5cc002261828d3a8727a4dfc916e234d1665a96f296828b460538ab5b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/8b460538ab5b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/8b460538ab5b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2022/02/Proces-verbal-1-novembre-2021.pdf",
+      "storage_key": "raw/pv-index/cas/298a0840e1b321210d2d4344955a53766232450cdd621be6f50e0ade19a52950.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 6,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-11-01-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       a) Résolution 2021-11-01-01 concernant la nomination d’une mairesse ou d’un maire"
+            }
+          },
+          {
+            "label": "2021-11-01-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "       b) Résolution 2021-11-01-02 concernant le dépôt des états comparatifs 2020-2021"
+            }
+          },
+          {
+            "label": "2021-11-01-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "       c) Résolution 2021-11-01-03 concernant le dépôt du rapport financier trimestriel et du"
+            }
+          },
+          {
+            "label": "2021-11-01-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "       d) Résolution 2021-11-01-04 concernant une demande de financement dans le programme"
+            }
+          },
+          {
+            "label": "2021-11-01-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "       e) Résolution 2021-11-01-05 concernant un contrat en génie civil"
+            }
+          },
+          {
+            "label": "2021-11-01-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "       f) Résolution 2021-11-01-06 concernant un contrat de services d’architecture"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-11-01-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "       b) Dépôt et adoption du projet de règlement 2021-11-01-01 concernant le traitement du"
+            }
+          },
+          {
+            "label": "2021-11-01-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "       d) Dépôt et adoption du projet de règlement 2021-11-01-02 concernant le taux de taxation"
+            }
+          },
+          {
+            "label": "2020-11-02-06",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "     Règlement no 2020-11-02-06 fixant la rémunération des élus;"
+            }
+          },
+          {
+            "label": "1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:517",
+              "quote": "Projet de règlement             1er novembre 2021"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0ade19a52950.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0ade19a52950.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2024/07/Proces-verbal-Baie-Johan-Beetz-3-juin-2024.pdf",
+      "storage_key": "raw/pv-index/cas/2c0221886cd7d20dab869a9aa4b5a1550876667de91e132c787690b98a781e85.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2024-06-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "       Considérant que le greffier-trésorier doit, lors d’une séance du conseil, déposer le rapport"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2024-06-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "5.1    Résolution 2024-06-03-01 concernant le rapport financier 2023"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-06-03-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "           5.1. Résolution 2024-06-03-01 concernant le Rapport financier 2023"
+            }
+          },
+          {
+            "label": "2024-06-03-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           5.2 Résolution 2024-06-03-02 concernant le Schéma de couverture de risque"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/90b98a781e85.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/90b98a781e85.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-10-janvier-2022.pdf",
+      "storage_key": "raw/pv-index/cas/2d012c3d021a886a480911b7e7ba549e8d16993dcb2a0095d7e0dd5bd9de9f65.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-10-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "            a. Résolution 2022-01-10-01 concernant un contrat notarié"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/dd5bd9de9f65.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/dd5bd9de9f65.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-11-avril-2022.pdf",
+      "storage_key": "raw/pv-index/cas/35c7e7e5ae69302aee688f698b0738110f1f5baaffcb31498346f935910dfa8c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-04-11-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "            a. Résolution 2022-04-11-01 concernant l’embauche de mandat de Martin Côté à signer le"
+            }
+          },
+          {
+            "label": "2022-04-11-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "            b. Résolution 2022-04-11-02 concernant une demande d’aide financière à la MRC dans le"
+            }
+          },
+          {
+            "label": "2022-04-11-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "            c. Résolution 2022-04-11-03 concernant les assurances collectives des employés de la"
+            }
+          },
+          {
+            "label": "2022-04-11-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "            d. Résolution 2022-04-11-04 concernant la participation au développement d’un service"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/f935910dfa8c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/f935910dfa8c.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-02-03.pdf",
+      "storage_key": "raw/pv-index/cas/369a9c6c12fddc552d5aab572be6f4cb93b4f553fbfdf7ecf533658892cecfe3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "       municipal du 20 janvier 2025 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-02-03-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "       4. Résolution 2025-02-03-01 concernant le Schéma de couverture de risque révisé"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/658892cecfe3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/658892cecfe3.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/01/Proces-verbal-15-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/374eca06e7e72ba2ee95859ada14688886c9b9073d898bc69ea54b22e57d537b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4b22e57d537b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4b22e57d537b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-9-septembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/393d9093205212963d34685bc73a8a19869ed0e7d957bd4919cbeb4dd929c22c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-09-09-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "             5.1. Résolution 2024-09-09-01 concernant un contrat de pavage à Pavex ltée"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/eb4dd929c22c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/eb4dd929c22c.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-07-07.pdf",
+      "storage_key": "raw/pv-index/cas/397d61e2cd253e1ca6305e1af5b5eadd19338f1b5c9d600afa5bd6d4ad6eb25a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "       municipal du 2 juin 2025 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-07-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "           5.1. Résolution 2025-07-07-01 concernant la précarité des soins préhospitaliers"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/d6d4ad6eb25a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/d6d4ad6eb25a.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2024/08/Proces-verbal-Baie-Johan-Beetz-8-juillet-2024.pdf",
+      "storage_key": "raw/pv-index/cas/430fbf085b07f4acb4292b8a36f9c2794cb9e852b566040414a8ca2ca3e47b50.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-07-08-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           5.1. Résolution 2024-07-08-01 concernant la gestion du compte de"
+            }
+          },
+          {
+            "label": "2024-07-08-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           5.2 Résolution 2024-07-08-02 concernant Éco Entreprise Québec (ÉEQ)"
+            }
+          },
+          {
+            "label": "2024-07-08-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "           5.3 Résolution 2024-07-08-03 concernant le maire suppléant"
+            }
+          },
+          {
+            "label": "2024-07-08-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "           5.4 Résolution 2024-07-08-04 concernant la protection du territoire"
+            }
+          },
+          {
+            "label": "2024-07-08-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "           5.5 Résolution 2024-07-08-05 concernant l’embauche d’empoyé.e.s"
+            }
+          },
+          {
+            "label": "2024-07-08-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "           5.6 Résolution 2024-07-08-06 concernant le dispensaire de Baie-Johan-Beetz"
+            }
+          },
+          {
+            "label": "2024-07-08-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "           5.7 Résolution 2024-07-08-07 concernant une autorisation à Tetra Tech"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/ca2ca3e47b50.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/ca2ca3e47b50.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-01-20.pdf",
+      "storage_key": "raw/pv-index/cas/437ae708ec81f656ab2e35d8f33f82bed85ef3ccf43cf39b0c80429287f0fe61.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "3.     Adoption du procès-verbal de la séance ordinaire du 6 janvier 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-01-20-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       4. Résolution 2025-01-20-01 concernant le calendrier des séances ordinaires"
+            }
+          },
+          {
+            "label": "2024-12-13-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "       Que cette résolution annule et remplace la résolution 2024-12-13-01."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01-06-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "           5.1. Règlement 2025-01-06-01 concernant le traitement du maire et des élus municipaux"
+            }
+          },
+          {
+            "label": "2025-01-06-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           5.2. Règlement 2025-01-06-02 concernant le taux de taxation foncière et la tarification des"
+            }
+          },
+          {
+            "label": "2023-11-30-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "       Le présent règlement remplace le Règlement no 2023-11-30-01"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/429287f0fe61.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/429287f0fe61.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-01-06.pdf",
+      "storage_key": "raw/pv-index/cas/486b3783109970bb3089a7e595ff445ea35ca2274eed31abe12b097a6abf1e4a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "       municipal du 19 décembre 2024 soit adopté."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-01-06-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "           5.1. Règlement 2025-01-06-01 concernant l’avis de motion et le dépôt du projet de"
+            }
+          },
+          {
+            "label": "2025-01-06-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           5.2. Règlement 2025-01-06-02 concernant l’avis de motion et le dépôt du projet de"
+            }
+          },
+          {
+            "label": "2023-11-30-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "       Le présent règlement remplace le Règlement no 2023-11-30-01"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/097a6abf1e4a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/097a6abf1e4a.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-4-novembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/4e4d8c3324563f85d1c38292ccfc0357c6bb586c8d1f2afd0cbea5d75e9c8ee7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 5,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-11-04-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "            5.1. Résolution 2024-11-04-01 concernant la programmation de la TECQ"
+            }
+          },
+          {
+            "label": "2024-11-04-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "            5.2. Résolution 2024-11-04-02 concernant le règlement 2024-10-07-01"
+            }
+          },
+          {
+            "label": "2024-11-04-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "            5.3. Résolution 2024-11-04-03 concernant le règlement 2024-10-07-02"
+            }
+          },
+          {
+            "label": "2024-11-04-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "            5.4. Résolution 2024-11-04-04 concernant les travaux d’atténuation de feux de forêt"
+            }
+          },
+          {
+            "label": "2024-11-04-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "            5.5. Résolution 2024-11-04-05 concernant l’achat d’un terrain pour l’usine d’eau potable"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-10-07-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "            5.2. Résolution 2024-11-04-02 concernant le règlement 2024-10-07-01"
+            }
+          },
+          {
+            "label": "2024-10-07-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "            5.3. Résolution 2024-11-04-03 concernant le règlement 2024-10-07-02"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6562240",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:320",
+              "quote": "      par le lot 6 562 240 et dont le numéro de dossier est MERN 002105 21 999 ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a5d75e9c8ee7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a5d75e9c8ee7.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/05/Proces-verbal-14-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/510683ee2926bc6d9ba5dd4c61de812f18b01f060d5f8cd556a858911d1c882f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/58911d1c882f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/58911d1c882f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/11/Proces-verbal-7-novembre-2022.pdf",
+      "storage_key": "raw/pv-index/cas/54af5b2cf26cd66bd4490cf55fe15563bc5673b5aaff7a628161bf9adf64dc64.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-11-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "      a) Résolution 2022-11-07-01 concernant la nomination d’une mairesse ou d’un"
+            }
+          },
+          {
+            "label": "2022-11-07-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "      b) Résolution 2022-11-07-02 concernant le dépôt des états comparatifs"
+            }
+          },
+          {
+            "label": "2022-11-07-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "      c) Résolution 2022-11-07-03 concernant le dépôt du rapport financier"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-11-07-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "      b) Dépôt et adoption du projet de règlement 2022-11-07-01 concernant le"
+            }
+          },
+          {
+            "label": "2022-11-0-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "      d) Dépôt et adoption du projet de règlement 2022-11-0-02 concernant le taux"
+            }
+          },
+          {
+            "label": "2021-12-13-01",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "    le Règlement no 2021-12-13-01 fixant la rémunération des élus;"
+            }
+          },
+          {
+            "label": "7",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:466",
+              "quote": "Projet de règlement                        7er novembre 2022"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/bf9adf64dc64.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/bf9adf64dc64.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/01/Proces-verbal-13-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/5a219dbacfa898eb6276733e9a4dd914e9115b73df09d05e41c13044518d8095.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/3044518d8095.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/3044518d8095.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/11/Proces-verbal-2-octobre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/5cb70b6edbb85a7eca3cbeb894d20b364a1cfea37ba60ea97ee8b2c417af6d32.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "       municipal du 11 septembre 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-10-02-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       6. Résolution 2023-10-02-01 concernant l’adoption du Rapport annuel 2022 en sécurité"
+            }
+          },
+          {
+            "label": "2023-10-02-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "       7. Résolution 2023-10-02-02 concernant l’acte de servitude en faveur d’Hydro-Québec pour"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5356398",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           les bornes de recharge de véhicule électrique sur le lot 5 356 398"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/b2c417af6d32.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/b2c417af6d32.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2024/03/Proces-verbal-05-02-2024.pdf",
+      "storage_key": "raw/pv-index/cas/69dda60e4f18d5fb9dbfee4a4001e1d196cedc018f9c63551851de22045f2cb0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-02-05-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "            1. Résolution 2024-02-05-01 concernant le paiement des heures cumulées du"
+            }
+          },
+          {
+            "label": "2024-02-05-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "            2. Résolution 2024-02-05-02 concernant l’achat de radars pédagogiques"
+            }
+          },
+          {
+            "label": "2024-02-05-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "            3. Résolution 2024-02-05-03 concernant une subvention à la Coopérative de solidarité"
+            }
+          },
+          {
+            "label": "2024-02-05-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "            4. Résolution 2024-02-05-04 concernant Tourisme Côte-Nord"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/de22045f2cb0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/de22045f2cb0.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/12/Proces-verbal-18-decembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/6aeb5c90c14e88adba04b7dde100ef3702a24c4a820c718242bf80b07a060a8e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "       municipal du 11 décembre 2023 soit adopté."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-12-18-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "       4. Règlement 2023-12-18-01 concernant l’avis de motion et le dépôt du projet de règlement"
+            }
+          },
+          {
+            "label": "2023-11-30-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "          visant une modification au règlement 2023-11-30-02 sur le taux de taxation foncière et la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/80b07a060a8e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/80b07a060a8e.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-8-aout-2022.pdf",
+      "storage_key": "raw/pv-index/cas/6b7c523e5adc6700596f6ad744da2aa62826b1f1f6ad75d2458f4784c84a586d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022-08-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "\f            Considérant que la secrétaire-trésorière doit, lors d’une séance du conseil, déposer le rapport financier, le"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022-08-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "           a)   Résolution 2022-08-08-01 concernant le dépôt du rapport financier 2021"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-08-08-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "         a) Résolution 2022-08-08-01 concernant le dépôt du rapport financier 2021"
+            }
+          },
+          {
+            "label": "2022-08-08-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "         b) Résolution 2022-08-08-02 concernant le dépôt du rapport du maire"
+            }
+          },
+          {
+            "label": "2022-08-08-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "         c) Résolution 2022-08-08-03 concernant le projet d’isolation ou de remplacement de la conduite"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4784c84a586d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/4784c84a586d.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2026/04/Proces-verbal-7-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/3ccfdea53a7c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/3ccfdea53a7c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-22-decembre-2022.pdf",
+      "storage_key": "raw/pv-index/cas/6fe591f599297af156db08dbd9f7771bb5fccbc12f00cf9aa921d3e3032ba298.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-12-22-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "          a) Résolution 2022-12-22-01 concernant l’emploi de M. Stéfan Marchand"
+            }
+          },
+          {
+            "label": "2022-12-22-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "          b) Résolution 2022-12-22-02 concernant l’embauche d’un directeur général par"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/d3e3032ba298.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/d3e3032ba298.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/12/PV-11-decembre-2023-BJB.pdf",
+      "storage_key": "raw/pv-index/cas/710e42d94323a3c3ced1e91448f246364117f59fa892b0b87f5e5b7390713501.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 7,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "     conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "     municipal du 5 décembre 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-11-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "           a) résolution 2023-12-11-01 concernant des participations financières : Centre d’action"
+            }
+          },
+          {
+            "label": "2023-12-11-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "           b) résolution 2023-12-11-02 concernant la nomination d’un responsable des services"
+            }
+          },
+          {
+            "label": "2023-12-11-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "           c) résolution 2023-12-11-03 concernant la nomination d’une représentante de la"
+            }
+          },
+          {
+            "label": "2023-12-11-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "           d) résolution 2023-12-11-04 concernant la demande d’attestation de classification requise"
+            }
+          },
+          {
+            "label": "2023-12-11-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "           e) résolution 2023-12-11-05 concernant le calendrier des séances ordinaires du conseil"
+            }
+          },
+          {
+            "label": "2023-12-11-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "           f) résolution 2023-12-11-06 concernant le dépôt des états comparatifs, le rapport financier"
+            }
+          },
+          {
+            "label": "2023-12-11-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "           g) résolution 2023-12-11-07 concernant l’adoption de la mise à jour de la Politique familiale"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-11-30-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "           a) adoption du règlement 2023-11-30-01 concernant le traitement du maire et des élus"
+            }
+          },
+          {
+            "label": "2023-11-30-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "           b) adoption du règlement 2023-11-30-02 concernant le taux de taxation foncière et la"
+            }
+          },
+          {
+            "label": "2022-11-07-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "                Le présent règlement remplace le Règlement no 2022-11-07-01"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/5b7390713501.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/5b7390713501.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2021/10/Proces-verbal-4-octobre-2021.pdf",
+      "storage_key": "raw/pv-index/cas/73e3496f686843f5b050c11c1f813abf1e6aa7ad42a1e69a80c2b768b4953b4c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/b768b4953b4c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/b768b4953b4c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-9-janvier-2023.pdf",
+      "storage_key": "raw/pv-index/cas/775d5af46fe83ac29fbc42045d5bd7de18df15e56257e4e6ddf4a8261c728210.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                        MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                        MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-01-09-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "         a) Résolution 2023-01-09-01 concernant une subvention à la Coopérative de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a8261c728210.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a8261c728210.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/12/Proces-verbal-09-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/6b0549f1d3e7.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/6b0549f1d3e7.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2024/02/Proces-verbal-08-01-2024.pdf",
+      "storage_key": "raw/pv-index/cas/7eb86229c3778f9dc7a550c092c6ab8e16639d463c596c763e52c66c890b8cf5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "       municipal du 20 décembre 2023 soit adopté."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/c66c890b8cf5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/c66c890b8cf5.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-21-aout-2023.pdf",
+      "storage_key": "raw/pv-index/cas/889f4e6e5b77c91c05ecb07f6e9da5fc8b541630822611cc98950f13fc13e3c2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "       municipal du 7 août 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-08-21-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "       4. Résolution 2023-08-21-01 – mandat de géotechnie et évaluation environnementale"
+            }
+          },
+          {
+            "label": "2023-08-21-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "       5. Résolution 2023-08-21-02 – mandat de plans et devis et études préliminaires"
+            }
+          },
+          {
+            "label": "2023-08-21-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "       6. Résolution 2023-08-21-03 – embauche d’un directeur général, secrétaire trésorier et"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-06-23-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "     QUE cette dépense soit assumée à même le règlement 2023-06-23-01;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0f13fc13e3c2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/0f13fc13e3c2.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2024/09/Proces-verbal-19-08-2024.pdf",
+      "storage_key": "raw/pv-index/cas/8abd0b77a5426779ce95d0f52051a8bbb7e96c5738b593953bbeff9d1ed60b94.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-08-19-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           5.1. Résolution 2024-08-19-01 concernant le dépôt du rapport financier semestriel et du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/ff9d1ed60b94.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/ff9d1ed60b94.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-13-fevrier-2023.pdf",
+      "storage_key": "raw/pv-index/cas/8feba5646f7ad6e0436e2e5737333ac420321541bc36d6d11b68a2a5887cd904.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                           MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance ordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "       municipal du 9 janvier 2023 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-02-13-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "           a) Résolution 2023-02-13-01 concernant le Service en ressources humaines de la"
+            }
+          },
+          {
+            "label": "2023-02-13-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "           b) Résolution 2023-02-13-02 concernant un contrat avec FQM services au sujet"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a2a5887cd904.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a2a5887cd904.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-2025-02-10.pdf",
+      "storage_key": "raw/pv-index/cas/904dd077537b601793aa0fcf4999d96dd72811c6470bf67a5eab435babe974e4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "       conseillères et conseillers présents que le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "       municipal du 3 février 2025 soit adopté."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-02-10-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "           5.1. Résolution 2025-02-10-01 concernant le Programme des travailleurs étrangers"
+            }
+          },
+          {
+            "label": "2025-02-10-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "           5.2. Résolution 2025-02-10-02 concernant la demande financière de Bernard Landry"
+            }
+          },
+          {
+            "label": "2025-02-10-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "           5.3. Résolution 2025-02-10-03 concernant le projet de Quentin Savignac"
+            }
+          },
+          {
+            "label": "2025-02-10-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "           5.4. Résolution 2025-02-10-04 concernant la nomination d’une substitut à la RIGMREM"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/435babe974e4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/435babe974e4.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2025/09/Proces-verbal-7-octobre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/90fd97ba82971d038328cdf779faf6538d68f9c08441eaf083eda068fb7433df.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-10-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "             5.1. Résolution 2024-10-07-01 concernant la programmation de la TECQ"
+            }
+          },
+          {
+            "label": "2024-10-07-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "             5.2. Résolution 2024-10-07-02 concernant une aide financière pour le compostage des"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-10-07-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "             6.1. Avis de motion et dépôt du projet de règlement 2024-10-07-01"
+            }
+          },
+          {
+            "label": "2024-10-07-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "             6.2. Avis de motion et dépôt du projet de règlement 2024-10-07-02"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a068fb7433df.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/a068fb7433df.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-6-juin-2022.pdf",
+      "storage_key": "raw/pv-index/cas/917babbddff3659f0346faba2316f1986912f5fab55efe180aa5e62a3ed95785.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 6,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-06-06-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "        a) Résolution 2022-06-06-01 concernant l’embauche d’un employé aux travaux sylvicoles"
+            }
+          },
+          {
+            "label": "2022-06-06-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "        b) Résolution 2022-06-06-02 concernant l’adhésion annuelle à Culture Côte-Nord"
+            }
+          },
+          {
+            "label": "2022-06-06-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "        c) Résolution 2022-06-06-03 concernant la nomination d’une mairesse ou d’un maire"
+            }
+          },
+          {
+            "label": "2022-06-06-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "        d) Résolution 2022-06-06-04 concernant l’octroi d’une contribution financière non"
+            }
+          },
+          {
+            "label": "2022-06-06-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "        e) Résolution 2022-06-06-05 concernant l’adoption du rapport annuel d’activités du"
+            }
+          },
+          {
+            "label": "2022-06-06-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "        f) Résolution 2022-06-06-06 concernant l’adhésion à l’association forestière Côte-Nord"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-06-06-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "        b) Dépôt et adoption du projet de règlement 2022-06-06-01 le code d’éthique et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/e62a3ed95785.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/e62a3ed95785.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "url": "https://www.baiejohanbeetz.qc.ca/app/uploads/2023/09/Proces-verbal-7-fevrier-2022.pdf",
+      "storage_key": "raw/pv-index/cas/93091964369eaaeaeae64ff673e26b209932be90f0986b7f7060fdd12de09fa7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Johan-Beetz",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-02-07-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "            a. Résolution 2022-02-07-01 concernant la prévention des risques liés aux feux de forêt"
+            }
+          },
+          {
+            "label": "2022-02-07-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "            b. Résolution 2022-02-07-02 concernant les droits d’accès pour clic sécur"
+            }
+          },
+          {
+            "label": "2022-02-07-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "            c. Résolution 2022-02-07-03 concernant Tetra Tech"
+            }
+          },
+          {
+            "label": "2022-02-07-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "            d. Résolution 2022-02-07-04 Concernant les droits d’accès pour Accès D"
+            }
+          },
+          {
+            "label": "2022-02-07-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "            e. Résolution 2022-02-07-05 concernant un contrat d’urbanisme"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/fdd12de09fa7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T053034Z/baie-johan-beetz/fdd12de09fa7.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-johan-beetz"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
