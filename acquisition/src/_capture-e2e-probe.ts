@@ -17,6 +17,8 @@
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx acquisition/src/_capture-e2e-probe.ts --run zones-20260725T150000Z-0 [--type wfs]
  */
+import { pathToFileURL } from "node:url";
+
 import {
   captureRunKeys,
   parseManifestJsonl,
@@ -34,6 +36,28 @@ import { captureReceiptFromManifest } from "./lib/zone-provenance-quality.js";
 function arg(k: string): string | undefined {
   const i = process.argv.indexOf(`--${k}`);
   return i >= 0 ? process.argv[i + 1] : undefined;
+}
+
+/**
+ * Résout les run_id concrets à partir de clés S3 listées sous `capture/_runs/`,
+ * pour un préfixe de run déterministe (`<lane>-<stamp>-`, cf. le descripteur émis
+ * par k8s-capture-run). Le run_id complet ajoute `<shard>-<POD_UID>` que seul le
+ * pod connaît : lister le préfixe puis appeler cette fonction ferme la friction
+ * de récupération. Ne garde que les `manifest.jsonl` du préfixe demandé ; dédupe
+ * en préservant l'ordre de première apparition.
+ */
+export function runIdsFromManifestKeys(keys: readonly string[], runPrefix: string): string[] {
+  const runIds: string[] = [];
+  const seen = new Set<string>();
+  for (const key of keys) {
+    const match = /^capture\/_runs\/([^/]+)\/manifest\.jsonl$/.exec(key);
+    if (!match) continue;
+    const runId = match[1];
+    if (!runId.startsWith(runPrefix) || seen.has(runId)) continue;
+    seen.add(runId);
+    runIds.push(runId);
+  }
+  return runIds;
 }
 
 async function main(): Promise<void> {
@@ -129,4 +153,9 @@ async function main(): Promise<void> {
   if (failed > 0) process.exit(1);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.stack : String(e)); process.exit(1); });
+// N'exécute la sonde que lancée directement : l'import (test unitaire de
+// runIdsFromManifestKeys) ne doit déclencher ni lecture d'argv ni process.exit.
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
+  main().catch((e: unknown) => { console.error(e instanceof Error ? e.stack : String(e)); process.exit(1); });
+}
