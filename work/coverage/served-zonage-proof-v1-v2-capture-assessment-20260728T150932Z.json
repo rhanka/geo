@@ -1,0 +1,234 @@
+{
+  "contract": "served-zonage-proof-v1-v2-capture-assessment/v1",
+  "generated_at": "2026-07-28T15:14:19.227Z",
+  "complete": true,
+  "scope": "work/coverage/served-zonage-proof-v1-v2-capture-scope-20260728T145651Z.json",
+  "worklist": "work/coverage/served-zonage-proof-v1-v2-capture-control-20260728T145651Z.json",
+  "run_stamp": "20260728T150932Z",
+  "captures": {
+    "unique_urls": 10,
+    "partition": {
+      "SHA_IDENTIQUE": 7,
+      "SHA_DIFFERENT": 3,
+      "HTTP_404": 0,
+      "AUTRE": 0,
+      "total": 10,
+      "closed": true
+    }
+  },
+  "collections": {
+    "affected": 10,
+    "partition": {
+      "SHA_IDENTIQUE": 7,
+      "SHA_DIFFERENT": 3,
+      "HTTP_404": 0,
+      "AUTRE": 0,
+      "total": 10,
+      "closed": true
+    }
+  },
+  "urls": [
+    {
+      "url": "https://arcgis-web.saint-eustache.ca/arcgis/rest/services/zonage/ZonageMunicipal/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:990b7e56660b18c9a2f6ebcda4cc8fcd5ce42094348fcbc48a660f47580b7963",
+      "retrieved_at": "2026-07-28T15:09:59.211Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 1,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "saint-eustache"
+      ],
+      "expected_sha256": [
+        "sha256:990b7e56660b18c9a2f6ebcda4cc8fcd5ce42094348fcbc48a660f47580b7963"
+      ]
+    },
+    {
+      "url": "https://cartes.ville.levis.qc.ca/arcgis/rest/services/Portail/UrbanismeWeb/MapServer/923/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:2925506a2b52211f8c23bdaf78c9b9b0c8e0fafc3160dd7586e79d7b0e15231e",
+      "retrieved_at": "2026-07-28T15:10:01.218Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 1,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "levis"
+      ],
+      "expected_sha256": [
+        "sha256:2925506a2b52211f8c23bdaf78c9b9b0c8e0fafc3160dd7586e79d7b0e15231e"
+      ]
+    },
+    {
+      "url": "https://geo.victoriaville.ca/arcgis/rest/services/Urbanisme/Service_zonage/MapServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:0ebfbbe5b0489090042faf8a7568c07ca6f207a7e1570edf289314996622d3b1",
+      "retrieved_at": "2026-07-28T15:10:04.111Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 3,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "victoriaville"
+      ],
+      "expected_sha256": [
+        "sha256:0ebfbbe5b0489090042faf8a7568c07ca6f207a7e1570edf289314996622d3b1"
+      ]
+    },
+    {
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2721030%27",
+      "http_status": 200,
+      "sha256": "sha256:89a8decba0b46894123610115dd5e39d646b1701ed589ceb08b19a9af43e76bb",
+      "retrieved_at": "2026-07-28T15:10:06.930Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 3,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_DIFFERENT",
+      "slugs": [
+        "sainte-anne-de-beaupre"
+      ],
+      "expected_sha256": [
+        "sha256:244263df224aae4ad872d019644be37ada3fce869fbfd4cc899ef9f620be4e2d"
+      ]
+    },
+    {
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2757075%27",
+      "http_status": 200,
+      "sha256": "sha256:2b2de062d480e9f2a48028186526c649c5af011029cce07b9b2b53402414f6a5",
+      "retrieved_at": "2026-07-28T15:10:07.620Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 5,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_DIFFERENT",
+      "slugs": [
+        "saint-antoine-sur-richelieu"
+      ],
+      "expected_sha256": [
+        "sha256:7da115559c488a1866bf75a3880d76d624545400fd52cf3d3fddb515da0cede3"
+      ]
+    },
+    {
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2767015%27",
+      "http_status": 200,
+      "sha256": "sha256:02c47f829c84ed6a7b840cec64b7aff547acd580c78808e42c8ddced79787e4c",
+      "retrieved_at": "2026-07-28T15:10:11.113Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 4,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_DIFFERENT",
+      "slugs": [
+        "la-prairie"
+      ],
+      "expected_sha256": [
+        "sha256:3b63c670df1cb08ffd5069637238dced0c76b089c9640264c71d14fa87e44d09"
+      ]
+    },
+    {
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03010_Publique/MapServer/15/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:4a369802992929f8d198d37f627c3fd2ccdad1bbe494e26774cf9432cb3d95a0",
+      "retrieved_at": "2026-07-28T15:10:13.804Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 7,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "cloridorme"
+      ],
+      "expected_sha256": [
+        "sha256:4a369802992929f8d198d37f627c3fd2ccdad1bbe494e26774cf9432cb3d95a0"
+      ]
+    },
+    {
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05010_Publique/MapServer/23/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:da51697ab451387031b73facc190eaad402556c7d02fa5ca6cba4cb93c03a827",
+      "retrieved_at": "2026-07-28T15:10:15.604Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 6,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "shigawake"
+      ],
+      "expected_sha256": [
+        "sha256:da51697ab451387031b73facc190eaad402556c7d02fa5ca6cba4cb93c03a827"
+      ]
+    },
+    {
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05015_Publique/MapServer/23/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:4ec4a1442f22a5efcf4cb076063ec5be023665bc08255e473de4074179d769dd",
+      "retrieved_at": "2026-07-28T15:10:16.593Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 8,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "saint-godefroi"
+      ],
+      "expected_sha256": [
+        "sha256:4ec4a1442f22a5efcf4cb076063ec5be023665bc08255e473de4074179d769dd"
+      ]
+    },
+    {
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05025_Publique/MapServer/23/query?where=1%3D1&outFields=*&f=geojson",
+      "http_status": 200,
+      "sha256": "sha256:d521556e25e6308bbcb69d3807076a5584ed250fa57564aa8da614e2c65f1311",
+      "retrieved_at": "2026-07-28T15:10:18.849Z",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 7,
+      "raw_payload_verified": true,
+      "verification_detail": null,
+      "outcome": "SHA_IDENTIQUE",
+      "slugs": [
+        "hope"
+      ],
+      "expected_sha256": [
+        "sha256:d521556e25e6308bbcb69d3807076a5584ed250fa57564aa8da614e2c65f1311"
+      ]
+    }
+  ],
+  "sha_changed_collections": [
+    {
+      "slug": "sainte-anne-de-beaupre",
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2721030%27",
+      "served_sha256": [
+        "sha256:244263df224aae4ad872d019644be37ada3fce869fbfd4cc899ef9f620be4e2d"
+      ],
+      "captured_sha256": "sha256:89a8decba0b46894123610115dd5e39d646b1701ed589ceb08b19a9af43e76bb",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 3
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2757075%27",
+      "served_sha256": [
+        "sha256:7da115559c488a1866bf75a3880d76d624545400fd52cf3d3fddb515da0cede3"
+      ],
+      "captured_sha256": "sha256:2b2de062d480e9f2a48028186526c649c5af011029cce07b9b2b53402414f6a5",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-0-5445e6f5-7650-423d-ad36-1978901dd0cc/manifest.jsonl",
+      "line_index": 5
+    },
+    {
+      "slug": "la-prairie",
+      "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2767015%27",
+      "served_sha256": [
+        "sha256:3b63c670df1cb08ffd5069637238dced0c76b089c9640264c71d14fa87e44d09"
+      ],
+      "captured_sha256": "sha256:02c47f829c84ed6a7b840cec64b7aff547acd580c78808e42c8ddced79787e4c",
+      "manifest_key": "capture/_runs/zones-20260728T150932Z-1-e07dc6e0-a051-48ec-8382-a51513e179fe/manifest.jsonl",
+      "line_index": 4
+    }
+  ]
+}

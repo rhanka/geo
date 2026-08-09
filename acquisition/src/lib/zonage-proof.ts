@@ -347,6 +347,8 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "hauteur_max_unit",
   "densite_value",
   "densite_unit",
+  "densite_legal_date",
+  "densite_legal_date_evidence",
   "marge_avant_min_value",
   "marge_avant_min_unit",
   "marge_laterale_min_value",
@@ -365,15 +367,73 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "densite_apres_reglement",
   "effet_densifiant",
   "effet_densifiant_delta",
+  // Un effet DÉDUIT (des classes d'habitation autorisées) n'a pas la même valeur
+  // probante qu'un effet LU dans une colonne de grille, et un consommateur qui
+  // annote un procès-verbal doit pouvoir citer la page. Servir le verdict sans
+  // sa méthode ni sa source rendait les deux indiscernables.
+  "effet_densifiant_methode",
+  "densite_avant_source",
+  "densite_apres_source",
 ]);
 
 export interface AdditiveOptions {
   /** Narrow the ceiling to exactly the keys this fold stamps (defence in depth).
    *  Must be a subset of {@link PROVENANCE_PROP_WHITELIST} or the write fails closed. */
   allowedProps?: Iterable<string>;
+  /**
+   * Narrow, one-shot exception for legacy immo proof envelopes. Each entry
+   * identifies the current S3 URI, its replacement public URL, and the SHA-256
+   * attesting their captured bytes. Only the v1 feature-proof leaf described by
+   * an entry may change; collection proofs and every other field stay immutable.
+   */
+  allowProofArtifactUriSubstitution?: Iterable<ProofArtifactUriSubstitution>;
+  /**
+   * Narrow, one-shot restoration for an older v1 envelope that has no
+   * `sources.geometry.sha256` member at all. An attested public URL and the
+   * SHA-256 from the very same capture-manifest line are stamped together.
+   *
+   * This differs from `allowProofArtifactUriSubstitution`: that option proves
+   * an existing SHA is unchanged; this one is the only additive route that
+   * may introduce a missing SHA. It never replaces or corrects one.
+   */
+  allowProofArtifactUriAndSha256Stamp?: Iterable<ProofArtifactUriSubstitution>;
+  /**
+   * Narrow, one-shot promotion of a v1 envelope that already carries a public
+   * HTTPS `artifact_uri` and a valid `sha256`, but NO `retrieved_at` — so it is
+   * openable and hashable by a third party, yet attached to no capture.
+   *
+   * A fresh capture of that same URL returned bytes whose SHA-256 EQUALS the one
+   * already served; the only thing added is the instant that capture measured.
+   * Nothing is corrected: if the refetched SHA differed, the source has changed
+   * since the proof was written and the caller must refuse rather than silently
+   * overwrite it — losing that fact would be worse than the missing date.
+   *
+   * This is the third and last additive route on a proof, and each one adds
+   * strictly what was ABSENT: `allowProofArtifactUriSubstitution` proves an
+   * existing SHA unchanged, `allowProofArtifactUriAndSha256Stamp` introduces a
+   * missing SHA, and this one introduces a missing `retrieved_at`. None of them
+   * may ever replace a value that is already there.
+   */
+  allowProofCaptureAttestation?: Iterable<ProofCaptureAttestation>;
   /** Take a non-destructive server-side backup of the current served object to
    *  `<key>.additive-prebackup.geojson` before overwriting. Default true. */
   backup?: boolean;
+}
+
+export interface ProofArtifactUriSubstitution {
+  artifactUri: string;
+  replacementUrl: string;
+  sha256: `sha256:${string}`;
+}
+
+/** Une capture qui a CONFIRME une preuve v1 : meme URL, meme SHA, plus l'instant mesure. */
+export interface ProofCaptureAttestation {
+  /** L'URL https deja portee par la preuve — inchangee, jamais substituee ici. */
+  artifactUri: string;
+  /** Le SHA-256 deja porte par la preuve, et re-obtenu par la capture. */
+  sha256: `sha256:${string}`;
+  /** L'instant mesure par le chokepoint de capture, jamais un horodatage de fichier. */
+  retrievedAt: string;
 }
 
 /** Canonical JSON: object keys sorted, array order preserved (arrays ARE ordered —
@@ -404,6 +464,264 @@ function jsonEqual(a: unknown, b: unknown): boolean {
 interface AdditiveFeature { geometry?: unknown; properties?: Record<string, unknown> | null }
 interface AdditiveFC { type?: unknown; features?: AdditiveFeature[] }
 
+const PROOF_SHA256_RE = /^sha256:[a-f0-9]{64}$/;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+/**
+ * URL de remplacement acceptable dans une substitution d'`artifact_uri`.
+ *
+ * Cette fonction interdisait toute query string. La règle était une prudence
+ * de forme — « une URL de document nue est stable » — et elle s'est révélée
+ * FAUSSE sur la classe de sources la plus nombreuse.
+ *
+ * Un endpoint ArcGIS `FeatureServer/<n>` rend une PAGE HTML de description de
+ * service. La géométrie n'est atteignable que par
+ * `<endpoint>/query?where=1%3D1&outFields=*&f=geojson`. Interdire la query
+ * revenait donc à n'admettre que l'URL qui NE sert PAS la donnée attestée :
+ * exactement la preuve fabriquée qu'un re-stampage a été arrêté pour éviter
+ * (0 écriture sur 10, 2026-07-28).
+ *
+ * Ce que le garde doit protéger n'est pas la forme de l'URL, c'est la
+ * propriété : « cette URL, fetchée, a rendu des octets dont le SHA-256 est
+ * celui qu'on atteste, et une ligne de manifeste l'enregistre ». La query
+ * string est orthogonale à cette propriété — elle en est même la condition ici.
+ *
+ * Ce qui reste refusé, et pourquoi :
+ *   - `http:` — une attestation ne se rejoue pas sur un canal non authentifié ;
+ *   - les identifiants dans l'URL (`user:pass@`) — un secret dans une preuve
+ *     publiée fuite, et l'URL n'est alors pas rejouable par un tiers ;
+ *   - le fragment (`#…`) — jamais transmis au serveur, donc il ne peut pas
+ *     faire partie de ce qui a produit les octets ; le laisser suggérerait
+ *     qu'il compte.
+ * Les autres gardes de la substitution restent inchangés : l'URI d'origine doit
+ * être `s3://`, le SHA-256 doit venir de la même ligne de manifeste et être
+ * écrit dans la même opération, et toute autre altération de l'enveloppe échoue.
+ */
+function isAttestableReplacementUrl(value: unknown): value is string {
+  if (!isRealGeometryUrl(value)) return false;
+  const parsed = new URL(value);
+  return parsed.protocol === "https:" && parsed.hash.length === 0 && parsed.username === "" && parsed.password === "";
+}
+
+function checkedProofArtifactUriAttestations(
+  candidates: Iterable<ProofArtifactUriSubstitution> | undefined,
+  label: string,
+): ProofArtifactUriSubstitution[] {
+  const substitutions = candidates
+    ? [...candidates]
+    : [];
+  const seen = new Set<string>();
+  for (const substitution of substitutions) {
+    if (
+      !substitution ||
+      typeof substitution.artifactUri !== "string" ||
+      !substitution.artifactUri.startsWith("s3://") ||
+      !isAttestableReplacementUrl(substitution.replacementUrl) ||
+      !PROOF_SHA256_RE.test(substitution.sha256)
+    ) {
+      throw new Error(`putServedZoneAdditive: invalid ${label} attestation`);
+    }
+    const tuple = `${substitution.artifactUri}\u0000${substitution.replacementUrl}\u0000${substitution.sha256}`;
+    if (seen.has(tuple)) throw new Error(`putServedZoneAdditive: duplicate ${label} attestation`);
+    seen.add(tuple);
+  }
+  return substitutions;
+}
+
+function proofArtifactUriSubstitutions(options: AdditiveOptions): ProofArtifactUriSubstitution[] {
+  return checkedProofArtifactUriAttestations(
+    options.allowProofArtifactUriSubstitution,
+    "proof artifact_uri substitution",
+  );
+}
+
+function proofArtifactUriAndSha256Stamps(options: AdditiveOptions): ProofArtifactUriSubstitution[] {
+  return checkedProofArtifactUriAttestations(
+    options.allowProofArtifactUriAndSha256Stamp,
+    "proof artifact_uri + sha256 stamp",
+  );
+}
+
+/**
+ * Valide les attestations de capture AVANT toute comparaison, comme les deux
+ * routes voisines : une entree mal formee doit faire echouer l'ecriture, pas
+ * etre ignoree silencieusement — sans quoi un appel qui croit stamper n'aurait
+ * simplement aucun effet et personne ne s'en apercevrait.
+ */
+function proofCaptureAttestations(options: AdditiveOptions): ProofCaptureAttestation[] {
+  const attestations = options.allowProofCaptureAttestation ? [...options.allowProofCaptureAttestation] : [];
+  const seen = new Set<string>();
+  for (const attestation of attestations) {
+    if (
+      !attestation ||
+      !isAttestableReplacementUrl(attestation.artifactUri) ||
+      !PROOF_SHA256_RE.test(attestation.sha256) ||
+      !isIsoTimestamp(attestation.retrievedAt)
+    ) {
+      throw new Error("putServedZoneAdditive: invalid proof capture attestation");
+    }
+    const tuple = `${attestation.artifactUri} ${attestation.sha256} ${attestation.retrievedAt}`;
+    if (seen.has(tuple)) throw new Error("putServedZoneAdditive: duplicate proof capture attestation");
+    seen.add(tuple);
+  }
+  return attestations;
+}
+
+/**
+ * Returns true only for the one legacy v1 proof mutation explicitly attested in
+ * {@link AdditiveOptions.allowProofArtifactUriSubstitution}. Restoring the old
+ * URI before comparison proves that no sibling or nested field changed.
+ */
+function isAttestedProofArtifactUriSubstitution(
+  currentProof: unknown,
+  nextProof: unknown,
+  substitutions: readonly ProofArtifactUriSubstitution[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "1.0") return false;
+  const currentSources = asRecord(current.sources);
+  const nextSources = asRecord(next.sources);
+  const currentGeometry = asRecord(currentSources?.geometry);
+  const nextGeometry = asRecord(nextSources?.geometry);
+  const artifactUri = currentGeometry?.artifact_uri;
+  const replacementUrl = nextGeometry?.artifact_uri;
+  const sha256 = currentGeometry?.sha256;
+  if (
+    typeof artifactUri !== "string" ||
+    !artifactUri.startsWith("s3://") ||
+    !isAttestableReplacementUrl(replacementUrl) ||
+    typeof sha256 !== "string" ||
+    !PROOF_SHA256_RE.test(sha256) ||
+    nextGeometry?.sha256 !== sha256
+  ) return false;
+  const attested = substitutions.some((substitution) =>
+    substitution.artifactUri === artifactUri &&
+    substitution.replacementUrl === replacementUrl &&
+    substitution.sha256 === sha256,
+  );
+  if (!attested) return false;
+  return jsonEqual(current, {
+    ...next,
+    sources: {
+      ...nextSources,
+      geometry: { ...nextGeometry, artifact_uri: artifactUri },
+    },
+  });
+}
+
+/**
+ * Restoration companion to {@link isAttestedProofArtifactUriSubstitution}.
+ * It admits exactly two coupled leaf changes in a v1 feature proof: the legacy
+ * `s3://` URI becomes the HTTPS URL actually captured by the manifest — query
+ * string included when that is what served the bytes — and the
+ * previously ABSENT SHA-256 member is added from that same manifest line.
+ * Reconstructing the old proof before comparison makes every other alteration
+ * fail closed.
+ */
+function isAttestedProofArtifactUriAndSha256Stamp(
+  currentProof: unknown,
+  nextProof: unknown,
+  stamps: readonly ProofArtifactUriSubstitution[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "1.0") return false;
+  const currentSources = asRecord(current.sources);
+  const nextSources = asRecord(next.sources);
+  const currentGeometry = asRecord(currentSources?.geometry);
+  const nextGeometry = asRecord(nextSources?.geometry);
+  const artifactUri = currentGeometry?.artifact_uri;
+  const replacementUrl = nextGeometry?.artifact_uri;
+  // `undefined` is insufficient: a served `null` or malformed value must not
+  // be silently upgraded under a name that promises a missing-field repair.
+  if (
+    !currentGeometry ||
+    Object.hasOwn(currentGeometry, "sha256") ||
+    typeof artifactUri !== "string" ||
+    !artifactUri.startsWith("s3://") ||
+    !isAttestableReplacementUrl(replacementUrl) ||
+    typeof nextGeometry?.sha256 !== "string" ||
+    !PROOF_SHA256_RE.test(nextGeometry.sha256)
+  ) return false;
+  const attested = stamps.some((stamp) =>
+    stamp.artifactUri === artifactUri &&
+    stamp.replacementUrl === replacementUrl &&
+    stamp.sha256 === nextGeometry.sha256,
+  );
+  if (!attested) return false;
+  const restoredGeometry: Record<string, unknown> = { ...nextGeometry, artifact_uri: artifactUri };
+  delete restoredGeometry.sha256;
+  return jsonEqual(current, {
+    ...next,
+    sources: {
+      ...nextSources,
+      geometry: restoredGeometry,
+    },
+  });
+}
+
+/**
+ * Promotion v1 -> v2 d'une preuve deja OUVRABLE et HACHABLE mais rattachee a
+ * aucune capture. Le seul ajout admis est `retrieved_at`; `artifact_uri` et
+ * `sha256` doivent etre IDENTIQUES de part et d'autre.
+ *
+ * L'egalite du SHA est la condition de fond : elle prouve que la capture qui
+ * fournit l'instant a bien rendu LES MEMES OCTETS que ceux deja attestes. Si le
+ * SHA differe, le document en ligne a change depuis la preuve — et ce cas doit
+ * REMONTER, jamais etre absorbe en ecrasant le SHA servi.
+ *
+ * Reconstruire l'ancienne preuve avant comparaison fait echouer fermement toute
+ * autre alteration, exactement comme les deux routes additives voisines.
+ */
+function isAttestedProofCaptureStamp(
+  currentProof: unknown,
+  nextProof: unknown,
+  attestations: readonly ProofCaptureAttestation[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "1.0") return false;
+  const currentSources = asRecord(current.sources);
+  const nextSources = asRecord(next.sources);
+  const currentGeometry = asRecord(currentSources?.geometry);
+  const nextGeometry = asRecord(nextSources?.geometry);
+  const artifactUri = currentGeometry?.artifact_uri;
+  const sha = currentGeometry?.sha256;
+  const retrievedAt = nextGeometry?.retrieved_at;
+  if (
+    !currentGeometry ||
+    // `retrieved_at` deja present : il n'y a rien a ajouter, et le remplacer
+    // reecrirait un instant mesure par une autre capture.
+    Object.hasOwn(currentGeometry, "retrieved_at") ||
+    !isAttestableReplacementUrl(artifactUri) ||
+    typeof sha !== "string" ||
+    !PROOF_SHA256_RE.test(sha) ||
+    // L'URL et le SHA doivent traverser INCHANGES : cette route n'en corrige aucun.
+    nextGeometry?.artifact_uri !== artifactUri ||
+    nextGeometry?.sha256 !== sha ||
+    !isIsoTimestamp(retrievedAt)
+  ) return false;
+  const attested = attestations.some((attestation) =>
+    attestation.artifactUri === artifactUri &&
+    attestation.sha256 === sha &&
+    attestation.retrievedAt === retrievedAt,
+  );
+  if (!attested) return false;
+  const restoredGeometry: Record<string, unknown> = { ...nextGeometry };
+  delete restoredGeometry.retrieved_at;
+  return jsonEqual(current, {
+    ...next,
+    sources: {
+      ...nextSources,
+      geometry: restoredGeometry,
+    },
+  });
+}
+
 /**
  * ADDITIVE provenance write onto an ALREADY SERVED qc-zonage collection.
  *
@@ -418,7 +736,8 @@ interface AdditiveFC { type?: unknown; features?: AdditiveFeature[] }
  *   (c) each feature's GEOMETRY is byte-identical to the served geometry;
  *   (d) every property that DIFFERS from the served object is in the whitelist —
  *       a fold may add/update/delete provenance keys and NOTHING else, so the
- *       `proof` block and every substantive attribute stay untouched.
+ *       `proof` block and every substantive attribute stay untouched, except
+ *       for an explicitly attested legacy v1 artifact_uri replacement.
  * The current served object is re-read from S3 as the baseline (the caller is never
  * trusted for it). Then a non-destructive backup is taken and the bytes are written.
  */
@@ -434,6 +753,19 @@ export async function putServedZoneAdditive(
     if (!PROVENANCE_PROP_WHITELIST.has(k)) {
       throw new Error(`putServedZoneAdditive: "${k}" is not a provenance metadata key; refuse to widen the whitelist`);
     }
+  }
+  const substitutions = proofArtifactUriSubstitutions(opts);
+  const sha256Stamps = proofArtifactUriAndSha256Stamps(opts);
+  const substitutionUris = new Set(substitutions.map((item) => item.artifactUri));
+  const captureAttestations = proofCaptureAttestations(opts);
+  if (sha256Stamps.some((item) => substitutionUris.has(item.artifactUri))) {
+    throw new Error("putServedZoneAdditive: a proof artifact_uri may use either substitution or missing-sha256 restoration, never both");
+  }
+  // Les trois routes additives ajoutent chacune ce qui MANQUE; les cumuler sur
+  // une meme URI signifierait qu'on ne sait pas dans quel etat est la preuve.
+  const stampedUris = new Set(sha256Stamps.map((item) => item.replacementUrl));
+  if (captureAttestations.some((item) => substitutionUris.has(item.artifactUri) || stampedUris.has(item.artifactUri))) {
+    throw new Error("putServedZoneAdditive: a proof artifact_uri may not combine a capture attestation with a substitution or a missing-sha256 restoration");
   }
   if (fc?.type !== "FeatureCollection" || !Array.isArray(fc.features)) {
     throw new Error("putServedZoneAdditive: payload is not a FeatureCollection");
@@ -477,11 +809,19 @@ export async function putServedZoneAdditive(
         `putServedZoneAdditive: feature ${i} geometry differs from served; new geometry requires putServedZoneGeojson with proof`,
       );
     }
-    // (d) only whitelisted properties may differ (add / update / delete).
+    // (d) only whitelisted properties may differ (add / update / delete), with
+    // the single attested legacy v1 proof-URI substitution below.
     const curProps = (cur.properties ?? {}) as Record<string, unknown>;
     const nxtProps = (nxt.properties ?? {}) as Record<string, unknown>;
     for (const propKey of new Set([...Object.keys(curProps), ...Object.keys(nxtProps)])) {
       if (jsonEqual(curProps[propKey], nxtProps[propKey])) continue;
+      if (
+        propKey === "proof" && (
+          isAttestedProofArtifactUriSubstitution(curProps[propKey], nxtProps[propKey], substitutions) ||
+          isAttestedProofArtifactUriAndSha256Stamp(curProps[propKey], nxtProps[propKey], sha256Stamps) ||
+          isAttestedProofCaptureStamp(curProps[propKey], nxtProps[propKey], captureAttestations)
+        )
+      ) continue;
       if (!allowed.has(propKey)) {
         throw new Error(
           `putServedZoneAdditive: non-provenance property "${propKey}" changed on feature ${i}; refused (geometry/proof and substantive attributes are immutable on this path)`,
@@ -489,9 +829,9 @@ export async function putServedZoneAdditive(
       }
     }
   }
-  // Non-destructive backup of the current served object before overwriting. The
-  // backup key carries a suffix before `.geojson`, so it is NOT a served-zone key
-  // and the generic copy gate accepts it (single, overwriteable "before this write").
+  // Non-destructive backup of the current served object before overwriting. The backup suffix excludes this key from the producer selector (`[a-z0-9-]+`), but OGC API serves it as a collection.
+  // Measured 2026-07-29: `qc-zonage-sutton.additive-prebackup` returned HTTP 200 (95 features; 85 with `effet_densifiant` other than `inconnu`).
+  // The generic copy gate accepts it (single, overwriteable "before this write").
   if (opts.backup !== false) {
     await copyObject(s3, key, `${key.replace(/\.geojson$/, "")}.additive-prebackup.geojson`);
   }

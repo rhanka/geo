@@ -1,0 +1,357 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:29:06.406Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 78,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Resolution": 2,
+    "Regulation": 20,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 26,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "blainville",
+      "storage_key": "raw/pv-index/cas/1a362434a0069e05efea1bce1f83df1859852ac1f6d828571c0d1b66433d9e4d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "1904476",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:131",
+      "quote": "                                 LOT 1 904 476"
+    },
+    {
+      "municipality_slug": "blainville",
+      "storage_key": "raw/pv-index/cas/1a362434a0069e05efea1bce1f83df1859852ac1f6d828571c0d1b66433d9e4d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2657690",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:713",
+      "quote": "2024-02-089                    LOTS 2 657 690, 2 657 691, 2 657 692, 2 657 695, 2 657 696 ET 2 657"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 20962,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z",
+  "documents": [
+    {
+      "slug": "blainville",
+      "municipality_name": "Blainville",
+      "url": "https://blainville.ca/storage/app/media/Landing%20page/proces-verbaux-seances-du-conseil/20%20f%C3%A9vrier%202024.pdf",
+      "storage_key": "raw/pv-index/cas/1a362434a0069e05efea1bce1f83df1859852ac1f6d828571c0d1b66433d9e4d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 20,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Blainville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         © Ville de Blainville"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         © Ville de Blainville"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-08-450",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "ATTENDU QUE par la résolution 2023-08-450 du conseil municipal, la Ville de Blainville a adhéré au"
+            }
+          },
+          {
+            "label": "2022-03-174",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "ATTENDU QUE par sa résolution 2022-03-174, adoptée le 15 mars 2022, le conseil autorisait"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1330-15",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "AVIS DE MOTION…                RÈGLEMENT 1330-15"
+            }
+          },
+          {
+            "label": "1330",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "fera présenter le Règlement 1330-15 modifiant le Règlement 1330 fixant les limites de vitesse sur"
+            }
+          },
+          {
+            "label": "1441-5",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "AVIS DE MOTION…               RÈGLEMENT 1441-5"
+            }
+          },
+          {
+            "label": "1441",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "présentera ou fera présenter le Règlement 1441-5 modifiant le Règlement 1441 concernant la régie"
+            }
+          },
+          {
+            "label": "1596-2",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "AVIS DE MOTION…               RÈGLEMENT 1596-2"
+            }
+          },
+          {
+            "label": "1596",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": "ou fera présenter le Règlement 1596-2 modifiant le Règlement 1596 fixant le traitement des élus"
+            }
+          },
+          {
+            "label": "1687",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "AVIS DE MOTION…               RÈGLEMENT 1687"
+            }
+          },
+          {
+            "label": "1419",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:140",
+              "quote": "ATTENDU QUE le Règlement 1419 de lotissement prévoit, comme condition pour la délivrance d’un"
+            }
+          },
+          {
+            "label": "1423",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:227",
+              "quote": "ATTENDU QUE ces projets sont conformes aux objectifs et critères établis au Règlement 1423 sur les"
+            }
+          },
+          {
+            "label": "1550",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:251",
+              "quote": "Règlement 1550 déléguant à certains fonctionnaires le pouvoir d’autoriser l’engagement de personnel"
+            }
+          },
+          {
+            "label": "1664",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:321",
+              "quote": "fonds prévus au Règlement 1664."
+            }
+          },
+          {
+            "label": "1675",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:352",
+              "quote": "approprier cette dépense à même les fonds prévus au Règlement 1675."
+            }
+          },
+          {
+            "label": "1417-29",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:379",
+              "quote": "ATTENDU QU'en date du 23 janvier 2024, le conseil municipal adoptait le Projet de Règlement 1417-29;"
+            }
+          },
+          {
+            "label": "1417",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:392",
+              "quote": "Règlement 1417-29 modifiant le Règlement 1417 sur l’administration des règlements d’urbanisme."
+            }
+          },
+          {
+            "label": "1418-185",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:398",
+              "quote": "RÉSOLUTION…                   APPROBATION – RÈGLEMENT 1418-185"
+            }
+          },
+          {
+            "label": "1418",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:413",
+              "quote": "Règlement 1418-185 modifiant le Règlement 1418 de zonage."
+            }
+          },
+          {
+            "label": "1672-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:423",
+              "quote": "ATTENDU QU’en date du 6 février 2024, le Projet de Règlement 1672-1 a été déposé conformément"
+            }
+          },
+          {
+            "label": "1672",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:432",
+              "quote": "d’approuver le Règlement 1672-1 modifiant le Règlement 1672 décrétant des dépenses en"
+            }
+          },
+          {
+            "label": "1685",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:698",
+              "quote": "                               RÈGLEMENT 1685"
+            }
+          },
+          {
+            "label": "1378",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:752",
+              "quote": "pouvoirs contenue au Règlement 1378 décrétant les règles de contrôle et de suivi budgétaires et"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "1904476",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "                                 LOT 1 904 476"
+            }
+          },
+          {
+            "label": "2657690",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:713",
+              "quote": "2024-02-089                    LOTS 2 657 690, 2 657 691, 2 657 692, 2 657 695, 2 657 696 ET 2 657"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/blainville/1b66433d9e4d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/blainville/1b66433d9e4d.pdf/.graphify/.graphify_extract.json — 26 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 26,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "blainville",
+          "mirabel",
+          "terrebonne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

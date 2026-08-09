@@ -1,28 +1,78 @@
-# Désactivé par défaut. Dupliquer/configurer une fois une lane validée : le
-# renouvellement ne doit jamais démarrer une campagne implicite.
+# Campagne PV post-contrôle. Appliquer ce manifeste UNIQUEMENT après le rapport
+# `pv-capture-octets-classification/v1` complet du Job de contrôle.
+# L'état, le manifeste et toutes les worklists sont sur S3; ce CronJob ne garde
+# donc aucun avancement en mémoire locale et s'auto-suspend à l'état terminal.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+  namespace: geo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+  namespace: geo
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["resourcequotas"]
+    verbs: ["get"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    resourceNames: ["geo-pv-backlog-pv-probable-20260728-b32de19169bc"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    resourceNames: ["geo-pv-backlog-pv-probable-20260728-b32de19169bc-lock"]
+    verbs: ["get", "update"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+  namespace: geo
+subjects:
+  - kind: ServiceAccount
+    name: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
+    namespace: geo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: geo-capture-refresh-REPLACE_ME
+  name: geo-pv-backlog-pv-probable-20260728-b32de19169bc
   namespace: geo
   labels:
-    app: geo-capture
-    app.kubernetes.io/part-of: geo
+    app: geo-capture-backlog
+    geo.sentropic.io/capture-backlog: pv-probable-20260728-b32de19169bc
 spec:
-  schedule: "17 4 1 * *"
-  suspend: true
+  schedule: "*/2 * * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  suspend: false
   jobTemplate:
     spec:
-      backoffLimit: 2
-      ttlSecondsAfterFinished: 86400
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 600
       template:
         metadata:
           labels:
-            app: geo-capture
+            app: geo-capture-backlog
         spec:
+          serviceAccountName: geo-pv-backlog-pv-probable-20260728-b32de19169bc-sa
           restartPolicy: Never
           imagePullSecrets:
             - name: geo-registry-pull
@@ -31,54 +81,32 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           containers:
-            - name: capture
-              image: rg.fr-par.scw.cloud/sentropic-geo/geo-capture:REPLACE_ME
+            - name: orchestrator
+              image: rg.fr-par.scw.cloud/sentropic-geo/geo-capture:pv-probable-20260728-b32de19169bc907c-v4
+              imagePullPolicy: IfNotPresent
+              command: ["tsx", "src/pv-capture-backlog-run.ts"]
               env:
-                - name: LANE
-                  value: "zones"
-                - name: WORKLIST
-                  value: "registry/capture-worklists/REPLACE_ME.json"
-                - name: SHARD
-                  value: "0"
-                - name: SHARDS
-                  value: "1"
-                - name: DELAY_MS
-                  value: "2000"
-                - name: EGRESS
-                  value: "direct"
-                - name: MAX_BYTES
-                  value: "104857600"
-                - name: DRY_RUN
-                  value: "0"
-                - name: GEO_CAPTURE_EXECUTION
-                  value: "cluster"
+                - name: PV_CAPTURE_BACKLOG_ID
+                  value: "pv-probable-20260728-b32de19169bc"
+                - name: PV_CAPTURE_BACKLOG_CRONJOB
+                  value: "geo-pv-backlog-pv-probable-20260728-b32de19169bc"
+                - name: PV_CAPTURE_BACKLOG_QUOTA
+                  value: "tenant-quota"
                 - name: NODE_OPTIONS
                   value: "--dns-result-order=ipv4first"
                 - name: AWS_MAX_ATTEMPTS
                   value: "10"
-                - name: POD_UID
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.uid
               envFrom:
                 - secretRef:
                     name: geo-s3-credentials
               resources:
                 requests:
-                  cpu: 100m
-                  memory: 192Mi
+                  cpu: 10m
+                  memory: 16Mi
                 limits:
-                  cpu: 500m
-                  memory: 256Mi
+                  cpu: 100m
+                  memory: 128Mi
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
-                  drop:
-                    - ALL
-              volumeMounts:
-                - name: scratch
-                  mountPath: /scratch
-          volumes:
-            - name: scratch
-              emptyDir:
-                sizeLimit: 4Gi
+                  drop: ["ALL"]

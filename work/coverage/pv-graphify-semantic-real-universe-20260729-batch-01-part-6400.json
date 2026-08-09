@@ -1,0 +1,1210 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:50:41.988Z",
+  "mode": "unverdict-cas-batch",
+  "unverdict_list": "work/coverage/pv-graphify-semantic-real-universe-20260729-unverdict-list-01.json",
+  "unverdict_selection": {
+    "offset": 0,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 337,
+  "eligible_documents": 337,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 14,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 11,
+    "failed_pvs": 9,
+    "outcomes": {
+      "INDEXED": 11,
+      "OWNER_NOT_CONFIRMED": 3,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 5,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 11,
+    "Document": 11,
+    "Regulation": 23,
+    "Zone": 3,
+    "LotCadastre": 3,
+    "CouncilSession": 1,
+    "MeetingDate": 1
+  },
+  "graphify": {
+    "nodes": 53,
+    "edges": 16,
+    "failures": 6
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 3,
+    "documents_with_zone": 2,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/02c7c1118b17362f9ab2fd6fd0674df703ce5dc3ae24642f7033d27731ec59e0.pdf",
+      "entity_type": "Zone",
+      "value": "146",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:94",
+      "quote": "          modification au règlement de zonage 069-2003 (zone 146)."
+    },
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/062c4a3edd0cb023ab74b0116bbaf24f4bd2e2b34d907f9512bde99b34353f39.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5846870",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1564",
+      "quote": "             numéro de lot 5 846 870;"
+    },
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/062c4a3edd0cb023ab74b0116bbaf24f4bd2e2b34d907f9512bde99b34353f39.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5847727",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1620",
+      "quote": "             mineure de monsieur Martin Chrétien portant sur le numéro de lot 5 847 727;"
+    },
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/0d8ffb5b0d3baa24e8415a5bbbcd1aadabacaddc06b59d08772b1fda6c1626c7.pdf",
+      "entity_type": "Zone",
+      "value": "208",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "          zonage numéro 069-2003 de la Ville d’Acton Vale (zone 208)."
+    },
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/0d8ffb5b0d3baa24e8415a5bbbcd1aadabacaddc06b59d08772b1fda6c1626c7.pdf",
+      "entity_type": "Zone",
+      "value": "151",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:104",
+      "quote": "          modification au règlement de zonage 069-2003 (zone 151)."
+    },
+    {
+      "municipality_slug": "albanel",
+      "storage_key": "raw/pv-index/cas/0f3236da2d8365ae77b520fb0ddc40f54540ad09371e1f5e9750568e9f5e207e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5157103",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:86",
+      "quote": "                   lot 5 157 103"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 425,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 4,
+      "total_lot_numbers": 9357,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z",
+  "documents": [
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/01ffea9e8414cb1854800621af0e46e4cb2c26524014c4439374f561136869e1.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/10/oj20241007.pdf",
+      "storage_key": "raw/pv-index/cas/025b549cb7c4fb787c5819a61f37e4a55be8df4ce6a9b4bb36900bb26b2b0a81.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "009-2024",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "   10.1 - Adoption du règlement 009-2024 portant sur la délégation de pouvoir"
+            }
+          },
+          {
+            "label": "015-2024",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "   10.2 - Adoption du règlement 015-2024 concernant la gestion contractuelle."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/0bb26b2b0a81.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/0bb26b2b0a81.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20210920.pdf",
+      "storage_key": "raw/pv-index/cas/02c7c1118b17362f9ab2fd6fd0674df703ce5dc3ae24642f7033d27731ec59e0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "015-2021",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "   10.2   Adoption du second projet du règlement          015-2021      modifiant     le"
+            }
+          },
+          {
+            "label": "014-2021",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "   10.1   Adoption du    règlement   014-2021    concernant   l’utilisation   de   l’eau"
+            }
+          },
+          {
+            "label": "016-2021",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "\f   10.4   Avis de motion et présentation du règlement 016-2021, établissant le"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "146",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "          modification au règlement de zonage 069-2003 (zone 146)."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/d27731ec59e0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/d27731ec59e0.pdf/.graphify/.graphify_extract.json — 6 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/0399c5625deddf3ee361e5b3675f52117a05eb40bdcebb8f8f5fecaf093f518e.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/0515f7e1acaf0c91846e1b76e967c4a25775df9a726cf96ac35049203a23149c.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2022/12/oj20221214ss-1.pdf",
+      "storage_key": "raw/pv-index/cas/0629ce4bf07da8d4aaf568f489ed68220047b56a4c183e425964a76b4d2227bc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/a76b4d2227bc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/a76b4d2227bc.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230615143203-proces-verbal-du-8-mai-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/062c4a3edd0cb023ab74b0116bbaf24f4bd2e2b34d907f9512bde99b34353f39.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 6,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "255-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "       5.12 - Dépôt d'un procès-verbal de correction au règlement 255-2023"
+            }
+          },
+          {
+            "label": "256-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "       5.13 - Dépôt d'un procès-verbal de correction au règlement 256-2023"
+            }
+          },
+          {
+            "label": "259-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "       6.1 - Avis de motion et dépôt du projet de règlement 259-2023 relatif à"
+            }
+          },
+          {
+            "label": "260-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "       6.2 - Avis de motion et dépôt du projet de règlement 260-2023 sur droit de"
+            }
+          },
+          {
+            "label": "258-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "       9.1 - Nomination du comité de démolition relatif au règlement 258-2023"
+            }
+          },
+          {
+            "label": "252-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:282",
+              "quote": "             CONSIDÉRANT QUE la municipalité a adopté son règlement 252-2022 portant sur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5846870",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1564",
+              "quote": "             numéro de lot 5 846 870;"
+            }
+          },
+          {
+            "label": "5847727",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1620",
+              "quote": "             mineure de monsieur Martin Chrétien portant sur le numéro de lot 5 847 727;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/beaulac-garthby/e99b34353f39.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/beaulac-garthby/e99b34353f39.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby",
+          "disraeli--les-appalaches",
+          "disraeli--les-appalaches--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2022/06/oj20221121.pdf",
+      "storage_key": "raw/pv-index/cas/08fbd25d6cfd2a24451158e9ddf9dd3c88f3fb7818149242d30a9903cc97b357.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "019-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "   10.1   Avis de motion et dépôt du projet de règlement 019-2022 relatif au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/9903cc97b357.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/9903cc97b357.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/096ac4d9e828cde88cfe18bee19f980df55d92777034f6a2af4f18f53bb25067.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20190617.pdf",
+      "storage_key": "raw/pv-index/cas/0bcafc99b1c064af78a4ba6d8a3f1432605b6981989e94c70ad9a8dc7fa5465e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "006-2019",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "   5.5    Adoption du règlement 006-2019 (raccordements aux services)."
+            }
+          },
+          {
+            "label": "005-2019",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "   5.6    Adoption du règlement 005-2019 (rgt d’emprunt 1e Rang)."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/a8dc7fa5465e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/a8dc7fa5465e.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20200803.pdf",
+      "storage_key": "raw/pv-index/cas/0d8ffb5b0d3baa24e8415a5bbbcd1aadabacaddc06b59d08772b1fda6c1626c7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "Zone": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "005-2020",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "   5.4    Adoption du règlement 005-2020 « Règlement 005-2020 décrétant les"
+            }
+          },
+          {
+            "label": "003-2020",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "   5.5    Adoption du règlement 003-2020 « Règlement modifiant le règlement de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "208",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "          zonage numéro 069-2003 de la Ville d’Acton Vale (zone 208)."
+            }
+          },
+          {
+            "label": "151",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "          modification au règlement de zonage 069-2003 (zone 151)."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/1fda6c1626c7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/1fda6c1626c7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20191216ss.pdf",
+      "storage_key": "raw/pv-index/cas/0deb26a4607aee60074a2bdc7779704da1c3c6f6040591a26f2d4d9d2e9dbe34.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/4d9d2e9dbe34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/4d9d2e9dbe34.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2025/01/oj20250902.pdf",
+      "storage_key": "raw/pv-index/cas/0df5202cad538a7bccec34a7f72789bc97c8814e6d6c985821e04ab72bf7b666.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/4ab72bf7b666.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/4ab72bf7b666.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "albanel",
+      "municipality_name": "Albanel",
+      "url": "https://albanel.ca/images/uploads/25-2024-01-15-pvbl.pdf",
+      "storage_key": "raw/pv-index/cas/0f3236da2d8365ae77b520fb0ddc40f54540ad09371e1f5e9750568e9f5e207e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albanel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "M.R.C. DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "M.R.C. DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 JANVIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal d'Albanel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 JANVIER 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "              PROCÈS-VERBAL DU 15 JANVIER 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "23-288",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "     5.6 Taxation 2024 – Adoption du Règlement no 23-288"
+            }
+          },
+          {
+            "label": "83",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:617",
+              "quote": "         3,2 mètres de la marge avant alors que le règlement no 83, qui était"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5157103",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "                   lot 5 157 103"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/albanel/568e9f5e207e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/albanel/568e9f5e207e.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albanel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/0fb49a9f1c07d527a928fc0889fb618e1e556da473d18089777a1e741fe00679.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/02/oj20240603.pdf",
+      "storage_key": "raw/pv-index/cas/10bcf3d75cadaad2d972eb27bb7974440458921a577edb709dfa44d970e8fd4b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "010-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "   10.1 - Avis de motion et dépôt du règlement 010-2024 concernant le traitement des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/44d970e8fd4b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/44d970e8fd4b.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2024/06/oj20240819.pdf",
+      "storage_key": "raw/pv-index/cas/120280e4aed9cb1002a8f6946171f2cb06b728f81f65214e505ae810ef0aa35d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/e810ef0aa35d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/e810ef0aa35d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20231214103137-proces-verbal-seance-ordinaire-du-13-novembre-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/131ce33a7863225a77aa4a2c37958e5669b738d39ea231db0b84dd36d1cba13f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "271-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "        6.1 - Adoption du règlement 271-2023 relatif à la création de la"
+            }
+          },
+          {
+            "label": "269-2023",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "        6.2 - Adoption du second projet de règlement 269-2023 pour autoriser les"
+            }
+          },
+          {
+            "label": "270-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "        6.3 - Adoption du règlement 270-2023 pour permettre certains"
+            }
+          },
+          {
+            "label": "252-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1112",
+              "quote": "             Règlement 252-2022 relatif aux usages conditionnels et du Règlement numéro"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/beaulac-garthby/dd36d1cba13f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/beaulac-garthby/dd36d1cba13f.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "url": "https://berthiersurmer.ca/wp-content/uploads/2020/07/Lundi-4-mai-2020.pdf",
+      "storage_key": "raw/pv-index/cas/140ecefd899db872ae536a9360e1eede8c79f59a4fcf6c443a2120a7ddd7b282.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/berthier-sur-mer/20a7ddd7b282.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/berthier-sur-mer/20a7ddd7b282.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2022/04/oj20211213ss.pdf",
+      "storage_key": "raw/pv-index/cas/144d4fe888138434358c63c6e171efabee24faf1c52093df7c7a589deeff37eb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/589deeff37eb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T194948Z/acton-vale/589deeff37eb.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

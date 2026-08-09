@@ -729,10 +729,21 @@ export async function extractZonePageFromImage(
   // "Zone A-2" / "A 2" / "A-2" surface difference between the two passes still
   // concords while a genuinely different code refuses — we keep pass A's verbatim
   // form for display.
+  // ⛔ FAUX CODE DE FAMILLE MESURÉ (saint-zéphirin-de-courval : 7 zones sur 30). Garder le
+  // verbatim de la passe A publie aussi le MOT-ÉTIQUETTE quand le modèle répond « ZONE A-2 ».
+  // La canonisation AVAL (`canonicalizeZoneCodeForJoin`) supprime alors l'espace et fabrique
+  // « ZONEA-2 » — un code qui n'existe nulle part, ne recoupe jamais le SIG et ne joint aucun
+  // lot ; et une fois collé, `\bZONE\b` ne peut plus le réparer. On retire donc l'étiquette
+  // AVANT publication, et UNIQUEMENT dans ce cas (aucune autre forme n'est touchée) :
+  // `canonZoneCode` ne supprime que le mot « ZONE », jamais un caractère du code lui-même.
+  const stripZoneLabel = (raw: string): string =>
+    /\bZONES?\b/i.test(raw) ? (canonZoneCode(raw) ?? raw) : raw;
   const zoneCanonA = canonZoneCode(passA.zone_code);
   const zoneConcord =
-    zoneCanonA !== null && zoneCanonA === canonZoneCode(passB.zone_code)
-      ? passA.zone_code
+    passA.zone_code !== null &&
+    zoneCanonA !== null &&
+    zoneCanonA === canonZoneCode(passB.zone_code)
+      ? stripZoneLabel(passA.zone_code)
       : null;
   const zoneCode = zoneConcord ?? opts.expectedZone ?? null;
   if (!zoneCode) {

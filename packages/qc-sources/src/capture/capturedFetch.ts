@@ -23,10 +23,18 @@
  * pas un accident. `capturedFetchOrThrow` fournit la sémantique inverse pour les
  * appelants qui ont déjà une boucle de retry.
  */
-import { buildRawDocumentRecord, rawMetaKey, type RawDocumentRecord } from "../RawDocument.js";
+import { createHash, randomUUID } from "node:crypto";
+
+import {
+  buildRawDocumentRecord,
+  buildRawDocumentRecordFromDigest,
+  rawMetaKey,
+  type RawDocumentRecord,
+} from "../RawDocument.js";
 import type { CaptureRun } from "./capture-run.js";
 import {
   assertCasKeyMatchesBytes,
+  assertCasKeyMatchesSha256,
   assertCaptureWritableKey,
   redactCaptureLog,
   redactUrlForManifest,
@@ -49,6 +57,8 @@ export interface CaptureHttpResponse {
   readonly ok: boolean;
   readonly url?: string;
   readonly headers: CaptureHttpHeaders;
+  /** Corps Web Fetch, présent en production. Les doubles historiques peuvent l'omettre. */
+  readonly body?: ReadableStream<Uint8Array> | null;
   arrayBuffer(): Promise<ArrayBuffer>;
 }
 export interface CaptureRequestInit {
@@ -98,6 +108,11 @@ export interface CapturedFetchContext {
   maxRedirects?: number;
   /** `false` = journalise et hash, mais n'écrit AUCUN octet sous `raw/`. */
   store?: boolean;
+  /**
+   * Conserve les octets pour l'appelant. `false` active le chemin spool → CAS
+   * pour les worklists, dont le runner n'analyse pas le corps téléchargé.
+   */
+  retainBody?: boolean;
 }
 
 export interface CapturedFetchResult {
@@ -107,7 +122,7 @@ export interface CapturedFetchResult {
   ok: boolean;
   /** La réponse HTTP finale, `null` si aucune réponse (DNS/TLS/timeout/robots). */
   response: CaptureHttpResponse | null;
-  /** Les octets reçus, `null` en échec. */
+  /** Les octets reçus, ou `null` pour une capture réussie en streaming. */
   bytes: Uint8Array | null;
   /** Le `RawDocumentRecord` déposé (ou qui l'aurait été), `null` en échec. */
   record: RawDocumentRecord | null;
@@ -127,6 +142,61 @@ function normalizeError(e: unknown): string {
     return redactCaptureLog(`${name}: ${e.message}`).slice(0, 500);
   }
   return redactCaptureLog(String(e)).slice(0, 500);
+}
+
+class MaxBytesExceededError extends Error {
+  constructor(readonly bytes: number, readonly maxBytes: number) {
+    super(`max-bytes-exceeded: ${bytes} > ${maxBytes}`);
+    this.name = "MaxBytesExceededError";
+  }
+}
+
+/**
+ * Hache et borne les chunks au moment exact où ils quittent le flux HTTP. Le
+ * digest obtenu est donc celui des octets envoyés au spool S3, sans tableau de
+ * chunks ni `arrayBuffer()` proportionnel à la taille du document.
+ */
+class StreamDigest {
+  private readonly hash = createHash("sha256");
+  private complete = false;
+  bytes = 0;
+
+  constructor(private readonly maxBytes: number) {}
+
+  get isComplete(): boolean {
+    return this.complete;
+  }
+
+  async *chunks(body: ReadableStream<Uint8Array>): AsyncIterable<Uint8Array> {
+    const reader = body.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) {
+          this.complete = true;
+          return;
+        }
+        if (!(value instanceof Uint8Array)) throw new Error("capture body chunk is not Uint8Array");
+        this.bytes += value.byteLength;
+        if (this.bytes > this.maxBytes) throw new MaxBytesExceededError(this.bytes, this.maxBytes);
+        this.hash.update(value);
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
+
+  sha256(): string {
+    if (!this.complete) throw new Error("capture stream did not complete");
+    return this.hash.digest("hex");
+  }
+}
+
+async function consumeStream(body: ReadableStream<Uint8Array>, digest: StreamDigest): Promise<void> {
+  for await (const _chunk of digest.chunks(body)) {
+    // Le digest est mis à jour dans l'itérateur; aucun corps n'est retenu.
+  }
 }
 
 /**
@@ -269,18 +339,59 @@ export async function capturedFetch(
   }
 
   // ── 4. octets reçus → sha256 ────────────────────────────────────────────────
-  let body: Uint8Array;
+  // Le Job de worklist ne consomme pas le corps : il le pompe directement vers
+  // un spool S3, haché chunk par chunk. Les appelants qui doivent parser le
+  // contenu conservent volontairement le chemin `arrayBuffer()` historique.
+  const contentTypeForStorage = contentType ?? "application/octet-stream";
+  const streamToCas =
+    ctx.retainBody === false &&
+    response.body !== undefined &&
+    response.body !== null &&
+    (ctx.store === false || run.canStreamToCas());
+  let body: Uint8Array | null = null;
+  let bytesLen: number;
+  let streamedSha256: string | null = null;
+  let spoolKey: string | null = null;
+
   try {
-    body = new Uint8Array(await response.arrayBuffer());
+    if (streamToCas) {
+      const digest = new StreamDigest(maxBytes);
+      if (ctx.store === false) {
+        await consumeStream(response.body!, digest);
+      } else {
+        // La clé est explicitement TEMPORAIRE et reste sous le préfixe de run :
+        // elle ne prétend jamais être du CAS avant que le digest soit connu.
+        spoolKey = `capture/_runs/${run.runId}/spool/${randomUUID()}.body`;
+        assertCaptureWritableKey(spoolKey);
+        await run.storePutStream(spoolKey, digest.chunks(response.body!), contentTypeForStorage);
+      }
+      if (!digest.isComplete) throw new Error("capture stream ended before its digest completed");
+      bytesLen = digest.bytes;
+      streamedSha256 = digest.sha256();
+    } else {
+      body = new Uint8Array(await response.arrayBuffer());
+      bytesLen = body.byteLength;
+      if (bytesLen > maxBytes) throw new MaxBytesExceededError(bytesLen, maxBytes);
+    }
   } catch (e) {
     clearTimer();
-    const error = normalizeError(e);
+    let error = e instanceof MaxBytesExceededError ? e.message : normalizeError(e);
+    if (spoolKey !== null) {
+      try {
+        await run.storeDeleteSpool(spoolKey);
+      } catch (cleanupError) {
+        error = `${error}; spool-cleanup: ${normalizeError(cleanupError)}`;
+      }
+    }
+    const bytes = e instanceof MaxBytesExceededError ? e.bytes : null;
     run.log(`[capture] FAIL-BODY ${method} ${redacted.url} — ${error}`);
     const line = await emit({
       http_status: status,
+      retrieved_at: new Date().toISOString(),
       redirect_chain: chain,
       final_url: finalUrl,
       content_type: contentType,
+      bytes,
       error,
     });
     return { line, ok: false, response, bytes: null, record: null };
@@ -288,50 +399,50 @@ export async function capturedFetch(
   clearTimer();
 
   const retrievedAt = new Date().toISOString();
-
-  if (body.byteLength > maxBytes) {
-    const error = `max-bytes-exceeded: ${body.byteLength} > ${maxBytes}`;
-    run.log(`[capture] ${error} ${redacted.url}`);
-    const line = await emit({
-      http_status: status,
-      retrieved_at: retrievedAt,
-      redirect_chain: chain,
-      final_url: finalUrl,
-      content_type: contentType,
-      bytes: body.byteLength,
-      error,
-    });
-    return { line, ok: false, response, bytes: null, record: null };
-  }
+  const provenance = {
+    version: ctx.version ?? "capturedFetch/1",
+    userAgent: run.userAgent,
+    viaObscura: run.viaObscura,
+  };
+  // Le sidecar est durable lui aussi : il ne doit pas devenir le contournement
+  // de la rédaction du manifeste lorsqu'une URL signée a servi au transport.
+  const record = body !== null
+    ? buildRawDocumentRecord({
+        source: ctx.source,
+        sourceUrl: redacted.url,
+        ...(ctx.title !== undefined ? { title: ctx.title } : {}),
+        ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
+        body,
+        fetchedAt: retrievedAt,
+        contentType: contentTypeForStorage,
+        provenance,
+      })
+    : buildRawDocumentRecordFromDigest({
+        source: ctx.source,
+        sourceUrl: redacted.url,
+        ...(ctx.title !== undefined ? { title: ctx.title } : {}),
+        ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
+        sha256: streamedSha256!,
+        bytesLen,
+        fetchedAt: retrievedAt,
+        contentType: contentTypeForStorage,
+        provenance,
+      });
 
   // ── 5. dépôt content-addressed (HEAD-skip idempotent) ───────────────────────
-  const record = buildRawDocumentRecord({
-    source: ctx.source,
-    // Le sidecar est durable lui aussi : il ne doit pas devenir le contournement
-    // de la rédaction du manifeste lorsqu'une URL signée a servi au transport.
-    sourceUrl: redacted.url,
-    ...(ctx.title !== undefined ? { title: ctx.title } : {}),
-    ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
-    body,
-    fetchedAt: retrievedAt,
-    contentType: contentType ?? "application/octet-stream",
-    provenance: {
-      version: ctx.version ?? "capturedFetch/1",
-      userAgent: run.userAgent,
-      viaObscura: run.viaObscura,
-    },
-  });
-
   let dedup: boolean | null = null;
   let storeError: string | null = null;
   let stored = false;
   if (ctx.store !== false) {
     try {
       assertCaptureWritableKey(record.storageKey);
-      assertCasKeyMatchesBytes(record.storageKey, body);
+      if (body !== null) assertCasKeyMatchesBytes(record.storageKey, body);
+      else assertCasKeyMatchesSha256(record.storageKey, record.sha256);
       dedup = await run.storeHead(record.storageKey);
       if (!dedup) {
-        await run.storePut(record.storageKey, body, record.contentType);
+        if (body !== null) await run.storePut(record.storageKey, body, record.contentType);
+        else if (spoolKey !== null) await run.storeCopy(spoolKey, record.storageKey);
+        else throw new Error("capture stream spool missing before CAS promotion");
       }
       // Le sidecar fait partie de l'objet de capture. Un pod peut mourir entre
       // le PUT CAS et le PUT meta : une recapture dédupliquée doit alors réparer
@@ -345,10 +456,22 @@ export async function capturedFetch(
           "application/json",
         );
       }
+      if (spoolKey !== null) {
+        await run.storeDeleteSpool(spoolKey);
+        spoolKey = null;
+      }
       stored = true;
     } catch (e) {
       storeError = normalizeError(e);
       dedup = null;
+    } finally {
+      if (spoolKey !== null) {
+        try {
+          await run.storeDeleteSpool(spoolKey);
+        } catch (cleanupError) {
+          storeError = `${storeError ?? "store failure"}; spool-cleanup: ${normalizeError(cleanupError)}`;
+        }
+      }
     }
   }
 
@@ -359,14 +482,14 @@ export async function capturedFetch(
     redirect_chain: chain,
     final_url: finalUrl,
     content_type: contentType,
-    bytes: body.byteLength,
+    bytes: bytesLen,
     sha256: `sha256:${record.sha256}`,
     storage_key: stored ? record.storageKey : null,
     dedup,
     error: storeError,
   });
   run.log(
-    `[capture] OK ${status} ${method} ${redacted.url} ${body.byteLength}B sha256:${record.sha256.slice(0, 12)}… ${
+    `[capture] OK ${status} ${method} ${redacted.url} ${bytesLen}B sha256:${record.sha256.slice(0, 12)}… ${
       dedup === true ? "dedup" : dedup === false ? "stored" : "not-stored"
     }`,
   );
@@ -394,7 +517,7 @@ export async function capturedFetchOrThrow(
   init: CaptureRequestInit | undefined,
   ctx: CapturedFetchContext,
 ): Promise<CapturedFetchResult & { bytes: Uint8Array }> {
-  const res = await capturedFetch(url, init, ctx);
+  const res = await capturedFetch(url, init, { ...ctx, retainBody: true });
   if (!res.ok || res.bytes === null) throw new CapturedFetchError(res.line);
   return { ...res, bytes: res.bytes };
 }

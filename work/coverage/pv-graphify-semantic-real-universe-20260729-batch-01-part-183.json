@@ -1,0 +1,256 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:32:41.463Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 182,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 3,
+    "Regulation": 3,
+    "Zone": 2,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 13,
+    "edges": 5,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 1,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/0c6a07a6f7fd183e7384e4be3a6408ddcd349f3983d3b19dab22822c6941bb3b.pdf",
+      "entity_type": "Zone",
+      "value": "C-6",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:76",
+      "quote": "       architecturale (PIIA) - 6935 route Louis-S.-St-Laurent - Zone C-6"
+    },
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/0c6a07a6f7fd183e7384e4be3a6408ddcd349f3983d3b19dab22822c6941bb3b.pdf",
+      "entity_type": "Zone",
+      "value": "C-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:841",
+      "quote": "       location de VR dans la zone C-4."
+    },
+    {
+      "municipality_slug": "compton",
+      "storage_key": "raw/pv-index/cas/0c6a07a6f7fd183e7384e4be3a6408ddcd349f3983d3b19dab22822c6941bb3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6380531",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:742",
+      "quote": "       Considérant que la demande vise la Ptie du lot 6 380 531;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 92,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1806,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z",
+  "documents": [
+    {
+      "slug": "compton",
+      "municipality_name": "Compton",
+      "url": "https://www.compton.ca/wp-content/uploads/2023/11/p-v-07-11.pdf",
+      "storage_key": "raw/pv-index/cas/0c6a07a6f7fd183e7384e4be3a6408ddcd349f3983d3b19dab22822c6941bb3b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 3,
+        "Zone": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Compton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE COMPTON"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 11 juillet 2023"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Séance ordinaire du Conseil de la Municipalité de Compton tenue le 11 juillet 2023"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "287-2023-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:618",
+              "quote": "       l’article 142(3) du Code municipal relativement à la résolution 287-2023-07-"
+            }
+          },
+          {
+            "label": "256-2022-07-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:699",
+              "quote": "       par la résolution 256-2022-07-12;"
+            }
+          },
+          {
+            "label": "287-2023-07-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1402",
+              "quote": "résolution 287-2023-07-11 et la reporte à la prochaine séance du Conseil."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2010-103-13.23",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1108",
+              "quote": "IL EST RÉSOLU d'adopter le Règlement no 2010-103-13.23 modifiant le"
+            }
+          },
+          {
+            "label": "2010-103-13-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "13.4   Adoption du Règlement no 2010-103-13-23 modifiant le règlement no 2010-103"
+            }
+          },
+          {
+            "label": "2010-103",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "13.4   Adoption du Règlement no 2010-103-13-23 modifiant le règlement no 2010-103"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C-6",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "       architecturale (PIIA) - 6935 route Louis-S.-St-Laurent - Zone C-6"
+            }
+          },
+          {
+            "label": "C-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:841",
+              "quote": "       location de VR dans la zone C-4."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6380531",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:742",
+              "quote": "       Considérant que la demande vise la Ptie du lot 6 380 531;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/compton/822c6941bb3b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/compton/822c6941bb3b.pdf/.graphify/.graphify_extract.json — 13 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "coaticook",
+          "compton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

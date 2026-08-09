@@ -1,0 +1,1049 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:28:39.708Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2800,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 6,
+    "failed_pvs": 14,
+    "outcomes": {
+      "INDEXED": 6,
+      "OWNER_NOT_CONFIRMED": 12,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 6,
+    "Document": 6,
+    "CouncilSession": 5,
+    "MeetingDate": 5,
+    "Regulation": 10,
+    "Resolution": 3,
+    "LotCadastre": 5
+  },
+  "graphify": {
+    "nodes": 40,
+    "edges": 16,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/623e6779560d5b8f89cdbee88efadd8002cf93a97d6249298d1f77431245ba22.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4809973",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:105",
+      "quote": "                     Luc, matricule 2559-11-5694, lot 4 809 973 du Cadastre du Québec, a déposé une demande de"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/941a7600ee83c433e7e4cc9d6afaf674594f464fa098766f71ba3c58d925a2c8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5248539",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:41",
+      "quote": "                     17.3 Cession d’une partie du lot 5 248 539 – 155 rue Arsenault"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/941a7600ee83c433e7e4cc9d6afaf674594f464fa098766f71ba3c58d925a2c8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5247980",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:385",
+      "quote": "                   Lepage et Mme Nicole Savard, soit le lot 5 247 980, et que ceux-ci ont manifesté leur intérêt à"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/9fec6619e01d46d01b81dda771a992980d6e8dac4264f84c548bd50be7a5d49d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6635945",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:13",
+      "quote": "                     3-      Octroi d'une servitude (aqueduc)- Lot 6 635 945"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/9fec6619e01d46d01b81dda771a992980d6e8dac4264f84c548bd50be7a5d49d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6635952",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:14",
+      "quote": "                     4-      Acquisition d'une servitude en faveur de la ville (aqueduc)- Lots 6 635 952,6 635 945 et"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 159,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2029,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z",
+  "documents": [
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_03-03-2025.pdf",
+      "storage_key": "raw/pv-index/cas/53bb7254fdb74515e86d742ebed21589e65a6baf769be1ce2c7e864dce1fcbdb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/864dce1fcbdb.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/864dce1fcbdb.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_01-04-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5bdbfa36c8c75e0bbcb55ab496b55d688ee41c3847269842412103ee399713e0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 01 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "01 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "tenue le 01 avril 2025 à 20 h, à l’Hôtel de Ville au 1, rue Saint-Jacques Nord, sont présents :"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "269-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:513",
+              "quote": "                  règlement numéro 269-23 – Démolition d’immeubles;"
+            }
+          },
+          {
+            "label": "289-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:602",
+              "quote": "AVIS DE MOTION       Avis de motion et présentation du projet de règlement numéro 289-25, règlement"
+            }
+          },
+          {
+            "label": "267-22",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:606",
+              "quote": "                     PROJET DE RÈGLEMENT NUMÉRO 267-22 DÉCRÉTANT DES DÉPENSES POUR"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/03ee399713e0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/03ee399713e0.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_05-05-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5f18382a57361661b19121e814a26dee5abbd1fd3187003b866f2374fe2b6cc0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue le 5"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue le 5"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-03-048",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "                       Considérant la résolution 2024-03-048 pour autoriser les travaux sur le terrain du garage municipal;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "289-25",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "                       le Règlement 289-25 pour revêtement de route du 2 rang et rue Garon."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/2374fe2b6cc0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/2374fe2b6cc0.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-07-21-2025_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/61da3367175bb620c1822537670669d91f6fd5b592e6e61d93a4b60d98ffd71f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/b60d98ffd71f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/b60d98ffd71f.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_09-17-2025_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/623e6779560d5b8f89cdbee88efadd8002cf93a97d6249298d1f77431245ba22.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 17 septembre 2025 à 19h53, à l’Hôtel de Ville au 1, rue Saint-Jacques Nord, sont présents :"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "298-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "              5-    Avis de motion et présentation du dépôt du règlement 298-25"
+            }
+          },
+          {
+            "label": "2025-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "                     ultérieure du conseil, le Règlement numéro 2025-01 relatif à la tarification incitative pour la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4809973",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "                     Luc, matricule 2559-11-5694, lot 4 809 973 du Cadastre du Québec, a déposé une demande de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/77431245ba22.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/77431245ba22.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2026/odj_2026-04-20_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/6f66c87f89f480e94003db4619c5f2a3c2d900416f9d3fc86bc9475478237fb7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/475478237fb7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/475478237fb7.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-09-17-2025_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/782dcb28d7d467df1ab82371c7eea352992ce58fc41b67c2d72408c56f3aec3e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/08c56f3aec3e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/08c56f3aec3e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2026/pv_09-04-2026.pdf",
+      "storage_key": "raw/pv-index/cas/79b9a372f0852bda762f55f6d561a87d1b736e77af32ca9762f8fff01aa1fa07.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " No de résolution"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " No de résolution"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "S ou annotation     PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL,tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                    le 7 avril 2026 à 19h28, à l'Hôtel de Ville au 1, rue Saint-Jacques Nord, sont présents : Les conseillers,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "302-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "                      7-        Adoption du règlement 302-26 entretien des bâtiments patrimoniaux"
+            }
+          },
+          {
+            "label": "303-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "                      8-        Avis de motion et dépôt du projet de règlement 303-26"
+            }
+          },
+          {
+            "label": "304-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "                      9-        Avis de motion et dépôt du projet de règlement 304-26"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/fff01aa1fa07.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/fff01aa1fa07.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2026/odj-2026-04-07.pdf",
+      "storage_key": "raw/pv-index/cas/8aca8b01a7ac396f8e88bc9764a71a60c937c01f638ba4cc8b996fd763d7f619.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/6fd763d7f619.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/6fd763d7f619.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2026/odj-2026-03-09.pdf",
+      "storage_key": "raw/pv-index/cas/8bbc87f81ffe19eb0154278cf88aefde3f270bfbf60e764d736c042747517bab.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/042747517bab.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/042747517bab.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj_15-12-2025_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/934c121a020e0a7bd7514ac81c3154b38810220e299106b6bd5a1e48c64ec9ba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/1e48c64ec9ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/1e48c64ec9ba.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_09-08-2025.pdf",
+      "storage_key": "raw/pv-index/cas/941a7600ee83c433e7e4cc9d6afaf674594f464fa098766f71ba3c58d925a2c8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               le 8 septembre 2025 à 20h01, à l’Hôtel de Ville au 1, rue Saint-Jacques Nord, sont présents : Messieurs"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "TECH 2024-2028",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "               8-   Résolution TECH 2024-2028 Programme de transfère des infrastructures d’eau et collectives"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "297-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "               7-   Adoption du règlement 297-25 Dispositions municipales applicables par la SQ"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5248539",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "                     17.3 Cession d’une partie du lot 5 248 539 – 155 rue Arsenault"
+            }
+          },
+          {
+            "label": "5247980",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:385",
+              "quote": "                   Lepage et Mme Nicole Savard, soit le lot 5 247 980, et que ceux-ci ont manifesté leur intérêt à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/3c58d925a2c8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/3c58d925a2c8.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2026/pv_12-01-2026.pdf",
+      "storage_key": "raw/pv-index/cas/95583b43c9faea517c919b96bdeef63ab1034456787d24a7edddd388aafefe93.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/d388aafefe93.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/d388aafefe93.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-01-12-2025_sw.pdf",
+      "storage_key": "raw/pv-index/cas/9b7a26d8aa476a25463ffb14485d391ea8f27c7a813fd68a1efcafa50c028068.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/afa50c028068.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/afa50c028068.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-03-03-2025.pdf",
+      "storage_key": "raw/pv-index/cas/9ebd0e5a5e76609f4165aea404b09dace15a6e8280efd43b53eb6fe58314425e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/6fe58314425e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/6fe58314425e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2026/pv_2026-04-20_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/9fec6619e01d46d01b81dda771a992980d6e8dac4264f84c548bd50be7a5d49d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "2026-04-330"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "2026-04-330"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "iyou annotation     PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAFSCAL,tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                    le 20 avril 2026 à 10h04, à l'Hôtel de Ville au 1, rue Saint-Jacques Nord,sont présents : Les conseillers,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-08-182",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                     5-      Modification et abrogation résolution 2025-08-182"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6635945",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "                     3-      Octroi d'une servitude (aqueduc)- Lot 6 635 945"
+            }
+          },
+          {
+            "label": "6635952",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "                     4-      Acquisition d'une servitude en faveur de la ville (aqueduc)- Lots 6 635 952,6 635 945 et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/d50be7a5d49d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/d50be7a5d49d.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj_15-12-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a20de2514ddbbf53bb42db3ada5ea0132601bbc20bd9867059411ae253cf487a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/1ae253cf487a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/1ae253cf487a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-03-02-2025.pdf",
+      "storage_key": "raw/pv-index/cas/a96993bac3cf47b990c31c3aef977b18924491706813df62b40aa06c45950b1a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/a06c45950b1a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/a06c45950b1a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-02-06-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ac7a4e3832f013409bcf0b49900387094bc427b601dfb8b30ab6342750993fb1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/342750993fb1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/342750993fb1.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/ordre-du-jour/2025/odj-11-10-2025_site_web.pdf",
+      "storage_key": "raw/pv-index/cas/b131396f413ca84c8a926efe68ecb26b75b35bd02894b36639e73eb173f52d1c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/3eb173f52d1c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T152808Z/causapscal/3eb173f52d1c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

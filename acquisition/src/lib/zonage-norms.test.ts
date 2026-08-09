@@ -21,6 +21,8 @@ import {
   overlapWithNumericBridge,
   expandCategoryZonesToSig,
   CATEGORY_EXPANDED_TAG,
+  buildNormsSchema,
+  DENSITY_PROVENANCE_COLUMNS,
 } from "./zonage-norms.js";
 import type {
   ZoneNormsT,
@@ -43,6 +45,25 @@ function fc(propsList: Array<Record<string, unknown>>): string {
     })),
   });
 }
+
+describe("density provenance parquet schema", () => {
+  it("persists the verbatim proof and legal date columns used by additive density deposits", () => {
+    expect(DENSITY_PROVENANCE_COLUMNS).toEqual([
+      "densite_source_url",
+      "densite_source_sha256",
+      "densite_source_storage_key",
+      "densite_methode",
+      "densite_snapshot",
+      "densite_page_source",
+      "densite_proof",
+      "densite_legal_date",
+      "densite_legal_date_evidence",
+    ]);
+    expect(buildNormsSchema().columns).toEqual(
+      expect.arrayContaining([...DENSITY_PROVENANCE_COLUMNS]),
+    );
+  });
+});
 
 describe("canonZone — order-invariant digit⇄letter reconciliation", () => {
   it("reconciles every format of one letter+digit code to the SAME key (Matapédia/Mitis 'Ha' famille)", () => {

@@ -37,6 +37,13 @@ function firstFetchSidecar(overrides: Record<string, unknown> = {}): Record<stri
 }
 
 describe("verifyRawCapturePayload", () => {
+  it("does not equate the receipt date with the sidecar date of the first deduplicated fetch", () => {
+    const sidecar = firstFetchSidecar();
+
+    expect(sidecar.fetchedAt).not.toBe(receipt().retrieved_at);
+    expect(verifyRawCapturePayload(receipt(), bytes, sidecar)).toMatchObject({ verified: true, reason: null });
+  });
+
   it("accepte la seconde capture dédupliquée : manifeste du second fetch, sidecar du premier", () => {
     const result = verifyRawCapturePayload(receipt(), bytes, firstFetchSidecar());
 

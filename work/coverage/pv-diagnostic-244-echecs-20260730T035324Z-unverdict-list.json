@@ -1,0 +1,1080 @@
+{
+  "contract": "pv-graphify-semantic-unverdict-list/v1",
+  "generated_at": "2026-07-30T04:18:32.660Z",
+  "purpose": "Réindexation des PV lisibles confirmés du diagnostic 244; une clé déjà munie d'un verdict Graphify ou territorial est exclue avant toute lecture S3.",
+  "diagnostic": {
+    "summary": "work/coverage/pv-diagnostic-244-echecs-20260730T035324Z.json",
+    "complete_trace": "work/coverage/pv-diagnostic-244-echecs-20260730T034638Z.json",
+    "confirmed_pv_unique_cas": 103,
+    "scans_without_text_layer_unique_cas": 13
+  },
+  "deduplication": {
+    "snapshot": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+    "batch_report_pattern": "work/coverage/**/pv-graphify-semantic-real-universe-*-batch-*.json",
+    "batch_reports_consulted": {
+      "count": 589,
+      "inventory_sha256": "a98ec1ce032896a9c278534740783ee9ae54d73ab6455079d0cc4ddc5004f19d"
+    },
+    "territorial_reports_consulted": [
+      "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+      "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json"
+    ],
+    "treated_cas_keys": 6905,
+    "collisions_avoided": 20,
+    "collisions": [
+      {
+        "storage_key": "raw/pv-index/cas/9cef30fe3bc28e7f55d24c56182b8faf2a6236be3d905478439f7ed28c15b633.pdf",
+        "slug": "hebertville-station",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6840.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/7cc41ccbbe3f532334eb572c116bc0f369ab812f7b6ef56cbc9358b62e362398.pdf",
+        "slug": "la-prairie",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6860.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/f975e7cfedf6ee6202cdb8d04c10142cb2a68bdcd1841e16de28605a97beb1a4.pdf",
+        "slug": "lac-beauport",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6860.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/651bc5ed1536454ffc3ee3d4b9c70d75d7c6edf74dfdabedb2d41ded7cac030a.pdf",
+        "slug": "mascouche",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6920.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/8b65ef66ba2b856e3d869da6925551e1ddf15c35479edc36630cd0b8c7f0ca7c.pdf",
+        "slug": "matapedia",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6920.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/cbcf7315954091be6ad85ab21e5817504d8a6b986fc0dbfc3eee0df39eb923a1.pdf",
+        "slug": "mont-blanc",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6920.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/cb2b0ad9e6aebd63ab13c2ffc9d00208f7ea2582ddd2b0edd3fdcbd4ac9f3fc2.pdf",
+        "slug": "montreal",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6920.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/e94c21a7e669112d06fc0562254f064f96331115444d8457b71e79ab7a33dcd3.pdf",
+        "slug": "notre-dame-de-bonsecours",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6940.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/b2daf8feb2c2cf55098406ff20e6d14b2c5c96d7c185555ca9931613555dbbc5.pdf",
+        "slug": "pointe-calumet",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6960.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/604208475dc2c3e748f2e2371bd8ab535ab7bbe79a78861564d82d7123af7a9d.pdf",
+        "slug": "prevost",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6980.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/061cb5fd4d60126b03f820d63ccbf4f2177cfb9ab1a49301cadf12b5cd694a6e.pdf",
+        "slug": "ristigouche-sud-est",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6980.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/bdca65ce6e2682095a51406e6223428682047fac580a41c81be02facff0325ec.pdf",
+        "slug": "rosemere",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-6980.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/8f75647bb527f05301b49e19f4fc5c67fd5bd4370e0268b9f43eeae5f1b7944d.pdf",
+        "slug": "saint-andre-de-kamouraska",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-7000.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/b11ac7efe9f5d90d2f5591e209a6f3288332c98e0aa7a378a58466a5cad51056.pdf",
+        "slug": "saint-augustin-de-desmaures",
+        "sources": [
+          {
+            "source": "work/coverage/pv-graphify-semantic-real-universe-20260729-batch-01-part-7020.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/ebb814ad0fcba75fc689d14c7414455cd291a70f7da7e87f9b79aebaba4491b4.pdf",
+        "slug": "saint-denis-de-la-bouteillerie",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1500.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/f816499889973675e2ea9b97d3365e64029f09a9b2c986bf5db5287aa80e5700.pdf",
+        "slug": "saint-edouard-de-maskinonge",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1520.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "CONTAMINATION_OWNER_MISMATCH"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/e5facb52dc6bc5d0045b5c8a1910dcfebd1ee109912937cb963cf102a5769c0c.pdf",
+        "slug": "saint-paul",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1620.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "OWNER_NOT_CONFIRMED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/4e4238d8396b1762f62bd70c207b4331f45b9e3fecbab976812b3c1b6c900543.pdf",
+        "slug": "saint-prosper",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1620.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/f16b5e9b00ece8b1d537242c000ebe799e7515404b6e7b7b676615a81bc2e1d4.pdf",
+        "slug": "sainte-adele",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1660.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/ae55cc70a10eff910d21d910b6422cdb947d56ef509b999ac80224b0d8ece560.pdf",
+        "slug": "sainte-brigitte-de-laval",
+        "sources": [
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-graphify-semantic-real-universe-20260729-batch-01-part-1680.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          },
+          {
+            "source": "work/coverage/pv-territorial-20260729t231834z/pv-territorial-campaign-conversion-summary.json",
+            "verdict": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED"
+          }
+        ]
+      }
+    ],
+    "selected_for_recheck": 83
+  },
+  "scans_without_text_layer": [
+    {
+      "storage_key": "raw/pv-index/cas/07a2c09c39760710fc41e6a8aac887fbb2e8aed91249f121406dc7577062c191.pdf",
+      "slug": "rawdon",
+      "municipality_name": "Rawdon",
+      "url": "https://rawdon.ca/storage/app/media/municipalite/vie-democratique/seances-du-conseil/2025/comptes-a-payer-28-02-2025.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/16287ac53c58a19f4b182c1527da485eccccc056497f5e4b63bb3a0eecf4c109.pdf",
+      "slug": "stanstead--memphremagog",
+      "municipality_name": "Stanstead",
+      "url": "http://stanstead.ca/wp-content/uploads/2022/04/Proces-verbal-2022-01-26_1_final-signe.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1aa104794b82022022d639c4ced71776111af6b78f6b157030a05fd853703d84.pdf",
+      "slug": "val-des-lacs",
+      "municipality_name": "Val-des-Lacs",
+      "url": "https://www.val-des-lacs.ca/fichiersUpload/fichiers/20210608112248-pv-16-janv-2021-signe.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/25a5a87891dbf5d02fc7cb4629cef0f73227f88e93bad00ff79f95586d319d82.pdf",
+      "slug": "saint-pascal",
+      "municipality_name": "Saint-Pascal",
+      "url": "https://www.villesaintpascal.com/fichiersUpload/fichiers/20250320134516-seance-extraordinaire-du-24-mars-2025.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/26b970677e474db2e80c529409fa68ddb0134a8f25f45c2a5412c9eac15f01ed.pdf",
+      "slug": "sainte-marguerite",
+      "municipality_name": "Sainte-Marguerite",
+      "url": "https://sainte-marguerite.ca/images/PDF/PV_0820.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2af5e7661f3642b1617d3c5bb8563db1b322f807461c4b0f615eed3ee554ca8b.pdf",
+      "slug": "shawinigan",
+      "municipality_name": "Shawinigan",
+      "url": "https://www.shawinigan.ca/download/228/pv/33664/2025-12-17_pv_conseil_extraordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3d59cade47ff6b300bab4b955344c9d1648391dc6c6b1f7e5f8dcc4d539c70ac.pdf",
+      "slug": "saint-celestin--nicolet-yamaska",
+      "municipality_name": "Saint-Célestin",
+      "url": "https://www.village-st-celestin.net/upload/seances-du-conseil/4___pv_2026-01-12_seance_ordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5c42ed1778c7260f75267c6b0786a6bdd612e5a60cc5b99efefbf62fa29ecab1.pdf",
+      "slug": "saint-raphael",
+      "municipality_name": "Saint-Raphaël",
+      "url": "https://www.saint-raphael.ca/fichiersUpload/fichiers/20260402123133-2025-02-04-seance-ordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6e02331ed6e36e60732781225f4da5fbc9fa74b0e98d4df7cab989dea6dc8ac1.pdf",
+      "slug": "saint-pierre",
+      "municipality_name": "Saint-Pierre",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-pierre-de-lile-dorleans/_publication/fichiers/10-octobre-2014.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/84fd44f7121e02c0a7ad8dae9d210d49e4d70ad99e548f638d7f89394c21d01c.pdf",
+      "slug": "sainte-marthe",
+      "municipality_name": "Sainte-Marthe",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-marthe/_publication/fichiers/10%20dcembre%202024%20procs-verbal%20sance%20ordinaire(1).pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8bb680e8daa06a02434219c0471162eca072bb2a2149df1dd6b0b256af113b2d.pdf",
+      "slug": "sainte-madeleine-de-la-riviere-madeleine",
+      "municipality_name": "Sainte-Madeleine-de-la-Rivière-Madeleine",
+      "url": "https://stemadeleine.ca/wp-content/uploads/2021/03/pv-05-01-2021.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9e098919648bdd5c9a821b78197528176a38729e77a1ed0c8a2f0a7ec42b4ee3.pdf",
+      "slug": "montpellier",
+      "municipality_name": "Montpellier",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/montpellier/_publication/fichiers/14-04-2026(1).pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ed2a4de8496606f329e84b80c535e0b7d066279c95041f703028c8d8c2470151.pdf",
+      "slug": "la-tuque",
+      "municipality_name": "La Tuque",
+      "url": "https://www.ville.latuque.qc.ca/upload/seances-du-conseil/agg-2026-02-17_-_pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    }
+  ],
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/9844c6b9819f2051391c97a0eea4f80271ca54aef09836abf1fdb8e0ee987b1f.pdf",
+      "slug": "sainte-justine-de-newton",
+      "municipality_name": "Sainte-Justine-de-Newton",
+      "url": "https://sainte-justine-de-newton.ca/wp-content/uploads/2025/12/3.1_PV_2025-07_ord_signe.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a7c758be737fdc6023a91fefa01fcb75715b8529e0c5384fbc9e237c554c59ef.pdf",
+      "slug": "sainte-luce",
+      "municipality_name": "Sainte-Luce",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-luce/_publication/fichiers/2023-04-03.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c13279b97df001f40a4d617b8861945b8af29383f45a574846183c07d88d5c01.pdf",
+      "slug": "sainte-lucie-des-laurentides",
+      "municipality_name": "Sainte-Lucie-des-Laurentides",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-lucie-des-laurentides/_publication/fichiers/Proces-verbal%20de%20correction_RES-04%20(1).pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2f8953f238d36a243ce15d4980f73e4131f6aea86f5c0137dfd0d0a06115df07.pdf",
+      "slug": "sainte-madeleine",
+      "municipality_name": "Sainte-Madeleine",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-madeleine/_publication/fichiers/25%20avril%202024.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/025a09ee29e609728c4f6cff1fb00be7dbae337af45318d05ae72e5e06ddf32d.pdf",
+      "slug": "sainte-marcelline-de-kildare",
+      "municipality_name": "Sainte-Marcelline-de-Kildare",
+      "url": "https://ste-marcelline.com/storage/app/media/municipalite/conseil-municipal/proces-verbaux/2026/Seance-extraordinaire-du-29-avril-2026-Proces-verbal-Final.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8618d84951009ca167e2f6b86ca10b95a628ed46e5868d0229bccbab813e36fa.pdf",
+      "slug": "sainte-marie",
+      "municipality_name": "Sainte-Marie",
+      "url": "https://www.sainte-marie.ca/wp-content/uploads/2026/02/2026-01-12_DER.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/717b6c94f84a3ea11fa0ced4aea860a1a7fa8056a53e5c11d70ae8ceb08e2823.pdf",
+      "slug": "sainte-marie-madeleine",
+      "municipality_name": "Sainte-Marie-Madeleine",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/sainte-marie-madeleine/_publication/fichiers/Proces-verbal-9-septembre-2019.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/512f982d2cee2d4e09255f7b67c46f7e1206c01d18379aaccf580396d81ad53d.pdf",
+      "slug": "sainte-marthe-sur-le-lac",
+      "municipality_name": "Sainte-Marthe-sur-le-Lac",
+      "url": "https://vsmsll.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2026/2026-0114_pv_seance_extraordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8a5d2129d97b6ef5a5c59a302bf2945b69f429c334b975ccb83ede465666f813.pdf",
+      "slug": "sainte-martine",
+      "municipality_name": "Sainte-Martine",
+      "url": "https://sainte-martine.ca/wp-content/uploads/2026/02/conseil-fevrier-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1d16c0ae3978801ac86cb8d6bc7ac08a4755ccd6c1b73d644bf7feee643a3d34.pdf",
+      "slug": "sainte-melanie",
+      "municipality_name": "Sainte-Mélanie",
+      "url": "https://www.sainte-melanie.ca/storage/app/media/municipalite/vie-democratique/Proc%C3%A8s-verbaux/2026/PV%202026-03-04.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/22b6cc3c2aca835548db9cbccfa1489410e29de3ff32d35352322c664248c1e3.pdf",
+      "slug": "sainte-monique--nicolet-yamaska",
+      "municipality_name": "Sainte-Monique",
+      "url": "https://www.sainte-monique.ca/upload/seances-du-conseil/pv_2026-01-13.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/036935285e5d7d8ab22295d7d05501943bcb0ab229dad157865d218b45f27f46.pdf",
+      "slug": "sainte-perpetue--nicolet-yamaska",
+      "municipality_name": "Sainte-Perpétue",
+      "url": "http://www.ste-perpetue.ca/wp-content/uploads/2022/03/02-proces-verbal-fevrier-2022.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5f23431a308781f946a5d830394c55239cd52eab5183d2307f9aad663c9ba38f.pdf",
+      "slug": "sainte-petronille",
+      "municipality_name": "Sainte-Pétronille",
+      "url": "http://stepetronille.com/wp-content/uploads/2022/08/1.-pv-janvier-2021_a.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/56571fbf4ecc3243d36adef01c09b94b62702bcd7dc4bdadea2c5d829b9e3f17.pdf",
+      "slug": "sainte-rose-de-watford",
+      "municipality_name": "Sainte-Rose-de-Watford",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=0ed5fd83-4bc1-4a0b-b2f2-1b6f15418d6c",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/23587ac208932170bec59a51e81bcf52e3bc96347b17b27fd220d78979f62864.pdf",
+      "slug": "sainte-rose-du-nord",
+      "municipality_name": "Sainte-Rose-du-Nord",
+      "url": "https://www.ste-rosedunord.qc.ca/wp-content/uploads/2025/05/proces-verbal-seance-du-2025-01-20.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a57700e3709e1ed13ab70a83a8579393d38d00187afefdacbc96d47807908c0e.pdf",
+      "slug": "sainte-sabine--brome-missisquoi",
+      "municipality_name": "Sainte-Sabine",
+      "url": "https://municipalites-du-quebec.com/sainte-sabine/docs/pv/2026/2026-01-12%20Proc%C3%A8s-verbal%20de%20la%20s%C3%A9ance%20du%2012%20janvier%202026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f6b3a7b51ae4ab759d94ed8ad16e20f4384153b2466890308b6d7aa438f97c04.pdf",
+      "slug": "sainte-sabine--les-etchemins",
+      "municipality_name": "Sainte-Sabine",
+      "url": "https://municipalites-du-quebec.com/sainte-sabine/docs/pv/2025/Compilation%20Proc%C3%A8s-verbaux%202025.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4dd4cce9bfa6044da282ac2b72d3355a81811884ea2f5220203a9f1962d7e893.pdf",
+      "slug": "sainte-seraphine",
+      "municipality_name": "Sainte-Séraphine",
+      "url": "https://www.munsainteseraphine.ca/fichiersUpload/fichiers/20230112152229-proces-verbal-6-decembre-2022.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/537c2111cadeb77c537aa31c7a98a84f19d040eba3e3ca20e842c024f735125f.pdf",
+      "slug": "sainte-sophie",
+      "municipality_name": "Sainte-Sophie",
+      "url": "https://www.stesophie.ca/storage/app/media/municipalite/vie-democratique/seances-du-conseil-et-proces-verbaux/proces-verbaux-2026/proces-verbal-so-2026-01-13.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8bfb0c432cb6646bd1fed4bcc949ccec8fad9d0503e8bd1d525e29e12867d634.pdf",
+      "slug": "sainte-thecle",
+      "municipality_name": "Sainte-Thècle",
+      "url": "http://ste-thecle.qc.ca/wp-content/uploads/proces-verbaux-annee2012.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d49c4fd4425c41262c92008e3383135f6c76e6cb6c669941e84f07033f188f1a.pdf",
+      "slug": "sainte-therese",
+      "municipality_name": "Sainte-Thérèse",
+      "url": "https://www.sainte-therese.ca/storage/app/media/ville/democratie/seances-du-conseil/proces-verbaux/2026/26-01-12_ordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a7657e3ec319d71f0fe9dea59286cddac8380e08a7dee689aa2ff382a36523dd.pdf",
+      "slug": "sainte-therese-de-gaspe",
+      "municipality_name": "Sainte-Thérèse-de-Gaspé",
+      "url": "https://saintetheresedegaspe.com/wp-content/uploads/2019/09/Proc%C3%A8s-verbal-2019-01-15.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3eeb7e55c5d79304872cd1858efb1912ae6d29fa2c24c101c172b970fd9fade4.pdf",
+      "slug": "sainte-therese-de-la-gatineau",
+      "municipality_name": "Sainte-Thérèse-de-la-Gatineau",
+      "url": "https://sainte-therese-de-la-gatineau.us-east-1.linodeobjects.com/20240525150154-pv-janv.pdf?v=1782246468",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9120112835bdb214f92ecaad5c9a37230249e8bb366f203a67262a54fdaecf1b.pdf",
+      "slug": "sainte-ursule",
+      "municipality_name": "Sainte-Ursule",
+      "url": "https://municipalites-du-quebec.com/sainte-ursule/docs/pv/2026/pv2026-01-13.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0c52dad3920138d6e4d453d7f4d038bd0be1b6f89a3ef4b41029bd60e2f072ad.pdf",
+      "slug": "saints-anges",
+      "municipality_name": "Saints-Anges",
+      "url": "https://www.saintsanges.com/wp-content/uploads/2026/01/2025-12.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/feb28341e5a702c518bb6b781726e1e55aa4195887d48cb59a30b5e19df37c8e.pdf",
+      "slug": "saints-martyrs-canadiens",
+      "municipality_name": "Saints-Martyrs-Canadiens",
+      "url": "https://www.saints-martyrs-canadiens.ca/medias/doc/seances/2026-01-12%20-%20Proc%C3%A8s-verbal.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c0df5772f4fd170e8d2d4839733a7df0ac21ad8db0c5ff928d7ec858b348900b.pdf",
+      "slug": "salaberry-de-valleyfield",
+      "municipality_name": "Salaberry-de-Valleyfield",
+      "url": "https://dua3m7xvptjbw.cloudfront.net/documents/seances/GRE-SD-Proces-verbal-de-la-seance-extraordinaire-du-6-decembre-2024.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/beabd998a8cb8f03cc20332819a79bce5790d1409cf221b8863daedf9a67ce11.pdf",
+      "slug": "scotstown",
+      "municipality_name": "Scotstown",
+      "url": "https://scotstown.ca/wp-content/uploads/2025/03/RESUME-5-mai-2020-Seance-ordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a59702a491154c5c80ce4a81977693eb7873c88a255c1cdf1f8342d20b7395df.pdf",
+      "slug": "scott",
+      "municipality_name": "Scott",
+      "url": "https://www.municipalitescott.com/wp-content/uploads/2016/05/2012seanceextraordinaire10decembre.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/07d8e8e286ceba2c3883cb7c54ad11cbf8bf8a470d208f73965485c3f2210721.pdf",
+      "slug": "senneterre--la-vallee-de-lor",
+      "municipality_name": "Senneterre",
+      "url": "https://www.ville.senneterre.qc.ca/upload/seances-du-conseil/proces-verbaux/2026/2026-01-19_pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/12196793160e8bbe7c3f17074eccec75c86749c679514155d7e2b88892bb77c4.pdf",
+      "slug": "senneville",
+      "municipality_name": "Senneville",
+      "url": "https://www.senneville.ca/wp-content/uploads/2022/12/190826_Proces-verbal.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/44736f92fa4c71d5a4befa65d8f2d41b708f55fe8a51361feb87c586f4e3fdd7.pdf",
+      "slug": "sept-iles",
+      "municipality_name": "Sept-Îles",
+      "url": "https://www.septiles.ca/CLIENTS/1-villesi/docs/upload/sys_docs/Procesverbal_de_la_seance_ordinaire_du_25_mai_2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/91a10d061f310ea9bbac57c3b6604a13048acd256e9325c7e717f52dc1410e02.pdf",
+      "slug": "shannon",
+      "municipality_name": "Shannon",
+      "url": "https://shannon.ca/wp-content/uploads/2017/07/PV-2017-01-16.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b8f31586853b0615c716b1a59a543dca81bab92643c14d2788e0e82a9ad58d7a.pdf",
+      "slug": "sherbrooke",
+      "municipality_name": "Sherbrooke",
+      "url": "https://www.sherbrooke.ca/Fichiers/3337a882-4a53-e611-80ea-00155d09650f/Entities/m_10d7b199-e1d7-49fa-bb5d-6b2b67587680/Comite%20consultatif%20agricole/2026/pv_cca_20260506.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6bfdc0bafd3948f6c2a0a54713da779d49f6924c1a5a453def007b76fcb72f8f.pdf",
+      "slug": "shigawake",
+      "municipality_name": "Shigawake",
+      "url": "https://municipalityshigawake.com/download/102/fevrier/2575/projet-de-proces-verbal-de-la-seance-du-premier-fevrier-2021",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b60f5cbf44db41e594f4fd10ef7cb95a62464e9e030401d3ff14342916b7c1ca.pdf",
+      "slug": "stanbridge-east",
+      "municipality_name": "Stanbridge East",
+      "url": "https://www.stanbridgeeast.ca/fichiers_edition/docs_conseil/fr/2026-01-12_FR_Minutes_-.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b9aff06648ba1a9ffd7f9f3d015dc1a5414f9c4435552dab51fe4818428748d3.pdf",
+      "slug": "stanstead--memphremagog--2",
+      "municipality_name": "Stanstead",
+      "url": "http://www.cantonstanstead.ca/wp-content/uploads/2023/03/3-Proces-verbal-27-fevrier-1.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/55630490d4e26adc9caea43597f6b5938781e97339d5f26788d00f7c1f8ab18d.pdf",
+      "slug": "stanstead-est",
+      "municipality_name": "Stanstead-Est",
+      "url": "https://www.stansteadest.ca/wp-content/uploads/2026/02/CM-PV_2026-01-Janvier.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/332893bfd15742533cb826821ba6c67bf869da23b96533cea76df9bc336d4262.pdf",
+      "slug": "stoneham-et-tewkesbury",
+      "municipality_name": "Stoneham-et-Tewkesbury",
+      "url": "https://www.villestoneham.com/storage/app/media/ma-municipalite/democratie/seances-du-conseil/proces-verbaux/proces_verbal_2025-07-07.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f6c3fe7de782886ee6a370719c17404f7a35f9be35e62e19dbd91c519bf525b4.pdf",
+      "slug": "stratford",
+      "municipality_name": "Stratford",
+      "url": "https://stratford.quebec/wp-content/uploads/2021/09/PV-EXTRA_2021-06-21.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d7d24707284db297d1039e9a0936a4cf984016994edc135b59ea65c58aa800c6.pdf",
+      "slug": "stukely-sud",
+      "municipality_name": "Stukely-Sud",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/stukely-sud/_publication/fichiers/2024-10-15%20pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/db19b19762346bdb136aa7e2c1c17b081dd4b1796cfaf5e6c6a5fca1ed7d29d4.pdf",
+      "slug": "tadoussac",
+      "municipality_name": "Tadoussac",
+      "url": "https://www.municipalite.tadoussac.com/fichiersUpload/fichiers/20250303140739-14-01-25-seance-ordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1afc81ac9695e6ab3ff57f83dbc4482389ff63e04b3e63f3ef2cadf8dca55ec1.pdf",
+      "slug": "taschereau",
+      "municipality_name": "Taschereau",
+      "url": "https://taschereau.ao.ca/documents/pages/02-seance-du-4-fevrier-2026-pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a2abaea1939122f03dd096bc5ad542e81cfdfe05013939a2645ac636541e2138.pdf",
+      "slug": "temiscaming",
+      "municipality_name": "Témiscaming",
+      "url": "https://www.temiscaming.net/upload/seances-du-conseil/oj_20260113_so.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9733f697b2b9bae45433ee6238c09f1211296472aef943b7ac8746bcfa007fb2.pdf",
+      "slug": "temiscouata-sur-le-lac",
+      "municipality_name": "Témiscouata-sur-le-Lac",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/temiscouata-sur-le-lac/_publication/fichiers/6%20decembre%202021%20-%20Proces-verbal.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4c4bfa96291836bfbd4187b2db896e070bc422204a8daf2dbb5e847d87e332db.pdf",
+      "slug": "terrasse-vaudreuil",
+      "municipality_name": "Terrasse-Vaudreuil",
+      "url": "https://www.terrasse-vaudreuil.ca/wp-content/uploads/2015/04/Proc%C3%A8s-verbal-08-08-2017.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b3d58730a0f4237dd4bc77aed16f389495cba6c129df841ebc02ca7a760e28cf.pdf",
+      "slug": "thorne",
+      "municipality_name": "Thorne",
+      "url": "https://www.thorneque.ca/_files/ugd/703639_4735780568d1449ca6fbb4674c58fe74.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5a49cd4ea7ae6f04ad64d3acf867348249e7a137faefef1f7cf9344bb4488f60.pdf",
+      "slug": "tres-saint-redempteur",
+      "municipality_name": "Très-Saint-Rédempteur",
+      "url": "https://tressaintredempteur.ca/wp-content/uploads/2026/02/Proces-verbal_2026-01-13.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9a00d1ea21086b9cdaadbdfe839465393735f1f57ba5cddec55ec9cc04b21229.pdf",
+      "slug": "tring-jonction",
+      "municipality_name": "Tring-Jonction",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=004da134-5318-4cf4-84d3-b0c45344b4b7",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5dbb7d3087e8bcca69b08ca32b999727313189fbd6fc0b79af0a8b40ee305d77.pdf",
+      "slug": "trois-pistoles",
+      "municipality_name": "Trois-Pistoles",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/trois-pistoles/_actualites/fichiers/2024-01-15%20PV_VF.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/7e063ee0c42be3d1820025f7ff2ddfe2fe5e44f457877cc69ade094b08e96232.pdf",
+      "slug": "trois-rives",
+      "municipality_name": "Trois-Rives",
+      "url": "https://trois-rives.com/wp-content/uploads/2026/03/Trois-Rives_Proces-verbal_seance-extraordinaire_26-janvier-2026_18-h-49.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b14e683ac1fe2f7883f5f54a419967c73ce3ae26c5089f5932ecf8bcc7a56164.pdf",
+      "slug": "ulverton",
+      "municipality_name": "Ulverton",
+      "url": "https://municipaliteulverton.com/wp-content/uploads/2020/09/0_PROCES-VERBAL-15-JANVIER-2018.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a07e1a648afc65191995c2f1a791f55cceb9bab588bc7179251b306c406f5068.pdf",
+      "slug": "upton",
+      "municipality_name": "Upton",
+      "url": "https://upton.ca/wp-content/uploads/2019/08/proces-verbal-2017-01-24.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/099784c0e40a15f9a177d5a7b4cf25c13e733df406ab4abab0da5085c940da59.pdf",
+      "slug": "val-alain",
+      "municipality_name": "Val-Alain",
+      "url": "https://www.val-alain.com/wp-content/uploads/2018/09/Proces-verbaux-Janvier-2017.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3c90a029456b64ff390e0e12683777b33b66997f3ef6c5fe517a7db8b0181d4f.pdf",
+      "slug": "val-brillant",
+      "municipality_name": "Val-Brillant",
+      "url": "https://municipalites-du-quebec.com/val-brillant/docs/pv/2026/2026-01-12.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/bc051c88f0d6615556943a2a69a824ce1f370d438cf50197a6faeba8dcaafcb9.pdf",
+      "slug": "val-des-bois",
+      "municipality_name": "Val-des-Bois",
+      "url": "https://val-des-bois.ca/wp-content/uploads/2026/02/Proces-verbal-2026-01-14.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/918fd25fcebd1408fcba1800248add653bc08fe2ee294191a6607c30a270717c.pdf",
+      "slug": "val-des-monts",
+      "municipality_name": "Val-des-Monts",
+      "url": "https://valdesmonts-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2026/01/cm-26-01-27.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0a7732167613fd26d75ee095c3654fff984a46218fb295eaaef5390a7146b140.pdf",
+      "slug": "val-des-sources",
+      "municipality_name": "Val-des-Sources",
+      "url": "https://valdessources.ca/wp-content/uploads/2026/02/pv-12-janvier-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/26bbdaebc474d28910cf1cd228a7e54460e91358c2be631cda0f6a406e113e65.pdf",
+      "slug": "val-dor",
+      "municipality_name": "Val-d'Or",
+      "url": "https://www.ville.valdor.qc.ca/uploads/1_La%20ville/D%C3%A9mocratie/Assemblees/Proces-verbal_du_3_juin_2024.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6d6d815ab5d001bf2dc38871bf0fac401fcdd7875f76795474d98346ca9a3d86.pdf",
+      "slug": "val-joli",
+      "municipality_name": "Val-Joli",
+      "url": "https://www.val-joli.ca/fichiersUpload/fichiers/20251006150050-pv-2-juin-doc.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/58cc002344bee92077de3a071ae91d0f30893b88d8f1fb54b8c46c2345b7b04a.pdf",
+      "slug": "val-racine",
+      "municipality_name": "Val-Racine",
+      "url": "https://www.val-racine.com/fichiersUpload/fichiers/20241107170843-2024-10-01-proces-verbal-final.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/bbc4ff6e3255f5ab14e499782b922d4c39541663322fe11ae2499674249c1efc.pdf",
+      "slug": "valcourt--le-val-saint-francois",
+      "municipality_name": "Valcourt",
+      "url": "https://www.valcourt.ca/app/uploads/2023/04/Proces-verbal-Seance-du-2-fevrier-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3878e553a8ab14ac4331aff3bc7f60d33893a5df0d3f4b78db94e0e5e1b4208a.pdf",
+      "slug": "vallee-jonction",
+      "municipality_name": "Vallée-Jonction",
+      "url": "https://valleejonction.qc.ca/wp-content/uploads/2023/10/2023-09-18-Seance-extraordinaire.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ff0d952b86865593370a64a2626b2f66e8eb8b3192f42d0ad8c4714989c4dd9b.pdf",
+      "slug": "varennes",
+      "municipality_name": "Varennes",
+      "url": "https://www.ville.varennes.qc.ca/uploads/conseil_municipal/20100111-SG.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/10e1ac8fe1c9809401a1da26229b2437a6a184aca1c8ba5356bde24193547def.pdf",
+      "slug": "vaudreuil-dorion",
+      "municipality_name": "Vaudreuil-Dorion",
+      "url": "https://www.ville.vaudreuil-dorion.qc.ca/uploads/sections/La_Ville/Mairie/Seances_publiques/PV_2022/220606_pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2a0d26d290e1fa2bb971d818586fc78af4afb1927a04a4c59c13acbcecc5f369.pdf",
+      "slug": "vaudreuil-sur-le-lac",
+      "municipality_name": "Vaudreuil-sur-le-Lac",
+      "url": "https://cdn.prod.website-files.com/5f4e5b6c545abb001212eb2a/610842ca57b5c35f74e96d16_Proce%CC%80s-verbal%205%20juillet%202021.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c88da6c8eb9c8ce764f90f3acd19d9ffafaef834bc2e3ee616e22875349054d9.pdf",
+      "slug": "venise-en-quebec",
+      "municipality_name": "Venise-en-Québec",
+      "url": "https://www.veniseenquebec.ca/storage/app/media/municipalite/conseil-municipal/proces-verbaux/2026/Proces-verbal-12-01-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c3b557284e4c5069e77319c2b482a7a459138a8290a8bd7d1669df042fbbef35.pdf",
+      "slug": "vercheres",
+      "municipality_name": "Verchères",
+      "url": "https://ville.vercheres.qc.ca/wp-content/uploads/2021/01/2021.01.11-pv.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/04668ec9dbfaa84489e7ff99a517e07274c47b52edab44a7d4c043bc75c136a6.pdf",
+      "slug": "victoriaville",
+      "municipality_name": "Victoriaville",
+      "url": "https://d16k40le270owi.cloudfront.net/PV-s%C3%A9ance-du-4-mai-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/89c1a924ccd2ca95da0cd2123cfaeb9ab2f37344dd2b0dec312bbeff9cf523e2.pdf",
+      "slug": "ville-marie",
+      "municipality_name": "Ville-Marie",
+      "url": "https://www.villevillemarie.org/wp-content/uploads/2022/12/2022-12-05-PV-REUO-public.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f828b9be2508bf85e24d0dd98cf4ee5e71f59842ad949b80e592d8299eee1bee.pdf",
+      "slug": "waltham",
+      "municipality_name": "Waltham",
+      "url": "https://pontiacouest.ca/wp-content/uploads/2026/01/Minutes-Waltham-28-janvier-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/745b992017bbc715820f7f4b2f8a1ad01c85a141cbfcf39914cc26d70de7ff03.pdf",
+      "slug": "warden",
+      "municipality_name": "Warden",
+      "url": "https://municipalites-du-quebec.com/warden/docs/pv/2026/2026-01-14%20Proc%C3%A8s-Verbal.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b159d5b7bed770c1e1c86f57c8d84d748d5c6c4ded84ef634a4be33d75dece5a.pdf",
+      "slug": "warwick",
+      "municipality_name": "Warwick",
+      "url": "https://villedewarwick.quebec/wp-content/uploads/2026/02/Proces-verbal-du-12-janvier-2026.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8c19af5e3dd5b27a72df56bd95a30822b864de27680826e6102685cc3de51036.pdf",
+      "slug": "waterloo",
+      "municipality_name": "Waterloo",
+      "url": "https://ville.waterloo.qc.ca/wp-content/uploads/2020/02/PV_2019-01-15.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/7deff05b71ad4cda2a12473b6f4cb1f96d7202d5fc4a5d3e977de65bf3c136b0.pdf",
+      "slug": "waterville",
+      "municipality_name": "Waterville",
+      "url": "https://www.waterville.ca/upload/proces-verbaux/2026-01-12%20PV.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/bff1bd29e4ae680a9954c5f3440c3aa3e4d90d9409187c54fb88f0e3cd6f6cff.pdf",
+      "slug": "weedon",
+      "municipality_name": "Weedon",
+      "url": "https://weedon.ca/wp-content/uploads/2017/05/01-PV-2012-janvier.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c6b43da20785330e3198cf5a8cd14571f4fa36888d2c7d5747e1ca2b2f965ce4.pdf",
+      "slug": "wentworth",
+      "municipality_name": "Wentworth",
+      "url": "https://www.wentworth.ca/storage/app/media/municipalite/conseil-municipal/proces-verbaux/2026/2026-01-12web.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/93262ee6941f6eda4a5e8484e9ccf0b688adde773ef4e4cbe6250f2e9509194e.pdf",
+      "slug": "westbury",
+      "municipality_name": "Westbury",
+      "url": "https://www.westbury.ca/wp-content/uploads/2023/02/01-16-janvier-2023-PV.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d2519f23fb255bfaf683c393733cc671a69721f73a19c6b04dcf01d5de6e4593.pdf",
+      "slug": "westmount",
+      "municipality_name": "Westmount",
+      "url": "https://westmount.org/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2026/2026-01-13-pti.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/7e5e628cb326ef4cae2c46adb6051185ab3ba3e8abb01a89bde9079cd1ca8f9f.pdf",
+      "slug": "wickham",
+      "municipality_name": "Wickham",
+      "url": "https://wickham.ca/wp-content/uploads/2017/09/Seance-ordinaire-1er-fevrier-2016.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1a6401626fc4474f46ca275b8dbf3d283c0eb4721f8cc77282c6dac27353e235.pdf",
+      "slug": "windsor",
+      "municipality_name": "Windsor",
+      "url": "https://www.villedewindsor.qc.ca/wp-content/uploads/2023/01/Proces-verbal-Seance-du-9-janvier-2023.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1d6f283b1a3f191cf6baf7352ae7016ed77f3bcbc2fdee3c9ba202d59feea435.pdf",
+      "slug": "yamachiche",
+      "municipality_name": "Yamachiche",
+      "url": "https://www.yamachiche.ca/wp-content/uploads/2026/04/PV_20260202.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1452880c1f01cc6d75ad42bb1c206ae61802b12309ec989fc9cafbe412e13c01.pdf",
+      "slug": "yamaska",
+      "municipality_name": "Yamaska",
+      "url": "https://www.yamaska.ca/upload/seances-du-conseil/01__13_janvier_2026__valide.pdf",
+      "source_status": "READY",
+      "source_observations": 1
+    }
+  ]
+}

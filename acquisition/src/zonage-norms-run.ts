@@ -26,7 +26,7 @@
  *       --source-url https://… [--reglement 123] \
  *       [--route auto|native|ocr|multizone|vision|gpt55|gpt54] \
  *       [--max-vision-pages N] [--budget-usd 15] [--auto-grid-page] \
- *       [--expand-categories] [--dry-run] [--force]
+ *       [--native-only] [--expand-categories] [--dry-run] [--force]
  *
  * `--expand-categories` (ADDITIVE, off by default): for a category-organised MRC
  * grille whose codes are USAGE CATEGORIES (`EAF`, `M`, `RU`) while the SIG stores
@@ -103,6 +103,7 @@ import {
   extractGrilleGpt55FromPdf,
   type CodexUsage,
 } from "./lib/grille-gpt55-codex.js";
+import { pageLimitForNativeFirstRoute } from "./lib/grille-execution-policy.js";
 import {
   crossValidateZoneCodes,
   depositZonageNorms,
@@ -143,6 +144,8 @@ interface Args {
   maxVisionPages: number;
   budgetUsd: number;
   dryRun: boolean;
+  /** Run every native parser, but structurally forbid OCR/vision CLI/API calls. */
+  nativeOnly: boolean;
   force: boolean;
   /** Parquet-only deposit (NO manifest write) — safe for concurrent lanes; reconcile via zonage-norms-manifest-merge.ts. */
   noManifest: boolean;
@@ -180,6 +183,7 @@ function parseArgs(argv: string[]): Args {
     maxVisionPages: Number(get("max-vision-pages") ?? "80"),
     budgetUsd: Number(get("budget-usd") ?? "15"),
     dryRun: has("dry-run"),
+    nativeOnly: has("native-only"),
     force: has("force"),
     noManifest: has("no-manifest"),
     autoGridPage: has("auto-grid-page"),
@@ -257,6 +261,11 @@ function publishedCount(z: ZoneNormsT): number {
     z.marges.arriere_min,
   ];
   return fs.filter((f) => f && f.value !== null).length;
+}
+
+/** Number of zones carrying a guarded, numeric density usable by the 4a prerequisite. */
+function zonesWithDensity(zones: readonly ZoneNormsT[]): number {
+  return zones.filter((zone) => Number.isFinite(zone.densite?.value)).length;
 }
 
 /** Merge duplicate page reads by zone, keeping the row with more published norms. */
@@ -906,7 +915,11 @@ async function main(): Promise<void> {
     // Bounded by maxVisionPages (count) AND budget — native above is unbounded/$0.
     const tracker = costTrackedZoneHeaderVision();
     const visionScanPages = scanPages.slice(0, args.maxVisionPages);
-    if (visionScanPages.length > 0 && process.env["MISTRAL_API_KEY"]) {
+    if (visionScanPages.length > 0 && args.nativeOnly) {
+      console.error(
+        `[zoneheader] native-only: ${visionScanPages.length} scan page(s) laissée(s) sans appel vision`,
+      );
+    } else if (visionScanPages.length > 0 && process.env["MISTRAL_API_KEY"]) {
       console.error(
         `[zoneheader] native zones=${nativeZones} → ${scanPages.length} scan page(s), ` +
           `${visionScanPages.length} via vision (cap ${args.maxVisionPages})`,
@@ -956,6 +969,10 @@ async function main(): Promise<void> {
         `estUsd=$${visionUsd.toFixed(3)}`,
     );
   } else if (decision.route === "vision") {
+    if (args.nativeOnly) {
+      console.error("[vision] native-only: route image laissée sans appel vision");
+      zones = [];
+    } else {
     if (!process.env["MISTRAL_API_KEY"]) {
       throw new Error("vision route requires MISTRAL_API_KEY (load sentropic/.env)");
     }
@@ -1000,7 +1017,12 @@ async function main(): Promise<void> {
       `[vision] zones=${zones.length} attempted=${visionPagesAttempted} ` +
         `failed=${visionPagesFailed} calls=${visionCalls} estUsd=$${visionUsd.toFixed(3)}`,
     );
+    }
   } else if (decision.route === "gpt55" || decision.route === "gpt54") {
+    if (args.nativeOnly) {
+      console.error(`[${decision.route}] native-only: route CLI vision laissée sans appel`);
+      zones = [];
+    } else {
     const cfg = codexRouteConfig(decision.route);
     methode = cfg.methode;
     const pageCount = pdfPageCount(args.pdf);
@@ -1034,6 +1056,7 @@ async function main(): Promise<void> {
         `failed=${res.pagesFailed} latency=${res.durationMs}ms ` +
         `tokens in/out/reason=${res.usage.inputTokens}/${res.usage.outputTokens}/${res.usage.reasoningOutputTokens}`,
     );
+    }
   } else if (decision.route === "ocr") {
     // PRIMARY path for multi-zone grilles: Document-AI OCR (mistral-ocr by
     // default; OCR_PROVIDER=chandra + OCR_API_BASE switches backend). One bounded
@@ -1048,8 +1071,12 @@ async function main(): Promise<void> {
     const first = args.firstPage ?? 1;
     const last = Math.min(args.lastPage ?? pageCount, first - 1 + args.maxVisionPages, pageCount);
     // Budget guard: trim the page set so estimated cost stays within --budget-usd.
-    const maxByBudget =
-      ocr.costPerPage > 0 ? Math.max(1, Math.floor(args.budgetUsd / ocr.costPerPage)) : last - first + 1;
+    const maxByBudget = pageLimitForNativeFirstRoute(
+      last - first + 1,
+      ocr.costPerPage,
+      args.budgetUsd,
+      args.nativeOnly,
+    );
     const allPages: number[] = [];
     for (let p = first; p <= last && allPages.length < maxByBudget; p++) allPages.push(p);
     const byZone = new Map<string, ZoneNormsT>();
@@ -1149,7 +1176,12 @@ async function main(): Promise<void> {
     );
     visionPagesAttempted = ocrPages.length;
     let ranOcr = false; // did a PAID OCR pass actually run? (drives the deposit tag)
-    if (ocrPages.length > 0 && !ocr.config.apiKey) {
+    if (ocrPages.length > 0 && args.nativeOnly) {
+      console.error(
+        `[ocr] native-only: ${ocrPages.length} page(s) laissée(s) sans appel OCR; ` +
+          `${nativeZones} zone(s) native(s) conservée(s)`,
+      );
+    } else if (ocrPages.length > 0 && !ocr.config.apiKey) {
       // Some pages need a paid OCR read but no key is loaded → deposit the $0
       // native zones we DID read (never crash a fully/partly native-readable doc).
       console.error(
@@ -1192,6 +1224,10 @@ async function main(): Promise<void> {
       `[ocr] zones=${zones.length} nativeZones=${nativeZones} attempted=${visionPagesAttempted} failed=${visionPagesFailed} estUsd=$${visionUsd.toFixed(4)}`,
     );
   } else if (decision.route === "multizone") {
+    if (args.nativeOnly) {
+      console.error("[multizone] native-only: route vision laissée sans appel");
+      zones = [];
+    } else {
     if (!process.env["MISTRAL_API_KEY"]) {
       throw new Error("multizone route requires MISTRAL_API_KEY (load sentropic/.env)");
     }
@@ -1269,6 +1305,7 @@ async function main(): Promise<void> {
       `[multizone] zones=${zones.length} attempted=${visionPagesAttempted} ` +
         `failed=${visionPagesFailed} calls=${visionCalls} estUsd=$${visionUsd.toFixed(3)}`,
     );
+    }
   } else {
     console.error("[route] none — nothing extractable; not depositing.");
   }
@@ -1379,6 +1416,7 @@ async function main(): Promise<void> {
           zones: zones.length,
           uniqueZoneCodes: crossval.extractedZoneCodes,
           crossval,
+          densityZones: zonesWithDensity(zones),
           visionUsd,
           ...(codexUsage ? { codexUsage } : {}),
           ...(categoryExpansion

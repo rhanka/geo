@@ -1,0 +1,1703 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T16:33:34.436Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3420,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/016e2c650350b979500a0ab3cf1fb55756e864023899894cbc9bfa0a73855d5c.pdf",
+      "raw/pv-index/cas/03bc3b5007e4b8e8e9bf2de04c0e1bcdc8feaf0ebc39b77e3bc6833d912a1bc8.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 18,
+    "MeetingDate": 18,
+    "Regulation": 15,
+    "Resolution": 10,
+    "Zone": 1,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 100,
+    "edges": 56,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 2,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/81bb37a6f84ebfb6009aacd55568e38ad045a62e677c884dc6d767a10b35d477.pdf",
+      "entity_type": "Zone",
+      "value": "16-H",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:618",
+      "quote": "        dans la zone 16-H est de trois (3) par lot;"
+    },
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/81bb37a6f84ebfb6009aacd55568e38ad045a62e677c884dc6d767a10b35d477.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5697336",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:523",
+      "quote": "      logements – Rue Albert-Ferland (lot 5 697 336)"
+    },
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/81bb37a6f84ebfb6009aacd55568e38ad045a62e677c884dc6d767a10b35d477.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5698546",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:647",
+      "quote": "      logements – Rue Papineau (lot 5 698 546)"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 21,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1253,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z",
+  "documents": [
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_4072770cbd6e47afaa0c78857bc22ecf.pdf",
+      "storage_key": "raw/pv-index/cas/0e62a8c9ba51dacd30f0c2f85fa8be31ddbc04ba514ac593ddd2008a3379212e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "\f                                     Séance extraordinaire du conseil du 10 mars 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "\f                                     Séance extraordinaire du conseil du 10 mars 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-138",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "ATTENDU QUE            le projet de règlement 2025-138 décrète un emprunt de 336"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/008a3379212e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/008a3379212e.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_3aef607360d543f3afe5d1ed59ba14f5.pdf",
+      "storage_key": "raw/pv-index/cas/136bfe72cda876dd9911932dc6296b7e3084ca4a54f6da92dcb2db913c3048f2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 1er mai 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 1er mai 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2016-12-317",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:298",
+              "quote": "ATTENDU QUE          le conseil a adopté la résolution 2016-12-317 demandant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/db913c3048f2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/db913c3048f2.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/06611e_3af845b2e9f94b0aa3e92a6e74399d2e.pdf",
+      "storage_key": "raw/pv-index/cas/2445e08148f8e489e19eb412b3097956e517545ced99b420ce0083579793f5d0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                                  Séance régulière du conseil du 4 mai 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                                  Séance régulière du conseil du 4 mai 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-139",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:237",
+              "quote": "        Le conseil de la municipalité de Chénéville adopte le règlement 2026-139"
+            }
+          },
+          {
+            "label": "2026-140",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:527",
+              "quote": "Le conseil de la municipalité de Chénéville adopte le règlement 2026-140"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/83579793f5d0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/83579793f5d0.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "montreal",
+          "quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_fd2919b6e59b4834ace89471db2f1580.pdf",
+      "storage_key": "raw/pv-index/cas/27e6bf545ef88bf22d8bc97d2078b6145850c9345e04b1dacf5693b92d456f28.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 27 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 27 mars 2024, à 19h à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "27 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 27 mars 2024, à 19h à la salle du conseil de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/93b92d456f28.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/93b92d456f28.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_a7a84d5d76dc494a8fafb17b79631e8a.pdf",
+      "storage_key": "raw/pv-index/cas/303bd5f40cb7aab0e82ad7d02fdca771198aff978d45ed54a4006a4c3427fe90.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 7 août 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 7 août 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/6a4c3427fe90.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/6a4c3427fe90.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "notre-dame-de-la-paix",
+          "saint-felix-de-valois"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_5b86ec2c5afe479e9c630d93cbda8509.pdf",
+      "storage_key": "raw/pv-index/cas/39116abaf7bf255234252f31ba398b60badb3cb847b2ec350c84c891ac8ce221.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 décembre 2024, à 19 h, à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 décembre 2024, à 19 h, à la salle du conseil de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-07-183",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "                      l’urbanisme et la résolution 2024-07-183 qui la nomme"
+            }
+          },
+          {
+            "label": "2024-09-221",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:196",
+              "quote": "ATTENDU               la résolution 2024-09-221 qui octroie le mandat à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2016-112",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:657",
+              "quote": "ATTENDU QUE           le Règlement numéro 2016-112 sur la gestion contractuelle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/c891ac8ce221.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/c891ac8ce221.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_8cc0acf2db3d413d98c4af700e9ab06d.pdf",
+      "storage_key": "raw/pv-index/cas/3bf640441146953646a4be4a5d265990a663e6798be55137fb07f3b26c9a475a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 4 mars 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 4 mars 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/f3b26c9a475a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/f3b26c9a475a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "riviere-rouge"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_29d2bd8123d740b184314904c0aebae7.pdf",
+      "storage_key": "raw/pv-index/cas/3f98a7ca76aaddff895ab674a58a1c145e00a437f47088b5d2105f9390562247.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 novembre 2024, à 19 h 00 à la salle du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 novembre 2024, à 19 h 00 à la salle du conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-08-203",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:557",
+              "quote": "ATTENDU                 la résolution 2024-08-203 qui octroie le mandat à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/5f9390562247.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/5f9390562247.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "lac-simon",
+          "ripon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_01d0465d254841cbaa8bfd617d530e6f.pdf",
+      "storage_key": "raw/pv-index/cas/5228085ea5d0499c4b027a03ecc351aaa349b9133e1d4bead2db116402e93235.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 janvier 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 15 janvier 2024, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 janvier 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 15 janvier 2024, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/116402e93235.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/116402e93235.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "fassett",
+          "plaisance"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_4b7ebb2578b94d86aca097278005345e.pdf",
+      "storage_key": "raw/pv-index/cas/58e0c3ec0a5b6ee735a5040d5ae51553f38ff2b52c6ccd79e4444769a82c3f1a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 octobre 2023, à 19h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 octobre 2023, à 19h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-117",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "          Adoption du règlement 2023-117 modifiant le règlement 2016-032"
+            }
+          },
+          {
+            "label": "2016-032",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "          Adoption du règlement 2023-117 modifiant le règlement 2016-032"
+            }
+          },
+          {
+            "label": "2009-032",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:283",
+              "quote": "ATTENDU QUE                      le règlement numéro 2009-032 décrétant"
+            }
+          },
+          {
+            "label": "2016-068",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:286",
+              "quote": "                                 règlement 2016-068,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/4769a82c3f1a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/4769a82c3f1a.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_0925f23f498c4271b4950c30bc372ae0.pdf",
+      "storage_key": "raw/pv-index/cas/699b244cc3172a6b9fb2842a51b27b7909bad0eb3f64e711f649402914a438d5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 21 août 2025, à 9h à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 21 août 2025, à 9h à la salle du conseil de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-130",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:313",
+              "quote": "                      règlement numéro 2025-130, modifiant le règlement de"
+            }
+          },
+          {
+            "label": "2016-062",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:387",
+              "quote": "Le présent règlement apporte des modifications au règlement 2016-062 et à son"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/402914a438d5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/402914a438d5.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_5945c70c46bc4fad8381763f1e09656c.pdf",
+      "storage_key": "raw/pv-index/cas/69b740f5aa2439ebba8053749a934e20aa4db7ba5e4bdcdefbdc80e222d17f7f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 6 mars 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance régulière, tenue le 6 mars 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-112",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:196",
+              "quote": "Adoption du règlement 2023-112: 6 mars 2023                            par la résolution : 2023-03-041"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/80e222d17f7f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/80e222d17f7f.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "lac-des-plages",
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_f2151020b60b4338a02cfd924bdec171.pdf",
+      "storage_key": "raw/pv-index/cas/715bb50d655a32a12e80110f8ad7f74c4a04accb3d9a94d6a6a68126f1310012.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 décembre 2023, à 19 h, à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 décembre 2023, à 19 h, à la salle du conseil de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-10-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "ATTENDU               la résolution 2023-10-231 qui octroie le mandat à"
+            }
+          },
+          {
+            "label": "2023-08-165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "ATTENDU               la résolution 2023-08-165 qui autorise l’achat de mobilier"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/8126f1310012.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/8126f1310012.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "plaisance"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_d437239bb51b4ffd80796a3eade20cba.pdf",
+      "storage_key": "raw/pv-index/cas/7422851317a7bf8a4da8502ab1af2f72414cda4bac119d08a19475b2fe8dfde3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                                 Séance régulière du conseil du 2 mars 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                                 Séance régulière du conseil du 2 mars 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-01-018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:175",
+              "quote": "                      résolution 2026-01-018;"
+            }
+          },
+          {
+            "label": "2016-12-317",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "ATTENDU QUE          le conseil a adopté la résolution 2016-12-317 demandant"
+            }
+          },
+          {
+            "label": "qui 2025-09-228",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:365",
+              "quote": "ATTENDU                  la résolution qui 2025-09-228 qui octroi le contrat à la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-137",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:641",
+              "quote": "      Avis de motion et présentation du règlement 2026-137 modifiant le"
+            }
+          },
+          {
+            "label": "2025-132",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "ATTENDU QUE           le règlement 2025-132 décrétant un emprunt de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/75b2fe8dfde3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/75b2fe8dfde3.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "plaisance"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_fe870d03c3be4e0281aecc2e1ddfb76b.pdf",
+      "storage_key": "raw/pv-index/cas/803d10e79a2c6ec7ec40e378f831a85d2126c1d45192f8c755e4bfe685e28593.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 1er mars 2024, à 11h à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 1er mars 2024, à 11h à la salle du conseil de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-118",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "     3. Avis de motion et présentation du règlement 2024-118 décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/bfe685e28593.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/bfe685e28593.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_1a3e821994734c43b410dafbfdeea189.pdf",
+      "storage_key": "raw/pv-index/cas/81bb37a6f84ebfb6009aacd55568e38ad045a62e677c884dc6d767a10b35d477.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "\f                                                  Séance régulière du conseil du 7 avril 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "\f                                                  Séance régulière du conseil du 7 avril 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "cadre 2025-10-249",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:575",
+              "quote": "ATTENDU QUE, tel que mentionné dans la résolution cadre 2025-10-249"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-138",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:488",
+              "quote": "Adoption du règlement 2026-138: 7 avril 2026                   par la résolution : 2026-04-100"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "16-H",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:618",
+              "quote": "        dans la zone 16-H est de trois (3) par lot;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5697336",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:523",
+              "quote": "      logements – Rue Albert-Ferland (lot 5 697 336)"
+            }
+          },
+          {
+            "label": "5698546",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "      logements – Rue Papineau (lot 5 698 546)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/67a10b35d477.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/67a10b35d477.pdf/.graphify/.graphify_extract.json — 9 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_550f26dddcc44017ab19638ba94b7215.pdf",
+      "storage_key": "raw/pv-index/cas/86ee9d45988af1cc9b5630d3f10e4029a1ad04b4115bcf3dbb7c8c8ac8710043.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 6 février 2023, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 6 février 2023, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/8c8ac8710043.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/8c8ac8710043.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "thurso"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_7c82467a937b416ba3a5ee9554ed1e9c.pdf",
+      "storage_key": "raw/pv-index/cas/8c5ac36168613018a637e28c548b6f30cefa2e21e60838b96b4c3834c5cc762a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 8 janvier 2026, à 19h à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 8 janvier 2026, à 19h à la salle du conseil de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/3834c5cc762a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163124Z/cheneville/3834c5cc762a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

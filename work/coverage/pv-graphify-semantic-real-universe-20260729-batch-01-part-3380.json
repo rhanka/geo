@@ -1,0 +1,1295 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T16:30:01.586Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3380,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/04d12e7c687944a8bd7ac5065ac80852fc285d3d1e46fc928a3078f9283d45f8.pdf",
+      "raw/pv-index/cas/0c302c191ad0366202c8ff6e71c828997b6c3406c69967c859b8ed80c8222fc0.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 14,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 14,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 4
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 14,
+    "Document": 14,
+    "CouncilSession": 14,
+    "MeetingDate": 14,
+    "Regulation": 3,
+    "Resolution": 2,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 64,
+    "edges": 42,
+    "failures": 4
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 3,
+    "documents_with_zone": 0,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chazel",
+      "storage_key": "raw/pv-index/cas/3be537c6bbbfc80325a94d2504f7f42e53f8c9eab2e7ac3526acabdec41ba2dd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4465748",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:97",
+      "quote": "qui désire construire une résidence sur le lot 4 465 748 situé dans le rang 10-1 Ouest de"
+    },
+    {
+      "municipality_slug": "chazel",
+      "storage_key": "raw/pv-index/cas/5970aba2716a5917417ac89bcfddbf8d4e2a6c546d81413aad3fb8e69d70c024.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5345550",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "passage sur le lot 5 345 550 pour prendre des échantillons de sol."
+    },
+    {
+      "municipality_slug": "chazel",
+      "storage_key": "raw/pv-index/cas/5970aba2716a5917417ac89bcfddbf8d4e2a6c546d81413aad3fb8e69d70c024.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4465760",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:184",
+      "quote": "DEMANDE D’ACHAT DU LOT 4 465 760                                          2019-06-80"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 402,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z",
+  "documents": [
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-12-janvier.pdf",
+      "storage_key": "raw/pv-index/cas/1706864d09425a3e2c1bb5f48c7d7449ae60b0f2428b88ad690310c1a7d673a1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 janvier 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue par"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 janvier 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "vidéoconférence, mardi le 12 janvier 2021 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/10c1a7d673a1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/10c1a7d673a1.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-5-octobre-.pdf",
+      "storage_key": "raw/pv-index/cas/172c675952e6f629733d38eebdba8ded9e00d2ea095e6e699cecc2ea85c59dd9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 octobre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue à la salle"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 octobre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "communautaire, mardi le 5 octobre 2021 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "120",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "\fATTENDU QUE ce règlement abroge et remplace le règlement NO 120 « Règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/c2ea85c59dd9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/c2ea85c59dd9.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-3-mars-202.pdf",
+      "storage_key": "raw/pv-index/cas/1a6ecdf0fa366369dbb15c9baf970754e0665c0ca4cdcaade452b4d2325b2c41.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 mars 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 mars 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "ordinaire des séances, mardi le 3 mars 2020 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/b4d2325b2c41.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/b4d2325b2c41.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-10-aout-20.pdf",
+      "storage_key": "raw/pv-index/cas/2b31dedb57007c4f7000272654057e21c616bcad1cf2841f04d7f81404c29f71.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 août 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue à la salle"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 août 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "communautaire, mardi le 10 août 2021 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/f81404c29f71.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/f81404c29f71.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-9-juillet-.pdf",
+      "storage_key": "raw/pv-index/cas/2ccb00767ce97076bdaab01db085d2136be15292faa63e96a304a59f40c8ce86.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 juillet 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 juillet 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "des séances, mardi le 9 juillet 2019 à laquelle étaient présents (es) messieurs, mesdames"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/a59f40c8ce86.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/a59f40c8ce86.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-8-juin-202.pdf",
+      "storage_key": "raw/pv-index/cas/30378b94150c747fcef3bcb692342f43a3ef2d6ef2a5936e65040c9271013976.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 juin 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue à la salle"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 juin 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "communautaire, mardi le 8 juin 2021 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "182",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "2.     Le règlement numéro 182 sur la gestion contractuelle est modifié par l’ajout de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/0c9271013976.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/0c9271013976.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-14-septemb.pdf",
+      "storage_key": "raw/pv-index/cas/3be537c6bbbfc80325a94d2504f7f42e53f8c9eab2e7ac3526acabdec41ba2dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 septembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue à la salle"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 septembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "communautaire, mardi le 14 septembre 2021 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-05-84",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "CONSIDÉRANT QUE la municipalité de Chazel a pris la résolution 2021-05-84, lors"
+            }
+          },
+          {
+            "label": "CPTAQ                                                         2021-09-131",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "RÉSOLUTION CPTAQ                                                         2021-09-131"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4465748",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "qui désire construire une résidence sur le lot 4 465 748 situé dans le rang 10-1 Ouest de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/abdec41ba2dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/abdec41ba2dd.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/seance-du-5-avril-2022.pdf",
+      "storage_key": "raw/pv-index/cas/3ec72f9b4041c8b7ae4679aaaca41a63f1c45210f633af0d8b6c460f83ab5a29.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/460f83ab5a29.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/460f83ab5a29.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/p.v.-signe.pdf",
+      "storage_key": "raw/pv-index/cas/41e6ac7e3e167a17727d1b5f194d61c6d004034147739c61839f4a5fdd95c72c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/4a5fdd95c72c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/4a5fdd95c72c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-5-fevrier-.pdf",
+      "storage_key": "raw/pv-index/cas/439c5d4e9edaebed83f52d0ec8e974d7fe3bd36151ce2823a2978b932047d92d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 février 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 février 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "ordinaire des séances, mardi le 5 février 2019 à laquelle étaient présents (es)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/8b932047d92d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/8b932047d92d.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-9-fevrier-.pdf",
+      "storage_key": "raw/pv-index/cas/461a4f39ed6d127af20c6aec4d1a7037d38e859c0ce401c3e4aae96c900b2a85.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 février 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au bureau"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 février 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "municipal, mardi le 9 février 2021 à laquelle étaient présents (es) messieurs, mesdames"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e96c900b2a85.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e96c900b2a85.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-5-novembre.pdf",
+      "storage_key": "raw/pv-index/cas/4bb49c9e777e23a6ee3bf6221e3d8f12bc19f29609f0d50de02fe1e7f6dcdb4a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 novembre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 novembre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "des séances, mardi le 5 novembre 2019 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e1e7f6dcdb4a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e1e7f6dcdb4a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-1er-octobr.pdf",
+      "storage_key": "raw/pv-index/cas/4dda031b5431fdd1dd7b8ce0f6cba9178146a41f84198a20cc87734a9c600342.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er octobre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er octobre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "des séances, mardi le 1er octobre 2019 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/734a9c600342.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/734a9c600342.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-4-juin-201.pdf",
+      "storage_key": "raw/pv-index/cas/5970aba2716a5917417ac89bcfddbf8d4e2a6c546d81413aad3fb8e69d70c024.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 juin 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 juin 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "des séances, mardi le 4 juin 2019 à laquelle étaient présents (es) messieurs, mesdames"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "179",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:145",
+              "quote": "règlement numéro 179, concernant l’adoption du Code d’éthique et de déontologie des"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5345550",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "passage sur le lot 5 345 550 pour prendre des échantillons de sol."
+            }
+          },
+          {
+            "label": "4465760",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:184",
+              "quote": "DEMANDE D’ACHAT DU LOT 4 465 760                                          2019-06-80"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/b8e69d70c024.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/b8e69d70c024.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/pv-seance-du-1-fevrier-2022.pdf",
+      "storage_key": "raw/pv-index/cas/5b10225b46d30db469ff296667cc22ea2f4ecc8208d837e25a57bee5089f5f9b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/bee5089f5f9b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/bee5089f5f9b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/p.v.-signe-01-fev.2022.pdf",
+      "storage_key": "raw/pv-index/cas/5ca629565150c6453d4102f566c953cf2389279609ddc5104d489a6cda4fe699.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/9a6cda4fe699.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/9a6cda4fe699.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-6-aout-201.pdf",
+      "storage_key": "raw/pv-index/cas/6d0a5c1767a60afc7e77cb3f31e3d31fdd13042ade55319c28a9e417599a20ad.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 août 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au lieu ordinaire"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 août 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "des séances, mardi le 6 août 2019 à laquelle étaient présents (es) messieurs, mesdames"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e417599a20ad.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/e417599a20ad.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chazel",
+      "municipality_name": "Chazel",
+      "url": "https://chazel.ao.ca/documents/pages/proces-verbal-de-la-seance-reguliere-du-9-mars-202.pdf",
+      "storage_key": "raw/pv-index/cas/73936a2dcc21bb9bc383b8d2f372ed97efbaf97a67795c843dc45e09c0dd4fb8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chazel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Séance régulière des membres du Conseil de cette Municipalité, tenue au bureau"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "municipal, mardi le 9 mars 2021 à laquelle étaient présents (es) messieurs, mesdames"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/5e09c0dd4fb8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T162916Z/chazel/5e09c0dd4fb8.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

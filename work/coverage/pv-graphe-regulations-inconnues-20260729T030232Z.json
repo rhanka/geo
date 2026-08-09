@@ -1,0 +1,1434 @@
+{
+  "contract": "pv-graphe-regulations-inconnues/v1",
+  "generated_at": "2026-07-29T03:02:32Z",
+  "mode": "read-only",
+  "population": {
+    "total_regulations": 2045,
+    "quality_distribution": {
+      "PROJET": 125,
+      "ADOPTE": 421,
+      "INCONNUE": 1401,
+      "PREMIER_PROJET": 16,
+      "SECOND_PROJET": 82
+    },
+    "qualified_regulations": 644,
+    "qualified_percentage": 31.49,
+    "inconnue_regulations": 1401
+  },
+  "sampling": {
+    "sample_size": 40,
+    "population_size": 1401,
+    "seed": "pv-inconnues-sample/v1",
+    "method": "rang sha256 déterministe sur storage_key + index d’occurrence + source_location; sans stratification ni remplacement",
+    "audit_reference": "work/coverage/pv-graphe-audit-adversarial-20260729T023759Z.json",
+    "source_reports": [
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-01.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-02.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-03.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-04.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-05.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-06.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-07.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-08.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-09.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-10.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-11.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-12.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-13.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-14.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-15.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-16.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-17.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-18.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-19.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-20.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "work/coverage/pv-graphify-semantic-all-20260728-batch-24.json"
+    ],
+    "municipality_count": 15,
+    "municipality_counts": {
+      "acton-vale": 4,
+      "dolbeau-mistassini": 8,
+      "abercorn": 1,
+      "drummondville": 8,
+      "audet": 4,
+      "cowansville": 2,
+      "dunham": 4,
+      "disraeli--les-appalaches": 1,
+      "danville": 1,
+      "duhamel-ouest": 1,
+      "daveluyville": 1,
+      "dollard-des-ormeaux": 1,
+      "amherst": 1,
+      "albertville": 2,
+      "duhamel": 1
+    }
+  },
+  "closed_partition": {
+    "rules": [
+      "d est prioritaire si la référence est déformée par une séparation PDF/OCR autour d’un trait d’union.",
+      "c est retenu si le bloc cité porte un marqueur procédural ou statutaire non reconnu; ce marqueur n’est jamais converti en ADOPTE ni en entrée en vigueur.",
+      "b est retenu si une qualification du règlement visé est documentée ailleurs dans le même document, hors de la fenêtre de l’occurrence.",
+      "a est retenu si aucune qualification du règlement visé n’est documentée dans le document.",
+      "e est le résiduel nommé; aucune occurrence du tirage n’y tombe."
+    ],
+    "causes": {
+      "ABSENCE_VRAIE_MENTION_NUE": {
+        "count": 15,
+        "description": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+        "example": {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/c774689ffa4b.pdf/input/document.txt",
+          "line": 349,
+          "quote": "           0475/04/20   Dépôt d'un procès-verbal de correction relatif au règlement no RV20-5180",
+          "role": "citation de l’occurrence INCONNUE"
+        }
+      },
+      "PORTEE_HORS_FENETRE": {
+        "count": 5,
+        "description": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+        "example": {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/cdda0fa62055.pdf/input/document.txt",
+          "line": 29,
+          "quote": "      règlement 006-2025 (Domaine du stade).",
+          "role": "citation de l’occurrence INCONNUE"
+        }
+      },
+      "VOCABULAIRE_STATUT_NON_RECONNU": {
+        "count": 19,
+        "description": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+        "example": {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/f08496638483.pdf/input/document.txt",
+          "line": 427,
+          "quote": "AVIS DE MOTION - RÈGLEMENT NUMÉRO 1959-24 CRÉANT UNE RÉSERVE",
+          "role": "citation de l’occurrence INCONNUE"
+        }
+      },
+      "OPERATEUR_PDF_SEPARE": {
+        "count": 1,
+        "description": "La couche texte sépare une référence PDF/OCR autour d’un trait d’union et produit une ancre ou valeur déformée.",
+        "example": {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt",
+          "line": 275,
+          "quote": "Règlement      de    19).",
+          "role": "citation de l’occurrence INCONNUE"
+        }
+      },
+      "AUTRE": {
+        "count": 0,
+        "description": "Cause résiduelle nommée au cas par cas.",
+        "example": null
+      }
+    }
+  },
+  "extrapolation": {
+    "performed": false,
+    "reason": "Pas d’extrapolation à 1 401: c regroupe des marqueurs procéduraux juridiquement non équivalents et la taille n’autorise pas une estimation non inventée."
+  },
+  "conclusion": {
+    "dominant_cause_in_sample": "VOCABULAIRE_STATUT_NON_RECONNU",
+    "inconnue_majoritairement_honnete_dans_lechantillon": false,
+    "honest_absence_count": 15,
+    "non_absence_count": 25,
+    "required_change": "Remonter au conducteur: b/c/d totalisent 25/40; le classifieur doit élargir la portée et le vocabulaire/conserver les distinctions procédurales, sans toucher ici au code de la lane concurrente."
+  },
+  "samples": [
+    {
+      "sample_rank": 1,
+      "municipality_slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "regulation_label": "006-2025",
+      "storage_key": "raw/pv-index/cas/80bb17e9073d965d7df9b3426c2b235c4367f081532fb4c2290acdda0fa62055.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-19.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/cdda0fa62055.pdf/input/document.txt",
+        "line": 29,
+        "quote": "      règlement 006-2025 (Domaine du stade).",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        29,
+        35,
+        106
+      ],
+      "cause": "PORTEE_HORS_FENETRE",
+      "diagnosis": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/cdda0fa62055.pdf/input/document.txt",
+          "line": 35,
+          "quote": "Projet de règlement 006-2025.",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 2,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1959-24",
+      "storage_key": "raw/pv-index/cas/0fedc7cdba00c0f7547d8fa328356263be1eb0e28fa8c7b69d49f08496638483.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/f08496638483.pdf/input/document.txt",
+        "line": 427,
+        "quote": "AVIS DE MOTION - RÈGLEMENT NUMÉRO 1959-24 CRÉANT UNE RÉSERVE",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        427,
+        433,
+        436
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/f08496638483.pdf/input/document.txt",
+          "line": 432,
+          "quote": "Alexandre Tremblay donne avis de motion qu'il sera adopté, lors d'une séance",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/f08496638483.pdf/input/document.txt",
+          "line": 436,
+          "quote": "Le projet de règlement numéro 1959-24 est déposé séance tenante.",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 3,
+      "municipality_slug": "abercorn",
+      "municipality_name": "Abercorn",
+      "regulation_label": "397-2026",
+      "storage_key": "raw/pv-index/cas/354b3568a529118d98bea4d6f827a7a859c64b5f17c3fa164c4b6e7440290da2.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-20.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215541Z/abercorn/6e7440290da2.pdf/input/document.txt",
+        "line": 27,
+        "quote": "    3.1. Règlement numéro 397-2026 concernant l’imposition de la taxe",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        27,
+        126,
+        144
+      ],
+      "cause": "PORTEE_HORS_FENETRE",
+      "diagnosis": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215541Z/abercorn/6e7440290da2.pdf/input/document.txt",
+          "line": 144,
+          "quote": "D’adopter le Règlement numéro 397-2026 concernant l’imposition de la",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 4,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1738-18",
+      "storage_key": "raw/pv-index/cas/29634c0a64299be420a33ff80e493bd72b2cf59f5fb69f9c5fc13d278a2c4e2e.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/3d278a2c4e2e.pdf/input/document.txt",
+        "line": 280,
+        "quote": "CONSIDÉRANT QUE le Règlement numéro 1738-18 portant sur la gestion",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        280,
+        290,
+        543,
+        550,
+        567,
+        852,
+        883,
+        890,
+        917,
+        926,
+        960
+      ],
+      "cause": "PORTEE_HORS_FENETRE",
+      "diagnosis": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/3d278a2c4e2e.pdf/input/document.txt",
+          "line": 550,
+          "quote": "CONSIDÉRANT QUE nous avons adopté le Règlement numéro 1738-18 en",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 5,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV20-5180",
+      "storage_key": "raw/pv-index/cas/4cee8080de8537d295087a513ede53cc6165b846c2e7cc3d0c00c774689ffa4b.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/c774689ffa4b.pdf/input/document.txt",
+        "line": 349,
+        "quote": "           0475/04/20   Dépôt d'un procès-verbal de correction relatif au règlement no RV20-5180",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        349,
+        354
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 6,
+      "municipality_slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "regulation_label": "003-2019",
+      "storage_key": "raw/pv-index/cas/2ab3038a11e5c57dd60a6acee1a41930807bf2ed99427e15c760e8fa71d9b081.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-19.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e8fa71d9b081.pdf/input/document.txt",
+        "line": 300,
+        "quote": "                 AVIS DE MOTION – RÈGLEMENT 003-2019.",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        300,
+        305
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e8fa71d9b081.pdf/input/document.txt",
+          "line": 304,
+          "quote": "                       Il est, par la présente, donné avis de motion, par la conseillère Suzanne",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e8fa71d9b081.pdf/input/document.txt",
+          "line": 305,
+          "quote": "                 Ledoux qu’il sera adopté, à une séance subséquente, le règlement 003-2019",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 7,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1953-24",
+      "storage_key": "raw/pv-index/cas/cf6e677dc38496e0c7ad584638153c4b0cd690c88808defef0ce714967e1a29d.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/714967e1a29d.pdf/input/document.txt",
+        "line": 466,
+        "quote": "ADOPTION - RÈGLEMENT NUMÉRO 1953-24 DÉCRÉTANT UNE DÉPENSE DE 101",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        466,
+        500
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/714967e1a29d.pdf/input/document.txt",
+          "line": 500,
+          "quote": "QUE le conseil municipal adopte le règlement numéro 1953-24 décrétant une dépense",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 8,
+      "municipality_slug": "audet",
+      "municipality_name": "Audet",
+      "regulation_label": "359",
+      "storage_key": "raw/pv-index/cas/55bb698f6e1fc4a9e750663af44e8a6f9cc8a355a124d22d13d006e68bfbfaa4.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-13.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T182109Z/audet/06e68bfbfaa4.pdf/input/document.txt",
+        "line": 63,
+        "quote": "           9. Adoption de règlement - Règlement numéro 359 pour déterminer les",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        63,
+        215,
+        219,
+        526,
+        539
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T182109Z/audet/06e68bfbfaa4.pdf/input/document.txt",
+          "line": 215,
+          "quote": "           ADOPTION DE RÈGLEMENT – RÈGLEMENT NUMÉRO 359 POUR",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 9,
+      "municipality_slug": "cowansville",
+      "municipality_name": "Cowansville",
+      "regulation_label": "1890",
+      "storage_key": "raw/pv-index/cas/ce17b2920f1805336f5a2249d8b9414614a6b21b221dc1c4e4c6d53488c79f76.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215830Z/cowansville/d53488c79f76.pdf/input/document.txt",
+        "line": 339,
+        "quote": "              Considérant l’article 8.1 du Règlement numéro 1890 sur la gestion",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        339,
+        1128
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 10,
+      "municipality_slug": "dunham",
+      "municipality_name": "Dunham",
+      "regulation_label": "482-23",
+      "storage_key": "raw/pv-index/cas/60b46fbd75cc5ff23fa6a4563cbc21228049af23db80176e031fdeea7402f30f.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/deea7402f30f.pdf/input/document.txt",
+        "line": 80,
+        "quote": "               7.1. Règlement no 482-23 modifiant le règlement no 442-22 établissant un",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        80,
+        617,
+        624
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/deea7402f30f.pdf/input/document.txt",
+          "line": 83,
+          "quote": "                    réutilisables – Avis de motion et dépôt du projet",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/deea7402f30f.pdf/input/document.txt",
+          "line": 624,
+          "quote": "         prochaine séance du conseil le Règlement no. 482-23 modifiant le",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 11,
+      "municipality_slug": "cowansville",
+      "municipality_name": "Cowansville",
+      "regulation_label": "1899",
+      "storage_key": "raw/pv-index/cas/0046957e795a2d62228c2c6dcc93b89fc02dbf3a31e11aed1901dbfb8c2c184d.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215830Z/cowansville/dbfb8c2c184d.pdf/input/document.txt",
+        "line": 88,
+        "quote": "        1899-04-2026 modifiant le règlement numéro 1899 concernant la",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        88,
+        569,
+        570,
+        573,
+        574,
+        582
+      ],
+      "cause": "PORTEE_HORS_FENETRE",
+      "diagnosis": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/cowansville/dbfb8c2c184d.pdf/input/document.txt",
+          "line": 569,
+          "quote": "251-05-2026   Avis de motion et présentation du projet – Règlement numéro 1899-04-",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/cowansville/dbfb8c2c184d.pdf/input/document.txt",
+          "line": 573,
+          "quote": "              séance de ce conseil, il sera adopté le Règlement numéro 1899-04-2026",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 12,
+      "municipality_slug": "disraeli--les-appalaches",
+      "municipality_name": "Disraeli",
+      "regulation_label": "738",
+      "storage_key": "raw/pv-index/cas/b358692bc3672c112f46c0adc88184007b20a1b9cbb37767a486be1ced07074e.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/be1ced07074e.pdf/input/document.txt",
+        "line": 257,
+        "quote": "              sera adopté, à une séance subséquente, le règlement numéro 738 amenant le",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        50,
+        53,
+        252,
+        257,
+        267,
+        288
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/be1ced07074e.pdf/input/document.txt",
+          "line": 256,
+          "quote": "              Il est, par la présente, donné avis de motion, par M. Denis St-Onge, conseiller, qu’il",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/be1ced07074e.pdf/input/document.txt",
+          "line": 257,
+          "quote": "              sera adopté, à une séance subséquente, le règlement numéro 738 amenant le",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/be1ced07074e.pdf/input/document.txt",
+          "line": 267,
+          "quote": "04-2026-101   8.3 - Dépôt du projet de règlement # 738 « Règlement amendant le règlement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/disraeli--les-appalaches/be1ced07074e.pdf/input/document.txt",
+          "line": 288,
+          "quote": "              QUE soit déposé le projet de règlement numéro 738 amendant le règlement numéro",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 13,
+      "municipality_slug": "danville",
+      "municipality_name": "Danville",
+      "regulation_label": "2026-03",
+      "storage_key": "raw/pv-index/cas/82103889a28d3191023075a07365c133e605db6bd50e887d4832e6e3abfe051e.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215830Z/danville/e6e3abfe051e.pdf/input/document.txt",
+        "line": 73,
+        "quote": "6.1 Avis de motion - Règlement 2026-03 sur la délégation du pouvoir",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        73,
+        419,
+        424
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/danville/e6e3abfe051e.pdf/input/document.txt",
+          "line": 424,
+          "quote": "              adopter lors d’une séance ultérieure, le règlement 2026-03 sur la délégation du",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 14,
+      "municipality_slug": "duhamel-ouest",
+      "municipality_name": "Duhamel-Ouest",
+      "regulation_label": "319",
+      "storage_key": "raw/pv-index/cas/f346e3a2317a85c173713672737259187dd21d30bb28897312a692fa4ef241de.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/duhamel-ouest/92fa4ef241de.pdf/input/document.txt",
+        "line": 469,
+        "quote": "                            règlement 295 relatif à la démolition d’immeubles et le règlement 319",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        469
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 15,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV26-5876",
+      "storage_key": "raw/pv-index/cas/75fe3bdc246bff127257935aba5ddd32eef7a4fd64a3f7efada9812d82727963.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/812d82727963.pdf/input/document.txt",
+        "line": 1907,
+        "quote": "          0650/06/26 Avis de motion du règlement no RV26-5876 modifiant le règlement",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1907,
+        1912
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/812d82727963.pdf/input/document.txt",
+          "line": 1908,
+          "quote": "                     no RV21-5338 et dépôt du projet de règlement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/812d82727963.pdf/input/document.txt",
+          "line": 1911,
+          "quote": "                    séance de ce conseil, il sera soumis pour adoption le règlement",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 16,
+      "municipality_slug": "dunham",
+      "municipality_name": "Dunham",
+      "regulation_label": "473-23",
+      "storage_key": "raw/pv-index/cas/767445e7c3f5def6f11d2286819616b5fb41d74fc213a1ca22c2bc60f6c83a3b.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-24.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220636Z/dunham/bc60f6c83a3b.pdf/input/document.txt",
+        "line": 579,
+        "quote": "       2. De financer cette dépense à même le Règlement no 473-23",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        579,
+        649
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220636Z/dunham/bc60f6c83a3b.pdf/input/document.txt",
+          "line": 584,
+          "quote": "          l’entrée en vigueur d’un règlement d’emprunt à venir pour la",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 17,
+      "municipality_slug": "daveluyville",
+      "municipality_name": "Daveluyville",
+      "regulation_label": "de    19",
+      "storage_key": "raw/pv-index/cas/fe2636bad92e9872adcedae43d43813dc69e70c59f294cdbe012f29b806370d0.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-21.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt",
+        "line": 275,
+        "quote": "Règlement      de    19).",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        275
+      ],
+      "cause": "OPERATEUR_PDF_SEPARE",
+      "diagnosis": "La couche texte sépare une référence PDF/OCR autour d’un trait d’union et produit une ancre ou valeur déformée.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt",
+          "line": 274,
+          "quote": "l’application  du    articles 468.51 et 573.3.1.2 de la Loi sur les cités et villes (RLRQ, c. C-",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T215830Z/daveluyville/f29b806370d0.pdf/input/document.txt",
+          "line": 275,
+          "quote": "Règlement      de    19).",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 18,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1728-18",
+      "storage_key": "raw/pv-index/cas/29634c0a64299be420a33ff80e493bd72b2cf59f5fb69f9c5fc13d278a2c4e2e.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/3d278a2c4e2e.pdf/input/document.txt",
+        "line": 1125,
+        "quote": "CONSIDÉRANT QU’en vertu de l’article 5.2 du Règlement numéro 1728-18, règlement",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1125
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 19,
+      "municipality_slug": "dunham",
+      "municipality_name": "Dunham",
+      "regulation_label": "385-19",
+      "storage_key": "raw/pv-index/cas/43b0c80738ade43f7bfbbce03a24193a3241bd1c194ccc2d8b79e17a89e99a0d.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-24.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220636Z/dunham/e17a89e99a0d.pdf/input/document.txt",
+        "line": 624,
+        "quote": "         CONSIDÉRANT             les critères établis au règlement no 385-19 relatif",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        624
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 20,
+      "municipality_slug": "audet",
+      "municipality_name": "Audet",
+      "regulation_label": "332",
+      "storage_key": "raw/pv-index/cas/85296715000c656e0da2df65cadd00d90249952b0cac4f377253e0fb29ac6ea0.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-15.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T182218Z/audet/e0fb29ac6ea0.pdf/input/document.txt",
+        "line": 711,
+        "quote": "sévères, tel que cela appert du Règlement no 332 de notre municipalité",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        668,
+        711
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 21,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV18-4933",
+      "storage_key": "raw/pv-index/cas/200fd1af0b3bd93a6fdb9cbb306c4d19111dcedf89b67e2ba4cf98a985e603cc.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/98a985e603cc.pdf/input/document.txt",
+        "line": 1761,
+        "quote": "                       règlement no RV18-4933 relatif au traitement des élus;",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1755,
+        1761,
+        1784
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/98a985e603cc.pdf/input/document.txt",
+          "line": 1754,
+          "quote": "\f            0420/04/26 Adoption du règlement no RV26-5847 afin de modifier le règlement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/98a985e603cc.pdf/input/document.txt",
+          "line": 1755,
+          "quote": "                       no RV18-4933 relatif au traitement des élus",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 22,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV17-4926",
+      "storage_key": "raw/pv-index/cas/18ba88c5147e052edeb4fe37496817179ca7e701ac37c0fcb2be288fbd63c573.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+        "line": 1623,
+        "quote": "          1334/12/17   Avis de motion du règlement no RV17-4926 visant le 4515 boulevard Saint-",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1623,
+        1627,
+        1821,
+        1828
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+          "line": 1624,
+          "quote": "                       Joseph et présentation du projet de règlement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/288fbd63c573.pdf/input/document.txt",
+          "line": 1627,
+          "quote": "                       conseil, il sera soumis pour adoption le règlement no RV17-4926 visant le 4515",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 23,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV20-5282",
+      "storage_key": "raw/pv-index/cas/534100b94599f1ad996accc4f379d229b3dea0c444ae6145bc97deed27b7356c.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/deed27b7356c.pdf/input/document.txt",
+        "line": 856,
+        "quote": "          1161/10/20   Avis de motion du règlement no RV20-5282 règlement intérieur du conseil",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        856,
+        861
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/deed27b7356c.pdf/input/document.txt",
+          "line": 858,
+          "quote": "                       et dépôt du projet de règlement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/deed27b7356c.pdf/input/document.txt",
+          "line": 861,
+          "quote": "                       conseil, il sera soumis pour adoption le règlement no RV20-5282, règlement",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 24,
+      "municipality_slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "regulation_label": "015-2024",
+      "storage_key": "raw/pv-index/cas/acaf9322f4e915351c2c6ae1de7a34c64b09dec21ca18855538195ed0e0308a6.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-20.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215541Z/acton-vale/95ed0e0308a6.pdf/input/document.txt",
+        "line": 367,
+        "quote": "         Attendu l’article 6.3 du Règlement numéro 015-2024 sur la gestion",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        367
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 25,
+      "municipality_slug": "audet",
+      "municipality_name": "Audet",
+      "regulation_label": "362",
+      "storage_key": "raw/pv-index/cas/56523c2802670e7c84d4b19cf02f4db7ebf17eaae84589c51c091a9cb6697464.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-14.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T182144Z/audet/1a9cb6697464.pdf/input/document.txt",
+        "line": 551,
+        "quote": "           règlement numéro 362 est déposé et présenté en conseil.",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        551,
+        557
+      ],
+      "cause": "PORTEE_HORS_FENETRE",
+      "diagnosis": "Une qualification du règlement visé existe ailleurs dans le même document, hors de la ligne ou fenêtre ayant produit l’occurrence.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T182144Z/audet/1a9cb6697464.pdf/input/document.txt",
+          "line": 550,
+          "quote": "           Conformément à l’article 445 du Code municipal du Québec, un projet du",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T182144Z/audet/1a9cb6697464.pdf/input/document.txt",
+          "line": 556,
+          "quote": "           La conseillère, Madame Danièle Provencher, donne avis de motion qu’à",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T182144Z/audet/1a9cb6697464.pdf/input/document.txt",
+          "line": 557,
+          "quote": "           une prochaine séance de ce conseil le Règlement numéro 362 portant",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T182144Z/audet/1a9cb6697464.pdf/input/document.txt",
+          "line": 558,
+          "quote": "           sur l’utilisation de l’eau potable sera présenté pour adoption.",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 26,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1322-07",
+      "storage_key": "raw/pv-index/cas/a077ce9d8730fd4b0830719169b2a066e198a25e1401c5fb20dbcc0df2a913d5.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/cc0df2a913d5.pdf/input/document.txt",
+        "line": 1240,
+        "quote": "assujettis au Règlement numéro 1322-07 portant sur les plans d’implantation et",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1240,
+        1254
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 27,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "4305",
+      "storage_key": "raw/pv-index/cas/9c358c1cd1256f7f620fcfc954effbc0e268f5157558000cd8ba8ce45de71551.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/8ce45de71551.pdf/input/document.txt",
+        "line": 992,
+        "quote": "                      CONSIDÉRANT le règlement no 4305 sur les projets particuliers de",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        992,
+        1000,
+        1041,
+        1049,
+        1097,
+        1105,
+        1162,
+        1173,
+        1221,
+        1232,
+        1284,
+        1295,
+        1337,
+        1351,
+        1603,
+        1618,
+        1620
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/8ce45de71551.pdf/input/document.txt",
+          "line": 1000,
+          "quote": "                      il est résolu que le premier projet de résolution en vertu du règlement no 4305",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/8ce45de71551.pdf/input/document.txt",
+          "line": 1049,
+          "quote": "                      il est résolu que le premier projet de résolution en vertu du règlement no 4305",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 28,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1322-07",
+      "storage_key": "raw/pv-index/cas/29634c0a64299be420a33ff80e493bd72b2cf59f5fb69f9c5fc13d278a2c4e2e.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/3d278a2c4e2e.pdf/input/document.txt",
+        "line": 1176,
+        "quote": "assujettis au Règlement numéro 1322-07 portant sur les plans d’implantation et",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1176,
+        1199,
+        1225
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 29,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1930-24",
+      "storage_key": "raw/pv-index/cas/92a8e62936d149127d783b9aff2434b33a61709342fc9ab49a90547173ac7bde.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/547173ac7bde.pdf/input/document.txt",
+        "line": 323,
+        "quote": "ADOPTION - RÈGLEMENT NUMÉRO 1930-24 ABROGEANT LES RÈGLEMENTS",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        323,
+        345
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/547173ac7bde.pdf/input/document.txt",
+          "line": 323,
+          "quote": "ADOPTION - RÈGLEMENT NUMÉRO 1930-24 ABROGEANT LES RÈGLEMENTS",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/547173ac7bde.pdf/input/document.txt",
+          "line": 345,
+          "quote": "QUE le conseil municipal adopte le règlement numéro 1930-24 abrogeant les",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 30,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "4697",
+      "storage_key": "raw/pv-index/cas/2612711f18f5e0fb5560b714b02aad94e0bef047a595408c3a92de274f0826b3.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+        "line": 1378,
+        "quote": "\f           0122/2/16         Avis de motion du règlement no 4697 modifiant le règlement de zonage no",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        1378,
+        1386,
+        1426,
+        1436
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+          "line": 1386,
+          "quote": "                             conseil, il sera proposé pour adoption le règlement no 4697 ayant pour objet de",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/de274f0826b3.pdf/input/document.txt",
+          "line": 1426,
+          "quote": "           0124/2/16         Adoption du projet de règlement no 4697 ayant pour effet d'autoriser",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 31,
+      "municipality_slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "regulation_label": "95-842",
+      "storage_key": "raw/pv-index/cas/db29470be9ed1abf1aa18155ebdd0761270db4e93069e9f62392196ce5460e6a.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+        "line": 832,
+        "quote": "  dispositions du règlement 95-842 étant          By-law 95-842 now being incorporated",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        824,
+        825,
+        830,
+        832,
+        859,
+        860
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+          "line": 823,
+          "quote": "ADOPTION DU RÈGLEMENT R-2026-219                ADOPTION OF BY-LAW R-2026-219",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+          "line": 824,
+          "quote": "ABROGEANT LES RÈGLEMENTS 252 ET                 REPEALING BY-LAWS 252 AND 95-842",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+          "line": 829,
+          "quote": "- Que le présent règlement a pour objet         - The object of the present By-law is to",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+          "line": 830,
+          "quote": "  d’abroger les règlements 252 et 95-842,         repeal By-laws 252 and 95-842, By-law",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dollard-des-ormeaux/196ce5460e6a.pdf/input/document.txt",
+          "line": 832,
+          "quote": "  dispositions du règlement 95-842 étant          By-law 95-842 now being incorporated",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 32,
+      "municipality_slug": "amherst",
+      "municipality_name": "Amherst",
+      "regulation_label": "609-26",
+      "storage_key": "raw/pv-index/cas/185ae80a3dff3ac31e25dde543b67630740dbc6777a2d36d1a6f0c7e412c0bb7.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-03.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T181541Z/amherst/0c7e412c0bb7.pdf/input/document.txt",
+        "line": 46,
+        "quote": "     6.1      Avis de motion et présentation du règlement 609-26 édictant le",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        46,
+        161,
+        165,
+        169
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T181541Z/amherst/0c7e412c0bb7.pdf/input/document.txt",
+          "line": 161,
+          "quote": "6.1   AVIS DE MOTION ET PRÉSENTATION DU RÈGLEMENT 609-26 ÉDICTANT LE",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T181541Z/amherst/0c7e412c0bb7.pdf/input/document.txt",
+          "line": 169,
+          "quote": "      2026 sera présenté au conseil pour adoption le règlement 609-26 édictant le code",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 33,
+      "municipality_slug": "audet",
+      "municipality_name": "Audet",
+      "regulation_label": "276",
+      "storage_key": "raw/pv-index/cas/b3774de51fded772612840153bb95df8433f3123fb871bf2a774044c70c6b869.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-16.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T182256Z/audet/044c70c6b869.pdf/input/document.txt",
+        "line": 590,
+        "quote": "MUNICIPALES - RÈGLEMENT NUMÉRO 276, 281 & 287",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        590,
+        592
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    },
+    {
+      "sample_rank": 34,
+      "municipality_slug": "drummondville",
+      "municipality_name": "Drummondville",
+      "regulation_label": "RV26-5821",
+      "storage_key": "raw/pv-index/cas/5944494384a82b2a86fd3f363f6d03d0f53fed685c5037948aade8dcfa1a1f15.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt",
+        "line": 2509,
+        "quote": "         0277/03/26 Dépôt d'un certificat relatif au règlement no RV26-5821 décrétant des",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        2509,
+        2519
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt",
+          "line": 2515,
+          "quote": "                     Conformément à la loi, la greffière dépose le certificat concernant la",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt",
+          "line": 2519,
+          "quote": "                     •   Règlement no RV26-5821 décrétant des travaux de pavage, de",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/drummondville/e8dcfa1a1f15.pdf/input/document.txt",
+          "line": 2523,
+          "quote": "                     Nombre de signature(s) reçue(s) : aucune.",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 35,
+      "municipality_slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "regulation_label": "013-2021",
+      "storage_key": "raw/pv-index/cas/29689cf6f5c565d6e8678e940948f4aff86a7fe64b2c2ca0499fe163259cd1b9.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-19.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e163259cd1b9.pdf/input/document.txt",
+        "line": 343,
+        "quote": "AVIS DE MOTION ET PRÉSENTATION DU RÈGLEMENT 013-2021,",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        343,
+        356,
+        359,
+        365,
+        366
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e163259cd1b9.pdf/input/document.txt",
+          "line": 351,
+          "quote": "        La conseillère Suzanne Ledoux, par la présente, donne avis de motion,",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e163259cd1b9.pdf/input/document.txt",
+          "line": 356,
+          "quote": "     Dépose le projet de règlement 013-2021 modifiant le règlement de",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T215129Z/acton-vale/e163259cd1b9.pdf/input/document.txt",
+          "line": 365,
+          "quote": "                 Lavallée et il est résolu d’accepter le premier projet de règlement 013-2021",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 36,
+      "municipality_slug": "albertville",
+      "municipality_name": "Albertville",
+      "regulation_label": "2025-03",
+      "storage_key": "raw/pv-index/cas/89e8917f4b4903b6c1045fee19468bfb63e4fdc49e3a04209364f099f1eec438.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-02.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T181621Z/albertville/f099f1eec438.pdf/input/document.txt",
+        "line": 36,
+        "quote": "10.     Adoption règlement 2025-03 concernant la tarification incitative des matières résiduelles",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        36,
+        199,
+        235,
+        241
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T181621Z/albertville/f099f1eec438.pdf/input/document.txt",
+          "line": 199,
+          "quote": "121-07-2025 : ADOPTION RÈGLEMENT 2025-03 CONCERNANT LA TARIFICATION INCITATIVE DES",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T181621Z/albertville/f099f1eec438.pdf/input/document.txt",
+          "line": 235,
+          "quote": "unanimement que la municipalité d’Albertville adopte le Règlement numéro 2025-03 relatif à la",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 37,
+      "municipality_slug": "dunham",
+      "municipality_name": "Dunham",
+      "regulation_label": "476-23",
+      "storage_key": "raw/pv-index/cas/b4231ee860526263f06c419b7af6d3544655dd6d9a604826531b80a370aa43b2.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/80a370aa43b2.pdf/input/document.txt",
+        "line": 87,
+        "quote": "              6.4. Dépôt du rapport de rétroaction pour le règlement no 476-23",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        87,
+        790,
+        794
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/80a370aa43b2.pdf/input/document.txt",
+          "line": 790,
+          "quote": "         DÉPÔT DU RAPPORT DE RÉTROACTION POUR LE RÈGLEMENT NO 476-23",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220314Z/dunham/80a370aa43b2.pdf/input/document.txt",
+          "line": 794,
+          "quote": "         Règlement no 476-23 modifiant le règlement de zonage no 382-19 afin",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 38,
+      "municipality_slug": "dolbeau-mistassini",
+      "municipality_name": "Dolbeau-Mistassini",
+      "regulation_label": "1985-25",
+      "storage_key": "raw/pv-index/cas/adb29b4037fb418e5f50ed46eb89e8d5323a0f2580b9d4faa5246c6505f18a19.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-22.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/6c6505f18a19.pdf/input/document.txt",
+        "line": 13696,
+        "quote": "AVIS DE MOTION - RÈGLEMENT NUMÉRO 1985-25 RELATIF AU PAIEMENT DES",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        13696,
+        13704,
+        13708,
+        18736,
+        18742,
+        18756
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/6c6505f18a19.pdf/input/document.txt",
+          "line": 13702,
+          "quote": "Conformément à l'article 356 de la Loi sur les cités et villes, monsieur le conseiller",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/6c6505f18a19.pdf/input/document.txt",
+          "line": 13708,
+          "quote": "Le projet de règlement numéro 1985-25 est déposé séance tenante.",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/6c6505f18a19.pdf/input/document.txt",
+          "line": 18736,
+          "quote": "ADOPTION - RÈGLEMENT NUMÉRO 1985-25 RELATIF AU PAIEMENT DES",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T220136Z/dolbeau-mistassini/6c6505f18a19.pdf/input/document.txt",
+          "line": 18756,
+          "quote": "QUE le conseil municipal adopte le règlement numéro 1985-25 relatif au paiement des",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 39,
+      "municipality_slug": "albertville",
+      "municipality_name": "Albertville",
+      "regulation_label": "2024-05",
+      "storage_key": "raw/pv-index/cas/84606dc2434554a20ff711925be65cc068ef114ae9cc4d27650d2750b3b1d90a.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-01.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T181500Z/albertville/2750b3b1d90a.pdf/input/document.txt",
+        "line": 422,
+        "quote": "              Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        422
+      ],
+      "cause": "VOCABULAIRE_STATUT_NON_RECONNU",
+      "diagnosis": "Un marqueur textuel existe dans la citation ou son bloc immédiat, mais sa tournure n’est pas reconnue. Avis de motion, projet déposé, adoption, certificat et en vigueur restent distincts; aucun n’est assimilé automatiquement à une entrée en vigueur.",
+      "evidence": [
+        {
+          "file": "work/graphify/pv-semantic-20260728T181500Z/albertville/2750b3b1d90a.pdf/input/document.txt",
+          "line": 422,
+          "quote": "              Selon les modalités du règlement 2024-05 de la Régie Intermunicipale de traitement",
+          "role": "preuve de diagnostic"
+        },
+        {
+          "file": "work/graphify/pv-semantic-20260728T181500Z/albertville/2750b3b1d90a.pdf/input/document.txt",
+          "line": 423,
+          "quote": "              des matières résiduelles de la MRC de la Matapédia et de la Mitis dûment en vigueur.",
+          "role": "preuve de diagnostic"
+        }
+      ]
+    },
+    {
+      "sample_rank": 40,
+      "municipality_slug": "duhamel",
+      "municipality_name": "Duhamel",
+      "regulation_label": "2024-04",
+      "storage_key": "raw/pv-index/cas/18438347bdecc35d4b08094c966c4548e8f0620b80cd2bee804f2fb77c0a5159.pdf",
+      "source_report": "work/coverage/pv-graphify-semantic-all-20260728-batch-23.json",
+      "primary_citation": {
+        "file": "work/graphify/pv-semantic-20260728T220314Z/duhamel/2fb77c0a5159.pdf/input/document.txt",
+        "line": 66,
+        "quote": "                Conformément au règlement 2024-04 sur la régie interne des séances",
+        "role": "citation de l’occurrence INCONNUE"
+      },
+      "source_occurrence_lines_for_label": [
+        66
+      ],
+      "cause": "ABSENCE_VRAIE_MENTION_NUE",
+      "diagnosis": "Le texte cite le règlement visé sans qualifier son stade ou son effet juridique; INCONNUE est alors le verdict prudent.",
+      "evidence": []
+    }
+  ]
+}

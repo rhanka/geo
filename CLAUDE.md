@@ -25,10 +25,12 @@ Concrètement, avant de considérer un travail comme fait :
 - **La logique va dans `packages/` (lib), pas dans un script jetable.** Un
   `acquisition/src/_*.ts` est une sonde de diagnostic, jamais le lieu d'une règle
   métier. Ce qui sert deux fois se promeut dans la lib, avec un test.
-- **La capture est de la donnée de production.** Le scraping tourne sur le
-  cluster ; les octets bruts, le manifeste de fetch (`url`, `retrieved_at`,
-  `sha256`, statut HTTP) et les logs vont sur le stockage objet. Les agents
-  locaux ANALYSENT en lecture seule ; ils ne captent pas.
+- **La capture est de la donnée de production. JAMAIS DE CAPTURE LOCALE.** Le
+  scraping tourne sur le **cluster** et écrit **directement sur S3** les octets
+  bruts, le manifeste de fetch (`url`, `retrieved_at`, `sha256`, statut HTTP) et
+  les logs. Les agents locaux ANALYSENT en lecture seule ; **ils ne captent
+  jamais**. Une capture qui atterrit sur une machine est un défaut, pas un
+  livrable — elle **n'existe pas** tant qu'elle n'est pas sur S3.
   Voir `docs/spec/SPEC_CAPTURE_ON_CLUSTER.md`.
 - **Preuve par construction.** Le manifeste de capture EST la preuve v2 exigée
   par `putServedZoneGeojson`. Une preuve qu'on ne peut pas rattacher à une
@@ -36,6 +38,23 @@ Concrètement, avant de considérer un travail comme fait :
 - **Vert par omission = rouge.** Un typecheck ou un test qui passe parce qu'il ne
   regarde pas (workspace sauté, fichier exclu, `@ts-ignore`, fixture local
   absent) ne prouve rien. On corrige la cause, on n'élargit pas l'angle mort.
+
+## ⭐ Principe fondateur — CONVERGENCE CONTINUE sur origin/main
+
+> **Jamais de divergence `origin/main`. Aucun travail n'est « fait » tant qu'il
+> n'est pas mergé sur `origin/main`. Jamais plus de 2 PR ouvertes vers `main`.**
+
+- **Chaque job va jusqu'au merge.** Tout job (lane, worker, conducteur) ouvre une
+  PR et la conduit **jusqu'au merge sur `origin/main`** — pas de branche qui
+  s'accumule, pas de « terminé » sur une branche locale. Un livrable non mergé
+  n'est **pas** livré. C'est le pendant du principe S3 : rien ne reste local, ni
+  la donnée (→ S3), ni le code (→ `origin/main`).
+- **Maximum 2 PR ouvertes vers `main` à la fois** (hors dependabot). Au-delà, on
+  **merge ou ferme** avant d'en ouvrir une nouvelle. Cible permanente : **0 PR en
+  attente** ; la divergence `origin/main ↔ branche` reste proche de 0.
+- **Garde CI committée** : `.github/workflows/max-open-prs.yml` échoue si > 2 PR
+  non-dependabot sont ouvertes vers `main`. La règle est **gravée dans le repo**,
+  pas seulement dans les têtes.
 
 ## Rapport de couverture (standard)
 

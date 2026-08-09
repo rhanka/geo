@@ -1,0 +1,1158 @@
+{
+  "contract": "pv-decouverte-municipalites-vierges/v1",
+  "generated_at": "2026-07-30T00:52:50.796Z",
+  "read_only": true,
+  "definition": {
+    "reference": "packages/qc-sources/src/geo/municipalities.qc.json",
+    "covered": "174 municipalités de la partition finale + 203 verdicts INDEXED de la vague territoriale 1; union vérifiée = 377",
+    "candidate": "municipalité de référence attachée à au moins une URL pv_probable de planPvProbableTargets sur registry/qc-pv/*/index.json",
+    "missing": "reference - covered - candidate_only; les ensembles couverts et candidate_only sont disjoints"
+  },
+  "sources": {
+    "municipalities": {
+      "path": "packages/qc-sources/src/geo/municipalities.qc.json",
+      "sha256": "sha256:7569b3ae83b61a589ccef3aa20b08747370904eba82b0c8c63792d28c5f966ef"
+    },
+    "base_partition": {
+      "path": "work/coverage/pv-univers-partition-finale-20260729T215104Z.json",
+      "sha256": "sha256:15d70df6d075ba9edb5d824f7bac0a254ef35bac9d77e7d0929ded3575c3c76a"
+    },
+    "wave1_verdicts": {
+      "path": "work/coverage/pv-territorial-20260729t222149z-verdicts.json",
+      "sha256": "sha256:4626717652be8cf954d9fe074eb8c30d6ff493ff7539361d60eb394d151fc5ac"
+    },
+    "s3_index_prefix": "s3://sentropic-geo/registry/qc-pv/",
+    "s3_index_listing_sha256": "sha256:deaab0aca80218e6bd36009b9b157a99b17728d1a91f27bf57d22661bc25f2d4"
+  },
+  "cardinality": {
+    "reference_municipalities": 1106,
+    "base_covered": 174,
+    "wave1_indexed": 203,
+    "covered_union": 377,
+    "probable_urls": 45751,
+    "candidate_municipalities_total": 877,
+    "candidate_municipalities_in_reference": 876,
+    "candidate_municipalities_unrecognized": 1,
+    "covered_candidate_intersection": 369,
+    "candidate_only_in_reference": 507,
+    "covered_union_candidate_union_in_reference": 884,
+    "missing_without_candidate": 222,
+    "equation": "1106 - 377 - 507 = 222",
+    "expected_527_delta": -305
+  },
+  "unrecognized_candidate_slugs": [
+    "hemmingford"
+  ],
+  "municipalities": [
+    {
+      "slug": "alma",
+      "name": "Alma",
+      "mrc": "Lac-Saint-Jean-Est"
+    },
+    {
+      "slug": "ange-gardien",
+      "name": "Ange-Gardien",
+      "mrc": "Rouville"
+    },
+    {
+      "slug": "austin",
+      "name": "Austin",
+      "mrc": "Memphrémagog"
+    },
+    {
+      "slug": "baie-du-febvre",
+      "name": "Baie-du-Febvre",
+      "mrc": "Nicolet-Yamaska"
+    },
+    {
+      "slug": "barraute",
+      "name": "Barraute",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "batiscan",
+      "name": "Batiscan",
+      "mrc": "Des Chenaux"
+    },
+    {
+      "slug": "beaumont",
+      "name": "Beaumont",
+      "mrc": "Bellechasse"
+    },
+    {
+      "slug": "beaupre",
+      "name": "Beaupré",
+      "mrc": "La Côte-de-Beaupré"
+    },
+    {
+      "slug": "belleterre",
+      "name": "Belleterre",
+      "mrc": "Témiscamingue"
+    },
+    {
+      "slug": "blanc-sablon",
+      "name": "Blanc-Sablon",
+      "mrc": "Le Golfe-du-Saint-Laurent"
+    },
+    {
+      "slug": "bonne-esperance",
+      "name": "Bonne-Espérance",
+      "mrc": "Le Golfe-du-Saint-Laurent"
+    },
+    {
+      "slug": "brebeuf",
+      "name": "Brébeuf",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "bryson",
+      "name": "Bryson",
+      "mrc": "Pontiac"
+    },
+    {
+      "slug": "candiac",
+      "name": "Candiac",
+      "mrc": "Roussillon"
+    },
+    {
+      "slug": "caniapiscau",
+      "name": "Caniapiscau",
+      "mrc": null
+    },
+    {
+      "slug": "cap-sante",
+      "name": "Cap-Santé",
+      "mrc": "Portneuf"
+    },
+    {
+      "slug": "cascapedia-saint-jules",
+      "name": "Cascapedia-Saint-Jules",
+      "mrc": "Bonaventure"
+    },
+    {
+      "slug": "chambord",
+      "name": "Chambord",
+      "mrc": "Le Domaine-du-Roy"
+    },
+    {
+      "slug": "chapais",
+      "name": "Chapais",
+      "mrc": null
+    },
+    {
+      "slug": "charette",
+      "name": "Charette",
+      "mrc": "Maskinongé"
+    },
+    {
+      "slug": "chelsea",
+      "name": "Chelsea",
+      "mrc": "Les Collines-de-l'Outaouais"
+    },
+    {
+      "slug": "colombier",
+      "name": "Colombier",
+      "mrc": "La Haute-Côte-Nord"
+    },
+    {
+      "slug": "cote-nord-du-golfe-du-saint-laurent",
+      "name": "Côte-Nord-du-Golfe-du-Saint-Laurent",
+      "mrc": "Le Golfe-du-Saint-Laurent"
+    },
+    {
+      "slug": "crabtree",
+      "name": "Crabtree",
+      "mrc": "Joliette"
+    },
+    {
+      "slug": "degelis",
+      "name": "Dégelis",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "desbiens",
+      "name": "Desbiens",
+      "mrc": "Lac-Saint-Jean-Est"
+    },
+    {
+      "slug": "disraeli--les-appalaches--2",
+      "name": "Disraeli",
+      "mrc": "Les Appalaches"
+    },
+    {
+      "slug": "dundee",
+      "name": "Dundee",
+      "mrc": "Le Haut-Saint-Laurent"
+    },
+    {
+      "slug": "eeyou-istchee-james-bay",
+      "name": "Eeyou Istchee James Bay",
+      "mrc": null
+    },
+    {
+      "slug": "fassett",
+      "name": "Fassett",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "ferland-et-boilleau",
+      "name": "Ferland-et-Boilleau",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "frampton",
+      "name": "Frampton",
+      "mrc": "La Nouvelle-Beauce"
+    },
+    {
+      "slug": "gaspe",
+      "name": "Gaspé",
+      "mrc": "La Côte-de-Gaspé"
+    },
+    {
+      "slug": "godbout",
+      "name": "Godbout",
+      "mrc": "Manicouagan"
+    },
+    {
+      "slug": "gros-mecatina",
+      "name": "Gros-Mécatina",
+      "mrc": "Le Golfe-du-Saint-Laurent"
+    },
+    {
+      "slug": "guerin",
+      "name": "Guérin",
+      "mrc": "Témiscamingue"
+    },
+    {
+      "slug": "hampden",
+      "name": "Hampden",
+      "mrc": "Le Haut-Saint-François"
+    },
+    {
+      "slug": "hampstead",
+      "name": "Hampstead",
+      "mrc": null
+    },
+    {
+      "slug": "hope",
+      "name": "Hope",
+      "mrc": "Bonaventure"
+    },
+    {
+      "slug": "ivry-sur-le-lac",
+      "name": "Ivry-sur-le-Lac",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "la-conception",
+      "name": "La Conception",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "la-macaza",
+      "name": "La Macaza",
+      "mrc": "Antoine-Labelle"
+    },
+    {
+      "slug": "la-reine",
+      "name": "La Reine",
+      "mrc": "Abitibi-Ouest"
+    },
+    {
+      "slug": "la-visitation-de-lile-dupas",
+      "name": "La Visitation-de-l'Île-Dupas",
+      "mrc": "D'Autray"
+    },
+    {
+      "slug": "la-visitation-de-yamaska",
+      "name": "La Visitation-de-Yamaska",
+      "mrc": "Nicolet-Yamaska"
+    },
+    {
+      "slug": "lac-au-saumon",
+      "name": "Lac-au-Saumon",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "lac-frontiere",
+      "name": "Lac-Frontière",
+      "mrc": "Montmagny"
+    },
+    {
+      "slug": "lacolle",
+      "name": "Lacolle",
+      "mrc": "Le Haut-Richelieu"
+    },
+    {
+      "slug": "landrienne",
+      "name": "Landrienne",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "lange-gardien--les-collines-de-loutaouais",
+      "name": "L'Ange-Gardien",
+      "mrc": "Les Collines-de-l'Outaouais"
+    },
+    {
+      "slug": "laval",
+      "name": "Laval",
+      "mrc": null
+    },
+    {
+      "slug": "lebel-sur-quevillon",
+      "name": "Lebel-sur-Quévillon",
+      "mrc": null
+    },
+    {
+      "slug": "les-mechins",
+      "name": "Les Méchins",
+      "mrc": "La Matanie"
+    },
+    {
+      "slug": "lile-cadieux",
+      "name": "L'Île-Cadieux",
+      "mrc": "Vaudreuil-Soulanges"
+    },
+    {
+      "slug": "lile-dorval",
+      "name": "L'Île-Dorval",
+      "mrc": null
+    },
+    {
+      "slug": "lingwick",
+      "name": "Lingwick",
+      "mrc": "Le Haut-Saint-François"
+    },
+    {
+      "slug": "lisle-aux-allumettes",
+      "name": "L'Isle-aux-Allumettes",
+      "mrc": "Pontiac"
+    },
+    {
+      "slug": "lisle-verte",
+      "name": "L'Isle-Verte",
+      "mrc": "Rivière-du-Loup"
+    },
+    {
+      "slug": "lochaber",
+      "name": "Lochaber",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "lochaber-partie-ouest",
+      "name": "Lochaber-Partie-Ouest",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "longue-rive",
+      "name": "Longue-Rive",
+      "mrc": "La Haute-Côte-Nord"
+    },
+    {
+      "slug": "lotbiniere",
+      "name": "Lotbinière",
+      "mrc": "Lotbinière"
+    },
+    {
+      "slug": "louiseville",
+      "name": "Louiseville",
+      "mrc": "Maskinongé"
+    },
+    {
+      "slug": "macamic",
+      "name": "Macamic",
+      "mrc": "Abitibi-Ouest"
+    },
+    {
+      "slug": "malartic",
+      "name": "Malartic",
+      "mrc": "La Vallée-de-l'Or"
+    },
+    {
+      "slug": "manseau",
+      "name": "Manseau",
+      "mrc": "Bécancour"
+    },
+    {
+      "slug": "maskinonge",
+      "name": "Maskinongé",
+      "mrc": "Maskinongé"
+    },
+    {
+      "slug": "massueville",
+      "name": "Massueville",
+      "mrc": "Pierre-De Saurel"
+    },
+    {
+      "slug": "mayo",
+      "name": "Mayo",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "moffet",
+      "name": "Moffet",
+      "mrc": "Témiscamingue"
+    },
+    {
+      "slug": "mont-joli",
+      "name": "Mont-Joli",
+      "mrc": "La Mitis"
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "name": "Mont-Saint-Grégoire",
+      "mrc": "Le Haut-Richelieu"
+    },
+    {
+      "slug": "mont-saint-pierre",
+      "name": "Mont-Saint-Pierre",
+      "mrc": "La Haute-Gaspésie"
+    },
+    {
+      "slug": "morin-heights",
+      "name": "Morin-Heights",
+      "mrc": "Les Pays-d'en-Haut"
+    },
+    {
+      "slug": "murdochville",
+      "name": "Murdochville",
+      "mrc": "La Côte-de-Gaspé"
+    },
+    {
+      "slug": "new-carlisle",
+      "name": "New Carlisle",
+      "mrc": "Bonaventure"
+    },
+    {
+      "slug": "new-richmond",
+      "name": "New Richmond",
+      "mrc": "Bonaventure"
+    },
+    {
+      "slug": "newport",
+      "name": "Newport",
+      "mrc": "Le Haut-Saint-François"
+    },
+    {
+      "slug": "notre-dame-de-la-salette",
+      "name": "Notre-Dame-de-la-Salette",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "name": "Notre-Dame-de-l'Île-Perrot",
+      "mrc": "Vaudreuil-Soulanges"
+    },
+    {
+      "slug": "notre-dame-de-montauban",
+      "name": "Notre-Dame-de-Montauban",
+      "mrc": "Mékinac"
+    },
+    {
+      "slug": "notre-dame-des-anges",
+      "name": "Notre-Dame-des-Anges",
+      "mrc": null
+    },
+    {
+      "slug": "notre-dame-des-monts",
+      "name": "Notre-Dame-des-Monts",
+      "mrc": "Charlevoix-Est"
+    },
+    {
+      "slug": "notre-dame-des-neiges",
+      "name": "Notre-Dame-des-Neiges",
+      "mrc": "Les Basques"
+    },
+    {
+      "slug": "notre-dame-du-laus",
+      "name": "Notre-Dame-du-Laus",
+      "mrc": "Antoine-Labelle"
+    },
+    {
+      "slug": "notre-dame-du-mont-carmel",
+      "name": "Notre-Dame-du-Mont-Carmel",
+      "mrc": "Des Chenaux"
+    },
+    {
+      "slug": "notre-dame-du-nord",
+      "name": "Notre-Dame-du-Nord",
+      "mrc": "Témiscamingue"
+    },
+    {
+      "slug": "notre-dame-du-rosaire",
+      "name": "Notre-Dame-du-Rosaire",
+      "mrc": "Montmagny"
+    },
+    {
+      "slug": "palmarolle",
+      "name": "Palmarolle",
+      "mrc": "Abitibi-Ouest"
+    },
+    {
+      "slug": "petite-vallee",
+      "name": "Petite-Vallée",
+      "mrc": "La Côte-de-Gaspé"
+    },
+    {
+      "slug": "piopolis",
+      "name": "Piopolis",
+      "mrc": "Le Granit"
+    },
+    {
+      "slug": "port-cartier",
+      "name": "Port-Cartier",
+      "mrc": "Sept-Rivières"
+    },
+    {
+      "slug": "portage-du-fort",
+      "name": "Portage-du-Fort",
+      "mrc": "Pontiac"
+    },
+    {
+      "slug": "preissac",
+      "name": "Preissac",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "rigaud",
+      "name": "Rigaud",
+      "mrc": "Vaudreuil-Soulanges"
+    },
+    {
+      "slug": "rimouski",
+      "name": "Rimouski",
+      "mrc": "Rimouski-Neigette"
+    },
+    {
+      "slug": "riviere-bleue",
+      "name": "Rivière-Bleue",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "riviere-eternite",
+      "name": "Rivière-Éternité",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "riviere-heva",
+      "name": "Rivière-Héva",
+      "mrc": "La Vallée-de-l'Or"
+    },
+    {
+      "slug": "riviere-saint-jean",
+      "name": "Rivière-Saint-Jean",
+      "mrc": "Minganie"
+    },
+    {
+      "slug": "roberval",
+      "name": "Roberval",
+      "mrc": "Le Domaine-du-Roy"
+    },
+    {
+      "slug": "saguenay",
+      "name": "Saguenay",
+      "mrc": null
+    },
+    {
+      "slug": "saint-adelphe",
+      "name": "Saint-Adelphe",
+      "mrc": "Mékinac"
+    },
+    {
+      "slug": "saint-adrien-dirlande",
+      "name": "Saint-Adrien-d'Irlande",
+      "mrc": "Les Appalaches"
+    },
+    {
+      "slug": "saint-aime-des-lacs",
+      "name": "Saint-Aimé-des-Lacs",
+      "mrc": "Charlevoix-Est"
+    },
+    {
+      "slug": "saint-alexandre-de-kamouraska",
+      "name": "Saint-Alexandre-de-Kamouraska",
+      "mrc": "Kamouraska"
+    },
+    {
+      "slug": "saint-alexis-de-matapedia",
+      "name": "Saint-Alexis-de-Matapédia",
+      "mrc": "Avignon"
+    },
+    {
+      "slug": "saint-alphonse-de-granby",
+      "name": "Saint-Alphonse-de-Granby",
+      "mrc": "La Haute-Yamaska"
+    },
+    {
+      "slug": "saint-ambroise",
+      "name": "Saint-Ambroise",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "saint-anaclet-de-lessard",
+      "name": "Saint-Anaclet-de-Lessard",
+      "mrc": "Rimouski-Neigette"
+    },
+    {
+      "slug": "saint-andre-de-restigouche",
+      "name": "Saint-André-de-Restigouche",
+      "mrc": "Avignon"
+    },
+    {
+      "slug": "saint-andre-du-lac-saint-jean",
+      "name": "Saint-André-du-Lac-Saint-Jean",
+      "mrc": "Le Domaine-du-Roy"
+    },
+    {
+      "slug": "saint-anselme",
+      "name": "Saint-Anselme",
+      "mrc": "Bellechasse"
+    },
+    {
+      "slug": "saint-armand",
+      "name": "Saint-Armand",
+      "mrc": "Brome-Missisquoi"
+    },
+    {
+      "slug": "saint-athanase",
+      "name": "Saint-Athanase",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "saint-augustin--maria-chapdelaine",
+      "name": "Saint-Augustin",
+      "mrc": "Maria-Chapdelaine"
+    },
+    {
+      "slug": "saint-barthelemy",
+      "name": "Saint-Barthélemy",
+      "mrc": "D'Autray"
+    },
+    {
+      "slug": "saint-benjamin",
+      "name": "Saint-Benjamin",
+      "mrc": "Les Etchemins"
+    },
+    {
+      "slug": "saint-benoit-du-lac",
+      "name": "Saint-Benoît-du-Lac",
+      "mrc": "Memphrémagog"
+    },
+    {
+      "slug": "saint-calixte",
+      "name": "Saint-Calixte",
+      "mrc": "Montcalm"
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska--2",
+      "name": "Saint-Célestin",
+      "mrc": "Nicolet-Yamaska"
+    },
+    {
+      "slug": "saint-charles-de-bellechasse",
+      "name": "Saint-Charles-de-Bellechasse",
+      "mrc": "Bellechasse"
+    },
+    {
+      "slug": "saint-cleophas",
+      "name": "Saint-Cléophas",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "saint-clet",
+      "name": "Saint-Clet",
+      "mrc": "Vaudreuil-Soulanges"
+    },
+    {
+      "slug": "saint-cyprien--riviere-du-loup",
+      "name": "Saint-Cyprien",
+      "mrc": "Rivière-du-Loup"
+    },
+    {
+      "slug": "saint-cyrille-de-lessard",
+      "name": "Saint-Cyrille-de-Lessard",
+      "mrc": "L'Islet"
+    },
+    {
+      "slug": "saint-damien",
+      "name": "Saint-Damien",
+      "mrc": "Matawinie"
+    },
+    {
+      "slug": "saint-david",
+      "name": "Saint-David",
+      "mrc": "Pierre-De Saurel"
+    },
+    {
+      "slug": "saint-david-de-falardeau",
+      "name": "Saint-David-de-Falardeau",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "saint-didace",
+      "name": "Saint-Didace",
+      "mrc": "D'Autray"
+    },
+    {
+      "slug": "saint-dominique-du-rosaire",
+      "name": "Saint-Dominique-du-Rosaire",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "saint-edouard",
+      "name": "Saint-Édouard",
+      "mrc": "Les Jardins-de-Napierville"
+    },
+    {
+      "slug": "saint-edouard-de-fabre",
+      "name": "Saint-Édouard-de-Fabre",
+      "mrc": "Témiscamingue"
+    },
+    {
+      "slug": "saint-eloi",
+      "name": "Saint-Éloi",
+      "mrc": "Les Basques"
+    },
+    {
+      "slug": "saint-elphege",
+      "name": "Saint-Elphège",
+      "mrc": "Nicolet-Yamaska"
+    },
+    {
+      "slug": "saint-elzear--la-nouvelle-beauce",
+      "name": "Saint-Elzéar",
+      "mrc": "La Nouvelle-Beauce"
+    },
+    {
+      "slug": "saint-elzear-de-temiscouata",
+      "name": "Saint-Elzéar-de-Témiscouata",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "saint-emile-de-suffolk",
+      "name": "Saint-Émile-de-Suffolk",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "saint-eugene-dargentenay",
+      "name": "Saint-Eugène-d'Argentenay",
+      "mrc": "Maria-Chapdelaine"
+    },
+    {
+      "slug": "saint-felix-de-dalquier",
+      "name": "Saint-Félix-de-Dalquier",
+      "mrc": null
+    },
+    {
+      "slug": "saint-ferdinand",
+      "name": "Saint-Ferdinand",
+      "mrc": "L'Érable"
+    },
+    {
+      "slug": "saint-flavien",
+      "name": "Saint-Flavien",
+      "mrc": "Lotbinière"
+    },
+    {
+      "slug": "saint-fortunat",
+      "name": "Saint-Fortunat",
+      "mrc": "Les Appalaches"
+    },
+    {
+      "slug": "saint-francois-dassise",
+      "name": "Saint-François-d'Assise",
+      "mrc": "Avignon"
+    },
+    {
+      "slug": "saint-francois-de-la-riviere-du-sud",
+      "name": "Saint-François-de-la-Rivière-du-Sud",
+      "mrc": "Montmagny"
+    },
+    {
+      "slug": "saint-fulgence",
+      "name": "Saint-Fulgence",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "saint-gabriel-de-valcartier",
+      "name": "Saint-Gabriel-de-Valcartier",
+      "mrc": "La Jacques-Cartier"
+    },
+    {
+      "slug": "saint-gabriel-lalemant",
+      "name": "Saint-Gabriel-Lalemant",
+      "mrc": "Kamouraska"
+    },
+    {
+      "slug": "saint-gilles",
+      "name": "Saint-Gilles",
+      "mrc": "Lotbinière"
+    },
+    {
+      "slug": "saint-guy",
+      "name": "Saint-Guy",
+      "mrc": null
+    },
+    {
+      "slug": "saint-hermenegilde",
+      "name": "Saint-Herménégilde",
+      "mrc": "Coaticook"
+    },
+    {
+      "slug": "saint-honore",
+      "name": "Saint-Honoré",
+      "mrc": "Le Fjord-du-Saguenay"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "name": "Saint-Hyacinthe",
+      "mrc": "Les Maskoutains"
+    },
+    {
+      "slug": "saint-ignace-de-stanbridge",
+      "name": "Saint-Ignace-de-Stanbridge",
+      "mrc": "Brome-Missisquoi"
+    },
+    {
+      "slug": "saint-jacques-le-majeur-de-wolfestown",
+      "name": "Saint-Jacques-le-Majeur-de-Wolfestown",
+      "mrc": "Les Appalaches"
+    },
+    {
+      "slug": "saint-jean-de-cherbourg",
+      "name": "Saint-Jean-de-Cherbourg",
+      "mrc": "La Matanie"
+    },
+    {
+      "slug": "saint-jean-de-la-lande",
+      "name": "Saint-Jean-de-la-Lande",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "saint-jean-de-lile-dorleans",
+      "name": "Saint-Jean-de-l'Île-d'Orléans",
+      "mrc": "L'Île-d'Orléans"
+    },
+    {
+      "slug": "saint-joseph-des-erables",
+      "name": "Saint-Joseph-des-Érables",
+      "mrc": "Beauce-Centre"
+    },
+    {
+      "slug": "saint-lambert--abitibi-ouest",
+      "name": "Saint-Lambert",
+      "mrc": "Abitibi-Ouest"
+    },
+    {
+      "slug": "saint-lazare-de-bellechasse",
+      "name": "Saint-Lazare-de-Bellechasse",
+      "mrc": "Bellechasse"
+    },
+    {
+      "slug": "saint-leandre",
+      "name": "Saint-Léandre",
+      "mrc": "La Matanie"
+    },
+    {
+      "slug": "saint-leon-le-grand--maskinonge",
+      "name": "Saint-Léon-le-Grand",
+      "mrc": "Maskinongé"
+    },
+    {
+      "slug": "saint-liguori",
+      "name": "Saint-Liguori",
+      "mrc": "Montcalm"
+    },
+    {
+      "slug": "saint-louis-de-gonzague-du-cap-tourmente",
+      "name": "Saint-Louis-de-Gonzague-du-Cap-Tourmente",
+      "mrc": "La Côte-de-Beaupré"
+    },
+    {
+      "slug": "saint-louis-du-ha-ha",
+      "name": "Saint-Louis-du-Ha! Ha!",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "saint-lucien",
+      "name": "Saint-Lucien",
+      "mrc": "Drummond"
+    },
+    {
+      "slug": "saint-ludger-de-milot",
+      "name": "Saint-Ludger-de-Milot",
+      "mrc": "Lac-Saint-Jean-Est"
+    },
+    {
+      "slug": "saint-marc-de-figuery",
+      "name": "Saint-Marc-de-Figuery",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "saint-medard",
+      "name": "Saint-Médard",
+      "mrc": "Les Basques"
+    },
+    {
+      "slug": "saint-modeste",
+      "name": "Saint-Modeste",
+      "mrc": "Rivière-du-Loup"
+    },
+    {
+      "slug": "saint-moise",
+      "name": "Saint-Moïse",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "saint-octave-de-metis",
+      "name": "Saint-Octave-de-Métis",
+      "mrc": "La Mitis"
+    },
+    {
+      "slug": "saint-pierre-de-la-riviere-du-sud",
+      "name": "Saint-Pierre-de-la-Rivière-du-Sud",
+      "mrc": "Montmagny"
+    },
+    {
+      "slug": "saint-pierre-de-lamy",
+      "name": "Saint-Pierre-de-Lamy",
+      "mrc": "Témiscouata"
+    },
+    {
+      "slug": "saint-pierre-de-lile-dorleans",
+      "name": "Saint-Pierre-de-l'Île-d'Orléans",
+      "mrc": "L'Île-d'Orléans"
+    },
+    {
+      "slug": "saint-placide",
+      "name": "Saint-Placide",
+      "mrc": "Deux-Montagnes"
+    },
+    {
+      "slug": "saint-prime",
+      "name": "Saint-Prime",
+      "mrc": "Le Domaine-du-Roy"
+    },
+    {
+      "slug": "saint-remi-de-tingwick",
+      "name": "Saint-Rémi-de-Tingwick",
+      "mrc": "Arthabaska"
+    },
+    {
+      "slug": "saint-rene-de-matane",
+      "name": "Saint-René-de-Matane",
+      "mrc": "La Matanie"
+    },
+    {
+      "slug": "saint-samuel",
+      "name": "Saint-Samuel",
+      "mrc": "Arthabaska"
+    },
+    {
+      "slug": "saint-sebastien--le-granit",
+      "name": "Saint-Sébastien",
+      "mrc": "Le Granit"
+    },
+    {
+      "slug": "saint-simon-les-mines",
+      "name": "Saint-Simon-les-Mines",
+      "mrc": "Beauce-Sartigan"
+    },
+    {
+      "slug": "saint-sulpice",
+      "name": "Saint-Sulpice",
+      "mrc": "L'Assomption"
+    },
+    {
+      "slug": "saint-telesphore",
+      "name": "Saint-Télesphore",
+      "mrc": "Vaudreuil-Soulanges"
+    },
+    {
+      "slug": "saint-tharcisius",
+      "name": "Saint-Tharcisius",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "saint-valerien",
+      "name": "Saint-Valérien",
+      "mrc": "Rimouski-Neigette"
+    },
+    {
+      "slug": "saint-vianney",
+      "name": "Saint-Vianney",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "sainte-agathe-des-monts",
+      "name": "Sainte-Agathe-des-Monts",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "name": "Sainte-Anne-de-Sabrevois",
+      "mrc": "Le Haut-Richelieu"
+    },
+    {
+      "slug": "sainte-anne-du-lac",
+      "name": "Sainte-Anne-du-Lac",
+      "mrc": "Antoine-Labelle"
+    },
+    {
+      "slug": "sainte-beatrix",
+      "name": "Sainte-Béatrix",
+      "mrc": "Matawinie"
+    },
+    {
+      "slug": "sainte-christine-dauvergne",
+      "name": "Sainte-Christine-d'Auvergne",
+      "mrc": "Portneuf"
+    },
+    {
+      "slug": "sainte-elisabeth",
+      "name": "Sainte-Élisabeth",
+      "mrc": "D'Autray"
+    },
+    {
+      "slug": "sainte-francoise--les-basques",
+      "name": "Sainte-Françoise",
+      "mrc": "Les Basques"
+    },
+    {
+      "slug": "sainte-gertrude-manneville",
+      "name": "Sainte-Gertrude-Manneville",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "sainte-hedwidge",
+      "name": "Sainte-Hedwidge",
+      "mrc": "Le Domaine-du-Roy"
+    },
+    {
+      "slug": "sainte-jeanne-darc--maria-chapdelaine",
+      "name": "Sainte-Jeanne-d'Arc",
+      "mrc": "Maria-Chapdelaine"
+    },
+    {
+      "slug": "sainte-louise",
+      "name": "Sainte-Louise",
+      "mrc": "L'Islet"
+    },
+    {
+      "slug": "sainte-lucie-de-beauregard",
+      "name": "Sainte-Lucie-de-Beauregard",
+      "mrc": "Montmagny"
+    },
+    {
+      "slug": "sainte-marguerite-marie",
+      "name": "Sainte-Marguerite-Marie",
+      "mrc": "La Matapédia"
+    },
+    {
+      "slug": "sainte-marie-de-blandford",
+      "name": "Sainte-Marie-de-Blandford",
+      "mrc": "Bécancour"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "name": "Sainte-Marie-Salomé",
+      "mrc": "Montcalm"
+    },
+    {
+      "slug": "sainte-monique--lac-saint-jean-est",
+      "name": "Sainte-Monique",
+      "mrc": "Lac-Saint-Jean-Est"
+    },
+    {
+      "slug": "sainte-perpetue--lislet",
+      "name": "Sainte-Perpétue",
+      "mrc": "L'Islet"
+    },
+    {
+      "slug": "sainte-rita",
+      "name": "Sainte-Rita",
+      "mrc": "Les Basques"
+    },
+    {
+      "slug": "sainte-sophie-de-levrard",
+      "name": "Sainte-Sophie-de-Lévrard",
+      "mrc": "Bécancour"
+    },
+    {
+      "slug": "sainte-sophie-dhalifax",
+      "name": "Sainte-Sophie-d'Halifax",
+      "mrc": "L'Érable"
+    },
+    {
+      "slug": "schefferville",
+      "name": "Schefferville",
+      "mrc": "Caniapiscau"
+    },
+    {
+      "slug": "shawville",
+      "name": "Shawville",
+      "mrc": "Pontiac"
+    },
+    {
+      "slug": "sheenboro",
+      "name": "Sheenboro",
+      "mrc": "Pontiac"
+    },
+    {
+      "slug": "stornoway",
+      "name": "Stornoway",
+      "mrc": "Le Granit"
+    },
+    {
+      "slug": "thurso",
+      "name": "Thurso",
+      "mrc": "Papineau"
+    },
+    {
+      "slug": "tingwick",
+      "name": "Tingwick",
+      "mrc": "Arthabaska"
+    },
+    {
+      "slug": "trecesson",
+      "name": "Trécesson",
+      "mrc": "Abitibi"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "name": "Très-Saint-Sacrement",
+      "mrc": "Le Haut-Saint-Laurent"
+    },
+    {
+      "slug": "trois-rivieres",
+      "name": "Trois-Rivières",
+      "mrc": null
+    },
+    {
+      "slug": "val-david",
+      "name": "Val-David",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "val-morin",
+      "name": "Val-Morin",
+      "mrc": "Les Laurentides"
+    },
+    {
+      "slug": "val-saint-gilles",
+      "name": "Val-Saint-Gilles",
+      "mrc": "Abitibi-Ouest"
+    },
+    {
+      "slug": "villeroy",
+      "name": "Villeroy",
+      "mrc": "L'Érable"
+    },
+    {
+      "slug": "wotton",
+      "name": "Wotton",
+      "mrc": "Les Sources"
+    }
+  ]
+}

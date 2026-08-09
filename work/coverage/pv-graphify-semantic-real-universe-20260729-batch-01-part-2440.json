@@ -1,0 +1,1807 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:03:23.401Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2440,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/18b6bd0d84dee181b3572d5f1a5558942e0dc93b2adb387c77ffd8dc215e554e.pdf",
+      "raw/pv-index/cas/1ae2398553b62b9a11db887709e6abe6476ce3c5cbc3ddfd842df786500885c2.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 17,
+    "MeetingDate": 17,
+    "Regulation": 31,
+    "LotCadastre": 5,
+    "Resolution": 5
+  },
+  "graphify": {
+    "nodes": 111,
+    "edges": 54,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/fd75df79b648a32424eb7946b28b99a0c81ca3948f459e4dc004d444f5cd9835.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3349723",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:155",
+      "quote": "       principal résidentiel projeté - 3, chemin Duclos - Lot 3 349 723 -"
+    },
+    {
+      "municipality_slug": "cantley",
+      "storage_key": "raw/pv-index/cas/fd75df79b648a32424eb7946b28b99a0c81ca3948f459e4dc004d444f5cd9835.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4586544",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:160",
+      "quote": "       impasse du Crépuscule - Lot 4 586 544 - Dossier 2020-20001"
+    },
+    {
+      "municipality_slug": "cap-chat",
+      "storage_key": "raw/pv-index/cas/282f396e01bf77914e060965a039d5cb297057dcf249a75d0d5dedbbc1e57f1c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6248546",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:205",
+      "quote": "               PRODUITS FORESTIERS D’AUTEUIL (1988) LTÉE – LOT 6 248 546 – AUTORISATION"
+    },
+    {
+      "municipality_slug": "cap-chat",
+      "storage_key": "raw/pv-index/cas/659ddd7c871b00382d2001fb552fab3a3aebfdfa0209304affa51e8841773c92.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6248702",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:47",
+      "quote": "               ATTENDU QUE l’étude géotechnique réalisée sur le lot 6 248 702 par la firme LER"
+    },
+    {
+      "municipality_slug": "cap-chat",
+      "storage_key": "raw/pv-index/cas/70ccc21c210f91b99aa18bd2b8330c19b4048cc5c06014c763fa8a93e0dae28f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6248546",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:34",
+      "quote": "RÉS.02.03.23     ACHAT DU LOT N° 6 248 546 DU CADASTRE DU QUÉBEC, PROPRIÉTÉ DE « LES"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 67,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 7750,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z",
+  "documents": [
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2020/03/PV-Conseil-du-10-03-2020.pdf",
+      "storage_key": "raw/pv-index/cas/fd75df79b648a32424eb7946b28b99a0c81ca3948f459e4dc004d444f5cd9835.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 10,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Séance ordinaire du conseil municipal de la Municipalité de Cantley tenue le"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 MARS 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "1.     OUVERTURE DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 MARS 2020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "       DU 10 MARS 2020"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "603-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "6.1    Adoption du Règlement numéro 603-20 constituant le comité"
+            }
+          },
+          {
+            "label": "604-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "6.2    Adoption du Règlement numéro 604-20 constituant le comité"
+            }
+          },
+          {
+            "label": "224-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "       605-20 modifiant le règlement numéro 224-03 sur les branchements à"
+            }
+          },
+          {
+            "label": "607-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "6.4    Avis de motion - Règlement numéro 607-20 pour abroger et"
+            }
+          },
+          {
+            "label": "600-19",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "      609-20 modifiant le Règlement numéro 600-19 établissant les taux de"
+            }
+          },
+          {
+            "label": "602-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:166",
+              "quote": "11.4   Adoption du Règlement numéro 602-20 modifiant le Règlement de"
+            }
+          },
+          {
+            "label": "605-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:861",
+              "quote": "                                   RÈGLEMENT NUMÉRO 605-20 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "609-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1475",
+              "quote": "                                RÈGLEMENT NUMÉRO 609-20 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "274-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2374",
+              "quote": "             CONSIDÉRANT QUE la demande est assujettie au Règlement numéro 274-05 sur"
+            }
+          },
+          {
+            "label": "501-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2695",
+              "quote": "             CONSIDÉRANT QUE l'article 3.4 du Règlement numéro 501-16 constituant le CCU"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3349723",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:155",
+              "quote": "       principal résidentiel projeté - 3, chemin Duclos - Lot 3 349 723 -"
+            }
+          },
+          {
+            "label": "4586544",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:160",
+              "quote": "       impasse du Crépuscule - Lot 4 586 544 - Dossier 2020-20001"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cantley/d444f5cd9835.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cantley/d444f5cd9835.pdf/.graphify/.graphify_extract.json — 16 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cantley",
+      "municipality_name": "Cantley",
+      "url": "https://cantley.ca/wp-content/uploads/2024/01/OJ-PR-Conseil-du-16-janvier-2024.pdf",
+      "storage_key": "raw/pv-index/cas/fe58394436a08d3ccd8649065246144d80a56157a8ad74efe735429a7fdb1867.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cantley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      l'article 72 de la Loi sur les compétences municipales dans le cadre de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      l'article 72 de la Loi sur les compétences municipales dans le cadre de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cantley/429a7fdb1867.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cantley/429a7fdb1867.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cantley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.07.03.pdf",
+      "storage_key": "raw/pv-index/cas/1cf8c7b4d00594a8a327bd80916e1f2c33b9673bfe6ef629b0552d0cfc62df63.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, à 20 h, le 3 juillet 2023."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "321-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "RÉS.10.07.23   RÈGLEMENT N° 321-2023 RÉGISSANT LA DÉMOLITION D’IMMEUBLES ET LA PROTECTION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/2d0cfc62df63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/2d0cfc62df63.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.02.06.pdf",
+      "storage_key": "raw/pv-index/cas/1d955a083182ae28cd0beaa514a85824c1c3dca4b7e1b333e6b155e4106a122c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil municipal de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               20 h, le 6 février 2023."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "11.09.22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:433",
+              "quote": "               résolutions numéros 11.09.22 et 12.09.22 furent adoptées. La première étant"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "313-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:441",
+              "quote": "               consultation publique concernant le Projet de Règlement 313-2022 fut tenue"
+            }
+          },
+          {
+            "label": "315-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:460",
+              "quote": "               CONSIDÉRANT QUE le Projet de Règlement n° 315-2022 a été adopté lors de la"
+            }
+          },
+          {
+            "label": "319-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:495",
+              "quote": "               DÉPOSE SÉANCE TENANTE, le Projet de Règlement numéro 319-2023."
+            }
+          },
+          {
+            "label": "320-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:523",
+              "quote": "               DÉPOSE SÉANCE TENANTE, le Projet de Règlement numéro 320-2023."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/55e4106a122c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/55e4106a122c.pdf/.graphify/.graphify_extract.json — 9 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.12.18_2.pdf",
+      "storage_key": "raw/pv-index/cas/25963a77ed21b55b2abb396c93a54c4078a337cfe487c8b5329eb19aa8ee4bea.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, le 18 décembre 2023 à 20 h."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "329-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "RÉS.41.12.23   RÈGLEMENT NUMÉRO 329-2023 VISANT L’ADOPTION DU BUDGET"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/b19aa8ee4bea.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/b19aa8ee4bea.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.04.24v2.pdf",
+      "storage_key": "raw/pv-index/cas/26321742f70719d0d3a8ab126321ee65ab14078c486f29778f2ab5ac9802595a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "               de Ville Louis-Roy, le 24 avril 2023 à 16 h 30."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/b5ac9802595a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/b5ac9802595a.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.01.09.pdf",
+      "storage_key": "raw/pv-index/cas/282f396e01bf77914e060965a039d5cb297057dcf249a75d0d5dedbbc1e57f1c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, à 20 h, le 9 janvier 2023."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6248546",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:205",
+              "quote": "               PRODUITS FORESTIERS D’AUTEUIL (1988) LTÉE – LOT 6 248 546 – AUTORISATION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/edbbc1e57f1c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/edbbc1e57f1c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.02.16.pdf",
+      "storage_key": "raw/pv-index/cas/418995d2dcedc79d53d9a323c47fd78624043ffeead08b36ecbe89ef26e83f77.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "               Louis-Roy, le 16 février 2023, à 16 h 30."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/89ef26e83f77.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/89ef26e83f77.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.12.13.pdf",
+      "storage_key": "raw/pv-index/cas/60067e9a0526ca71ab393baea031ad4c38d4aa579b03b55917bd1dc91d6a201b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, le 13 décembre 2023, à 16 h 30."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "330-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "RÉS.29.12.23   PROJET DE RÈGLEMENT NUMÉRO 330-2023 SUR LES MODALITÉS DE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/1dc91d6a201b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/1dc91d6a201b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.07.10.pdf",
+      "storage_key": "raw/pv-index/cas/659ddd7c871b00382d2001fb552fab3a3aebfdfa0209304affa51e8841773c92.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Louis-Roy, le 10 juillet 2023, à 16 h."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6248702",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "               ATTENDU QUE l’étude géotechnique réalisée sur le lot 6 248 702 par la firme LER"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/1e8841773c92.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/1e8841773c92.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.03.01.pdf",
+      "storage_key": "raw/pv-index/cas/70ccc21c210f91b99aa18bd2b8330c19b4048cc5c06014c763fa8a93e0dae28f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                 PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                 Louis-Roy, le 1er mars 2023, à 16 h 30."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6248546",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "RÉS.02.03.23     ACHAT DU LOT N° 6 248 546 DU CADASTRE DU QUÉBEC, PROPRIÉTÉ DE « LES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/8a93e0dae28f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/8a93e0dae28f.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.11.14.pdf",
+      "storage_key": "raw/pv-index/cas/75bc19b88ef70fa85b8656f03bd2e794669d2a1bad60884ef3b710c6b32a8aa7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Louis-Roy, le 14 novembre 2023, à 16 h 30."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/10c6b32a8aa7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/10c6b32a8aa7.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2022/PV2023.06.28.pdf",
+      "storage_key": "raw/pv-index/cas/77a689f6ad81f6b2fdc603c8dfc9d02cad0c070a148ebdaa53c5c03dbb6dd273.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, le 28 juin 2023, à 14 h."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "323-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "RÉS.30.06.23   ADOPTION DU RÈGLEMENT NUMÉRO 323-2023 DÉCRÉTANT L’ACQUISITION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/c03dbb6dd273.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/c03dbb6dd273.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.10.02.pdf",
+      "storage_key": "raw/pv-index/cas/7877868c2bc3aeeeeead032d39596e3709970b1307e42c5ea434c07c19c2270d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, à 20 h, le 2 octobre 2023."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "04.08.23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "               VU la résolution numéro 04.08.23 octroyant à la firme PESCA Environnement"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "323-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "               MILLE DOLLARS (390 000. $) – RÈGLEMENT NUMÉRO 323-2023 – ACQUISITION"
+            }
+          },
+          {
+            "label": "324-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "RÉS.08.10.23   AVIS DE MOTION – RÈGLEMENT 324-2023 AMENDANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "325-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:190",
+              "quote": "RÉS.10.10.23   AVIS DE MOTION – RÈGLEMENT 325-2023 AMENDANT LE RÈGLEMENT DE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/c07c19c2270d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/c07c19c2270d.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.05.01.pdf",
+      "storage_key": "raw/pv-index/cas/9ad516bfceab7b4a28188a3f4b170da1afed450eb25e3789e58027604774b8ff.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, à 20 h, le 1er mai 2023."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "11959-03-2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:207",
+              "quote": "               ATTENDU QUE par résolution numéro 11959-03-2023, adoptée à sa séance"
+            }
+          },
+          {
+            "label": "08.07.19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:244",
+              "quote": "\fRÉS.10.05.23   AFFECTATION D’UN SOLDE RESTANT RÉSOLUTION NUMÉRO 08.07.19"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/27604774b8ff.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/27604774b8ff.pdf/.graphify/.graphify_extract.json — 6 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.12.18_1.pdf",
+      "storage_key": "raw/pv-index/cas/9f124fb5181457f475c829af22c9609ea1a1adbc585b62cddff5d5df0335a8d5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE EXTRAORDINAIRE des membres du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               Ville Louis-Roy, le 18 décembre 2023 à 19 h 30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "20.04.21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "               de formation du Service incendie (résolution numéro 20.04.21);"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "327-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "               CONSIDÉRANT QUE le Projet de Règlement numéro 327-2023 a été adopté lors"
+            }
+          },
+          {
+            "label": "328-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "               CONSIDÉRANT QUE le Projet de Règlement numéro 328-2023 a été adopté lors de"
+            }
+          },
+          {
+            "label": "330-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "               CONSIDÉRANT QUE le Projet de Règlement numéro 330-2023 a été adopté lors de"
+            }
+          },
+          {
+            "label": "329-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "RÉS.34.12.23   PROJET DE RÈGLEMENT NUMÉRO 329-2023 VISANT L’ADOPTION DU BUDGET"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/d5df0335a8d5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/d5df0335a8d5.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.08.07.pdf",
+      "storage_key": "raw/pv-index/cas/a2de6ebb7e8ec6e286dd27f5239ba278e6c81b4b4fbf8cd8b3710be6b4c9f857.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil municipal de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               20 h, le 7 août 2023."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "286-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "               VU le Règlement numéro 286-2019 sur la Gestion contractuelle de la Ville;"
+            }
+          },
+          {
+            "label": "320-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "RÉS.08.08.23   RÈGLEMENT N° 320-2023 AMENDANT LE RÈGLEMENT DE ZONAGE N° 068-2006 AFIN"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/0be6b4c9f857.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/0be6b4c9f857.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cap-chat",
+      "municipality_name": "Cap-Chat",
+      "url": "https://www.cap-chat.ca/images/documents/conseil-mun/proces-verbaux/2023/PV2023.11.06.pdf",
+      "storage_key": "raw/pv-index/cas/a4ea4597b118c09e6df9bc0a09429090f6991453337ac4a5f8746239ad286e65.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cap-Chat",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "               PROCÈS-VERBAL de la SÉANCE ORDINAIRE des membres du Conseil municipal de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "               20 h, le 6 novembre 2023."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "324-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:339",
+              "quote": "RÉS.15.11.23   RÈGLEMENT N° 324-2023 AMENDANT LE RÈGLEMENT RELATIF AU PLAN"
+            }
+          },
+          {
+            "label": "325-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "\fRÉS.16.11.23   RÈGLEMENT N° 325-2023 AMENDANT LE RÈGLEMENT DE ZONAGE NUMÉRO 068-"
+            }
+          },
+          {
+            "label": "326-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:374",
+              "quote": "               CONSIDÉRANT QUE l’adoption du présent Règlement numéro 326-2023 n’a pas à"
+            }
+          },
+          {
+            "label": "261-2016",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:378",
+              "quote": "               Règlement N° 326-2023 modifiant le Règlement numéro 261-2016 décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/6239ad286e65.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T150204Z/cap-chat/6239ad286e65.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cap-chat",
+          "sainte-anne-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
