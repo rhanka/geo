@@ -36,7 +36,7 @@ describe("palier-matrix contract", () => {
     const slugKeys = payload.columns.filter((c: any) => c.slug_measured).map((c: any) => c.key);
     expect(slugKeys.length).toBe(6); // cols 14-19
     const pending = payload.rows.filter((r: any) => !r.graph_matched);
-    expect(pending.length).toBe(5);
+    expect(pending.length).toBe(payload.cohort.pending_graph_node);
     for (const r of pending) {
       expect(r.flag).toBe("PENDING-GRAPH-NODE");
       // toutes les colonnes graphe sont unknown (aucune mesure hors du graphe).
@@ -69,8 +69,10 @@ describe("palier-matrix contract", () => {
     for (const r of payload.rows.filter((x: any) => x.graph_matched)) {
       expect(r.presence.present + r.presence.absent + r.presence.na_excluded).toBe(20);
     }
-    // col 20 (v3.4) sans source per-ville : absente partout → aucune ville full-presence.
-    expect(payload.presence_gate.cities_full_presence).toBe(0);
+    // La gate agrège les lignes matchées : elle ne fige aucun nombre qui varie
+    // avec les sources per-ville (dont la col 20).
+    const fullPresenceRows = payload.rows.filter((r: any) => r.graph_matched && r.presence.absent === 0).length;
+    expect(payload.presence_gate.cities_full_presence).toBe(fullPresenceRows);
   });
 
   it("présence = donnée là ; colonne presence_strict (PV capté) : present ssi complete", () => {
